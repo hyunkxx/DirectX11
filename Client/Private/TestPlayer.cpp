@@ -44,6 +44,9 @@ HRESULT CTestPlayer::Initialize(void * pArg)
 
 void CTestPlayer::Start()
 {
+	CGameInstance* pGame = CGameInstance::GetInstance();
+
+	pStaticObject = pGame->Find_GameObject(LEVEL_GAMEPLAY, L"StaticTest");
 }
 
 void CTestPlayer::Tick(_double TimeDelta)
@@ -62,6 +65,11 @@ void CTestPlayer::Tick(_double TimeDelta)
 		if (--m_iSkelAnimID < 0)
 			m_iSkelAnimID = 0;
 		SetUp_SkelAnimation();
+	}
+
+	if (pGame->InputKey(DIK_DOWN) == KEY_STATE::TAP)
+	{
+		pStaticObject->SetState(STATE::DESTROY);
 	}
 
 	Tick_State(TimeDelta);
@@ -105,6 +113,8 @@ HRESULT CTestPlayer::Render()
 	}
 
 	// HairParts
+
+	
 	for (_uint j = 0; j < HAIR_END; ++j)
 	{
 		if (nullptr == m_pHairParts[j])
@@ -161,7 +171,7 @@ HRESULT CTestPlayer::Render()
 			m_pStaticParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODEL], "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
 			m_pStaticParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODEL], "g_NormalTexture", i, MyTextureType_NORMALS);
 
-			m_pShaderCom[SHADER_MODEL]->Begin(1);
+			m_pShaderCom[SHADER_MODEL]->Begin(0);
 
 			m_pStaticParts[i]->Render(i);
 		}
@@ -273,7 +283,7 @@ HRESULT CTestPlayer::SetUp_ShaderResources()
 		return E_FAIL;
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	//if (FAILED(m_pMainTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+	//if (FAILED(m_pMainTransform->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 	//	return E_FAIL;
 
 	if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetMatrix("g_ViewMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
