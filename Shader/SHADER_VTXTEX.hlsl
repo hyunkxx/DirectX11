@@ -99,7 +99,7 @@ PS_OUT PS_MAIN_SOFTEFFECT(PS_IN_SOFTEFFECT In)
 
 	vector		vDepthDesc = g_DepthTexture.Sample(LinearSampler, vDepthUV);
 
-	float		fOldViewZ = vDepthDesc.y * 300.f;
+	float		fOldViewZ = vDepthDesc.y * 1000.f;
 
 	float		fViewZ = In.vProjPos.w;
 

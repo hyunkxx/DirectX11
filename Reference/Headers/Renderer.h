@@ -23,6 +23,7 @@ private:
 	void Render_Priority();
 	void Render_NonAlphaBlend();
 	void Render_Lights();
+	void Render_Outline();
 	void Render_Blend();
 	void Render_NonLight();
 	void Render_AlphaBlend();

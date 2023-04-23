@@ -72,15 +72,13 @@ public:
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
 	CShader*			m_pShaderCom[SHADER_END] = { nullptr };
-	CTransform*			m_pTransformCom = { nullptr };
-
 
 	// Models
 private:
 	CModel_Anim*		m_pAnimSet = { nullptr };
 	CModel_Anim*		m_pSkelParts[SKEL_END] = { nullptr, };
 	CModel_Anim*		m_pHairParts[HAIR_END] = { nullptr, };
-	CModel_Anim*		m_pStaticParts[STATIC_END] = { nullptr, };
+	CModel*				m_pStaticParts[STATIC_END] = { nullptr, };
 
 private:
 	_uint				m_iAnimSetID = { 0 };

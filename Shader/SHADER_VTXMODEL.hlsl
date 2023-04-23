@@ -4,6 +4,7 @@
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 texture2D	g_DiffuseTexture;
+texture2D	g_NormalTexture;
 texture2D	g_DepthTexture;
 float4		g_vCamPosition;
 float4		g_vColor;
@@ -27,6 +28,8 @@ struct VS_OUT
 	float4 vNormal : NORMAL;
 	float2 vTexUV : TEXCOORD0;
 	float4 vProjPos : TEXCOORD1;
+	float3 vTangent : TANGENT;
+	float3 vBiNormal : BINORMAL;
 };
 
 struct VS_OUT_EFFECT
@@ -79,6 +82,8 @@ struct PS_IN
 	float4 vNormal : NORMAL;
 	float2 vTexUV : TEXCOORD0;
 	float4 vProjPos : TEXCOORD1;
+	float3 vTangent : TANGENT;
+	float3 vBiNormal : BINORMAL;
 };
 
 
@@ -98,6 +103,15 @@ struct PS_OUT
 	float4 vDepth : SV_TARGET2;
 };
 
+
+struct PS_OUTLINE
+{
+	float4 vDiffuse : SV_TARGET0;
+	float4 vNormal : SV_TARGET1;
+	float4 vDepth : SV_TARGET2;
+	float4 vOutNormal : SV_TARGET3;
+};
+
 struct PS_OUT_EFFECT
 {
 	float4 vColor : SV_TARGET0;
@@ -114,10 +128,34 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	Out.vDiffuse = vMtrlDiffuse;
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
 
 	return Out;
 }
+
+PS_OUTLINE	PS_Outline(PS_IN In)
+{
+	PS_OUTLINE Out = (PS_OUTLINE)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float3	 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
+
+	if (0.1f >= vMtrlDiffuse.a)
+		discard;
+
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vNormal = float4(vNormal * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
+
+	if (Out.vDepth.g * 1000 < 10.f)
+		Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, In.vProjPos.w / 1000.f);
+
+	return Out;
+}
+
 
 PS_OUT_EFFECT	PS_MAIN_SHIELD(PS_IN_EFFECT In)
 {
@@ -211,6 +249,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	pass Outline
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Outline();
 	}
 
 	pass Shield

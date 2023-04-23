@@ -33,6 +33,10 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_OutNormal", ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
+
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Depth", ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
@@ -45,6 +49,10 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Outline", ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	// µðÇ»Áî, ³ë¸», µª½º
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_Diffuse")))
 		return E_FAIL;
@@ -52,12 +60,19 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_Depth")))
 		return E_FAIL;
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_OutNormal")))
+		return E_FAIL;
 
 	// ½¦ÀÌµå, ½ºÆåÅ§·¯
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_LightAcc", L"Target_Shade")))
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_LightAcc", L"Target_Specular")))
 		return E_FAIL;
+
+	// ¿Ü°û¼±
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_ToonShader", L"Target_Outline")))
+		return E_FAIL;
+
 
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pVIBuffer)
@@ -85,6 +100,8 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Specular"), 300.f, 300.f, 200.f, 200.f)))
 		return E_FAIL;
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Outline"), 300.f, 500.f, 200.f, 200.f)))
+		return E_FAIL;
 #endif
 
 	return S_OK;
@@ -106,6 +123,7 @@ void CRenderer::Draw()
 	Render_Priority();
 	Render_NonAlphaBlend();
 	Render_Lights();
+	Render_Outline();
 	Render_Blend();
 	Render_NonLight();
 	Render_AlphaBlend();
@@ -119,6 +137,7 @@ void CRenderer::Draw()
 		return;
 	m_pTargetManager->Render(TEXT("MRT_Deferred"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
+	m_pTargetManager->Render(TEXT("MRT_ToonShader"), m_pShader, m_pVIBuffer);
 #endif
 
 }
@@ -184,8 +203,32 @@ void CRenderer::Render_Lights()
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Depth", "g_DepthTexture")))
 		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Outline", "g_OutlineTexture")))
+		return;
 
 	m_pLightManager->Render(m_pShader, m_pVIBuffer);
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+}
+
+void CRenderer::Render_Outline()
+{
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_ToonShader")))
+		return;
+
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_OutNormal"), "g_DiffuseTexture")))
+		return;
+
+	m_pShader->Begin(4);
+	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;

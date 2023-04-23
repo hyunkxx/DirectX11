@@ -33,7 +33,7 @@ HRESULT CTestPlayer::Initialize(void * pArg)
 	// Model Init
 	Init_Models();
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(10.f, 3.f, 10.f, 1.f));
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(10.f, 3.f, 10.f, 1.f));
 
 
 	SetUp_SkelAnimation();
@@ -44,9 +44,6 @@ HRESULT CTestPlayer::Initialize(void * pArg)
 
 void CTestPlayer::Start()
 {
-	CGameInstance* pGame = CGameInstance::GetInstance();
-
-	pStaticObject = pGame->Find_GameObject(LEVEL_GAMEPLAY, L"StaticTest");
 }
 
 void CTestPlayer::Tick(_double TimeDelta)
@@ -65,11 +62,6 @@ void CTestPlayer::Tick(_double TimeDelta)
 		if (--m_iSkelAnimID < 0)
 			m_iSkelAnimID = 0;
 		SetUp_SkelAnimation();
-	}
-
-	if (pGame->InputKey(DIK_DOWN) == KEY_STATE::TAP)
-	{
-		pStaticObject->SetState(STATE::DESTROY);
 	}
 
 	Tick_State(TimeDelta);
@@ -96,7 +88,7 @@ HRESULT CTestPlayer::Render()
 	{
 		_uint iNumMeshes = m_pSkelParts[j]->Get_NumMeshes();
 
-		if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetMatrix("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
+		if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
 			return E_FAIL;
 
 		for (_uint i = 0; i < iNumMeshes; ++i)
@@ -113,8 +105,6 @@ HRESULT CTestPlayer::Render()
 	}
 
 	// HairParts
-
-	
 	for (_uint j = 0; j < HAIR_END; ++j)
 	{
 		if (nullptr == m_pHairParts[j])
@@ -125,7 +115,7 @@ HRESULT CTestPlayer::Render()
 			* XMMatrixRotationX(XMConvertToRadians(-90.f))
 			* XMLoadFloat4x4(&m_pHairParts[j]->Get_HangBone()->Get_CombinedTransfromationMatrix())
 			* XMMatrixRotationY(XMConvertToRadians(180.f))
-			* XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+			* XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
 			if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetMatrix("g_WorldMatrix", &WorldMatrix)))
 				return E_FAIL;
@@ -158,7 +148,7 @@ HRESULT CTestPlayer::Render()
 				* XMMatrixRotationX(XMConvertToRadians(-90.f))
 				* XMLoadFloat4x4(&m_pStaticParts[j]->Get_HangBone()->Get_CombinedTransfromationMatrix())
 				* XMMatrixRotationY(XMConvertToRadians(180.f))
-				* XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+				* XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
 			if (FAILED(m_pShaderCom[SHADER_MODEL]->SetMatrix("g_WorldMatrix", &WorldMatrix)))
 				return E_FAIL;
@@ -171,7 +161,7 @@ HRESULT CTestPlayer::Render()
 			m_pStaticParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODEL], "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
 			m_pStaticParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODEL], "g_NormalTexture", i, MyTextureType_NORMALS);
 
-			m_pShaderCom[SHADER_MODEL]->Begin(0);
+			m_pShaderCom[SHADER_MODEL]->Begin(1);
 
 			m_pStaticParts[i]->Render(i);
 		}
@@ -195,7 +185,7 @@ HRESULT CTestPlayer::Add_Components()
 	TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
-		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
+		TEXT("Com_Transform"), (CComponent**)&m_pMainTransform, &TransformDesc)))
 		return E_FAIL;
 
 	/* For.Com_AnimSet*/
@@ -283,7 +273,7 @@ HRESULT CTestPlayer::SetUp_ShaderResources()
 		return E_FAIL;
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	//if (FAILED(m_pTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+	//if (FAILED(m_pMainTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 	//	return E_FAIL;
 
 	if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetMatrix("g_ViewMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
@@ -389,7 +379,7 @@ void CTestPlayer::Free()
 	}
 
 	Safe_Release(m_pAnimSet);
-	Safe_Release(m_pTransformCom);
+	Safe_Release(m_pMainTransform);
 
 	for (_uint i = 0; i < SHADER_END; ++i)
 	{

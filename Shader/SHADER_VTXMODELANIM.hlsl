@@ -5,10 +5,10 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix g_BoneMatrix[256];
 
 texture2D	g_DiffuseTexture;
+texture2D	g_NormalTexture;
 texture2D	g_DissolveTexture;
 float		g_fDissolveRate;
 float4		g_vDissolveColor;
-
 
 struct VS_IN
 {
@@ -27,6 +27,8 @@ struct VS_OUT
 	float4 vNormal : NORMAL;
 	float2 vTexUV : TEXCOORD0;
 	float4 vProjPos : TEXCOORD1;
+	float3 vTangent : TANGENT;
+	float3 vBiNormal : BINORMAL;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -54,6 +56,9 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vTexUV = In.vTexUV;
 	Out.vProjPos = Out.vPosition;
 
+	Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix));
+	Out.vBiNormal = normalize(cross(Out.vNormal, Out.vTangent));
+
 	return Out;
 }
 
@@ -63,6 +68,8 @@ struct PS_IN
 	float4 vNormal : NORMAL;
 	float2 vTexUV : TEXCOORD0;
 	float4 vProjPos : TEXCOORD1;
+	float3 vTangent : TANGENT;
+	float3 vBiNormal : BINORMAL;
 };
 
 struct PS_OUT
@@ -72,18 +79,34 @@ struct PS_OUT
 	float4 vDepth	: SV_TARGET2;
 };
 
-PS_OUT	PS_MAIN(PS_IN In)
+struct PS_OUTLINE
 {
-	PS_OUT Out = (PS_OUT)0;;
+	float4 vDiffuse : SV_TARGET0;
+	float4 vNormal	: SV_TARGET1;
+	float4 vDepth	: SV_TARGET2;
+	float4 vOutNormal	: SV_TARGET3;
+};
+
+
+PS_OUTLINE	PS_MAIN(PS_IN In)
+{
+	PS_OUTLINE Out = (PS_OUTLINE)0;
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float3	 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
 
 	if (0.1f >= vMtrlDiffuse.a)
 		discard;
 
 	Out.vDiffuse = vMtrlDiffuse;
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 1.f);
+	Out.vNormal = float4(vNormal * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
+
+	if(Out.vDepth.g * 1000 < 10.f)
+		Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, In.vProjPos.w / 1000.f);
 
 	return Out;
 }
@@ -107,7 +130,7 @@ PS_OUT	PS_MAIN_DISSOLVING(PS_IN In)
 
 	Out.vDiffuse = vMtrlDiffuse;
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
 
 	return Out;
 }

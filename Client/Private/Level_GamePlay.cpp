@@ -46,8 +46,8 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	// Directional
 	ZeroMemory(&LightDesc, sizeof LightDesc);
 	LightDesc.eLightType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(0.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
+	LightDesc.vDirection = _float4(2.f, -1.f, 1.0f, 0.f);
+	LightDesc.vDiffuse = _float4(0.6f, 0.65f, 0.6f, 1.f);
 	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	
@@ -74,7 +74,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	CCamera::CAMERA_DESC CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERA_DESC));
 
-	CameraDesc.TransformDesc.fMoveSpeed = 20.f;
+	CameraDesc.TransformDesc.fMoveSpeed = 5.f;
 	CameraDesc.TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
 
 	CameraDesc.vEye = _float3(0.f, 10.f, -10.f);
