@@ -69,7 +69,6 @@ void CModel_Anim::Set_OffsetZero()
 {
 	for (auto& pBone : m_Bones)
 		pBone->Set_OffsetMatrix(XMMatrixIdentity());
-
 }
 
 HRESULT CModel_Anim::Initialize_Prototype(const _tchar * pModelFilePath)
@@ -272,6 +271,14 @@ _float3 CModel_Anim::Play_Animation(_double TimeDelta, _double* pFrameAccOut, _b
 	}
 
 	return vMove;
+}
+
+void CModel_Anim::Follow_Animation()
+{
+	for (auto& pBone : m_Bones)
+	{
+		pBone->Copy_CombinedMatrix();
+	}
 }
 
 HRESULT CModel_Anim::Ready_Bones(DMODELINFO * pModel)

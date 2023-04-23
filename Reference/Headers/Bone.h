@@ -53,6 +53,19 @@ public:
 	HRESULT Initialize(BONEINFO* pBoneInfo);
 	HRESULT	Set_ParentBone(CBone*	pParent);
 	void	Invalidate_CombinedMatrix();
+	void	Copy_CombinedMatrix();
+
+	_bool Register_SkelBone(CBone* pSkelBone)
+	{
+		if (!lstrcmp(pSkelBone->m_szName, m_szName) && true == m_bAnim)
+		{
+			m_pSkelBone = pSkelBone;
+			return true;
+		}
+		return false;
+	}
+
+
 
 private:
 	_tchar m_szName[MAX_PATH] = TEXT("");
@@ -61,6 +74,7 @@ private:
 	_float4x4 m_TransformationMatrix;
 	_float4x4 m_CombinedTransformationMatrix;
 	CBone* m_pParent = { nullptr };
+	CBone* m_pSkelBone = { nullptr };
 	_bool	m_bAnim = { true };
 
 public:

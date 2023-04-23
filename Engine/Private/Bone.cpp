@@ -12,6 +12,7 @@ CBone::CBone(const CBone & rhs)
 	, m_OffsetMatrix(rhs.m_OffsetMatrix)
 	, m_CombinedTransformationMatrix(rhs.m_CombinedTransformationMatrix)
 	, m_pParent(rhs.m_pParent)
+	, m_pSkelBone(rhs.m_pSkelBone)
 	, m_bAnim(rhs.m_bAnim)
 {
 	lstrcpy(m_szName, rhs.Get_Name());
@@ -25,13 +26,6 @@ HRESULT CBone::Initialize(BONEINFO * pBoneInfo)
 	memcpy(&m_TransformationMatrix, &pBoneInfo->s_TransformationMatrix, sizeof(_float4x4));
 	memcpy(&m_OffsetMatrix, &pBoneInfo->s_OffsetMatrix, sizeof(_float4x4));
 	XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMMatrixIdentity());
-	
-	
-	if (!lstrcmp(m_szName, TEXT("chest_R")))
-		int a = 10;
-
-	if (!lstrcmp(m_szName, TEXT("chest_L")))
-		int a = 10;
 
 	m_bAnim = pBoneInfo->s_bAnim;
 	
@@ -62,6 +56,19 @@ void CBone::Invalidate_CombinedMatrix()
 		XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMLoadFloat4x4(&m_TransformationMatrix) * XMLoadFloat4x4(&m_pParent->Get_CombinedTransfromationMatrix()));
 	else
 		XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMLoadFloat4x4(&m_DefaultTransformationMatrix) * XMLoadFloat4x4(&m_pParent->Get_CombinedTransfromationMatrix()));
+}
+
+void CBone::Copy_CombinedMatrix()
+{
+	if (nullptr == m_pSkelBone)
+	{
+		Invalidate_CombinedMatrix();
+	}
+	else
+	{
+		m_TransformationMatrix = m_pSkelBone->m_TransformationMatrix;
+		m_CombinedTransformationMatrix = m_pSkelBone->Get_CombinedTransfromationMatrix();
+	}
 }
 
 CBone * CBone::Create(BONEINFO * pBoneInfo)

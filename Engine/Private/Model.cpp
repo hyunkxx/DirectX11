@@ -3,6 +3,7 @@
 #include "Mesh.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "Bone.h"
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
@@ -139,6 +140,11 @@ HRESULT CModel::SetUp_ShaderMaterialResource(CShader * pShaderCom, const char * 
 		return S_OK;
 	
 	return m_ModelMaterials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType]->Setup_ShaderResource(pShaderCom, pConstantName);
+}
+
+void CModel::Set_HangBone(CBone * pBone)
+{
+	m_pHangBone = pBone;
 }
 
 HRESULT CModel::Render(_uint iMeshIndex)

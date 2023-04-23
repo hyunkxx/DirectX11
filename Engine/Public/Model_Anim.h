@@ -70,6 +70,28 @@ public:
 
 	void	Set_OffsetZero();
 
+	void Register_SkelModel(vector<CBone*> SkelModelBones)
+	{
+		_uint SkipID = 0;
+
+		for(_uint i = 0; i < SkelModelBones.size(); ++i)
+		{
+			//_uint j = SkipID;
+			for (_uint j = 0; j < m_Bones.size(); ++j)
+			{
+				if (true == m_Bones[j]->Register_SkelBone(SkelModelBones[i]))
+				{
+					//SkipID = j;
+					break;
+				}
+			}
+		}
+	}
+
+	_uint	Get_AnimCount()
+	{
+		return (_uint)m_Animations.size();
+	}
 
 public:
 	virtual HRESULT Initialize_Prototype(const _tchar* pModelFilePath);
@@ -80,7 +102,7 @@ public:
 
 	HRESULT SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate, _bool bFootAltitude); /* 어떤 애니메이션을 구동할거야. */
 	_float3 Play_Animation(_double TimeDelta, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr, _bool bContinue = false); /* 애니메이션 재생한다.(모든 뼈들의 Combined행렬을 셋팅한다) */
-
+	void	Follow_Animation();
 
 private:
 	_uint					m_iNumBones = { 0 };

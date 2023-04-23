@@ -206,8 +206,7 @@
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\Terrain.h" />
-    <ClInclude Include="..\public\ModelTest_Dynamic.h" />
-    <ClInclude Include="..\public\ModelTest_Static.h" />
+    <ClInclude Include="..\public\TestPlayer.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -252,8 +251,7 @@
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
-    <ClCompile Include="..\private\ModelTest_Dynamic.cpp" />
-    <ClCompile Include="..\private\ModelTest_Static.cpp" />
+    <ClCompile Include="..\private\TestPlayer.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

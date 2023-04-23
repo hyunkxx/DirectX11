@@ -65,11 +65,8 @@
     <Filter Include="src\02. GameObjects\99. TestModel">
       <UniqueIdentifier>{665cf870-6dc5-4522-a932-6df3c0f2f1dc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\02. GameObjects\99. TestModel\01. Anim">
-      <UniqueIdentifier>{8c3e0e46-fef4-413d-b853-a5caec54822a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02. GameObjects\99. TestModel\00. Static">
-      <UniqueIdentifier>{2c4a4037-c905-43ab-a912-48db719fe7e6}</UniqueIdentifier>
+    <Filter Include="src\02. GameObjects\99. TestModel\TestPlayer">
+      <UniqueIdentifier>{51e1450e-258c-4add-a836-0ed20a60c48e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -166,11 +163,8 @@
     <ClInclude Include="..\Public\Client_ModelEnum.h">
       <Filter>config\header</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ModelTest_Static.h">
-      <Filter>src\02. GameObjects\99. TestModel\00. Static</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\ModelTest_Dynamic.h">
-      <Filter>src\02. GameObjects\99. TestModel\01. Anim</Filter>
+    <ClInclude Include="..\public\TestPlayer.h">
+      <Filter>src\02. GameObjects\99. TestModel\TestPlayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -237,11 +231,8 @@
     <ClCompile Include="..\ImGui\imgui_impl_win32.cpp">
       <Filter>config\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ModelTest_Static.cpp">
-      <Filter>src\02. GameObjects\99. TestModel\00. Static</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\ModelTest_Dynamic.cpp">
-      <Filter>src\02. GameObjects\99. TestModel\01. Anim</Filter>
+    <ClCompile Include="..\private\TestPlayer.cpp">
+      <Filter>src\02. GameObjects\99. TestModel\TestPlayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

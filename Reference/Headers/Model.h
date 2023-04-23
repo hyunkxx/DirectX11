@@ -23,6 +23,9 @@ public:
 
 public:
 	HRESULT	SetUp_ShaderMaterialResource(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex, MytextureType eType);
+
+	void	Set_HangBone(class CBone* pBone);
+	CBone*	Get_HangBone() { return m_pHangBone; }
 	
 
 protected:
@@ -35,6 +38,9 @@ protected:
 
 protected:
 	_float4x4				m_LocalMatrix;
+
+protected:
+	class CBone*			m_pHangBone = { nullptr };
 
 
 private:
