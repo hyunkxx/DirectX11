@@ -80,6 +80,9 @@ Generated\ Files/
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
 
+Client/Bin/
+Engine/Bin/
+
 # NUnit
 *.VisualState.xml
 TestResult.xml
