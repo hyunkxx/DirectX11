@@ -1,0 +1,50 @@
+#pragma once
+
+#include "GameObject.h"
+#include "Transform.h"
+
+BEGIN(Engine)
+
+class ENGINE_DLL CCamera abstract : public CGameObject
+{
+public:
+	typedef struct tagCameraDesc
+	{
+		CTransform::TRANSFORM_DESC TransformDesc;
+
+		_float3 vEye;
+		_float3 vAt;
+		_float3 vAxisY;
+
+		_float fFovy;
+		_float fAspect;
+		_float fNear;
+		_float fFar;
+
+	}CAMERA_DESC;
+
+protected:
+	explicit CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	explicit CCamera(const CCamera& rhs);
+	virtual ~CCamera() = default;
+
+public:
+	virtual	HRESULT Initialize_Prototype() override;
+	virtual	HRESULT Initialize(void* pArg) override;
+	virtual void Start() override;
+	virtual void Tick(_double TimeDelta) override;
+	virtual void LateTick(_double TimeDelta) override;
+	virtual HRESULT Render() override;
+
+public:
+	virtual CGameObject* Clone(void* pArg = nullptr) = 0;
+	virtual void Free() override;
+
+protected:
+	class CTransform*	m_pTransform = { nullptr };
+	class CPipeLine*	m_pPipeLine = { nullptr };
+	CAMERA_DESC			m_CameraDesc;
+
+};
+
+END

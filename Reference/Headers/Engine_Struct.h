@@ -1,0 +1,240 @@
+#pragma once
+
+namespace Engine
+{
+	typedef struct tagKeyFrame
+	{
+		XMFLOAT3	vScale;
+		XMFLOAT4	vRotation;
+		XMFLOAT3	vPosition;
+		double		Time;
+	}KEYFRAME;
+
+	typedef struct tagModelMaterial
+	{
+		class CTexture* pMaterialTexture[MY_TEXTURE_TYPE_MAX] = { nullptr };
+	}MODEL_MATERIAL;
+
+	typedef struct tagLight_Desc
+	{
+		enum TYPE { TYPE_DIRECTIONAL, TYPE_POINT, TYPE_END };
+		TYPE eLightType = TYPE_END;
+		XMFLOAT4 vDirection;
+		XMFLOAT4 vPosition;
+		float fRange;
+
+		XMFLOAT4 vDiffuse;
+		XMFLOAT4 vAmbient;
+		XMFLOAT4 vSpecular;
+
+	}LIGHT_DESC;
+
+	typedef struct tagGraphic_Desc
+	{
+		enum WIN_MODE { MODE_FULL, MODE_WINDOW, MODE_END };
+		WIN_MODE eMode;
+		unsigned int iWinSizeX;
+		unsigned int iWinSizeY;
+		HINSTANCE hInstance;
+		HWND hWnd;
+	}GRAPHIC_DESC;
+
+	typedef struct tagFaceIndices16
+	{
+		unsigned short _0, _1, _2;
+	}FACEINDICES16;
+
+	typedef struct tagFaceIndices32
+	{
+		unsigned long _0, _1, _2;
+	}FACEINDICES32;
+
+
+	typedef struct tagVertex_Position_Color
+	{
+		XMFLOAT3		vPosition;
+	}VTXPOS;
+
+	typedef struct ENGINE_DLL tagVertex_Position_Color_Declaration
+	{
+		const static unsigned int						iNumElements = 1;
+		static D3D11_INPUT_ELEMENT_DESC					Elements[1];
+	}VTXPOS_DECLARATION;
+
+	// 내가 어떤 모델을 그리기위한 정점 구성요소
+	typedef struct tagVertex_Position_TexCoord
+	{
+		XMFLOAT3 vPosition;
+		XMFLOAT2 vTexUV;
+	}VTXTEX;
+
+	// 정점 요소에대한 구체적인 정보
+	typedef struct ENGINE_DLL tagVertex_Position_TexCoord_Declaration
+	{
+		const static unsigned int						ElementCount = 2;
+		static D3D11_INPUT_ELEMENT_DESC					Elements[2];
+	}VTXTEX_DECLARATION;
+
+	typedef struct tagVertex_Position_Normal_TexCoord
+	{
+		XMFLOAT3 vPosition;
+		XMFLOAT3 vNormal;
+		XMFLOAT2 vTexUV;
+	}VTXNORTEX;
+
+	typedef struct ENGINE_DLL tagVertex_Position_Normal_TexCoord_Declaration
+	{
+		const static unsigned int						ElementCount = 3;
+		static D3D11_INPUT_ELEMENT_DESC					Elements[ElementCount];
+	}VTXNORTEX_DECLARATION;
+
+	// Cube
+	typedef struct tagVertex_Position_Normal_TexCoord_CUBE
+	{
+		XMFLOAT3 vPosition;
+		XMFLOAT3 vNormal;
+		XMFLOAT3 vTexUV;
+	}VTXCUBE;
+
+	typedef struct ENGINE_DLL tagVertex_Position_Normal_Cube_Declaration
+	{
+		const static unsigned int						ElementCount = 2;
+		static D3D11_INPUT_ELEMENT_DESC					Elements[ElementCount];
+	}VTXCUBE_DECLARATION;
+
+	// Model
+	typedef struct tagVertex_Model_Static
+	{
+		XMFLOAT3	vPosition;
+		XMFLOAT3	vNormal;
+		XMFLOAT2	vTexUV;
+		XMFLOAT3	vTangent;
+	}VTXSMODEL;
+
+	typedef struct ENGINE_DLL tagVertex_Model_Static_Declaration
+	{
+		const static unsigned int			iNumElements = 4;
+		static D3D11_INPUT_ELEMENT_DESC		ElementDesc[iNumElements];
+	}VTXSMODEL_DECLARATION;
+
+	typedef struct tagVertex_Model_Dynamic
+	{
+		XMFLOAT3	vPosition;
+		XMFLOAT3	vNormal;
+		XMFLOAT2	vTexUV;
+		XMFLOAT3	vTangent;
+
+		XMUINT4		vBlendIndices;
+		XMFLOAT4	vBlendWeights;
+	}VTXDMODEL;
+
+	typedef struct ENGINE_DLL tagVertex_Anim_Dynamic_Declaration
+	{
+		const static unsigned int			iNumElements = 6;
+		static D3D11_INPUT_ELEMENT_DESC		ElementDesc[iNumElements];
+	}VTXDMODEL_DECLARATION;
+
+	typedef struct tagMaterial
+	{
+		wchar_t s_szNameDotExt[MY_TEXTURE_TYPE_MAX][MAX_PATH];
+	}MTRLINFO;
+
+	typedef struct tagMeshInfo_Static
+	{
+		wchar_t s_szName[MAX_PATH] = TEXT("");
+		unsigned int s_iMaterialIndex = 0;
+		unsigned int s_iNumVertices = 0;
+		unsigned int s_iNumFaces = 0;
+		VTXSMODEL*	s_pVertices = nullptr;
+		FACEINDICES32* s_pFaces = nullptr;
+	}SMESHINFO;
+
+	typedef struct tagModelInfo_Static
+	{
+		unsigned int s_iNumMeshes = 0;
+		unsigned int s_iNumMaterials = 0;
+
+		SMESHINFO* s_pMeshes = nullptr;
+		MTRLINFO* s_pMtrls = nullptr;
+	}SMODELINFO;
+
+	typedef struct tagMeshInfo_Dynamic
+	{
+		wchar_t s_szName[MAX_PATH] = TEXT("");
+		unsigned int s_iMaterialIndex = 0;
+		unsigned int s_iNumVertices = 0;
+		unsigned int s_iNumFaces = 0;
+		unsigned int s_iNumBones = 0;
+		VTXDMODEL*	s_pVertices = nullptr;
+		FACEINDICES32* s_pFaces = nullptr;
+		wchar_t** s_pszBoneNameArray = nullptr;
+	}DMESHINFO;
+
+	typedef struct tagBoneInfo
+	{
+		wchar_t	s_szName[MAX_PATH] = TEXT("");
+		wchar_t	s_szParentName[MAX_PATH] = TEXT("");
+		XMFLOAT4X4 s_TransformationMatrix;
+		XMFLOAT4X4 s_OffsetMatrix;
+		_bool		s_bAnim;
+	}BONEINFO;
+
+
+	typedef struct tagChannelInfo
+	{
+		wchar_t	s_szName[MAX_PATH] = TEXT("");
+		unsigned int s_iNumKeyFrames = 0;
+		unsigned int s_iNumScalingKeys = 0;
+		unsigned int s_iNumRotationKeys = 0;
+		unsigned int s_iNumPositionKeys = 0;
+		KEYFRAME* s_pKeyFrames = nullptr;
+	}CHANNELINFO;
+
+	typedef struct tagAnimInfo
+	{
+		wchar_t s_szName[MAX_PATH] = TEXT("");
+		double	s_Duration = 0.0;
+		double	s_TicksPerSecond = 0.0;
+		unsigned int s_iNumChannels = 0;
+		CHANNELINFO* s_pChannels = nullptr;
+	}ANIMINFO;
+
+	typedef struct tagModelInfo_Dynamic
+	{
+		unsigned int s_iNumBones = 0;
+		unsigned int s_iNumMeshes = 0;
+		unsigned int s_iNumMaterials = 0;
+		unsigned int s_iNumAnimations = 0;
+
+		BONEINFO* s_pRootBone = nullptr;
+		DMESHINFO* s_pMeshes = nullptr;
+		MTRLINFO* s_pMtrls = nullptr;
+		ANIMINFO* s_pAnimations = nullptr;
+	}DMODELINFO;
+
+	typedef struct tagVertex_Matrix
+	{
+		XMFLOAT4		vRight;
+		XMFLOAT4		vUp;
+		XMFLOAT4		vLook;
+		XMFLOAT4		vPosition;
+	}VTXMATRIX;
+
+	typedef struct ENGINE_DLL tagVertex_Instance_Declaration
+	{
+		const static unsigned int						ElementCount = 6;
+		static D3D11_INPUT_ELEMENT_DESC					Elements[ElementCount];
+	}VTXINSTANCE_DECLARATION;
+
+	typedef struct tagVertex_Point
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT2		vPSize;
+	}VTXPOINT;
+
+	typedef struct ENGINE_DLL tagVertex_Point_Instance_Declaration
+	{
+		const static unsigned int						ElementCount = 6;
+		static D3D11_INPUT_ELEMENT_DESC					Elements[ElementCount];
+	}VTXPOINTINSTANCE_DECLARATION;
+}

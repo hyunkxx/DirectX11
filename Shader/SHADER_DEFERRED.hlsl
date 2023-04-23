@@ -1,0 +1,249 @@
+#include "SHADER_DEFINES.hpp"
+
+matrix	  g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+texture2D g_DiffuseTexture;
+texture2D g_NormalTexture;
+texture2D g_DepthTexture;
+texture2D g_ShadeTexture;
+texture2D g_SpecularTexture;
+		  
+vector	  g_vCamPosition;
+		  
+vector	  g_vLightDir;
+vector	  g_vLightPos;
+float	  g_fLightRange;
+		  
+vector	  g_vLightDiffuse;
+vector	  g_vLightAmbient;
+vector	  g_vLightSpecular;
+		  
+vector	  g_vMtrlAmbient = vector(0.4f, 0.4f, 0.4f, 1.f);
+vector	  g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
+		  
+float4x4  g_ProjMatrixInv;
+float4x4  g_ViewMatrixInv;
+
+
+struct VS_IN
+{
+	float3 vPosition : POSITION;
+	float2 vTexUV : TEXCOORD0;
+};
+
+struct VS_OUT
+{
+	float4 vPosition : SV_POSITION;
+	float2 vTexUV : TEXCOORD0;
+};
+
+VS_OUT VS_MAIN(VS_IN In)
+{
+	VS_OUT Out = (VS_OUT)0;
+
+	matrix matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+	Out.vTexUV = In.vTexUV;
+
+	return Out;
+}
+
+struct PS_IN
+{
+	float4 vPosition : SV_POSITION;
+	float2 vTexUV : TEXCOORD0;
+
+};
+
+struct PS_OUT
+{
+	float4 vColor : SV_TARGET0;
+};
+
+PS_OUT PS_MAIN(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	return Out;
+}
+
+struct PS_OUT_LIGHT
+{
+	float4 vShade : SV_TARGET0;
+	float4 vSpecular : SV_TARGET1;
+};
+
+PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
+{
+	PS_OUT_LIGHT Out = (PS_OUT_LIGHT)0;
+
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
+		   
+	vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+		   
+	vector vShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)));
+
+
+	Out.vShade = g_vLightDiffuse * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient));
+
+	Out.vShade.a = 1.f;
+
+	vector			vWorldPos;
+
+	/* 투영스페이스 상의 위치. (로컬정점위치 * 월드 * 뷰 * 투영 / w  */
+	/* w = n ~ f */
+	vWorldPos.x = In.vTexUV.x * 2.f - 1.f;
+	vWorldPos.y = In.vTexUV.y * -2.f + 1.f;
+	vWorldPos.z = vDepthDesc.x; /*0 ~ 1*/
+	vWorldPos.w = 1.f;
+
+	/* 로컬정점위치 * 월드 * 뷰 * 투영 */
+	vWorldPos = vWorldPos * (vDepthDesc.y * 300.f);
+
+	/* XMVector3TransformCoord */
+	/* 로컬정점위치 * 월드 * 뷰 */
+	vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+	/* 로컬정점위치 * 월드 */
+	vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
+	vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
+	vector vLook = vWorldPos - g_vCamPosition;
+		   
+	float  fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
+
+	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * fSpecular;
+	Out.vSpecular.a = 0.f;
+
+	return Out;
+}
+
+PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
+{
+	PS_OUT_LIGHT Out = (PS_OUT_LIGHT)0;
+
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
+		   
+	vector vWorldPos;
+
+	/* 투영스페이스 상의 위치. (로컬정점위치 * 월드 * 뷰 * 투영 / w  */
+	/* w = n ~ f */
+	vWorldPos.x = In.vTexUV.x * 2.f - 1.f;
+	vWorldPos.y = In.vTexUV.y * -2.f + 1.f;
+	vWorldPos.z = vDepthDesc.x; /*0 ~ 1*/
+	vWorldPos.w = 1.f;
+
+	/* 로컬정점위치 * 월드 * 뷰 * 투영 */
+	vWorldPos = vWorldPos * (vDepthDesc.y * 300.f);
+
+	/* XMVector3TransformCoord */
+	/* 로컬정점위치 * 월드 * 뷰 */
+	vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+	/* 로컬정점위치 * 월드 */
+	vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
+	vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+		   
+	vector vLightDir = vWorldPos - g_vLightPos;
+	float  fDistance = length(vLightDir);
+
+	/* 빛과 픽셀의 위치가 가까우면 1에가까운값으로 */
+	/* range에가까지질수록 0에 가까운값으로 .*/
+	float fAtt = saturate((g_fLightRange - fDistance) / g_fLightRange);
+
+	vector vShade = saturate(dot(normalize(vLightDir) * -1.f, normalize(vNormal)));
+
+
+	Out.vShade = g_vLightDiffuse * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
+
+	Out.vShade.a = 1.f;
+
+	vector vReflect = reflect(normalize(vLightDir), normalize(vNormal));
+	vector vLook = vWorldPos - g_vCamPosition;
+		   
+	float  fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
+
+	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * fSpecular * fAtt;
+	Out.vSpecular.a = 0.f;
+
+
+	return Out;
+}
+
+
+PS_OUT PS_MAIN_BLEND(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+		   
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexUV);
+	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
+
+	Out.vColor = vDiffuse * (vShade * 2.f);
+
+	if (0.0f == Out.vColor.a)
+		discard;
+
+	return Out;
+}
+
+technique11 DefaultTechnique
+{
+	pass Debug
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	pass Light_Directional
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_OneBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_DIRECTIONAL();
+	}
+
+	pass Light_Point
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_OneBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_POINT();
+	}
+
+	pass Blend
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_BLEND();
+	}
+}
