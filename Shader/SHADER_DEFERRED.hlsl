@@ -6,6 +6,8 @@ texture2D g_NormalTexture;
 texture2D g_DepthTexture;
 texture2D g_ShadeTexture;
 texture2D g_SpecularTexture;
+
+texture2D g_OutNormalTexture;
 texture2D g_OutlineTexture;
 		  
 vector	  g_vCamPosition;
@@ -197,9 +199,15 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexUV);
 	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
+	vector vOutNormal = g_OutNormalTexture.Sample(LinearSampler, In.vTexUV);
 
-	vector vOutline = g_OutlineTexture.Sample(LinearSampler, In.vTexUV);
-	Out.vColor = (vDiffuse * (vShade * 2.f)) * vOutline;
+	if (vOutNormal.a == 1.f)
+	{
+		vector vOutline = g_OutlineTexture.Sample(LinearSampler, In.vTexUV);
+		Out.vColor = (vDiffuse * (vShade * 2.f)) * vOutline;
+	}
+	else
+		Out.vColor = (vDiffuse * (vShade * 2.f));
 
 	if (0.0f == Out.vColor.a)
 		discard;

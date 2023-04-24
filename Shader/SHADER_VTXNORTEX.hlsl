@@ -58,6 +58,7 @@ struct PS_OUT
 	float4			vDiffuse : SV_TARGET0;
 	float4			vNormal : SV_TARGET1;
 	float4			vDepth : SV_TARGET2;
+	float4			vOutNormal : SV_TARGET3;
 };
 
 PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
@@ -86,6 +87,8 @@ PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
 	/* Out.vNormal.xyz => 0 ~ 1 */
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
+
+	Out.vOutNormal = float4(1.f, 1.f, 1.f, 1.f);
 
 	return Out;
 }

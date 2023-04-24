@@ -175,7 +175,7 @@ PS_OUT_EFFECT	PS_MAIN_SHIELD(PS_IN_EFFECT In)
 
 	vector		vDepthDesc = g_DepthTexture.Sample(LinearSampler, vDepthUV);
 
-	float		fOldViewZ = vDepthDesc.y * 300.f;
+	float		fOldViewZ = vDepthDesc.y * 1000.f;
 
 	float		fViewZ = In.vProjPos.w;
 
@@ -204,7 +204,7 @@ PS_OUT	PS_MAIN_DISSOLVING(PS_IN In)
 
 	Out.vDiffuse = vMtrlDiffuse;
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
 
 	return Out;
 }

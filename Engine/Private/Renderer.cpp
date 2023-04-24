@@ -249,6 +249,8 @@ void CRenderer::Render_Blend()
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Specular"), "g_SpecularTexture")))
 		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_OutNormal"), "g_OutNormalTexture")))
+		return;
 
 	m_pShader->Begin(3);
 	m_pVIBuffer->Render();

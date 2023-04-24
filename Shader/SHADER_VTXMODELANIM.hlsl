@@ -106,7 +106,7 @@ PS_OUTLINE	PS_MAIN(PS_IN In)
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
 
 	if(Out.vDepth.g * 1000 < 10.f)
-		Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, In.vProjPos.w / 1000.f);
+		Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
 	return Out;
 }

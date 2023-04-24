@@ -84,6 +84,7 @@ Generated\ Files/
 
 Client/Bin/
 Engine/Bin/
+Reference/Librarys
 
 # NUnit
 *.VisualState.xml
