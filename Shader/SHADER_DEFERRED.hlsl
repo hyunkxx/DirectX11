@@ -223,7 +223,7 @@ PS_OUT PS_Outline(PS_IN In)
 	vector vNormal = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
 	float4 vColor = 0;
-	for (int i = 0; i < 9; ++i)
+	for (uint i = 0; i < 9; ++i)
 		vColor += mask[i] * g_DiffuseTexture.Sample(LinearSampler, In.vTexUV + float2(coord[i % 3] / 1280, coord[i % 3] / 720));
 
 	float fGray = 1.f - (vColor.r * 0.3f + vColor.g * 0.59f + vColor.b * 0.11f);

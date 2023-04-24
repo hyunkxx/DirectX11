@@ -56,8 +56,8 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vTexUV = In.vTexUV;
 	Out.vProjPos = Out.vPosition;
 
-	Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix));
-	Out.vBiNormal = normalize(cross(Out.vNormal, Out.vTangent));
+	Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix)).xyz;
+	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent)).xyz;
 
 	return Out;
 }
