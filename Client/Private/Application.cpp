@@ -84,6 +84,7 @@ HRESULT CApplication::Render()
 
 	m_pGameInstance->Clear_RenderTargetView(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencilView();
+
 	m_pRenderer->Draw();
 	m_pGameInstance->CollisionRender();
 
@@ -155,8 +156,19 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Grass_003.jpg")))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::FLOOR,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Floor.dds")))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::VIBUFFER_TERRAIN,
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height.bmp")))))
+		return E_FAIL;
+
+	CVIBuffer_Terrain::TERRAIN_SIZE tSize;
+	tSize.mX = 300.f;
+	tSize.mZ = 300.f;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::VIBUFFER_FLOOR_TERRAIN,
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, tSize))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::BACKGROUND,

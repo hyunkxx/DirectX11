@@ -65,7 +65,7 @@ PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	vector		vSourDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 20.f);
+	vector		vSourDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 100.f);
 	vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
 
 	vector		vMtrlDiffuse = vSourDiffuse;
@@ -86,8 +86,23 @@ PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
 	/* In.vNormal.xyz => -1 ~ 1 */
 	/* Out.vNormal.xyz => 0 ~ 1 */
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 
+	Out.vOutNormal = float4(1.f, 1.f, 1.f, 1.f);
+
+	return Out;
+}
+
+
+PS_OUT PS_MAIN_FLOOR(PS_IN_PHONG In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 70.f);
+
+	Out.vDiffuse.gb = Out.vDiffuse.r;
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 	Out.vOutNormal = float4(1.f, 1.f, 1.f, 1.f);
 
 	return Out;
@@ -107,5 +122,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_PHONG();
+	}
+
+	pass Terrain_Floor
+	{
+		SetRasterizerState(/*RS_Wireframe*/RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_PHONG();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_FLOOR();
 	}
 }

@@ -10,10 +10,12 @@ enum SOUND_VOLUME
 
 namespace Engine
 {
+	static const unsigned int g_iShadowWidth = 12800;
+	static const unsigned int g_iShadowHeight = 7200;
+
 	enum MOUSE_KEYSTATE { DIMK_LB, DIMK_RB, DIMK_WHEEL, DIMK_END };
 	enum MOUSE_MOVESTATE { DIMM_X, DIMM_Y, DIMM_WHEEL, DIMM_END };
 	enum KEY_STATE { HOLD, TAP, AWAY, NONE };
-
 }
 
 namespace COMPONENT
@@ -28,6 +30,7 @@ namespace COMPONENT
 		VIBUFFER_RECT,
 		VIBUFFER_CUBE,
 		VIBUFFER_TRIANGLE,
+		VIBUFFER_FLOOR_TERRAIN,
 		VIBUFFER_TERRAIN,
 		MODEL,
 		MODEL_ANIM,

@@ -4,6 +4,7 @@
 
 #include "BackGround.h"
 #include "Terrain.h"
+#include "Floor.h"
 
 #include "TestPlayer.h"
 
@@ -142,6 +143,9 @@ HRESULT CLoader::Load_Level_GamePlay()
 #pragma region GAMEOBJECTS
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::FLOOR, CFloor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTPLAYER, CTestPlayer::Create(m_pDevice, m_pContext))))

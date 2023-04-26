@@ -68,6 +68,8 @@ public:
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render();
+	virtual HRESULT RenderShadow();
+	virtual void	RenderGUI();
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -85,6 +87,10 @@ private:
 	_uint				m_iSkelAnimID = { 0 };
 	_uint				m_iHairAnimID = { 0 };
 
+private://TestCode
+	static int s_SpawnCount;
+	int m_iSpawnedID = 0;
+
 private:
 	HRESULT Add_Components();
 	void Init_Models();
@@ -93,6 +99,7 @@ private:
 	void Tick_State(_double TimeDelta);
 
 	HRESULT	SetUp_ShaderResources();
+	HRESULT	SetUp_ShdowShaderResources();
 
 public:
 	static CTestPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

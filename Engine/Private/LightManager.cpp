@@ -1,5 +1,6 @@
 #include "..\Public\LightManager.h"
 #include "Light.h"
+#include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CLightManager)
 
@@ -31,7 +32,20 @@ const LIGHT_DESC* CLightManager::GetLightDesc(_uint Index)
 	for (_uint i = 0; i < Index; ++i)
 		++iter;
 
+	if (iter == m_Lights.end())
+		return nullptr;
+
 	return (*iter)->GetLightDesc();
+}
+
+void CLightManager::ShadowUpdate()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	_vector vCamPos = XMLoadFloat4(&pGameInstance->Get_CamPosition());
+	_vector vLightEye = XMVectorSet(XMVectorGetX(vCamPos) - 50.f, 40.f, XMVectorGetZ(vCamPos) - 50.f, 1.f);
+	_vector vLightAt = XMVectorSet(XMVectorGetX(vCamPos) + 10.f, 0.f, XMVectorGetZ(vCamPos) + 10.f, 1.f);
+	_matrix vLightViewMatrix = XMMatrixLookAtLH(vLightEye, vLightAt, VECTOR_UP);
+	pGameInstance->SetLightMatrix(vLightViewMatrix, LIGHT_MATRIX::LIGHT_VIEW);
 }
 
 void CLightManager::SetLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatrix)
@@ -64,6 +78,11 @@ _float4x4 CLightManager::GetLightInverseFloat4x4(LIGHT_MATRIX eLightMatrix)
 void CLightManager::SetLightPosition(_fvector vLightPos)
 {
 	XMStoreFloat4(&m_vLightPos, vLightPos);
+}
+
+void CLightManager::SetLightDirection(_fvector vLightDir)
+{
+	XMStoreFloat4(&m_vLightDir, vLightDir);
 }
 
 void CLightManager::Free()

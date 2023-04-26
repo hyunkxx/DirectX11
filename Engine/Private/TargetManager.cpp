@@ -1,5 +1,6 @@
 #include "..\Public\TargetManager.h"
 #include "RenderTarget.h"
+#include "Graphic_Device.h"
 
 IMPLEMENT_SINGLETON(CTargetManager)
 
@@ -61,7 +62,7 @@ HRESULT CTargetManager::Begin(ID3D11DeviceContext * pContext, const _tchar * pMR
 	list<CRenderTarget*>* pMRTList = FindMRT(pMRTTag);
 	if (nullptr == pMRTList)
 		return E_FAIL;
-
+	
 	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
 
 	ID3D11RenderTargetView* pRenderTargets[8];
@@ -78,9 +79,35 @@ HRESULT CTargetManager::Begin(ID3D11DeviceContext * pContext, const _tchar * pMR
 	return S_OK;
 }
 
+HRESULT CTargetManager::ShadowBegin(ID3D11DeviceContext * pContext, const _tchar * pMRTTag)
+{
+	list<CRenderTarget*>* pMRTList = FindMRT(pMRTTag);
+	if (nullptr == pMRTList)
+		return E_FAIL;
+
+	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
+
+	ID3D11RenderTargetView* pRenderTargets[8];
+	_uint iViewCount = 0;
+
+	for (auto& pRenderTarget : *pMRTList)
+	{
+		pRenderTarget->Clear();
+		pRenderTargets[iViewCount++] = pRenderTarget->Get_RTV();
+	}
+	
+	CGraphic_Device* pGrahicDevice = CGraphic_Device::GetInstance();
+	pContext->OMSetRenderTargets(iViewCount, pRenderTargets, m_pShadowDepthStencilView);
+	pContext->RSSetViewports(1, pGrahicDevice->GetViewport(CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_SHADOWDEPTH));
+
+	return S_OK;
+}
+
 HRESULT CTargetManager::End(ID3D11DeviceContext * pContext)
 {
+	CGraphic_Device* pGrahicDevice = CGraphic_Device::GetInstance();
 	pContext->OMSetRenderTargets(1, &m_pBackBufferView, m_pDepthStencilView);
+	pContext->RSSetViewports(1, pGrahicDevice->GetViewport(CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT));
 
 	Safe_Release(m_pBackBufferView);
 	Safe_Release(m_pDepthStencilView);

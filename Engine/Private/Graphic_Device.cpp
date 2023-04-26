@@ -24,20 +24,29 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WIN_MODE 
 	if (FAILED(Ready_DepthStencilView(iWinSizeX, iWinSizeY)))
 		return E_FAIL;
 
+	if (FAILED(Ready_ShadowDepthStencilView(g_iShadowWidth, g_iShadowHeight)))
+		return E_FAIL;
+
 	//ÀåÄ¡¿¡ ¹ÙÀÎµù ÇÒ ·»´õÅ¸°Ùµé°ú µª½º,½ºÅÙ½Çºä¸¦ ¼¼ÆÃÇÑ´Ù.
 	m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
+	
+	ZeroMemory(&viewPortDesc, sizeof(D3D11_VIEWPORT) * VIEWPORT_END);
+	viewPortDesc[VIEWPORT_DEFAULT].TopLeftX = 0;
+	viewPortDesc[VIEWPORT_DEFAULT].TopLeftY = 0;
+	viewPortDesc[VIEWPORT_DEFAULT].Width = (_float)iWinSizeX;
+	viewPortDesc[VIEWPORT_DEFAULT].Height = (_float)iWinSizeY;
+	viewPortDesc[VIEWPORT_DEFAULT].MinDepth = 0.f;
+	viewPortDesc[VIEWPORT_DEFAULT].MaxDepth = 1.f;
 
-	D3D11_VIEWPORT viewPortDesc;
-	ZeroMemory(&viewPortDesc, sizeof D3D11_VIEWPORT);
-	viewPortDesc.TopLeftX = 0;
-	viewPortDesc.TopLeftY = 0;
-	viewPortDesc.Width = (_float)iWinSizeX;
-	viewPortDesc.Height = (_float)iWinSizeY;
-	viewPortDesc.MinDepth = 0.f;
-	viewPortDesc.MaxDepth = 1.f;
+	viewPortDesc[VIEWPORT_SHADOWDEPTH].TopLeftX = 0;
+	viewPortDesc[VIEWPORT_SHADOWDEPTH].TopLeftY = 0;
+	viewPortDesc[VIEWPORT_SHADOWDEPTH].Width = (_float)g_iShadowWidth;
+	viewPortDesc[VIEWPORT_SHADOWDEPTH].Height = (_float)g_iShadowHeight;
+	viewPortDesc[VIEWPORT_SHADOWDEPTH].MinDepth = 0.f;
+	viewPortDesc[VIEWPORT_SHADOWDEPTH].MaxDepth = 1.f;
 
-	m_pContext->RSSetViewports(1, &viewPortDesc);
-
+	m_pContext->RSSetViewports(1, viewPortDesc);
+	
 	*ppDevice_out = m_pDevice;
 	*ppContext_out = m_pContext;
 	Safe_AddRef(m_pDevice);
@@ -62,6 +71,16 @@ HRESULT CGraphic_Device::Clear_DepthStencilView()
 		return E_FAIL;
 
 	m_pContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.f, 0);
+
+	return S_OK;
+}
+
+HRESULT CGraphic_Device::Clear_ShadowDepthStencilView()
+{
+	if (nullptr == m_pContext)
+		return E_FAIL;
+
+	m_pContext->ClearDepthStencilView(m_pShadowDepthStencilView, D3D11_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.f, 0);
 
 	return S_OK;
 }
@@ -171,10 +190,50 @@ HRESULT CGraphic_Device::Ready_DepthStencilView(_uint iWinSizeX, _uint iWinSizeY
 	return S_OK;
 }
 
+HRESULT CGraphic_Device::Ready_ShadowDepthStencilView(_uint iWinSizeX, _uint iWinSizeY)
+{
+	if (nullptr == m_pDevice)
+		return E_FAIL;
+
+	// ±×¸²ÀÚ¿ë µª½º
+	ID3D11Texture2D* pDepthStencilTexture = nullptr;
+	D3D11_TEXTURE2D_DESC TextureDesc;
+
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	TextureDesc.Width = iWinSizeX;
+	TextureDesc.Height = iWinSizeY;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
+
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	TextureDesc.CPUAccessFlags = 0;
+	TextureDesc.MiscFlags = 0;
+
+	/* RenderTarget ShaderResource ShadowDepthStencil */
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
+		return E_FAIL;
+
+	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pShadowDepthStencilView)))
+		return E_FAIL;
+
+	Safe_Release(pDepthStencilTexture);
+
+	return S_OK;
+}
+
 void CGraphic_Device::Free()
 {
 	Safe_Release(m_pSwapChain);
+
 	Safe_Release(m_pDepthStencilView);
+	Safe_Release(m_pShadowDepthStencilView);
+
 	Safe_Release(m_pRenderTargetView);
 	Safe_Release(m_pContext);
 

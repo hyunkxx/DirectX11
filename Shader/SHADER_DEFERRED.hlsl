@@ -1,11 +1,13 @@
 #include "SHADER_DEFINES.hpp"
 
-matrix	  g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+float4x4  g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_LightViewMatrix, g_LightProjMatrix;
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 texture2D g_DepthTexture;
+texture2D g_ShadowDepthTexture;
 texture2D g_ShadeTexture;
 texture2D g_SpecularTexture;
+texture2D g_LightPosTexture;
 
 texture2D g_OutNormalTexture;
 texture2D g_OutlineTexture;
@@ -22,7 +24,7 @@ vector	  g_vLightSpecular;
 		  
 vector	  g_vMtrlAmbient = vector(0.8f, 0.8f, 0.8f, 1.f);
 vector	  g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
-		  
+
 float4x4  g_ProjMatrixInv;
 float4x4  g_ViewMatrixInv;
 
@@ -31,6 +33,12 @@ float mask[9] =
 	-1.f, -1.f, -1.f,
 	-1.f,  8.f, -1.f,
 	-1.f, -1.f, -1.f
+};
+
+float fWeight[13] =
+{
+	0.0561, 0.1353, 0.278, 0.4868, 0.7271, 0.9231, 1,
+	0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561
 };
 
 float coord[3] = { -1.f, 0.f, 1.f };
@@ -120,7 +128,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 	vWorldPos.w = 1.f;
 
 	/* 로컬정점위치 * 월드 * 뷰 * 투영 */
-	vWorldPos = vWorldPos * (vDepthDesc.y * 1000.f);
+	vWorldPos = vWorldPos * (vDepthDesc.y * g_Far);
 
 	/* XMVector3TransformCoord */
 	/* 로컬정점위치 * 월드 * 뷰 */
@@ -156,7 +164,7 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 	vWorldPos.w = 1.f;
 
 	/* 로컬정점위치 * 월드 * 뷰 * 투영 */
-	vWorldPos = vWorldPos * (vDepthDesc.y * 300.f);
+	vWorldPos = vWorldPos * (vDepthDesc.y * g_Far);
 
 	/* XMVector3TransformCoord */
 	/* 로컬정점위치 * 월드 * 뷰 */
@@ -196,18 +204,61 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 	
+	vector vWorldPos;
+
 	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexUV);
 	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
 	vector vOutNormal = g_OutNormalTexture.Sample(LinearSampler, In.vTexUV);
 
-	if (vOutNormal.a == 1.f)
+	vector vDepthInfo = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);
+	float fViewZ = vDepthInfo.y * g_Far;
+
+	vector vPosition;
+	vPosition.x = (In.vTexUV.x * 2.f - 1.f) * fViewZ;
+	vPosition.y = (In.vTexUV.y * -2.f + 1.f) * fViewZ;
+	vPosition.z = vDepthInfo.x * fViewZ;
+	vPosition.w = fViewZ;
+
+	//해당 픽셀의 포지션을 월드까지 내림
+	vPosition = mul(vPosition, g_ProjMatrixInv);
+	vPosition = mul(vPosition, g_ViewMatrixInv);
+
+	vPosition = mul(vPosition, g_LightViewMatrix);
+	vector vUVPos = mul(vPosition, g_LightProjMatrix);
+	float2 vNewUV;
+
+	vNewUV.x = (vUVPos.x / vUVPos.w) * 0.5f + 0.5f;
+	vNewUV.y = (vUVPos.y / vUVPos.w) * -0.5f + 0.5f;
+
+	vector vShadowDepthInfo = g_ShadowDepthTexture.Sample(LinearSampler, vNewUV);
+
+	float4 vFinalColor = (vDiffuse * (vShade * 2.f));
+	//깊이 0.5 : 모델과 애님모델에는 그림자 안그림
+	if (vPosition.z - 0.01f > (vShadowDepthInfo.g * g_Far) && vDepthInfo.b != 0.5f)
 	{
-		vector vOutline = g_OutlineTexture.Sample(LinearSampler, In.vTexUV);
-		Out.vColor = (vDiffuse * (vShade * 2.f)) * vOutline;
+		Out.vColor = vFinalColor * vector(0.7f, 0.7f, 0.7f, 0.7f);
 	}
 	else
-		Out.vColor = (vDiffuse * (vShade * 2.f));
+	{
+		if (vOutNormal.a == 1.f)
+		{
+			float2 texelSize = 1.0 / float2(1280, 720);
+			float result = 0.0;
+			for (int x = -1; x < 1; ++x)
+			{
+				for (int y = -1; y < 1; ++y)
+				{
+					float2 offset = float2(float(x), float(y)) * texelSize;
+					result += g_OutlineTexture.Sample(PointSampler, In.vTexUV + offset).r;
+				}
+			}
+
+			Out.vColor = float4(vFinalColor.xyz * (result / (2.0 * 2.0)), vFinalColor.z);
+		}
+		else
+			Out.vColor = vFinalColor;
+	}
 
 	if (0.0f == Out.vColor.a)
 		discard;
@@ -226,10 +277,10 @@ PS_OUT PS_Outline(PS_IN In)
 	for (uint i = 0; i < 9; ++i)
 		vColor += mask[i] * g_DiffuseTexture.Sample(LinearSampler, In.vTexUV + float2(coord[i % 3] / 1280, coord[i % 3] / 720));
 
-	float fGray = 1.f - (vColor.r * 0.3f + vColor.g * 0.59f + vColor.b * 0.11f);
-	float4 Ret = float4(fGray + 0.3f, fGray + 0.3f, fGray + 0.3f, 1) / 1;
+	float fGray = 1.f - (vColor.r * 0.9f + vColor.g * 0.59f + vColor.b * 0.11f);
+	float4 Ret = float4(fGray + 0.7f, fGray + 0.7f, fGray + 0.7f, 1) / 1;
 
-	Out.vColor = smoothstep(0.8, 1, Ret);
+	Out.vColor = smoothstep(0.5, 1, Ret);
 
 	return Out;
 }

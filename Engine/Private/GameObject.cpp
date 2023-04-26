@@ -48,6 +48,11 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
+HRESULT CGameObject::RenderShadow()
+{
+	return S_OK;
+}
+
 void CGameObject::RenderGUI()
 {
 	return;

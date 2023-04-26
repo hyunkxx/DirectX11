@@ -35,6 +35,10 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 	pAppManager->SetTitle(L"LEVEL_GAMEPLAY");
 #endif
 
+	//카메라 기준으로 쉐도우 조명 갱신
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	pGameInstance->ShadowUpdate();
+
 }
 
 HRESULT CLevel_GamePlay::Ready_Lights()
@@ -61,7 +65,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TERRAIN, pLayerTag, L"terrain")))
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TERRAIN, pLayerTag, L"terrain")))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::FLOOR, pLayerTag, L"floor")))
 		return E_FAIL;
 
 	return S_OK;
@@ -71,10 +78,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+	//Camera Setting
 	CCamera::CAMERA_DESC CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERA_DESC));
 
-	CameraDesc.TransformDesc.fMoveSpeed = 5.f;
+	CameraDesc.TransformDesc.fMoveSpeed = 30.f;
 	CameraDesc.TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
 
 	CameraDesc.vEye = _float3(0.f, 10.f, -10.f);
@@ -84,8 +92,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	CameraDesc.fFovy = XMConvertToRadians(45.f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 1000.f;
+	CameraDesc.fFar = 500.f;
 	
+	//Light Setting
+
+	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(30.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);
+	pGameInstance->SetLightMatrix(vLightProjMatrix, LIGHT_MATRIX::LIGHT_PROJ);
+
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::DYNAMIC_CAMERA, pLayerTag, L"dynamic_camera", &CameraDesc)))
 		return E_FAIL;
 
@@ -95,15 +108,14 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	for (_int i = 0; i < 100; ++i)
-	{
-		_tchar szTag[100][30];
-		wsprintf(szTag[i], L"character_%d", i);
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHARACTER, pLayerTag, szTag[i], &i)))
-			return E_FAIL;
-	}
+
+	int i = 0;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHARACTER, pLayerTag, L"Texture", &i)))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TESTPLAYER, pLayerTag, TEXT("TestPlayer"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TESTPLAYER, pLayerTag, TEXT("TestPlayer2"))))
 		return E_FAIL;
 
 	return S_OK;

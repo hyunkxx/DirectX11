@@ -1,4 +1,7 @@
 /* For.SamplerState */
+
+float g_Far = 500.f;
+
 sampler LinearSampler = sampler_state{
 	filter = min_mag_mip_linear;
 	AddressU = wrap;
@@ -25,6 +28,20 @@ RasterizerState RS_Default
 	FrontCounterClockwise = false;
 };
 
+RasterizerState RS_CullFront
+{
+	FillMode = Solid;
+	CullMode = Front;
+	FrontCounterClockwise = false;
+};
+
+RasterizerState RS_CullBack
+{
+	FillMode = Solid;
+	CullMode = Back;
+	FrontCounterClockwise = false;
+};
+
 RasterizerState	RS_Sky
 {
 	FillMode = Solid;
@@ -38,6 +55,14 @@ RasterizerState RS_Wireframe
 	CullMode = Back;
 	FrontCounterClockwise = false;
 };
+
+RasterizerState RS_ShadowDepth
+{
+	FillMode = Solid;
+	CullMode = None;
+	FrontCounterClockwise = false;
+};
+
 
 /* For.DepthStencilState */
 DepthStencilState DS_Default

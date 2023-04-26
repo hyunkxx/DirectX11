@@ -6,7 +6,8 @@ namespace TEXTURE
 	enum
 	{
 		BACKGROUND = 2000,
-		TERRAIN
+		TERRAIN,
+		FLOOR
 
 	};
 }

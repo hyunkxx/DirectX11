@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 
+int CTestPlayer::s_SpawnCount = 0;
 CTestPlayer::CTestPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -11,6 +12,7 @@ CTestPlayer::CTestPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 CTestPlayer::CTestPlayer(const CTestPlayer & rhs)
 	: CGameObject(rhs)
 {
+	m_iSpawnedID = s_SpawnCount++;
 }
 
 HRESULT CTestPlayer::Initialize_Prototype()
@@ -33,8 +35,7 @@ HRESULT CTestPlayer::Initialize(void * pArg)
 	// Model Init
 	Init_Models();
 
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(10.f, 3.f, 10.f, 1.f));
-
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
 	SetUp_SkelAnimation();
 	SetUp_HairAnimation();
@@ -51,21 +52,44 @@ void CTestPlayer::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	CGameInstance* pGame = CGameInstance::GetInstance();
-	if (pGame->InputKey(DIK_RIGHT) == KEY_STATE::TAP)
+	if (pGame->InputKey(DIK_PGUP) == KEY_STATE::TAP)
 	{
 		if (++m_iSkelAnimID > 34)
 			m_iSkelAnimID = 34;
 		SetUp_SkelAnimation();
 	}
-	if (pGame->InputKey(DIK_LEFT) == KEY_STATE::TAP)
+	if (pGame->InputKey(DIK_PGDN) == KEY_STATE::TAP)
 	{
 		if (--m_iSkelAnimID < 0)
 			m_iSkelAnimID = 0;
 		SetUp_SkelAnimation();
 	}
 
+	if (m_iSpawnedID == 0)
+	{
+		if (pGame->InputKey(DIK_UPARROW) == KEY_STATE::HOLD)
+		{
+			m_pMainTransform->MoveForward(TimeDelta);
+		}
+		if (pGame->InputKey(DIK_DOWNARROW) == KEY_STATE::HOLD)
+		{
+			m_pMainTransform->MoveBackward(TimeDelta);
+		}
+
+		if (pGame->InputKey(DIK_LEFTARROW) == KEY_STATE::HOLD)
+		{
+			m_pMainTransform->MoveLeft(TimeDelta);
+		}
+		if (pGame->InputKey(DIK_RIGHTARROW) == KEY_STATE::HOLD)
+		{
+			m_pMainTransform->MoveRight(TimeDelta);
+		}
+	}
+
+
 	Tick_State(TimeDelta);
 
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
 
@@ -82,7 +106,6 @@ HRESULT CTestPlayer::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-
 	// SkelParts
 	for (_uint j = 0; j < SKEL_END; ++j)
 	{
@@ -97,9 +120,8 @@ HRESULT CTestPlayer::Render()
 			m_pSkelParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODELANIM], "g_NormalTexture", i, MyTextureType_NORMALS);
 
 			m_pSkelParts[j]->SetUp_BoneMatrices(m_pShaderCom[SHADER_MODELANIM], "g_BoneMatrix", i);
-
+			
 			m_pShaderCom[SHADER_MODELANIM]->Begin(0);
-
 			m_pSkelParts[j]->Render(i);
 		}
 	}
@@ -161,6 +183,103 @@ HRESULT CTestPlayer::Render()
 			m_pStaticParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODEL], "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
 			m_pStaticParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODEL], "g_NormalTexture", i, MyTextureType_NORMALS);
 
+			m_pShaderCom[SHADER_MODEL]->Begin(0);
+
+			m_pStaticParts[i]->Render(i);
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CTestPlayer::RenderShadow()
+{
+	if (FAILED(__super::Render()))
+		return E_FAIL;
+
+	if (FAILED(SetUp_ShdowShaderResources()))
+		return E_FAIL;
+
+	// SkelParts
+	for (_uint j = 0; j < SKEL_END; ++j)
+	{
+		_uint iNumMeshes = m_pSkelParts[j]->Get_NumMeshes();
+
+		if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
+			return E_FAIL;
+
+		for (_uint i = 0; i < iNumMeshes; ++i)
+		{
+			m_pSkelParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODELANIM], "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
+			m_pSkelParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODELANIM], "g_NormalTexture", i, MyTextureType_NORMALS);
+
+			m_pSkelParts[j]->SetUp_BoneMatrices(m_pShaderCom[SHADER_MODELANIM], "g_BoneMatrix", i);
+
+			//Shadow
+			CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+			m_pShaderCom[SHADER_MODELANIM]->Begin(1);
+			m_pSkelParts[j]->Render(i);
+		}
+	}
+
+	// HairParts
+	for (_uint j = 0; j < HAIR_END; ++j)
+	{
+		if (nullptr == m_pHairParts[j])
+			continue;
+
+		_float4x4 WorldMatrix;
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixRotationY(XMConvertToRadians(180.f))
+			* XMMatrixRotationX(XMConvertToRadians(-90.f))
+			* XMLoadFloat4x4(&m_pHairParts[j]->Get_HangBone()->Get_CombinedTransfromationMatrix())
+			* XMMatrixRotationY(XMConvertToRadians(180.f))
+			* XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+
+		if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetMatrix("g_WorldMatrix", &WorldMatrix)))
+			return E_FAIL;
+
+		_uint iNumMeshes = m_pHairParts[j]->Get_NumMeshes();
+
+		for (_uint i = 0; i < iNumMeshes; ++i)
+		{
+			m_pHairParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODELANIM], "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
+			m_pHairParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODELANIM], "g_NormalTexture", i, MyTextureType_NORMALS);
+
+			m_pHairParts[j]->SetUp_BoneMatrices(m_pShaderCom[SHADER_MODELANIM], "g_BoneMatrix", i);
+
+			m_pShaderCom[SHADER_MODELANIM]->Begin(1);
+
+			m_pHairParts[j]->Render(i);
+		}
+	}
+
+	// StaticParts
+	for (_uint j = 0; j < STATIC_END; ++j)
+	{
+		if (nullptr == m_pStaticParts[j])
+			continue;
+
+		if (STATIC_HEADWEAR == j)
+		{
+			_float4x4 WorldMatrix;
+			XMStoreFloat4x4(&WorldMatrix, XMMatrixRotationY(XMConvertToRadians(180.f))
+				* XMMatrixRotationX(XMConvertToRadians(-90.f))
+				* XMLoadFloat4x4(&m_pStaticParts[j]->Get_HangBone()->Get_CombinedTransfromationMatrix())
+				* XMMatrixRotationY(XMConvertToRadians(180.f))
+				* XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+
+			if (FAILED(m_pShaderCom[SHADER_MODEL]->SetMatrix("g_WorldMatrix", &WorldMatrix)))
+				return E_FAIL;
+		}
+
+		_uint iNumMeshes = m_pStaticParts[j]->Get_NumMeshes();
+
+		for (_uint i = 0; i < iNumMeshes; ++i)
+		{
+			m_pStaticParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODEL], "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
+			m_pStaticParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODEL], "g_NormalTexture", i, MyTextureType_NORMALS);
+
 			m_pShaderCom[SHADER_MODEL]->Begin(1);
 
 			m_pStaticParts[i]->Render(i);
@@ -168,6 +287,10 @@ HRESULT CTestPlayer::Render()
 	}
 
 	return S_OK;
+}
+
+void CTestPlayer::RenderGUI()
+{
 }
 
 HRESULT CTestPlayer::Add_Components()
@@ -273,8 +396,6 @@ HRESULT CTestPlayer::SetUp_ShaderResources()
 		return E_FAIL;
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	//if (FAILED(m_pMainTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-	//	return E_FAIL;
 
 	if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetMatrix("g_ViewMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
 		return E_FAIL;
@@ -286,6 +407,31 @@ HRESULT CTestPlayer::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom[SHADER_MODEL]->SetMatrix("g_ProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CTestPlayer::SetUp_ShdowShaderResources()
+{
+	if (nullptr == m_pShaderCom)
+		return E_FAIL;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetMatrix("g_ViewMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetMatrix("g_ProjMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom[SHADER_MODEL]->SetMatrix("g_ViewMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom[SHADER_MODEL]->SetMatrix("g_ProjMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetRawValue("g_LightDir", &pGameInstance->GetLightDirection(), sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetRawValue("g_LightPos", &pGameInstance->GetLightPosition(), sizeof(_float3))))
 		return E_FAIL;
 
 	return S_OK;

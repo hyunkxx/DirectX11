@@ -7,7 +7,7 @@ BEGIN(Engine)
 class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
-	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_NONLIGHT, RENDER_ALPHABLEND, RENDER_UI, RENDER_END };
+	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_SHADOWDEPTH, RENDER_NONALPHA, RENDER_NONLIGHT, RENDER_ALPHABLEND, RENDER_UI, RENDER_END };
 private:
 	explicit CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CRenderer() = default;
@@ -21,6 +21,7 @@ public:
 
 private:
 	void Render_Priority();
+	void Render_ShadowDepth();
 	void Render_NonAlphaBlend();
 	void Render_Lights();
 	void Render_Outline();

@@ -29,7 +29,6 @@ public:
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
 
-	CGameObject* pTargetObject = nullptr;
 };
 
 END

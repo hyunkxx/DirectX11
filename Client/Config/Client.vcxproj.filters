@@ -94,9 +94,6 @@
     <ClInclude Include="..\Public\Level_Logo.h">
       <Filter>src\01. Levels\01. Logo</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Level_GamePlay.h">
-      <Filter>src\01. Levels\02. GamePlay</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\BackGround.h">
       <Filter>src\02. GameObjects\02. BackGround</Filter>
     </ClInclude>
@@ -157,14 +154,20 @@
     <ClInclude Include="..\public\Character.h">
       <Filter>src\02. GameObjects\03. Character</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\InGameLoader.h">
-      <Filter>src\01. Levels\00. Loading\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Client_ModelEnum.h">
       <Filter>config\header</Filter>
     </ClInclude>
     <ClInclude Include="..\public\TestPlayer.h">
       <Filter>src\02. GameObjects\99. TestModel\TestPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_GamePlay.h">
+      <Filter>src\01. Levels\02. GamePlay</Filter>
+    </ClInclude>
+    <ClInclude Include="Floor.h">
+      <Filter>src\02. GameObjects\00. Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\InGameLoader.h">
+      <Filter>src\00. Application\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -191,9 +194,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Terrain.cpp">
       <Filter>src\02. GameObjects\00. Terrain</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\DynamicCamera.cpp">
-      <Filter>src\02. GameObjects\01. Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GUIManager.cpp">
       <Filter>config\ImGui\Manager</Filter>
@@ -222,9 +222,6 @@
     <ClCompile Include="..\private\Character.cpp">
       <Filter>src\02. GameObjects\03. Character</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\InGameLoader.cpp">
-      <Filter>src\01. Levels\00. Loading\Loader</Filter>
-    </ClCompile>
     <ClCompile Include="..\ImGui\imgui_impl_dx11.cpp">
       <Filter>config\ImGui</Filter>
     </ClCompile>
@@ -233,6 +230,15 @@
     </ClCompile>
     <ClCompile Include="..\private\TestPlayer.cpp">
       <Filter>src\02. GameObjects\99. TestModel\TestPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Floor.cpp">
+      <Filter>src\02. GameObjects\00. Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\InGameLoader.cpp">
+      <Filter>src\00. Application\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DynamicCamera.cpp">
+      <Filter>src\02. GameObjects\01. Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -272,10 +278,10 @@
     <FxCompile Include="..\..\Shader\SHADER_VTXCUBE.hlsl">
       <Filter>src\99. ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_DEFERRED.hlsl">
+    <FxCompile Include="..\..\Shader\SHADER_VTXMODEL.hlsl">
       <Filter>src\99. ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_VTXMODEL.hlsl">
+    <FxCompile Include="..\..\Shader\SHADER_DEFERRED.hlsl">
       <Filter>src\99. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shader\SHADER_VTXMODELANIM.hlsl">

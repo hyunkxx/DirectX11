@@ -31,11 +31,6 @@ HRESULT CDynamicCamera::Initialize(void* pArg)
 
 void CDynamicCamera::Start()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	pTargetObject = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, L"terrain");
-	if (pTargetObject == nullptr)
-		MSG_BOX("TERRAIN FIND FAILED");
-
 }
 
 void CDynamicCamera::Tick(_double TimeDelta)
@@ -53,9 +48,6 @@ void CDynamicCamera::Tick(_double TimeDelta)
 
 	if (pGameInstance->InputKey(DIK_D) == KEY_STATE::HOLD)
 		m_pTransform->MoveRight(TimeDelta);
-
-	if (pGameInstance->InputKey(DIK_DELETE) == KEY_STATE::TAP)
-		pTargetObject->SetState(STATE::DESTROY);
 
 	_long MouseMove = 0;
 
@@ -83,9 +75,6 @@ HRESULT CDynamicCamera::Render()
 
 void CDynamicCamera::RenderGUI()
 {
-	ImGui::Begin("Camera ID");
-	ImGui::DragInt("ID", &m_iObjectID);
-	ImGui::End();
 }
 
 HRESULT CDynamicCamera::Add_Components()

@@ -3,10 +3,12 @@
 #include "Component_Manager.h"
 #include "PipeLine.h"
 #include "LightManager.h"
+#include "Graphic_Device.h"
 
 BEGIN(Engine)
 
 typedef CLightManager::LIGHT_MATRIX LIGHT_MATRIX;
+typedef CGraphic_Device::VIEWPORT_TYPE VIEWPORT_TYPE;
 
 class ENGINE_DLL CGameInstance final: public CBase
 {
@@ -21,8 +23,10 @@ public:
 	HRESULT Engine_Tick(_double TimeDelta);
 
 public: //Graphic_Device
+	const D3D11_VIEWPORT* GetViewport(VIEWPORT_TYPE eViewportType) const;
 	HRESULT Clear_RenderTargetView(_float4 vColor);
 	HRESULT Clear_DepthStencilView();
+	HRESULT Clear_ShadowDepthStencilView();
 	HRESULT Present();
 
 public: //Level_Manager
@@ -74,6 +78,9 @@ public: //LightManager
 	_float4x4 GetLightInverseFloat4x4(LIGHT_MATRIX eLightMatrix);
 	void SetLightPosition(_fvector vLightPos);
 	_float4 GetLightPosition() const;
+	void SetLightDirection(_fvector vLightDir);
+	_float4 GetLightDirection() const;
+	void ShadowUpdate();
 
 public: //TargetManager
 	HRESULT Set_ShaderRenderTargetResourceView(class CShader* pShader, const _tchar* pTargetTag, const char* pContantName);

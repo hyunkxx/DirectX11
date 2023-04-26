@@ -53,6 +53,9 @@ HRESULT CGameInstance::Engine_Initialize(const GRAPHIC_DESC& GraphicDesc, _uint 
 	if (FAILED(m_pGraphic_Device->Ready_Graphic_Device(GraphicDesc.hWnd, GraphicDesc.eMode, GraphicDesc.iWinSizeX, GraphicDesc.iWinSizeY, ppDevice_out, ppContext_out)))
 		return E_FAIL;
 
+	//½¦µµ¿ì µª½º ¼Â¾÷
+	m_pTargetManager->SetupShadowDepthStencilView(m_pGraphic_Device->GetShadowDepthStencilView());
+
 	if (FAILED(m_pInput_Device->Initialize_Input(GraphicDesc.hInstance, GraphicDesc.hWnd)))
 		return E_FAIL;
 
@@ -85,8 +88,8 @@ HRESULT CGameInstance::Engine_Tick(_double TimeDelta)
 	m_pInput_Device->Update();
 
 	m_pLevel_Manager->Tick_Level(TimeDelta);
-	m_pPipeLine->Tick();
 	m_pObject_Manager->Tick(TimeDelta);
+	m_pPipeLine->Tick();
 	
 	m_pFrustum->Tick();
 	m_pObject_Manager->LateTick(TimeDelta);
@@ -95,6 +98,14 @@ HRESULT CGameInstance::Engine_Tick(_double TimeDelta)
 
 
 	return S_OK;
+}
+
+const D3D11_VIEWPORT* CGameInstance::GetViewport(CGraphic_Device::VIEWPORT_TYPE eViewportType) const
+{
+	if (nullptr == m_pGraphic_Device)
+		return nullptr;
+
+	return m_pGraphic_Device->GetViewport(eViewportType);
 }
 
 HRESULT CGameInstance::Clear_RenderTargetView(_float4 vColor)
@@ -111,6 +122,14 @@ HRESULT CGameInstance::Clear_DepthStencilView()
 		return E_FAIL;
 
 	return m_pGraphic_Device->Clear_DepthStencilView();
+}
+
+HRESULT CGameInstance::Clear_ShadowDepthStencilView()
+{
+	if (nullptr == m_pGraphic_Device)
+		return E_FAIL;
+
+	return m_pGraphic_Device->Clear_ShadowDepthStencilView();
 }
 
 HRESULT CGameInstance::Present()
@@ -384,6 +403,30 @@ _float4 CGameInstance::GetLightPosition() const
 		return _float4();
 
 	return m_pLightManager->GetLightPosition();
+}
+
+void CGameInstance::SetLightDirection(_fvector vLightDir)
+{
+	if (nullptr == m_pLightManager)
+		return;
+
+	return m_pLightManager->SetLightDirection(vLightDir);
+}
+
+_float4 CGameInstance::GetLightDirection() const
+{
+	if (nullptr == m_pLightManager)
+		return _float4();
+
+	return m_pLightManager->GetLightDirection();
+}
+
+void CGameInstance::ShadowUpdate()
+{
+	if (nullptr == m_pLightManager)
+		return;
+
+	return m_pLightManager->ShadowUpdate();
 }
 
 HRESULT CGameInstance::Set_ShaderRenderTargetResourceView(CShader * pShader, const _tchar * pTargetTag, const char * pContantName)
