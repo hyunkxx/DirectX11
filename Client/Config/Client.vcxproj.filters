@@ -68,6 +68,15 @@
     <Filter Include="src\02. GameObjects\99. TestModel\TestPlayer">
       <UniqueIdentifier>{51e1450e-258c-4add-a836-0ed20a60c48e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\02. GameObjects\04. MapObject">
+      <UniqueIdentifier>{3d139dea-d631-4f3b-b1c3-ca5f6aadf820}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObjects\04. MapObject\00.Tree">
+      <UniqueIdentifier>{5388ba6c-98db-49ad-9510-a72ca4231dbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObjects\04. MapObject\00.Tree\0">
+      <UniqueIdentifier>{5bc307ae-c7a6-4735-aff3-9bfdd9d67033}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -169,6 +178,9 @@
     <ClInclude Include="..\public\InGameLoader.h">
       <Filter>src\00. Application\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Tree_0.h">
+      <Filter>src\02. GameObjects\04. MapObject\00.Tree\0</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -240,6 +252,9 @@
     <ClCompile Include="..\private\DynamicCamera.cpp">
       <Filter>src\02. GameObjects\01. Camera</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Tree_0.cpp">
+      <Filter>src\02. GameObjects\04. MapObject\00.Tree\0</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -285,6 +300,9 @@
       <Filter>src\99. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shader\SHADER_VTXMODELANIM.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_VTXMODEL_INSTANCE.hlsl">
       <Filter>src\99. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

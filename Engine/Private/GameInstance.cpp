@@ -501,6 +501,14 @@ void CGameInstance::StopAllSound()
 	m_pSound_Manager->Stop_AllSound();
 }
 
+void CGameInstance::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)
+{
+	if (nullptr == m_pFrustum)
+		return;
+
+	return m_pFrustum->Transform_ToLocalSpace(WorldMatrixInv);
+}
+
 _bool CGameInstance::InWorldSpace(_fvector vPoint, _float fRadius)
 {
 	if (nullptr == m_pFrustum)

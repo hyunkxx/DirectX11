@@ -11,10 +11,13 @@
 
 #include "Model.h"
 #include "Model_Anim.h"
+#include "Model_Instance.h"
 
 #include "Collider.h"
 #include "SphereCollider.h"
 #include "OBBCollider.h"
+
+#include "Calculator.h"
 
 BEGIN(Engine)
 /* 컴포넌트들의 원형을 레벨별로 나누어 보관한다. */

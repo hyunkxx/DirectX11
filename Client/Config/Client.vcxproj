@@ -207,6 +207,7 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\TestPlayer.h" />
+    <ClInclude Include="..\Public\Tree_0.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="Resource.h" />
@@ -253,6 +254,7 @@
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\TestPlayer.cpp" />
+    <ClCompile Include="..\Private\Tree_0.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -281,6 +283,7 @@
     <FxCompile Include="..\..\Shader\SHADER_VTXCUBE.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXMODEL.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXMODELANIM.hlsl" />
+    <FxCompile Include="..\..\Shader\SHADER_VTXMODEL_INSTANCE.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXNORTEX.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXTEX.hlsl" />
   </ItemGroup>

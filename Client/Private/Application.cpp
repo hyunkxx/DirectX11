@@ -185,6 +185,10 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		return E_FAIL;
 #pragma endregion
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::CARCULATOR,
+		CCalculator::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	Safe_AddRef(m_pRenderer);
 
 	return S_OK;

@@ -39,6 +39,7 @@ void CGUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 	ImGui_ImplWin32_Init(hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
+
 }
 
 void CGUIManager::NewFrame()

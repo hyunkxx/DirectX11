@@ -25,6 +25,11 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
 		return E_FAIL;
 	
+#pragma region MAP_OBJECT_TREE
+	if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_Tree"))))
+		return E_FAIL;
+#pragma endregion MAP_OBJECT_TREE
+
 	return S_OK;
 }
 
@@ -117,6 +122,22 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TESTPLAYER, pLayerTag, TEXT("TestPlayer2"))))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+	;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_0, pLayerTag, TEXT("ObjectTree"))))
+	{
+		MSG_BOX("Failed to AddGameObject In GamePlay : ObjectTree");
+		return E_FAIL;
+	}
 
 	return S_OK;
 }

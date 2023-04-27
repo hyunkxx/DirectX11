@@ -98,6 +98,7 @@ public: // Sound_Manager
 	void StopAllSound();
 
 public: // Frustum
+	void Transform_ToLocalSpace(_fmatrix WorldMatrixInv);
 	_bool InWorldSpace(_fvector vPoint, _float fRadius = 0.f);
 	_bool InLocalSpace(_fvector vPoint, _float fRadius = 0.f);
 

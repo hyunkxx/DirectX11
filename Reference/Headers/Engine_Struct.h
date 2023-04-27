@@ -237,4 +237,23 @@ namespace Engine
 		const static unsigned int						ElementCount = 6;
 		static D3D11_INPUT_ELEMENT_DESC					Elements[ElementCount];
 	}VTXPOINTINSTANCE_DECLARATION;
+
+#pragma region MODEL_INSTANCE
+	typedef struct ENGINE_DLL tagVertex_Model_Static_Instance_Declaration
+	{
+		const static unsigned int						ElementCount = 8;
+		static D3D11_INPUT_ELEMENT_DESC					Elements[ElementCount];
+	}VTXSMODELINSTANCE_DECLARATION;
+#pragma endregion MODEL_INSTANCE
+
+#pragma region STATIC_OBJECT
+	typedef struct tagStaticObject_Desc
+	{
+		XMFLOAT3		vP = {};
+		XMFLOAT3		vS = {};
+		XMFLOAT3		vA = {};
+	}SOBJECT_DESC;
+
+#pragma endregion STATIC_OBJECT
+
 }

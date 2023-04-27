@@ -35,6 +35,7 @@ namespace COMPONENT
 		MODEL,
 		MODEL_ANIM,
 		SPHERE,
-		OBB
+		OBB,
+		CARCULATOR
 	};
 }

@@ -167,6 +167,7 @@
     <ClInclude Include="..\Public\AnimController.h" />
     <ClInclude Include="..\public\Base.h" />
     <ClInclude Include="..\Public\Bone.h" />
+    <ClInclude Include="..\Public\Calculator.h" />
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\Public\Channel.h" />
     <ClInclude Include="..\Public\Collider.h" />
@@ -203,8 +204,10 @@
     <ClInclude Include="..\public\Light.h" />
     <ClInclude Include="..\public\LightManager.h" />
     <ClInclude Include="..\Public\Mesh.h" />
+    <ClInclude Include="..\Public\Mesh_Instance.h" />
     <ClInclude Include="..\Public\Model.h" />
     <ClInclude Include="..\Public\Model_Anim.h" />
+    <ClInclude Include="..\Public\Model_Instance.h" />
     <ClInclude Include="..\Public\OBBCollider.h" />
     <ClInclude Include="..\public\Object_Manager.h" />
     <ClInclude Include="..\public\PipeLine.h" />
@@ -228,6 +231,7 @@
     <ClCompile Include="..\Private\AnimController.cpp" />
     <ClCompile Include="..\private\Base.cpp" />
     <ClCompile Include="..\Private\Bone.cpp" />
+    <ClCompile Include="..\Private\Calculator.cpp" />
     <ClCompile Include="..\private\Camera.cpp" />
     <ClCompile Include="..\Private\Channel.cpp" />
     <ClCompile Include="..\Private\Collider.cpp" />
@@ -249,8 +253,10 @@
     <ClCompile Include="..\private\Light.cpp" />
     <ClCompile Include="..\private\LightManager.cpp" />
     <ClCompile Include="..\Private\Mesh.cpp" />
+    <ClCompile Include="..\Private\Mesh_Instance.cpp" />
     <ClCompile Include="..\Private\Model.cpp" />
     <ClCompile Include="..\Private\Model_Anim.cpp" />
+    <ClCompile Include="..\Private\Model_Instance.cpp" />
     <ClCompile Include="..\Private\OBBCollider.cpp" />
     <ClCompile Include="..\private\Object_Manager.cpp" />
     <ClCompile Include="..\private\PipeLine.cpp" />

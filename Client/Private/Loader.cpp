@@ -8,6 +8,9 @@
 
 #include "TestPlayer.h"
 
+#include "Tree_0.h"
+
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
 	, m_pContext(pContext)
@@ -127,6 +130,15 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_SUPPRESSOR, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Suppressor/Suppressor.dmdl")))))
 		return E_FAIL;
 
+#pragma region MODEL_INSTANCE_TREE
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_0, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Trees/0/SM_Tree091_home_Lod1.smdl"), TEXT("../../Data/GamePlay/MapObject/Tree_0.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : MODEL_INSTANCE");
+		return E_FAIL;
+	}
+#pragma endregion MODEL_INSTANCE_TREE
+
 
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
@@ -136,6 +148,15 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
 		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
+
+#pragma region SHADER_MODEL_INSTANCE
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODEL_INSTANCE, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL_INSTANCE.hlsl"), VTXSMODELINSTANCE_DECLARATION::Elements, VTXSMODELINSTANCE_DECLARATION::ElementCount))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : MODEL_INSTANCE_SHADER");
+		return E_FAIL;
+	}
+#pragma endregion SHADER_MODEL_INSTANCE
 
 #pragma endregion
 
@@ -150,6 +171,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTPLAYER, CTestPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+#pragma region MAP_OBJECT_TREE
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_0, CTree_0::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion MAP_OBJECT_TREE
 
 #pragma endregion
 

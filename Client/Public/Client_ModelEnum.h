@@ -7,6 +7,9 @@ namespace SMODEL
 	{
 		SMD_TEST = 3000,
 		SMD_HEADWEAR,
+
+		SMD_TREE_0,
+
 		SMD_END
 	};
 }

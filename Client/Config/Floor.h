@@ -41,7 +41,6 @@ private:
 	CTexture*			m_pTexture = { nullptr };
 	CRenderer*			m_pRenderer = { nullptr };
 	CVIBuffer_Terrain*	m_pVIBuffer = { nullptr };
-
 };
 
 END

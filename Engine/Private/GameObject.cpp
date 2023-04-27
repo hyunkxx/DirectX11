@@ -16,6 +16,7 @@ CGameObject::CGameObject(const CGameObject& rhs)
 	: m_pDevice{ rhs.m_pDevice }
 	, m_pContext{ rhs.m_pContext }
 	, m_iObjectID{ rhs.m_iObjectID }
+	, m_IsDistinction_NormalTex{ rhs.m_IsDistinction_NormalTex }
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);

@@ -33,6 +33,9 @@ public:
 public:
 
 protected:
+	_bool						m_IsDistinction_NormalTex = { false };
+
+protected:
 	HRESULT Add_Component(_uint iLevelIndex, _int iComponent, const _tchar* pComponentTag, class CComponent** ppOut, void* pArg = nullptr);
 
 public:

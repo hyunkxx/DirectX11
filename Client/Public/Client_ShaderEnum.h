@@ -12,6 +12,8 @@ namespace SHADER
 		MODEL,
 		MODELANIM,
 		GROUD,
-		PHONG
+		PHONG,
+
+		MODEL_INSTANCE
 	};
 }

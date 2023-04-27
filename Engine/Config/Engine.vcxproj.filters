@@ -127,6 +127,15 @@
     <Filter Include="utility\03. Components\03. VIBuffer\Triangle">
       <UniqueIdentifier>{befb40e1-ba7d-4325-88f9-22922d708c65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="utility\03. Components\08. Model\ModelInstance">
+      <UniqueIdentifier>{9625f3ed-df26-4c9d-a2e9-ed33754b367b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility\03. Components\08. Model\ModelInstance\MeshInstance">
+      <UniqueIdentifier>{be02c096-e6b5-4d14-a331-26e49bf97e21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility\03. Components\09. Calculator">
+      <UniqueIdentifier>{aa2cf403-d73d-44dd-ac5c-7f215a6ff994}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -263,6 +272,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Model_Anim.cpp">
       <Filter>utility\03. Components\08. Model\ModelAnim</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model_Instance.cpp">
+      <Filter>utility\03. Components\08. Model\ModelInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh_Instance.cpp">
+      <Filter>utility\03. Components\08. Model\ModelInstance\MeshInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Calculator.cpp">
+      <Filter>utility\03. Components\09. Calculator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -442,6 +460,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Model_Anim.h">
       <Filter>utility\03. Components\08. Model\ModelAnim</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Model_Instance.h">
+      <Filter>utility\03. Components\08. Model\ModelInstance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh_Instance.h">
+      <Filter>utility\03. Components\08. Model\ModelInstance\MeshInstance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Calculator.h">
+      <Filter>utility\03. Components\09. Calculator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

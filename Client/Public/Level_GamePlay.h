@@ -20,6 +20,8 @@ private:
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);
 
+	HRESULT Ready_Layer_MapObject_Tree(const _tchar* pLayerTag);
+
 	void AddCount();
 
 public:
