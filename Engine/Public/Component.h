@@ -19,6 +19,7 @@ public:
 public:
 	virtual HRESULT Render() { return S_OK; }
 #endif
+	_bool IsClone() const { return m_isClone; }
 
 public:
 	virtual CComponent* Clone(void* pArg = nullptr) = 0;

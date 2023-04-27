@@ -1,12 +1,15 @@
 #include "..\Public\Layer.h"
 
-HRESULT CLayer::Add_GameObject(const _tchar* szObjectTag, CGameObject* pGameObject)
+HRESULT CLayer::Add_GameObject(_tchar* szObjectTag, CGameObject* pGameObject)
 {
 	if (nullptr == pGameObject)
 		return E_FAIL;
+	
+	_tchar* pTag = new _tchar[MAX_TAG];
+	lstrcpy(pTag, szObjectTag);
 
-	m_GameObjects.emplace(szObjectTag, pGameObject);
-
+	m_GameObjects.emplace(pTag, pGameObject);
+	
 	return S_OK;
 }
 
@@ -79,7 +82,10 @@ CLayer* CLayer::Create()
 void CLayer::Free()
 {
 	for (auto& pGameObject : m_GameObjects)
+	{
 		Safe_Release(pGameObject.second);
+		delete pGameObject.first;
+	}
 
 	m_GameObjects.clear();
 }

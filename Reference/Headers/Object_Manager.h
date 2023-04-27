@@ -19,7 +19,7 @@ public:
 
 	HRESULT Reserve_Manager(_uint iLevelMaxCount);
 	HRESULT Add_Prototype(_int iObjectEnum, class CGameObject* pPrototype);
-	HRESULT Add_GameObject(_uint iLevelIndex, _int iObjectEnum, const _tchar* pLayerTag, const _tchar* pObjectTag, void* pArg = nullptr);
+	HRESULT Add_GameObject(_uint iLevelIndex, _int iObjectEnum, const _tchar* pLayerTag, _tchar* pObjectTag, void* pArg = nullptr);
 	class CGameObject* Find_GameObject(_uint iLevelIndex, const _tchar* pObjectTag);
 
 	void Start(_uint iLevelIndex);

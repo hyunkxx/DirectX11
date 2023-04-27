@@ -28,7 +28,7 @@ public:
 	_float ComputeCameraLength();
 
 	class CComponent* Find_Component(const _tchar* pComponentTag);
-	unordered_map<const _tchar*, class CComponent*> m_Components;
+	unordered_map<_tchar*, class CComponent*> m_Components;
 
 public:
 
@@ -37,8 +37,10 @@ protected:
 
 protected:
 	HRESULT Add_Component(_uint iLevelIndex, _int iComponent, const _tchar* pComponentTag, class CComponent** ppOut, void* pArg = nullptr);
+	HRESULT Add_Component(_uint iLevelIndex, _int iComponent, _tchar* pComponentTag, class CComponent** ppOut, void* pArg = nullptr);
 
 public:
+	_bool IsClone() const { return m_bClone; }
 	void SetState(STATE eState) { m_eState = eState; }
 	void Destroy() { m_eState = STATE::DESTROY; }
 	_bool IsActive() const { return m_eState == STATE::ACTIVE; }
@@ -57,6 +59,7 @@ protected:
 	ID3D11DeviceContext*		m_pContext;
 
 protected:
+	_bool m_bClone = false;
 	_int m_iObjectID = -1;
 	STATE m_eState = { ACTIVE };
 

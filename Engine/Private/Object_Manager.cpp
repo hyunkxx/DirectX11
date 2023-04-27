@@ -26,9 +26,9 @@ HRESULT CObject_Manager::Add_Prototype(_int iObjectEnum, CGameObject* pPrototype
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Add_GameObject(_uint iLevelIndex, _int iObjectEnum, const _tchar* pLayerTag, const _tchar* strObjectTag, void* pArg)
+HRESULT CObject_Manager::Add_GameObject(_uint iLevelIndex, _int iObjectEnum, const _tchar* pLayerTag, _tchar* strObjectTag, void* pArg)
 {
-	CGameObject*pPrototype = Find_Prototype(iObjectEnum);
+	CGameObject* pPrototype = Find_Prototype(iObjectEnum);
 	if (nullptr == pPrototype)
 		return E_FAIL;
 

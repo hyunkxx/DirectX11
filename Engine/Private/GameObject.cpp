@@ -17,6 +17,7 @@ CGameObject::CGameObject(const CGameObject& rhs)
 	, m_pContext{ rhs.m_pContext }
 	, m_iObjectID{ rhs.m_iObjectID }
 	, m_IsDistinction_NormalTex{ rhs.m_IsDistinction_NormalTex }
+	, m_bClone(true)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
@@ -59,9 +60,12 @@ void CGameObject::RenderGUI()
 	return;
 }
 
-HRESULT CGameObject::Add_Component(_uint iLevelIndex, _int iComponent, const _tchar* pComponentTag, CComponent** ppOut, void * pArg)
+HRESULT CGameObject::Add_Component(_uint iLevelIndex, _int iComponent, _tchar* pComponentTag, CComponent** ppOut, void * pArg)
 {
-	if (nullptr != Find_Component(pComponentTag))
+	_tchar* pTag = new _tchar[MAX_TAG];
+	lstrcpy(pTag, pComponentTag);
+
+	if (nullptr != Find_Component(pTag))
 		return E_FAIL;
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -71,7 +75,7 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, _int iComponent, const _tc
 		return E_FAIL;
 
 	*ppOut = pComponent;
-	m_Components.emplace(pComponentTag, pComponent);
+	m_Components.emplace(pTag, pComponent);
 	Safe_AddRef(pComponent);
 
 	return S_OK;
@@ -101,6 +105,7 @@ void CGameObject::Free()
 	for (auto& pair : m_Components)
 	{
 		Safe_Release(pair.second);
+		delete pair.first;
 	}
 	m_Components.clear();
 

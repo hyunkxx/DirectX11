@@ -3,6 +3,8 @@
 #define IN
 #define OUT
 
+#define MAX_TAG 40
+
 #define DIRECTINPUT_VERSION 0x0800
 
 #pragma warning (disable : 4005)
@@ -41,6 +43,8 @@
 
 // C++ & STL
 #include "commdlg.h"
+#include <cstdlib>
+#include <stdlib.h>
 #include <thread>
 #include <assert.h>
 #include <cassert>

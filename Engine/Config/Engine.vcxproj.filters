@@ -156,9 +156,6 @@
     <ClCompile Include="..\private\GameObject.cpp">
       <Filter>utility\02. GameObjects\01. GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Object_Manager.cpp">
-      <Filter>utility\02. GameObjects\00. Manager</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Layer.cpp">
       <Filter>utility\02. GameObjects\00. Manager\Layer</Filter>
     </ClCompile>
@@ -281,6 +278,8 @@
     </ClCompile>
     <ClCompile Include="..\Private\Calculator.cpp">
       <Filter>utility\03. Components\09. Calculator</Filter>
+    <ClCompile Include="..\private\Object_Manager.cpp">
+      <Filter>utility\02. GameObjects\01. GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -313,9 +312,6 @@
     </ClInclude>
     <ClInclude Include="..\public\GameObject.h">
       <Filter>utility\02. GameObjects\01. GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Object_Manager.h">
-      <Filter>utility\02. GameObjects\00. Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Layer.h">
       <Filter>utility\02. GameObjects\00. Manager\Layer</Filter>
@@ -469,6 +465,8 @@
     </ClInclude>
     <ClInclude Include="..\Public\Calculator.h">
       <Filter>utility\03. Components\09. Calculator</Filter>
+    <ClInclude Include="..\public\Object_Manager.h">
+      <Filter>utility\02. GameObjects\01. GameObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

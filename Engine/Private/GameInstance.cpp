@@ -172,7 +172,7 @@ HRESULT CGameInstance::Add_Prototype(_int iObjectEnum, CGameObject* pPrototype)
 	return m_pObject_Manager->Add_Prototype(iObjectEnum, pPrototype);
 }
 
-HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, _int iObjectEnum, const _tchar* pLayerTag, const _tchar* strObjectTag, void* pArg)
+HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, _int iObjectEnum, const _tchar* pLayerTag, _tchar* strObjectTag, void* pArg)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
@@ -532,8 +532,8 @@ void CGameInstance::Engine_Release()
 	CGameInstance::DestroyInstance();
 	CInput_Device::DestroyInstance();
 	CTimer_Manager::DestroyInstance();
-	CComponent_Manager::DestroyInstance();
 	CObject_Manager::DestroyInstance();
+	CComponent_Manager::DestroyInstance();
 	CLevel_Manager::DestroyInstance();
 	CPipeLine::DestroyInstance();
 	CGraphic_Device::DestroyInstance();

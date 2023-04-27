@@ -23,7 +23,8 @@ HRESULT CCharacter::Initialize_Prototype()
 
 HRESULT CCharacter::Initialize(void * pArg)
 {
-	m_iObjectCount = *(int*)pArg;
+	if(pArg)
+		m_iObjectCount = *(int*)pArg;
 
 	if (FAILED(CGameObject::Initialize(pArg)))
 		return E_FAIL;
@@ -146,12 +147,14 @@ CGameObject * CCharacter::Clone(void * pArg)
 void CCharacter::Free()
 {
 	__super::Free();
+	
+	if (!IsClone())
+		return;
 
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pMainTransform);
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pShader);
-
 	Safe_Release(m_pMainCollider);
 }
 
