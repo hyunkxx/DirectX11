@@ -20,10 +20,16 @@ public:
 
 	const LIGHT_DESC* GetLightDesc(_uint Index);
 
+	void InitializeBakeLight();
 	void ShadowUpdate();
 	void SetLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatrix);
+	void SetBakeLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatrix);
+
 	_float4x4 GetLightFloat4x4(LIGHT_MATRIX eLightMatrix);
+	_float4x4 GetBakeLightFloat4x4(LIGHT_MATRIX eLightMatrix);
+
 	_float4x4 GetLightInverseFloat4x4(LIGHT_MATRIX eLightMatrix);
+	_float4x4 GetBakeLightInverseFloat4x4(LIGHT_MATRIX eLightMatrix);
 
 	void SetLightPosition(_fvector vLightPos);
 	_float4 GetLightPosition() const { return m_vLightPos; };
@@ -41,6 +47,7 @@ private:
 	_float4 m_vLightDir = { 0.f, 0.f, 0.f, 0.f };
 	_float4x4 m_LightMatrix[LIGHT_MATRIX_END];
 
+	_float4x4 m_BakeLightMatrix[LIGHT_MATRIX_END];
 };
 
 END

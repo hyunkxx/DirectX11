@@ -68,7 +68,7 @@ public:
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render();
-	virtual HRESULT RenderShadow();
+	virtual HRESULT DrawDynamicShadow();
 	virtual void	RenderGUI();
 
 private:

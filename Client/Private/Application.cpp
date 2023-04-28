@@ -165,8 +165,8 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		return E_FAIL;
 
 	CVIBuffer_Terrain::TERRAIN_SIZE tSize;
-	tSize.mX = 300.f;
-	tSize.mZ = 300.f;
+	tSize.mX = 300;
+	tSize.mZ = 300;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::VIBUFFER_FLOOR_TERRAIN,
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, tSize))))
 		return E_FAIL;

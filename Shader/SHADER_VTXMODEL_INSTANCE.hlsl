@@ -30,6 +30,45 @@ struct VS_OUT
 	float4 vProjPos : TEXCOORD1;
 };
 
+struct VS_OUT_SHADOW
+{
+	float4 vPosition : SV_POSITION;
+	float2 vTexUV : TEXCOORD0;
+	float4 vShadowDepth : TEXCOORD1;
+};
+
+// NoramlMap
+struct VS_OUT_NORMALMAP
+{
+	float4			vPosition : SV_POSITION;
+	float4			vNormal : NORMAL;
+	float2			vTexUV : TEXCOORD0;
+	float4			vProjPos : TEXCOORD1;
+
+	float3			vTangent : TANGENT;
+	float3			vBiNormal : BINORMAL;
+};
+
+struct PS_IN
+{
+	float4 vPosition : SV_POSITION;
+	float4 vNormal : NORMAL;
+	float2 vTexUV : TEXCOORD0;
+	float4 vProjPos : TEXCOORD1;
+};
+
+struct PS_OUT
+{
+	float4 vDiffuse : SV_TARGET0;
+	float4 vNormal : SV_TARGET1;
+	float4 vDepth : SV_TARGET2;
+};
+
+struct PS_OUT_SHADOW
+{
+	float4 vShadowDepth : SV_TARGET0;
+};
+
 VS_OUT VS_MAIN(VS_IN In)
 {
 	VS_OUT Out = (VS_OUT)0;
@@ -51,17 +90,6 @@ VS_OUT VS_MAIN(VS_IN In)
 	return Out;
 }
 
-// NoramlMap
-struct VS_OUT_NORMALMAP
-{
-	float4			vPosition : SV_POSITION;
-	float4			vNormal : NORMAL;
-	float2			vTexUV : TEXCOORD0;
-	float4			vProjPos : TEXCOORD1;
-
-	float3			vTangent : TANGENT;
-	float3			vBiNormal : BINORMAL;
-};
 
 VS_OUT_NORMALMAP VS_MAIN_NORMALMAP(VS_IN In)
 {
@@ -73,8 +101,7 @@ VS_OUT_NORMALMAP VS_MAIN_NORMALMAP(VS_IN In)
 	matWVP = mul(matWV, g_ProjMatrix);
 
 	float4x4	TransformMatrix = float4x4(In.vRight, In.vUp, In.vLook, In.vTranslation);
-
-	vector vPosition = mul(float4(In.vPosition, 1.0f), TransformMatrix);
+	vector		vPosition = mul(float4(In.vPosition, 1.0f), TransformMatrix);
 
 	/*vector vNormal = mul(float4(In.vNormal, 0.0f), TransformMatrix);
 	vector vTangent = mul(float4(In.vTangent, 0.0f), TransformMatrix);
@@ -98,34 +125,23 @@ VS_OUT_NORMALMAP VS_MAIN_NORMALMAP(VS_IN In)
 	return Out;
 }
 
-struct PS_IN
+VS_OUT_SHADOW VS_MAIN_SHADOW(VS_IN In)
 {
-	float4 vPosition : SV_POSITION;
-	float4 vNormal : NORMAL;
-	float2 vTexUV : TEXCOORD0;
-	float4 vProjPos : TEXCOORD1;
-};
+	VS_OUT_SHADOW Out = (VS_OUT_SHADOW)0;
 
-struct PS_OUT
-{
-	float4 vDiffuse : SV_TARGET0;
-	float4 vNormal : SV_TARGET1;
-	float4 vDepth : SV_TARGET2;
-};
+	matrix	matWV, matWVP;
 
-PS_OUT	PS_MAIN(PS_IN In)
-{
-	PS_OUT Out = (PS_OUT)0;;
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
 
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	float4x4	TransformMatrix = float4x4(In.vRight, In.vUp, In.vLook, In.vTranslation);
+	vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
 
-	Out.vDiffuse = vMtrlDiffuse;
-
-	if (Out.vDiffuse.a < 0.1f)
-		discard;
-
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 1.f);
+	Out.vPosition = mul(vPosition, g_WorldMatrix);
+	Out.vPosition = mul(Out.vPosition, g_ViewMatrix);
+	Out.vPosition = mul(Out.vPosition, g_ProjMatrix);
+	Out.vShadowDepth = Out.vPosition;
+	Out.vTexUV = In.vTexUV;
 
 	return Out;
 }
@@ -162,14 +178,44 @@ PS_OUT PS_MAIN_NORMALMAP(PS_IN_NORMALMAP In)
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
 
 	/* 투영 스페이스 상의 z , 뷰 스페이스 상의 z (vProjPos.w 에 저장되어 있음) -> 뷰 공간서의 최대 z 값 Far -> Far 로 나눠서 0 ~ 1 사이로 뷰 의 z값 보관 */
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.0f, 1.f);
+	//Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+
+	return Out;
+}
+
+
+PS_OUT	PS_MAIN(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (Out.vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.0f, 1.f);
+
+	return Out;
+}
+
+PS_OUT_SHADOW	PS_MAIN_SHADOW(VS_OUT_SHADOW In)
+{
+	PS_OUT_SHADOW Out = (PS_OUT_SHADOW)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if(vDiffuse.a > 0.1f)
+		Out.vShadowDepth = vector(In.vShadowDepth.z / In.vShadowDepth.w, In.vShadowDepth.w / g_Far, 0.0f, 1.f);
 
 	return Out;
 }
 
 technique11 DefaultTechnique
 {
-	pass Instance_Model
+	//나뭇잎
+	pass Instance_Model_Pass0
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -182,7 +228,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-	pass Instance_Model_NoramlMap
+	pass Instance_Model_NoramlMap_Pass1
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -193,5 +239,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_NORMALMAP();
+	}
+
+	pass Shadow_Pass2
+	{
+		SetRasterizerState(RS_ShadowDepth);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
 	}
 }

@@ -30,6 +30,9 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 #pragma endregion MAP_OBJECT_TREE
 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	pGameInstance->InitalizeBakeLight();
+
 	return S_OK;
 }
 
@@ -100,7 +103,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	CameraDesc.fFar = 500.f;
 	
 	//Light Setting
-
 	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(30.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);
 	pGameInstance->SetLightMatrix(vLightProjMatrix, LIGHT_MATRIX::LIGHT_PROJ);
 

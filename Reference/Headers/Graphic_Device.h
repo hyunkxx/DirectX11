@@ -14,9 +14,14 @@ private:
 
 public:
 	enum VIEWPORT_TYPE { VIEWPORT_DEFAULT, VIEWPORT_SHADOWDEPTH, VIEWPORT_END };
+
+	ID3D11DepthStencilView* GetStaticShadowDepthStencilView() const {
+		return m_pStaticShadowDepthStencilView;
+	}
 	ID3D11DepthStencilView* GetShadowDepthStencilView() const {
 		return m_pShadowDepthStencilView;
 	}
+
 	HRESULT Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WIN_MODE eWinMode, _uint iWinSizeX, _uint iWinSizeY, ID3D11Device** ppDevice_out, ID3D11DeviceContext** ppContext_out);
 	HRESULT Clear_RenderTargetView(_float4 vClearColor);
 	HRESULT Clear_DepthStencilView();
@@ -28,6 +33,7 @@ private:
 	HRESULT Ready_SwapChain(HWND hWnd, GRAPHIC_DESC::WIN_MODE eWinMode, _uint iWinSizeX, _uint iWinSizeY);
 	HRESULT Ready_RenderTargetView();
 	HRESULT Ready_DepthStencilView(_uint iWinSizeX, _uint iWinSizeY);
+	HRESULT Ready_StaticShadowDepthStencilView(_uint iWinSizeX, _uint iWinSizeY);
 	HRESULT Ready_ShadowDepthStencilView(_uint iWinSizeX, _uint iWinSizeY);
 
 public:
@@ -42,6 +48,8 @@ private:
 	/* pRTV & pDSV */
 	ID3D11RenderTargetView*		m_pRenderTargetView = { nullptr };
 	ID3D11DepthStencilView*		m_pDepthStencilView = { nullptr };
+
+	ID3D11DepthStencilView*		m_pStaticShadowDepthStencilView = { nullptr };
 	ID3D11DepthStencilView*		m_pShadowDepthStencilView = { nullptr };
 
 	D3D11_VIEWPORT viewPortDesc[VIEWPORT_END];

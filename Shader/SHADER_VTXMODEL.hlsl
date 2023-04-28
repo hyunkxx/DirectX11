@@ -170,7 +170,7 @@ PS_OUT	PS_MAIN_MAPOBJECT(PS_IN In)
 		discard;
 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 
 	return Out;
 }
@@ -193,7 +193,7 @@ PS_OUT PS_MAIN_MAPOBJECT_NORMALMAP(PS_IN In)
 		discard;
 
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 
 	return Out;
 }

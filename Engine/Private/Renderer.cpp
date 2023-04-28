@@ -51,15 +51,15 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Outline", ViewPortDesc.Width, ViewPortDesc.Height,
-		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 0.f))))
 		return E_FAIL;
 
-	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_ShadowDepth", (_float)g_iShadowWidth, (_float)g_iShadowHeight,
-		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_StaticShadowDepth", (_float)g_iShadowWidth, (_float)g_iShadowHeight,
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.0f, 1.f))))
 		return E_FAIL;
 
-	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_LightPos", (_float)g_iShadowWidth, (_float)g_iShadowHeight,
-		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_DynamicShadowDepth", (_float)g_iShadowWidth, (_float)g_iShadowHeight,
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.0f, 1.f))))
 		return E_FAIL;
 
 	// µğÇ»Áî, ³ë¸», µª½º
@@ -73,9 +73,9 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	// ±×¸²ÀÚ ±íÀÌ
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_LightDepth", L"Target_ShadowDepth")))
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_StaticShadow", L"Target_StaticShadowDepth")))
 		return E_FAIL;
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_LightDepth", L"Target_LightPos")))
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_LightDepth", L"Target_DynamicShadowDepth")))
 		return E_FAIL;
 
 	// ½¦ÀÌµå, ½ºÆåÅ§·¯
@@ -87,7 +87,6 @@ HRESULT CRenderer::Initialize_Prototype()
 	// ¿Ü°û¼±
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_ToonShader", L"Target_Outline")))
 		return E_FAIL;
-
 
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pVIBuffer)
@@ -117,9 +116,9 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Outline"), 50.f, 550.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_ShadowDepth"), 50.f, 650, 100.f, 100.f)))
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_StaticShadowDepth"), 1100, 150.f, 300.f, 300.f)))
 		return E_FAIL;
-	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_LightPos"), 300.f, 150.f, 200.f, 200.f)))
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_DynamicShadowDepth"), 350, 350.f, 300.f, 300.f)))
 		return E_FAIL;
 #endif
 
@@ -140,7 +139,11 @@ HRESULT CRenderer::Add_RenderGroup(RENDER_GROUP eRenderGroup, CGameObject* pGame
 void CRenderer::Draw()
 {
 	Render_Priority();
-	Render_ShadowDepth();
+
+	if(!m_bBakeShadowed)
+		Render_StaticShadowDepth();
+
+	Render_DynamicShadowDepth();
 	Render_NonAlphaBlend();
 	Render_Lights();
 	Render_Outline();
@@ -155,9 +158,10 @@ void CRenderer::Draw()
 		return;
 	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
-
+	
 	m_pTargetManager->Render(TEXT("MRT_Deferred"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
+	m_pTargetManager->Render(TEXT("MRT_StaticShadow"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_LightDepth"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_ToonShader"), m_pShader, m_pVIBuffer);
 #endif
@@ -177,7 +181,31 @@ void CRenderer::Render_Priority()
 	m_RenderObject[RENDER_PRIORITY].clear();
 }
 
-void CRenderer::Render_ShadowDepth()
+void CRenderer::Render_StaticShadowDepth()
+{
+	if (nullptr == m_pTargetManager)
+		return;
+
+	m_bBakeShadowed = true;
+
+	if (FAILED(m_pTargetManager->StaticShadowBegin(m_pContext, L"MRT_StaticShadow")))
+		return;
+
+	for (auto& pGameObject : m_RenderObject[RENDER_STATIC_SHADOWDEPTH])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->DrawStaticShadow();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObject[RENDER_STATIC_SHADOWDEPTH].clear();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+}
+
+void CRenderer::Render_DynamicShadowDepth()
 {
 	if (nullptr == m_pTargetManager)
 		return;
@@ -185,15 +213,15 @@ void CRenderer::Render_ShadowDepth()
 	if (FAILED(m_pTargetManager->ShadowBegin(m_pContext, L"MRT_LightDepth")))
 		return;
 
-	for (auto& pGameObject : m_RenderObject[RENDER_SHADOWDEPTH])
+	for (auto& pGameObject : m_RenderObject[RENDER_DYNAMIC_SHADOWDEPTH])
 	{
 		if (nullptr != pGameObject)
-			pGameObject->RenderShadow();
+			pGameObject->DrawDynamicShadow();
 
 		Safe_Release(pGameObject);
 	}
 
-	m_RenderObject[RENDER_SHADOWDEPTH].clear();
+	m_RenderObject[RENDER_DYNAMIC_SHADOWDEPTH].clear();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
@@ -298,6 +326,8 @@ void CRenderer::Render_Blend()
 
 	if (FAILED(m_pShader->SetMatrix("g_LightViewMatrix", &pLighrManager->GetLightFloat4x4(CLightManager::LIGHT_MATRIX::LIGHT_VIEW))))
 		return;
+	if (FAILED(m_pShader->SetMatrix("g_BakeLightViewMatrix", &pLighrManager->GetBakeLightFloat4x4(CLightManager::LIGHT_MATRIX::LIGHT_VIEW))))
+		return;
 	if (FAILED(m_pShader->SetMatrix("g_LightProjMatrix", &pLighrManager->GetLightFloat4x4(CLightManager::LIGHT_MATRIX::LIGHT_PROJ))))
 		return;
 
@@ -323,11 +353,13 @@ void CRenderer::Render_Blend()
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_OutNormal"), "g_OutNormalTexture")))
 		return;
 
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Depth"), "g_DepthTexture")))
+ 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Depth"), "g_DepthTexture")))
 		return;
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_ShadowDepth"), "g_ShadowDepthTexture")))
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_StaticShadowDepth"), "g_StaticShadowDepthTexture")))
 		return;
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_LightPos"), "g_LightPosTexture")))
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_DynamicShadowDepth"), "g_ShadowDepthTexture")))
 		return;
 
 	m_pShader->Begin(3);

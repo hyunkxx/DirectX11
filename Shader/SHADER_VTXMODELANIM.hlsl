@@ -131,7 +131,6 @@ struct PS_OUT_OUTLINE
 struct PS_OUT_SHADOW
 {
 	float4 vShadowDepth : SV_TARGET0;
-	float4 vLightPos : SV_TARGET1;
 };
 
 PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
@@ -162,6 +161,7 @@ PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
 	PS_OUT_SHADOW Out = (PS_OUT_SHADOW)0;
 
 	Out.vShadowDepth = vector(In.vShadowDepth.z / In.vShadowDepth.w, In.vShadowDepth.w / g_Far, 0.f, 1.f);
+
 	return Out;
 }
 

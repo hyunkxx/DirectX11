@@ -21,7 +21,8 @@ public:
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render();
-	virtual HRESULT RenderShadow();
+	virtual HRESULT DrawStaticShadow();
+	virtual HRESULT DrawDynamicShadow();
 	virtual void RenderGUI();
 
 	//AlphaSort
@@ -36,7 +37,6 @@ protected:
 	_bool						m_IsDistinction_NormalTex = { false };
 
 protected:
-	HRESULT Add_Component(_uint iLevelIndex, _int iComponent, const _tchar* pComponentTag, class CComponent** ppOut, void* pArg = nullptr);
 	HRESULT Add_Component(_uint iLevelIndex, _int iComponent, _tchar* pComponentTag, class CComponent** ppOut, void* pArg = nullptr);
 
 public:

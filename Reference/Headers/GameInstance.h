@@ -73,13 +73,22 @@ public: //Timer_Manager
 public: //LightManager
 	HRESULT AddLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHT_DESC& LightDesc);
 	const LIGHT_DESC* GetLightDesc(_uint Index);
+
 	void SetLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatrix);
+	void SetBakeLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatrix);
+
 	_float4x4 GetLightFloat4x4(LIGHT_MATRIX eLightMatrix);
 	_float4x4 GetLightInverseFloat4x4(LIGHT_MATRIX eLightMatrix);
+
+	_float4x4 GetBakeLightFloat4x4(LIGHT_MATRIX eLightMatrix);
+	_float4x4 GetLBakeLightInverseFloat4x4(LIGHT_MATRIX eLightMatrix);
+
 	void SetLightPosition(_fvector vLightPos);
 	_float4 GetLightPosition() const;
 	void SetLightDirection(_fvector vLightDir);
 	_float4 GetLightDirection() const;
+
+	void InitalizeBakeLight();
 	void ShadowUpdate();
 
 public: //TargetManager

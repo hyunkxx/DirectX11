@@ -24,6 +24,9 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WIN_MODE 
 	if (FAILED(Ready_DepthStencilView(iWinSizeX, iWinSizeY)))
 		return E_FAIL;
 
+	if (FAILED(Ready_StaticShadowDepthStencilView(g_iShadowWidth, g_iShadowHeight)))
+		return E_FAIL;
+
 	if (FAILED(Ready_ShadowDepthStencilView(g_iShadowWidth, g_iShadowHeight)))
 		return E_FAIL;
 
@@ -70,7 +73,7 @@ HRESULT CGraphic_Device::Clear_DepthStencilView()
 	if (nullptr == m_pContext)
 		return E_FAIL;
 
-	m_pContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.f, 0);
+	m_pContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
 	return S_OK;
 }
@@ -80,7 +83,7 @@ HRESULT CGraphic_Device::Clear_ShadowDepthStencilView()
 	if (nullptr == m_pContext)
 		return E_FAIL;
 
-	m_pContext->ClearDepthStencilView(m_pShadowDepthStencilView, D3D11_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.f, 0);
+	m_pContext->ClearDepthStencilView(m_pShadowDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
 	return S_OK;
 }
@@ -190,6 +193,43 @@ HRESULT CGraphic_Device::Ready_DepthStencilView(_uint iWinSizeX, _uint iWinSizeY
 	return S_OK;
 }
 
+HRESULT CGraphic_Device::Ready_StaticShadowDepthStencilView(_uint iWinSizeX, _uint iWinSizeY)
+{
+	if (nullptr == m_pDevice)
+		return E_FAIL;
+
+	// 그림자용 뎁스
+	ID3D11Texture2D* pDepthStencilTexture = nullptr;
+	D3D11_TEXTURE2D_DESC TextureDesc;
+
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	TextureDesc.Width = iWinSizeX;
+	TextureDesc.Height = iWinSizeY;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
+
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	TextureDesc.CPUAccessFlags = 0;
+	TextureDesc.MiscFlags = 0;
+
+	/* RenderTarget ShaderResource ShadowDepthStencil */
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
+		return E_FAIL;
+
+	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pStaticShadowDepthStencilView)))
+		return E_FAIL;
+
+	Safe_Release(pDepthStencilTexture);
+
+	return S_OK;
+}
+
 HRESULT CGraphic_Device::Ready_ShadowDepthStencilView(_uint iWinSizeX, _uint iWinSizeY)
 {
 	if (nullptr == m_pDevice)
@@ -232,6 +272,7 @@ void CGraphic_Device::Free()
 	Safe_Release(m_pSwapChain);
 
 	Safe_Release(m_pDepthStencilView);
+	Safe_Release(m_pStaticShadowDepthStencilView);
 	Safe_Release(m_pShadowDepthStencilView);
 
 	Safe_Release(m_pRenderTargetView);

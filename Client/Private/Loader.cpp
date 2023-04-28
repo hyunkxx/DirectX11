@@ -132,7 +132,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 #pragma region MODEL_INSTANCE_TREE
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_0, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Trees/0/SM_Tree091_home_Lod1.smdl"), TEXT("../../Data/GamePlay/MapObject/Tree_0.data")))))
+		TEXT("../../Resource/Model/Static/Map/Object/Trees/0/SM_Com_Tre_02AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Tree_0.data")))))
 	{
 		MSG_BOX("Failed to Prototype In Loader : MODEL_INSTANCE");
 		return E_FAIL;

@@ -54,6 +54,7 @@ HRESULT CGameInstance::Engine_Initialize(const GRAPHIC_DESC& GraphicDesc, _uint 
 		return E_FAIL;
 
 	//½¦µµ¿ì µª½º ¼Â¾÷
+	m_pTargetManager->SetupStaticShadowDepthStencilView(m_pGraphic_Device->GetStaticShadowDepthStencilView());
 	m_pTargetManager->SetupShadowDepthStencilView(m_pGraphic_Device->GetShadowDepthStencilView());
 
 	if (FAILED(m_pInput_Device->Initialize_Input(GraphicDesc.hInstance, GraphicDesc.hWnd)))
@@ -373,6 +374,14 @@ void CGameInstance::SetLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatr
 	m_pLightManager->SetLightMatrix(LightMatrix, eLightMatrix);
 }
 
+void CGameInstance::SetBakeLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatrix)
+{
+	if (nullptr == m_pLightManager)
+		return;
+
+	m_pLightManager->SetBakeLightMatrix(LightMatrix, eLightMatrix);
+}
+
 _float4x4 CGameInstance::GetLightFloat4x4(LIGHT_MATRIX eLightMatrix)
 {
 	if (nullptr == m_pLightManager)
@@ -387,6 +396,22 @@ _float4x4 CGameInstance::GetLightInverseFloat4x4(LIGHT_MATRIX eLightMatrix)
 		return _float4x4();
 
 	return m_pLightManager->GetLightInverseFloat4x4(eLightMatrix);
+}
+
+_float4x4 CGameInstance::GetBakeLightFloat4x4(LIGHT_MATRIX eLightMatrix)
+{
+	if (nullptr == m_pLightManager)
+		return _float4x4();
+
+	return m_pLightManager->GetBakeLightFloat4x4(eLightMatrix);
+}
+
+_float4x4 CGameInstance::GetLBakeLightInverseFloat4x4(LIGHT_MATRIX eLightMatrix)
+{
+	if (nullptr == m_pLightManager)
+		return _float4x4();
+
+	return m_pLightManager->GetBakeLightInverseFloat4x4(eLightMatrix);
 }
 
 void CGameInstance::SetLightPosition(_fvector vLightPos)
@@ -419,6 +444,14 @@ _float4 CGameInstance::GetLightDirection() const
 		return _float4();
 
 	return m_pLightManager->GetLightDirection();
+}
+
+void CGameInstance::InitalizeBakeLight()
+{
+	if (nullptr == m_pLightManager)
+		return;
+
+	return m_pLightManager->InitializeBakeLight();
 }
 
 void CGameInstance::ShadowUpdate()

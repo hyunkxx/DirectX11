@@ -89,7 +89,7 @@ void CTestPlayer::Tick(_double TimeDelta)
 
 	Tick_State(TimeDelta);
 
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
 
@@ -192,8 +192,11 @@ HRESULT CTestPlayer::Render()
 	return S_OK;
 }
 
-HRESULT CTestPlayer::RenderShadow()
+HRESULT CTestPlayer::DrawDynamicShadow()
 {
+	//if (ComputeCameraLength() >= 40.f)
+	//	return E_FAIL;
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 

@@ -14,6 +14,13 @@ sampler LinearClampSampler = sampler_state{
 	AddressV = clamp;
 };
 
+sampler LinearBorderSampler = sampler_state{
+	filter = min_mag_mip_linear;
+	BorderColor = float4(1.f,1.f, 1.f,1.f);
+	AddressU = Border;
+	AddressV = Border;
+};
+
 sampler PointSampler = sampler_state{
 	filter = min_mag_mip_Point;
 	AddressU = wrap;
@@ -63,7 +70,6 @@ RasterizerState RS_ShadowDepth
 	FrontCounterClockwise = false;
 };
 
-
 /* For.DepthStencilState */
 DepthStencilState DS_Default
 {
@@ -83,6 +89,7 @@ DepthStencilState DS_ZTest_NoZWrite
 	DepthEnable = true;
 	DepthWriteMask = Zero;
 };
+
 
 /* For.BlendState */
 BlendState BS_Default

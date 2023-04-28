@@ -14,13 +14,18 @@ public:
 	virtual void Free() override;
 
 public:
+	void SetupStaticShadowDepthStencilView(ID3D11DepthStencilView* pShadowDepthStencil) {
+		m_pStaticShadowDepthStencilView = pShadowDepthStencil;
+	};
 	void SetupShadowDepthStencilView(ID3D11DepthStencilView* pShadowDepthStencil) {
 		m_pShadowDepthStencilView = pShadowDepthStencil;
 	};
+
 	HRESULT AddRenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pTargetTag, _float iWidth, _float iHeight, DXGI_FORMAT eFormat, _float4 vColor);
 	HRESULT AddMRT(const _tchar* pMRTTag, const _tchar* pTargetTag);
 
 	HRESULT Begin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
+	HRESULT StaticShadowBegin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
 	HRESULT ShadowBegin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
 	HRESULT End(ID3D11DeviceContext* pContext);
 
@@ -45,6 +50,7 @@ private:
 private:
 	ID3D11RenderTargetView* m_pBackBufferView = nullptr;
 	ID3D11DepthStencilView* m_pDepthStencilView = nullptr;
+	ID3D11DepthStencilView* m_pStaticShadowDepthStencilView = nullptr;
 	ID3D11DepthStencilView* m_pShadowDepthStencilView = nullptr;
 };
 

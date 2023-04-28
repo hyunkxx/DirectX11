@@ -1,9 +1,12 @@
 #include "SHADER_DEFINES.hpp"
 
 float4x4  g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_LightViewMatrix, g_LightProjMatrix;
+float4x4 g_BakeLightViewMatrix;
+
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 texture2D g_DepthTexture;
+texture2D g_StaticShadowDepthTexture;
 texture2D g_ShadowDepthTexture;
 texture2D g_ShadeTexture;
 texture2D g_SpecularTexture;
@@ -214,48 +217,49 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	vector vDepthInfo = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);
 	float fViewZ = vDepthInfo.y * g_Far;
 
-	vector vPosition;
-	vPosition.x = (In.vTexUV.x * 2.f - 1.f) * fViewZ;
-	vPosition.y = (In.vTexUV.y * -2.f + 1.f) * fViewZ;
-	vPosition.z = vDepthInfo.x * fViewZ;
-	vPosition.w = fViewZ;
+	vector vPosition, vBakePosition;
+	vBakePosition = vPosition.x = (In.vTexUV.x * 2.f - 1.f) * fViewZ;
+	vBakePosition = vPosition.y = (In.vTexUV.y * -2.f + 1.f) * fViewZ;
+	vBakePosition = vPosition.z = vDepthInfo.x * fViewZ;
+	vBakePosition = vPosition.w = fViewZ;
 
 	//해당 픽셀의 포지션을 월드까지 내림
-	vPosition = mul(vPosition, g_ProjMatrixInv);
-	vPosition = mul(vPosition, g_ViewMatrixInv);
+	vBakePosition = vPosition = mul(vPosition, g_ProjMatrixInv);
+	vBakePosition = vPosition = mul(vPosition, g_ViewMatrixInv);
 
 	vPosition = mul(vPosition, g_LightViewMatrix);
-	vector vUVPos = mul(vPosition, g_LightProjMatrix);
-	float2 vNewUV;
+	vBakePosition = mul(vBakePosition, g_BakeLightViewMatrix);
 
-	vNewUV.x = (vUVPos.x / vUVPos.w) * 0.5f + 0.5f;
-	vNewUV.y = (vUVPos.y / vUVPos.w) * -0.5f + 0.5f;
+	vector vLightUVPos = mul(vPosition, g_LightProjMatrix);
+	vector vBakeLightUVPos = mul(vBakePosition, g_LightProjMatrix);
+	float2 vLightUV, vBakeLightUV;
 
-	vector vShadowDepthInfo = g_ShadowDepthTexture.Sample(LinearSampler, vNewUV);
+	vLightUV.x = (vLightUVPos.x / vLightUVPos.w) * 0.5f + 0.5f;
+	vLightUV.y = (vLightUVPos.y / vLightUVPos.w) * -0.5f + 0.5f;
+
+	vBakeLightUV.x = (vBakeLightUVPos.x / vBakeLightUVPos.w) * 0.5f + 0.5f;
+	vBakeLightUV.y = (vBakeLightUVPos.y / vBakeLightUVPos.w) * -0.5f + 0.5f;
+
+	vector vShadowDepthInfo = g_ShadowDepthTexture.Sample(LinearBorderSampler, vLightUV);
+	vector vStaticShadowDepthInfo = g_StaticShadowDepthTexture.Sample(LinearBorderSampler, vBakeLightUV);
 
 	float4 vFinalColor = (vDiffuse * (vShade * 2.f));
 
 	//깊이 0.5 : 모델과 애님모델에는 그림자 안그림
-	if (vPosition.z - 0.01f > (vShadowDepthInfo.g * g_Far) && vDepthInfo.b != 0.5f)
+	if (vBakePosition.z - 0.01f > (vStaticShadowDepthInfo.g * g_Far) ||
+		vPosition.z - 0.01f > (vShadowDepthInfo.g * g_Far) &&
+		vDepthInfo.b != 0.5f)
 	{
 		Out.vColor = vFinalColor * vector(0.7f, 0.7f, 0.7f, 0.7f);
 	}
 	else
 	{
+		float4 vFinalColor = (vDiffuse * (vShade * 2.f));
+
 		if (vOutNormal.a == 1.f)
 		{
-			float2 texelSize = 1.0 / float2(1280, 720);
-			float result = 0.0;
-			for (int x = -1; x < 1; ++x)
-			{
-				for (int y = -1; y < 1; ++y)
-				{
-					float2 offset = float2(float(x), float(y)) * texelSize;
-					result += g_OutlineTexture.Sample(PointSampler, In.vTexUV + offset).r;
-				}
-			}
-
-			Out.vColor = float4(vFinalColor.xyz * (result / (2.0 * 2.0)), vFinalColor.z);
+			float vOutline = g_OutlineTexture.Sample(PointSampler, In.vTexUV).r;
+			Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z);
 		}
 		else
 			Out.vColor = vFinalColor;
@@ -266,6 +270,7 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 
 	return Out;
 }
+
 
 PS_OUT PS_Outline(PS_IN In)
 {
@@ -288,7 +293,7 @@ PS_OUT PS_Outline(PS_IN In)
 
 technique11 DefaultTechnique
 {
-	pass Debug
+	pass Debug_Pass0
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -301,7 +306,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-	pass Light_Directional
+	pass Light_Directional_Pass1
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -314,7 +319,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_DIRECTIONAL();
 	}
 
-	pass Light_Point
+	pass Light_Point_Pass2
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -327,7 +332,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_POINT();
 	}
 
-	pass Blend
+	pass Blend_Pass3
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -340,7 +345,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_BLEND();
 	}
 
-	pass Outline
+	pass Outline_Pass4
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);

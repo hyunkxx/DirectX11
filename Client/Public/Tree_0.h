@@ -23,9 +23,16 @@ private:
 public:
 	virtual HRESULT	Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
+	virtual void Start();
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render() override;
+	virtual HRESULT DrawStaticShadow() override;
+	virtual HRESULT DrawDynamicShadow() override;
+
+public:
+	HRESULT DrawDefault();
+	HRESULT DrawShadow();
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -41,6 +48,7 @@ private:
 private:
 	HRESULT Add_Components();
 	HRESULT	SetUp_ShaderResources();
+	HRESULT	SetUp_ShadowShaderResources();
 
 public:
 	static CTree_0* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

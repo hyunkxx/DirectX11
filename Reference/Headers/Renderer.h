@@ -7,7 +7,7 @@ BEGIN(Engine)
 class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
-	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_SHADOWDEPTH, RENDER_NONALPHA, RENDER_NONLIGHT, RENDER_ALPHABLEND, RENDER_UI, RENDER_END };
+	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_STATIC_SHADOWDEPTH, RENDER_DYNAMIC_SHADOWDEPTH, RENDER_NONALPHA, RENDER_NONLIGHT, RENDER_ALPHABLEND, RENDER_UI, RENDER_END };
 private:
 	explicit CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CRenderer() = default;
@@ -16,12 +16,14 @@ public:
 	virtual HRESULT Initialize_Prototype() override;
 
 public:
+	void ResetStaticShadowState() { m_bBakeShadowed = false; };
 	HRESULT Add_RenderGroup(RENDER_GROUP eRenderGroup, class CGameObject* pGameObject);
 	void Draw();
 
 private:
 	void Render_Priority();
-	void Render_ShadowDepth();
+	void Render_StaticShadowDepth();
+	void Render_DynamicShadowDepth();
 	void Render_NonAlphaBlend();
 	void Render_Lights();
 	void Render_Outline();
@@ -59,6 +61,9 @@ private:
 private:
 	class CLightManager* m_pLightManager = nullptr;
 	class CTargetManager* m_pTargetManager = nullptr;
+
+private:
+	_bool m_bBakeShadowed = false;
 
 };
 

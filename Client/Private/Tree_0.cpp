@@ -30,10 +30,17 @@ HRESULT CTree_0::Initialize(void * pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, POSITION_ZERO);
-
 	m_iShaderPassID = 0;
 
 	return S_OK;
+}
+
+void CTree_0::Start()
+{
+	__super::Start();
+
+	m_pRendererCom->ResetStaticShadowState();
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC_SHADOWDEPTH, this);
 }
 
 void CTree_0::Tick(_double TimeDelta)
@@ -53,7 +60,9 @@ void CTree_0::LateTick(_double TimeDelta)
 		m_pModelCom->Culling(m_pTransformCom->Get_WorldMatrixInverse(), 15.0f);
 
 	if (nullptr != m_pRendererCom)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+	}
 }
 
 HRESULT CTree_0::Render()
@@ -61,11 +70,34 @@ HRESULT CTree_0::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
+	if (FAILED(DrawDefault()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CTree_0::DrawStaticShadow()
+{
+	if (FAILED(__super::DrawStaticShadow()))
+		return E_FAIL;
+
+	if (FAILED(DrawShadow()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CTree_0::DrawDynamicShadow()
+{
+	return S_OK;
+}
+
+HRESULT CTree_0::DrawDefault()
+{
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
-
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
@@ -84,7 +116,21 @@ HRESULT CTree_0::Render()
 			m_iShaderPassID = 1;
 
 		m_pShaderCom->Begin(m_iShaderPassID);
+		m_pModelCom->Render(i);
+	}
 
+	return S_OK;
+}
+
+HRESULT CTree_0::DrawShadow()
+{
+ 	if (FAILED(SetUp_ShadowShaderResources()))
+		return E_FAIL;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pShaderCom->Begin(2);
 		m_pModelCom->Render(i);
 	}
 
@@ -146,6 +192,25 @@ HRESULT CTree_0::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CTree_0::SetUp_ShadowShaderResources()
+{
+	if (nullptr == m_pShaderCom)
+		return E_FAIL;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
+		return E_FAIL;
+
+	_float4x4 vvv = pGameInstance->GetBakeLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW);
+	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->GetBakeLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_PROJ))))
 		return E_FAIL;
 
 	return S_OK;
