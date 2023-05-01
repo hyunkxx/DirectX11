@@ -168,6 +168,8 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 #endif
 
+	m_pNoiseTexture = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/Mask/noise.jpg");
+
 	return S_OK;
 }
 
@@ -189,6 +191,8 @@ void CRenderer::Draw()
 	Render_NonAlphaBlend();
 
 	Ready_SSAO(L"Target_SSAO");
+	Target_Blur(L"Target_SSAO", 2);
+	Extraction(L"Target_SSAO", L"Target_BlurY");
 
 	Render_Lights();
 	Render_Outline();
@@ -304,6 +308,9 @@ void CRenderer::Render_Lights()
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Depth", "g_DepthTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Outline", "g_OutlineTexture")))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_SSAO"), "g_SSAOTexture")))
 		return;
 
 	m_pLightManager->Render(m_pShader, m_pVIBuffer);
@@ -584,6 +591,8 @@ void CRenderer::Ready_SSAO(const _tchar* pBindTargetTag)
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_SSAO, L"Target_Depth", "g_DepthTexture")))
 		return;
 
+	m_pNoiseTexture->Setup_ShaderResource(m_pShader_SSAO, "g_NoiseTexture");
+
 	if (FAILED(m_pShader_SSAO->Begin(0)))
 		return;
 	if (FAILED(m_pVIBuffer->Render()))
@@ -622,6 +631,7 @@ void CRenderer::Free()
 	Safe_Release(m_pShader_Extraction);
 	Safe_Release(m_pShader_SSAO);
 
+	Safe_Release(m_pNoiseTexture);
 	Safe_Release(m_pVIBuffer);
 	
 	Safe_Release(m_pLightManager);

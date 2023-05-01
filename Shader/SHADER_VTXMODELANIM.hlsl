@@ -153,6 +153,38 @@ VS_OUT VS_MAIN_VTF(VS_IN In)
 	return Out;
 }
 
+VS_OUT_SHADOW VS_MAIN_VTF_SHADOW(VS_IN In)
+{
+	VS_OUT_SHADOW Out = (VS_OUT_SHADOW)0;
+
+	matrix	matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+
+	matrix matX = LoadBoneMatrix(In.vBlendIndices.x);
+	matrix matY = LoadBoneMatrix(In.vBlendIndices.y);
+	matrix matZ = LoadBoneMatrix(In.vBlendIndices.z);
+	matrix matW = LoadBoneMatrix(In.vBlendIndices.w);
+
+	float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+
+	matrix	AnimMatrix =
+		matX * In.vBlendWeights.x +
+		matY * In.vBlendWeights.y +
+		matZ * In.vBlendWeights.z +
+		matW * fWeightW;
+
+	vector vPosition = mul(float4(In.vPosition, 1.f), AnimMatrix);
+	vector vNormal = mul(float4(In.vNormal, 0.f), AnimMatrix);
+
+	Out.vPosition = mul(vPosition, matWVP);
+	Out.vShadowDepth = Out.vPosition;
+
+	return Out;
+}
+
 
 struct PS_IN
 {
@@ -245,7 +277,7 @@ PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
 
 technique11 DefaultTechnique
 {
-	pass Model
+	pass Default_0
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -258,20 +290,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-	pass Shadow
-	{
-		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
-		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-
-		VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
-		GeometryShader = NULL;
-		HullShader = NULL;
-		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
-	}
-
-	pass Outline
+	pass Outline_1
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -284,7 +303,20 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Outline();
 	}
 
-	pass Model_VTF
+	pass Shadow_2
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
+	}
+
+	pass VTF_Default_3
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -297,4 +329,29 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
+	pass VTF_OutLine_4
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_VTF();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Outline();
+	}
+
+	pass VTF_Shadow_5
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_VTF_SHADOW();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
+	}
 }

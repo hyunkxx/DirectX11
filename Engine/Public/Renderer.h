@@ -38,6 +38,18 @@ private:
 	void Ready_SSAO(const _tchar* pBindTargetTag);
 
 public:
+	typedef struct tagSSAOSetting
+	{
+		float fRadius;
+		float fFalloff;
+		float fStrength;
+		float fTotStrength;
+		float fInvSamples;
+	}SSAO_SETTING;
+
+	void SetSSAO(const SSAO_SETTING& tagSetting) { m_eSSAO = tagSetting; };
+
+public:
 	static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
@@ -65,9 +77,14 @@ private:
 
 	_float4x4 m_FullScreenWorldMatrix, m_ViewMatrix, m_ProjMatrix;
 
+	class CTexture* m_pNoiseTexture = nullptr;
+
 private:
 	class CLightManager* m_pLightManager = nullptr;
 	class CTargetManager* m_pTargetManager = nullptr;
+
+private:
+	SSAO_SETTING m_eSSAO;
 
 };
 

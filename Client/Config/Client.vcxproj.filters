@@ -169,9 +169,6 @@
     <ClInclude Include="..\Public\Client_ModelEnum.h">
       <Filter>config\header</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\TestPlayer.h">
-      <Filter>src\02. GameObjects\99. TestModel\TestPlayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Level_GamePlay.h">
       <Filter>src\01. Levels\02. GamePlay</Filter>
     </ClInclude>
@@ -183,6 +180,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Tree_0.h">
       <Filter>src\02. GameObjects\04. MapObject\00.Tree\0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerGirl.h">
+      <Filter>src\02. GameObjects\03. Character</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\GameMode.h">
+      <Filter>src\00. Application\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -243,9 +246,6 @@
     <ClCompile Include="..\ImGui\imgui_impl_win32.cpp">
       <Filter>config\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\TestPlayer.cpp">
-      <Filter>src\02. GameObjects\99. TestModel\TestPlayer</Filter>
-    </ClCompile>
     <ClCompile Include="Floor.cpp">
       <Filter>src\02. GameObjects\00. Terrain</Filter>
     </ClCompile>
@@ -257,6 +257,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tree_0.cpp">
       <Filter>src\02. GameObjects\04. MapObject\00.Tree\0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerGirl.cpp">
+      <Filter>src\02. GameObjects\03. Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\GameMode.cpp">
+      <Filter>src\00. Application\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

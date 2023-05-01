@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Character.h"
 
+#include "GameMode.h"
+
 const char CCharacter::szSharedStateTag[SS_END][MAX_PATH] =
 {
 	"SS_WALK_F",
@@ -179,6 +181,20 @@ void CCharacter::Tick(_double TimeDelta)
 }
 
 void CCharacter::LateTick(_double TimeDelta)
+{
+}
+
+HRESULT CCharacter::Render()
+{
+	return S_OK;
+}
+
+HRESULT CCharacter::RenderShadow()
+{
+	return S_OK;
+}
+
+void CCharacter::RenderGUI()
 {
 }
 

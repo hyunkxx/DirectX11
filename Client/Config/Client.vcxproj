@@ -199,6 +199,7 @@
     <ClInclude Include="..\Public\Client_ShaderEnum.h" />
     <ClInclude Include="..\Public\Client_TextureEnum.h" />
     <ClInclude Include="..\public\DynamicCamera.h" />
+    <ClInclude Include="..\public\GameMode.h" />
     <ClInclude Include="..\Public\GUIManager.h" />
     <ClInclude Include="..\public\InGameLoader.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
@@ -248,6 +249,7 @@
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\DynamicCamera.cpp" />
+    <ClCompile Include="..\private\GameMode.cpp" />
     <ClCompile Include="..\Private\GUIManager.cpp" />
     <ClCompile Include="..\private\InGameLoader.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />

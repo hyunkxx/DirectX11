@@ -1,6 +1,7 @@
 #pragma once
 #include "Client_Defines.h"
 #include "Character.h"
+#include "Renderer.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -51,7 +52,9 @@ public:
 	virtual void Start();
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
-	virtual HRESULT Render();
+	virtual HRESULT Render() override;
+	virtual HRESULT RenderShadow() override;
+	virtual void RenderGUI() override;
 
 	CModel_Anim*	Get_Action(_uint iType)
 	{
@@ -110,6 +113,7 @@ private:
 	void Init_AnimSystem();
 
 	HRESULT	SetUp_ShaderResources();
+	HRESULT Setup_ShadowShaderResource();
 
 public:
 	static CPlayerGirl* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

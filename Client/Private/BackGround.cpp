@@ -70,9 +70,6 @@ HRESULT CBackGround::Render()
 
 void CBackGround::RenderGUI()
 {
-	ImGui::Begin("BackGround ID");
-	ImGui::DragInt("ID", &m_iObjectID);
-	ImGui::End();
 }
 
 HRESULT CBackGround::Add_Components()

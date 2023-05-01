@@ -47,7 +47,6 @@ HRESULT CPlayerGirl::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
@@ -58,8 +57,8 @@ HRESULT CPlayerGirl::Initialize(void * pArg)
 
 	m_pActionCom[ANIMSET_BASE]->Set_RootBone(TEXT("Root"));
 
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-	m_pMainTransform->SetRotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 0.f, 0.f, 1.f));
+	//m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
 
 	SetUp_Pose();
 	SetUp_Animation();
@@ -113,12 +112,6 @@ void CPlayerGirl::Tick(_double TimeDelta)
 		m_tState[m_iStateID].bLoop = !m_tState[m_iStateID].bLoop;
 	}
 
-	if (pGame->InputKey(DIK_Q) == KEY_STATE::TAP)
-	{
-		m_pMainTransform->SetRotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
-	}
-
-
 	if (pGame->InputKey(DIK_R) == KEY_STATE::TAP)
 	{
 		m_TrackPos[ANIMSET_BASE] = 0.f;
@@ -133,13 +126,14 @@ void CPlayerGirl::Tick(_double TimeDelta)
 	}
 
 	Tick_State(TimeDelta);
-
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
 
 void CPlayerGirl::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
+
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 }
 
 HRESULT CPlayerGirl::Render()
@@ -148,6 +142,37 @@ HRESULT CPlayerGirl::Render()
 		return E_FAIL;
 
 	if (FAILED(SetUp_ShaderResources()))
+		return E_FAIL;
+
+	int iPass = 4;
+	if (10.f <= ComputeCameraLength())
+		iPass = 3;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
+			return E_FAIL;
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(iPass);
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+HRESULT CPlayerGirl::RenderShadow()
+{
+	if (FAILED(__super::RenderShadow()))
+		return E_FAIL;
+
+	if (FAILED(Setup_ShadowShaderResource()))
 		return E_FAIL;
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
@@ -162,11 +187,15 @@ HRESULT CPlayerGirl::Render()
 		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(3);
+		m_pShaderCom->Begin(5);
 		m_pModelCom->Render(i);
 	}
 
 	return S_OK;
+}
+
+void CPlayerGirl::RenderGUI()
+{
 }
 
 void CPlayerGirl::SetUp_Animation(_uint iType)
@@ -237,9 +266,7 @@ HRESULT CPlayerGirl::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON_ACTION,
 		TEXT("Com_AnimSet_Ribbon_Action"), (CComponent**)&m_pActionCom[ANIMSET_RIBBON])))
 		return E_FAIL;
-
-
-
+	
 	return S_OK;
 }
 
@@ -268,6 +295,24 @@ HRESULT CPlayerGirl::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CPlayerGirl::Setup_ShadowShaderResource()
+{
+	if (nullptr == m_pShaderCom)
+		return E_FAIL;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_PROJ))))
 		return E_FAIL;
 
 	return S_OK;

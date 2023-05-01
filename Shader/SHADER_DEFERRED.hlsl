@@ -9,6 +9,8 @@ texture2D g_DepthTexture;
 texture2D g_ShadowDepthTexture;
 texture2D g_ShadowTexture;
 
+texture2D g_SSAOTexture;
+
 texture2D g_ShadeTexture;
 texture2D g_SpecularTexture;
 texture2D g_LightPosTexture;
@@ -112,7 +114,8 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
-		   
+	vector vSSAO = g_SSAOTexture.Sample(LinearSampler, In.vTexUV);
+
 	vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 
 	//Toon
@@ -124,7 +127,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 
 	vector vShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)));
 
-	Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient));
+	Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient) * vSSAO.r);
 	Out.vShade.a = 1.f;
 
 	vector			vWorldPos;
@@ -205,7 +208,6 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * fSpecular * fAtt;
 	Out.vSpecular.a = 0.f;
 
-
 	return Out;
 }
 
@@ -220,8 +222,9 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
 	vector vOutNormal = g_OutNormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vShadow = g_ShadowTexture.Sample(LinearSampler, In.vTexUV);
-
-	float4 vFinalColor = (vDiffuse * (vShade * 2.f));
+	
+	//1.6~1.75น่
+	float4 vFinalColor = (vDiffuse * (vShade * 1.7f));
 	if (vOutNormal.a == 1.f)
 	{
 		float vOutline = g_OutlineTexture.Sample(PointSampler, In.vTexUV).r;

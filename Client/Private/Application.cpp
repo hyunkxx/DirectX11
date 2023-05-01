@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Application.h"
 
+#include "GameMode.h"
 #include "AppManager.h"
 #include "GUIManager.h"
 
@@ -11,6 +12,7 @@
 #include "DynamicCamera.h"
 
 #include "Character.h"
+#include "BackGround.h"
 
 CApplication::CApplication()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -82,7 +84,7 @@ HRESULT CApplication::Render()
 	m_pContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
 #endif
 
-	m_pGameInstance->Clear_RenderTargetView(_float4(0.f, 0.f, 1.f, 1.f));
+	m_pGameInstance->Clear_RenderTargetView(_float4(0.3f, 0.3f, 0.3f, 1.f));
 	m_pGameInstance->Clear_DepthStencilView();
 
 	m_pRenderer->Draw();
@@ -196,6 +198,9 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 
 HRESULT CApplication::Ready_Prototype_Static_GameObject()
 {
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::BACKGROUND, CBackGround::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::DYNAMIC_CAMERA,
 		CDynamicCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -206,6 +211,7 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 HRESULT CApplication::InitializeManager()
 {
 	CAppManager::GetInstance();
+	CGameMode::GetInstance();
 
 	return S_OK;
 }
@@ -217,6 +223,7 @@ void CApplication::DestroyManager()
 #endif
 
 	CAppManager::DestroyInstance();
+	CGameMode::DestroyInstance();
 }
 
 CApplication* CApplication::Create()

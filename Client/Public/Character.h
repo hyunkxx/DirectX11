@@ -239,6 +239,9 @@ public:
 	virtual void Start();
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
+	virtual HRESULT Render();
+	virtual HRESULT RenderShadow();
+	virtual void RenderGUI();
 
 	static const char szSharedStateTag[SS_END][MAX_PATH];
 

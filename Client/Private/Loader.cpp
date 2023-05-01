@@ -2,7 +2,6 @@
 #include "..\Public\Loader.h"
 #include "GameInstance.h"
 
-#include "BackGround.h"
 #include "Terrain.h"
 #include "Floor.h"
 
@@ -77,10 +76,6 @@ HRESULT CLoader::Load_Level_Logo()
 #pragma region GAMEOBJECTS
 	
 	m_szLoadingStateText = L"객체 원형을 준비중";
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::BACKGROUND, CBackGround::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	
 
 #pragma endregion
 
