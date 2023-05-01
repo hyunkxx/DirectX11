@@ -208,6 +208,7 @@
     <ClInclude Include="..\Public\Model.h" />
     <ClInclude Include="..\Public\Model_Anim.h" />
     <ClInclude Include="..\Public\Model_Instance.h" />
+    <ClInclude Include="..\public\Model_VTF.h" />
     <ClInclude Include="..\Public\OBBCollider.h" />
     <ClInclude Include="..\public\Object_Manager.h" />
     <ClInclude Include="..\public\PipeLine.h" />
@@ -257,6 +258,7 @@
     <ClCompile Include="..\Private\Model.cpp" />
     <ClCompile Include="..\Private\Model_Anim.cpp" />
     <ClCompile Include="..\Private\Model_Instance.cpp" />
+    <ClCompile Include="..\private\Model_VTF.cpp" />
     <ClCompile Include="..\Private\OBBCollider.cpp" />
     <ClCompile Include="..\private\Object_Manager.cpp" />
     <ClCompile Include="..\private\PipeLine.cpp" />

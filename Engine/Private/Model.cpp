@@ -13,7 +13,7 @@ CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 CModel::CModel(const CModel & rhs)
 	: CComponent(rhs)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
-	, m_Meshes(rhs.m_Meshes) 
+	, m_Meshes(rhs.m_Meshes)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
 	, m_ModelMaterials(rhs.m_ModelMaterials)
 	, m_LocalMatrix(rhs.m_LocalMatrix)
@@ -112,7 +112,7 @@ HRESULT CModel::Initialize_Prototype(const _tchar* pModelFilePath)
 
 	if (FAILED(Ready_Materials(&Model, pModelFilePath)))
 		return E_FAIL;
-	
+
 	for (_uint i = 0; i < Model.s_iNumMeshes; ++i)
 	{
 		Safe_Delete_Array(Model.s_pMeshes[i].s_pVertices);
@@ -138,7 +138,7 @@ HRESULT CModel::SetUp_ShaderMaterialResource(CShader * pShaderCom, const char * 
 
 	if (nullptr == m_ModelMaterials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType])
 		return S_OK;
-	
+
 	return m_ModelMaterials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType]->Setup_ShaderResource(pShaderCom, pConstantName);
 }
 
@@ -172,7 +172,7 @@ HRESULT CModel::Ready_Meshes(SMODELINFO* pModel)
 
 		m_Meshes.push_back(pMesh);
 	}
-	
+
 	return S_OK;
 }
 
@@ -205,19 +205,19 @@ HRESULT CModel::Ready_Materials(SMODELINFO* pModel, const _tchar * pModelFilePat
 			{
 				continue;
 			}
-			
+
 			_tchar szFullPath[MAX_PATH] = TEXT("");
 			lstrcpy(szFullPath, szCommonDir);
 			lstrcat(szFullPath, szNameDotExt);
-			
+
 			ModelMaterial.pMaterialTexture[j] = CTexture::Create(m_pDevice, m_pContext, szFullPath);
-			
+
 			if (nullptr == ModelMaterial.pMaterialTexture[j])
 			{
 				int a = 10;
 				return E_FAIL;
 			}
-				
+
 		}
 		m_ModelMaterials.push_back(ModelMaterial);
 	}

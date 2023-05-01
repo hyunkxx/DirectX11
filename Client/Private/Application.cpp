@@ -200,10 +200,6 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 		CDynamicCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::CHARACTER,
-		CCharacter::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	return S_OK;
 }
 

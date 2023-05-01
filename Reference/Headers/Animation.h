@@ -5,7 +5,7 @@
 
 BEGIN(Engine)
 
-class CAnimation final : public CBase
+class ENGINE_DLL CAnimation final : public CBase
 {
 private:
 	CAnimation();
@@ -15,7 +15,28 @@ public:
 	HRESULT Initialize(ANIMINFO* pAnimInfo, class CModel_Anim* pModel);
 	void Play_Animation(_double TimeDelta, CAnimController::ANIMSTATE& tState, CModel_Anim* pModel, _bool bContinue = false);
 
+	const _tchar* Get_Name()
+	{
+		return m_szName;
+	}
+
+	_double Get_Duration()
+	{
+		return m_Duration;
+	}
+
+	_double Get_TicksPerSecond()
+	{
+		return m_TicksPerSecond;
+	}
+
+	void Set_TicksPerSecond(_double TicksPerSecond)
+	{
+		m_TicksPerSecond = TicksPerSecond;
+	}
+
 	const _uint Get_NumChannels() const { return m_iNumChannels; }
+	vector<class CChannel*>& Get_Channels();
 
 private:
 	_tchar	m_szName[MAX_PATH] = TEXT("");
@@ -25,7 +46,7 @@ private:
 	//
 	//_double m_TimeAcc = { 0.0 };
 	//_bool	m_isFinished = { false };
-	
+
 
 private:
 	_uint	m_iNumChannels = { 0 };

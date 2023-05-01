@@ -27,16 +27,17 @@ CModel_Anim::CModel_Anim(const CModel_Anim & rhs)
 	for (auto& pBone : m_Bones)
 	{
 		const CBone* pParentBone = pBone->Get_ParentBone();
-		if(nullptr != pParentBone)
+		if (nullptr != pParentBone)
 			pBone->Set_ParentBone(Get_BonePtr(pParentBone->Get_Name()));
 	}
-		
+
 	for (auto& pAnim : m_Animations)
 		Safe_AddRef(pAnim);
 }
 
 CBone * CModel_Anim::Get_BonePtr(const _tchar * pBoneName)
-{	auto& iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone) 
+{
+	auto& iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)
 	{
 		return !lstrcmp(pBone->Get_Name(), pBoneName);
 	});
@@ -60,7 +61,7 @@ _uint CModel_Anim::Get_BoneIndex(const _tchar * pBoneName)
 	return UINT_MAX;
 }
 
-const _bool CModel_Anim::Get_AnimInterpolating() const 
+const _bool CModel_Anim::Get_AnimInterpolating() const
 {
 	return m_pAnimController->Get_AnimInterpolating();
 }
@@ -69,6 +70,16 @@ void CModel_Anim::Set_OffsetZero()
 {
 	for (auto& pBone : m_Bones)
 		pBone->Set_OffsetMatrix(XMMatrixIdentity());
+}
+
+void CModel_Anim::Set_TrackPos(_float fTrackPos)
+{
+	m_pAnimController->Set_TrackPos(fTrackPos);
+}
+
+vector<class CAnimation*>& CModel_Anim::Get_Animations()
+{
+	return m_Animations;
 }
 
 HRESULT CModel_Anim::Initialize_Prototype(const _tchar * pModelFilePath)
@@ -98,7 +109,7 @@ HRESULT CModel_Anim::Initialize_Prototype(const _tchar * pModelFilePath)
 	ZeroMemory(Model.s_pRootBone, sizeof(BONEINFO) * Model.s_iNumBones);
 
 	ReadFile(hFile, Model.s_pRootBone, sizeof(BONEINFO) * Model.s_iNumBones, &dwByte, nullptr);
-	
+
 	ReadFile(hFile, &Model.s_iNumMeshes, sizeof(_uint), &dwByte, nullptr);
 
 	Model.s_pMeshes = new DMESHINFO[Model.s_iNumMeshes];
@@ -135,7 +146,7 @@ HRESULT CModel_Anim::Initialize_Prototype(const _tchar * pModelFilePath)
 	}
 
 	ReadFile(hFile, &Model.s_iNumMaterials, sizeof(_uint), &dwByte, nullptr);
-	
+
 	Model.s_pMtrls = new MTRLINFO[Model.s_iNumMaterials];
 	ZeroMemory(Model.s_pMtrls, sizeof(MTRLINFO) * Model.s_iNumMaterials);
 
@@ -183,7 +194,7 @@ HRESULT CModel_Anim::Initialize_Prototype(const _tchar * pModelFilePath)
 	//MSG_BOX("Load Succeed");
 
 
- 	if (FAILED(Ready_Bones(&Model)))
+	if (FAILED(Ready_Bones(&Model)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Meshes(&Model)))
@@ -247,8 +258,6 @@ HRESULT CModel_Anim::SetUp_BoneMatrices(CShader * pShaderCom, const char * pCons
 	m_Meshes[iMeshIndex]->Get_BoneMatrices(MeshBoneMatrices, this);
 
 	return  pShaderCom->Set_Matrices(pConstantName, MeshBoneMatrices, 256);
-
-	return S_OK;
 }
 
 HRESULT CModel_Anim::SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate, _bool bFootAltitude)
@@ -265,19 +274,55 @@ _float3 CModel_Anim::Play_Animation(_double TimeDelta, _double* pFrameAccOut, _b
 {
 	_float3 vMove = m_pAnimController->Play_Animation(TimeDelta, this, pFrameAccOut, pFinishedOut, bContinue);
 
+	return vMove;
+}
+
+void CModel_Anim::Invalidate_CombinedMatrices()
+{
 	for (auto& pBone : m_Bones)
 	{
 		pBone->Invalidate_CombinedMatrix();
 	}
-
-	return vMove;
 }
 
-void CModel_Anim::Follow_Animation()
+void CModel_Anim::Reset_Pose()
 {
 	for (auto& pBone : m_Bones)
 	{
-		pBone->Copy_CombinedMatrix();
+		pBone->Reset_Pose();
+	}
+}
+
+void CModel_Anim::Update_TargetBones_Pose()
+{
+	for (auto& pBone : m_Bones)
+	{
+		pBone->Update_TargetBone_Pose();
+	}
+}
+
+void CModel_Anim::Update_TargetBones()
+{
+	for (auto& pBone : m_Bones)
+	{
+		pBone->Update_TargetBone();
+	}
+}
+
+
+void CModel_Anim::Ribbon_TargetBones_Pose()
+{
+	for (auto& pBone : m_Bones)
+	{
+		pBone->Ribbon_TargetBone_Pose();
+	}
+}
+
+void CModel_Anim::Ribbon_TargetBones()
+{
+	for (auto& pBone : m_Bones)
+	{
+		pBone->Ribbon_TargetBone();
 	}
 }
 
@@ -373,7 +418,7 @@ HRESULT CModel_Anim::Ready_Animations(DMODELINFO * pModel)
 
 	for (_uint i = 0; i < m_iNumAnimations; ++i)
 	{
-		CAnimation* pAnim = CAnimation::Create(&pModel->s_pAnimations[i],this);
+		CAnimation* pAnim = CAnimation::Create(&pModel->s_pAnimations[i], this);
 		if (nullptr == pAnim)
 			return E_FAIL;
 

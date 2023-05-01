@@ -5,9 +5,9 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CModel_Anim final : public CModel
+class ENGINE_DLL CModel_Anim : public CModel
 {
-private:
+protected:
 	CModel_Anim(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CModel_Anim(const CModel_Anim& rhs);
 	virtual ~CModel_Anim() = default;
@@ -70,28 +70,16 @@ public:
 
 	void	Set_OffsetZero();
 
-	void Register_SkelModel(vector<CBone*> SkelModelBones)
-	{
-		_uint SkipID = 0;
+	void Set_TrackPos(_float fTrackPos);
 
-		for(_uint i = 0; i < SkelModelBones.size(); ++i)
-		{
-			//_uint j = SkipID;
-			for (_uint j = 0; j < m_Bones.size(); ++j)
-			{
-				if (true == m_Bones[j]->Register_SkelBone(SkelModelBones[i]))
-				{
-					//SkipID = j;
-					break;
-				}
-			}
-		}
-	}
 
 	_uint	Get_AnimCount()
 	{
 		return (_uint)m_Animations.size();
 	}
+
+	vector<class CAnimation*>& Get_Animations();
+
 
 public:
 	virtual HRESULT Initialize_Prototype(const _tchar* pModelFilePath);
@@ -102,24 +90,30 @@ public:
 
 	HRESULT SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate, _bool bFootAltitude); /* 어떤 애니메이션을 구동할거야. */
 	_float3 Play_Animation(_double TimeDelta, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr, _bool bContinue = false); /* 애니메이션 재생한다.(모든 뼈들의 Combined행렬을 셋팅한다) */
-	void	Follow_Animation();
+	void	Invalidate_CombinedMatrices();
 
-private:
+	void	Reset_Pose();
+	void	Update_TargetBones_Pose();
+	void	Update_TargetBones();
+	void	Ribbon_TargetBones_Pose();
+	void	Ribbon_TargetBones();
+
+protected:
 	_uint					m_iNumBones = { 0 };
 	vector<class CBone*>	m_Bones;
 	CBone*					m_pRootBone = { nullptr };
 	CBone*					m_pShotBone = { nullptr };
 	CBone*					m_pTopBone = { nullptr };
-	CBone*					m_pRightBottom= { nullptr };
+	CBone*					m_pRightBottom = { nullptr };
 	CBone*					m_pLeftBottom = { nullptr };
 
 
-private:
+protected:
 	class CAnimController*		m_pAnimController = { nullptr };
 	_uint						m_iNumAnimations = { 0 };
 	vector<class CAnimation*>	m_Animations;
 
-private:
+protected:
 	HRESULT	Ready_Bones(DMODELINFO* pModel);
 	HRESULT Ready_Meshes(DMODELINFO* pModel);
 	HRESULT Ready_Materials(DMODELINFO* pModel, const _tchar* pModelFilePath);

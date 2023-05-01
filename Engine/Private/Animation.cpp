@@ -50,6 +50,11 @@ void CAnimation::Play_Animation(_double TimeDelta, CAnimController::ANIMSTATE& t
 	}
 }
 
+vector<class CChannel*>& CAnimation::Get_Channels()
+{
+	return m_Channels;
+}
+
 CAnimation * CAnimation::Create(ANIMINFO * pAnimInfo, CModel_Anim * pModel)
 {
 	CAnimation* pInstance = new CAnimation();

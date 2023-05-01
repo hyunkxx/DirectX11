@@ -11,7 +11,10 @@
 
 #include "Model.h"
 #include "Model_Anim.h"
+#include "Model_VTF.h"
 #include "Model_Instance.h"
+#include "Animation.h"
+#include "Channel.h"
 
 #include "Collider.h"
 #include "SphereCollider.h"

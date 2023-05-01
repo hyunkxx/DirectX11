@@ -206,7 +206,7 @@
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\Terrain.h" />
-    <ClInclude Include="..\public\TestPlayer.h" />
+    <ClInclude Include="..\public\PlayerGirl.h" />
     <ClInclude Include="..\Public\Tree_0.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Floor.h" />
@@ -255,7 +255,7 @@
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
-    <ClCompile Include="..\private\TestPlayer.cpp" />
+    <ClCompile Include="..\private\PlayerGirl.cpp" />
     <ClCompile Include="..\Private\Tree_0.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Floor.cpp" />

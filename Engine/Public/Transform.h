@@ -44,6 +44,7 @@ public:
 	void MoveBackward(_double TimeDelta);
 	void MoveRight(_double TimeDelta);
 	void MoveLeft(_double TimeDelta);
+	void Move_Anim(_float3* vMove);
 
 	void SetRotationXYZ(_float3 fRadian); // 모든각도 회전
 	void SetRotation(_fvector vAxis, _float fRadian); //특정 각도로 회전

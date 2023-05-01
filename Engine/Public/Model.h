@@ -26,7 +26,7 @@ public:
 
 	void	Set_HangBone(class CBone* pBone);
 	CBone*	Get_HangBone() { return m_pHangBone; }
-	
+
 
 protected:
 	_uint					m_iNumMeshes = { 0 };

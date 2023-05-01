@@ -23,6 +23,7 @@ public:
 	}
 
 	void Get_BoneMatrices(_float4x4* pMeshBoneMatrices, CModel_Anim* Model);
+	void Get_BoneMatrices_VTF(_float4x4* pMeshBoneMatrices, CModel_Anim* Model);
 
 private:
 	_tchar	m_szName[MAX_PATH] = TEXT("");
@@ -30,7 +31,10 @@ private:
 	_uint	m_iNumBones = { 0 };
 
 private:
-	vector<_uint>	m_BoneIndices;
+	//vector<_uint>	m_BoneIndices;
+
+	_uint*	m_pBoneIndices = { nullptr };
+
 
 private:
 	HRESULT Ready_VIBuffer_For_NonAnim(SMESHINFO* pMeshInfo);

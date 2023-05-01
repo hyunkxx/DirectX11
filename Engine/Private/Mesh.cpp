@@ -19,23 +19,23 @@ HRESULT CMesh::Initialize_Prototype(void* pMeshInfo, CModel_Anim* pModel)
 	// m_iVerticesCount = pAIMesh->mNumVertices;
 	// m_iPrimitiveCount = pAIMesh->mNumFaces;
 	// m_iStride = sizeof(VTXMODEL);
-	
+
 	m_iFaceIndexSize = sizeof(FACEINDICES32);
 	m_iFaceIndexCount = 3;
 	m_iVertexBuffersCount = 1;
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	
+
 	HRESULT hr;
 
 	if (nullptr == pModel)
 		hr = Ready_VIBuffer_For_NonAnim(reinterpret_cast<SMESHINFO*>(pMeshInfo));
 	else
 		hr = Ready_VIBuffer_For_Anim(reinterpret_cast<DMESHINFO*>(pMeshInfo), pModel);
-	
+
 	if (FAILED(hr))
 		return E_FAIL;
-	
+
 
 	return S_OK;
 }
@@ -49,12 +49,26 @@ void CMesh::Get_BoneMatrices(_float4x4 * pMeshBoneMatrices, CModel_Anim* Model)
 {
 	_uint iIndex = 0;
 
-	for (auto& BoneID : m_BoneIndices)
+	for (_uint i = 0; i < m_iNumBones; ++i)
 	{
-		CBone* pBone = Model->Get_BonePtr(BoneID);
+		CBone* pBone = Model->Get_BonePtr(m_pBoneIndices[i]);
 
-		XMStoreFloat4x4(&pMeshBoneMatrices[iIndex++], XMLoadFloat4x4(&pBone->Get_OffsetMatrix()) * 
-			XMLoadFloat4x4(&pBone->Get_CombinedTransfromationMatrix()) * 
+		XMStoreFloat4x4(&pMeshBoneMatrices[iIndex++], XMLoadFloat4x4(&pBone->Get_OffsetMatrix()) *
+			XMLoadFloat4x4(&pBone->Get_CombinedTransfromationMatrix()) *
+			Model->Get_LocalMatrix());
+	}
+}
+
+void CMesh::Get_BoneMatrices_VTF(_float4x4 * pMeshBoneMatrices, CModel_Anim * Model)
+{
+	_uint iIndex = 0;
+
+	for (_uint i = 0; i < m_iNumBones; ++i)
+	{
+		CBone* pBone = Model->Get_BonePtr(m_pBoneIndices[i]);
+
+		XMStoreFloat4x4(&pMeshBoneMatrices[iIndex++], XMLoadFloat4x4(&pBone->Get_OffsetMatrix()) *
+			XMLoadFloat4x4(&pBone->Get_CombinedTransfromationMatrix()) *
 			Model->Get_LocalMatrix());
 	}
 }
@@ -184,30 +198,24 @@ HRESULT CMesh::Ready_VIBuffer_For_Anim(DMESHINFO * pMeshInfo, CModel_Anim* pMode
 
 	m_iNumBones = pMeshInfo->s_iNumBones;
 
+
+
 	if (0 < m_iNumBones)
 	{
+		m_pBoneIndices = new _uint[m_iNumBones];
+
+
 		for (_uint i = 0; i < m_iNumBones; ++i)
 		{
 			_uint iBoneIndex = pModel->Get_BoneIndex(pMeshInfo->s_pszBoneNameArray[i]);
-			
+
 			if (UINT_MAX == iBoneIndex)
 				return E_FAIL;
 
-			m_BoneIndices.push_back(iBoneIndex);
+			m_pBoneIndices[i] = iBoneIndex;
+
 		}
 	}
-	else if (0 == m_iNumBones)
-	{
-		m_iNumBones = 1;
-
-		_uint iBoneIndex = pModel->Get_BoneIndex(m_szName);
-
-		if (UINT_MAX == iBoneIndex)
-			return E_FAIL;
-
-		m_BoneIndices.push_back(iBoneIndex);
-	}
-
 
 	m_SubResourceData.pSysMem = pVertices;
 
@@ -289,4 +297,6 @@ CComponent * CMesh::Clone(void * pArg)
 void CMesh::Free()
 {
 	__super::Free();
+
+	Safe_Delete_Array(m_pBoneIndices);
 }

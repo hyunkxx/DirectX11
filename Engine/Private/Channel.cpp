@@ -106,7 +106,6 @@ void CChannel::Invalidate_Transform(_uint ChannelID, CAnimController::ANIMSTATE&
 	pModel->Get_BonePtr(m_iTargetBoneID)->Set_TransformationMatrix(TransformationMatrix);
 
 
-
 	// RootMotion 처리용 낮은 발 높이 찾기
 	if (true == tState.bFootAltitude)
 	{

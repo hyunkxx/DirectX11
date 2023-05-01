@@ -109,6 +109,19 @@ void CTransform::MoveLeft(_double TimeDelta)
 	Set_State(STATE::STATE_POSITION, vPosition);
 }
 
+void CTransform::Move_Anim(_float3 * vMove)
+{
+	_vector vPos = Get_State(CTransform::STATE_POSITION);
+	_vector vRight = Get_State(CTransform::STATE_RIGHT);
+	_vector vUp = Get_State(CTransform::STATE_UP);
+	_vector vLook = Get_State(CTransform::STATE_LOOK);
+
+	_vector vMovesrc = XMVector3Normalize(vRight) * vMove->x - XMVector3Normalize(vLook) * vMove->y + XMVector3Normalize(vUp) * vMove->z;
+	_vector vPossrc = vPos + vMovesrc;
+
+	Set_State(STATE_POSITION, vPossrc);
+}
+
 void CTransform::SetRotationXYZ(_float3 fRadian)
 {
 	_vector vRight, vUp, vLook;

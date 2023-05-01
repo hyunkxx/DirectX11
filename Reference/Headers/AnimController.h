@@ -32,13 +32,22 @@ private:
 	CAnimController();
 	virtual ~CAnimController() = default;
 
-public: 
+public:
+	const _bool Get_AnimInterpolating() const { return m_tAnimState.IsInterpolate; }
+	void Set_TrackPos(_float fTrackPos)
+	{
+		m_tAnimState.FrameAcc = (_double)fTrackPos;
+
+		for (auto& KeyID : m_tAnimState.vecCurrentKeyFrame)
+			KeyID = 0;
+	}
+public:
 	HRESULT Initialize(_uint iNumBones);
 	HRESULT SetUp_Animation(_uint iAnimationIndex, class CModel_Anim* pModel, _bool bInterpolate, _bool bFootAltitude);
 	const _float3 Play_Animation(_double TimeDelta, class CModel_Anim* pModel, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr, _bool bContinue = false);
 
-	const _bool Get_AnimInterpolating() const { return m_tAnimState.IsInterpolate; }
-	
+
+
 private:
 	_uint	m_iCurAnimation = { NO_ANIM };
 	_uint	m_iPrevAnimation = { NO_ANIM };

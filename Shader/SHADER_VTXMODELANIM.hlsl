@@ -7,6 +7,9 @@ float4 g_LightDir;
 
 float4x4 g_BoneMatrix[256];
 
+// VTF 뼈 행렬을 저장한 텍스쳐
+texture2D	g_VertexTexture;
+
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 
@@ -94,6 +97,62 @@ VS_OUT_SHADOW VS_MAIN_SHADOW(VS_IN In)
 
 	return Out;
 }
+
+float4x4 LoadBoneMatrix(uint iBoneID)
+{
+	uint iBaseID = iBoneID * 4;
+	float fBaseU = iBaseID % 64;
+	float fBaseV = iBaseID / 64;
+
+	float4 vRight = g_VertexTexture.Load(int3(fBaseU, fBaseV, 0));
+	float4 vUp = g_VertexTexture.Load(int3(fBaseU + 1, fBaseV, 0));
+	float4 vLook = g_VertexTexture.Load(int3(fBaseU + 2, fBaseV, 0));
+	float4 vPos = g_VertexTexture.Load(int3(fBaseU + 3, fBaseV, 0));
+
+	float4x4 matOut = float4x4(vRight, vUp, vLook, vPos);
+
+	//matOut = transpose(matOut);
+
+	return matOut;
+}
+
+VS_OUT VS_MAIN_VTF(VS_IN In)
+{
+	VS_OUT Out = (VS_OUT)0;
+
+	matrix	matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+
+	matrix matX = LoadBoneMatrix(In.vBlendIndices.x);
+	matrix matY = LoadBoneMatrix(In.vBlendIndices.y);
+	matrix matZ = LoadBoneMatrix(In.vBlendIndices.z);
+	matrix matW = LoadBoneMatrix(In.vBlendIndices.w);
+
+	float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+
+	matrix	AnimMatrix =
+		matX * In.vBlendWeights.x +
+		matY * In.vBlendWeights.y +
+		matZ * In.vBlendWeights.z +
+		matW * fWeightW;
+
+	vector vPosition = mul(float4(In.vPosition, 1.f), AnimMatrix);
+	vector vNormal = mul(float4(In.vNormal, 0.f), AnimMatrix);
+
+	Out.vPosition = mul(vPosition, matWVP);
+	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
+	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
+
+	Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix)).xyz;
+	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent)).xyz;
+
+	return Out;
+}
+
 
 struct PS_IN
 {
@@ -223,6 +282,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Outline();
+	}
+
+	pass Model_VTF
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_VTF();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
 }

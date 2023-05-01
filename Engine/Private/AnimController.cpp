@@ -20,7 +20,7 @@ HRESULT CAnimController::SetUp_Animation(_uint iAnimationIndex, CModel_Anim * pM
 	m_iCurAnimation = iAnimationIndex;
 
 	// 이전 애니메이션 종료 상태 저장
-	
+
 	if (true == bInterpolate)
 	{
 		if (NO_ANIM != m_iPrevAnimation)
@@ -62,9 +62,10 @@ const _float3 CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * p
 	// 발 2개 중 낮은쪽 높이 구하기 위해 매프레임 true로 초기화
 	m_tAnimState.bAltitudeFirst = true;
 
-	CAnimation* pAnim =  pModel->Get_Animation(m_iCurAnimation);
-	
+	CAnimation* pAnim = pModel->Get_Animation(m_iCurAnimation);
+
 	pAnim->Play_Animation(TimeDelta, m_tAnimState, pModel, bContinue);
+
 	if (nullptr != pFrameAccOut)
 	{
 		*pFrameAccOut = m_tAnimState.FrameAcc;
@@ -77,9 +78,7 @@ const _float3 CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * p
 	CBone* pRootBone = pModel->Get_RootBone();
 	if (nullptr != pRootBone)
 	{
-		m_tAnimState.fHeight = pRootBone->Get_TransformationMatrix()._42 - m_tAnimState.fAltitude;
-
-		pRootBone->Set_Position(_float3(0.f, m_tAnimState.fHeight, 0.f));
+		pRootBone->Set_Position(_float3(0.f, 0.f, 0.f));
 	}
 
 	return m_tAnimState.vCurRootBoneMove;

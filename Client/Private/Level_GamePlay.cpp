@@ -113,15 +113,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	
-	int j = 0;
+	/*int j = 0;
 	_tchar szTag[MAX_TAG];
 	wsprintf(szTag, L"Texture%d", j);
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHARACTER, pLayerTag, szTag, &j)))
-		return E_FAIL;
+		return E_FAIL;*/
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TESTPLAYER, pLayerTag, TEXT("TestPlayer"))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TESTPLAYER, pLayerTag, TEXT("TestPlayer2"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYERGIRL, pLayerTag, TEXT("PlayerGirl"))))
 		return E_FAIL;
 
 	return S_OK;

@@ -145,6 +145,9 @@
     <ClCompile Include="..\private\TargetManager.cpp">
       <Filter>utility\09. RenderTarget</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Model_VTF.cpp">
+      <Filter>utility\04. Components\06. Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Typedef.h">
@@ -332,6 +335,9 @@
     </ClInclude>
     <ClInclude Include="..\public\TargetManager.h">
       <Filter>utility\09. RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Model_VTF.h">
+      <Filter>utility\04. Components\06. Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
