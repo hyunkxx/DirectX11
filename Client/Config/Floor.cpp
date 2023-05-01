@@ -42,7 +42,9 @@ void CFloor::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	if (nullptr != m_pRenderer)
+	{
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+	}
 }
 
 HRESULT CFloor::Render()

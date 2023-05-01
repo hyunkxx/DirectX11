@@ -85,6 +85,11 @@ struct PS_OUT
 	float4 vColor : SV_TARGET0;
 };
 
+struct PS_OUT_SHADOW
+{
+	float4 vDynamicShadow : SV_TARGET0;
+};
+
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -217,53 +222,34 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	vector vDepthInfo = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);
 	float fViewZ = vDepthInfo.y * g_Far;
 
-	vector vPosition, vBakePosition;
-	vBakePosition = vPosition.x = (In.vTexUV.x * 2.f - 1.f) * fViewZ;
-	vBakePosition = vPosition.y = (In.vTexUV.y * -2.f + 1.f) * fViewZ;
-	vBakePosition = vPosition.z = vDepthInfo.x * fViewZ;
-	vBakePosition = vPosition.w = fViewZ;
+	vector vPosition;
+	vPosition.x = (In.vTexUV.x * 2.f - 1.f) * fViewZ;
+	vPosition.y = (In.vTexUV.y * -2.f + 1.f) * fViewZ;
+	vPosition.z = vDepthInfo.x * fViewZ;
+	vPosition.w = fViewZ;
 
 	//해당 픽셀의 포지션을 월드까지 내림
-	vBakePosition = vPosition = mul(vPosition, g_ProjMatrixInv);
-	vBakePosition = vPosition = mul(vPosition, g_ViewMatrixInv);
+	vPosition = mul(vPosition, g_ProjMatrixInv);
+	vPosition = mul(vPosition, g_ViewMatrixInv);
 
 	vPosition = mul(vPosition, g_LightViewMatrix);
-	vBakePosition = mul(vBakePosition, g_BakeLightViewMatrix);
 
 	vector vLightUVPos = mul(vPosition, g_LightProjMatrix);
-	vector vBakeLightUVPos = mul(vBakePosition, g_LightProjMatrix);
 	float2 vLightUV, vBakeLightUV;
 
 	vLightUV.x = (vLightUVPos.x / vLightUVPos.w) * 0.5f + 0.5f;
 	vLightUV.y = (vLightUVPos.y / vLightUVPos.w) * -0.5f + 0.5f;
 
-	vBakeLightUV.x = (vBakeLightUVPos.x / vBakeLightUVPos.w) * 0.5f + 0.5f;
-	vBakeLightUV.y = (vBakeLightUVPos.y / vBakeLightUVPos.w) * -0.5f + 0.5f;
-
 	vector vShadowDepthInfo = g_ShadowDepthTexture.Sample(LinearBorderSampler, vLightUV);
-	vector vStaticShadowDepthInfo = g_StaticShadowDepthTexture.Sample(LinearBorderSampler, vBakeLightUV);
-
 	float4 vFinalColor = (vDiffuse * (vShade * 2.f));
 
-	//깊이 0.5 : 모델과 애님모델에는 그림자 안그림
-	if (vBakePosition.z - 0.01f > (vStaticShadowDepthInfo.g * g_Far) ||
-		vPosition.z - 0.01f > (vShadowDepthInfo.g * g_Far) &&
-		vDepthInfo.b != 0.5f)
+	if (vOutNormal.a == 1.f)
 	{
-		Out.vColor = vFinalColor * vector(0.7f, 0.7f, 0.7f, 0.7f);
+		float vOutline = g_OutlineTexture.Sample(PointSampler, In.vTexUV).r;
+		Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z);
 	}
 	else
-	{
-		float4 vFinalColor = (vDiffuse * (vShade * 2.f));
-
-		if (vOutNormal.a == 1.f)
-		{
-			float vOutline = g_OutlineTexture.Sample(PointSampler, In.vTexUV).r;
-			Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z);
-		}
-		else
-			Out.vColor = vFinalColor;
-	}
+		Out.vColor = vFinalColor;
 
 	if (0.0f == Out.vColor.a)
 		discard;
@@ -271,6 +257,48 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	return Out;
 }
 
+PS_OUT_SHADOW PS_Shadow(PS_IN In)
+{
+	PS_OUT_SHADOW Out = (PS_OUT_SHADOW)0;
+
+	vector vWorldPos;
+
+	vector vDepthInfo = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);
+	float fViewZ = vDepthInfo.y * g_Far;
+
+	vector vPosition;
+	vPosition.x = (In.vTexUV.x * 2.f - 1.f) * fViewZ;
+	vPosition.y = (In.vTexUV.y * -2.f + 1.f) * fViewZ;
+	vPosition.z = vDepthInfo.x * fViewZ;
+	vPosition.w = fViewZ;
+
+	//해당 픽셀의 포지션을 월드까지 내림
+	vPosition = mul(vPosition, g_ProjMatrixInv);
+	vPosition = mul(vPosition, g_ViewMatrixInv);
+
+	vPosition = mul(vPosition, g_LightViewMatrix);
+
+	vector vLightUVPos = mul(vPosition, g_LightProjMatrix);
+	float2 vLightUV, vBakeLightUV;
+
+	vLightUV.x = (vLightUVPos.x / vLightUVPos.w) * 0.5f + 0.5f;
+	vLightUV.y = (vLightUVPos.y / vLightUVPos.w) * -0.5f + 0.5f;
+
+	vector vShadowDepthInfo = g_ShadowDepthTexture.Sample(LinearBorderSampler, vLightUV);
+	
+	//깊이 0.5 : 모델과 애님모델에는 그림자 안그림
+	if (vPosition.z - 0.05f > (vShadowDepthInfo.g * g_Far) &&
+		vDepthInfo.b != 0.5f)
+	{
+		Out.vDynamicShadow = vector(0.7f, 0.7f, 0.7f, 0.7f);
+	}
+	else
+	{
+		Out.vDynamicShadow = vector(1.f, 1.f, 1.f, 1.f);
+	}
+
+	return Out;
+}
 
 PS_OUT PS_Outline(PS_IN In)
 {
@@ -356,5 +384,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Outline();
+	}
+
+	pass DynamicShadow_Pass5
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Shadow();
 	}
 }

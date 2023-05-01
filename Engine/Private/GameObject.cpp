@@ -50,12 +50,7 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
-HRESULT CGameObject::DrawStaticShadow()
-{
-	return S_OK;
-}
-
-HRESULT CGameObject::DrawDynamicShadow()
+HRESULT CGameObject::RenderShadow()
 {
 	return S_OK;
 }

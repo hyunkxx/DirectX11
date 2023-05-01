@@ -39,8 +39,6 @@ void CTree_0::Start()
 {
 	__super::Start();
 
-	m_pRendererCom->ResetStaticShadowState();
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC_SHADOWDEPTH, this);
 }
 
 void CTree_0::Tick(_double TimeDelta)
@@ -62,6 +60,7 @@ void CTree_0::LateTick(_double TimeDelta)
 	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 	}
 }
 
@@ -73,22 +72,6 @@ HRESULT CTree_0::Render()
 	if (FAILED(DrawDefault()))
 		return E_FAIL;
 
-	return S_OK;
-}
-
-HRESULT CTree_0::DrawStaticShadow()
-{
-	if (FAILED(__super::DrawStaticShadow()))
-		return E_FAIL;
-
-	if (FAILED(DrawShadow()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CTree_0::DrawDynamicShadow()
-{
 	return S_OK;
 }
 
@@ -122,9 +105,9 @@ HRESULT CTree_0::DrawDefault()
 	return S_OK;
 }
 
-HRESULT CTree_0::DrawShadow()
+HRESULT CTree_0::RenderShadow()
 {
- 	if (FAILED(SetUp_ShadowShaderResources()))
+	if (FAILED(SetUp_ShadowShaderResources()))
 		return E_FAIL;
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
@@ -206,8 +189,7 @@ HRESULT CTree_0::SetUp_ShadowShaderResources()
 	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
 		return E_FAIL;
 
-	_float4x4 vvv = pGameInstance->GetBakeLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW);
-	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->GetBakeLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
+	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_PROJ))))

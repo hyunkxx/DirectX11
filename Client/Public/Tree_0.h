@@ -27,12 +27,10 @@ public:
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render() override;
-	virtual HRESULT DrawStaticShadow() override;
-	virtual HRESULT DrawDynamicShadow() override;
+	virtual HRESULT RenderShadow() override;
 
 public:
 	HRESULT DrawDefault();
-	HRESULT DrawShadow();
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };

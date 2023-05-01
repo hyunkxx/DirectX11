@@ -38,21 +38,11 @@ const LIGHT_DESC* CLightManager::GetLightDesc(_uint Index)
 	return (*iter)->GetLightDesc();
 }
 
-void CLightManager::InitializeBakeLight()
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	_vector vCamPos = XMLoadFloat4(&pGameInstance->Get_CamPosition());
-	_vector vLightEye = XMVectorSet(XMVectorGetX(vCamPos) - 50.f, 40.f, XMVectorGetZ(vCamPos) - 50.f, 1.f);
-	_vector vLightAt = XMVectorSet(XMVectorGetX(vCamPos) + 10.f, 0.f, XMVectorGetZ(vCamPos) + 10.f, 1.f);
-	_matrix vLightViewMatrix = XMMatrixLookAtLH(vLightEye, vLightAt, VECTOR_UP);
-	pGameInstance->SetBakeLightMatrix(vLightViewMatrix, LIGHT_MATRIX::LIGHT_VIEW);
-}
-
 void CLightManager::ShadowUpdate()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	_vector vCamPos = XMLoadFloat4(&pGameInstance->Get_CamPosition());
-	_vector vLightEye = XMVectorSet(XMVectorGetX(vCamPos) - 50.f, 40.f, XMVectorGetZ(vCamPos) - 50.f, 1.f);
+	_vector vLightEye = XMVectorSet(XMVectorGetX(vCamPos) - 50.f, 120.f, XMVectorGetZ(vCamPos) - 50.f, 1.f);
 	_vector vLightAt = XMVectorSet(XMVectorGetX(vCamPos) + 10.f, 0.f, XMVectorGetZ(vCamPos) + 10.f, 1.f);
 	_matrix vLightViewMatrix = XMMatrixLookAtLH(vLightEye, vLightAt, VECTOR_UP);
 	pGameInstance->SetLightMatrix(vLightViewMatrix, LIGHT_MATRIX::LIGHT_VIEW);
@@ -73,42 +63,15 @@ void CLightManager::SetLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatr
 	}
 }
 
-void CLightManager::SetBakeLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatrix)
-{
-	switch (eLightMatrix)
-	{
-	case Engine::CLightManager::LIGHT_VIEW:
-		XMStoreFloat4x4(&m_BakeLightMatrix[LIGHT_VIEW], LightMatrix);
-		break;
-	case Engine::CLightManager::LIGHT_PROJ:
-		XMStoreFloat4x4(&m_BakeLightMatrix[LIGHT_PROJ], LightMatrix);
-		break;
-	default:
-		break;
-	}
-}
-
 _float4x4 CLightManager::GetLightFloat4x4(LIGHT_MATRIX eLightMatrix)
 {
 	return m_LightMatrix[eLightMatrix];
-}
-
-_float4x4 CLightManager::GetBakeLightFloat4x4(LIGHT_MATRIX eLightMatrix)
-{
-	return m_BakeLightMatrix[eLightMatrix];
 }
 
 _float4x4 CLightManager::GetLightInverseFloat4x4(LIGHT_MATRIX eLightMatrix)
 {
 	_float4x4 InvMatrix;
 	XMStoreFloat4x4(&InvMatrix, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_LightMatrix[eLightMatrix])));
-	return InvMatrix;
-}
-
-_float4x4 CLightManager::GetBakeLightInverseFloat4x4(LIGHT_MATRIX eLightMatrix)
-{
-	_float4x4 InvMatrix;
-	XMStoreFloat4x4(&InvMatrix, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_BakeLightMatrix[eLightMatrix])));
 	return InvMatrix;
 }
 
