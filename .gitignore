@@ -6,6 +6,8 @@
 *.d
 .lib
 .dll
+Client/Config/Client.vcxproj.filters
+Engine/Config/Engine.vcxproj.filters
 
 # Compiled Object files
 *.slo
