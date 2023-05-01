@@ -77,6 +77,9 @@
     <Filter Include="src\02. GameObjects\04. MapObject\00.Tree\0">
       <UniqueIdentifier>{5bc307ae-c7a6-4735-aff3-9bfdd9d67033}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\100.NewFiles">
+      <UniqueIdentifier>{11aac948-2efb-4e46-90ec-ca46e2a295b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -308,7 +311,10 @@
     <FxCompile Include="..\..\Shader\SHADER_BLUR.hlsl">
       <Filter>src\99. ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_POSTEFFECT.hlsl">
+    <FxCompile Include="..\..\Shader\SHADER_SSAO.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_EXTRACTION.hlsl">
       <Filter>src\99. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -9,6 +9,8 @@
 #include "VIBuffer_Rect.h"
 #include "Shader.h"
 
+#include "SSAO.h"
+
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
 	, m_pTargetManager(CTargetManager::GetInstance())
@@ -27,6 +29,7 @@ HRESULT CRenderer::Initialize_Prototype()
 	D3D11_VIEWPORT ViewPortDesc;
 	m_pContext->RSGetViewports(&iViewportCount, &ViewPortDesc);
 
+#pragma region  AddRenderTargets
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Diffuse", ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 0.f))))
 		return E_FAIL;
@@ -63,8 +66,6 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.0f, 1.f))))
 		return E_FAIL;
 
-#pragma region Blur
-
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX"), ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
@@ -73,7 +74,9 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
-#pragma endregion
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAO"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
 
 	// 디퓨즈, 노말, 뎁스
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_Diffuse")))
@@ -101,17 +104,19 @@ HRESULT CRenderer::Initialize_Prototype()
 	// 외곽선
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_ToonShader", L"Target_Outline")))
 		return E_FAIL;
-
-#pragma region MRT_Blur
-
+	
+	// 블러
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_BlurX", L"Target_BlurX")))
 		return E_FAIL;
-
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_BlurY", L"Target_BlurY")))
 		return E_FAIL;
 
+	// SSAO
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSAO", L"Target_SSAO")))
+		return E_FAIL;
 #pragma endregion
 
+#pragma region POST_EFFECT
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pVIBuffer)
 		return E_FAIL;
@@ -124,8 +129,12 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (nullptr == m_pShader_Blur)
 		return E_FAIL;
 
-	m_pPostEffect = CShader::Create(m_pDevice, m_pContext, L"../../Shader/SHADER_POSTEFFECT.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount);
-	if (nullptr == m_pPostEffect)
+	m_pShader_Extraction = CShader::Create(m_pDevice, m_pContext, L"../../Shader/SHADER_EXTRACTION.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount);
+	if (nullptr == m_pShader_Extraction)
+		return E_FAIL;
+
+	m_pShader_SSAO = CShader::Create(m_pDevice, m_pContext, L"../../Shader/SHADER_SSAO.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount);
+	if (nullptr == m_pShader_SSAO)
 		return E_FAIL;
 
 	XMStoreFloat4x4(&m_FullScreenWorldMatrix,
@@ -134,6 +143,8 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewPortDesc.Width, ViewPortDesc.Height, 0.f, 1.f));
+
+#pragma endregion
 
 #ifdef _DEBUG
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Diffuse"), 50.f, 50.f, 100.f, 100.f)))
@@ -148,12 +159,13 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Outline"), 50.f, 550.f, 100.f, 100.f)))
 		return E_FAIL;
-
-	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_ShadowMap"), 700, 100.f, 200.f, 200.f)))
-		return E_FAIL;
-	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Shadow"), 900, 100.f, 200.f, 200.f)))
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_ShadowMap"), 50.f, 650.f, 100.f, 100.f)))
 		return E_FAIL;
 
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Shadow"), 150, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_SSAO"), 150, 150.f, 100.f, 100.f)))
+		return E_FAIL;
 #endif
 
 	return S_OK;
@@ -175,11 +187,16 @@ void CRenderer::Draw()
 	Render_Priority();
 	Render_DynamicShadowMap();
 	Render_NonAlphaBlend();
+
+	Ready_SSAO(L"Target_SSAO");
+
 	Render_Lights();
 	Render_Outline();
 	Render_Shadow();
+
 	Target_Blur(L"Target_Shadow", 2);
-	PostEffect(L"Target_Shadow", L"Target_BlurY", nullptr, POST_EFFECT::POST_EXTRACTION);
+	Extraction(L"Target_Shadow", L"Target_BlurY");
+
 	Render_Blend();
 	Render_NonLight();
 	Render_AlphaBlend();
@@ -198,6 +215,7 @@ void CRenderer::Draw()
 	m_pTargetManager->Render(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_ToonShader"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer);
+	m_pTargetManager->Render(TEXT("MRT_SSAO"), m_pShader, m_pVIBuffer);
 #endif
 
 }
@@ -437,29 +455,26 @@ void CRenderer::AlphaSort(CRenderer::RENDER_GROUP eGroup)
 	m_RenderObject[eGroup].sort(Compute);
 }
 
-void CRenderer::PostEffect(const _tchar * pBindTargetTag, const _tchar * pSourTag, const _tchar * pDestTag, POST_EFFECT eEffect)
+//두번째 인자로 들어온 렌더타겟을 바인딩된 타겟(첫번째 인자)에 렌더
+void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag)
 {
 	CRenderTarget* pSourTarget = m_pTargetManager->FindTarget(pSourTag);
-	CRenderTarget* pDestTarget = m_pTargetManager->FindTarget(pDestTag);
 	CRenderTarget* pBindTarget = m_pTargetManager->FindTarget(pBindTargetTag);
 
 	if (FAILED(m_pTargetManager->BeginTarget(m_pContext, pBindTarget)))
 		return;
 
-	if (FAILED(m_pPostEffect->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
 		return;
-	if (FAILED(m_pPostEffect->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
 		return;
-	if (FAILED(m_pPostEffect->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 	
 	if (pSourTarget)
-		pSourTarget->Set_ShaderResourceView(m_pPostEffect, "g_SourTexture");
+		pSourTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_SourTexture");
 
-	if(pDestTarget)
-		pDestTarget->Set_ShaderResourceView(m_pPostEffect, "g_DestTexture");
-
-	m_pPostEffect->Begin(eEffect);
+	m_pShader_Extraction->Begin(0);
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
@@ -548,6 +563,36 @@ void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount)
 	}
 }
 
+void CRenderer::Ready_SSAO(const _tchar* pBindTargetTag)
+{
+	CRenderTarget* pBindTarget = m_pTargetManager->FindTarget(pBindTargetTag);
+
+	if (FAILED(m_pTargetManager->BeginTarget(m_pContext, pBindTarget)))
+		return;
+
+	if (FAILED(m_pShader_SSAO->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader_SSAO->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader_SSAO->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_SSAO, L"Target_Diffuse", "g_DiffuseTexture")))
+		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_SSAO, L"Target_Normal", "g_NormalTexture")))
+		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_SSAO, L"Target_Depth", "g_DepthTexture")))
+		return;
+
+	if (FAILED(m_pShader_SSAO->Begin(0)))
+		return;
+	if (FAILED(m_pVIBuffer->Render()))
+		return;
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+}
+
 CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CRenderer* pInstance = new CRenderer(pDevice, pContext);
@@ -574,11 +619,14 @@ void CRenderer::Free()
 
 	Safe_Release(m_pShader);
 	Safe_Release(m_pShader_Blur);
-	Safe_Release(m_pPostEffect);
-	Safe_Release(m_pVIBuffer);
+	Safe_Release(m_pShader_Extraction);
+	Safe_Release(m_pShader_SSAO);
 
+	Safe_Release(m_pVIBuffer);
+	
 	Safe_Release(m_pLightManager);
 	Safe_Release(m_pTargetManager);
+
 }
 
 #ifdef _DEBUG

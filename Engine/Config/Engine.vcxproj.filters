@@ -419,5 +419,8 @@
     <Filter Include="utility\09. RenderTarget">
       <UniqueIdentifier>{15c01e2d-f9be-434f-b9e2-dd3fbf6aa77d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="utility\100.NewFiles">
+      <UniqueIdentifier>{25d34ea3-e1b7-44a6-9ead-9affc6ed81e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

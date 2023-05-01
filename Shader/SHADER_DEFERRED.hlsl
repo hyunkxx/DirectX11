@@ -1,7 +1,6 @@
 #include "SHADER_DEFINES.hpp"
 
 float4x4  g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_LightViewMatrix, g_LightProjMatrix;
-float4x4 g_BakeLightViewMatrix;
 
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;

@@ -8,9 +8,6 @@ class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
 	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_DYNAMIC_SHADOW, RENDER_NONALPHA, RENDER_NONLIGHT, RENDER_ALPHABLEND, RENDER_UI, RENDER_END };
-	
-private:
-	enum POST_EFFECT { POST_EXTRACTION };
 
 private:
 	explicit CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -19,12 +16,12 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype() override;
 
-public:
-	void ResetStaticShadowState() { m_bBakeShadowed = false; };
 	HRESULT Add_RenderGroup(RENDER_GROUP eRenderGroup, class CGameObject* pGameObject);
 	void Draw();
 
 private:
+	void AlphaSort(CRenderer::RENDER_GROUP eGroup);
+
 	void Render_Priority();
 	void Render_DynamicShadowMap();
 	void Render_NonAlphaBlend();
@@ -36,10 +33,9 @@ private:
 	void Render_AlphaBlend();
 	void Render_UI();
 
-	void AlphaSort(CRenderer::RENDER_GROUP eGroup);
-
-	void PostEffect(const _tchar * pBindTargetTag, const _tchar * pSourTag, const _tchar * pDestTag, POST_EFFECT eEffect);
+	void Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag);
 	void Target_Blur(const _tchar* TargetTag, _int BlurCount = 1);
+	void Ready_SSAO(const _tchar* pBindTargetTag);
 
 public:
 	static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -62,19 +58,16 @@ private:
 
 private:
 	class CVIBuffer_Rect* m_pVIBuffer = nullptr;
+	class CShader* m_pShader_Extraction = nullptr;
 	class CShader* m_pShader = nullptr;
 	class CShader* m_pShader_Blur = nullptr;
-
-	class CShader* m_pPostEffect = nullptr;
+	class CShader* m_pShader_SSAO = nullptr;
 
 	_float4x4 m_FullScreenWorldMatrix, m_ViewMatrix, m_ProjMatrix;
 
 private:
 	class CLightManager* m_pLightManager = nullptr;
 	class CTargetManager* m_pTargetManager = nullptr;
-
-private:
-	_bool m_bBakeShadowed = false;
 
 };
 
