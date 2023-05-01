@@ -83,8 +83,7 @@ public: //LightManager
 	_float4 GetLightPosition() const;
 	void SetLightDirection(_fvector vLightDir);
 	_float4 GetLightDirection() const;
-
-	void InitalizeBakeLight();
+	
 	void ShadowUpdate();
 
 public: //TargetManager

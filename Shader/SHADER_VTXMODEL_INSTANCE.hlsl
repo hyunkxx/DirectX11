@@ -179,7 +179,7 @@ PS_OUT PS_MAIN_NORMALMAP(PS_IN_NORMALMAP In)
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
 
 	/* 투영 스페이스 상의 z , 뷰 스페이스 상의 z (vProjPos.w 에 저장되어 있음) -> 뷰 공간서의 최대 z 값 Far -> Far 로 나눠서 0 ~ 1 사이로 뷰 의 z값 보관 */
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.0f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 
 	return Out;
@@ -196,7 +196,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 		discard;
 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.0f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 
 	return Out;
@@ -209,7 +209,7 @@ PS_OUT_SHADOW	PS_MAIN_SHADOW(VS_OUT_SHADOW In)
 	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
 	if(vDiffuse.a > 0.1f)
-		Out.vShadowDepth = vector(In.vShadowDepth.z / In.vShadowDepth.w, In.vShadowDepth.w / g_Far, 0.0f, 1.f);
+		Out.vShadowDepth = vector(In.vShadowDepth.z / In.vShadowDepth.w, In.vShadowDepth.w / g_Far, 0.4f, 1.f);
 
 	return Out;
 }

@@ -1,6 +1,7 @@
 #include "..\Public\Renderer.h"
 #include "GameInstance.h"
 #include "TargetManager.h"
+#include "RenderTarget.h"
 #include "LightManager.h"
 #include "PipeLine.h"
 
@@ -54,17 +55,13 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 0.f))))
 		return E_FAIL;
 
-	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_DynamicShadowMap", (_float)g_iShadowWidth, (_float)g_iShadowHeight,
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_ShadowMap", (_float)g_iShadowWidth, (_float)g_iShadowHeight,
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.0f, 1.f))))
 		return E_FAIL;
 
-	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_DynamicShadow", ViewPortDesc.Width, ViewPortDesc.Height,
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Shadow", ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.0f, 1.f))))
 		return E_FAIL;
-	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_StaticShadow", ViewPortDesc.Width, ViewPortDesc.Height,
-		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.0f, 1.f))))
-		return E_FAIL;
-
 
 #pragma region Blur
 
@@ -89,12 +86,10 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	// ±×¸²ÀÚ ±íÀÌ
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_LightDepth", L"Target_DynamicShadowMap")))
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_LightDepth", L"Target_ShadowMap")))
 		return E_FAIL;
 
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Shadow", L"Target_DynamicShadow")))
-		return E_FAIL;
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Shadow", L"Target_StaticShadow")))
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Shadow", L"Target_Shadow")))
 		return E_FAIL;
 
 	// ½¦ÀÌµå, ½ºÆåÅ§·¯
@@ -117,7 +112,6 @@ HRESULT CRenderer::Initialize_Prototype()
 
 #pragma endregion
 
-
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pVIBuffer)
 		return E_FAIL;
@@ -128,6 +122,10 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	m_pShader_Blur = CShader::Create(m_pDevice, m_pContext, L"../../Shader/SHADER_BLUR.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount);
 	if (nullptr == m_pShader_Blur)
+		return E_FAIL;
+
+	m_pPostEffect = CShader::Create(m_pDevice, m_pContext, L"../../Shader/SHADER_POSTEFFECT.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount);
+	if (nullptr == m_pPostEffect)
 		return E_FAIL;
 
 	XMStoreFloat4x4(&m_FullScreenWorldMatrix,
@@ -150,10 +148,12 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Outline"), 50.f, 550.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_DynamicShadowMap"), 350, 350.f, 300.f, 300.f)))
+
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_ShadowMap"), 700, 100.f, 200.f, 200.f)))
 		return E_FAIL;
-	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_DynamicShadow"), 700, 100.f, 300.f, 300.f)))
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Shadow"), 900, 100.f, 200.f, 200.f)))
 		return E_FAIL;
+
 #endif
 
 	return S_OK;
@@ -177,7 +177,9 @@ void CRenderer::Draw()
 	Render_NonAlphaBlend();
 	Render_Lights();
 	Render_Outline();
-	Render_DynamicShadow();
+	Render_Shadow();
+	Target_Blur(L"Target_Shadow", 2);
+	PostEffect(L"Target_Shadow", L"Target_BlurY", nullptr, POST_EFFECT::POST_EXTRACTION);
 	Render_Blend();
 	Render_NonLight();
 	Render_AlphaBlend();
@@ -193,8 +195,9 @@ void CRenderer::Draw()
 	m_pTargetManager->Render(TEXT("MRT_Deferred"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_LightDepth"), m_pShader, m_pVIBuffer);
-	m_pTargetManager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer);
+	m_pTargetManager->Render(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_ToonShader"), m_pShader, m_pVIBuffer);
+	m_pTargetManager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer);
 #endif
 
 }
@@ -313,7 +316,7 @@ void CRenderer::Render_Outline()
 		return;
 }
 
-void CRenderer::Render_DynamicShadow()
+void CRenderer::Render_Shadow()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CLightManager* pLighrManager = CLightManager::GetInstance();
@@ -321,7 +324,7 @@ void CRenderer::Render_DynamicShadow()
 
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Shadow")))
 		return;
-
+	
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
 		return;
 	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -341,7 +344,7 @@ void CRenderer::Render_DynamicShadow()
 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Depth"), "g_DepthTexture")))
 		return;
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_DynamicShadowMap"), "g_ShadowDepthTexture")))
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_ShadowMap"), "g_ShadowDepthTexture")))
 		return;
 
 	m_pShader->Begin(5);
@@ -374,6 +377,9 @@ void CRenderer::Render_Blend()
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Specular"), "g_SpecularTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_OutNormal"), "g_OutNormalTexture")))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Shadow"), "g_ShadowTexture")))
 		return;
 
 	m_pShader->Begin(3);
@@ -429,6 +435,35 @@ bool Compute(Engine::CGameObject* pSourObject, Engine::CGameObject* pDestObject)
 void CRenderer::AlphaSort(CRenderer::RENDER_GROUP eGroup)
 {
 	m_RenderObject[eGroup].sort(Compute);
+}
+
+void CRenderer::PostEffect(const _tchar * pBindTargetTag, const _tchar * pSourTag, const _tchar * pDestTag, POST_EFFECT eEffect)
+{
+	CRenderTarget* pSourTarget = m_pTargetManager->FindTarget(pSourTag);
+	CRenderTarget* pDestTarget = m_pTargetManager->FindTarget(pDestTag);
+	CRenderTarget* pBindTarget = m_pTargetManager->FindTarget(pBindTargetTag);
+
+	if (FAILED(m_pTargetManager->BeginTarget(m_pContext, pBindTarget)))
+		return;
+
+	if (FAILED(m_pPostEffect->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pPostEffect->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pPostEffect->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+	
+	if (pSourTarget)
+		pSourTarget->Set_ShaderResourceView(m_pPostEffect, "g_SourTexture");
+
+	if(pDestTarget)
+		pDestTarget->Set_ShaderResourceView(m_pPostEffect, "g_DestTexture");
+
+	m_pPostEffect->Begin(eEffect);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
 }
 
 void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount)
@@ -538,6 +573,8 @@ void CRenderer::Free()
 	__super::Free();
 
 	Safe_Release(m_pShader);
+	Safe_Release(m_pShader_Blur);
+	Safe_Release(m_pPostEffect);
 	Safe_Release(m_pVIBuffer);
 
 	Safe_Release(m_pLightManager);

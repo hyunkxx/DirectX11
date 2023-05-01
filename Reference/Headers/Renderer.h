@@ -8,6 +8,10 @@ class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
 	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_DYNAMIC_SHADOW, RENDER_NONALPHA, RENDER_NONLIGHT, RENDER_ALPHABLEND, RENDER_UI, RENDER_END };
+	
+private:
+	enum POST_EFFECT { POST_EXTRACTION };
+
 private:
 	explicit CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CRenderer() = default;
@@ -26,7 +30,7 @@ private:
 	void Render_NonAlphaBlend();
 	void Render_Lights();
 	void Render_Outline();
-	void Render_DynamicShadow();
+	void Render_Shadow();
 	void Render_Blend();
 	void Render_NonLight();
 	void Render_AlphaBlend();
@@ -34,6 +38,7 @@ private:
 
 	void AlphaSort(CRenderer::RENDER_GROUP eGroup);
 
+	void PostEffect(const _tchar * pBindTargetTag, const _tchar * pSourTag, const _tchar * pDestTag, POST_EFFECT eEffect);
 	void Target_Blur(const _tchar* TargetTag, _int BlurCount = 1);
 
 public:
@@ -59,6 +64,9 @@ private:
 	class CVIBuffer_Rect* m_pVIBuffer = nullptr;
 	class CShader* m_pShader = nullptr;
 	class CShader* m_pShader_Blur = nullptr;
+
+	class CShader* m_pPostEffect = nullptr;
+
 	_float4x4 m_FullScreenWorldMatrix, m_ViewMatrix, m_ProjMatrix;
 
 private:

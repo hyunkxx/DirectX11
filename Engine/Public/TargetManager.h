@@ -25,14 +25,14 @@ public:
 	HRESULT AddMRT(const _tchar* pMRTTag, const _tchar* pTargetTag);
 
 	HRESULT Begin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
-	HRESULT StaticShadowBegin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
 	HRESULT ShadowBegin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
+	HRESULT BeginTarget(ID3D11DeviceContext* pContext, class CRenderTarget* pTarget);
 	HRESULT End(ID3D11DeviceContext* pContext);
 
 	HRESULT Set_ShaderResourceView(class CShader* pShader, const _tchar* pTargetTag, const char* pContantName);
 
-private:
 	class CRenderTarget* FindTarget(const _tchar* pTargetTag);
+private:
 	class list<class CRenderTarget*>* FindMRT(const _tchar* pMRTTag);
 
 

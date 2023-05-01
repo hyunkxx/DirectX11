@@ -6,8 +6,10 @@ float4x4 g_BakeLightViewMatrix;
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 texture2D g_DepthTexture;
-texture2D g_StaticShadowDepthTexture;
+
 texture2D g_ShadowDepthTexture;
+texture2D g_ShadowTexture;
+
 texture2D g_ShadeTexture;
 texture2D g_SpecularTexture;
 texture2D g_LightPosTexture;
@@ -218,38 +220,18 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexUV);
 	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
 	vector vOutNormal = g_OutNormalTexture.Sample(LinearSampler, In.vTexUV);
+	vector vShadow = g_ShadowTexture.Sample(LinearSampler, In.vTexUV);
 
-	vector vDepthInfo = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);
-	float fViewZ = vDepthInfo.y * g_Far;
-
-	vector vPosition;
-	vPosition.x = (In.vTexUV.x * 2.f - 1.f) * fViewZ;
-	vPosition.y = (In.vTexUV.y * -2.f + 1.f) * fViewZ;
-	vPosition.z = vDepthInfo.x * fViewZ;
-	vPosition.w = fViewZ;
-
-	//해당 픽셀의 포지션을 월드까지 내림
-	vPosition = mul(vPosition, g_ProjMatrixInv);
-	vPosition = mul(vPosition, g_ViewMatrixInv);
-
-	vPosition = mul(vPosition, g_LightViewMatrix);
-
-	vector vLightUVPos = mul(vPosition, g_LightProjMatrix);
-	float2 vLightUV, vBakeLightUV;
-
-	vLightUV.x = (vLightUVPos.x / vLightUVPos.w) * 0.5f + 0.5f;
-	vLightUV.y = (vLightUVPos.y / vLightUVPos.w) * -0.5f + 0.5f;
-
-	vector vShadowDepthInfo = g_ShadowDepthTexture.Sample(LinearBorderSampler, vLightUV);
 	float4 vFinalColor = (vDiffuse * (vShade * 2.f));
-
 	if (vOutNormal.a == 1.f)
 	{
 		float vOutline = g_OutlineTexture.Sample(PointSampler, In.vTexUV).r;
-		Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z);
+		Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r;
 	}
 	else
-		Out.vColor = vFinalColor;
+	{
+		Out.vColor = vFinalColor * vShadow.r;
+	}
 
 	if (0.0f == Out.vColor.a)
 		discard;
@@ -287,10 +269,9 @@ PS_OUT_SHADOW PS_Shadow(PS_IN In)
 	vector vShadowDepthInfo = g_ShadowDepthTexture.Sample(LinearBorderSampler, vLightUV);
 	
 	//깊이 0.5 : 모델과 애님모델에는 그림자 안그림
-	if (vPosition.z - 0.05f > (vShadowDepthInfo.g * g_Far) &&
-		vDepthInfo.b != 0.5f)
+	if (vPosition.z - 0.05f > (vShadowDepthInfo.g * g_Far) && vDepthInfo.b != vShadowDepthInfo.b)
 	{
-		Out.vDynamicShadow = vector(0.7f, 0.7f, 0.7f, 0.7f);
+		Out.vDynamicShadow = vector(0.5f, 0.5f, 0.5f, 0.5f);
 	}
 	else
 	{
@@ -386,7 +367,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Outline();
 	}
 
-	pass DynamicShadow_Pass5
+	pass Shadow_Pass5
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);

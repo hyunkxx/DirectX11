@@ -51,7 +51,7 @@ void CBackGround::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	if (nullptr != m_pRenderer)
-		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }
 
 HRESULT CBackGround::Render()

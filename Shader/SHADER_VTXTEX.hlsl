@@ -67,14 +67,17 @@ struct PS_IN
 
 struct PS_OUT
 {
-	float4			vColor : SV_TARGET0;
+	float4 vDiffuse : SV_TARGET0;
+	float4 vNormal	: SV_TARGET1;
+	float4 vDepth	: SV_TARGET2;
+	float4 vOutNormal : SV_TARGET3;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+	Out.vDiffuse = g_Texture.Sample(LinearSampler, In.vTexUV);
 
 	return Out;
 }
@@ -90,7 +93,7 @@ PS_OUT PS_MAIN_SOFTEFFECT(PS_IN_SOFTEFFECT In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+	Out.vDiffuse = g_Texture.Sample(LinearSampler, In.vTexUV);
 
 	float2		vDepthUV;
 
@@ -103,7 +106,7 @@ PS_OUT PS_MAIN_SOFTEFFECT(PS_IN_SOFTEFFECT In)
 
 	float		fViewZ = In.vProjPos.w;
 
-	Out.vColor.a = Out.vColor.a * saturate(fOldViewZ - fViewZ);
+	Out.vDiffuse.a = Out.vDiffuse.a * saturate(fOldViewZ - fViewZ);
 
 	return Out;
 }

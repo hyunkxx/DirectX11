@@ -105,6 +105,12 @@ HRESULT CTestPlayer::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
+	_float CamDistance = ComputeCameraLength();
+
+	int iPass = 0;
+	if (CamDistance <= 10.f)
+		iPass = 2;
+
 	// SkelParts
 	for (_uint j = 0; j < SKEL_END; ++j)
 	{
@@ -120,7 +126,7 @@ HRESULT CTestPlayer::Render()
 
 			m_pSkelParts[j]->SetUp_BoneMatrices(m_pShaderCom[SHADER_MODELANIM], "g_BoneMatrix", i);
 			
-			m_pShaderCom[SHADER_MODELANIM]->Begin(0);
+			m_pShaderCom[SHADER_MODELANIM]->Begin(iPass);
 			m_pSkelParts[j]->Render(i);
 		}
 	}
@@ -150,7 +156,7 @@ HRESULT CTestPlayer::Render()
 
 			m_pHairParts[j]->SetUp_BoneMatrices(m_pShaderCom[SHADER_MODELANIM], "g_BoneMatrix", i);
 
-			m_pShaderCom[SHADER_MODELANIM]->Begin(0);
+			m_pShaderCom[SHADER_MODELANIM]->Begin(iPass);
 
 			m_pHairParts[j]->Render(i);
 		}
@@ -182,7 +188,7 @@ HRESULT CTestPlayer::Render()
 			m_pStaticParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODEL], "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
 			m_pStaticParts[j]->SetUp_ShaderMaterialResource(m_pShaderCom[SHADER_MODEL], "g_NormalTexture", i, MyTextureType_NORMALS);
 
-			m_pShaderCom[SHADER_MODEL]->Begin(0);
+			m_pShaderCom[SHADER_MODEL]->Begin(iPass);
 
 			m_pStaticParts[i]->Render(i);
 		}
@@ -397,8 +403,7 @@ HRESULT CTestPlayer::SetUp_ShaderResources()
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-
+	
 	if (FAILED(m_pShaderCom[SHADER_MODELANIM]->SetMatrix("g_ViewMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
 		return E_FAIL;
 

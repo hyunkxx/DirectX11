@@ -122,7 +122,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	Out.vDiffuse = vMtrlDiffuse;
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 
 	return Out;
 }
@@ -144,8 +144,7 @@ PS_OUT_OUTLINE	PS_Outline(PS_IN In)
 	Out.vNormal = float4(vNormal * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 
-	if (Out.vDepth.g * 1000 < 10.f)
-		Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, In.vProjPos.w / g_Far);
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, In.vProjPos.w / g_Far);
 
 	return Out;
 }
@@ -154,7 +153,7 @@ PS_OUT_SHADOW PS_MAIN_SHADOW(VS_OUT_SHADOW In)
 {
 	PS_OUT_SHADOW Out = (PS_OUT_SHADOW)0;
 
-	Out.vShadowDepth = vector(In.vShadowDepth.z / In.vShadowDepth.w, In.vShadowDepth.w / g_Far, 0.f, 1.f);
+	Out.vShadowDepth = vector(In.vShadowDepth.z / In.vShadowDepth.w, In.vShadowDepth.w / g_Far, 0.5f, 1.f);
 
 	return Out;
 }
@@ -200,8 +199,8 @@ PS_OUT PS_MAIN_MAPOBJECT_NORMALMAP(PS_IN In)
 
 technique11 DefaultTechnique
 {
-	//아웃라인 있는 그리기
-	pass Outline
+	//아웃라인 없는 디폴트 그리기
+	pass Model
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -211,7 +210,7 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_Outline();
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
 	//그림자 맵
@@ -228,8 +227,8 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
 	}
 
-	//아웃라인 없는 디폴트 그리기
-	pass Model
+	//아웃라인 있는 그리기
+	pass Outline
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -239,7 +238,7 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
+		PixelShader = compile ps_5_0 PS_Outline();
 	}
 
 	// 3. NormalMap 이 없는 맵 객체 
