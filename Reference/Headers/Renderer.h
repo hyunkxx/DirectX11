@@ -34,6 +34,8 @@ private:
 
 	void AlphaSort(CRenderer::RENDER_GROUP eGroup);
 
+	void Target_Blur(const _tchar* TargetTag, _int BlurCount = 1);
+
 public:
 	static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg = nullptr) override;
@@ -56,6 +58,7 @@ private:
 private:
 	class CVIBuffer_Rect* m_pVIBuffer = nullptr;
 	class CShader* m_pShader = nullptr;
+	class CShader* m_pShader_Blur = nullptr;
 	_float4x4 m_FullScreenWorldMatrix, m_ViewMatrix, m_ProjMatrix;
 
 private:

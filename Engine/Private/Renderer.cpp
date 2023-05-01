@@ -62,6 +62,19 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.0f, 1.f))))
 		return E_FAIL;
 
+
+#pragma region Blur
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurY"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+
+#pragma endregion
+
 	// 디퓨즈, 노말, 뎁스
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_Diffuse")))
 		return E_FAIL;
@@ -88,12 +101,27 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_ToonShader", L"Target_Outline")))
 		return E_FAIL;
 
+#pragma region MRT_Blur
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_BlurX", L"Target_BlurX")))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_BlurY", L"Target_BlurY")))
+		return E_FAIL;
+
+#pragma endregion
+
+
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pVIBuffer)
 		return E_FAIL;
 
 	m_pShader = CShader::Create(m_pDevice, m_pContext, L"../../Shader/SHADER_DEFERRED.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount);
 	if (nullptr == m_pShader)
+		return E_FAIL;
+
+	m_pShader_Blur = CShader::Create(m_pDevice, m_pContext, L"../../Shader/SHADER_BLUR.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount);
+	if (nullptr == m_pShader_Blur)
 		return E_FAIL;
 
 	XMStoreFloat4x4(&m_FullScreenWorldMatrix,
@@ -415,6 +443,88 @@ bool Compute(Engine::CGameObject* pSourObject, Engine::CGameObject* pDestObject)
 void CRenderer::AlphaSort(CRenderer::RENDER_GROUP eGroup)
 {
 	m_RenderObject[eGroup].sort(Compute);
+}
+
+void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount)
+{
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurX")))
+		return;
+
+	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, TargetTag, "g_BlurTexture")))
+		return;
+
+	m_pShader_Blur->Begin(0);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurY")))
+		return;
+
+	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX", "g_BlurTexture")))
+		return;
+
+	m_pShader_Blur->Begin(1);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+
+	for (int i = 1; BlurCount > i; i++)
+	{
+		if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurX")))
+			return;
+
+		if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+			return;
+		if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+			return;
+		if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+			return;
+
+		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY", "g_BlurTexture")))
+			return;
+
+		m_pShader_Blur->Begin(0);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pTargetManager->End(m_pContext)))
+			return;
+
+		if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurY")))
+			return;
+
+		if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+			return;
+		if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+			return;
+		if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+			return;
+
+		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX", "g_BlurTexture")))
+			return;
+
+		m_pShader_Blur->Begin(1);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pTargetManager->End(m_pContext)))
+			return;
+	}
 }
 
 CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
