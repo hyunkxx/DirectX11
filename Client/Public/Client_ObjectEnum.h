@@ -12,5 +12,6 @@ namespace OBJECT
 		PLAYERGIRL,
 
 		OBJECT_TREE_0,
+		OBJECT_TREE_1
 	};
 }

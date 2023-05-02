@@ -9,6 +9,7 @@ class CRenderer;
 class CTexture;
 class CShader;
 class CCalculator;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -43,6 +44,7 @@ private:
 	CRenderer*			m_pRenderer = { nullptr };
 	CVIBuffer_Terrain*	m_pVIBuffer = { nullptr };
 	CCalculator*		m_pCalculator = { nullptr };
+	CNavigation*		m_pNavigation = { nullptr };
 };
 
 END

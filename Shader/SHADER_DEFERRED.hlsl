@@ -256,9 +256,6 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 		}
 	}
 
-	if (0.0f == Out.vColor.a)
-		discard;
-
 	return Out;
 }
 
@@ -329,9 +326,6 @@ PS_OUT PS_Last_Blend(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-
-	if (Out.vColor.a == 0)
-		discard;
 
 	return Out;
 }

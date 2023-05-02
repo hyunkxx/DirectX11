@@ -45,6 +45,12 @@ void CFloor::LateTick(_double TimeDelta)
 	{
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 	}
+
+
+#ifdef _DEBUG
+	//if (nullptr != m_pRenderer && nullptr != m_pNavigation)
+		//m_pRenderer->AddDebugGroup(m_pNavigation);
+#endif // _DEBUG
 }
 
 HRESULT CFloor::Render()
@@ -93,6 +99,10 @@ HRESULT CFloor::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::FLOOR,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::NAVIGATION,
+		TEXT("com_navigation"), (CComponent**)&m_pNavigation)))
 		return E_FAIL;
 
 	return S_OK;
@@ -156,4 +166,5 @@ void CFloor::Free()
 	Safe_Release(m_pShader);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pTexture);
+	Safe_Release(m_pNavigation);
 }

@@ -8,6 +8,7 @@ class CTransform;
 class CRenderer;
 class CTexture;
 class CShader;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -41,6 +42,7 @@ private:
 	CTexture*			m_pTexture = { nullptr };
 	CRenderer*			m_pRenderer = { nullptr };
 	CVIBuffer_Terrain*	m_pVIBuffer = { nullptr };
+	CNavigation*		m_pNavigation = { nullptr };
 };
 
 END

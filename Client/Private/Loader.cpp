@@ -8,7 +8,7 @@
 #include "PlayerGirl.h"
 
 #include "Tree_0.h"
-
+#include "Tree_1.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -110,16 +110,20 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON_ACTION, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/nvzhu/nvzhu_Ribbon_Action.dmdl")))))
 		return E_FAIL;
 
-
 #pragma region MODEL_INSTANCE_TREE
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_0, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Trees/0/SM_Com_Tre_02AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Tree_0.data")))))
+		TEXT("../../Resource/Model/Static/Map/Object/Trees/0/SM_Com_Tre_01AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Tree_0.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : MODEL_INSTANCE");
+		MSG_BOX("Failed to Prototype In Loader : Tree_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_1, CModel_Instance_Tree1::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Trees/1/SM_Com_Tre_02AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Tree_1.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : Tree_1");
 		return E_FAIL;
 	}
 #pragma endregion MODEL_INSTANCE_TREE
-
 
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
@@ -155,6 +159,8 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 #pragma region MAP_OBJECT_TREE
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_0, CTree_0::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_1, CTree_1::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion MAP_OBJECT_TREE
 

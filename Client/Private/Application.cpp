@@ -58,6 +58,14 @@ HRESULT CApplication::Initialize()
 	//콜라이더 보이기/숨기기
 	m_pGameInstance->SetCollisionDebugRender(true);
 
+#ifdef _DEBUG
+	if (nullptr == m_pGameInstance)
+		return E_FAIL;
+	m_pNavigation = static_cast<CNavigation*>(m_pGameInstance->Clone_Component(LEVEL_STATIC, COMPONENT::NAVIGATION));
+	if (nullptr == m_pNavigation)
+		return E_FAIL;
+#endif // _DEBUG
+
 	return S_OK;
 }
 
@@ -89,6 +97,12 @@ HRESULT CApplication::Render()
 
 	m_pRenderer->Draw();
 	m_pGameInstance->CollisionRender();
+
+	
+#ifdef _DEBUG
+	if (FAILED(m_pNavigation->Render(0.10f)))
+		return E_FAIL;
+#endif // _DEBUG
 
 #ifdef _DEBUG
 	m_pGUIManager->RenderDrawData();
@@ -200,6 +214,11 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		CCalculator::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	// TEXT("../../Data/GamePlay/Navigation/Navigation.data")
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::NAVIGATION,
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Navigation/Navigation.data")))))
+		return E_FAIL;
+
 	Safe_AddRef(m_pRenderer);
 
 	return S_OK;
@@ -255,9 +274,15 @@ void CApplication::Free()
 
 	Safe_Release(m_pRenderer);
 
+#ifdef _DEBUG
+	Safe_Release(m_pNavigation);
+#endif // _DEBUG
+
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 
 	Safe_Release(m_pGameInstance);
 	CGameInstance::Engine_Release();
+
+
 }

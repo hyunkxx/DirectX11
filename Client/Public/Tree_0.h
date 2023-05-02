@@ -8,7 +8,6 @@ class CRenderer;
 class CShader;
 class CTransform;
 class CModel_Instance;
-class CCollider;
 END
 
 BEGIN(Client)
@@ -37,7 +36,6 @@ private:
 	CShader*			m_pShaderCom = { nullptr };
 	CTransform*			m_pTransformCom = { nullptr };
 	CModel_Instance*	m_pModelCom = { nullptr };
-	CCollider*			m_pColliderCom = { nullptr };
 
 private:
 	_uint				m_iAnimID = { 0 };

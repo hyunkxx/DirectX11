@@ -253,7 +253,14 @@ namespace Engine
 		XMFLOAT3		vS = {};
 		XMFLOAT3		vA = {};
 	}SOBJECT_DESC;
-
 #pragma endregion STATIC_OBJECT
+
+#pragma region NAVIGATION
+	typedef struct tagNaviPoint_Desc
+	{
+		XMFLOAT3						vP[3] = {};
+		int								iCell_State = {};
+	}NAVIPOINT_DESC;
+#pragma endregion NAVIGATION
 
 }

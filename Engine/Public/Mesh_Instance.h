@@ -49,7 +49,7 @@ public:
 	_float3 GetPosition_To_InstanceMatrix(_uint iGetNum);
 
 public:
-	void GetOn_Terrain();
+	//void GetOn_Terrain();
 
 private:
 	_uint							m_iStrideInstance = { 0 };

@@ -44,10 +44,6 @@ void CTree_0::Start()
 void CTree_0::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-
-	CGameInstance* pGI = CGameInstance::GetInstance();
-	pGI->AddCollider(m_pColliderCom, COLLISION_LAYER::COLL_BASE);
-	m_pColliderCom->Update(XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
 }
 
 void CTree_0::LateTick(_double TimeDelta)
@@ -149,16 +145,6 @@ HRESULT CTree_0::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	// ¿øÁ¡È®ÀÎ¿ëÀ¸·Î ³Àµ×À½
-	CCollider::COLLIDER_DESC CollDesc;
-	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 0.f, 0.f };
-	CollDesc.vExtents = { 4.f, 4.f, 4.f };
-	CollDesc.vRotation = { 0.f, 0.f, 0.f };
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
-		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &CollDesc)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -232,5 +218,4 @@ void CTree_0::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pColliderCom);
 }

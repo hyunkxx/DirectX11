@@ -7,6 +7,7 @@ namespace SMODEL
 	{
 		SMD_TEST = 3000,
 		SMD_TREE_0,
+		SMD_TREE_1,
 		SMD_END
 	};
 }

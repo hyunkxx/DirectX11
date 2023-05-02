@@ -138,6 +138,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_1, pLayerTag, TEXT("ObjectTree"))))
+	{
+		MSG_BOX("Failed to AddGameObject In GamePlay : ObjectTree");
+		return E_FAIL;
+	}
+
 	return S_OK;
 }
 

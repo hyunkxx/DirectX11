@@ -212,6 +212,7 @@
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\PlayerGirl.h" />
     <ClInclude Include="..\Public\Tree_0.h" />
+    <ClInclude Include="..\Public\Tree_1.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="Resource.h" />
@@ -265,6 +266,7 @@
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\PlayerGirl.cpp" />
     <ClCompile Include="..\Private\Tree_0.cpp" />
+    <ClCompile Include="..\Private\Tree_1.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -284,9 +286,8 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\..\..\..\..\바탕 화면\EffectTool - 복사본\Shader\Shader_SkillModel.hlsl" />
-    <FxCompile Include="..\..\..\..\..\..\바탕 화면\EffectTool - 복사본\Shader\Shader_VtxPointInstance.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_BLUR.hlsl" />
+    <FxCompile Include="..\..\Shader\SHADER_CELL.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_DEFERRED.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_GROUD.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_PHONG.hlsl">
@@ -294,12 +295,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Shader\SHADER_EXTRACTION.hlsl" />
+    <FxCompile Include="..\..\Shader\Shader_SkillModel.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_SSAO.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXCUBE.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXMODEL.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXMODELANIM.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXMODEL_INSTANCE.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXNORTEX.hlsl" />
+    <FxCompile Include="..\..\Shader\Shader_VtxPointInstance.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXTEX.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

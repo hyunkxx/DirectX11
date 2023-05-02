@@ -5,6 +5,10 @@
 BEGIN(Engine)
 class CGameInstance;
 class CRenderer;
+
+#ifdef _DEBUG
+class CNavigation;
+#endif // _DEBUG
 END
 
 BEGIN(Client)
@@ -44,6 +48,10 @@ private:
 	CGameInstance*				m_pGameInstance = { nullptr };
 
 	CRenderer*					m_pRenderer = { nullptr };
+
+#ifdef _DEBUG
+	CNavigation*				m_pNavigation = { nullptr };
+#endif // _DEBUG
 
 #ifdef _DEBUG
 	class CGUIManager*			m_pGUIManager = { nullptr };
