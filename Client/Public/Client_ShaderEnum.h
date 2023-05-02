@@ -7,10 +7,12 @@ namespace SHADER
 	enum
 	{
 		VTXTEX = 1000,
+		POINT_INST,
 		VTXCUBE,
 		VTXNORTEX,
 		MODEL,
 		MODELANIM,
+		SKILL_MODEL,
 		GROUD,
 		PHONG,
 

@@ -177,6 +177,7 @@
     <ClInclude Include="..\public\CustomFont.h" />
     <ClInclude Include="..\Public\CustomVector.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
+    <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
     <ClInclude Include="..\Public\Engine_Enum.h" />
     <ClInclude Include="..\Public\Engine_Macro.h" />
@@ -223,6 +224,7 @@
     <ClInclude Include="..\public\Transform.h" />
     <ClInclude Include="..\public\VIBuffer.h" />
     <ClInclude Include="..\public\VIBuffer_Cube.h" />
+    <ClInclude Include="..\Public\VIBuffer_Particle.h" />
     <ClInclude Include="..\public\VIBuffer_Rect.h" />
     <ClInclude Include="..\public\VIBuffer_Terrain.h" />
     <ClInclude Include="..\public\VIBuffer_Triangle.h" />
@@ -241,6 +243,7 @@
     <ClCompile Include="..\private\Component_Manager.cpp" />
     <ClCompile Include="..\private\CustomFont.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp" />
+    <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Engine_Struct.cpp" />
     <ClCompile Include="..\private\FontManager.cpp" />
     <ClCompile Include="..\private\Frustum.cpp" />
@@ -273,6 +276,7 @@
     <ClCompile Include="..\private\Transform.cpp" />
     <ClCompile Include="..\private\VIBuffer.cpp" />
     <ClCompile Include="..\private\VIBuffer_Cube.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_Particle.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect.cpp" />
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp" />
     <ClCompile Include="..\private\VIBuffer_Triangle.cpp" />

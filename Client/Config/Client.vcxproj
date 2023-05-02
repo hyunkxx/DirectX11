@@ -199,6 +199,7 @@
     <ClInclude Include="..\Public\Client_ShaderEnum.h" />
     <ClInclude Include="..\Public\Client_TextureEnum.h" />
     <ClInclude Include="..\public\DynamicCamera.h" />
+    <ClInclude Include="..\Public\Effect_Player.h" />
     <ClInclude Include="..\public\GameMode.h" />
     <ClInclude Include="..\Public\GUIManager.h" />
     <ClInclude Include="..\public\InGameLoader.h" />
@@ -206,6 +207,8 @@
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\public\Loader.h" />
+    <ClInclude Include="..\Public\Mesh_Effect_P.h" />
+    <ClInclude Include="..\Public\Particle_Effect_P.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\PlayerGirl.h" />
     <ClInclude Include="..\Public\Tree_0.h" />
@@ -249,6 +252,7 @@
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\DynamicCamera.cpp" />
+    <ClCompile Include="..\Private\Effect_Player.cpp" />
     <ClCompile Include="..\private\GameMode.cpp" />
     <ClCompile Include="..\Private\GUIManager.cpp" />
     <ClCompile Include="..\private\InGameLoader.cpp" />
@@ -256,6 +260,8 @@
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
+    <ClCompile Include="..\Private\Mesh_Effect_P.cpp" />
+    <ClCompile Include="..\Private\Particle_Effect_P.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\PlayerGirl.cpp" />
     <ClCompile Include="..\Private\Tree_0.cpp" />
@@ -278,6 +284,8 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\..\..\..\..\..\바탕 화면\EffectTool - 복사본\Shader\Shader_SkillModel.hlsl" />
+    <FxCompile Include="..\..\..\..\..\..\바탕 화면\EffectTool - 복사본\Shader\Shader_VtxPointInstance.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_BLUR.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_DEFERRED.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_GROUD.hlsl" />

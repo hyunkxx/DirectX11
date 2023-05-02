@@ -66,6 +66,12 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.0f, 1.f))))
 		return E_FAIL;
 
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAO"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+
+
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX"), ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
@@ -74,9 +80,18 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
-	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAO"), ViewPortDesc.Width, ViewPortDesc.Height,
-		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_Blend"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 1.f, 0.f))))
 		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_Glow"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_Glow_Result"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 
 	// 디퓨즈, 노말, 뎁스
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_Diffuse")))
@@ -105,10 +120,20 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_ToonShader", L"Target_Outline")))
 		return E_FAIL;
 	
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Blend", L"Target_Blend")))
+		return E_FAIL;
+
 	// 블러
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_BlurX", L"Target_BlurX")))
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_BlurY", L"Target_BlurY")))
+		return E_FAIL;
+
+	//Glow
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Glow", L"Target_Glow")))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Glow_Result", L"Target_Glow_Result")))
 		return E_FAIL;
 
 	// SSAO
@@ -166,6 +191,14 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_SSAO"), 150, 150.f, 100.f, 100.f)))
 		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Glow"), 150, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Blend"), 150, 350.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Glow_Result"), 150, 450.f, 100.f, 100.f)))
+		return E_FAIL;
+
 #endif
 
 	m_pNoiseTexture = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/Mask/noise.jpg");
@@ -201,7 +234,13 @@ void CRenderer::Draw()
 	Target_Blur(L"Target_Shadow", 2);
 	Extraction(L"Target_Shadow", L"Target_BlurY");
 
+	Render_Particle();
+
 	Render_Blend();
+	
+	Render_Glow();
+	Render_Glow_Blend();
+
 	Render_NonLight();
 	Render_AlphaBlend();
 	Render_UI();
@@ -220,6 +259,10 @@ void CRenderer::Draw()
 	m_pTargetManager->Render(TEXT("MRT_ToonShader"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_SSAO"), m_pShader, m_pVIBuffer);
+
+	m_pTargetManager->Render(TEXT("MRT_Glow"), m_pShader, m_pVIBuffer);
+	m_pTargetManager->Render(TEXT("MRT_Glow_Result"), m_pShader, m_pVIBuffer);
+	m_pTargetManager->Render(TEXT("MRT_Blend"), m_pShader, m_pVIBuffer);
 #endif
 
 }
@@ -341,6 +384,25 @@ void CRenderer::Render_Outline()
 		return;
 }
 
+void CRenderer::Render_Particle()
+{
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Glow")))
+		return;
+
+	for (auto& pGameObject : m_RenderObject[RENDER_PARTICLE])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObject[RENDER_PARTICLE].clear();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+}
+
 void CRenderer::Render_Shadow()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -381,6 +443,9 @@ void CRenderer::Render_Shadow()
 
 void CRenderer::Render_Blend()
 {
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Blend")))
+		return;
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CLightManager* pLighrManager = CLightManager::GetInstance();
 	CPipeLine* pPipeline = CPipeLine::GetInstance();
@@ -407,7 +472,62 @@ void CRenderer::Render_Blend()
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Shadow"), "g_ShadowTexture")))
 		return;
 
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Glow"), "g_GlowTexture")))
+		return;
+
 	m_pShader->Begin(3);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+}
+
+void CRenderer::Render_Glow()
+{
+	Target_Blur(L"Target_Glow", 5);
+
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Glow_Result")))
+		return;
+
+	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_Blend", "g_finalTexture")))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_Glow", "g_GlowOriTexture")))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY", "g_GlowTexture")))
+		return;
+
+	m_pShader_Blur->Begin(3);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+
+}
+
+void CRenderer::Render_Glow_Blend()
+{
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Glow_Result", "g_DiffuseTexture")))
+		return;
+
+	m_pShader->Begin(6);
 	m_pVIBuffer->Render();
 }
 

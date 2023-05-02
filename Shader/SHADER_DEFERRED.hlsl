@@ -18,6 +18,8 @@ texture2D g_LightPosTexture;
 texture2D g_OutNormalTexture;
 texture2D g_OutlineTexture;
 		  
+texture2D g_GlowTexture;
+
 vector	  g_vCamPosition;
 		  
 vector	  g_vLightDir;
@@ -222,17 +224,36 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
 	vector vOutNormal = g_OutNormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vShadow = g_ShadowTexture.Sample(LinearSampler, In.vTexUV);
-	
+	vector vGlowColor = g_GlowTexture.Sample(LinearSampler, In.vTexUV);
+
 	//1.6~1.75น่
 	float4 vFinalColor = (vDiffuse * (vShade * 1.7f));
-	if (vOutNormal.a == 1.f)
+	if (vGlowColor.a != 0.f)
 	{
-		float vOutline = g_OutlineTexture.Sample(PointSampler, In.vTexUV).r;
-		Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r;
+		if (vOutNormal.a == 1.f)
+		{
+			float vOutline = g_OutlineTexture.Sample(PointSampler, In.vTexUV).r;
+			float4 vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r;
+			Out.vColor.rgb = vColor.rgb * (1.f - vGlowColor.a) + vGlowColor.rgb * vGlowColor.a;
+			Out.vColor.a = 1.f;
+		}
+		else
+		{
+			Out.vColor.rgb = vFinalColor * vShadow.r  * (1.f - vGlowColor.a) + +vGlowColor.rgb * vGlowColor.a;
+			Out.vColor.a = (vFinalColor * vShadow.r).a;
+		}
 	}
 	else
 	{
-		Out.vColor = vFinalColor * vShadow.r;
+		if (vOutNormal.a == 1.f)
+		{
+			float vOutline = g_OutlineTexture.Sample(PointSampler, In.vTexUV).r;
+			Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r + float4(vGlowColor.rgb, 0.f);
+		}
+		else
+		{
+			Out.vColor = vFinalColor * vShadow.r + float4(vGlowColor.rgb, 0.f);
+		}
 	}
 
 	if (0.0f == Out.vColor.a)
@@ -301,6 +322,21 @@ PS_OUT PS_Outline(PS_IN In)
 
 	return Out;
 }
+
+
+PS_OUT PS_Last_Blend(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (Out.vColor.a == 0)
+		discard;
+
+	return Out;
+}
+
+
 
 technique11 DefaultTechnique
 {
@@ -380,5 +416,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Shadow();
+	}
+
+	pass Last_Blend
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Last_Blend();
 	}
 }
