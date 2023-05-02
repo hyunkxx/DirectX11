@@ -214,6 +214,14 @@ CGameObject* CGameInstance::Find_GameObject(_uint iLevelIndex, const _tchar* pLa
 	return pGameObject;
 }
 
+CGameObject * CGameInstance::Clone_GameObject(_int iObjectEnum, void * pArg)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+
+	m_pObject_Manager->Clone_GameObject(iObjectEnum, pArg);
+}
+
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, _int iComponent, CComponent * pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)

@@ -51,6 +51,21 @@ HRESULT CObject_Manager::Add_GameObject(_uint iLevelIndex, _int iObjectEnum, con
 	return S_OK;
 }
 
+CGameObject * CObject_Manager::Clone_GameObject(_int iObjectEnum, void * pArg)
+{
+	CGameObject* pPrototype = Find_Prototype(iObjectEnum);
+
+	if (nullptr == pPrototype)
+		return nullptr;
+
+	CGameObject* pGameObject = pPrototype->Clone(pArg);
+
+	if (nullptr == pGameObject)
+		return nullptr;
+
+	return pGameObject;
+}
+
 CGameObject * CObject_Manager::Find_GameObject(_uint iLevelIndex, const _tchar * pObjectTag)
 {
 	CGameObject* pGameObject = nullptr;
