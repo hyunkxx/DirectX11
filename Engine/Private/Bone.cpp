@@ -8,7 +8,6 @@ CBone::CBone()
 
 CBone::CBone(const CBone & rhs)
 	: m_DefaultTransformationMatrix(rhs.m_DefaultTransformationMatrix)
-	, m_PoseTransformationMatrix(rhs.m_PoseTransformationMatrix)
 	, m_TransformationMatrix(rhs.m_TransformationMatrix)
 	, m_OffsetMatrix(rhs.m_OffsetMatrix)
 	, m_CombinedTransformationMatrix(rhs.m_CombinedTransformationMatrix)
@@ -25,13 +24,9 @@ HRESULT CBone::Initialize(BONEINFO * pBoneInfo)
 	lstrcpy(m_szName, pBoneInfo->s_szName);
 	memcpy(&m_DefaultTransformationMatrix, &pBoneInfo->s_TransformationMatrix, sizeof(_float4x4));
 	memcpy(&m_TransformationMatrix, &pBoneInfo->s_TransformationMatrix, sizeof(_float4x4));
-	memcpy(&m_PoseTransformationMatrix, &pBoneInfo->s_TransformationMatrix, sizeof(_float4x4));
 	memcpy(&m_OffsetMatrix, &pBoneInfo->s_OffsetMatrix, sizeof(_float4x4));
 	XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMMatrixIdentity());
 	m_bAnim = pBoneInfo->s_bAnim;
-
-	if (lstrcmp(m_szName, TEXT("Bip001Head")))
-		m_bAnim = true;
 
 	return S_OK;
 }
@@ -61,14 +56,6 @@ void CBone::Invalidate_CombinedMatrix()
 		XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMLoadFloat4x4(&m_DefaultTransformationMatrix) * XMLoadFloat4x4(&m_pParent->Get_CombinedTransfromationMatrix()));
 }
 
-void CBone::Update_TargetBone_Pose()
-{
-	if (nullptr != m_pTargetBone)
-	{
-		m_pTargetBone->Set_PoseTransformationMatrix(XMLoadFloat4x4(&m_TransformationMatrix));
-	}
-}
-
 void CBone::Update_TargetBone()
 {
 	if (nullptr != m_pTargetBone)
@@ -77,17 +64,11 @@ void CBone::Update_TargetBone()
 	}
 }
 
-void CBone::Ribbon_TargetBone_Pose()
-{
-	if (nullptr != m_pTargetBone)
-		m_pTargetBone->Set_PoseTransformationMatrix(XMLoadFloat4x4(&m_pTargetBone->Get_PoseTransformationMatrix()) * XMLoadFloat4x4(&m_TransformationMatrix));
-}
-
 void CBone::Ribbon_TargetBone()
 {
 	if (nullptr != m_pTargetBone)
 	{
-		m_pTargetBone->Set_TransformationMatrix(XMLoadFloat4x4(&m_pTargetBone->Get_PoseTransformationMatrix()) * XMLoadFloat4x4(&m_TransformationMatrix));
+		m_pTargetBone->Set_TransformationMatrix(XMLoadFloat4x4(&m_pTargetBone->Get_DefaultTransformationMatrix()) * XMLoadFloat4x4(&m_TransformationMatrix));
 	}
 }
 

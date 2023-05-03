@@ -4,6 +4,7 @@
 #include "GameMode.h"
 #include "AppManager.h"
 #include "GUIManager.h"
+#include "AnimToolManager.h"
 
 #include "GameInstance.h"
 #include "Level_Loading.h"
@@ -18,6 +19,7 @@ CApplication::CApplication()
 	: m_pGameInstance { CGameInstance::GetInstance() }
 #ifdef _DEBUG
 	, m_pGUIManager(CGUIManager::GetInstance())
+	, m_pAnimToolManager {CAnimToolManager::GetInstance()}
 #endif
 {
 	Safe_AddRef(m_pGameInstance);
@@ -88,6 +90,7 @@ HRESULT CApplication::Render()
 #ifdef _DEBUG
 	m_pGUIManager->NewFrame();
 	m_pGameInstance->RenderGUI();
+	m_pGameInstance->RenderLevelUI();
 	m_pGUIManager->Render();
 	m_pContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
 #endif
@@ -240,7 +243,7 @@ HRESULT CApplication::InitializeManager()
 {
 	CAppManager::GetInstance();
 	CGameMode::GetInstance();
-
+	m_pAnimToolManager->Init_AnimToolManager(m_pDevice, m_pContext);
 	return S_OK;
 }
 
@@ -248,6 +251,9 @@ void CApplication::DestroyManager()
 {
 #ifdef _DEBUG
 	m_pGUIManager->Shutdown();
+
+	m_pAnimToolManager = nullptr;
+	CAnimToolManager::DestroyInstance();
 #endif
 
 	CAppManager::DestroyInstance();

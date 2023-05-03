@@ -16,3 +16,12 @@ extern HINSTANCE g_hInst;
 extern HWND g_hWnd;
 
 using namespace Client;
+
+// AnimTool
+extern int g_iGUIID;
+
+#define VTFID(p) p - OBJECT::TESTVTF_BEGIN
+#define VTFENUM(p) p + OBJECT::TESTVTF_BEGIN
+
+#define GENERICID(p) p - OBJECT::TESTGENERIC_BEGIN
+#define GENERICENUM(p) p + OBJECT::TESTGENERIC_BEGIN

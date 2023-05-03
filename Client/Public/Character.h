@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "Client_Defines.h"
+#include "StateKey.h"
 
 BEGIN(Client)
 
@@ -15,7 +16,7 @@ public:
 		ANIMSET_END
 	};
 
-	enum PlayersSharedStates
+	enum PlayerCharacterSharedStates
 	{
 		// 이동 - 걷기
 		SS_WALK_F,
@@ -185,8 +186,7 @@ public:
 
 	typedef struct tagMultiAnimStateInfo
 	{
-		_int iPoseID[ANIMSET_END];
-		_int iActionID[ANIMSET_END];
+		_int iAnimID[ANIMSET_END];
 		//
 		_int iNextState;
 		_int iRotationType;
@@ -198,8 +198,10 @@ public:
 		_int iWeaponPosition;
 		_float CoolTime;
 		_int pPhysicMoveID; // RootMotion이 false 일 경우 사용할 등가속 운동 움직임 ID
-		_int iEnterPriority; // 진입 우선순위
-		_int iLeavePriority; // 이탈 우선순위
+		_int iPriority; // 우선순위
+		// StateKeys
+		_int iKeyCount;
+		CStateKey** ppStateKeys;
 	}MULTISTATE;
 
 	typedef struct tagSingleAnimStateInfo
@@ -216,16 +218,22 @@ public:
 		_int iWeaponPosition;
 		_float CoolTime;
 		_int pPhysicMoveID; // RootMotion이 false 일 경우 사용할 등가속 운동 움직임 ID
+		_int iPriority;
+		// StateKeys
+		_int iKeyCount;
+		CStateKey** ppStateKeys;
 	}SINGLESTATE;
 
 	typedef struct tagPhysicMove
 	{
-		_bool	bInitMovement;		// true == 운동 시작 시, InitDir/Force 적용, false == 운동 시작 시, 직전 운동 상태 유지
-		_bool	bConstant;			// true == 등속 운동, 시작 운동 상태를 그대로 유지, false == 가속도 적용
-		_float3 vInitDir;
-		_float	fInitForce;
-		_float	fHorizontalMaxSpeed;	// 가로축(XZ) 최대 속도, 
-		_float	fVerticalMinSpeed;		// 세로축(Y) 최저 속도, 낙하하기 때문에 -Value
+		_bool	bInitMovement;			// true == 운동 시작 시, InitDir/Force 적용, false == 운동 시작 시, 직전 운동 상태 유지
+		_bool	bConstant;				// true == 등속 운동, 시작 운동 상태가 변하지 않음, false == 운동 상태가 변함
+		_float3 vInitDir;				// 시작 운동 방향 Normalized
+		_float	fInitForce;				// 시작 운동 속도
+		_float	fHorizontalAtten;		// 가로축 운동 속도 감쇄율 - 마찰
+		_float	fVerticalAccel;			// 세로축 가속도 - 중력
+		_float	fHorizontalMaxSpeed;	// 가로축(XZ) 최대 속도 절대값
+		_float	fVerticalMaxSpeed;		// 세로축(Y) 최대 속도 절대값
 	}PHYSICMOVE;
 
 protected:
@@ -242,6 +250,7 @@ public:
 	virtual HRESULT Render();
 	virtual HRESULT RenderShadow();
 	virtual void RenderGUI();
+	virtual const char* Get_StateTag(_uint iIndex) { return nullptr; }
 
 	static const char szSharedStateTag[SS_END][MAX_PATH];
 

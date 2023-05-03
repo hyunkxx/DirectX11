@@ -49,6 +49,8 @@ private:
 
 	CRenderer*					m_pRenderer = { nullptr };
 
+	class CAnimToolManager*		m_pAnimToolManager = { nullptr };
+
 #ifdef _DEBUG
 	CNavigation*				m_pNavigation = { nullptr };
 #endif // _DEBUG

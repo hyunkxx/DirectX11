@@ -15,14 +15,8 @@ public:
 	const _tchar* Get_Name() const { return m_szName; }
 
 	const _float4x4& Get_DefaultTransformationMatrix() { return m_DefaultTransformationMatrix; }
-	const _float4x4& Get_PoseTransformationMatrix() { return m_PoseTransformationMatrix; }
 	const _float4x4& Get_TransformationMatrix() { return m_TransformationMatrix; }
 	const _float4x4& Get_CombinedTransfromationMatrix() { return m_CombinedTransformationMatrix; }
-
-	void Reset_Pose()
-	{
-		m_PoseTransformationMatrix = m_DefaultTransformationMatrix;
-	}
 
 	void Set_OffsetMatrix(_fmatrix OffsetMatrix)
 	{
@@ -31,11 +25,6 @@ public:
 
 	_float4x4 Get_OffsetMatrix()	const {
 		return m_OffsetMatrix;
-	}
-
-	void Set_PoseTransformationMatrix(_fmatrix RibbonMatrix)
-	{
-		XMStoreFloat4x4(&m_PoseTransformationMatrix, RibbonMatrix);
 	}
 
 	void	Set_TransformationMatrix(_fmatrix matTransform)
@@ -83,16 +72,13 @@ public:
 	HRESULT	Set_ParentBone(CBone*	pParent);
 	void	Invalidate_CombinedMatrix();
 
-	void Update_TargetBone_Pose();
 	void Update_TargetBone();
-	void Ribbon_TargetBone_Pose();
 	void Ribbon_TargetBone();
 
 private:
 	_tchar m_szName[MAX_PATH] = TEXT("");
 	_float4x4 m_OffsetMatrix;
 	_float4x4 m_DefaultTransformationMatrix;
-	_float4x4 m_PoseTransformationMatrix;
 	_float4x4 m_TransformationMatrix;
 	_float4x4 m_CombinedTransformationMatrix;
 	CBone* m_pParent = { nullptr };

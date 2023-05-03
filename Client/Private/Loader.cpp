@@ -6,9 +6,13 @@
 #include "Floor.h"
 
 #include "PlayerGirl.h"
+#include "Parts.h"
 
 #include "Tree_0.h"
 #include "Tree_1.h"
+
+//AnimTool
+#include "AnimToolManager.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -31,6 +35,9 @@ unsigned int APIENTRY ThreadEntry(void* pArg)
 		break;
 	case LEVEL_GAMEPLAY:
 		pLoader->Load_Level_GamePlay();
+		break;
+	case LEVEL_ANIMTOOL:
+		pLoader->Load_Level_AnimTool();
 		break;
 	}
 
@@ -95,16 +102,19 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
 
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
+	// SMODEL
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Sword01/Sword01_Sword.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SWORD_0_SCABBARD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Sword01/Sword01_Scabbard.smdl")))))
+		return E_FAIL;
+
+
+	// DMODEL
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/nvzhu/nvzhu.dmdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE_POSE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/nvzhu/nvzhu_Base_Pose.dmdl")))))
-		return E_FAIL;
-
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE_ACTION, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/nvzhu/nvzhu_Base_Action.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON_POSE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/nvzhu/nvzhu_Ribbon_Pose.dmdl")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON_ACTION, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/nvzhu/nvzhu_Ribbon_Action.dmdl")))))
@@ -157,12 +167,89 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYERGIRL, CPlayerGirl::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SWORD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SWORD))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SCABBARD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SCABBARD))))
+		return E_FAIL;
+
 #pragma region MAP_OBJECT_TREE
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_0, CTree_0::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_1, CTree_1::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion MAP_OBJECT_TREE
+
+#pragma endregion
+
+	m_szLoadingStateText = L"Load Completed";
+	m_isFinish = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Load_Level_AnimTool()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CAnimToolManager* pAnimTool = CAnimToolManager::GetInstance();
+
+	//GamePlay Component
+#pragma region COMPONENTS
+	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
+
+	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+
+	m_szLoadingStateText = L"모델를 로딩중입니다.";
+
+	// SModel
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Sword01/Sword01_Sword.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_0_SCABBARD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Sword01/Sword01_Scabbard.smdl")))))
+		return E_FAIL;
+
+
+	// DModel
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/nvzhu/nvzhu.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE_ACTION, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/nvzhu/nvzhu_Base_Action.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON_ACTION, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/nvzhu/nvzhu_Ribbon_Action.dmdl")))))
+		return E_FAIL;
+
+
+
+	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+#pragma endregion
+
+	//GamePlay GameObject
+#pragma region GAMEOBJECTS
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/*if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_NULL, CTestGeneric::Create(m_pDevice, m_pContext))))
+		return E_FAIL;*/
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_PLAYERGIRL, CPlayerGirl::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MLB_VTF, VTFID(OBJECT::TESTVTF_PLAYERGIRL), TEXT("TestPlayerGirl"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SWORD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SWORD))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SCABBARD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SCABBARD))))
+		return E_FAIL;
+
 
 #pragma endregion
 

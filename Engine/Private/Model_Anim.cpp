@@ -285,36 +285,11 @@ void CModel_Anim::Invalidate_CombinedMatrices()
 	}
 }
 
-void CModel_Anim::Reset_Pose()
-{
-	for (auto& pBone : m_Bones)
-	{
-		pBone->Reset_Pose();
-	}
-}
-
-void CModel_Anim::Update_TargetBones_Pose()
-{
-	for (auto& pBone : m_Bones)
-	{
-		pBone->Update_TargetBone_Pose();
-	}
-}
-
 void CModel_Anim::Update_TargetBones()
 {
 	for (auto& pBone : m_Bones)
 	{
 		pBone->Update_TargetBone();
-	}
-}
-
-
-void CModel_Anim::Ribbon_TargetBones_Pose()
-{
-	for (auto& pBone : m_Bones)
-	{
-		pBone->Ribbon_TargetBone_Pose();
 	}
 }
 

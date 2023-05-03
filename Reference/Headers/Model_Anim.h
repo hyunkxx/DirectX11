@@ -92,10 +92,7 @@ public:
 	_float3 Play_Animation(_double TimeDelta, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr, _bool bContinue = false); /* 애니메이션 재생한다.(모든 뼈들의 Combined행렬을 셋팅한다) */
 	void	Invalidate_CombinedMatrices();
 
-	void	Reset_Pose();
-	void	Update_TargetBones_Pose();
 	void	Update_TargetBones();
-	void	Ribbon_TargetBones_Pose();
 	void	Ribbon_TargetBones();
 
 protected:
