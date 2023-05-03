@@ -12,6 +12,7 @@ protected:
 	virtual ~CModel() = default;
 
 public:
+	const _tchar* Get_MeshName(_uint iMeshIndex);
 	_uint	Get_NumMeshes() { return m_iNumMeshes; }
 	_matrix	Get_LocalMatrix() { return XMLoadFloat4x4(&m_LocalMatrix); }
 	void	Set_LocalMatrix(_fmatrix LocalMatrix) { XMStoreFloat4x4(&m_LocalMatrix, LocalMatrix); }

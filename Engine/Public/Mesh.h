@@ -22,9 +22,9 @@ public:
 		return m_iMaterialIndex;
 	}
 
+	const _tchar* Get_Name() { return m_szName; }
 	void Get_BoneMatrices(_float4x4* pMeshBoneMatrices, CModel_Anim* Model);
 	void Get_BoneMatrices_VTF(_float4x4* pMeshBoneMatrices, CModel_Anim* Model);
-
 private:
 	_tchar	m_szName[MAX_PATH] = TEXT("");
 	_uint	m_iMaterialIndex = { 0 };

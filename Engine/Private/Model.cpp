@@ -30,6 +30,11 @@ CModel::CModel(const CModel & rhs)
 	}
 }
 
+const _tchar * CModel::Get_MeshName(_uint iMeshIndex)
+{
+	return m_Meshes[iMeshIndex]->Get_Name();
+}
+
 HRESULT CModel::Initialize_Prototype(const _tchar* pModelFilePath)
 {
 	HANDLE		hFile = CreateFile(pModelFilePath,		// 파일 경로와 이름을 명시

@@ -228,14 +228,13 @@ PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
 {
 	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
 
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	float3	 vNormal = vNormalDesc.xyz * 2.f - 1.f;
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
 
-	if (0.1f >= vMtrlDiffuse.a)
-		discard;
+	vMtrlDiffuse.a = 1.f;
 
 	Out.vDiffuse = vMtrlDiffuse;
 	Out.vNormal = float4(vNormal * 0.5f + 0.5f, 0.f);
@@ -248,19 +247,35 @@ PS_OUT_OUTLINE PS_Outline(PS_IN In)
 {
 	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
 
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	float3	 vNormal = vNormalDesc.xyz * 2.f - 1.f;
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
 
-	if (0.1f >= vMtrlDiffuse.a)
-		discard;
+	vMtrlDiffuse.a = 1.f;
 
 	Out.vDiffuse = vMtrlDiffuse;
 	Out.vNormal = float4(vNormal * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	return Out;
+}
+
+PS_OUT_OUTLINE PS_Eye(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+
+	vMtrlDiffuse.a = 1.f;
+
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+	Out.vNormal	= vector(1.f, 1.f, 1.f, 0.f);
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
 	return Out;
@@ -353,5 +368,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
+	}
+
+	pass VTF_Eye_6
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_VTF();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Eye();
 	}
 }

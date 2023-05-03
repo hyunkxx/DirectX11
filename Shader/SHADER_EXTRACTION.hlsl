@@ -47,7 +47,7 @@ PS_OUT PS_EXTRACTION(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	Out.vColor = g_SourTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor = g_SourTexture.Sample(LinearBorderSampler, In.vTexUV);
 
 	return Out;
 }

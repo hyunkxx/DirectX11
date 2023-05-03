@@ -44,6 +44,36 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	pGameInstance->ShadowUpdate();
 
+	//임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것
+	static _uint iShadowLevel = 0;
+	if (pGameInstance->InputKey(DIK_0) == KEY_STATE::TAP)
+	{
+		iShadowLevel++;
+		if (iShadowLevel > 2)
+			iShadowLevel = 0;
+
+		pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)iShadowLevel);
+	}
+
+	if (pGameInstance->InputKey(DIK_9) == KEY_STATE::TAP)
+		pGameInstance->OutlineToggle();
+
+	if (pGameInstance->InputKey(DIK_8) == KEY_STATE::TAP)
+		pGameInstance->SSAOToggle();
+
+	static _uint iIndexLUT = CRenderer::LUT_DEFAULT;
+	if (pGameInstance->InputKey(DIK_7) == KEY_STATE::TAP)
+	{
+		iIndexLUT++;
+		if(iIndexLUT >= CRenderer::LUT_DEFAULT + 1)
+			iIndexLUT = 0;
+
+		pGameInstance->SetLUT((CRenderer::LUT)iIndexLUT);
+	}
+}
+
+void CLevel_GamePlay::RenderLevelUI()
+{
 }
 
 HRESULT CLevel_GamePlay::Ready_Lights()

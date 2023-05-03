@@ -11,6 +11,7 @@
 #include "TargetManager.h"
 #include "Frustum.h"
 #include "../Public/Fmod/Sound_Manager.h"
+#include "RenderSetting.h"
 #include "Layer.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
@@ -29,6 +30,7 @@ CGameInstance::CGameInstance()
 	, m_pFontManager{ CFont_Manager::GetInstance() }
 	, m_pTargetManager{ CTargetManager::GetInstance() }
 	, m_pFrustum{ CFrustum::GetInstance() }
+	, m_pRenderSetting{ CRenderSetting::GetInstance() }
 {
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pTimer_Manager);
@@ -43,6 +45,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pFontManager);
 	Safe_AddRef(m_pTargetManager);
 	Safe_AddRef(m_pFrustum);
+	Safe_AddRef(m_pRenderSetting);
 }
 
 HRESULT CGameInstance::Engine_Initialize(const GRAPHIC_DESC& GraphicDesc, _uint iLevelCount , _uint iCollisionLayerCount, ID3D11Device** ppDevice_out, ID3D11DeviceContext** ppContext_out)
@@ -96,8 +99,7 @@ HRESULT CGameInstance::Engine_Tick(_double TimeDelta)
 	m_pObject_Manager->LateTick(TimeDelta);
 
 	m_pCollision_Manager->PhysicsUpdate();
-
-
+	
 	return S_OK;
 }
 
@@ -534,8 +536,81 @@ _bool CGameInstance::InLocalSpace(_fvector vPoint, _float fRadius)
 	return m_pFrustum->InLocalSpace(vPoint, fRadius);
 }
 
+void CGameInstance::SetShadowLevel(SHADOW_LEVEL eLevel)
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	m_pRenderSetting->SetShadowLevel(eLevel);
+}
+
+_bool CGameInstance::IsActiveShadow() const
+{
+	if (nullptr == m_pRenderSetting)
+		return nullptr;
+
+	return m_pRenderSetting->IsActiveShadow();
+}
+
+SHADOW_LEVEL CGameInstance::GetShadowLevel() const
+{
+	if (nullptr == m_pRenderSetting)
+		return CRenderSetting::SHADOW_LEVEL::SHADOW_OFF;
+
+	return m_pRenderSetting->GetShadowLevel();
+}
+
+void CGameInstance::SSAOToggle()
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	m_pRenderSetting->SSAOToggle();
+}
+
+void CGameInstance::OutlineToggle()
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	m_pRenderSetting->OutlineToggle();
+}
+
+_bool CGameInstance::IsActiveOutline() const
+{
+	if (nullptr == m_pRenderSetting)
+		return false;
+
+	return m_pRenderSetting->IsActiveOutline();
+}
+
+_bool CGameInstance::IsActiveSSAO() const
+{
+	if (nullptr == m_pRenderSetting)
+		return false;
+
+	return m_pRenderSetting->IsActiveSSAO();
+}
+
+void CGameInstance::SetLUT(CRenderer::LUT eLUT)
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	m_pRenderSetting->SetLUT(eLUT);
+}
+
+CRenderer::LUT CGameInstance::GetLUT()
+{
+	if (nullptr == m_pRenderSetting)
+		return CRenderer::LUT_DEFAULT;
+
+	return m_pRenderSetting->GetLUT();
+}
+
 void CGameInstance::Engine_Release()
 {
+	CRenderSetting::DestroyInstance();
 	CLightManager::DestroyInstance();
 	CSound_Manager::DestroyInstance();
 	CGameInstance::DestroyInstance();
@@ -554,6 +629,7 @@ void CGameInstance::Engine_Release()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pRenderSetting);
 	Safe_Release(m_pLightManager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pInput_Device);

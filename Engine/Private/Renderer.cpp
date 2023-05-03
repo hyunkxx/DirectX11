@@ -11,10 +11,13 @@
 
 #include "SSAO.h"
 
+#include "RenderSetting.h"
+
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
 	, m_pTargetManager(CTargetManager::GetInstance())
 	, m_pLightManager(CLightManager::GetInstance())
+	, m_pRenderSetting(CRenderSetting::GetInstance())
 {
 	Safe_AddRef(m_pTargetManager);
 	Safe_AddRef(m_pLightManager);
@@ -29,7 +32,8 @@ HRESULT CRenderer::Initialize_Prototype()
 	D3D11_VIEWPORT ViewPortDesc;
 	m_pContext->RSGetViewports(&iViewportCount, &ViewPortDesc);
 
-#pragma region  AddRenderTargets
+#pragma region  RENDERTARGET_SETUP
+
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Diffuse", ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 0.f))))
 		return E_FAIL;
@@ -92,6 +96,9 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_LUT"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
 
 	// 디퓨즈, 노말, 뎁스
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_Diffuse")))
@@ -139,9 +146,13 @@ HRESULT CRenderer::Initialize_Prototype()
 	// SSAO
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSAO", L"Target_SSAO")))
 		return E_FAIL;
+
+	// LUT
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_LUT", L"Target_LUT")))
+		return E_FAIL;
 #pragma endregion
 
-#pragma region POST_EFFECT
+#pragma region POST_EFFECT_SETUP
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pVIBuffer)
 		return E_FAIL;
@@ -162,6 +173,10 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (nullptr == m_pShader_SSAO)
 		return E_FAIL;
 
+	m_pShader_LUT = CShader::Create(m_pDevice, m_pContext, L"../../Shader/SHADER_LUT.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount);
+	if (nullptr == m_pShader_LUT)
+		return E_FAIL;
+
 	XMStoreFloat4x4(&m_FullScreenWorldMatrix,
 		XMMatrixScaling(ViewPortDesc.Width, ViewPortDesc.Height, 1.f) *
 		XMMatrixTranslation(0.f, 0.f, 0.f));
@@ -170,6 +185,19 @@ HRESULT CRenderer::Initialize_Prototype()
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewPortDesc.Width, ViewPortDesc.Height, 0.f, 1.f));
 
 #pragma endregion
+
+#pragma region TEXTURE_SETUP
+	m_pNoiseTexture = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/Mask/noise.jpg");
+
+	m_pLUT[0] = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/LUT/LUT_ExposureMinus.png");
+	m_pLUT[1] = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/LUT/LUT_ExposurePlus.png");
+	m_pLUT[2] = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/LUT/LUT_Fuji.png");
+	m_pLUT[3] = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/LUT/LUT_Grungy.png");
+	m_pLUT[4] = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/LUT/LUT_South.png");
+	m_pLUT[5] = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/LUT/LUT_Kuro.png");
+
+#pragma endregion
+
 
 #ifdef _DEBUG
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Diffuse"), 50.f, 50.f, 100.f, 100.f)))
@@ -192,16 +220,17 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_SSAO"), 150, 150.f, 100.f, 100.f)))
 		return E_FAIL;
 
-	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Glow"), 150, 250.f, 100.f, 100.f)))
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_LUT"), 150, 250.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Blend"), 150, 350.f, 100.f, 100.f)))
+
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Glow"), 150, 350.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Glow_Result"), 150, 450.f, 100.f, 100.f)))
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Blend"), 150, 450.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Glow_Result"), 150, 550.f, 100.f, 100.f)))
 		return E_FAIL;
 
 #endif
-
-	m_pNoiseTexture = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/Mask/noise.jpg");
 
 	return S_OK;
 }
@@ -219,20 +248,38 @@ HRESULT CRenderer::Add_RenderGroup(RENDER_GROUP eRenderGroup, CGameObject* pGame
 
 void CRenderer::Draw()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 	Render_Priority();
 	Render_DynamicShadowMap();
 	Render_NonAlphaBlend();
 
-	Ready_SSAO(L"Target_SSAO");
-	Target_Blur(L"Target_SSAO", 2);
-	Extraction(L"Target_SSAO", L"Target_BlurY");
+	if (m_pRenderSetting->IsActiveSSAO())
+	{
+		Ready_SSAO(L"Target_SSAO");
+		Target_Blur(L"Target_SSAO", 2);
+		Extraction(L"Target_SSAO", L"Target_BlurY");
+	}
 
 	Render_Lights();
 	Render_Outline();
-	Render_Shadow();
 
-	Target_Blur(L"Target_Shadow", 2);
-	Extraction(L"Target_Shadow", L"Target_BlurY");
+	if (m_pRenderSetting->IsActiveShadow())
+	{
+		Render_Shadow();
+
+		if (m_pRenderSetting->GetShadowLevel() == CRenderSetting::SHADOW_HIGH)
+		{
+			Target_Blur(L"Target_Shadow", 2);
+			Extraction(L"Target_Shadow", L"Target_BlurY");
+		}
+	}
+
+	if (m_pRenderSetting->GetLUT() != CRenderer::LUT_DEFAULT)
+	{
+		ApplyLUT(m_pRenderSetting->GetLUT());
+		Extraction(L"Target_Diffuse", L"Target_LUT");
+	}
 
 	Render_Particle();
 
@@ -243,6 +290,7 @@ void CRenderer::Draw()
 
 	Render_NonLight();
 	Render_AlphaBlend();
+
 	Render_UI();
 
 #ifdef _DEBUG
@@ -259,10 +307,10 @@ void CRenderer::Draw()
 	m_pTargetManager->Render(TEXT("MRT_ToonShader"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_SSAO"), m_pShader, m_pVIBuffer);
-
 	m_pTargetManager->Render(TEXT("MRT_Glow"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_Glow_Result"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_Blend"), m_pShader, m_pVIBuffer);
+	m_pTargetManager->Render(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
 #endif
 
 }
@@ -282,6 +330,15 @@ void CRenderer::Render_Priority()
 
 void CRenderer::Render_DynamicShadowMap()
 {
+	if (!m_pRenderSetting->IsActiveShadow())
+	{
+		for (auto& pGameObject : m_RenderObject[RENDER_DYNAMIC_SHADOW])
+			Safe_Release(pGameObject);
+
+		m_RenderObject[RENDER_DYNAMIC_SHADOW].clear();
+		return;
+	}
+
 	if (nullptr == m_pTargetManager)
 		return;
 
@@ -346,6 +403,15 @@ void CRenderer::Render_Lights()
 	if (FAILED(m_pShader->SetRawValue("g_vCamPosition", &pPipeline->Get_CamPosition(), sizeof(_float4))))
 		return;
 
+	_float fUseSSAO = 0.f;
+	if (m_pRenderSetting->IsActiveSSAO())
+		fUseSSAO = 1.f;
+	else
+		fUseSSAO = 0.f;
+
+	if (FAILED(m_pShader->SetRawValue("g_UseSSAO", &fUseSSAO, sizeof(_float))))
+		return;
+
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Normal", "g_NormalTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Depth", "g_DepthTexture")))
@@ -355,7 +421,7 @@ void CRenderer::Render_Lights()
 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_SSAO"), "g_SSAOTexture")))
 		return;
-
+	
 	m_pLightManager->Render(m_pShader, m_pVIBuffer);
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
@@ -377,7 +443,13 @@ void CRenderer::Render_Outline()
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_OutNormal"), "g_DiffuseTexture")))
 		return;
 
-	m_pShader->Begin(4);
+	_uint iOutlinePass;
+	if (m_pRenderSetting->IsActiveOutline())
+		iOutlinePass = 6;
+	else
+		iOutlinePass = 5;
+
+	m_pShader->Begin(iOutlinePass);
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
@@ -434,7 +506,7 @@ void CRenderer::Render_Shadow()
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_ShadowMap"), "g_ShadowDepthTexture")))
 		return;
 
-	m_pShader->Begin(5);
+	m_pShader->Begin(7);
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
@@ -468,14 +540,19 @@ void CRenderer::Render_Blend()
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_OutNormal"), "g_OutNormalTexture")))
 		return;
-
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Shadow"), "g_ShadowTexture")))
 		return;
-
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Glow"), "g_GlowTexture")))
 		return;
 
-	m_pShader->Begin(3);
+	_uint iBlendPass;
+
+	if (m_pRenderSetting->IsActiveShadow())
+		iBlendPass = 4;
+	else
+		iBlendPass = 3;
+
+	m_pShader->Begin(iBlendPass);
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
@@ -580,6 +657,35 @@ bool Compute(Engine::CGameObject* pSourObject, Engine::CGameObject* pDestObject)
 void CRenderer::AlphaSort(CRenderer::RENDER_GROUP eGroup)
 {
 	m_RenderObject[eGroup].sort(Compute);
+}
+
+// LUT 필터 적용
+void CRenderer::ApplyLUT(_uint iIndex)
+{
+	CRenderTarget* pTargetDiffuse = m_pTargetManager->FindTarget(L"Target_Diffuse");
+	CRenderTarget* pTargetLUT = m_pTargetManager->FindTarget(L"Target_LUT");
+
+	if (FAILED(m_pTargetManager->BeginTarget(m_pContext, pTargetLUT)))
+		return;
+
+	if (FAILED(m_pShader_LUT->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader_LUT->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader_LUT->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+	
+	if (FAILED(m_pLUT[iIndex]->Setup_ShaderResource(m_pShader_LUT, "g_LUT")))
+		return;
+
+	if (FAILED(pTargetDiffuse->Set_ShaderResourceView(m_pShader_LUT, "g_DiffuseTexture")))
+		return;
+
+	m_pShader_LUT->Begin(0);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
 }
 
 //두번째 인자로 들어온 렌더타겟을 바인딩된 타겟(첫번째 인자)에 렌더
@@ -710,9 +816,7 @@ void CRenderer::Ready_SSAO(const _tchar* pBindTargetTag)
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_SSAO, L"Target_Depth", "g_DepthTexture")))
 		return;
-
-	m_pNoiseTexture->Setup_ShaderResource(m_pShader_SSAO, "g_NoiseTexture");
-
+	
 	if (FAILED(m_pShader_SSAO->Begin(0)))
 		return;
 	if (FAILED(m_pVIBuffer->Render()))
@@ -750,13 +854,20 @@ void CRenderer::Free()
 	Safe_Release(m_pShader_Blur);
 	Safe_Release(m_pShader_Extraction);
 	Safe_Release(m_pShader_SSAO);
+	Safe_Release(m_pShader_LUT);
 
 	Safe_Release(m_pNoiseTexture);
 	Safe_Release(m_pVIBuffer);
-	
+
 	Safe_Release(m_pLightManager);
 	Safe_Release(m_pTargetManager);
 
+
+	if (m_isClone)
+		return;
+
+	for (int i = 0; i < LUT_DEFAULT; ++i)
+		Safe_Release(m_pLUT[i]);
 }
 
 #ifdef _DEBUG

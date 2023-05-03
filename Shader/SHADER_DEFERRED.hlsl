@@ -36,6 +36,8 @@ vector	  g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
 float4x4  g_ProjMatrixInv;
 float4x4  g_ViewMatrixInv;
 
+float g_UseSSAO = 0.f;
+
 float mask[9] =
 {
 	-1.f, -1.f, -1.f,
@@ -129,7 +131,11 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 
 	vector vShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)));
 
-	Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient) * vSSAO.r);
+	if (g_UseSSAO == 1.f)
+		Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient) * vSSAO.r);
+	else
+		Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient));
+
 	Out.vShade.a = 1.f;
 
 	vector			vWorldPos;
@@ -213,7 +219,36 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_MAIN_BLEND(PS_IN In)
+PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vWorldPos;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexUV);
+	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
+	vector vOutNormal = g_OutNormalTexture.Sample(LinearSampler, In.vTexUV);
+
+	//1.6~1.75¹è
+	float4 vFinalColor = (vDiffuse * (vShade * 1.7f));
+	if (vOutNormal.a == 1.f)
+	{
+		float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
+		Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z);
+	}
+	else
+	{
+		Out.vColor = vFinalColor;
+	}
+
+	//if (0.0f == Out.vColor.a)
+	//	discard;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 	
@@ -232,8 +267,8 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	{
 		if (vOutNormal.a == 1.f)
 		{
-			float vOutline = g_OutlineTexture.Sample(PointSampler, In.vTexUV).r;
-			float4 vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r;
+			float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
+			Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r;
 			Out.vColor.rgb = vColor.rgb * (1.f - vGlowColor.a) + vGlowColor.rgb * vGlowColor.a;
 			Out.vColor.a = 1.f;
 		}
@@ -290,13 +325,9 @@ PS_OUT_SHADOW PS_Shadow(PS_IN In)
 	
 	//±íÀÌ 0.5 : ¸ðµ¨°ú ¾Ö´Ô¸ðµ¨¿¡´Â ±×¸²ÀÚ ¾È±×¸²
 	if (vPosition.z - 0.05f > (vShadowDepthInfo.g * g_Far) && vDepthInfo.b != vShadowDepthInfo.b)
-	{
 		Out.vDynamicShadow = vector(0.5f, 0.5f, 0.5f, 0.5f);
-	}
 	else
-	{
 		Out.vDynamicShadow = vector(1.f, 1.f, 1.f, 1.f);
-	}
 
 	return Out;
 }
@@ -305,17 +336,24 @@ PS_OUT PS_Outline(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector vDepthInfo = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
-	vector vNormal = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-
 	float4 vColor = 0;
 	for (uint i = 0; i < 9; ++i)
 		vColor += mask[i] * g_DiffuseTexture.Sample(LinearSampler, In.vTexUV + float2(coord[i % 3] / 1280, coord[i % 3] / 720));
 
 	float fGray = 1.f - (vColor.r * 0.9f + vColor.g * 0.59f + vColor.b * 0.11f);
-	float4 Ret = float4(fGray + 0.7f, fGray + 0.7f, fGray + 0.7f, 1) / 1;
+	float4 Ret = float4(fGray, fGray, fGray, 1.f) / 1;
 
-	Out.vColor = smoothstep(0.5, 1, Ret);
+	Out.vColor = smoothstep(0.1f, 1.f, Ret);
+	Out.vColor.a = 0.3f;
+
+	return Out;
+}
+
+PS_OUT PS_NoOutline(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
 
 	return Out;
 }
@@ -373,7 +411,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_POINT();
 	}
 
-	pass Blend_Pass3
+	pass Blend_NoShadow_Pass3
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -383,10 +421,36 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_BLEND();
+		PixelShader = compile ps_5_0 PS_MAIN_BLEND_NOSHADOW();
 	}
 
-	pass Outline_Pass4
+	pass Blend_Shadow_Pass4
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_BLEND_SHADOW();
+	}
+
+	pass NoOutline_Pass5
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_NoOutline();
+	}
+
+	pass Outline_Pass6
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -399,7 +463,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Outline();
 	}
 
-	pass Shadow_Pass5
+	pass Shadow_Pass7
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);

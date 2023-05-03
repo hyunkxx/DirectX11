@@ -8,7 +8,7 @@ class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
 	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_NONLIGHT, RENDER_PARTICLE , RENDER_ALPHABLEND, RENDER_UI, RENDER_DYNAMIC_SHADOW, RENDER_END };
-
+	enum LUT { LUT_EXPOSURE_MINUS, LUT_EXPOSURE_PLUS, LUT_FUJI, LUT_GRUNGY, LUT_SOUTH, LUT_KURO, LUT_DEFAULT };
 private:
 	explicit CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CRenderer() = default;
@@ -36,6 +36,7 @@ private:
 	void Render_AlphaBlend();
 	void Render_UI();
 
+	void ApplyLUT(_uint iIndex);
 	void Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag);
 	void Target_Blur(const _tchar* TargetTag, _int BlurCount = 1);
 	void Ready_SSAO(const _tchar* pBindTargetTag);
@@ -77,14 +78,18 @@ private:
 	class CShader* m_pShader = nullptr;
 	class CShader* m_pShader_Blur = nullptr;
 	class CShader* m_pShader_SSAO = nullptr;
+	class CShader* m_pShader_LUT = nullptr;
 
 	_float4x4 m_FullScreenWorldMatrix, m_ViewMatrix, m_ProjMatrix;
 
 	class CTexture* m_pNoiseTexture = nullptr;
+	class CTexture* m_pLUT[LUT_DEFAULT];
+	_uint iLUTIndex = 0;
 
 private:
 	class CLightManager* m_pLightManager = nullptr;
 	class CTargetManager* m_pTargetManager = nullptr;
+	class CRenderSetting* m_pRenderSetting = nullptr;
 
 private:
 	SSAO_SETTING m_eSSAO;

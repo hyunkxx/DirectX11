@@ -4,11 +4,13 @@
 #include "PipeLine.h"
 #include "LightManager.h"
 #include "Graphic_Device.h"
+#include "RenderSetting.h"
 
 BEGIN(Engine)
 
 typedef CLightManager::LIGHT_MATRIX LIGHT_MATRIX;
 typedef CGraphic_Device::VIEWPORT_TYPE VIEWPORT_TYPE;
+typedef CRenderSetting::SHADOW_LEVEL SHADOW_LEVEL;
 
 class ENGINE_DLL CGameInstance final: public CBase
 {
@@ -107,6 +109,20 @@ public: // Frustum
 	_bool InWorldSpace(_fvector vPoint, _float fRadius = 0.f);
 	_bool InLocalSpace(_fvector vPoint, _float fRadius = 0.f);
 
+public: // RenderSetting
+	void SetShadowLevel(SHADOW_LEVEL eLevel);
+	_bool IsActiveShadow() const;
+	SHADOW_LEVEL GetShadowLevel() const;
+
+	void SSAOToggle();
+	_bool IsActiveSSAO() const;
+
+	void OutlineToggle();
+	_bool IsActiveOutline() const;
+
+	void SetLUT(CRenderer::LUT eLUT);
+	CRenderer::LUT GetLUT();
+
 public:
 	static void Engine_Release();
 	virtual void Free() override;
@@ -125,6 +141,7 @@ private:
 	class CLightManager*			m_pLightManager = { nullptr };
 	class CFrustum*					m_pFrustum = { nullptr };
 	class CTargetManager*			m_pTargetManager = { nullptr };
+	class CRenderSetting*			m_pRenderSetting = { nullptr };
 };
 
 END

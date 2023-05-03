@@ -13,7 +13,7 @@ private:
 public:
 	virtual HRESULT Initialize() override;
 	virtual void Tick(_double TimeDelta) override;
-
+	virtual void RenderLevelUI() override;
 private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);

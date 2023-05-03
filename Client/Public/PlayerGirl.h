@@ -153,6 +153,7 @@ public:
 	virtual void Free() override;
 
 	CGameObject* pStaticObject = nullptr;
+
 };
 
 END

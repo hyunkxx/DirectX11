@@ -132,8 +132,8 @@ PS_OUT PS_SSAO(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector vDepth = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
-	vector vNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	vector vDepth = g_DepthTexture.Sample(LinearBorderSampler, In.vTexUV);
+	vector vNormal = g_NormalTexture.Sample(LinearBorderSampler, In.vTexUV);
 
 	if (vNormal.a != 0.f)
 	{

@@ -169,19 +169,22 @@ HRESULT CPlayerGirl::Render()
 	if (10.f <= ComputeCameraLength())
 		iPass = 3;
 
-	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (_uint i = 0; i < iNumMeshes; ++i)
+	for (_uint i = 0; i < 6; ++i)
 	{
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
 			return E_FAIL;
+
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS)))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(iPass);
+		if (i == 5)
+			m_pShaderCom->Begin(6); // Eye
+		else
+			m_pShaderCom->Begin(iPass);
+
 		m_pModelCom->Render(i);
 	}
 
