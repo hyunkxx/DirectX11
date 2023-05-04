@@ -135,6 +135,8 @@ private:
 	class CParts*		m_Parts[PARTS_END] = { nullptr, };
 	CBone*				m_PartsBone[PBONE_END] = { nullptr, };
 
+	// 이펙트 재생용 임시
+	_float4x4			m_WorldMatrix;
 private:
 	HRESULT Add_Components();
 	// State

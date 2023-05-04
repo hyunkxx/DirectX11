@@ -13,7 +13,7 @@ protected:
 	virtual ~CEffect_Player() = default;
 
 public:
-	virtual	HRESULT				Initialize_Prototype(const list<EFFECT_DESC*>& pEffectDescList);
+	virtual	HRESULT				Initialize_Prototype(const char* FilePath , const list<EFFECT_DESC*>& pEffectDescList);
 	virtual	HRESULT				Initialize(void* pArg)override;
 	virtual void				Tick(_double TimeDelta)override;
 	virtual void				LateTick(_double TimeDelta)override;
@@ -33,7 +33,7 @@ private:
 	vector<CEffect*>			m_EffectList;
 
 public:
-	static CEffect_Player*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const list<EFFECT_DESC*>& pEffectDescList);
+	static CEffect_Player*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext , const char* FilePath  ,const list<EFFECT_DESC*>& pEffectDescList);
 	virtual CGameObject* Clone(void* pArg = nullptr);
 	virtual void Free()override;
 

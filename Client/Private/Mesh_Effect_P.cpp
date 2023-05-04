@@ -40,18 +40,18 @@ void CMesh_Effect_P::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	m_fLifeAcc += TimeDelta;
+	m_fLifeAcc += (_float)TimeDelta;
 
 	if (m_EffectDesc.fStartDelay >= m_fLifeAcc)
 		return;
 
-	m_fEffectAcc += TimeDelta;
+	m_fEffectAcc += (_float)TimeDelta;
 
 	if (m_fEffectAcc > m_EffectDesc.fEffectTime)
 	{
 		if (m_EffectDesc.bLoop)
 		{
-			m_fDelayAcc += TimeDelta;
+			m_fDelayAcc += (_float)TimeDelta;
 
 			if (m_fDelayAcc > m_EffectDesc.fDelayTime)
 			{
@@ -83,7 +83,7 @@ void CMesh_Effect_P::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	SetUp_Linear();
-	XMStoreFloat2(&m_EffectDesc.vUV, XMLoadFloat2(&m_EffectDesc.vUV) + XMLoadFloat2(&m_EffectDesc.fUVSpeed) * TimeDelta);
+	XMStoreFloat2(&m_EffectDesc.vUV, XMLoadFloat2(&m_EffectDesc.vUV) + XMLoadFloat2(&m_EffectDesc.fUVSpeed) * (_float)TimeDelta);
 	m_pMainTransform->SetRotationXYZ(m_EffectDesc.vCurAngle);
 	m_WorldMatrix = m_pMainTransform->Get_WorldMatrix();
 
@@ -158,7 +158,7 @@ void CMesh_Effect_P::Play_Effect(_float4x4 * pWorldMatrix, _bool bTracking)
 	}
 }
 
-CEffect::EFFECT_DESC CMesh_Effect_P::Get_Effect_Desc()
+EFFECT_DESC CMesh_Effect_P::Get_Effect_Desc()
 {
 	return m_EffectDesc;
 }

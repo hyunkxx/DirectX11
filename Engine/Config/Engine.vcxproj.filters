@@ -172,6 +172,8 @@
     <ClCompile Include="..\private\Base.cpp">
       <Filter>utility\99. SuperClass</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect_Manager.cpp" />
+    <ClCompile Include="Save_Loader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Typedef.h">
@@ -384,6 +386,8 @@
     <ClInclude Include="..\public\Base.h">
       <Filter>utility\99. SuperClass</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Manager.h" />
+    <ClInclude Include="..\Public\Save_Loader.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="system">

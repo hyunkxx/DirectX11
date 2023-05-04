@@ -4,6 +4,7 @@
 #include "GameMode.h"
 #include "GameInstance.h"
 #include "Parts.h"
+#include "Effect.h"
 
 const _int CPlayerGirl::iState_End = CCharacter::SS_END + (CPlayerGirl::IS_END - CPlayerGirl::IS_START);
 
@@ -66,6 +67,7 @@ HRESULT CPlayerGirl::Initialize(void * pArg)
 	//m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
 
 	SetUp_Animation();
+	XMStoreFloat4x4(&m_WorldMatrix , XMMatrixIdentity());
 
 	return S_OK;
 }
@@ -127,6 +129,12 @@ void CPlayerGirl::Tick(_double TimeDelta)
 	if (pGame->InputKey(DIK_SPACE) == KEY_STATE::TAP)
 	{
 		m_bPlay = !m_bPlay;
+	}
+
+	if (pGame->InputKey(DIK_1) == KEY_STATE::TAP)
+	{
+		CEffect* pEffect = pGame->Get_Effect(L"YangYang_Jump_Attack_01");
+		pEffect->Play_Effect(&m_WorldMatrix);
 	}
 
 	Tick_State(TimeDelta);

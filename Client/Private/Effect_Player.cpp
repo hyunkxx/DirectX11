@@ -18,19 +18,19 @@ CEffect_Player::CEffect_Player(const CEffect_Player & rhs)
 
 }
 
-HRESULT CEffect_Player::Initialize_Prototype(const list<EFFECT_DESC*>& pEffectDescList)
+HRESULT CEffect_Player::Initialize_Prototype(const char* FilePath , const list<EFFECT_DESC*>& pEffectDescList)
 {
 
 	for (auto& iter : pEffectDescList)
 	{
 		CEffect* pEffect = nullptr;
-		if (CEffect::EFFECT_TYPE::ID_MESH == iter->eEffectType)
+		if (EFFECT_TYPE::ID_MESH == iter->eEffectType)
 		{
-			pEffect = CMesh_Effect_P::Create(m_pDevice, m_pContext,"../../Resource/Tool_Resource/" ,*iter);
+			pEffect = CMesh_Effect_P::Create(m_pDevice, m_pContext, FilePath,*iter);
 		}
-		else if (CEffect::EFFECT_TYPE::ID_PARTICLE == iter->eEffectType)
+		else if (EFFECT_TYPE::ID_PARTICLE == iter->eEffectType)
 		{
-			pEffect = CParticle_Effect_P::Create(m_pDevice, m_pContext, "../../Resource/Tool_Resource/" ,*iter);
+			pEffect = CParticle_Effect_P::Create(m_pDevice, m_pContext, FilePath,*iter);
 		}
 		if (nullptr != pEffect)
 		{
@@ -73,6 +73,7 @@ void CEffect_Player::LateTick(_double TimeDelta)
 	if (bFinish)
 	{
 		m_bFinish = true;
+		m_bEffectUpdate = false;
 	}
 }
 
@@ -111,14 +112,14 @@ void CEffect_Player::Play_Effect(_float4x4* pWorldMatrix, _bool bTracking)
 	}
 }
 
-list<CEffect::EFFECT_DESC*>* CEffect_Player::Get_Effects()
+list<EFFECT_DESC*>* CEffect_Player::Get_Effects()
 {
-	list<CEffect::EFFECT_DESC*>* pEffects = new list<CEffect::EFFECT_DESC*>;
+	list<EFFECT_DESC*>* pEffects = new list<EFFECT_DESC*>;
 
 	for (auto&iter : m_EffectList)
 	{
 		EFFECT_DESC* pEffectDesc = new EFFECT_DESC;
-		memcpy(pEffectDesc, &iter->Get_Effect_Desc(),sizeof(CEffect::EFFECT_DESC));
+		memcpy(pEffectDesc, &iter->Get_Effect_Desc(),sizeof(EFFECT_DESC));
 
 		pEffects->push_back(pEffectDesc);
 	}
@@ -151,11 +152,11 @@ void CEffect_Player::Add_Effect(CEffect * pEffect)
 
 }
 
-CEffect_Player * CEffect_Player::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const list<EFFECT_DESC*>& pEffectDescList)
+CEffect_Player * CEffect_Player::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const char* FilePath , const list<EFFECT_DESC*>& pEffectDescList)
 {
 	CEffect_Player*		pInstance = new CEffect_Player(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pEffectDescList)))
+	if (FAILED(pInstance->Initialize_Prototype(FilePath , pEffectDescList)))
 	{
 		MSG_BOX("Failed to Created : CEffect_Player");
 		Safe_Release(pInstance);

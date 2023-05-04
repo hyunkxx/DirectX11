@@ -40,7 +40,7 @@ HRESULT CVIBuffer_Particle::Initialize_Prototype(const ParticleDesc& _ParticleDe
 
 	m_vCurColor = _ParticleDesc.vStartColor;	
 
-	for (_uint i = 0; i < m_ParticleDesc.iNumInstance; ++i)
+	for (_int i = 0; i < m_ParticleDesc.iNumInstance; ++i)
 	{
 		m_pMaxDist[i] = (rand() % ((_int)(m_ParticleDesc.fMaxDist * 100.f - m_ParticleDesc.fMinDist * 100.f) + 1) + m_ParticleDesc.fMinDist * 100.f) / 100.f;
 		m_pDist[i] = 0.f;
@@ -151,7 +151,7 @@ HRESULT CVIBuffer_Particle::Initialize_Prototype(const ParticleDesc& _ParticleDe
 	VTXMATRIX*		pInstanceVertices = new VTXMATRIX[m_ParticleDesc.iNumInstance];
 	ZeroMemory(pInstanceVertices, sizeof(VTXMATRIX) * m_ParticleDesc.iNumInstance);
 
-	for (_uint i = 0; i < m_ParticleDesc.iNumInstance; ++i)
+	for (_int i = 0; i < m_ParticleDesc.iNumInstance; ++i)
 	{
 		pInstanceVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
 		pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
@@ -187,7 +187,7 @@ HRESULT CVIBuffer_Particle::Render()
 
 	_uint					iStrides[] = {
 		m_iStride,
-		m_iStrideInstance
+		(_uint)m_iStrideInstance
 
 	};
 
@@ -214,10 +214,10 @@ void CVIBuffer_Particle::Update(_double TimeDelta)
 	if (FAILED(m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource)))
 		return;
 
-	XMStoreFloat3(&m_vCurColor, XMVectorLerp(XMLoadFloat3(&m_vCurColor), XMLoadFloat3(&m_ParticleDesc.vEndColor), 0.5f * TimeDelta));
+	XMStoreFloat3(&m_vCurColor, XMVectorLerp(XMLoadFloat3(&m_vCurColor), XMLoadFloat3(&m_ParticleDesc.vEndColor), 0.5f * (_float)TimeDelta));
 
-	m_fTimeAcc += TimeDelta / 5.f;
-	m_fDelayAcc += TimeDelta;
+	m_fTimeAcc += (_float)TimeDelta / 5.f;
+	m_fDelayAcc += (_float)TimeDelta;
 
 	if (m_fDelayAcc > m_ParticleDesc.fDelayTime)
 	{
@@ -228,7 +228,7 @@ void CVIBuffer_Particle::Update(_double TimeDelta)
 		m_fDelayAcc = 0.f;
 	}
 
-	for (_uint i = 0; i < m_ParticleDesc.iNumInstance; ++i)
+	for (_int i = 0; i < m_ParticleDesc.iNumInstance; ++i)
 	{
 		_float4 vOldPos = ((VTXMATRIX*)SubResource.pData)[i].vPosition;
 		_float3 vLook = _float3(((VTXMATRIX*)SubResource.pData)[i].vLook.x,
@@ -244,7 +244,7 @@ void CVIBuffer_Particle::Update(_double TimeDelta)
 			XMStoreFloat3(&vNorLook, XMVector3Normalize(XMLoadFloat3(&vLook)));
 			_float3 vMove = _float3(0.f, 0.f, 0.f);
 
-			XMStoreFloat3(&vMove, XMLoadFloat3(&vNorLook) *  m_pSpeed[i] * TimeDelta);
+			XMStoreFloat3(&vMove, XMLoadFloat3(&vNorLook) *  m_pSpeed[i] * (_float)TimeDelta);
 
 			vMove.y -= (0.5f * m_ParticleDesc.fGravityPower * (m_fTimeAcc * m_fTimeAcc));
 
@@ -270,8 +270,8 @@ void CVIBuffer_Particle::Update(_double TimeDelta)
 		}
 		else
 		{
-			m_pDist[i] += XMVectorGetX(XMVector3Length(XMVector3Normalize(XMLoadFloat3(&vLook)) * m_pSpeed[i] * TimeDelta));
-			XMStoreFloat3(&vPos, XMLoadFloat3(&vPos) + XMVector3Normalize(XMLoadFloat3(&vLook)) * m_pSpeed[i] * TimeDelta);
+			m_pDist[i] += XMVectorGetX(XMVector3Length(XMVector3Normalize(XMLoadFloat3(&vLook)) * m_pSpeed[i] * (_float)TimeDelta));
+			XMStoreFloat3(&vPos, XMLoadFloat3(&vPos) + XMVector3Normalize(XMLoadFloat3(&vLook)) * m_pSpeed[i] * (_float)TimeDelta);
 
 		}
 
@@ -345,7 +345,7 @@ void CVIBuffer_Particle::Reset_Update(_float3 vDir)
 
 	m_vCurColor = m_ParticleDesc.vStartColor;
 
-	for (_uint i = 0; i < m_iOriMaxNumInstance; ++i)
+	for (_int i = 0; i < m_iOriMaxNumInstance; ++i)
 	{
 		m_pMaxDist[i] = (rand() % ((_int)(m_ParticleDesc.fMaxDist * 100.f - m_ParticleDesc.fMinDist * 100.f) + 1) + m_ParticleDesc.fMinDist * 100.f) / 100.f;
 		m_pDist[i] = 0.f;
@@ -473,7 +473,7 @@ void CVIBuffer_Particle::Set_Desc(ParticleNum eID, void * pArg)
 		m_iOriMaxNumInstance = m_ParticleDesc.iNumInstance;
 		m_iOriMaxNumInstance = m_ParticleDesc.iNumInstance;
 
-		if (m_iSettimeMaxNumInst < m_ParticleDesc.iNumInstance)
+		if (m_iSettimeMaxNumInst < (_uint)m_ParticleDesc.iNumInstance)
 		{
 			m_ParticleDesc.iNumInstance = m_iSettimeMaxNumInst;
 			m_iOriMaxNumInstance = m_iSettimeMaxNumInst;

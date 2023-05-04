@@ -71,4 +71,25 @@ namespace Engine
 	private:
 		const wchar_t* m_pTargetTag = nullptr;
 	};
+
+	class CTagFinder2
+	{
+	public:
+		explicit CTagFinder2(const char* pTag2)
+			: m_pTargetTag(pTag2) {}
+		~CTagFinder2() = default;
+
+	public:
+		template<typename T>
+		bool operator()(const T& pair)
+		{
+			if (0 == strcmp(m_pTargetTag, pair.first))
+				return true;
+			else
+				return false;
+		}
+
+	private:
+		const char* m_pTargetTag = nullptr;
+	};
 }

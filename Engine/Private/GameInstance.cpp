@@ -9,6 +9,8 @@
 #include "CollisionManager.h"
 #include "FontManager.h"
 #include "TargetManager.h"
+#include "Effect_Manager.h"
+#include "Save_Loader.h"
 #include "Frustum.h"
 #include "../Public/Fmod/Sound_Manager.h"
 #include "RenderSetting.h"
@@ -29,9 +31,13 @@ CGameInstance::CGameInstance()
 	, m_pLightManager{ CLightManager::GetInstance() }
 	, m_pFontManager{ CFont_Manager::GetInstance() }
 	, m_pTargetManager{ CTargetManager::GetInstance() }
+	, m_pEffect_Manager{ CEffect_Manager::GetInstance() }
+	, m_pSaveLoader{ CSave_Loader::GetInstance() }
 	, m_pFrustum{ CFrustum::GetInstance() }
 	, m_pRenderSetting{ CRenderSetting::GetInstance() }
 {
+	Safe_AddRef(m_pEffect_Manager);
+	Safe_AddRef(m_pSaveLoader);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pTimer_Manager);
 	Safe_AddRef(m_pPipeLine);
@@ -94,10 +100,12 @@ HRESULT CGameInstance::Engine_Tick(_double TimeDelta)
 
 	m_pLevel_Manager->Tick_Level(TimeDelta);
 	m_pObject_Manager->Tick(TimeDelta);
+	m_pEffect_Manager->Tick(TimeDelta);
 	m_pPipeLine->Tick();
 	
 	m_pFrustum->Tick();
 	m_pObject_Manager->LateTick(TimeDelta);
+	m_pEffect_Manager->Late_Tick(TimeDelta);
 
 	m_pCollision_Manager->PhysicsUpdate();
 	
@@ -633,6 +641,30 @@ _bool CGameInstance::IsActiveBlackWhite() const
 	return m_pRenderSetting->IsActiveBlackWhite();
 }
 
+HRESULT CGameInstance::Load_Effect(HWND hWnd, wstring strFileName, list<EFFECT_DESC*>* pEffectDesc)
+{
+	if (!m_pSaveLoader)
+		return E_FAIL;
+
+	return m_pSaveLoader->Load_Effect(hWnd , strFileName , pEffectDesc);
+}
+
+HRESULT CGameInstance::Push_Effect(const _tchar * pEffectTag, CEffect * pEffect)
+{
+	if (!m_pEffect_Manager)
+		return E_FAIL;
+
+	return m_pEffect_Manager->Push_Effect(pEffectTag, pEffect);
+}
+
+CEffect * CGameInstance::Get_Effect(const _tchar * EffectTag)
+{
+	if (!m_pEffect_Manager)
+		return nullptr;
+
+	return m_pEffect_Manager->Get_Effect(EffectTag);
+}
+
 void CGameInstance::Engine_Release()
 {
 	CRenderSetting::DestroyInstance();
@@ -647,6 +679,8 @@ void CGameInstance::Engine_Release()
 	CPipeLine::DestroyInstance();
 	CGraphic_Device::DestroyInstance();
 	CFont_Manager::DestroyInstance();
+	CEffect_Manager::DestroyInstance();
+	CSave_Loader::DestroyInstance();
 	CFrustum::DestroyInstance();
 	CCollisionManager::DestroyInstance();
 	CTargetManager::DestroyInstance();
@@ -664,6 +698,8 @@ void CGameInstance::Free()
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pTargetManager);
 	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_pEffect_Manager);
+	Safe_Release(m_pSaveLoader);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pFontManager);

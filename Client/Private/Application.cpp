@@ -15,6 +15,8 @@
 #include "Character.h"
 #include "BackGround.h"
 
+#include "Effect_Player.h"
+
 CApplication::CApplication()
 	: m_pGameInstance { CGameInstance::GetInstance() }
 #ifdef _DEBUG
@@ -235,6 +237,19 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::DYNAMIC_CAMERA,
 		CDynamicCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	for (_int i = 0; 20 > i; i++)
+	{
+		list<EFFECT_DESC*> EffectDescList;
+		CGameInstance::GetInstance()->Load_Effect(g_hWnd, L"../../Resource/Effect/YangYang_Jump_Attack_01.bin" ,&EffectDescList);
+		CEffect* pEffect = CEffect_Player::Create(m_pDevice, m_pContext, "../../Resource/Effect/YangYang_Jump_Attack_01/", EffectDescList);
+
+		for (auto& iter : EffectDescList)
+			Safe_Delete(iter);
+		EffectDescList.clear();
+
+		CGameInstance::GetInstance()->Push_Effect(L"YangYang_Jump_Attack_01", pEffect);
+	}
 
 	return S_OK;
 }

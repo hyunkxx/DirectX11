@@ -43,17 +43,17 @@ void CParticle_Effect_P::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	m_fLifeAcc += TimeDelta;
+	m_fLifeAcc += (_float)TimeDelta;
 
 	if (m_EffectDesc.fStartDelay >= m_fLifeAcc)
 		return;
 
-	m_fEffectAcc += TimeDelta;
+	m_fEffectAcc += (_float)TimeDelta;
 	m_pVIBufferCom->Update(TimeDelta);
 
 	if (m_EffectDesc.bSprite)
 	{
-		m_fFrameAcc += m_EffectDesc.fFrameSpeed * TimeDelta;
+		m_fFrameAcc += m_EffectDesc.fFrameSpeed * (_float)TimeDelta;
 		_float FrameTime = (1.f / (m_EffectDesc.vUV.x * m_EffectDesc.vUV.y));
 
 		if (FrameTime < m_fFrameAcc)
@@ -78,7 +78,7 @@ void CParticle_Effect_P::Tick(_double TimeDelta)
 	{
 		if (m_EffectDesc.bLoop)
 		{
-			m_fDelayAcc += TimeDelta;
+			m_fDelayAcc += (_float)TimeDelta;
 
 			if (m_fDelayAcc > m_EffectDesc.fDelayTime)
 			{
@@ -247,7 +247,7 @@ void CParticle_Effect_P::Play_Effect(_float4x4 * pWorldMatrix, _bool bTracking)
 	}
 }
 
-CEffect::EFFECT_DESC CParticle_Effect_P::Get_Effect_Desc()
+EFFECT_DESC CParticle_Effect_P::Get_Effect_Desc()
 {
 
 	CVIBuffer_Particle::ParticleDesc PrticleDesc = m_pVIBufferCom->Get_ParticleDesc();
