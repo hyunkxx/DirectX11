@@ -100,6 +100,10 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlackWhite"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+
 	// 디퓨즈, 노말, 뎁스
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_Diffuse")))
 		return E_FAIL;
@@ -147,9 +151,13 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSAO", L"Target_SSAO")))
 		return E_FAIL;
 
-	// LUT
+	// Black&White
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_LUT", L"Target_LUT")))
 		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_BlackWhite", L"Target_BlackWhite")))
+		return E_FAIL;
+	
 #pragma endregion
 
 #pragma region POST_EFFECT_SETUP
@@ -174,6 +182,10 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	m_pShader_LUT = CShader::Create(m_pDevice, m_pContext, L"../../Shader/SHADER_LUT.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount);
+	if (nullptr == m_pShader_LUT)
+		return E_FAIL;
+
+	m_pShader_RGBSplit = CShader::Create(m_pDevice, m_pContext, L"../../Shader/SHADER_RGB_SPLIT.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount);
 	if (nullptr == m_pShader_LUT)
 		return E_FAIL;
 
@@ -229,6 +241,8 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Glow_Result"), 150, 550.f, 100.f, 100.f)))
 		return E_FAIL;
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_BlackWhite"), 150, 650.f, 100.f, 100.f)))
+		return E_FAIL;
 
 #endif
 
@@ -262,6 +276,8 @@ void CRenderer::Draw()
 	}
 
 	Render_Lights();
+	Extraction(L"Target_BlackWhite", L"Target_Shade", 1);
+
 	Render_Outline();
 
 	if (m_pRenderSetting->IsActiveShadow())
@@ -311,6 +327,7 @@ void CRenderer::Draw()
 	m_pTargetManager->Render(TEXT("MRT_Glow_Result"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_Blend"), m_pShader, m_pVIBuffer);
 	m_pTargetManager->Render(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
+	m_pTargetManager->Render(TEXT("MRT_BlackWhite"), m_pShader, m_pVIBuffer);
 #endif
 
 }
@@ -480,7 +497,7 @@ void CRenderer::Render_Shadow()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CLightManager* pLighrManager = CLightManager::GetInstance();
 	CPipeLine* pPipeline = CPipeLine::GetInstance();
-
+	
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Shadow")))
 		return;
 	
@@ -532,8 +549,19 @@ void CRenderer::Render_Blend()
 	if (FAILED(m_pShader->SetRawValue("g_vCamPosition", &pPipeline->Get_CamPosition(), sizeof(_float4))))
 		return;
 
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Diffuse"), "g_DiffuseTexture")))
-		return;
+	if (m_pRenderSetting->IsActiveBlackWhite())
+	{
+		_double TimeDelta = pGameInstance->GetTimeDelta();
+		m_pRenderSetting->BlackWhiteTimeAcc(TimeDelta);
+		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_BlackWhite"), "g_DiffuseTexture")))
+			return;
+	}
+	else
+	{
+		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Diffuse"), "g_DiffuseTexture")))
+			return;
+	}
+
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Shade"), "g_ShadeTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Specular"), "g_SpecularTexture")))
@@ -584,7 +612,12 @@ void CRenderer::Render_Glow()
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY", "g_GlowTexture")))
 		return;
 
-	m_pShader_Blur->Begin(3);
+	if(m_pRenderSetting->IsActiveBlackWhite())
+		m_pShader_Blur->Begin(4);
+	else
+		m_pShader_Blur->Begin(3);
+
+
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
@@ -604,7 +637,7 @@ void CRenderer::Render_Glow_Blend()
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Glow_Result", "g_DiffuseTexture")))
 		return;
 
-	m_pShader->Begin(6);
+	m_pShader->Begin(8);
 	m_pVIBuffer->Render();
 }
 
@@ -688,8 +721,33 @@ void CRenderer::ApplyLUT(_uint iIndex)
 		return;
 }
 
+void CRenderer::RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag)
+{
+	CRenderTarget* pSourTarget = m_pTargetManager->FindTarget(pSourTag);
+	CRenderTarget* pBindTarget = m_pTargetManager->FindTarget(pBindTargetTag);
+
+	if (FAILED(m_pTargetManager->BeginTarget(m_pContext, pBindTarget)))
+		return;
+
+	if (FAILED(m_pShader_RGBSplit->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader_RGBSplit->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader_RGBSplit->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (pSourTarget)
+		pSourTarget->Set_ShaderResourceView(m_pShader_RGBSplit, "g_SourTexture");
+
+	m_pShader_RGBSplit->Begin(0);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+}
+
 //두번째 인자로 들어온 렌더타겟을 바인딩된 타겟(첫번째 인자)에 렌더
-void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag)
+void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag,  _uint iPass)
 {
 	CRenderTarget* pSourTarget = m_pTargetManager->FindTarget(pSourTag);
 	CRenderTarget* pBindTarget = m_pTargetManager->FindTarget(pBindTargetTag);
@@ -707,7 +765,7 @@ void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTa
 	if (pSourTarget)
 		pSourTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_SourTexture");
 
-	m_pShader_Extraction->Begin(0);
+	m_pShader_Extraction->Begin(iPass);
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
@@ -855,6 +913,7 @@ void CRenderer::Free()
 	Safe_Release(m_pShader_Extraction);
 	Safe_Release(m_pShader_SSAO);
 	Safe_Release(m_pShader_LUT);
+	Safe_Release(m_pShader_RGBSplit);
 
 	Safe_Release(m_pNoiseTexture);
 	Safe_Release(m_pVIBuffer);

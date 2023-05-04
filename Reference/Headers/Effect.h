@@ -26,7 +26,7 @@ public:
 		PASS_ALPHABLEND, PASS_COLOR_T0_ALPHA, PASS_END
 	};
 
-	typedef struct EFFECT_DESC
+	typedef struct tagEffectDesc
 	{
 #pragma region Effect
 		EFFECT_TYPE eEffectType;
@@ -128,7 +128,7 @@ public:
 		char TexName[MAX_PATH];
 		char NoiseTexName[MAX_PATH];
 		char DissolveTexName[MAX_PATH];
-	};
+	}EFFECT_DESC;
 
 protected:
 	CEffect(ID3D11Device* pDevice, ID3D11DeviceContext*	pContext);

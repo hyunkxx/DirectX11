@@ -229,16 +229,22 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 	vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexUV);
 	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
 	vector vOutNormal = g_OutNormalTexture.Sample(LinearSampler, In.vTexUV);
+	vector vGlowColor = g_GlowTexture.Sample(LinearSampler, In.vTexUV);
 
 	//1.6~1.75น่
 	float4 vFinalColor = (vDiffuse * (vShade * 1.7f));
 	if (vOutNormal.a == 1.f)
 	{
 		float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
-		Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z);
+		float4 vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z);
+		Out.vColor.rgb = vColor.rgb * (1.f - vGlowColor.a) + vGlowColor.rgb * vGlowColor.a;
+		Out.vColor.a = 1.f;
 	}
 	else
 	{
+		Out.vColor.rgb = vFinalColor.rgb * (1.f - vGlowColor.a) + +vGlowColor.rgb * vGlowColor.a;
+		Out.vColor.a = (vFinalColor).a;
+
 		Out.vColor = vFinalColor;
 	}
 
@@ -258,8 +264,8 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 	vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexUV);
 	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
 	vector vOutNormal = g_OutNormalTexture.Sample(LinearSampler, In.vTexUV);
-	vector vShadow = g_ShadowTexture.Sample(LinearSampler, In.vTexUV);
-	vector vGlowColor = g_GlowTexture.Sample(LinearSampler, In.vTexUV);
+	vector vShadow = g_ShadowTexture.Sample(LinearBorderSampler, In.vTexUV);
+	vector vGlowColor = g_GlowTexture.Sample(LinearBorderSampler, In.vTexUV);
 
 	//1.6~1.75น่
 	float4 vFinalColor = (vDiffuse * (vShade * 1.7f));
@@ -268,13 +274,13 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 		if (vOutNormal.a == 1.f)
 		{
 			float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
-			Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r;
+			float4 vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r;
 			Out.vColor.rgb = vColor.rgb * (1.f - vGlowColor.a) + vGlowColor.rgb * vGlowColor.a;
 			Out.vColor.a = 1.f;
 		}
 		else
 		{
-			Out.vColor.rgb = vFinalColor * vShadow.r  * (1.f - vGlowColor.a) + +vGlowColor.rgb * vGlowColor.a;
+			Out.vColor.rgb = vFinalColor.rgb * vShadow.r  * (1.f - vGlowColor.a) + +vGlowColor.rgb * vGlowColor.a;
 			Out.vColor.a = (vFinalColor * vShadow.r).a;
 		}
 	}
@@ -282,7 +288,7 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 	{
 		if (vOutNormal.a == 1.f)
 		{
-			float vOutline = g_OutlineTexture.Sample(PointSampler, In.vTexUV).r;
+			float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
 			Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r + float4(vGlowColor.rgb, 0.f);
 		}
 		else
@@ -300,7 +306,7 @@ PS_OUT_SHADOW PS_Shadow(PS_IN In)
 
 	vector vWorldPos;
 
-	vector vDepthInfo = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);
+	vector vDepthInfo = g_DepthTexture.Sample(LinearBorderSampler, In.vTexUV);
 	float fViewZ = vDepthInfo.y * g_Far;
 
 	vector vPosition;
@@ -344,7 +350,6 @@ PS_OUT PS_Outline(PS_IN In)
 	float4 Ret = float4(fGray, fGray, fGray, 1.f) / 1;
 
 	Out.vColor = smoothstep(0.1f, 1.f, Ret);
-	Out.vColor.a = 0.3f;
 
 	return Out;
 }
@@ -363,7 +368,7 @@ PS_OUT PS_Last_Blend(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
 
 	return Out;
 }
@@ -476,7 +481,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Shadow();
 	}
 
-	pass Last_Blend
+	pass Last_Blend_Pass8
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);

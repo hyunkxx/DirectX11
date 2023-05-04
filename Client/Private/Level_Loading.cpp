@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Level_Loading.h"
 
+#include "GameMode.h"
 #include "AppManager.h"
 #include "GameInstance.h"
 
@@ -37,8 +38,10 @@ void CLevel_Loading::Tick(_double TimeDelta)
 
 	if (true == m_pLoader->IsFinished() && GetKeyState(VK_RETURN) & 0x8000)
 	{
-		CGameInstance* pGameInstance = CGameInstance::GetInstance();
 		CLevel*	pLevel = { nullptr };
+		CGameMode* m_pGM = CGameMode::GetInstance();
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+		m_pGM->SetCurrentLevel(m_eNextLevel);
 
 		switch (m_eNextLevel)
 		{
@@ -52,7 +55,6 @@ void CLevel_Loading::Tick(_double TimeDelta)
 			pLevel = CLevel_AnimTool::Create(m_pDevice, m_pContext);
 			break;
 		}
-
 		if (nullptr == pLevel)
 			return;
 

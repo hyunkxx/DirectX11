@@ -52,6 +52,20 @@ PS_OUT PS_EXTRACTION(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_EXTRACTION_BLACK_WHITE(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vSourceColor = g_SourTexture.Sample(LinearBorderSampler, In.vTexUV);
+
+	if(vSourceColor.r > 0.5f)
+		Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
+	else
+		Out.vColor = float4(0.f, 0.f, 0.f, 1.f);
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass Extraction_Pass0
@@ -65,5 +79,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_EXTRACTION();
+	}
+
+	pass Extraction_BlackWhite_Pass1
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_EXTRACTION_BLACK_WHITE();
 	}
 }

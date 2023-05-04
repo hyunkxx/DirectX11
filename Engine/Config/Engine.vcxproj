@@ -176,7 +176,6 @@
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\Component_Manager.h" />
     <ClInclude Include="..\public\CustomFont.h" />
-    <ClInclude Include="..\Public\CustomVector.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />

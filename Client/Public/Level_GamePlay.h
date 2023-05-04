@@ -26,6 +26,7 @@ public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
 
+	class CDynamicCamera* m_pDynamicCamera = nullptr;
 
 	std::thread thread1;
 	int m_iThreadTest = 0;

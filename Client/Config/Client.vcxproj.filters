@@ -1,130 +1,203 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="config">
-      <UniqueIdentifier>{792f7ce0-d5a6-4b79-ad7b-af46212da221}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="config\res">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="config\pch">
-      <UniqueIdentifier>{b43a9dd1-9ee5-40c9-b95d-2cf09ed305b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="config\header">
-      <UniqueIdentifier>{86482e6e-9ff7-40ae-8df5-63919f70d759}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="config\ImGui">
-      <UniqueIdentifier>{1a071513-88c6-4526-bf38-5208f4d2df6e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="config\ImGui\Manager">
-      <UniqueIdentifier>{e695b911-ea19-4f06-811f-45206d6c571e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src">
-      <UniqueIdentifier>{8efdc4aa-e512-46e1-863d-576f7fea412b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\01. Levels">
-      <UniqueIdentifier>{c6e78f92-7038-4d76-92d9-fcd27e6cf583}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\01. Levels\00. Loading">
-      <UniqueIdentifier>{a6b0a0db-a03f-4c72-9c66-3dd22191fda8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\01. Levels\00. Loading\Loader">
-      <UniqueIdentifier>{b0e6ba28-d8ce-4b34-ae41-739490f8ed15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\01. Levels\02. GamePlay">
-      <UniqueIdentifier>{a0fe662c-f94a-4d4b-b072-e1a6b073e38a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\01. Levels\01. Logo">
-      <UniqueIdentifier>{8148b9dc-719b-4ca4-be27-3361a8cc2079}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02. GameObjects">
-      <UniqueIdentifier>{103fe8f1-2e98-41b5-8543-5b4077cbec4a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02. GameObjects\02. BackGround">
-      <UniqueIdentifier>{dc6159ad-4ee9-4dec-9c7d-627205fe95e1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02. GameObjects\01. Camera">
-      <UniqueIdentifier>{dbf6febb-caa7-41c7-ba5b-66461a3365cb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02. GameObjects\00. Terrain">
-      <UniqueIdentifier>{8bbfe02c-4521-4c84-97f5-109e4df3f75a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\99. ShaderFiles">
-      <UniqueIdentifier>{a2c67a9a-622f-427a-85ff-ff7d7f32481d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\00. Application">
-      <UniqueIdentifier>{5a1dc353-75b1-482c-b427-d4091fdc6f55}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\00. Application\Manager">
-      <UniqueIdentifier>{340821c9-9f50-46c4-8493-a4160c0375eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02. GameObjects\03. Character">
-      <UniqueIdentifier>{c95f0211-6d13-49e0-aa9d-7b3ab6b502a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02. GameObjects\99. TestModel">
-      <UniqueIdentifier>{665cf870-6dc5-4522-a932-6df3c0f2f1dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02. GameObjects\99. TestModel\TestPlayer">
-      <UniqueIdentifier>{51e1450e-258c-4add-a836-0ed20a60c48e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02. GameObjects\04. MapObject">
-      <UniqueIdentifier>{3d139dea-d631-4f3b-b1c3-ca5f6aadf820}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02. GameObjects\04. MapObject\00.Tree">
-      <UniqueIdentifier>{5388ba6c-98db-49ad-9510-a72ca4231dbd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02. GameObjects\04. MapObject\00.Tree\0">
-      <UniqueIdentifier>{5bc307ae-c7a6-4735-aff3-9bfdd9d67033}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\100.NewFiles">
-      <UniqueIdentifier>{11aac948-2efb-4e46-90ec-ca46e2a295b2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02. GameObjects\05.Effect">
-      <UniqueIdentifier>{8306a188-8b40-4bf1-b197-019b89a05e6f}</UniqueIdentifier>
-    </Filter>
+    <FxCompile Include="..\..\Shader\SHADER_BLUR.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_CELL.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_DEFERRED.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_EXTRACTION.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_GROUD.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_LUT.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_PHONG.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\Shader_SkillModel.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_SSAO.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_VTXCUBE.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_VTXMODEL.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_VTXMODEL_INSTANCE.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_VTXMODELANIM.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_VTXNORTEX.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\Shader_VtxPointInstance.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_VTXTEX.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_RGB_SPLIT.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Client.h">
+    <ClCompile Include="..\ImGui\imgui.cpp">
+      <Filter>config\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_demo.cpp">
+      <Filter>config\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_draw.cpp">
+      <Filter>config\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_impl_dx11.cpp">
+      <Filter>config\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_impl_win32.cpp">
+      <Filter>config\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_tables.cpp">
+      <Filter>config\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_widgets.cpp">
+      <Filter>config\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Client.cpp">
       <Filter>config</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Application.h">
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>config\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GUIManager.cpp">
+      <Filter>config\ImGui\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\InGameLoader.cpp">
+      <Filter>src\00. Application\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\GameMode.cpp">
+      <Filter>src\00. Application\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AppManager.cpp">
+      <Filter>src\00. Application\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Application.cpp">
       <Filter>src\00. Application</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="..\private\Loader.cpp">
+      <Filter>src\01. Level\00. Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Loading.cpp">
+      <Filter>src\01. Level\00. Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Logo.cpp">
+      <Filter>src\01. Level\01. Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_GamePlay.cpp">
+      <Filter>src\01. Level\02. GamePlay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_AnimTool.cpp">
+      <Filter>src\01. Level\99. AnimTool</Filter>
+    </ClCompile>
+    <ClCompile Include="Floor.cpp">
+      <Filter>src\02. GameObject\00. Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Terrain.cpp">
+      <Filter>src\02. GameObject\00. Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DynamicCamera.cpp">
+      <Filter>src\02. GameObject\01. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BackGround.cpp">
+      <Filter>src\02. GameObject\02. BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Character.cpp">
+      <Filter>src\02. GameObject\03. Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_0.cpp">
+      <Filter>src\04. MapObject\00. Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_1.cpp">
+      <Filter>src\04. MapObject\00. Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerGirl.cpp">
+      <Filter>src\02. GameObject\03. Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Parts.cpp">
+      <Filter>src\02. GameObject\03. Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AnimToolManager.cpp">
+      <Filter>src\00. Application\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SoundKey.cpp">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StateKey.cpp">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WeaponKey.cpp">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MissileKey.cpp">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EffectKey.cpp">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DissolveKey.cpp">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Player.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh_Effect_P.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Particle_Effect_P.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
       <Filter>config\header</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>config\res</Filter>
+    <ClInclude Include="..\Public\Client_Enum.h">
+      <Filter>config\header</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>config\res</Filter>
+    <ClInclude Include="..\Public\Client_ModelEnum.h">
+      <Filter>config\header</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Level_Loading.h">
-      <Filter>src\01. Levels\00. Loading</Filter>
+    <ClInclude Include="..\Public\Client_ObjectEnum.h">
+      <Filter>config\header</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Loader.h">
-      <Filter>src\01. Levels\00. Loading\Loader</Filter>
+    <ClInclude Include="..\Public\Client_ShaderEnum.h">
+      <Filter>config\header</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Level_Logo.h">
-      <Filter>src\01. Levels\01. Logo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\BackGround.h">
-      <Filter>src\02. GameObjects\02. BackGround</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Terrain.h">
-      <Filter>src\02. GameObjects\00. Terrain</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\DynamicCamera.h">
-      <Filter>src\02. GameObjects\01. Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\GUIManager.h">
-      <Filter>config\ImGui\Manager</Filter>
+    <ClInclude Include="..\Public\Client_TextureEnum.h">
+      <Filter>config\header</Filter>
     </ClInclude>
     <ClInclude Include="..\ImGui\imconfig.h">
       <Filter>config\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\ImGui\imgui.h">
+      <Filter>config\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Downloads\imgui-docking\imgui-docking\backends\imgui_impl_dx11.h">
+      <Filter>config\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Downloads\imgui-docking\imgui-docking\backends\imgui_impl_win32.h">
       <Filter>config\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\ImGui\imgui_internal.h">
@@ -139,211 +212,208 @@
     <ClInclude Include="..\ImGui\imstb_truetype.h">
       <Filter>config\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\imgui-docking\imgui-docking\backends\imgui_impl_win32.h">
-      <Filter>config\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\imgui-docking\imgui-docking\backends\imgui_impl_dx11.h">
-      <Filter>config\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\AppManager.h">
-      <Filter>src\00. Application\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Client_Enum.h">
-      <Filter>config\header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Client_ShaderEnum.h">
-      <Filter>config\header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Client_TextureEnum.h">
-      <Filter>config\header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Client_ObjectEnum.h">
-      <Filter>config\header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Shader\SHADER_DEFINES.hpp">
-      <Filter>src\99. ShaderFiles</Filter>
+    <ClInclude Include="Client.h">
+      <Filter>config</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>config\pch</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Character.h">
-      <Filter>src\02. GameObjects\03. Character</Filter>
+    <ClInclude Include="..\Public\GUIManager.h">
+      <Filter>config\ImGui\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Client_ModelEnum.h">
-      <Filter>config\header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_GamePlay.h">
-      <Filter>src\01. Levels\02. GamePlay</Filter>
-    </ClInclude>
-    <ClInclude Include="Floor.h">
-      <Filter>src\02. GameObjects\00. Terrain</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Tree_0.h">
-      <Filter>src\02. GameObjects\04. MapObject\00.Tree\0</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\PlayerGirl.h">
-      <Filter>src\02. GameObjects\03. Character</Filter>
+    <ClInclude Include="..\public\InGameLoader.h">
+      <Filter>src\00. Application\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\GameMode.h">
       <Filter>src\00. Application\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Mesh_Effect_P.h">
-      <Filter>src\02. GameObjects\05.Effect</Filter>
+    <ClInclude Include="..\public\AppManager.h">
+      <Filter>src\00. Application\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Particle_Effect_P.h">
-      <Filter>src\02. GameObjects\05.Effect</Filter>
+    <ClInclude Include="..\public\Application.h">
+      <Filter>src\00. Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Loader.h">
+      <Filter>src\01. Level\00. Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Loading.h">
+      <Filter>src\01. Level\00. Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Logo.h">
+      <Filter>src\01. Level\01. Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_GamePlay.h">
+      <Filter>src\01. Level\02. GamePlay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_AnimTool.h">
+      <Filter>src\01. Level\99. AnimTool</Filter>
+    </ClInclude>
+    <ClInclude Include="Floor.h">
+      <Filter>src\02. GameObject\00. Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Terrain.h">
+      <Filter>src\02. GameObject\00. Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DynamicCamera.h">
+      <Filter>src\02. GameObject\01. Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BackGround.h">
+      <Filter>src\02. GameObject\02. BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Character.h">
+      <Filter>src\02. GameObject\03. Character</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_0.h">
+      <Filter>src\04. MapObject\00. Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_1.h">
+      <Filter>src\04. MapObject\00. Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerGirl.h">
+      <Filter>src\02. GameObject\03. Character</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>config\res</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>config\res</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Shader\SHADER_DEFINES.hpp">
+      <Filter>src\99. ShaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Parts.h">
+      <Filter>src\02. GameObject\03. Character</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AnimToolManager.h">
+      <Filter>src\00. Application\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SoundKey.h">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StateKey.h">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\WeaponKey.h">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MissileKey.h">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EffectKey.h">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DissolveKey.h">
+      <Filter>src\05.AnimStateKeys</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Player.h">
-      <Filter>src\02. GameObjects\05.Effect</Filter>
+      <Filter>src\06. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh_Effect_P.h">
+      <Filter>src\06. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Particle_Effect_P.h">
+      <Filter>src\06. Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Client.cpp">
-      <Filter>config</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Application.cpp">
-      <Filter>src\00. Application</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Level_Loading.cpp">
-      <Filter>src\01. Levels\00. Loading</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Loader.cpp">
-      <Filter>src\01. Levels\00. Loading\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_Logo.cpp">
-      <Filter>src\01. Levels\01. Logo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_GamePlay.cpp">
-      <Filter>src\01. Levels\02. GamePlay</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\BackGround.cpp">
-      <Filter>src\02. GameObjects\02. BackGround</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Terrain.cpp">
-      <Filter>src\02. GameObjects\00. Terrain</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\GUIManager.cpp">
-      <Filter>config\ImGui\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGui\imgui.cpp">
+    <Image Include="Client.ico">
+      <Filter>config\res</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>config\res</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\ImGui\LICENSE.txt">
       <Filter>config\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGui\imgui_demo.cpp">
-      <Filter>config\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGui\imgui_draw.cpp">
-      <Filter>config\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGui\imgui_tables.cpp">
-      <Filter>config\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGui\imgui_widgets.cpp">
-      <Filter>config\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\AppManager.cpp">
-      <Filter>src\00. Application\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>config\pch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Character.cpp">
-      <Filter>src\02. GameObjects\03. Character</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGui\imgui_impl_dx11.cpp">
-      <Filter>config\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGui\imgui_impl_win32.cpp">
-      <Filter>config\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Floor.cpp">
-      <Filter>src\02. GameObjects\00. Terrain</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\DynamicCamera.cpp">
-      <Filter>src\02. GameObjects\01. Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Tree_0.cpp">
-      <Filter>src\02. GameObjects\04. MapObject\00.Tree\0</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\PlayerGirl.cpp">
-      <Filter>src\02. GameObjects\03. Character</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\GameMode.cpp">
-      <Filter>src\00. Application\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Mesh_Effect_P.cpp">
-      <Filter>src\02. GameObjects\05.Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Particle_Effect_P.cpp">
-      <Filter>src\02. GameObjects\05.Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Effect_Player.cpp">
-      <Filter>src\02. GameObjects\05.Effect</Filter>
-    </ClCompile>
+    </Text>
+    <Text Include="ReadMe.txt">
+      <Filter>config\res</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="config">
+      <UniqueIdentifier>{650dc429-6909-4c2a-951f-a0858d783c91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config\header">
+      <UniqueIdentifier>{93cfca1f-b363-470c-9664-da4cef2a4c9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config\ImGui">
+      <UniqueIdentifier>{5c6160dc-d352-4469-a9d7-b404f89630f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config\pch">
+      <UniqueIdentifier>{5aaa9db6-51c8-4c7b-a241-bd5c22d36e58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config\res">
+      <UniqueIdentifier>{fcac9c33-b73c-4874-af74-80e172f07c8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config\ImGui\Manager">
+      <UniqueIdentifier>{fbb16821-87a9-49cb-b5c1-d25d842444c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4a5184dd-5a79-4fdc-931a-93fb5f9c4ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\00. Application">
+      <UniqueIdentifier>{1187ad0f-61f6-4538-8384-97bd9740e0c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\00. Application\Manager">
+      <UniqueIdentifier>{1cdc14b9-79a1-4906-8590-163fc16e0b21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\01. Level">
+      <UniqueIdentifier>{fd77cf89-af56-4549-8575-4f1729bc8578}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\01. Level\00. Loading">
+      <UniqueIdentifier>{7a6e94bf-6515-43a7-9961-fc4536fc8407}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\01. Level\00. Loading\Loader">
+      <UniqueIdentifier>{f268160b-b175-40bf-a9af-f200065f21e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\01. Level\01. Logo">
+      <UniqueIdentifier>{e7a1b258-2783-4358-a16b-f5daabb9d08b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\01. Level\02. GamePlay">
+      <UniqueIdentifier>{8a7361c6-3d89-490c-8eed-2a470a09055c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\01. Level\99. AnimTool">
+      <UniqueIdentifier>{cd9c5def-a4a0-4054-8331-dbe56ee4a78f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject">
+      <UniqueIdentifier>{3f04570d-a4b1-461e-82b8-b787ccabfa73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\00. Terrain">
+      <UniqueIdentifier>{29d26517-95d4-47ce-a258-47894a317ff5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\01. Camera">
+      <UniqueIdentifier>{7bd6bb8e-bbda-4ff6-9d37-999f7bdb25c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\02. BackGround">
+      <UniqueIdentifier>{975476c6-7409-4c8e-93ab-d8f8f4b64e95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\03. Character">
+      <UniqueIdentifier>{9e12d510-e3fb-4470-bf45-dcac3ce8dc53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\99. ShaderFiles">
+      <UniqueIdentifier>{499dbb27-f1f2-4bb8-8977-755ea69a0977}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\05.AnimStateKeys">
+      <UniqueIdentifier>{f161b005-e67f-4fb2-86e8-fb1a6482981a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\06. Effect">
+      <UniqueIdentifier>{0a780412-6669-4fbe-bad5-44069c4f7632}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\NEW_FILES">
+      <UniqueIdentifier>{a5a0ec18-4f53-47c5-a349-be7c606368c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\04. MapObject">
+      <UniqueIdentifier>{cf60166b-cc5a-4458-8303-58a0a8b2e018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\04. MapObject\00. Tree">
+      <UniqueIdentifier>{b800cd01-54f2-4c93-b152-4b55258deb44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
       <Filter>config\res</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="small.ico">
-      <Filter>config\res</Filter>
-    </Image>
-    <Image Include="Client.ico">
-      <Filter>config\res</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt">
-      <Filter>config\res</Filter>
-    </Text>
-    <Text Include="..\ImGui\LICENSE.txt">
-      <Filter>config\ImGui</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\..\Shader\SHADER_VTXNORTEX.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_VTXTEX.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_GROUD.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_PHONG.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_VTXCUBE.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_VTXMODEL.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_DEFERRED.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_VTXMODELANIM.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_VTXMODEL_INSTANCE.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_BLUR.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_SSAO.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shader\SHADER_EXTRACTION.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\..\..\..\..\바탕 화면\EffectTool - 복사본\Shader\Shader_SkillModel.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\..\..\..\..\바탕 화면\EffectTool - 복사본\Shader\Shader_VtxPointInstance.hlsl">
-    <FxCompile Include="..\..\Shader\SHADER_LUT.hlsl">
-      <Filter>src\99. ShaderFiles</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>

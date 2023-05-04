@@ -243,7 +243,11 @@ HRESULT CApplication::InitializeManager()
 {
 	CAppManager::GetInstance();
 	CGameMode::GetInstance();
+
+#ifdef _DEBUG
 	m_pAnimToolManager->Init_AnimToolManager(m_pDevice, m_pContext);
+#endif
+
 	return S_OK;
 }
 

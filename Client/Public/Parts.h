@@ -37,6 +37,7 @@ public:
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render();
+	virtual HRESULT RenderShadow();
 
 	void Set_Parent(_uint iParentID)
 	{
@@ -64,6 +65,7 @@ private:
 private:
 	HRESULT Add_Components();
 	HRESULT	SetUp_ShaderResources();
+	HRESULT Setup_ShadowShaderResource();
 
 public:
 	static CParts* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iModelID);

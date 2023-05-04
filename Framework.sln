@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Config\Cli
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Config\Engine.vcxproj", "{5216AE1D-C4CD-4EF2-AB89-0D8C539644AF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "__NEW_FILE_NEW_FILE__", "__NEW_FILE_NEW_FILE__", "{33EC3021-D5F4-4835-A528-72B15B5CBFD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Parts.h"
 
+#include "GameMode.h"
 #include "GameInstance.h"
 
 CParts::CParts(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -66,6 +67,8 @@ void CParts::LateTick(_double TimeDelta)
 		return;
 
 	__super::LateTick(TimeDelta);
+
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 }
 
 HRESULT CParts::Render()
@@ -79,24 +82,48 @@ HRESULT CParts::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
+	int iPass = 2;
+	if (10.f <= ComputeCameraLength())
+		iPass = 0;
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
-
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
 
-		//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS)))
+			return E_FAIL;
 
+		//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
 		//m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
-		m_pShaderCom->Begin(0);
-
+		m_pShaderCom->Begin(iPass);
 		m_pModelCom->Render(i);
 	}
 
 	return S_OK;
 
+}
+
+HRESULT CParts::RenderShadow()
+{
+	if (true != m_bRender)
+		return E_FAIL;
+
+	if (FAILED(__super::RenderShadow()))
+		return E_FAIL;
+
+	if (FAILED(Setup_ShadowShaderResource()))
+		return E_FAIL;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pShaderCom->Begin(1);
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
 }
 
 HRESULT CParts::Add_Components()
@@ -117,13 +144,16 @@ HRESULT CParts::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pMainTransform, &TransformDesc)))
 		return E_FAIL;
 
+	CGameMode* pGM = CGameMode::GetInstance();
+	_uint nCurrentLevel = pGM->GetCurrentLevel();
+
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_iModelID,
+	if (FAILED(__super::Add_Component(nCurrentLevel, m_iModelID,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, SHADER::MODEL,
+	if (FAILED(__super::Add_Component(nCurrentLevel, SHADER::MODEL,
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -143,6 +173,24 @@ HRESULT CParts::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CParts::Setup_ShadowShaderResource()
+{
+	if (nullptr == m_pShaderCom)
+		return E_FAIL;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_PROJ))))
 		return E_FAIL;
 
 	return S_OK;

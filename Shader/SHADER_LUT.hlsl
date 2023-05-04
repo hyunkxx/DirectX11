@@ -7,7 +7,7 @@ float g_Value = 12.f;
 texture2D g_DiffuseTexture;
 texture2D g_LUT;
 
-float3 GetLutColor(float3 ColorIn, texture2D LutTexture)
+float3 GetLutColor(float3 ColorIn)
 {
 	float2 LutSize = float2(0.00390625f, 0.0625f);
 	float4 LutUV;
@@ -18,7 +18,10 @@ float3 GetLutColor(float3 ColorIn, texture2D LutTexture)
 	LutUV.x += LutUV.w * LutSize.y;
 	LutUV.z = LutUV.x + LutSize.y;
 
-	return lerp(LutTexture.Sample(LinearSampler, LutUV.xyzz).rgb, LutTexture.Sample(LinearSampler, LutUV.zyzz).rgb, ColorIn.b - LutUV.w);
+	vector Lut1 = g_LUT.Sample(PointSampler, LutUV.xyzz);
+	vector Lut2 = g_LUT.Sample(PointSampler, LutUV.zyzz);
+
+	return lerp(Lut1.xyz, Lut2.xyz, ColorIn.b - LutUV.w);
 }
 
 struct VS_IN
@@ -64,7 +67,7 @@ PS_OUT PS_LUT(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	Out.vColor = float4(GetLutColor(Out.vColor.rgb, g_LUT), 1.f);
+	Out.vColor = float4(GetLutColor(Out.vColor.rgb), 1.f);
 
 	return Out;
 }

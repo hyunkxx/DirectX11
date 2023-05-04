@@ -20,9 +20,12 @@ public:
 	virtual HRESULT Render() override;
 	virtual void RenderGUI() override;
 
-public:
+private:
 	HRESULT Add_Components();
 	HRESULT Setup_ShaderResources();
+
+public:
+	_float GetCameraSpeed();
 
 public:
 	static CDynamicCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

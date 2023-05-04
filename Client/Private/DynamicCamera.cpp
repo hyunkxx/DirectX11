@@ -58,8 +58,24 @@ void CDynamicCamera::Tick(_double TimeDelta)
 
 		if (MouseMove = pGameInstance->InputMouseMove(DIMM_Y))
 			m_pTransform->Rotate(m_pTransform->Get_State(CTransform::STATE_RIGHT), MouseMove * TimeDelta * 0.1f);
+	}	
+
+	if (pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
+		pGameInstance->InputKey(DIK_PGUP) == KEY_STATE::TAP)
+	{
+		_float fSpeed = floor(m_pTransform->Get_Speed() * 2.f);
+		if (fSpeed <= 1280.f)
+			m_pTransform->Set_Speed(fSpeed);
 	}
 
+	if(pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
+		pGameInstance->InputKey(DIK_PGDN) == KEY_STATE::TAP)
+	{
+		_float fSpeed = floor(m_pTransform->Get_Speed() * 0.5f);
+		if (fSpeed >= 5.f)
+			m_pTransform->Set_Speed(fSpeed);
+	}
+	
 	__super::Tick(TimeDelta);
 }
 
@@ -85,6 +101,13 @@ HRESULT CDynamicCamera::Add_Components()
 HRESULT CDynamicCamera::Setup_ShaderResources()
 {
 	return S_OK;
+}
+
+_float CDynamicCamera::GetCameraSpeed()
+{
+	if (m_pTransform == nullptr)
+		return 0.f;
+	return m_pTransform->Get_Speed();
 }
 
 CDynamicCamera* CDynamicCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -37,6 +37,8 @@ private:
 	list<class CLight*> m_Lights;
 	typedef list<class CLight*> LIGHTS;
 
+	LIGHT_DESC m_eCamLightDesc;
+
 	_float4 m_vLightPos = { 0.f, 0.f, 0.f, 1.f };
 	_float4 m_vLightDir = { 0.f, 0.f, 0.f, 0.f };
 	_float4x4 m_LightMatrix[LIGHT_MATRIX_END];

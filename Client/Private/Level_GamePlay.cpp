@@ -70,10 +70,66 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 
 		pGameInstance->SetLUT((CRenderer::LUT)iIndexLUT);
 	}
+
+	if (pGameInstance->InputKey(DIK_6) == KEY_STATE::TAP)
+	{
+		pGameInstance->StartBlackWhite(1.f);
+	}
+
+	if (pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
+		pGameInstance->InputKey(DIK_6) == KEY_STATE::TAP)
+	{
+		pGameInstance->StartBlackWhite(0.05f);
+	}
 }
 
 void CLevel_GamePlay::RenderLevelUI()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	ImGui::Begin("Helper");
+
+	string strCamSpeed = to_string(int(m_pDynamicCamera->GetCameraSpeed()));
+	ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "DynamicCamera");
+	ImGui::Text("Current CamSpeed : x"); ImGui::SameLine();
+	ImGui::Text(strCamSpeed.c_str());
+	ImGui::Text("Ctrl+PageUp    : Speed Up");
+	ImGui::Text("Ctrl+PageDown  : Speed Down");
+
+	ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "RenderSetting");
+	ImGui::Text("[ 0 ] Shadow      (Off/Low/High)");
+	ImGui::Text("[ 9 ] Outline     (On/Off)");
+	ImGui::Text("[ 8 ] SSAO        (On/Off)");
+	ImGui::Text("[ 7 ] LUT Change  "); ImGui::SameLine();
+
+	switch (pGameInstance->GetLUT())
+	{
+	case CRenderer::LUT_EXPOSURE_MINUS:
+		ImGui::Text("Exposure Minus");
+		break;
+	case CRenderer::LUT_EXPOSURE_PLUS:
+		ImGui::Text("Exposure Plus");
+		break;
+	case CRenderer::LUT_FUJI:
+		ImGui::Text("Fuji");
+		break;
+	case CRenderer::LUT_GRUNGY:
+		ImGui::Text("Grungy");
+		break;
+	case CRenderer::LUT_SOUTH:
+		ImGui::Text("South");
+		break;
+	case CRenderer::LUT_KURO:
+		ImGui::Text("Kuro");
+		break;
+	case CRenderer::LUT_DEFAULT:
+		ImGui::Text("Default");
+		break;
+	}
+
+	ImGui::Text("[ 6 ] [ Ctrl+6]    Black&White ");
+
+	ImGui::End();
 }
 
 HRESULT CLevel_GamePlay::Ready_Lights()
@@ -86,7 +142,7 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	ZeroMemory(&LightDesc, sizeof LightDesc);
 	LightDesc.eLightType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(2.f, -1.f, 1.0f, 0.f);
-	LightDesc.vDiffuse = _float4(0.6f, 0.65f, 0.6f, 1.f);
+	LightDesc.vDiffuse = _float4(0.6f, 0.68f, 0.6f, 1.f);
 	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	
@@ -135,6 +191,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::DYNAMIC_CAMERA, pLayerTag, L"dynamic_camera", &CameraDesc)))
 		return E_FAIL;
+
+	m_pDynamicCamera = (CDynamicCamera*)pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, L"dynamic_camera");
 
 	return S_OK;
 }

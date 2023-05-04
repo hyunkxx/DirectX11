@@ -37,7 +37,8 @@ private:
 	void Render_UI();
 
 	void ApplyLUT(_uint iIndex);
-	void Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag);
+	void RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag);
+	void Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag, _uint iPass = 0);
 	void Target_Blur(const _tchar* TargetTag, _int BlurCount = 1);
 	void Ready_SSAO(const _tchar* pBindTargetTag);
 
@@ -79,6 +80,7 @@ private:
 	class CShader* m_pShader_Blur = nullptr;
 	class CShader* m_pShader_SSAO = nullptr;
 	class CShader* m_pShader_LUT = nullptr;
+	class CShader* m_pShader_RGBSplit = nullptr;
 
 	_float4x4 m_FullScreenWorldMatrix, m_ViewMatrix, m_ProjMatrix;
 

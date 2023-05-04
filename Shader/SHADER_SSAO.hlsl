@@ -81,7 +81,9 @@ tagSSAO_Out GetSSAO(tagSSAO_In In)
 		vReflect.x *= -1.f;
 
 		vRandomUV = In.vUV + vReflect.xy;
-		fOccNormal = g_DepthTexture.Sample(LinearSampler, vRandomUV).g * g_Far * In.fViewZ;
+
+		vector NearDepthInfo = g_DepthTexture.Sample(LinearSampler, vRandomUV);
+		fOccNormal = NearDepthInfo.g * g_Far * In.fViewZ;
 
 		if (fOccNormal <= In.fDepth + 0.05f)
 			++iColor;

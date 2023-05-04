@@ -102,7 +102,7 @@ PS_OUT PS_MAIN_BLUR_X(PS_IN In)
 	for (int i = -6 ; 7 > i; i++)
 	{
 		vUV2 = vUV + float2(fTu * i, 0);
-		vColor += fWeight[i + 6] * g_BlurTexture.Sample(LinearBorderSampler, vUV2);
+		vColor += fWeight[i + 6] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
 		fTotal += fWeight[i + 6];
 	}
 
@@ -128,7 +128,7 @@ PS_OUT PS_MAIN_BLUR_Y(PS_IN In)
 	for (int i = -6 ; 7 > i; i++)
 	{
 		vUV2 = vUV + float2(0 , fTv * i);
-		vColor += fWeight[i + 6] * g_BlurTexture.Sample(LinearBorderSampler, vUV2);
+		vColor += fWeight[i + 6] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
 		fTotal += fWeight[i + 6];
 	}
 
@@ -141,7 +141,7 @@ PS_OUT PS_MAIN_BRIGHT(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	float4 vFragColor = g_finalTexture.Sample(LinearBorderSampler, In.vTexUV);
+	float4 vFragColor = g_finalTexture.Sample(LinearClampSampler, In.vTexUV);
 
 
 	if (0.8f <= vFragColor.r || 0.8f <= vFragColor.g || 0.8f <= vFragColor.b)
@@ -159,7 +159,8 @@ PS_OUT PS_MAIN_GLOW(PS_IN In)
 	/*if (vfinalColor.a == 0.f)
 	discard;*/
 	// g_GlowOriTexture
-	float3 color = pow(g_finalTexture.Sample(LinearBorderSampler, In.vTexUV).rgb * g_fColorRange, float3(2.2f, 2.2f, 2.2f));
+
+	float3 color = pow(g_GlowOriTexture.Sample(LinearBorderSampler, In.vTexUV).rgb * g_fColorRange, float3(2.2f, 2.2f, 2.2f));
 	color = pow(color, float3(2.2f, 2.2f, 2.2f));
 	color += pow(getBloom(In.vTexUV), float3(2.2f, 2.2f, 2.2f));
 	color = pow(color, float3(1.f / 2.2f, 1.f / 2.2f, 1.f / 2.2f));
@@ -171,14 +172,47 @@ PS_OUT PS_MAIN_GLOW(PS_IN In)
 
 	Out.vColor = pow(abs(vfinalColor), 1.f / 2.2f);
 
-	Out.vColor.a = g_finalTexture.Sample(LinearBorderSampler, In.vTexUV).a;
+	Out.vColor.a = g_finalTexture.Sample(LinearClampSampler, In.vTexUV).a;
 
 	return Out;
 }
 
+PS_OUT PS_MAIN_GLOW_BLACK_WHITE(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	float4 vfinalColor = g_finalTexture.Sample(LinearBorderSampler, In.vTexUV);
+
+	/*if (vfinalColor.a == 0.f)
+	discard;*/
+	// g_GlowOriTexture
+
+	float3 color = pow(g_GlowOriTexture.Sample(LinearBorderSampler, In.vTexUV).rgb * g_fColorRange, float3(2.2f, 2.2f, 2.2f));
+	color = pow(color, float3(2.2f, 2.2f, 2.2f));
+	color += pow(getBloom(In.vTexUV), float3(2.2f, 2.2f, 2.2f));
+	color = pow(color, float3(1.f / 2.2f, 1.f / 2.2f, 1.f / 2.2f));
+
+	color = jodieReinhardTonemap(color);
+
+	vfinalColor = pow(abs(vfinalColor), 2.2f);
+	vfinalColor.rgb += color.rgb;
+
+	Out.vColor = pow(abs(vfinalColor), 1.f / 2.2f);
+
+	if (Out.vColor.r > 0.5f)
+		Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
+	else
+		Out.vColor = float4(0.f, 0.f, 0.f, 1.f);
+
+	Out.vColor.a = g_finalTexture.Sample(LinearClampSampler, In.vTexUV).a;
+
+	return Out;
+}
+
+
 technique11 DefaultTechnique
 {
-	pass BlurX
+	pass BlurX_Pass0
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -191,7 +225,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_BLUR_X();
 	}
 
-	pass BlurY
+	pass BlurY_Pass1
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -204,7 +238,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_BLUR_Y();
 	}
 
-	pass Bright
+	pass Bright_Pass2
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -215,10 +249,9 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_BRIGHT();
-
 	}
 
-	pass Glow
+	pass Glow_Pass3
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -229,6 +262,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_GLOW();
+	}
 
+	pass Glow_BlackWhite_Pass4
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_GLOW_BLACK_WHITE();
 	}
 }

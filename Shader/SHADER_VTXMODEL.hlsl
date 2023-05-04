@@ -111,9 +111,9 @@ struct PS_OUT_OUTLINE
 	float4 vOutNormal : SV_TARGET3;
 };
 
-PS_OUT	PS_MAIN(PS_IN In)
+PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
 {
-	PS_OUT Out = (PS_OUT)0;
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
@@ -139,7 +139,7 @@ PS_OUT_OUTLINE	PS_Outline(PS_IN In)
 
 	if (0.1f >= vMtrlDiffuse.a)
 		discard;
-
+	
 	Out.vDiffuse = vMtrlDiffuse;
 	Out.vNormal = float4(vNormal * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
@@ -200,7 +200,7 @@ PS_OUT PS_MAIN_MAPOBJECT_NORMALMAP(PS_IN In)
 technique11 DefaultTechnique
 {
 	//아웃라인 없는 디폴트 그리기
-	pass Model
+	pass Model_Pass0
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -214,7 +214,7 @@ technique11 DefaultTechnique
 	}
 
 	//그림자 맵
-	pass Shadow
+	pass Shadow_Pass1
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -228,7 +228,7 @@ technique11 DefaultTechnique
 	}
 
 	//아웃라인 있는 그리기
-	pass Outline
+	pass Outline_Pass2
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -242,7 +242,7 @@ technique11 DefaultTechnique
 	}
 
 	// 3. NormalMap 이 없는 맵 객체 
-	pass Model_MapObject
+	pass Model_MapObject_Pass3
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -254,8 +254,9 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MAPOBJECT();
 	}
+
 	// 4. NormalMap 이 있는 맵 객체 
-	pass Model_MapObject_NormalMap
+	pass Model_MapObject_NormalMap_Pass4
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);

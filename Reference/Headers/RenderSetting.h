@@ -42,12 +42,35 @@ public:
 	};
 	CRenderer::LUT GetLUT() { return m_eLUTFilter; }
 
-private:
-	SHADOW_LEVEL m_eShadowLevel = SHADOW_OFF;
+	void StartBlackWhite(_double TimeDelta) { 
+		m_fBlackWhite_TimeAcc = 0.f;
+		m_fBlackWhite_TimeLimit = (_float)TimeDelta;
+		m_bBlackWhite = true; 
+	}
+	void BlackWhiteTimeAcc(_double TimeDelta) {
+		m_fBlackWhite_TimeAcc += (_float)TimeDelta;
+		if (m_fBlackWhite_TimeAcc >= m_fBlackWhite_TimeLimit)
+		{
+			m_bBlackWhite = false;
+			m_fBlackWhite_TimeAcc = 0.f;
+		}
+	};
+	_bool IsActiveBlackWhite() const { return m_bBlackWhite; }
 
+private:
+	// 그림자 성능
+	SHADOW_LEVEL m_eShadowLevel = SHADOW_HIGH;
+
+	// SSAO & 외곽선
 	_bool m_bSSAO = false;
 	_bool m_bOutline = false;
 
+	// 흑백연출
+	_bool m_bBlackWhite = false;
+	_float m_fBlackWhite_TimeAcc = 0.0f;
+	_float m_fBlackWhite_TimeLimit = 0.1f;
+
+	// 필터
 	CRenderer::LUT m_eLUTFilter = CRenderer::LUT_DEFAULT;
 };
 

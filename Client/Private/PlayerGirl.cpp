@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\PlayerGirl.h"
 
+#include "GameMode.h"
 #include "GameInstance.h"
 #include "Parts.h"
 
@@ -152,6 +153,7 @@ void CPlayerGirl::LateTick(_double TimeDelta)
 		{
 			m_Parts[i]->LateTick(TimeDelta);
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, m_Parts[i]);
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, m_Parts[i]);
 		}
 
 	}
@@ -200,14 +202,8 @@ HRESULT CPlayerGirl::RenderShadow()
 		return E_FAIL;
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
-
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
-			return E_FAIL;
-		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS)))
-			return E_FAIL;
-
 		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
 			return E_FAIL;
 
@@ -259,25 +255,26 @@ HRESULT CPlayerGirl::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pMainTransform, &TransformDesc)))
 		return E_FAIL;
 
+	CGameMode* pGM = CGameMode::GetInstance();
+  	_uint nCurrentLevel = pGM->GetCurrentLevel();
+
 	// For.Com_Shader_ModelAnim
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, SHADER::MODELANIM,
+	if (FAILED(__super::Add_Component(nCurrentLevel, SHADER::MODELANIM,
 		TEXT("Com_Shader_ModelAnim"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_MODEL,
+	if (FAILED(__super::Add_Component(nCurrentLevel, DMODEL::DMD_PLAYERGIRL_MODEL,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-
 	/* For.Com_AnimSet_Base */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE_ACTION,
+	if (FAILED(__super::Add_Component(nCurrentLevel, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE_ACTION,
 		TEXT("Com_AnimSet_Base"), (CComponent**)&m_pAnimSetCom[ANIMSET_BASE])))
 		return E_FAIL;
 
 	/* For.Com_AnimSet_Ribbon */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON_ACTION,
+	if (FAILED(__super::Add_Component(nCurrentLevel, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON_ACTION,
 		TEXT("Com_AnimSet_Ribbon"), (CComponent**)&m_pAnimSetCom[ANIMSET_RIBBON])))
 		return E_FAIL;
 	

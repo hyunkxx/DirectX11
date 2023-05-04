@@ -89,6 +89,7 @@ HRESULT CGameInstance::Engine_Tick(_double TimeDelta)
 	if (!m_pLevel_Manager || !m_pObject_Manager || !m_pPipeLine)
 		return E_FAIL;
 
+	m_TimeDelta = TimeDelta;
 	m_pInput_Device->Update();
 
 	m_pLevel_Manager->Tick_Level(TimeDelta);
@@ -606,6 +607,30 @@ CRenderer::LUT CGameInstance::GetLUT()
 		return CRenderer::LUT_DEFAULT;
 
 	return m_pRenderSetting->GetLUT();
+}
+
+void CGameInstance::StartBlackWhite(_double TimeDelta)
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	return m_pRenderSetting->StartBlackWhite(TimeDelta);
+}
+
+void CGameInstance::BlackWhiteTimeAcc(_double TimeDelta)
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	return m_pRenderSetting->BlackWhiteTimeAcc(TimeDelta);
+}
+
+_bool CGameInstance::IsActiveBlackWhite() const
+{
+	if (nullptr == m_pRenderSetting)
+		return false;
+
+	return m_pRenderSetting->IsActiveBlackWhite();
 }
 
 void CGameInstance::Engine_Release()

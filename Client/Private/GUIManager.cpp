@@ -66,7 +66,6 @@ void CGUIManager::Render()
 	UINT nViewPorts = 1;
 	
 	m_pContext->RSGetViewports(&nViewPorts, &ViewPort);
-
 	{
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
 		ImGui::SetNextWindowSize(ImVec2(210, 20));

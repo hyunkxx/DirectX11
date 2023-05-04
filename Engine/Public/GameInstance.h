@@ -24,6 +24,9 @@ public:
 	HRESULT Engine_Initialize(const GRAPHIC_DESC& GraphicDesc, _uint iLevelCount, _uint iCollisionLayerCount, ID3D11Device** ppDevice_out, ID3D11DeviceContext** ppContext_out);
 	HRESULT Engine_Tick(_double TimeDelta);
 
+public:
+	_double GetTimeDelta() const { return m_TimeDelta; }
+
 public: //Graphic_Device
 	const D3D11_VIEWPORT* GetViewport(VIEWPORT_TYPE eViewportType) const;
 	HRESULT Clear_RenderTargetView(_float4 vColor);
@@ -123,9 +126,15 @@ public: // RenderSetting
 	void SetLUT(CRenderer::LUT eLUT);
 	CRenderer::LUT GetLUT();
 
+	void StartBlackWhite(_double TimeDelta);
+	void BlackWhiteTimeAcc(_double TimeDelta);
+	_bool IsActiveBlackWhite() const;
 public:
 	static void Engine_Release();
 	virtual void Free() override;
+
+public:
+	_double m_TimeDelta = 0.0;
 
 private:
 	class CCollisionManager*		m_pCollision_Manager = { nullptr };
