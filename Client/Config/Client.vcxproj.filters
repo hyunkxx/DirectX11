@@ -147,9 +147,6 @@
     <ClCompile Include="..\private\StateKey.cpp">
       <Filter>src\05.AnimStateKeys</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\WeaponKey.cpp">
-      <Filter>src\05.AnimStateKeys</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\MissileKey.cpp">
       <Filter>src\05.AnimStateKeys</Filter>
     </ClCompile>
@@ -167,6 +164,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Particle_Effect_P.cpp">
       <Filter>src\06. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PartsKey.cpp">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TestChar.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TestVTF.cpp">
+      <Filter>src\NEW_FILES</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -293,9 +299,6 @@
     <ClInclude Include="..\public\StateKey.h">
       <Filter>src\05.AnimStateKeys</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\WeaponKey.h">
-      <Filter>src\05.AnimStateKeys</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\MissileKey.h">
       <Filter>src\05.AnimStateKeys</Filter>
     </ClInclude>
@@ -313,6 +316,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Particle_Effect_P.h">
       <Filter>src\06. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PartsKey.h">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TestChar.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TestVTF.h">
+      <Filter>src\NEW_FILES</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

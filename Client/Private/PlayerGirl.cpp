@@ -93,11 +93,7 @@ void CPlayerGirl::Tick(_double TimeDelta)
 	
 	Key_Input(TimeDelta);
 
-	if (pGame->InputKey(DIK_1) == KEY_STATE::TAP)
-	{
-		CEffect* pEffect = pGame->Get_Effect(L"YangYang_Jump_Attack_01");
-		pEffect->Play_Effect(&m_WorldMatrix);
-	}
+	
 
 	Tick_State(TimeDelta);
 
@@ -467,6 +463,12 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 	_vector vLook = XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_LOOK));
 	_vector vRight = XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_RIGHT));
 	_bool bMoved = false;
+
+	if (pGame->InputKey(DIK_1) == KEY_STATE::TAP)
+	{
+		CEffect* pEffect = pGame->Get_Effect(L"YangYang_Jump_Attack_01");
+		pEffect->Play_Effect(&m_WorldMatrix);
+	}
 
 
 	if (pGame->InputKey(DIK_UP) == KEY_STATE::TAP)
