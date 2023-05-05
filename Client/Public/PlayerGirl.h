@@ -22,7 +22,7 @@ public:
 	typedef enum INPUT_STATE {
 		INPUT_NONE,
 		INPUT_MOVE,
-		INPUT_SPRINT,
+		INPUT_DASH,
 		INPUT_SPACE,
 		INPUT_ATTACK,
 		INPUT_ATTACK_CHARGE,
@@ -119,6 +119,7 @@ private:
 
 	// 이펙트 재생용 임시
 	_float4x4			m_WorldMatrix;
+
 private:
 	HRESULT Add_Components();
 	void Init_AnimSystem();

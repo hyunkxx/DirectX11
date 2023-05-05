@@ -52,16 +52,7 @@ public:
 	}SINGLESTATE_TOOL;
 
 
-	// NONE : 회전 안함, ONSTART : 상태 진입 시 1회 타겟 방향을 바라봄, LOOKAT : 상태 적용 중 매 프레임 타겟 방향을 바라봄
-	// TURN : 상태 적용 중 매 프레임 타겟 방향으로 Transform의 회전 각속도 만큼 회전함
-	enum StateRotationType
-	{
-		ROT_NONE,
-		ROT_ONSTART,
-		ROT_LOOKAT,
-		ROT_TURN,
-		ROT_END,
-	};
+	
 
 
 protected:

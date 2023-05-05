@@ -443,7 +443,7 @@ void CTestVTF::Tick_State(_double TimeDelta)
 	{
 		_float3 vMovement;
 
-		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &m_vRotation, &vMovement, &BaseTrackPos, &m_tStateController.bAnimFinished);
+		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &m_vRotation, &vMovement, &BaseTrackPos, &m_Scon.bAnimFinished);
 		m_pAnimSetCom[ANIMSET_RIBBON]->Play_Animation(TimeDelta, nullptr, nullptr, &RibbonTrackPos, &bRibbonFinished);
 
 		m_TrackPos[ANIMSET_BASE] = (_float)BaseTrackPos;
@@ -482,7 +482,7 @@ void CTestVTF::Tick_State(_double TimeDelta)
 		SetUp_Animation(ANIMSET_RIBBON);
 	}
 
-	if (true == m_tStateController.bAnimFinished)
+	if (true == m_Scon.bAnimFinished)
 	{
 		for (_int i = 0; i < m_tStates[m_iStateID].iKeyCount; ++i)
 		{

@@ -52,6 +52,7 @@ public:
 	void SetRotationXYZ(_float3 fRadian); // 모든각도 회전
 	void SetRotation(_fvector vAxis, _float fRadian); //특정 각도로 회전
 	void Rotate(_fvector vAxis, _double TimeDelta);  //현재 각도에서 추가 회전
+	void Set_LookDir(_fvector vTargetDir); // 특정 방향을 바라보도록 상태 갱신
 
 	void LookAt(_fvector vTargetPos);
 	_float Compute_Distance(_fvector vTargetPos);

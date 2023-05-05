@@ -18,7 +18,7 @@ CCharacter::PHYSICMOVE CCharacter::PlayerStatePhysics[PSP_END]
 	{ true, true, _float3(1.f, 0.f, 0.f),	3.3f, 0.f, 0.f, 0.f, 0.f },
 	// 질주 _F, 등속
 	{ true, true, _float3(0.f, -1.f, 0.f),	5.f, 0.f, 0.f, 0.f, 0.f },
-	{ true, true, _float3(0.f, 1.f, 0.f),	5.f, 0.f, 0.f, 0.f, 0.f },
+	{ true, true, _float3(0.f, -1.f, 0.f),	5.5f, 0.f, 0.f, 0.f, 0.f },
 	/*{},
 	{},
 	{},
@@ -46,7 +46,7 @@ HRESULT CCharacter::Initialize_Prototype()
 
 HRESULT CCharacter::Initialize(void * pArg)
 {
-	ZeroMemory(&m_tStateController, sizeof StateController);
+	ZeroMemory(&m_Scon, sizeof StateController);
 	return S_OK;
 }
 

@@ -217,6 +217,27 @@ void CTransform::Rotate(_fvector vAxis, _double TimeDelta)
 	Set_State(STATE::STATE_LOOK, vLook);
 }
 
+void CTransform::Set_LookDir(_fvector vTargetDir)
+{
+	_vector vLook = XMVector3Normalize(vTargetDir);
+	_vector vRight;
+	if (vTargetDir.m128_f32[0] == 0.f &&
+		vTargetDir.m128_f32[2] == 0.f &&
+		vTargetDir.m128_f32[3] == 0.f &&
+		vTargetDir.m128_f32[1] != 0.f)
+	{
+		vRight = XMVector3Normalize(XMVectorSet(vTargetDir.m128_f32[1], 0.f, 0.f, 0.f));
+	}
+	else
+		vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
+	_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+
+	_float3 vScale = Get_Scale();
+	Set_State(CTransform::STATE_RIGHT, vRight * vScale.x);
+	Set_State(CTransform::STATE_UP, vUp * vScale.y);
+	Set_State(CTransform::STATE_LOOK, vLook * vScale.z);
+}
+
 void CTransform::LookAt(_fvector vTargetPos)
 {
 	_vector vPosition = Get_State(STATE::STATE_POSITION);

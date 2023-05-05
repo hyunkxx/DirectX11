@@ -202,6 +202,26 @@ public:
 		PSP_END,
 
 	};
+
+	// NONE : 회전 안함, ONSTART : 상태 진입 시 1회 타겟 방향을 바라봄, LOOKAT : 상태 적용 중 매 프레임 타겟 방향을 바라봄
+	// TURN : 상태 적용 중 매 프레임 타겟 방향으로 Transform의 회전 각속도 만큼 회전함
+	enum StateRotationType
+	{
+		ROT_NONE,
+		ROT_ONSTART,
+		ROT_LOOKAT,
+		ROT_TURN,
+		ROT_END,
+	};
+
+	enum PositionState
+	{
+		PS_GROUND,
+		PS_AIR,
+		PS_CLIMB,
+		PS_SWIM,
+		PS_END
+	};
 	//
 	typedef struct tagMultiAnimStateInfo
 	{
@@ -258,20 +278,20 @@ public:
 		_float	fVerticalMaxSpeed;		// 세로축(Y) 최대 속도 절대값
 	}PHYSICMOVE;
 	
-	typedef struct StateController
+	struct StateController
 	{
-		_uint	iCurState;
-		_uint	iNextState;
-		_double	TrackPos;
-		_bool	bAnimFinished;
-		_float3 vMovement;
-		_float3	vPrevMovement;
-	}SCON;
+		_uint			iCurState;
+		_uint			iNextState;
+		_double			TrackPos;
+		_bool			bAnimFinished;
+		_float3			vMovement;
+		_float3			vPrevMovement;
+		PositionState	ePositionState;
+		_bool			bWalk;
+	};
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration) {};
-
-
 
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -291,7 +311,7 @@ public:
 	static PHYSICMOVE PlayerStatePhysics[PSP_END];
 
 protected:
-	StateController m_tStateController;
+	StateController m_Scon;
 
 public:
 	virtual void Free() override;

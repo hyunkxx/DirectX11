@@ -72,8 +72,9 @@ HRESULT CPlayerGirl::Initialize(void * pArg)
 	XMStoreFloat4x4(&m_WorldMatrix , XMMatrixIdentity());
 
 	//
-	m_tStateController.iCurState = 0;
-	m_tStateController.iNextState = 0;
+	m_Scon.iCurState = 0;
+	m_Scon.iNextState = 0;
+	m_Scon.ePositionState = PS_GROUND;
 	m_tCurState = m_tStates[0];
 	SetUp_State();
 
@@ -92,8 +93,6 @@ void CPlayerGirl::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 	
 	Key_Input(TimeDelta);
-
-	
 
 	Tick_State(TimeDelta);
 
@@ -372,17 +371,17 @@ void CPlayerGirl::SetUp_State()
 	}
 
 	// 오입력 예외처리
-	if (m_tStateController.iNextState >= iState_End)
-		m_tStateController.iNextState = iState_End - 1;
-	else if (m_tStateController.iNextState <= 0)
-		m_tStateController.iNextState = 0;
+	if (m_Scon.iNextState >= iState_End)
+		m_Scon.iNextState = iState_End - 1;
+	else if (m_Scon.iNextState <= 0)
+		m_Scon.iNextState = 0;
 
 	// 다음 애니메이션으로 갱신
-	m_tStateController.iCurState = m_tStateController.iNextState;
-	m_tCurState = m_tStates[m_tStateController.iCurState];
+	m_Scon.iCurState = m_Scon.iNextState;
+	m_tCurState = m_tStates[m_Scon.iCurState];
 
-	m_tStateController.TrackPos = 0.0;
-	m_tStateController.bAnimFinished = false;
+	m_Scon.TrackPos = 0.0;
+	m_Scon.bAnimFinished = false;
 
 	// 무기 위치 잡기
 	if (0 == m_tCurState.bWeaponState)
@@ -396,9 +395,9 @@ void CPlayerGirl::SetUp_State()
 		PHYSICMOVE tPhysicMove = PlayerStatePhysics[m_tCurState.iPhysicMoveID];
 
 		if (true == tPhysicMove.bInitMovement)
-			XMStoreFloat3(&m_tStateController.vMovement, XMVector3Normalize(XMLoadFloat3(&tPhysicMove.vInitDir)) * tPhysicMove.fInitForce);
+			XMStoreFloat3(&m_Scon.vMovement, XMVector3Normalize(XMLoadFloat3(&tPhysicMove.vInitDir)) * tPhysicMove.fInitForce);
 		else
-			m_tStateController.vMovement = m_tStateController.vPrevMovement;
+			m_Scon.vMovement = m_Scon.vPrevMovement;
 	}
 
 	SetUp_Animations();
@@ -458,96 +457,226 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 {
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
-	INPUT eCurFrameInput = INPUT_NONE;
-	_vector	vMoveDir = XMVectorSet(0.f, 0.f, 0.f, 0.f);
-	_vector vLook = XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_LOOK));
-	_vector vRight = XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_RIGHT));
-	_bool bMoved = false;
-
+	// 애니메이션 테스트용 임시 코드
 	if (pGame->InputKey(DIK_1) == KEY_STATE::TAP)
 	{
 		CEffect* pEffect = pGame->Get_Effect(L"YangYang_Jump_Attack_01");
 		pEffect->Play_Effect(&m_WorldMatrix);
 	}
 
-
-	if (pGame->InputKey(DIK_UP) == KEY_STATE::TAP)
+	if (pGame->InputKey(DIK_C) == KEY_STATE::TAP)
 	{
-		m_tStateController.iNextState = m_tStateController.iCurState + 1;
+		m_Scon.bWalk = !m_Scon.bWalk;
+	}
 
-		if (m_tStateController.iNextState >= iState_End)
-			m_tStateController.iNextState = iState_End - 1;
+	/*if (pGame->InputKey(DIK_UP) == KEY_STATE::TAP)
+	{
+		m_Scon.iNextState = m_Scon.iCurState + 1;
+
+		if (m_Scon.iNextState >= iState_End)
+			m_Scon.iNextState = iState_End - 1;
 
 		SetUp_State();
 	}
 
 	if (pGame->InputKey(DIK_DOWN) == KEY_STATE::TAP)
 	{
-		m_tStateController.iNextState = m_tStateController.iCurState - 1;
+		m_Scon.iNextState = m_Scon.iCurState - 1;
 
-		if (m_tStateController.iNextState <= 0)
-			m_tStateController.iNextState = 0;
+		if (m_Scon.iNextState <= 0)
+			m_Scon.iNextState = 0;
 
 		SetUp_State();
-	}
+	}*/
 
 	if (pGame->InputKey(DIK_TAB) == KEY_STATE::TAP)
 	{
-		m_tStateController.iNextState = 145;
+		m_Scon.iNextState = 145;
 		SetUp_State();
 	}
 
+	//
+	INPUT eCurFrameInput = INPUT_NONE;
 
-	if (pGame->InputKey(DIK_W) == KEY_STATE::HOLD)
-	{
-		vMoveDir += vLook;
-		eCurFrameInput = INPUT_MOVE;
-		bMoved = true;
-	}
-	else if (pGame->InputKey(DIK_S) == KEY_STATE::HOLD)
-	{
-		vMoveDir -= vLook;
-		eCurFrameInput = INPUT_MOVE;
-		bMoved = true;
-	}
+	// 이동 기능 구현용 임시 코드
+	_matrix matCam = pGame->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
+	_vector vCamLookXZ = XMVector3Normalize(XMVectorSetY(matCam.r[2], 0.f));
 
-	if (pGame->InputKey(DIK_A) == KEY_STATE::HOLD)
-	{
-		vMoveDir -= vRight;
-		eCurFrameInput = INPUT_MOVE;
-		bMoved = true;
-	}
-	else if (pGame->InputKey(DIK_D) == KEY_STATE::HOLD)
-	{
-		vMoveDir += vRight;
-		eCurFrameInput = INPUT_MOVE;
-		bMoved = true;
-	}
+	// 이동 방향 체크
+	_bool bInputDir[4] = { false, false, false, false };
+	if (pGame->InputKey(DIK_UP) == KEY_STATE::HOLD)
+		bInputDir[0] = true;
 
+	else if (pGame->InputKey(DIK_DOWN) == KEY_STATE::HOLD)
+		bInputDir[1] = true;
+
+	if (pGame->InputKey(DIK_LEFT) == KEY_STATE::HOLD)
+		bInputDir[2] = true;
+
+	else if (pGame->InputKey(DIK_RIGHT) == KEY_STATE::HOLD)
+		bInputDir[3] = true;
+
+	if (bInputDir[0] ||
+		bInputDir[1] ||
+		bInputDir[2] ||
+		bInputDir[3])
+		eCurFrameInput = INPUT_MOVE;
+	else
+		eCurFrameInput = INPUT_NONE;
+		
+	// Shift 입력 시 회피
 	if (pGame->InputKey(DIK_LSHIFT) == KEY_STATE::HOLD)
 	{
+		eCurFrameInput = INPUT_DASH;
 	}
+
+	//
+	if (pGame->InputKey(DIK_SPACE) == KEY_STATE::HOLD)
+	{
+		eCurFrameInput = INPUT_SPACE;
+	}
+
+	if (pGame->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+	{
+		eCurFrameInput = INPUT_ATTACK;
+	}
+	
 
 	// 입력에 따라 대응하는 다음 상태 찾기
-	switch (eCurFrameInput)
+	if (PS_GROUND == m_Scon.ePositionState)
 	{
-	case Client::CPlayerGirl::INPUT_NONE:
-		//m_tStateController.iNextState = SS_STAND2;
-		break;
-	case Client::CPlayerGirl::INPUT_MOVE:
-		
-		break;
-	default:
-		break;
+		switch (eCurFrameInput)
+		{
+		case Client::CPlayerGirl::INPUT_NONE:
+			switch (m_Scon.iCurState)
+			{
+			case SS_WALK_F:
+			case SS_WALK_B:
+			case SS_WALK_LF:
+			case SS_WALK_LB:
+			case SS_WALK_RF:
+			case SS_WALK_RB:
+				m_Scon.iNextState = SS_WALK_STOP_L;
+				break;
+
+			case SS_RUN_F:
+			case SS_RUN_B:
+			case SS_RUN_LF:
+			case SS_RUN_LB:
+			case SS_RUN_RF:
+			case SS_RUN_RB:
+				m_Scon.iNextState = SS_RUN_STOP_L;
+				break;
+
+			case SS_SPRINT:
+			case SS_SPRINT_IMPULSE_F:
+				m_Scon.iNextState = SS_SPRINT_STOP_L;
+				break;
+
+			default:
+				m_Scon.iNextState = SS_STAND1;
+				break;
+			}
+			break;
+
+		case Client::CPlayerGirl::INPUT_MOVE:
+			// WALK
+			if (m_Scon.bWalk)
+			{
+				if (true == bInputDir[0])
+					if (true == bInputDir[2])
+						m_Scon.iNextState = SS_WALK_LF;
+					else if (true == bInputDir[3])
+						m_Scon.iNextState = SS_WALK_RF;
+					else
+						m_Scon.iNextState = SS_WALK_F;
+				else if (true == bInputDir[1])
+					if (true == bInputDir[2])
+						m_Scon.iNextState = SS_WALK_LB;
+					else if (true == bInputDir[3])
+						m_Scon.iNextState = SS_WALK_RB;
+					else
+						m_Scon.iNextState = SS_WALK_B;
+				else if (true == bInputDir[2])
+					m_Scon.iNextState = SS_WALK_LF;
+				else 
+					m_Scon.iNextState = SS_WALK_RF;
+			}
+			// RUN
+			else
+			{
+				if (true == bInputDir[0])
+					if (true == bInputDir[2])
+						m_Scon.iNextState = SS_RUN_LF;
+					else if (true == bInputDir[3])
+						m_Scon.iNextState = SS_RUN_RF;
+					else
+						m_Scon.iNextState = SS_RUN_F;
+				else if (true == bInputDir[1])
+					if (true == bInputDir[2])
+						m_Scon.iNextState = SS_RUN_LB;
+					else if (true == bInputDir[3])
+						m_Scon.iNextState = SS_RUN_RB;
+					else
+						m_Scon.iNextState = SS_RUN_B;
+				else if (true == bInputDir[2])
+					m_Scon.iNextState = SS_RUN_LF;
+				else
+					m_Scon.iNextState = SS_RUN_RF;
+			}
+			break;
+		case Client::CPlayerGirl::INPUT_DASH:
+			if(!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
+				m_Scon.iNextState = SS_MOVE_B;
+			else
+				m_Scon.iNextState = SS_MOVE_F;
+			break;
+		case Client::CPlayerGirl::INPUT_ATTACK:
+			switch (m_Scon.iCurState)
+			{
+			case IS_ATTACK_01:
+				m_Scon.iNextState = IS_ATTACK_02;
+				break;
+			case IS_ATTACK_02:
+				m_Scon.iNextState = IS_ATTACK_03;
+				break;
+			case IS_ATTACK_03:
+				m_Scon.iNextState = IS_ATTACK_04;
+				break;
+			case IS_ATTACK_04:
+				m_Scon.iNextState = IS_ATTACK_05;
+				break;
+			default:
+				m_Scon.iNextState = IS_ATTACK_01;
+				break;
+			}
+			break;
+		default:
+			break;
+		}
 	}
+	
 
 	// 지금 상태를 끊고 다음 상태로 갱신 할지 여부
-	if (m_tStateController.iCurState != m_tStateController.iNextState)
+	if (m_Scon.iCurState != m_Scon.iNextState)
 	{
-		if (m_tCurState.iPriority < m_tStates[m_tStateController.iNextState].iPriority)
+	
+		if (m_tCurState.iPriority <= m_tStates[m_Scon.iNextState].iPriority)
 		{
 			SetUp_State();
+
+			// 상태 갱신 시 1번만
+			if (CCharacter::ROT_ONSTART == m_tCurState.iRotationType)
+			{
+				m_pMainTransform->Set_LookDir(vCamLookXZ);
+			}
 		}
+	}
+
+	// 매 프레임
+	if (CCharacter::ROT_LOOKAT == m_tCurState.iRotationType)
+	{
+		m_pMainTransform->Set_LookDir(vCamLookXZ);
 	}
 
 }
@@ -555,13 +684,13 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 void CPlayerGirl::Tick_State(_double TimeDelta)
 {
 	//
-	if (false == m_tStateController.bAnimFinished)
+	if (false == m_Scon.bAnimFinished)
 	{
 		_float4 vRotation;
 		_float3 vMovement;
 
 		// 애니메이션 갱신
-		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &vRotation, &vMovement, &m_tStateController.TrackPos, &m_tStateController.bAnimFinished);
+		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &vRotation, &vMovement, &m_Scon.TrackPos, &m_Scon.bAnimFinished);
 		m_pAnimSetCom[ANIMSET_RIBBON]->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, nullptr);
 
 		m_pAnimSetCom[ANIMSET_BASE]->Update_TargetBones();
@@ -575,13 +704,13 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 			// TODO : 회전 적용
 			//m_pMainTransform->Rotate_Quaternion(XMLoadFloat4(&vRotation));
 			m_pMainTransform->Move_Anim(&vMovement);
-			m_tStateController.vPrevMovement = vMovement;
+			m_Scon.vPrevMovement = vMovement;
 		}
 		else
 		{
 			// TODO : 등속 운동이 아닐 경우 가속/감속 체크하는 코드
 
-			XMStoreFloat3(&vMovement, XMLoadFloat3(&m_tStateController.vMovement) * (_float)TimeDelta);
+			XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vMovement) * (_float)TimeDelta);
 			m_pMainTransform->Move_Anim(&vMovement);
 		}
 
@@ -589,24 +718,23 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 		for (_uint i = 0; i < m_tCurState.iKeyCount; ++i)
 		{
 			if(nullptr != m_tCurState.ppStateKeys[i])
-				m_tCurState.ppStateKeys[i]->Check(m_tStateController.TrackPos, this);
+				m_tCurState.ppStateKeys[i]->Check(m_Scon.TrackPos, this);
 		}
-			
 	}
 
-	if (true == m_tStateController.bAnimFinished)
+	if (true == m_Scon.bAnimFinished)
 	{
 		if (true == m_tCurState.bLoop)
 		{
-			m_tStateController.iNextState = m_tStateController.iCurState;
+			m_Scon.iNextState = m_Scon.iCurState;
 			SetUp_State();
+			m_tCurState.bLerp = false;
 		}
-			
 		else
 		{
 			if (NO_ANIM != m_tCurState.iNextState)
 			{
-				m_tStateController.iNextState = m_tCurState.iNextState;
+				m_Scon.iNextState = m_tCurState.iNextState;
 				SetUp_State();
 			}
 		}
