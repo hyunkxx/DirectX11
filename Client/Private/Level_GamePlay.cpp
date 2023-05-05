@@ -56,12 +56,12 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 		pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)iShadowLevel);
 	}
 
-	if (pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
-		pGameInstance->InputKey(DIK_0) == KEY_STATE::TAP)
+	if (pGameInstance->InputKey(DIK_PAUSE) == KEY_STATE::TAP)
 	{
 		pGameInstance->DebugTargetToggle();
 	}
-	else if (pGameInstance->InputKey(DIK_0) == KEY_STATE::TAP)
+
+	if (pGameInstance->InputKey(DIK_0) == KEY_STATE::TAP)
 	{
 		iShadowLevel++;
 		if (iShadowLevel > 2)
@@ -160,7 +160,7 @@ void CLevel_GamePlay::RenderLevelUI()
 	ImGui::Text("[ 5 ] [ Ctrl+5]    RGB Split");
 	ImGui::DragFloat3("Split Value", (float*)&rgbDesc);
 
-	ImGui::Text("[   Ctrl + 0  ]	Target On/Off");
+	ImGui::Text("[   Pause Key   ]	Target On/Off");
 
 	ImGui::End();
 }

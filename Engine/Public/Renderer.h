@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "Graphic_Device.h"
 
 BEGIN(Engine)
 
@@ -36,10 +37,9 @@ private:
 	void Render_AlphaBlend();
 	void Render_UI();
 
-	void SmallTest();
 	void ApplyLUT(_uint iIndex);
 	void RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag);
-	void Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag, _uint iPass = 0);
+	void Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag, _uint iPass = 0, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT);
 	void FinalExtraction();
 	void Target_Blur(const _tchar* TargetTag, _int BlurCount = 1);
 	void Ready_SSAO(const _tchar* pBindTargetTag);
@@ -84,8 +84,8 @@ private:
 	class CShader* m_pShader_LUT = nullptr;
 	class CShader* m_pShader_RGBSplit = nullptr;
 
-	_float4x4 m_FullScreenWorldMatrix, m_SmallScreenWorldMatrix;
-	_float4x4 m_ViewMatrix, m_ProjMatrix, m_SmallProjMatrix;
+	_float4x4 m_FullScreenWorldMatrix;
+	_float4x4 m_ViewMatrix, m_ProjMatrix;
 
 	class CTexture* m_pNoiseTexture = nullptr;
 	class CTexture* m_pLUT[LUT_DEFAULT];

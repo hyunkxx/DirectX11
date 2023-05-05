@@ -10,8 +10,8 @@ texture2D			g_BlurTexture;
 texture2D			g_GlowTexture;
 texture2D			g_GlowOriTexture;
 
-float				g_fWindowSizeX = 1280.f;
-float				g_fWindowSizeY = 720.f;
+float				g_fWindowSizeX = 640.f;
+float				g_fWindowSizeY = 360.f;
 
 float				g_fWeight[13];
 

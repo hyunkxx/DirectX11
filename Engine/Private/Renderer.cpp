@@ -75,11 +75,11 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 	
-	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX"), ViewPortDesc.Width, ViewPortDesc.Height,
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX"), ViewPortDesc.Width * 0.5f, ViewPortDesc.Height * 0.5f,
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
-	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurY"), ViewPortDesc.Width, ViewPortDesc.Height,
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurY"), ViewPortDesc.Width * 0.5f, ViewPortDesc.Height * 0.5f,
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
@@ -108,6 +108,10 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_Final"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_Small"), ViewPortDesc.Width * 0.5f, ViewPortDesc.Height * 0.5f,
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
@@ -168,6 +172,8 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Split", L"Target_Split")))
 		return E_FAIL;
 
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Small", L"Target_Small")))
+		return E_FAIL;
 
 	// 찐막
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Final", L"Target_Final")))
@@ -208,13 +214,8 @@ HRESULT CRenderer::Initialize_Prototype()
 		XMMatrixScaling(ViewPortDesc.Width, ViewPortDesc.Height, 1.f) *
 		XMMatrixTranslation(0.f, 0.f, 0.f));
 
-	XMStoreFloat4x4(&m_SmallScreenWorldMatrix,
-		XMMatrixScaling(ViewPortDesc.Width * 0.5f, ViewPortDesc.Height * 0.5f, 1.f) *
-		XMMatrixTranslation(0.f, 0.f, 0.f));
-
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewPortDesc.Width, ViewPortDesc.Height, 0.f, 1.f));
-	XMStoreFloat4x4(&m_SmallProjMatrix, XMMatrixOrthographicLH(ViewPortDesc.Width * 0.5f, ViewPortDesc.Height * 0.5f, 0.f, 1.f));
 
 #pragma endregion
 
@@ -267,6 +268,8 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Final"), 1205.f, 75.f, 150.f, 150.f)))
 		return E_FAIL;
 
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Small"), 1205.f, 225.f, 150.f, 150.f)))
+		return E_FAIL;
 
 #endif
 
@@ -296,7 +299,7 @@ void CRenderer::Draw()
 	if (m_pRenderSetting->IsActiveSSAO())
 	{
 		Ready_SSAO(L"Target_SSAO");
-		Target_Blur(L"Target_SSAO", 2);
+		Target_Blur(L"Target_SSAO");
 		Extraction(L"Target_SSAO", L"Target_BlurY");
 	}
 
@@ -311,7 +314,7 @@ void CRenderer::Draw()
 
 		if (m_pRenderSetting->GetShadowLevel() == CRenderSetting::SHADOW_HIGH)
 		{
-			Target_Blur(L"Target_Shadow", 2);
+			Target_Blur(L"Target_Shadow");
 			Extraction(L"Target_Shadow", L"Target_BlurY");
 		}
 	}
@@ -363,6 +366,7 @@ void CRenderer::Draw()
 		m_pTargetManager->Render(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
 		m_pTargetManager->Render(TEXT("MRT_BlackWhite"), m_pShader, m_pVIBuffer);
 		m_pTargetManager->Render(TEXT("MRT_Split"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Small"), m_pShader, m_pVIBuffer);
 		m_pTargetManager->Render(TEXT("MRT_Final"), m_pShader, m_pVIBuffer);
 	}
 #endif
@@ -630,7 +634,7 @@ void CRenderer::Render_Blend()
 void CRenderer::Render_Glow()
 {
 	if(!m_GlowEmpty)
-		Target_Blur(L"Target_Glow", 5);
+		Target_Blur(L"Target_Glow", 1);
 
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Glow_Result")))
 		return;
@@ -746,30 +750,6 @@ void CRenderer::AlphaSort(CRenderer::RENDER_GROUP eGroup)
 	m_RenderObject[eGroup].sort(Compute);
 }
 
-void CRenderer::SmallTest()
-{
-	CRenderTarget* pTargetDiffuse = m_pTargetManager->FindTarget(L"Target_Diffuse");
-
-	if (FAILED(m_pTargetManager->SmallBegin(m_pContext, L"MRT_Small")))
-		return;
-
-	if (FAILED(m_pShader_Extraction->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
-		return;
-	if (FAILED(m_pShader_Extraction->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader_Extraction->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-
-	if (FAILED(pTargetDiffuse->Set_ShaderResourceView(m_pShader_Extraction, "g_SourTexture")))
-		return;
-
-	m_pShader_Extraction->Begin(0);
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pTargetManager->End(m_pContext)))
-		return;
-}
-
 // LUT 필터 적용
 void CRenderer::ApplyLUT(_uint iIndex)
 {
@@ -842,13 +822,24 @@ void CRenderer::RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag)
 }
 
 //두번째 인자로 들어온 렌더타겟을 바인딩된 타겟(첫번째 인자)에 렌더
-void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag,  _uint iPass)
+void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag,  _uint iPass, VIEWPORT_TYPE eViewPortType)
 {
 	CRenderTarget* pSourTarget = m_pTargetManager->FindTarget(pSourTag);
 	CRenderTarget* pBindTarget = m_pTargetManager->FindTarget(pBindTargetTag);
 
-	if (FAILED(m_pTargetManager->BeginTarget(m_pContext, pBindTarget)))
-		return;
+	switch (eViewPortType)
+	{
+	case VIEWPORT_TYPE::VIEWPORT_DEFAULT:
+		if (FAILED(m_pTargetManager->BeginTarget(m_pContext, pBindTarget)))
+			return;
+		break;
+	case VIEWPORT_TYPE::VIEWPORT_SMALL:
+		if (FAILED(m_pTargetManager->SmallBeginTarget(m_pContext, pBindTarget)))
+			return;
+		break;
+	default:
+		break;
+	}
 
 	if (FAILED(m_pShader_Extraction->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
 		return;
@@ -888,7 +879,7 @@ void CRenderer::FinalExtraction()
 
 void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount)
 {
-	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurX")))
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurX", CGraphic_Device::VIEWPORT_SMALL)))
 		return;
 
 	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
@@ -907,7 +898,7 @@ void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount)
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
 
-	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurY")))
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurY", CGraphic_Device::VIEWPORT_SMALL)))
 		return;
 
 	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
@@ -928,7 +919,7 @@ void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount)
 
 	for (int i = 1; BlurCount > i; i++)
 	{
-		if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurX")))
+		if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurX", CGraphic_Device::VIEWPORT_SMALL)))
 			return;
 
 		if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
@@ -947,7 +938,7 @@ void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount)
 		if (FAILED(m_pTargetManager->End(m_pContext)))
 			return;
 
-		if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurY")))
+		if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurY", CGraphic_Device::VIEWPORT_SMALL)))
 			return;
 
 		if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))

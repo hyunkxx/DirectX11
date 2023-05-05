@@ -28,10 +28,10 @@ public:
 	HRESULT AddRenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pTargetTag, _float iWidth, _float iHeight, DXGI_FORMAT eFormat, _float4 vColor);
 	HRESULT AddMRT(const _tchar* pMRTTag, const _tchar* pTargetTag);
 
-	HRESULT Begin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
-	HRESULT SmallBegin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
+	HRESULT Begin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT);
 	HRESULT ShadowBegin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
 	HRESULT BeginTarget(ID3D11DeviceContext* pContext, class CRenderTarget* pTarget);
+	HRESULT SmallBeginTarget(ID3D11DeviceContext* pContext, CRenderTarget * pTarget);
 	HRESULT End(ID3D11DeviceContext* pContext);
 
 	HRESULT Set_ShaderResourceView(class CShader* pShader, const _tchar* pTargetTag, const char* pContantName);

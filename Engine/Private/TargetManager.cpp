@@ -58,8 +58,10 @@ HRESULT CTargetManager::AddMRT(const _tchar * pMRTTag, const _tchar * pTargetTag
 	return S_OK;
 }
 
-HRESULT CTargetManager::Begin(ID3D11DeviceContext * pContext, const _tchar * pMRTTag)
+HRESULT CTargetManager::Begin(ID3D11DeviceContext * pContext, const _tchar * pMRTTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType)
 {
+	CGraphic_Device* pGrahicDevice = CGraphic_Device::GetInstance();
+
 	list<CRenderTarget*>* pMRTList = FindMRT(pMRTTag);
 	if (nullptr == pMRTList)
 		return E_FAIL;
@@ -75,30 +77,35 @@ HRESULT CTargetManager::Begin(ID3D11DeviceContext * pContext, const _tchar * pMR
 		pRenderTargets[iViewCount++] = pRenderTarget->Get_RTV();
 	}
 
-	pContext->OMSetRenderTargets(iViewCount, pRenderTargets, m_pDepthStencilView);
+	switch (eViewPortType)
+	{
+	case CGraphic_Device::VIEWPORT_DEFAULT:
+		pContext->OMSetRenderTargets(iViewCount, pRenderTargets, m_pDepthStencilView);
+		pContext->RSSetViewports(1, pGrahicDevice->GetViewport(CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT));
+		break;
+	case CGraphic_Device::VIEWPORT_SMALL:
+		pContext->OMSetRenderTargets(iViewCount, pRenderTargets, m_pSmallDepthStencilView);
+		pContext->RSSetViewports(1, pGrahicDevice->GetViewport(CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_SMALL));
+		break;
+	default:
+		break;
+	}
 
 	return S_OK;
 }
 
-HRESULT CTargetManager::SmallBegin(ID3D11DeviceContext * pContext, const _tchar * pMRTTag)
+HRESULT CTargetManager::SmallBeginTarget(ID3D11DeviceContext * pContext, CRenderTarget * pTarget)
 {
-	list<CRenderTarget*>* pMRTList = FindMRT(pMRTTag);
-	if (nullptr == pMRTList)
+	if (!pContext || !pTarget)
 		return E_FAIL;
 
 	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
 
-	ID3D11RenderTargetView* pRenderTargets[8];
-	_uint iViewCount = 0;
-
-	for (auto& pRenderTarget : *pMRTList)
-	{
-		pRenderTarget->Clear();
-		pRenderTargets[iViewCount++] = pRenderTarget->Get_RTV();
-	}
-
+	pTarget->Clear();
+	ID3D11RenderTargetView* pRTV = pTarget->Get_RTV();
 	CGraphic_Device* pGrahicDevice = CGraphic_Device::GetInstance();
-	pContext->OMSetRenderTargets(iViewCount, pRenderTargets, m_pSmallDepthStencilView);
+
+	pContext->OMSetRenderTargets(1, &pRTV, m_pSmallDepthStencilView);
 	pContext->RSSetViewports(1, pGrahicDevice->GetViewport(CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_SMALL));
 
 	return S_OK;
