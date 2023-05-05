@@ -65,6 +65,7 @@ HRESULT CGameInstance::Engine_Initialize(const GRAPHIC_DESC& GraphicDesc, _uint 
 	//½¦µµ¿ì µª½º ¼Â¾÷
 	m_pTargetManager->SetupStaticShadowDepthStencilView(m_pGraphic_Device->GetStaticShadowDepthStencilView());
 	m_pTargetManager->SetupShadowDepthStencilView(m_pGraphic_Device->GetShadowDepthStencilView());
+	m_pTargetManager->SetupSmallDepthStencilView(m_pGraphic_Device->GetSmallDepthStencilView());
 
 	if (FAILED(m_pInput_Device->Initialize_Input(GraphicDesc.hInstance, GraphicDesc.hWnd)))
 		return E_FAIL;
@@ -142,6 +143,14 @@ HRESULT CGameInstance::Clear_ShadowDepthStencilView()
 		return E_FAIL;
 
 	return m_pGraphic_Device->Clear_ShadowDepthStencilView();
+}
+
+HRESULT CGameInstance::Clear_SmallDepthStencilView()
+{
+	if (nullptr == m_pGraphic_Device)
+		return E_FAIL;
+
+	return m_pGraphic_Device->Clear_SmallDepthStencilView();
 }
 
 HRESULT CGameInstance::Present()
@@ -545,6 +554,22 @@ _bool CGameInstance::InLocalSpace(_fvector vPoint, _float fRadius)
 	return m_pFrustum->InLocalSpace(vPoint, fRadius);
 }
 
+void CGameInstance::DebugTargetToggle()
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	m_pRenderSetting->DebugTargetToggle();
+}
+
+_bool CGameInstance::IsDebug() const
+{
+	if (nullptr == m_pRenderSetting)
+		return false;
+
+	return m_pRenderSetting->IsDebug();
+}
+
 void CGameInstance::SetShadowLevel(SHADOW_LEVEL eLevel)
 {
 	if (nullptr == m_pRenderSetting)
@@ -617,12 +642,12 @@ CRenderer::LUT CGameInstance::GetLUT()
 	return m_pRenderSetting->GetLUT();
 }
 
-void CGameInstance::StartBlackWhite(_double TimeDelta)
+void CGameInstance::StartBlackWhite(_double TotalTime)
 {
 	if (nullptr == m_pRenderSetting)
 		return;
 
-	return m_pRenderSetting->StartBlackWhite(TimeDelta);
+	return m_pRenderSetting->StartBlackWhite(TotalTime);
 }
 
 void CGameInstance::BlackWhiteTimeAcc(_double TimeDelta)
@@ -663,6 +688,51 @@ CEffect * CGameInstance::Get_Effect(const _tchar * EffectTag)
 		return nullptr;
 
 	return m_pEffect_Manager->Get_Effect(EffectTag);
+}
+
+void CGameInstance::SetSplitDesc(CRenderSetting::RGB_SPLIT_DESC tagDesc)
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	m_pRenderSetting->SetSplitDesc(tagDesc);
+}
+
+CRenderSetting::RGB_SPLIT_DESC & CGameInstance::GetSplitDesc()
+{
+	return m_pRenderSetting->GetSplitDesc();
+}
+
+void CGameInstance::StartRGBSplit(_double TotalTime)
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	return m_pRenderSetting->StartRGBSplit(TotalTime);
+}
+
+void CGameInstance::RGBSpiltTimeAcc(_double TimeDelta)
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	return m_pRenderSetting->RGBSpiltTimeAcc(TimeDelta);
+}
+
+_bool CGameInstance::IsActiveRGBSplit() const
+{
+	if (nullptr == m_pRenderSetting)
+		return false;
+
+	return m_pRenderSetting->IsActiveRGBSplit();
+}
+
+_float CGameInstance::GetRGBSplitRatio() const
+{
+	if (nullptr == m_pRenderSetting)
+		return false;
+
+	return m_pRenderSetting->GetRGBSplitRatio();
 }
 
 void CGameInstance::Engine_Release()

@@ -78,6 +78,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	Out.vDiffuse = g_Texture.Sample(LinearSampler, In.vTexUV);
+	Out.vOutNormal = float4(1.f, 1.f, 1.f, 1.f);
 
 	return Out;
 }

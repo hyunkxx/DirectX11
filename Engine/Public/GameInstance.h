@@ -32,6 +32,7 @@ public: //Graphic_Device
 	HRESULT Clear_RenderTargetView(_float4 vColor);
 	HRESULT Clear_DepthStencilView();
 	HRESULT Clear_ShadowDepthStencilView();
+	HRESULT Clear_SmallDepthStencilView();
 	HRESULT Present();
 
 public: //Level_Manager
@@ -113,6 +114,8 @@ public: // Frustum
 	_bool InLocalSpace(_fvector vPoint, _float fRadius = 0.f);
 
 public: // RenderSetting
+	void DebugTargetToggle();
+	_bool IsDebug() const;
 	void SetShadowLevel(SHADOW_LEVEL eLevel);
 	_bool IsActiveShadow() const;
 	SHADOW_LEVEL GetShadowLevel() const;
@@ -126,17 +129,23 @@ public: // RenderSetting
 	void SetLUT(CRenderer::LUT eLUT);
 	CRenderer::LUT GetLUT();
 
-	void StartBlackWhite(_double TimeDelta);
+	void StartBlackWhite(_double TotalTime);
 	void BlackWhiteTimeAcc(_double TimeDelta);
 	_bool IsActiveBlackWhite() const;
 
+	void SetSplitDesc(CRenderSetting::RGB_SPLIT_DESC tagDesc);
+	CRenderSetting::RGB_SPLIT_DESC& GetSplitDesc();
+	void StartRGBSplit(_double TotalTime);
+	void RGBSpiltTimeAcc(_double TimeDelta);
+	_bool IsActiveRGBSplit() const;
+	_float GetRGBSplitRatio() const;
+	
 public:/*For.Save_Loader*/
 	HRESULT		Load_Effect(HWND hWnd, wstring strFileName, list<EFFECT_DESC*>* pEffectDesc);
 
 public:/*For.CEffect_Manager*/
 	HRESULT Push_Effect(const _tchar* pEffectTag, class CEffect* pEffect);
 	class CEffect*	Get_Effect(const _tchar* EffectTag);
-
 public:
 	static void Engine_Release();
 	virtual void Free() override;

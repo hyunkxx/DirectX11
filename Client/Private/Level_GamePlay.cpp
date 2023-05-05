@@ -56,6 +56,20 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 		pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)iShadowLevel);
 	}
 
+	if (pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
+		pGameInstance->InputKey(DIK_0) == KEY_STATE::TAP)
+	{
+		pGameInstance->DebugTargetToggle();
+	}
+	else if (pGameInstance->InputKey(DIK_0) == KEY_STATE::TAP)
+	{
+		iShadowLevel++;
+		if (iShadowLevel > 2)
+			iShadowLevel = 0;
+
+		pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)iShadowLevel);
+	}
+
 	if (pGameInstance->InputKey(DIK_9) == KEY_STATE::TAP)
 		pGameInstance->OutlineToggle();
 
@@ -72,15 +86,25 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 		pGameInstance->SetLUT((CRenderer::LUT)iIndexLUT);
 	}
 
-	if (pGameInstance->InputKey(DIK_6) == KEY_STATE::TAP)
-	{
-		pGameInstance->StartBlackWhite(1.f);
-	}
 
 	if (pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
 		pGameInstance->InputKey(DIK_6) == KEY_STATE::TAP)
 	{
 		pGameInstance->StartBlackWhite(0.05f);
+	}
+	else if (pGameInstance->InputKey(DIK_6) == KEY_STATE::TAP)
+	{
+		pGameInstance->StartBlackWhite(1.f);
+	}
+
+	if (pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
+		pGameInstance->InputKey(DIK_5) == KEY_STATE::TAP)
+	{
+		pGameInstance->StartRGBSplit(0.5f);
+	}
+	else if (pGameInstance->InputKey(DIK_5) == KEY_STATE::TAP)
+	{
+		pGameInstance->StartRGBSplit(2.f);
 	}
 }
 
@@ -89,6 +113,9 @@ void CLevel_GamePlay::RenderLevelUI()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	ImGui::Begin("Helper");
+
+	ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Frame Rate");
+	ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 	string strCamSpeed = to_string(int(m_pDynamicCamera->GetCameraSpeed()));
 	ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "DynamicCamera");
@@ -128,7 +155,12 @@ void CLevel_GamePlay::RenderLevelUI()
 		break;
 	}
 
+	CRenderSetting::RGB_SPLIT_DESC& rgbDesc = pGameInstance->GetSplitDesc();
 	ImGui::Text("[ 6 ] [ Ctrl+6]    Black&White ");
+	ImGui::Text("[ 5 ] [ Ctrl+5]    RGB Split");
+	ImGui::DragFloat3("Split Value", (float*)&rgbDesc);
+
+	ImGui::Text("[   Ctrl + 0  ]	Target Off");
 
 	ImGui::End();
 }

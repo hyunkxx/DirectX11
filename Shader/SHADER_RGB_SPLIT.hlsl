@@ -6,7 +6,7 @@ float g_fSeparation = 0.1;        // how much to separate the r, g and b
 
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_SourTexture;
-float g_fTimeAcc = 0.5f;
+float g_fTimeAcc = 1.f;
 
 struct VS_IN
 {

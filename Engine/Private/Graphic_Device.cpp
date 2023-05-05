@@ -30,6 +30,9 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WIN_MODE 
 	if (FAILED(Ready_ShadowDepthStencilView(g_iShadowWidth, g_iShadowHeight)))
 		return E_FAIL;
 
+	if (FAILED(Ready_SmallDepthStencilView(640, 360)))
+		return E_FAIL;
+
 	//장치에 바인딩 할 렌더타겟들과 뎁스,스텐실뷰를 세팅한다.
 	m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
 	
@@ -47,6 +50,13 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WIN_MODE 
 	viewPortDesc[VIEWPORT_SHADOWDEPTH].Height = (_float)g_iShadowHeight;
 	viewPortDesc[VIEWPORT_SHADOWDEPTH].MinDepth = 0.f;
 	viewPortDesc[VIEWPORT_SHADOWDEPTH].MaxDepth = 1.f;
+
+	viewPortDesc[VIEWPORT_SMALL].TopLeftX = 0;
+	viewPortDesc[VIEWPORT_SMALL].TopLeftY = 0;
+	viewPortDesc[VIEWPORT_SMALL].Width = 640.f;
+	viewPortDesc[VIEWPORT_SMALL].Height = 360.f;
+	viewPortDesc[VIEWPORT_SMALL].MinDepth = 0.f;
+	viewPortDesc[VIEWPORT_SMALL].MaxDepth = 1.f;
 
 	m_pContext->RSSetViewports(1, viewPortDesc);
 	
@@ -84,6 +94,16 @@ HRESULT CGraphic_Device::Clear_ShadowDepthStencilView()
 		return E_FAIL;
 
 	m_pContext->ClearDepthStencilView(m_pShadowDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+
+	return S_OK;
+}
+
+HRESULT CGraphic_Device::Clear_SmallDepthStencilView()
+{
+	if (nullptr == m_pContext)
+		return E_FAIL;
+
+	m_pContext->ClearDepthStencilView(m_pSmallDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
 	return S_OK;
 }
@@ -267,6 +287,43 @@ HRESULT CGraphic_Device::Ready_ShadowDepthStencilView(_uint iWinSizeX, _uint iWi
 	return S_OK;
 }
 
+HRESULT CGraphic_Device::Ready_SmallDepthStencilView(_uint iWinSizeX, _uint iWinSizeY)
+{
+	if (nullptr == m_pDevice)
+		return E_FAIL;
+
+	// 절반크기의 깊이버퍼
+	ID3D11Texture2D* pDepthStencilTexture = nullptr;
+	D3D11_TEXTURE2D_DESC TextureDesc;
+
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	TextureDesc.Width = 640;
+	TextureDesc.Height = 360;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
+
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	TextureDesc.CPUAccessFlags = 0;
+	TextureDesc.MiscFlags = 0;
+
+	/* RenderTarget ShaderResource ShadowDepthStencil */
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
+		return E_FAIL;
+
+	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pSmallDepthStencilView)))
+		return E_FAIL;
+
+	Safe_Release(pDepthStencilTexture);
+
+	return S_OK;
+}
+
 void CGraphic_Device::Free()
 {
 	Safe_Release(m_pSwapChain);
@@ -274,6 +331,7 @@ void CGraphic_Device::Free()
 	Safe_Release(m_pDepthStencilView);
 	Safe_Release(m_pStaticShadowDepthStencilView);
 	Safe_Release(m_pShadowDepthStencilView);
+	Safe_Release(m_pSmallDepthStencilView);
 
 	Safe_Release(m_pRenderTargetView);
 	Safe_Release(m_pContext);

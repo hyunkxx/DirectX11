@@ -49,6 +49,11 @@ public:
 		m_bRender = bRender;
 	}
 
+	void Set_Outline(_bool bValue)
+	{
+		m_bOutline = bValue;
+	}
+
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -61,6 +66,7 @@ private:
 	_uint				m_iCurParent;
 	_float4x4			m_WorldMatrix;
 	_bool				m_bRender = { true };
+	_bool				m_bOutline = { false };
 
 private:
 	HRESULT Add_Components();

@@ -112,7 +112,7 @@ struct PS_OUT_LIGHT
 	float4 vSpecular : SV_TARGET1;
 };
 
-PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
+PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 {
 	PS_OUT_LIGHT Out = (PS_OUT_LIGHT)0;
 
@@ -130,18 +130,13 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 		fDot = 1.0f;
 
 	vector vShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)));
-
-	if (g_UseSSAO == 1.f)
-		Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient) * vSSAO.r);
-	else
-		Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient));
+	Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient) * vSSAO.r);
 
 	Out.vShade.a = 1.f;
 
 	vector			vWorldPos;
 
 	/* 투영스페이스 상의 위치. (로컬정점위치 * 월드 * 뷰 * 투영 / w  */
-	/* w = n ~ f */
 	vWorldPos.x = In.vTexUV.x * 2.f - 1.f;
 	vWorldPos.y = In.vTexUV.y * -2.f + 1.f;
 	vWorldPos.z = vDepthDesc.x; /*0 ~ 1*/
@@ -149,16 +144,57 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 
 	/* 로컬정점위치 * 월드 * 뷰 * 투영 */
 	vWorldPos = vWorldPos * (vDepthDesc.y * g_Far);
-
-	/* XMVector3TransformCoord */
-	/* 로컬정점위치 * 월드 * 뷰 */
 	vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-	/* 로컬정점위치 * 월드 */
 	vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
 	vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
 	vector vLook = vWorldPos - g_vCamPosition;
 		   
+	float  fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
+
+	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * fSpecular;
+	Out.vSpecular.a = 0.f;
+
+	return Out;
+}
+
+
+PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
+{
+	PS_OUT_LIGHT Out = (PS_OUT_LIGHT)0;
+
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
+
+	vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+
+	//Toon
+	float fDot = max(0, dot(vNormal, -g_vLightDir));
+	if (fDot < 0.2)
+		fDot = 0.93f;
+	else
+		fDot = 1.0f;
+
+	vector vShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)));
+	Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient));
+
+	Out.vShade.a = 1.f;
+
+	vector	vWorldPos;
+
+	/* 투영스페이스 상의 위치. (로컬정점위치 * 월드 * 뷰 * 투영 / w  */
+	vWorldPos.x = In.vTexUV.x * 2.f - 1.f;
+	vWorldPos.y = In.vTexUV.y * -2.f + 1.f;
+	vWorldPos.z = vDepthDesc.x; /*0 ~ 1*/
+	vWorldPos.w = 1.f;
+
+	vWorldPos = vWorldPos * (vDepthDesc.y * g_Far);
+	vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+	vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
+	vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
+	vector vLook = vWorldPos - g_vCamPosition;
+
 	float  fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
 
 	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * fSpecular;
@@ -173,11 +209,18 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
-		   
+	vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+
 	vector vWorldPos;
 
+	//Toon
+	float fDot = max(0, dot(vNormal, -g_vLightDir));
+	if (fDot < 0.2)
+		fDot = 0.93f;
+	else
+		fDot = 1.0f;
+
 	/* 투영스페이스 상의 위치. (로컬정점위치 * 월드 * 뷰 * 투영 / w  */
-	/* w = n ~ f */
 	vWorldPos.x = In.vTexUV.x * 2.f - 1.f;
 	vWorldPos.y = In.vTexUV.y * -2.f + 1.f;
 	vWorldPos.z = vDepthDesc.x; /*0 ~ 1*/
@@ -185,27 +228,18 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 
 	/* 로컬정점위치 * 월드 * 뷰 * 투영 */
 	vWorldPos = vWorldPos * (vDepthDesc.y * g_Far);
-
-	/* XMVector3TransformCoord */
-	/* 로컬정점위치 * 월드 * 뷰 */
 	vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-	/* 로컬정점위치 * 월드 */
 	vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-
-	vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-		   
+			   
 	vector vLightDir = vWorldPos - g_vLightPos;
 	float  fDistance = length(vLightDir);
 
 	/* 빛과 픽셀의 위치가 가까우면 1에가까운값으로 */
 	/* range에가까지질수록 0에 가까운값으로 .*/
 	float fAtt = saturate((g_fLightRange - fDistance) / g_fLightRange);
-
 	vector vShade = saturate(dot(normalize(vLightDir) * -1.f, normalize(vNormal)));
 
-
-	Out.vShade = g_vLightDiffuse * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
-
+	Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
 	Out.vShade.a = 1.f;
 
 	vector vReflect = reflect(normalize(vLightDir), normalize(vNormal));
@@ -492,5 +526,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Last_Blend();
+	}
+
+	pass Light_Directional_Pass9
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_OneBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_DIRECTIONAL_SSAO();
 	}
 }

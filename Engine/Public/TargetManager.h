@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.h"
+#include "Graphic_Device.h"
 
 BEGIN(Engine)
 
@@ -14,17 +15,21 @@ public:
 	virtual void Free() override;
 
 public:
-	void SetupStaticShadowDepthStencilView(ID3D11DepthStencilView* pShadowDepthStencil) {
-		m_pStaticShadowDepthStencilView = pShadowDepthStencil;
+	void SetupStaticShadowDepthStencilView(ID3D11DepthStencilView* pDepthStencil) {
+		m_pStaticShadowDepthStencilView = pDepthStencil;
 	};
-	void SetupShadowDepthStencilView(ID3D11DepthStencilView* pShadowDepthStencil) {
-		m_pShadowDepthStencilView = pShadowDepthStencil;
+	void SetupShadowDepthStencilView(ID3D11DepthStencilView* pDepthStencil) {
+		m_pShadowDepthStencilView = pDepthStencil;
+	};
+	void SetupSmallDepthStencilView(ID3D11DepthStencilView* pDepthStencil) {
+		m_pSmallDepthStencilView = pDepthStencil;
 	};
 
 	HRESULT AddRenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pTargetTag, _float iWidth, _float iHeight, DXGI_FORMAT eFormat, _float4 vColor);
 	HRESULT AddMRT(const _tchar* pMRTTag, const _tchar* pTargetTag);
 
 	HRESULT Begin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
+	HRESULT SmallBegin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
 	HRESULT ShadowBegin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
 	HRESULT BeginTarget(ID3D11DeviceContext* pContext, class CRenderTarget* pTarget);
 	HRESULT End(ID3D11DeviceContext* pContext);
@@ -52,6 +57,7 @@ private:
 	ID3D11DepthStencilView* m_pDepthStencilView = nullptr;
 	ID3D11DepthStencilView* m_pStaticShadowDepthStencilView = nullptr;
 	ID3D11DepthStencilView* m_pShadowDepthStencilView = nullptr;
+	ID3D11DepthStencilView* m_pSmallDepthStencilView = nullptr;
 };
 
 END

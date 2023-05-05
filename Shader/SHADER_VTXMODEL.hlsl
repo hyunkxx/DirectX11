@@ -117,12 +117,10 @@ PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
-	if (vMtrlDiffuse.a < 0.2f)
-		vMtrlDiffuse = vector(0.95f, 0.95f, 0.95f, 1.f);
-
 	Out.vDiffuse = vMtrlDiffuse;
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+	//Out.vOutNormal = vector(0.f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -136,15 +134,11 @@ PS_OUT_OUTLINE	PS_Outline(PS_IN In)
 	float3	 vNormal = vNormalDesc.xyz * 2.f - 1.f;
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
-
-	if (0.1f >= vMtrlDiffuse.a)
-		discard;
 	
 	Out.vDiffuse = vMtrlDiffuse;
 	Out.vNormal = float4(vNormal * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
-
-	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, In.vProjPos.w / g_Far);
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
 	return Out;
 }

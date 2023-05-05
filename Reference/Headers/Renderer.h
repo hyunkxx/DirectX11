@@ -36,9 +36,11 @@ private:
 	void Render_AlphaBlend();
 	void Render_UI();
 
+	void SmallTest();
 	void ApplyLUT(_uint iIndex);
 	void RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag);
 	void Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag, _uint iPass = 0);
+	void FinalExtraction();
 	void Target_Blur(const _tchar* TargetTag, _int BlurCount = 1);
 	void Ready_SSAO(const _tchar* pBindTargetTag);
 
@@ -82,7 +84,8 @@ private:
 	class CShader* m_pShader_LUT = nullptr;
 	class CShader* m_pShader_RGBSplit = nullptr;
 
-	_float4x4 m_FullScreenWorldMatrix, m_ViewMatrix, m_ProjMatrix;
+	_float4x4 m_FullScreenWorldMatrix, m_SmallScreenWorldMatrix;
+	_float4x4 m_ViewMatrix, m_ProjMatrix, m_SmallProjMatrix;
 
 	class CTexture* m_pNoiseTexture = nullptr;
 	class CTexture* m_pLUT[LUT_DEFAULT];
@@ -94,6 +97,7 @@ private:
 	class CRenderSetting* m_pRenderSetting = nullptr;
 
 private:
+	_bool m_GlowEmpty = false;
 	SSAO_SETTING m_eSSAO;
 
 };

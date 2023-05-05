@@ -67,8 +67,6 @@ void CParts::LateTick(_double TimeDelta)
 		return;
 
 	__super::LateTick(TimeDelta);
-
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 }
 
 HRESULT CParts::Render()
@@ -82,10 +80,6 @@ HRESULT CParts::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	int iPass = 2;
-	if (10.f <= ComputeCameraLength())
-		iPass = 0;
-
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
@@ -97,7 +91,11 @@ HRESULT CParts::Render()
 		//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
 		//m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
-		m_pShaderCom->Begin(iPass);
+		if(m_bOutline)
+			m_pShaderCom->Begin(2);
+		else
+			m_pShaderCom->Begin(0);
+
 		m_pModelCom->Render(i);
 	}
 
@@ -107,9 +105,6 @@ HRESULT CParts::Render()
 
 HRESULT CParts::RenderShadow()
 {
-	if (true != m_bRender)
-		return E_FAIL;
-
 	if (FAILED(__super::RenderShadow()))
 		return E_FAIL;
 

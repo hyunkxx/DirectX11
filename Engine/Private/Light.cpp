@@ -2,6 +2,7 @@
 
 #include "Shader.h"
 #include "VIBuffer_Rect.h"
+#include "RenderSetting.h"
 
 CLight::CLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -44,8 +45,28 @@ HRESULT CLight::Render(CShader * pShader, CVIBuffer_Rect * pVIBuffer)
 	if (pShader->SetRawValue("g_vLightSpecular", &m_LightDesc.vSpecular, sizeof(_float4)))
 		return E_FAIL;
 
-	if (FAILED(pShader->Begin(iPassIndex)))
-		return E_FAIL;
+	CRenderSetting* pRenderSetting = CRenderSetting::GetInstance();
+	if (pRenderSetting->IsActiveSSAO())
+	{
+		if (iPassIndex == 1)
+		{
+			// Directinal Light
+			if (FAILED(pShader->Begin(9)))
+				return E_FAIL;
+		}
+		else if(iPassIndex == 2)
+		{
+			// Point Light
+			if (FAILED(pShader->Begin(2)))
+				return E_FAIL;
+		}
+	}
+	else
+	{
+		if (FAILED(pShader->Begin(iPassIndex)))
+			return E_FAIL;
+	}
+
 
 	return pVIBuffer->Render();
 }

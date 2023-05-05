@@ -120,7 +120,6 @@ void CPlayerGirl::LateTick(_double TimeDelta)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, m_Parts[i]);
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, m_Parts[i]);
 		}
-
 	}
 }
 
@@ -132,9 +131,25 @@ HRESULT CPlayerGirl::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	int iPass = 4;
+	int iPass;
 	if (10.f <= ComputeCameraLength())
+	{
 		iPass = 3;
+		for (_uint i = 0; i < PARTS_END; ++i)
+		{
+			if (nullptr != m_Parts[i])
+				m_Parts[i]->Set_Outline(false);
+		}
+	}
+	else
+	{
+		iPass = 4;
+		for (_uint i = 0; i < PARTS_END; ++i)
+		{
+			if (nullptr != m_Parts[i])
+				m_Parts[i]->Set_Outline(true);
+		}
+	}
 
 	for (_uint i = 0; i < 6; ++i)
 	{

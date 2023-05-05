@@ -74,8 +74,7 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAO"), ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
-
-
+	
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX"), ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
@@ -102,6 +101,14 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlackWhite"), ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_Split"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_Final"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
 	// µðÇ»Áî, ³ë¸», µª½º
@@ -158,6 +165,14 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_BlackWhite", L"Target_BlackWhite")))
 		return E_FAIL;
 	
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Split", L"Target_Split")))
+		return E_FAIL;
+
+
+	// Âð¸·
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Final", L"Target_Final")))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma region POST_EFFECT_SETUP
@@ -186,15 +201,20 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	m_pShader_RGBSplit = CShader::Create(m_pDevice, m_pContext, L"../../Shader/SHADER_RGB_SPLIT.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount);
-	if (nullptr == m_pShader_LUT)
+	if (nullptr == m_pShader_RGBSplit)
 		return E_FAIL;
 
 	XMStoreFloat4x4(&m_FullScreenWorldMatrix,
 		XMMatrixScaling(ViewPortDesc.Width, ViewPortDesc.Height, 1.f) *
 		XMMatrixTranslation(0.f, 0.f, 0.f));
 
+	XMStoreFloat4x4(&m_SmallScreenWorldMatrix,
+		XMMatrixScaling(ViewPortDesc.Width * 0.5f, ViewPortDesc.Height * 0.5f, 1.f) *
+		XMMatrixTranslation(0.f, 0.f, 0.f));
+
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewPortDesc.Width, ViewPortDesc.Height, 0.f, 1.f));
+	XMStoreFloat4x4(&m_SmallProjMatrix, XMMatrixOrthographicLH(ViewPortDesc.Width * 0.5f, ViewPortDesc.Height * 0.5f, 0.f, 1.f));
 
 #pragma endregion
 
@@ -231,10 +251,8 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_SSAO"), 150, 150.f, 100.f, 100.f)))
 		return E_FAIL;
-
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_LUT"), 150, 250.f, 100.f, 100.f)))
 		return E_FAIL;
-
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Glow"), 150, 350.f, 100.f, 100.f)))
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Blend"), 150, 450.f, 100.f, 100.f)))
@@ -243,6 +261,12 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_BlackWhite"), 150, 650.f, 100.f, 100.f)))
 		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Split"), 250.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Final"), 1205.f, 75.f, 150.f, 150.f)))
+		return E_FAIL;
+
 
 #endif
 
@@ -263,11 +287,12 @@ HRESULT CRenderer::Add_RenderGroup(RENDER_GROUP eRenderGroup, CGameObject* pGame
 void CRenderer::Draw()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	_double TimeDelta = pGameInstance->GetTimeDelta();
 
 	Render_Priority();
 	Render_DynamicShadowMap();
 	Render_NonAlphaBlend();
-
+	
 	if (m_pRenderSetting->IsActiveSSAO())
 	{
 		Ready_SSAO(L"Target_SSAO");
@@ -303,31 +328,43 @@ void CRenderer::Draw()
 	
 	Render_Glow();
 	Render_Glow_Blend();
-
 	Render_NonLight();
 	Render_AlphaBlend();
+
+	if (m_pRenderSetting->IsActiveRGBSplit())
+	{
+		RGBSplit(L"Target_Split", L"Target_Final");
+		Extraction(L"Target_Final", L"Target_Split");
+	}
+
+	FinalExtraction();
 
 	Render_UI();
 
 #ifdef _DEBUG
-	RenderDebugGroup();
-	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-	
-	m_pTargetManager->Render(TEXT("MRT_Deferred"), m_pShader, m_pVIBuffer);
-	m_pTargetManager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
-	m_pTargetManager->Render(TEXT("MRT_LightDepth"), m_pShader, m_pVIBuffer);
-	m_pTargetManager->Render(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
-	m_pTargetManager->Render(TEXT("MRT_ToonShader"), m_pShader, m_pVIBuffer);
-	m_pTargetManager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer);
-	m_pTargetManager->Render(TEXT("MRT_SSAO"), m_pShader, m_pVIBuffer);
-	m_pTargetManager->Render(TEXT("MRT_Glow"), m_pShader, m_pVIBuffer);
-	m_pTargetManager->Render(TEXT("MRT_Glow_Result"), m_pShader, m_pVIBuffer);
-	m_pTargetManager->Render(TEXT("MRT_Blend"), m_pShader, m_pVIBuffer);
-	m_pTargetManager->Render(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
-	m_pTargetManager->Render(TEXT("MRT_BlackWhite"), m_pShader, m_pVIBuffer);
+	if (m_pRenderSetting->IsDebug())
+	{
+		RenderDebugGroup();
+		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+			return;
+		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+			return;
+
+		m_pTargetManager->Render(TEXT("MRT_Deferred"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_LightDepth"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_ToonShader"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_SSAO"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Glow"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Glow_Result"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Blend"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_BlackWhite"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Split"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Final"), m_pShader, m_pVIBuffer);
+	}
 #endif
 
 }
@@ -420,15 +457,6 @@ void CRenderer::Render_Lights()
 	if (FAILED(m_pShader->SetRawValue("g_vCamPosition", &pPipeline->Get_CamPosition(), sizeof(_float4))))
 		return;
 
-	_float fUseSSAO = 0.f;
-	if (m_pRenderSetting->IsActiveSSAO())
-		fUseSSAO = 1.f;
-	else
-		fUseSSAO = 0.f;
-
-	if (FAILED(m_pShader->SetRawValue("g_UseSSAO", &fUseSSAO, sizeof(_float))))
-		return;
-
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Normal", "g_NormalTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Depth", "g_DepthTexture")))
@@ -440,7 +468,6 @@ void CRenderer::Render_Lights()
 		return;
 	
 	m_pLightManager->Render(m_pShader, m_pVIBuffer);
-
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
 }
@@ -477,6 +504,11 @@ void CRenderer::Render_Particle()
 {
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Glow")))
 		return;
+
+	if (m_RenderObject[RENDER_PARTICLE].size() == 0)
+		m_GlowEmpty = true;
+	else
+		m_GlowEmpty = false;
 
 	for (auto& pGameObject : m_RenderObject[RENDER_PARTICLE])
 	{
@@ -575,10 +607,18 @@ void CRenderer::Render_Blend()
 
 	_uint iBlendPass;
 
-	if (m_pRenderSetting->IsActiveShadow())
-		iBlendPass = 4;
-	else
+	if (m_pRenderSetting->IsActiveBlackWhite())
+	{
 		iBlendPass = 3;
+	}
+	else
+	{
+		if (m_pRenderSetting->IsActiveShadow())
+			iBlendPass = 4;
+		else
+			iBlendPass = 3;
+	}
+
 
 	m_pShader->Begin(iBlendPass);
 	m_pVIBuffer->Render();
@@ -589,44 +629,55 @@ void CRenderer::Render_Blend()
 
 void CRenderer::Render_Glow()
 {
-	Target_Blur(L"Target_Glow", 5);
+	if(!m_GlowEmpty)
+		Target_Blur(L"Target_Glow", 5);
 
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Glow_Result")))
 		return;
 
 	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
 		return;
-
 	if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
 		return;
-
 	if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_Blend", "g_finalTexture")))
 		return;
-
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_Glow", "g_GlowOriTexture")))
-		return;
-
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY", "g_GlowTexture")))
-		return;
-
-	if(m_pRenderSetting->IsActiveBlackWhite())
-		m_pShader_Blur->Begin(4);
+	
+	if (m_GlowEmpty)
+	{
+		// Blur Off
+		if (m_pRenderSetting->IsActiveBlackWhite())
+			m_pShader_Blur->Begin(6);
+		else
+			m_pShader_Blur->Begin(5);
+	}
 	else
-		m_pShader_Blur->Begin(3);
+	{
+		// Blur On
+		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_Glow", "g_GlowOriTexture")))
+			return;
+		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY", "g_GlowTexture")))
+			return;
 
+		if (m_pRenderSetting->IsActiveBlackWhite())
+			m_pShader_Blur->Begin(4);
+		else
+			m_pShader_Blur->Begin(3);
+	}
 
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
-
 }
 
 void CRenderer::Render_Glow_Blend()
 {
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Final")))
+		return;
+
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
 		return;
 	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -665,6 +716,9 @@ void CRenderer::Render_AlphaBlend()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObject[RENDER_ALPHABLEND].clear();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
 }
 
 void CRenderer::Render_UI()
@@ -690,6 +744,30 @@ bool Compute(Engine::CGameObject* pSourObject, Engine::CGameObject* pDestObject)
 void CRenderer::AlphaSort(CRenderer::RENDER_GROUP eGroup)
 {
 	m_RenderObject[eGroup].sort(Compute);
+}
+
+void CRenderer::SmallTest()
+{
+	CRenderTarget* pTargetDiffuse = m_pTargetManager->FindTarget(L"Target_Diffuse");
+
+	if (FAILED(m_pTargetManager->SmallBegin(m_pContext, L"MRT_Small")))
+		return;
+
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(pTargetDiffuse->Set_ShaderResourceView(m_pShader_Extraction, "g_SourTexture")))
+		return;
+
+	m_pShader_Extraction->Begin(0);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
 }
 
 // LUT ÇÊÅÍ Àû¿ë
@@ -723,6 +801,12 @@ void CRenderer::ApplyLUT(_uint iIndex)
 
 void CRenderer::RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag)
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	_float TimeDelta =	(_float)pGameInstance->GetTimeDelta();
+	m_pRenderSetting->RGBSpiltTimeAcc(TimeDelta);
+
+	_float fRatio = pGameInstance->GetRGBSplitRatio();
+
 	CRenderTarget* pSourTarget = m_pTargetManager->FindTarget(pSourTag);
 	CRenderTarget* pBindTarget = m_pTargetManager->FindTarget(pBindTargetTag);
 
@@ -734,6 +818,17 @@ void CRenderer::RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag)
 	if (FAILED(m_pShader_RGBSplit->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
 		return;
 	if (FAILED(m_pShader_RGBSplit->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pShader_RGBSplit->SetRawValue("g_fTimeAcc", &fRatio, sizeof(float))))
+		return;
+
+	CRenderSetting::RGB_SPLIT_DESC& Desc = pGameInstance->GetSplitDesc();
+	if (FAILED(m_pShader_RGBSplit->SetRawValue("g_fDistortion", &Desc.m_fDistortion, sizeof(float))))
+		return;
+	if (FAILED(m_pShader_RGBSplit->SetRawValue("g_fStrength", &Desc.m_fStrength, sizeof(float))))
+		return;
+	if (FAILED(m_pShader_RGBSplit->SetRawValue("g_fSeparation", &Desc.m_fSeparation, sizeof(float))))
 		return;
 
 	if (pSourTarget)
@@ -770,6 +865,25 @@ void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTa
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
+}
+
+// Final·»´õÅ¸°ÙÀ» ¹é¹öÆÛ¿¡ ·»´õ
+void CRenderer::FinalExtraction()
+{
+	CRenderTarget* pSourTarget = m_pTargetManager->FindTarget(L"Target_Final");
+
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (pSourTarget)
+		pSourTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_SourTexture");
+	
+	m_pShader_Extraction->Begin(0);
+	m_pVIBuffer->Render();
 }
 
 void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount)
