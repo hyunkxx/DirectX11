@@ -12,7 +12,7 @@ private:
 	virtual ~CSoundKey() = default;
 
 public:
-	virtual HRESULT Initialize(_double ShotFrame, _tchar* szSoundKey, _uint iChannelID, _float fVolume);
+	virtual HRESULT Initialize(BaseData* pData);
 	virtual void Shot(class CCharacter* pMyCharacter) override;
 
 private:
@@ -21,7 +21,7 @@ private:
 	_float		m_fVolume;
 
 public:
-	static CSoundKey* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _double ShotFrame, _tchar* szSoundKey, _uint iChannelID, _float fVolume);
+	static CSoundKey* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, BaseData* pData);
 	virtual void Free() override;
 };
 

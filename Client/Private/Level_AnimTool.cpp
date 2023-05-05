@@ -68,7 +68,7 @@ HRESULT CLevel_AnimTool::Ready_Layer_BackGround(const _tchar* pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANIMTOOL, OBJECT::TERRAIN, pLayerTag, L"terrain")))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANIMTOOL, OBJECT::FLOOR, pLayerTag, L"floor")))
 		return E_FAIL;
 
 	return S_OK;

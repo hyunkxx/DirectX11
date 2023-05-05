@@ -300,7 +300,6 @@ namespace Engine
 		wchar_t	s_szParentName[MAX_PATH] = TEXT("");
 		XMFLOAT4X4 s_TransformationMatrix;
 		XMFLOAT4X4 s_OffsetMatrix;
-		_bool		s_bAnim;
 	}BONEINFO;
 
 

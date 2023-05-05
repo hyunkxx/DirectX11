@@ -18,6 +18,14 @@ public:
 
 	enum PlayerCharacterSharedStates
 	{
+		// 정지
+		SS_STAND1,
+		SS_STAND1_ACTION01,
+		SS_STAND1_ACTION02,
+		SS_STAND1_ACTION03,
+		SS_STAND2,
+		SS_STANDCHANGE, // 납도 같음 > Stand1로
+		SS_STANDUP, // 일어나기 > Stand1로
 		// 이동 - 걷기
 		SS_WALK_F,
 		SS_WALK_B,
@@ -158,14 +166,6 @@ public:
 		SS_MANIPULATE_RELEASE,
 		SS_MANIPULATE_LOOP,
 		SS_MANIPULATE_END,
-		// 정지
-		SS_STAND1,
-		SS_STAND1_ACTION01,
-		SS_STAND1_ACTION02,
-		SS_STAND1_ACTION03,
-		SS_STAND2,
-		SS_STANDCHANGE, // 납도 같음 > Stand1로
-		SS_STANDUP, // 일어나기 > Stand1로
 		//  각종 상호작용
 		SS_SUMMON, // 에코 소환?
 		SS_THROW_D, // 뭔가 던짐
@@ -184,43 +184,65 @@ public:
 		SS_END
 	};
 
+	enum PlayerStatePhysics
+	{
+		PSP_WALK_F,
+		PSP_WALK_B,
+		PSP_WALK_L,
+		PSP_WALK_R,
+
+		PSP_RUN_F,
+		PSP_RUN_B,
+		PSP_RUN_L,
+		PSP_RUN_R,
+
+		PSP_SPRINT_F,
+		PSP_SPRINT_B,
+
+		PSP_END,
+
+	};
+	//
 	typedef struct tagMultiAnimStateInfo
 	{
-		_int iAnimID[ANIMSET_END];
+		_uint iAnimID[ANIMSET_END];
 		//
-		_int iNextState;
-		_int iRotationType;
-		_float FramePerSec; // == TicksPerSec
+		_uint iNextState;
+
+		// NONE : 회전 안함, ONSTART : 상태 진입 시 1회 타겟 방향을 바라봄, LOOKAT : 상태 적용 중 매 프레임 타겟 방향을 바라봄
+		// TURN : 상태 적용 중 매 프레임 타겟 방향으로 Transform의 회전 각속도 만큼 회전함
+		_uint iRotationType;
+		_double FramePerSec; // == TicksPerSec
 		_bool bLoop;
 		_bool bLerp;
 		_bool bRootMotion;
 		_bool bApplyCoolTime;
-		_int iWeaponPosition;
-		_float CoolTime;
-		_int pPhysicMoveID; // RootMotion이 false 일 경우 사용할 등가속 운동 움직임 ID
-		_int iPriority; // 우선순위
+		_bool bWeaponState;
+		_double CoolTime;
+		_uint iPhysicMoveID; // RootMotion이 false 일 경우 사용할 등가속 운동 움직임 ID
+		_uint iPriority; // 우선순위
 		// StateKeys
-		_int iKeyCount;
+		_uint iKeyCount;
 		CStateKey** ppStateKeys;
 	}MULTISTATE;
 
 	typedef struct tagSingleAnimStateInfo
 	{
-		_int iAnimID;
+		_uint iAnimID;
 		//
-		_int iNextState;
-		_int iRotationType;
-		_float FramePerSec; // == TicksPerSec
+		_uint iNextState;
+		_uint iRotationType;
+		_double FramePerSec; // == TicksPerSec
 		_bool bLoop;
 		_bool bLerp;
 		_bool bRootMotion;
 		_bool bApplyCoolTime;
-		_int iWeaponPosition;
-		_float CoolTime;
-		_int pPhysicMoveID; // RootMotion이 false 일 경우 사용할 등가속 운동 움직임 ID
-		_int iPriority;
+		_bool bWeaponState;
+		_double CoolTime;
+		_uint iPhysicMoveID; // RootMotion이 false 일 경우 사용할 등가속 운동 움직임 ID
+		_uint iPriority;
 		// StateKeys
-		_int iKeyCount;
+		_uint iKeyCount;
 		CStateKey** ppStateKeys;
 	}SINGLESTATE;
 
@@ -228,13 +250,28 @@ public:
 	{
 		_bool	bInitMovement;			// true == 운동 시작 시, InitDir/Force 적용, false == 운동 시작 시, 직전 운동 상태 유지
 		_bool	bConstant;				// true == 등속 운동, 시작 운동 상태가 변하지 않음, false == 운동 상태가 변함
-		_float3 vInitDir;				// 시작 운동 방향 Normalized
-		_float	fInitForce;				// 시작 운동 속도
+		_float3 vInitDir;				// 시작 운동 방향 플레이어 로컬축 Normalized
+		_float	fInitForce;				// 시작 운동 속도 /s
 		_float	fHorizontalAtten;		// 가로축 운동 속도 감쇄율 - 마찰
 		_float	fVerticalAccel;			// 세로축 가속도 - 중력
 		_float	fHorizontalMaxSpeed;	// 가로축(XZ) 최대 속도 절대값
 		_float	fVerticalMaxSpeed;		// 세로축(Y) 최대 속도 절대값
 	}PHYSICMOVE;
+	
+	typedef struct StateController
+	{
+		_uint	iCurState;
+		_uint	iNextState;
+		_double	TrackPos;
+		_bool	bAnimFinished;
+		_float3 vMovement;
+		_float3	vPrevMovement;
+	}SCON;
+
+public: // StateKey 대응 함수 모음
+	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration) {};
+
+
 
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -250,16 +287,15 @@ public:
 	virtual HRESULT Render();
 	virtual HRESULT RenderShadow();
 	virtual void RenderGUI();
-	virtual const char* Get_StateTag(_uint iIndex) { return nullptr; }
 
-	static const char szSharedStateTag[SS_END][MAX_PATH];
+	static PHYSICMOVE PlayerStatePhysics[PSP_END];
 
 protected:
-	_int	m_iStateID = { 0 }; // 현재 State index
-	_bool	m_bPlay = { true }; // 애니메이션 재생 여부, false == 정지
+	StateController m_tStateController;
 
 public:
 	virtual void Free() override;
 };
 
 END
+

@@ -88,13 +88,17 @@ public:
 public:
 	HRESULT	SetUp_BoneMatrices(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex);
 
-	HRESULT SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate, _bool bFootAltitude); /* 어떤 애니메이션을 구동할거야. */
-	_float3 Play_Animation(_double TimeDelta, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr, _bool bContinue = false); /* 애니메이션 재생한다.(모든 뼈들의 Combined행렬을 셋팅한다) */
-	void	Invalidate_CombinedMatrices();
+	/* 재생할 애니메이션에 따라 AnimController를 초기화한다. */
+	HRESULT SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate); 
+	/* 애니메이션 재생한다.(안에서 Invalidate_CombinedMatrices 호출 안함) */
+	void	Play_Animation(_double TimeDelta, _float4* pRotationOut = nullptr, _float3* pMoveOut = nullptr, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr);
 
 	void	Update_TargetBones();
 	void	Ribbon_TargetBones();
+	
 
+	void	Invalidate_CombinedMatrices();
+	void	Reset_Pose();
 protected:
 	_uint					m_iNumBones = { 0 };
 	vector<class CBone*>	m_Bones;

@@ -36,9 +36,17 @@ public:
 		return m_KeyFrames;
 	}
 
+	void Set_Apply(_bool bApply)
+	{
+		m_bApply = bApply;
+	}
+
 private:
 	_tchar			m_szName[MAX_PATH] = TEXT("");
 	_uint			m_iTargetBoneID = { 0 };
+
+	// AnimSet Àü¿ë
+	_bool			m_bApply = { false };
 
 private:
 	_uint				m_iNumKeyFrames = { 0 };

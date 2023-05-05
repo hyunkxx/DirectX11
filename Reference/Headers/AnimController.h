@@ -21,11 +21,9 @@ public:
 		// Root 애니메이션용 변수
 		_float3				vPrevRootBonePos = { 0.f, 0.f, 0.f };
 		_float3				vCurRootBoneMove = { 0.f, 0.f, 0.f };
-		_float				fHeight = { 0.f };
-		_bool				bFootAltitude = { false };
-		_bool				bAltitudeFirst = { true };
-		_float				fAltitude = { 0.f };
 
+		_float4				vPrevRootBoneRot = { 0.f, 0.f, 0.f, 0.f };
+		_float4				vCurRootBoneRot = { 0.f, 0.f, 0.f, 0.f };
 	};
 
 private:
@@ -43,8 +41,8 @@ public:
 	}
 public:
 	HRESULT Initialize(_uint iNumBones);
-	HRESULT SetUp_Animation(_uint iAnimationIndex, class CModel_Anim* pModel, _bool bInterpolate, _bool bFootAltitude);
-	const _float3 Play_Animation(_double TimeDelta, class CModel_Anim* pModel, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr, _bool bContinue = false);
+	HRESULT SetUp_Animation(_uint iAnimationIndex, class CModel_Anim* pModel, _bool bInterpolate);
+	void Play_Animation(_double TimeDelta, class CModel_Anim* pModel, _float4* pRotationOut = nullptr, _float3* pMoveOut = nullptr, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr);
 
 
 

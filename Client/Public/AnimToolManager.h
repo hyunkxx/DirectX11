@@ -3,7 +3,7 @@
 #include "Base.h"
 #include "Client_Defines.h"
 #include "Character.h"
-#include "PlayerGirl.h"
+#include "TestVTF.h"
 
 BEGIN(Client)
 
@@ -21,28 +21,6 @@ public:
 		MODEL_VTF,
 		MODEL_GENERIC,
 		MODEL_END
-	};
-
-	enum PlayerHairType
-	{
-		HAIRTYPE_ONE,
-		HAIRTYPE_FRONTBACK,
-		HAIRTYPE_END
-	};
-
-
-	enum PlayerCharacterModel
-	{
-		PCMODEL_CUSTOM,
-		PCMODEL_REPLICA,
-		PCMODEL_END
-	};
-
-	enum ModelListBox
-	{
-		MLB_VTF,
-		MLB_GENERIC,
-		MLB_END
 	};
 
 	// ItemID = PrototypeID - CURTYPE_BEGIN
@@ -72,30 +50,29 @@ private:
 	ID3D11DeviceContext* m_pContext = { nullptr };
 
 	// 편집 대상 정보 연결용 포인터
-	class CPlayerGirl*	m_pTargetVTF = { nullptr };
-	CCharacter::MULTISTATE*	m_pMultiState = { nullptr };
+	class CTestVTF*	m_pTargetVTF = { nullptr };
+	CTestChar::MULTISTATE_TOOL*	m_pMultiState = { nullptr };
 	class CTestGeneric*		m_pTargetGeneric = { nullptr };
-	CCharacter::SINGLESTATE*	m_pSingleState = { nullptr };
+	CTestChar::SINGLESTATE_TOOL* m_pSingleState = { nullptr };
 
 	// 'Model' Treenode
 	/// Types
 	int	m_iModelType = MODEL_VTF;
-	int	m_iHairType = HAIRTYPE_ONE;
 
 	/// LIstBoxIndex
-	int m_iListBoxIDArray[MLB_END] = { 0, };
+	int m_iListBoxIDArray[MODEL_END] = { 0, };
 
 	/// ListBoxItems
 	// 리스트박스 MLB_END개, 프로토타입 10개 이름까지 저장, 문자열 길이 제한 MAX_PATH
-	char	m_szListBoxItemsArray[MLB_END][10][MAX_PATH] = { "", };
+	char	m_szListBoxItemsArray[MODEL_END][10][MAX_PATH] = { "", };
 
 	// 'Animation' Treenode
 	// Infos
-	char m_szActionName[CPlayerGirl::ANIMSET_END][MAX_PATH] = { "", };
-	_int m_iActionIndex[CPlayerGirl::ANIMSET_END] = { 0, };
+	char m_szActionName[CTestVTF::ANIMSET_END][MAX_PATH] = { "", };
+	_int m_iActionIndex[CTestVTF::ANIMSET_END] = { 0, };
 
 	// Parameters
-	_float m_Duration[CPlayerGirl::ANIMSET_END] = { 0.f };
+	_float m_Duration[CTestVTF::ANIMSET_END] = { 0.f };
 	_float m_TicksPerSecond = { 0.f };
 
 	// 'State' Treenode
@@ -106,7 +83,12 @@ private:
 	// 'StateKey' Treenode
 	_int m_iKeyCount = { 0 };
 	_int m_iKeyExist = { 0 };
-	CStateKey::SaveData m_tKeyData;
+	CStateKey::BaseData m_tKeyData;
+
+	char m_szClassName[MAX_PATH] = { "" };
+
+private:
+	void Save_State();
 
 public:
 	virtual void Free() override;

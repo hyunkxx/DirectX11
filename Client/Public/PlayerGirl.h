@@ -15,11 +15,24 @@ END
 
 BEGIN(Client)
 
-// AnimTool에서 플레이어 외의 모든 캐릭터들의 모델을 출력하고 편집하기 위한 클래스
-
 class CPlayerGirl : public CCharacter
 {
 public:
+
+	typedef enum INPUT_STATE {
+		INPUT_NONE,
+		INPUT_MOVE,
+		INPUT_SPRINT,
+		INPUT_SPACE,
+		INPUT_ATTACK,
+		INPUT_ATTACK_CHARGE,
+		INPUT_ATTACK_RELEASE,
+		INPUT_ELMT_ART,
+		INPUT_ELMT_BURST,
+		INPUT_END
+	}INPUT;
+
+
 	enum IndividualStates
 	{
 		// 캐릭터별 고유 액션 = 공용 액션 끝번호에서 시작
@@ -79,46 +92,14 @@ public:
 	virtual HRESULT RenderShadow() override;
 	virtual void RenderGUI() override;
 
-	CModel_Anim*	Get_Action(_uint iType)
-	{
-		return m_pAnimSetCom[iType];
-	}
-
-	_float*  Get_TrackPos(_uint iType)
-	{
-		return &m_TrackPos[iType];
-	}
-
-	MULTISTATE* Get_CurState()
-	{
-		return &m_tStates[m_iStateID];
-	}
-
-	int* Get_StateID()
-	{
-		return &m_iStateID;
-	}
-
-	void Set_TrackPos(_uint iType);
-
-	void Safe_StateID();
-
-	void Safe_AnimID();
-	void SetUp_Animation();
-	void SetUp_Animation(_uint iType);
-
-	virtual const char* Get_StateTag(_uint iIndex)
-	{
-		if (iIndex <= SS_END)
-			return CCharacter::szSharedStateTag[iIndex];
-		else if (iIndex < IS_END)
-			return CPlayerGirl::szIndividualStateTag[iIndex];
-		else
-			return nullptr;
-	}
-
+	// static
+	static HRESULT Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static void Release_States();
 	static const char szIndividualStateTag[IS_END - IS_START][MAX_PATH];
 	static const _int iState_End;
+
+public: // StateKey 대응 함수 모음
+	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -128,8 +109,9 @@ private:
 
 private:
 	// State
-	MULTISTATE			m_tStates[SS_END + (IS_END - IS_START)];
-	_float				m_TrackPos[ANIMSET_END] = { 0.f, };
+	static MULTISTATE	m_tStates[SS_END + (IS_END - IS_START)];
+	MULTISTATE			m_tCurState;
+	_double				m_StateCoolTimes[SS_END + (IS_END - IS_START)] = { 0.0, };
 
 	// Parts
 	class CParts*		m_Parts[PARTS_END] = { nullptr, };
@@ -139,15 +121,21 @@ private:
 	_float4x4			m_WorldMatrix;
 private:
 	HRESULT Add_Components();
-	// State
-	HRESULT Init_States();
-	void Tick_State(_double TimeDelta);
 	void Init_AnimSystem();
+	void SetUp_State();
+	void SetUp_Animations();
+
+	void Key_Input(_double TimeDelta);
+	void Tick_State(_double TimeDelta);
+	
 	// Parts
 	HRESULT Init_Parts();
 
 	HRESULT	SetUp_ShaderResources();
 	HRESULT Setup_ShadowShaderResource();
+
+private:
+	void Set_WeaponUse(_bool bBool);
 
 public:
 	static CPlayerGirl* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

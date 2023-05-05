@@ -20,7 +20,7 @@ private:
 	virtual ~CDissolveKey() = default;
 
 public:
-	virtual HRESULT Initialize(_double ShotFrame, TYPE eType, _double DissolveDuration);
+	virtual HRESULT Initialize(BaseData* pData);
 	virtual void Shot(class CCharacter* pMyCharacter) override;
 
 private:
@@ -28,7 +28,7 @@ private:
 	_double m_DissolveDuration = { 0.0 };
 
 public:
-	static CDissolveKey* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _double ShotFrame, TYPE eType, _double DissolveDuration);
+	static CDissolveKey* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, BaseData* pData);
 	virtual void Free() override;
 };
 

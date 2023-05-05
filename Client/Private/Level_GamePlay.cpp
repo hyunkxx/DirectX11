@@ -5,6 +5,7 @@
 #include "GameInstance.h"
 #include "DynamicCamera.h"
 #include "Character.h"
+#include "PlayerGirl.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -207,6 +208,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHARACTER, pLayerTag, szTag, &j)))
 		return E_FAIL;*/
 
+	CPlayerGirl::Init_States(m_pDevice, m_pContext);
+
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYERGIRL, pLayerTag, TEXT("PlayerGirl"))))
 		return E_FAIL;
 
@@ -252,4 +255,6 @@ CLevel_GamePlay* CLevel_GamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceCon
 void CLevel_GamePlay::Free()
 {
 	__super::Free();
+
+	CPlayerGirl::Release_States();
 }

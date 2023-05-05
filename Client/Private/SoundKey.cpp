@@ -8,13 +8,13 @@ CSoundKey::CSoundKey(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 }
 
-HRESULT CSoundKey::Initialize(_double ShotFrame, _tchar* szSoundKey, _uint iChannelID, _float fVolume)
+HRESULT CSoundKey::Initialize(BaseData* pData)
 {
-	__super::Initialize(ShotFrame);
+	__super::Initialize(pData);
 
-	lstrcpy(m_szSoundKey, szSoundKey);
-	m_iChannelID = iChannelID;
-	m_fVolume = fVolume;
+	//lstrcpy(m_szSoundKey, szSoundKey);
+	//m_iChannelID = iChannelID;
+	//m_fVolume = fVolume;
 
 	return S_OK;
 }
@@ -25,11 +25,11 @@ void CSoundKey::Shot(CCharacter * pMyCharacter)
 	//CSoundMgr::GetInstance()->SoundPlay(m_pSoundKey, m_eID, m_fVolume);
 }
 
-CSoundKey * CSoundKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _double ShotFrame, _tchar* szSoundKey, _uint iChannelID, _float fVolume)
+CSoundKey * CSoundKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, BaseData* pData)
 {
 	CSoundKey* pInstance = new CSoundKey(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(ShotFrame, szSoundKey, iChannelID, fVolume)))
+	if (FAILED(pInstance->Initialize(pData)))
 	{
 		MSG_BOX("Failed to Create : CSoundKey");
 		Safe_Release(pInstance);
@@ -40,4 +40,5 @@ CSoundKey * CSoundKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pCon
 
 void CSoundKey::Free()
 {
+	__super::Free();
 }

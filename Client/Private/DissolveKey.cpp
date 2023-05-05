@@ -9,12 +9,12 @@ CDissolveKey::CDissolveKey(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 }
 
-HRESULT CDissolveKey::Initialize(_double ShotFrame, TYPE eType, _double DissolveDuration)
+HRESULT CDissolveKey::Initialize(BaseData* pData)
 {
-	__super::Initialize(ShotFrame);
+	__super::Initialize(pData);
 
-	m_eDissolveType = eType;
-	m_DissolveDuration = DissolveDuration;
+	/*m_eDissolveType = eType;
+	m_DissolveDuration = DissolveDuration;*/
 
 	return S_OK;
 }
@@ -24,11 +24,11 @@ void CDissolveKey::Shot(CCharacter * pMyCharacter)
 	//pMyCharacter->Set_Dissolve(m_eDissolveType, m_DissolveDuration);
 }
 
-CDissolveKey * CDissolveKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _double ShotFrame, TYPE eType, _double DissolveDuration)
+CDissolveKey * CDissolveKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, BaseData* pData)
 {
 	CDissolveKey* pInstance = new CDissolveKey(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(ShotFrame, eType, DissolveDuration)))
+	if (FAILED(pInstance->Initialize(pData)))
 	{
 		MSG_BOX("Failed to Create : CDissolveKey");
 		Safe_Release(pInstance);
@@ -39,4 +39,5 @@ CDissolveKey * CDissolveKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext 
 
 void CDissolveKey::Free()
 {
+	__super::Free();
 }

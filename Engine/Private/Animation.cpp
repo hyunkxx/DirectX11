@@ -26,18 +26,11 @@ HRESULT CAnimation::Initialize(ANIMINFO * pAnimInfo, CModel_Anim * pModel)
 	return S_OK;
 }
 
-void CAnimation::Play_Animation(_double TimeDelta, CAnimController::ANIMSTATE& tState, CModel_Anim* pModel, _bool bContinue)
+void CAnimation::Play_Animation(_double TimeDelta, CAnimController::ANIMSTATE& tState, CModel_Anim* pModel)
 {
-	if (false == bContinue)
-		tState.FrameAcc += m_TicksPerSecond * TimeDelta;
-	else
-	{
-		tState.FrameAcc = tState.FrameRemain;
-		tState.FrameRemain = 0.0;
-	}
+	tState.FrameAcc += m_TicksPerSecond * TimeDelta;
 
-
-	if (tState.FrameAcc >= m_Duration)
+	if (tState.FrameAcc > m_Duration)
 	{
 		tState.isFinished = true;
 		tState.FrameRemain = tState.FrameAcc - m_Duration;

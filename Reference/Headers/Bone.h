@@ -61,10 +61,13 @@ public:
 
 		if (!lstrcmp(m_pParent->m_szName, pBoneName))
 			return true;
-		else if (!lstrcmp(m_pParent->m_szName, TEXT("Root")))
-			return false;
 		else
 			return m_pParent->Is_ChildOf(pBoneName);
+	}
+
+	void Set_Apply(_bool bApply)
+	{
+		m_bApply = bApply;
 	}
 
 public:
@@ -74,6 +77,7 @@ public:
 
 	void Update_TargetBone();
 	void Ribbon_TargetBone();
+	void Reset_Pose();
 
 private:
 	_tchar m_szName[MAX_PATH] = TEXT("");
@@ -82,9 +86,12 @@ private:
 	_float4x4 m_TransformationMatrix;
 	_float4x4 m_CombinedTransformationMatrix;
 	CBone* m_pParent = { nullptr };
+
+	// AnimSet 전용, Render용 모델의 같은 이름의 본을 타겟으로 잡아놓은 상태
 	CBone* m_pTargetBone = { nullptr };
 
-	_bool m_bAnim = { true };
+	// AnimSet 전용, 이번 프레임에 애니메이션 채널에서 갱신한 정보를 Target에 전달하는가
+	_bool m_bApply = { false };
 
 public:
 	static CBone* Create(BONEINFO* pBoneInfo);

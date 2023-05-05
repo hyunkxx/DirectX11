@@ -1,0 +1,229 @@
+#include "stdafx.h"
+#include "..\Public\TestChar.h"
+
+#include "GameMode.h"
+
+const char CTestChar::szSharedStateTag[SS_END][MAX_PATH] =
+{
+	"SS_STAND1",
+	"SS_STAND1_ACTION01",
+	"SS_STAND1_ACTION02",
+	"SS_STAND1_ACTION03",
+	"SS_STAND2",
+	"SS_STANDCHANGE",
+	"SS_STANDUP",
+	"SS_WALK_F",
+	"SS_WALK_B",
+	"SS_WALK_LF",
+	"SS_WALK_LB",
+	"SS_WALK_RF",
+	"SS_WALK_RB",
+	"SS_WALK_STOP_L",
+	"SS_WALK_STOP_R",
+	"SS_RUN_F",
+	"SS_RUN_B",
+	"SS_RUN_LF",
+	"SS_RUN_LB",
+	"SS_RUN_RF",
+	"SS_RUN_RB",
+	"SS_RUN_TURNBACK",
+	"SS_RUN_STOP_L",
+	"SS_RUN_STOP_R",
+	"SS_SPRINT",
+	"SS_SPRINT_IMPULSE_F",
+	"SS_SPRINT_STOP_L",
+	"SS_SPRINT_STOP_R",
+	"SS_MOVE_F",
+	"SS_MOVE_B",
+	"SS_MOVE_LIMIT_F",
+	"SS_MOVE_LIMIT_B",
+	"SS_JUMP_WALK",
+	"SS_JUMP_RUN",
+	"SS_JUMP_SECOND_F",
+	"SS_JUMP_SECOND_B",
+	"SS_LAND_LIGHT",
+	"SS_LAND_HEAVY",
+	"SS_LAND_ROLL",
+	"SS_LANDSLIDE_F",
+	"SS_LANDSLIDE_B",
+	"SS_LANDSLIDE_L",
+	"SS_LANDSLIDE_R",
+	"SS_FIXHOOK_START_1_D",
+	"SS_FIXHOOK_START_1_F",
+	"SS_FIXHOOK_START_1_U",
+	"SS_FIXHOOK_START_2_D",
+	"SS_FIXHOOK_START_2_F",
+	"SS_FIXHOOK_START_2_U",
+	"SS_FIXHOOK_LOOP_D",
+	"SS_FIXHOOK_LOOP_F",
+	"SS_FIXHOOK_LOOP_L",
+	"SS_FIXHOOK_LOOP_R",
+	"SS_FIXHOOK_LOOP_U",
+	"SS_FIXHOOK_END_UP",
+	"SS_FIXHOOK_END",
+	"SS_FALL",
+	"SS_FALL_FAST",
+	"SS_SWIM_FALL",
+	"SS_SWIM_STAND",
+	"SS_SWIM_LOOP_F",
+	"SS_SWIM_LOOP_L",
+	"SS_SWIM_LOOP_R",
+	"SS_SWIMUP_LOOP_F",
+	"SS_SWIMUP_LOOP_L",
+	"SS_SWIMUP_LOOP_R",
+	"SS_CLIMB_START_UP",
+	"SS_CLIMB_START_DOWN",
+	"SS_CLIMB_STAND",
+	"SS_CLIMB_D1",
+	"SS_CLIMB_D1_STOP",
+	"SS_CLIMB_D2",
+	"SS_CLIMB_D2_STOP",
+	"SS_CLIMB_DL1",
+	"SS_CLIMB_DL1_STOP",
+	"SS_CLIMB_DL2",
+	"SS_CLIMB_DL2_STOP",
+	"SS_CLIMB_DR1",
+	"SS_CLIMB_DR1_STOP",
+	"SS_CLIMB_DR2",
+	"SS_CLIMB_DR2_STOP",
+	"SS_CLIMB_L1",
+	"SS_CLIMB_L1_STOP",
+	"SS_CLIMB_L2",
+	"SS_CLIMB_L2_STOP",
+	"SS_CLIMB_R1",
+	"SS_CLIMB_R1_STOP",
+	"SS_CLIMB_R2",
+	"SS_CLIMB_R2_STOP",
+	"SS_CLIMB_U1",
+	"SS_CLIMB_U1_STOP",
+	"SS_CLIMB_U2",
+	"SS_CLIMB_U2_STOP",
+	"SS_CLIMB_UL1",
+	"SS_CLIMB_UL1_STOP",
+	"SS_CLIMB_UL2",
+	"SS_CLIMB_UL2_STOP",
+	"SS_CLIMB_UR1",
+	"SS_CLIMB_UR1_STOP",
+	"SS_CLIMB_UR2",
+	"SS_CLIMB_UR2_STOP",
+	"SS_CLIMB_MOVE",
+	"SS_CLIMB_ONTOP",
+	"SS_CLIMB_VAULT",
+	"SS_CLIMB_DASH_D",
+	"SS_CLIMB_DASH_DL",
+	"SS_CLIMB_DASH_DR",
+	"SS_CLIMB_DASH_L",
+	"SS_CLIMB_DASH_R",
+	"SS_CLIMB_DASH_U",
+	"SS_CLIMB_DASH_UL",
+	"SS_CLIMB_DASH_UR",
+	"SS_CLIMB_BOOST_L",
+	"SS_CLIMB_BOOST_L_START",
+	"SS_CLIMB_BOOST_L_STOP",
+	"SS_CLIMB_BOOST_R",
+	"SS_CLIMB_BOOST_R_START",
+	"SS_CLIMB_BOOST_R_STOP",
+	"SS_CLIMB_BOOST_U",
+	"SS_CLIMB_BOOST_U_START",
+	"SS_CLIMB_BOOST_U_STOP",
+	"SS_CLIMB_BOOST_ONTOP",
+	"SS_CLIMB_BOOST_ONTOPTOSPRINT",
+	"SS_CLIMB_BOOST_ONTOPTOSTOP",
+	"SS_CLIMB_BOOST_VAULT",
+	"SS_CLIMB_BOOST_VAULTTOFALL",
+	"SS_SWING_START",
+	"SS_SWING_END",
+	"SS_MANIPULATE_START",
+	"SS_MANIPULATE_RELEASE",
+	"SS_MANIPULATE_LOOP",
+	"SS_MANIPULATE_END",
+	"SS_SUMMON",
+	"SS_THROW_D",
+	"SS_THROW_F",
+	"SS_THROW_U",
+	"SS_CONTROL_D",
+	"SS_CONTROL_F",
+	"SS_CONTROL_U",
+	"SS_BEHIT_S",
+	"SS_BEHIT_B",
+	"SS_BEHIT_FLY",
+	"SS_BEHIT_PRESS",
+	"SS_DEATH_IN_WATER",
+	"SS_DEATH",
+};
+
+const char CTestChar::szRotationTag[ROT_END][MAX_PATH] =
+{
+	"ROT_NONE",
+	"ROT_ONSTART",
+	"ROT_LOOKAT",
+	"ROT_TURN",
+};
+
+const char CTestChar::szPhysicMoveTag[CCharacter::PSP_END][MAX_PATH] =
+{
+	"WALK_F",
+	"WALK_B",
+	"WALK_L",
+	"WALK_R",
+
+	"RUN_F",
+	"RUN_B",
+	"RUN_L",
+	"RUN_R",
+
+	"SPRINT_F",
+	"SPRINT_B",
+};
+
+CTestChar::CTestChar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CCharacter(pDevice, pContext)
+{
+}
+
+CTestChar::CTestChar(const CTestChar & rhs)
+	: CCharacter(rhs)
+{
+}
+
+HRESULT CTestChar::Initialize_Prototype()
+{
+	return S_OK;
+}
+
+HRESULT CTestChar::Initialize(void * pArg)
+{
+	__super::Initialize(pArg);
+	return S_OK;
+}
+
+void CTestChar::Start()
+{
+}
+
+void CTestChar::Tick(_double TimeDelta)
+{
+}
+
+void CTestChar::LateTick(_double TimeDelta)
+{
+}
+
+HRESULT CTestChar::Render()
+{
+	return S_OK;
+}
+
+HRESULT CTestChar::RenderShadow()
+{
+	return S_OK;
+}
+
+void CTestChar::RenderGUI()
+{
+}
+
+void CTestChar::Free()
+{
+	__super::Free();
+}

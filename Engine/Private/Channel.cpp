@@ -26,11 +26,18 @@ HRESULT CChannel::Initialize(CHANNELINFO * pChannelInfo, CModel_Anim * pModel)
 		m_KeyFrames.push_back(pChannelInfo->s_pKeyFrames[i]);
 	}
 
+	m_bApply = false;
+
 	return S_OK;
 }
 
 void CChannel::Invalidate_Transform(_uint ChannelID, CAnimController::ANIMSTATE& tState, CModel_Anim* pModel)
 {
+	pModel->Get_BonePtr(m_iTargetBoneID)->Set_Apply(m_bApply);
+
+	if (false == m_bApply)
+		return;
+
 	_vector vScale;
 	_vector vRotation;
 	_vector vPosition;
@@ -58,10 +65,10 @@ void CChannel::Invalidate_Transform(_uint ChannelID, CAnimController::ANIMSTATE&
 		//// 보간 처리
 		if (true == tState.IsInterpolate)
 		{
-			if (tState.FrameAcc < 12.0)
+			if (tState.FrameAcc < 4.0)
 			{
 				_vector vDestScale, vDestRotation, vDestPosition;
-				_double DestRatio = tState.FrameAcc / 12.0;
+				_double DestRatio = tState.FrameAcc / 4.0;
 
 				XMMatrixDecompose(&vDestScale, &vDestRotation, &vDestPosition, XMLoadFloat4x4(&tState.vecLastFrameState[m_iTargetBoneID]));
 
@@ -105,37 +112,36 @@ void CChannel::Invalidate_Transform(_uint ChannelID, CAnimController::ANIMSTATE&
 
 	pModel->Get_BonePtr(m_iTargetBoneID)->Set_TransformationMatrix(TransformationMatrix);
 
+	//// RootMotion 처리용 낮은 발 높이 찾기
+	//if (true == tState.bFootAltitude)
+	//{
+	//	if (pModel->Get_RightBottomBone() == pModel->Get_BonePtr(m_iTargetBoneID) ||
+	//		pModel->Get_LeftBottomBone() == pModel->Get_BonePtr(m_iTargetBoneID))
+	//	{
+	//		CBone* pBone = pModel->Get_BonePtr(m_iTargetBoneID);
 
-	// RootMotion 처리용 낮은 발 높이 찾기
-	if (true == tState.bFootAltitude)
-	{
-		if (pModel->Get_RightBottomBone() == pModel->Get_BonePtr(m_iTargetBoneID) ||
-			pModel->Get_LeftBottomBone() == pModel->Get_BonePtr(m_iTargetBoneID))
-		{
-			CBone* pBone = pModel->Get_BonePtr(m_iTargetBoneID);
+	//		_matrix matBottom = TransformationMatrix;
+	//		while (true)
+	//		{
+	//			pBone = pBone->Get_ParentBone();
 
-			_matrix matBottom = TransformationMatrix;
-			while (true)
-			{
-				pBone = pBone->Get_ParentBone();
+	//			matBottom = matBottom * XMLoadFloat4x4(&pBone->Get_TransformationMatrix());
 
-				matBottom = matBottom * XMLoadFloat4x4(&pBone->Get_TransformationMatrix());
+	//			if (pBone == pModel->Get_RootBone())
+	//				break;
+	//		}
 
-				if (pBone == pModel->Get_RootBone())
-					break;
-			}
-
-			if (true == tState.bAltitudeFirst)
-			{
-				tState.fAltitude = XMVectorGetY(matBottom.r[3]);
-				tState.bAltitudeFirst = false;
-			}
-			else
-				tState.fAltitude = min(tState.fAltitude, XMVectorGetY(matBottom.r[3]));
-		}
-	}
-	else
-		tState.fAltitude = 0.f;
+	//		if (true == tState.bAltitudeFirst)
+	//		{
+	//			tState.fAltitude = XMVectorGetY(matBottom.r[3]);
+	//			tState.bAltitudeFirst = false;
+	//		}
+	//		else
+	//			tState.fAltitude = min(tState.fAltitude, XMVectorGetY(matBottom.r[3]));
+	//	}
+	//}
+	//else
+	//	tState.fAltitude = 0.f;
 }
 
 CChannel * CChannel::Create(CHANNELINFO * pChannelInfo, CModel_Anim * pModel)

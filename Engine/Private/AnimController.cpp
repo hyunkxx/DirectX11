@@ -14,7 +14,7 @@ HRESULT CAnimController::Initialize(_uint iNumBones)
 	return S_OK;
 }
 
-HRESULT CAnimController::SetUp_Animation(_uint iAnimationIndex, CModel_Anim * pModel, _bool bInterpolate, _bool bFootAltitude)
+HRESULT CAnimController::SetUp_Animation(_uint iAnimationIndex, CModel_Anim * pModel, _bool bInterpolate)
 {
 	m_iPrevAnimation = m_iCurAnimation;
 	m_iCurAnimation = iAnimationIndex;
@@ -39,7 +39,6 @@ HRESULT CAnimController::SetUp_Animation(_uint iAnimationIndex, CModel_Anim * pM
 	// 애니메이션에 맞춰 초기값 설정
 	m_tAnimState.vecCurrentKeyFrame.clear();
 	m_tAnimState.vecCurrentKeyFrame.resize(pModel->Get_Animation(m_iCurAnimation)->Get_NumChannels());
-	m_tAnimState.bFootAltitude = bFootAltitude;
 
 	// 0초기화
 	m_tAnimState.FrameAcc = m_tAnimState.FrameRemain;
@@ -49,22 +48,18 @@ HRESULT CAnimController::SetUp_Animation(_uint iAnimationIndex, CModel_Anim * pM
 	ZeroMemory(&m_tAnimState.vPrevRootBonePos, sizeof(_float3));
 
 	m_tAnimState.isFirstFrame = true;
-	m_tAnimState.bAltitudeFirst = true;
 
 	return S_OK;
 }
 
-const _float3 CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * pModel, _double* pFrameAccOut, _bool* pFinishedOut, _bool bContinue)
+void CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * pModel, _float4* pRotationOut, _float3* pMoveOut, _double* pFrameAccOut, _bool* pFinishedOut)
 {
 	if (true == m_tAnimState.isFinished)
-		return _float3(0.f, 0.f, 0.f);
-
-	// 발 2개 중 낮은쪽 높이 구하기 위해 매프레임 true로 초기화
-	m_tAnimState.bAltitudeFirst = true;
+		return;
 
 	CAnimation* pAnim = pModel->Get_Animation(m_iCurAnimation);
 
-	pAnim->Play_Animation(TimeDelta, m_tAnimState, pModel, bContinue);
+	pAnim->Play_Animation(TimeDelta, m_tAnimState, pModel);
 
 	if (nullptr != pFrameAccOut)
 	{
@@ -77,11 +72,17 @@ const _float3 CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * p
 
 	CBone* pRootBone = pModel->Get_RootBone();
 	if (nullptr != pRootBone)
-	{
-		pRootBone->Set_Position(_float3(0.f, 0.f, 0.f));
-	}
+		pRootBone->Set_Position(_float3(0.f, 0.f, /*pRootBone->Get_TransformationMatrix()._43*/0.f));
 
-	return m_tAnimState.vCurRootBoneMove;
+	if (nullptr != pRotationOut)
+		*pRotationOut = m_tAnimState.vCurRootBoneRot;
+
+	if (nullptr != pMoveOut)
+		*pMoveOut = m_tAnimState.vCurRootBoneMove;
+
+	
+
+	return ;
 }
 
 CAnimController * CAnimController::Create(_uint iNumBones)

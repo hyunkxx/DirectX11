@@ -13,7 +13,7 @@ private:
 
 public:
 	HRESULT Initialize(ANIMINFO* pAnimInfo, class CModel_Anim* pModel);
-	void Play_Animation(_double TimeDelta, CAnimController::ANIMSTATE& tState, CModel_Anim* pModel, _bool bContinue = false);
+	void Play_Animation(_double TimeDelta, CAnimController::ANIMSTATE& tState, CModel_Anim* pModel);
 
 	const _tchar* Get_Name()
 	{

@@ -260,21 +260,19 @@ HRESULT CModel_Anim::SetUp_BoneMatrices(CShader * pShaderCom, const char * pCons
 	return  pShaderCom->Set_Matrices(pConstantName, MeshBoneMatrices, 256);
 }
 
-HRESULT CModel_Anim::SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate, _bool bFootAltitude)
+HRESULT CModel_Anim::SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate)
 {
 	if (iAnimationIndex >= m_iNumAnimations)
 		return E_FAIL;
 
-	m_pAnimController->SetUp_Animation(iAnimationIndex, this, bInterpolate, bFootAltitude);
+	m_pAnimController->SetUp_Animation(iAnimationIndex, this, bInterpolate);
 
 	return S_OK;
 }
 
-_float3 CModel_Anim::Play_Animation(_double TimeDelta, _double* pFrameAccOut, _bool* pFinishedOut, _bool bContinue)
+void CModel_Anim::Play_Animation(_double TimeDelta, _float4* pRotationOut, _float3* pMoveOut, _double* pFrameAccOut, _bool* pFinishedOut)
 {
-	_float3 vMove = m_pAnimController->Play_Animation(TimeDelta, this, pFrameAccOut, pFinishedOut, bContinue);
-
-	return vMove;
+	m_pAnimController->Play_Animation(TimeDelta, this, pRotationOut, pMoveOut, pFrameAccOut, pFinishedOut);
 }
 
 void CModel_Anim::Invalidate_CombinedMatrices()
@@ -282,6 +280,14 @@ void CModel_Anim::Invalidate_CombinedMatrices()
 	for (auto& pBone : m_Bones)
 	{
 		pBone->Invalidate_CombinedMatrix();
+	}
+}
+
+void CModel_Anim::Reset_Pose()
+{
+	for (auto& pBone : m_Bones)
+	{
+		pBone->Reset_Pose();
 	}
 }
 
