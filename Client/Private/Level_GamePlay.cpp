@@ -160,7 +160,7 @@ void CLevel_GamePlay::RenderLevelUI()
 	ImGui::Text("[ 5 ] [ Ctrl+5]    RGB Split");
 	ImGui::DragFloat3("Split Value", (float*)&rgbDesc);
 
-	ImGui::Text("[   Ctrl + 0  ]	Target Off");
+	ImGui::Text("[   Ctrl + 0  ]	Target On/Off");
 
 	ImGui::End();
 }

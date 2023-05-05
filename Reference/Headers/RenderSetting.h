@@ -95,8 +95,8 @@ public:
 	}
 
 	void StartRGBSplit(_double TotalTime) {
-		m_fRGBSplit_TimeAcc = TotalTime;
-		m_fRGBSplit_TotalTime = TotalTime;
+		m_fRGBSplit_TimeAcc = (_float)TotalTime;
+		m_fRGBSplit_TotalTime = (_float)TotalTime;
 		m_bRGBSplit = true;
 	}
 

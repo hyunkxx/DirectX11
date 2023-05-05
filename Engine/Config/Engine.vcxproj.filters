@@ -172,8 +172,12 @@
     <ClCompile Include="..\private\Base.cpp">
       <Filter>utility\99. SuperClass</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Effect_Manager.cpp" />
-    <ClCompile Include="Save_Loader.cpp" />
+    <ClCompile Include="..\Private\Effect_Manager.cpp">
+      <Filter>utility\02. GameObjects\01. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Save_Loader.cpp">
+      <Filter>system\04. SaveLoader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Typedef.h">
@@ -386,8 +390,12 @@
     <ClInclude Include="..\public\Base.h">
       <Filter>utility\99. SuperClass</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Effect_Manager.h" />
-    <ClInclude Include="..\Public\Save_Loader.h" />
+    <ClInclude Include="..\Public\Effect_Manager.h">
+      <Filter>utility\02. GameObjects\01. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Save_Loader.h">
+      <Filter>system\04. SaveLoader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="system">
@@ -482,6 +490,9 @@
     </Filter>
     <Filter Include="system\NEW_FILES">
       <UniqueIdentifier>{2a664b7e-3028-4808-a258-bbaeece7223d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\04. SaveLoader">
+      <UniqueIdentifier>{54bc3dfc-7264-47c5-a9ba-e1ae1fbfe433}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
