@@ -13,13 +13,15 @@ texture2D			g_GlowOriTexture;
 float				g_fWindowSizeX = 640.f;
 float				g_fWindowSizeY = 360.f;
 
-float				g_fWeight[13];
-
+float				g_fHighWeight[13];
 float				g_fColorRange = 24.f;
 
-float fWeight[13] = { 0.0561f , 0.1353f , 0.278f ,0.4868f , 0.7261f , 0.9231f,
+float fHighWeight[13] = { 0.0561f , 0.1353f , 0.278f ,0.4868f , 0.7261f , 0.9231f,
 						1.f ,
 						0.9231f , 0.7261f , 0.4868f , 0.278f , 0.1353f , 0.0561f };
+
+float fMiddelWeight[7] = { 0.4868f , 0.7261f, 0.9231f, 1.f , 0.9231f, 0.7261f , 0.4868f };
+float fLowWeight[3] = { 0.9231f, 1.f , 0.9231f };
 
 float3 jodieReinhardTonemap(float3 c)
 {
@@ -101,12 +103,12 @@ PS_OUT PS_MAIN_BLUR_X(PS_IN In)
 	for (int i = -6 ; 7 > i; i++)
 	{
 		vUV2 = vUV + float2(fTu * i, 0);
-		vColor += fWeight[i + 6] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
-		fTotal += fWeight[i + 6];
+		vColor += fHighWeight[i + 6] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
+		fTotal += fHighWeight[i + 6];
 	}
 
 	//vUV2 = vUV + float2(fTu * -6, 0);
-	//vColor += fWeight0 * g_BlurTexture.Sample(LinearSampler, vUV2);
+	//vColor += fHighWeight0 * g_BlurTexture.Sample(LinearSampler, vUV2);
 
 	Out.vColor = vColor / fTotal;
 
@@ -127,8 +129,102 @@ PS_OUT PS_MAIN_BLUR_Y(PS_IN In)
 	for (int i = -6 ; 7 > i; i++)
 	{
 		vUV2 = vUV + float2(0 , fTv * i);
-		vColor += fWeight[i + 6] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
-		fTotal += fWeight[i + 6];
+		vColor += fHighWeight[i + 6] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
+		fTotal += fHighWeight[i + 6];
+	}
+
+	Out.vColor = vColor / fTotal;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_BLUR_X_MIDDEL(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vColor = float4(0.0f, 0.0f, 0.0f, 0.f);
+	float fTotal = 0.f;
+
+	float2 vUV = In.vTexUV;
+	float2 vUV2 = 0;
+
+	float fTu = 1.f / (g_fWindowSizeX / 2.f);
+
+	for (int i = -3; 4 > i; i++)
+	{
+		vUV2 = vUV + float2(fTu * i, 0);
+		vColor += fMiddelWeight[i + 3] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
+		fTotal += fMiddelWeight[i + 3];
+	}
+
+	Out.vColor = vColor / fTotal;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_BLUR_Y_MIDDEL(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+	float4 vColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	float fTotal = 0.f;
+
+	float2 vUV = In.vTexUV;
+	float2 vUV2 = 0;
+
+	float fTv = 1.f / (g_fWindowSizeY / 2.f);
+
+	for (int i = -3; 4 > i; i++)
+	{
+		vUV2 = vUV + float2(0, fTv * i);
+		vColor += fMiddelWeight[i + 3] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
+		fTotal += fMiddelWeight[i + 3];
+	}
+
+	Out.vColor = vColor / fTotal;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_BLUR_X_MIN(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vColor = float4(0.0f, 0.0f, 0.0f, 0.f);
+	float fTotal = 0.f;
+
+	float2 vUV = In.vTexUV;
+	float2 vUV2 = 0;
+
+	float fTu = 1.f / (g_fWindowSizeX / 2.f);
+
+	for (int i = -1; 2 > i; i++)
+	{
+		vUV2 = vUV + float2(fTu * i, 0);
+		vColor += fLowWeight[i + 1] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
+		fTotal += fLowWeight[i + 1];
+	}
+
+	Out.vColor = vColor / fTotal;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_BLUR_Y_MIN(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+	float4 vColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	float fTotal = 0.f;
+
+	float2 vUV = In.vTexUV;
+	float2 vUV2 = 0;
+
+	float fTv = 1.f / (g_fWindowSizeY / 2.f);
+
+	for (int i = -1; 2 > i; i++)
+	{
+		vUV2 = vUV + float2(0, fTv * i);
+		vColor += fLowWeight[i + 1] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
+		fTotal += fLowWeight[i + 1];
 	}
 
 	Out.vColor = vColor / fTotal;
@@ -140,7 +236,7 @@ PS_OUT PS_MAIN_BRIGHT(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	float4 vFragColor = g_finalTexture.Sample(LinearClampSampler, In.vTexUV);
+	float4 vFragColor = g_finalTexture.Sample(LinearBorderSampler, In.vTexUV);
 
 
 	if (0.8f <= vFragColor.r || 0.8f <= vFragColor.g || 0.8f <= vFragColor.b)
@@ -171,7 +267,7 @@ PS_OUT PS_MAIN_GLOW(PS_IN In)
 
 	Out.vColor = pow(abs(vfinalColor), 1.f / 2.2f);
 
-	Out.vColor.a = g_finalTexture.Sample(LinearClampSampler, In.vTexUV).a;
+	Out.vColor.a = g_finalTexture.Sample(LinearBorderSampler, In.vTexUV).a;
 
 	return Out;
 }
@@ -212,7 +308,7 @@ PS_OUT PS_MAIN_GLOW_BLACK_WHITE(PS_IN In)
 	else
 		Out.vColor = float4(0.f, 0.f, 0.f, 1.f);
 
-	Out.vColor.a = g_finalTexture.Sample(LinearClampSampler, In.vTexUV).a;
+	Out.vColor.a = g_finalTexture.Sample(LinearBorderSampler, In.vTexUV).a;
 
 	return Out;
 }
@@ -294,7 +390,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_GLOW_BLACK_WHITE();
 	}
 
-	pass Glow_Pass5
+	pass NoGlow_Pass5
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -307,7 +403,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_NOGLOW();
 	}
 
-	pass Glow_BlackWhite_Pass6
+	pass NoGlow_BlackWhite_Pass6
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -318,5 +414,57 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_NOGLOW_BLACK_WHITE();
+	}
+
+	pass LowBlurX_Pass7
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_BLUR_X_MIN();
+	}
+
+	pass LowBlurY_Pass8
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_BLUR_Y_MIN();
+	}
+
+	pass MiddelBlurX_Pass9
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_BLUR_X_MIDDEL();
+	}
+
+	pass MiddelBlurY_Pass10
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_BLUR_Y_MIDDEL();
 	}
 }

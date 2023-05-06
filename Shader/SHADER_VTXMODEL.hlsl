@@ -109,6 +109,7 @@ struct PS_OUT_OUTLINE
 	float4 vNormal : SV_TARGET1;
 	float4 vDepth : SV_TARGET2;
 	float4 vOutNormal : SV_TARGET3;
+	float4 vGlow : SV_TARGET4;
 };
 
 PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
@@ -139,6 +140,9 @@ PS_OUT_OUTLINE	PS_Outline(PS_IN In)
 	Out.vNormal = float4(vNormal * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	if (vNormalDesc.g > vNormalDesc.b)
+		Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
 
 	return Out;
 }

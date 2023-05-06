@@ -28,10 +28,12 @@ public:
 	HRESULT AddRenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pTargetTag, _float iWidth, _float iHeight, DXGI_FORMAT eFormat, _float4 vColor);
 	HRESULT AddMRT(const _tchar* pMRTTag, const _tchar* pTargetTag);
 
-	HRESULT Begin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT);
+	 
+	// [ Begin : MRT바인딩 ]   [ ShadowBegin : 12800x7200 바인딩 ]   [ BeginTarget : 지정한 단일타겟 바인딩 ]   [ SmallBeginTarget : 절반사이즈 단일타겟 바인딩 ]
+	HRESULT Begin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT, _bool bClear = true);
 	HRESULT ShadowBegin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
-	HRESULT BeginTarget(ID3D11DeviceContext* pContext, class CRenderTarget* pTarget);
-	HRESULT SmallBeginTarget(ID3D11DeviceContext* pContext, CRenderTarget * pTarget);
+	HRESULT BeginTarget(ID3D11DeviceContext* pContext, class CRenderTarget* pTarget, _bool bClear = true);
+	HRESULT SmallBeginTarget(ID3D11DeviceContext* pContext, CRenderTarget * pTarget, _bool bClear = true);
 	HRESULT End(ID3D11DeviceContext* pContext);
 
 	HRESULT Set_ShaderResourceView(class CShader* pShader, const _tchar* pTargetTag, const char* pContantName);

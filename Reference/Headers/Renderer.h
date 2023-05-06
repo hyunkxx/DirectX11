@@ -10,6 +10,7 @@ class ENGINE_DLL CRenderer final : public CComponent
 public:
 	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_NONLIGHT, RENDER_PARTICLE , RENDER_ALPHABLEND, RENDER_UI, RENDER_DYNAMIC_SHADOW, RENDER_END };
 	enum LUT { LUT_EXPOSURE_MINUS, LUT_EXPOSURE_PLUS, LUT_FUJI, LUT_GRUNGY, LUT_SOUTH, LUT_KURO, LUT_DEFAULT };
+	enum BLUR { LOW, MIDDEL, HIGH };
 private:
 	explicit CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CRenderer() = default;
@@ -33,15 +34,20 @@ private:
 	void Render_Blend();
 	void Render_Glow();
 	void Render_Glow_Blend();
+
+	void Render_SpecularGlow();
+
 	void Render_NonLight();
 	void Render_AlphaBlend();
 	void Render_UI();
 
 	void ApplyLUT(_uint iIndex);
 	void RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag);
+	void AddCombine(const _tchar * pBindTargetTag, const _tchar * pSourTag, const _tchar * pDestTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT);
+	void BlendCombine(const _tchar * pBindTargetTag, const _tchar * pSourTag, const _tchar * pDestTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT);
 	void Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag, _uint iPass = 0, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT);
 	void FinalExtraction();
-	void Target_Blur(const _tchar* TargetTag, _int BlurCount = 1);
+	void Target_Blur(const _tchar* TargetTag, _int BlurCount = 1, BLUR eBlurLevel = BLUR::HIGH);
 	void Ready_SSAO(const _tchar* pBindTargetTag);
 
 public:

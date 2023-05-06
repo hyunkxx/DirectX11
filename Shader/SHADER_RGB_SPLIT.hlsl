@@ -56,7 +56,7 @@ PS_OUT PS_POSTEFFECT_RGBBLUR(PS_IN In)
 	for (float i = -10.0; i < 10.0; i++)
 	{
 		UV = (uv / sqrt(1.0 + (i * fStrength + (fDistortion + fSeparation)) * dot(uv, uv))).xy + 0.5f;
-		vector color = g_SourTexture.Sample(LinearClampSampler, UV);
+		vector color = g_SourTexture.Sample(LinearBorderSampler, UV);
 
 		A.r += color.r;
 	}
@@ -64,14 +64,14 @@ PS_OUT PS_POSTEFFECT_RGBBLUR(PS_IN In)
 	for (float i = -10.0; i < 10.0; i++)
 	{
 		UV = (uv / sqrt(1.0 + (i * fStrength + fDistortion) * dot(uv, uv))).xy + 0.5f;
-		vector color = g_SourTexture.Sample(LinearClampSampler, UV);
+		vector color = g_SourTexture.Sample(LinearBorderSampler, UV);
 		A.g += color.g;
 	}
 
 	for (float i = -10.0; i < 10.0; i++)
 	{
 		UV = (uv / sqrt(1.0 + (i * fStrength + (fDistortion - fSeparation)) * dot(uv, uv))).xy + 0.5f;
-		vector color = g_SourTexture.Sample(LinearClampSampler, UV);
+		vector color = g_SourTexture.Sample(LinearBorderSampler, UV);
 		A.b += color.b;
 	}
 

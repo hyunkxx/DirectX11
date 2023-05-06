@@ -36,7 +36,7 @@ void CLevel_Loading::Tick(_double TimeDelta)
 	if (nullptr == m_pLoader)
 		return;
 
-	if (true == m_pLoader->IsFinished() && GetKeyState(VK_RETURN) & 0x8000)
+	if (true == m_pLoader->IsFinished())
 	{
 		CLevel*	pLevel = { nullptr };
 		CGameMode* m_pGM = CGameMode::GetInstance();

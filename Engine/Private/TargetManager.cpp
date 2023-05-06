@@ -58,7 +58,7 @@ HRESULT CTargetManager::AddMRT(const _tchar * pMRTTag, const _tchar * pTargetTag
 	return S_OK;
 }
 
-HRESULT CTargetManager::Begin(ID3D11DeviceContext * pContext, const _tchar * pMRTTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType)
+HRESULT CTargetManager::Begin(ID3D11DeviceContext * pContext, const _tchar * pMRTTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType, _bool bClear)
 {
 	CGraphic_Device* pGrahicDevice = CGraphic_Device::GetInstance();
 
@@ -73,7 +73,9 @@ HRESULT CTargetManager::Begin(ID3D11DeviceContext * pContext, const _tchar * pMR
 
 	for (auto& pRenderTarget : *pMRTList)
 	{
-		pRenderTarget->Clear();
+		if(bClear)
+			pRenderTarget->Clear();
+		
 		pRenderTargets[iViewCount++] = pRenderTarget->Get_RTV();
 	}
 
@@ -94,14 +96,16 @@ HRESULT CTargetManager::Begin(ID3D11DeviceContext * pContext, const _tchar * pMR
 	return S_OK;
 }
 
-HRESULT CTargetManager::SmallBeginTarget(ID3D11DeviceContext * pContext, CRenderTarget * pTarget)
+HRESULT CTargetManager::SmallBeginTarget(ID3D11DeviceContext * pContext, CRenderTarget * pTarget, _bool bClear)
 {
 	if (!pContext || !pTarget)
 		return E_FAIL;
 
 	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
 
-	pTarget->Clear();
+	if(bClear)
+		pTarget->Clear();
+
 	ID3D11RenderTargetView* pRTV = pTarget->Get_RTV();
 	CGraphic_Device* pGrahicDevice = CGraphic_Device::GetInstance();
 
@@ -135,14 +139,16 @@ HRESULT CTargetManager::ShadowBegin(ID3D11DeviceContext * pContext, const _tchar
 	return S_OK;
 }
 
-HRESULT CTargetManager::BeginTarget(ID3D11DeviceContext * pContext, CRenderTarget * pTarget)
+HRESULT CTargetManager::BeginTarget(ID3D11DeviceContext * pContext, CRenderTarget * pTarget, _bool bClear)
 {
 	if (!pContext || !pTarget)
 		return E_FAIL;
 
 	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
 	
-	pTarget->Clear();
+	if(bClear)
+		pTarget->Clear();
+
 	ID3D11RenderTargetView* pRTV = pTarget->Get_RTV();
 	CGraphic_Device* pGrahicDevice = CGraphic_Device::GetInstance();
 

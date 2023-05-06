@@ -25,10 +25,11 @@ void CLevel_Logo::Tick(_double TimeDelta)
 	CAppManager* pAppManager = CAppManager::GetInstance();
 	pAppManager->SetTitle(L"LEVEL_LOGO");
 #endif
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (GetKeyState(VK_SPACE) & 0x8000)
+	if (pGameInstance->InputKey(DIK_RETURN) == KEY_STATE::TAP)
 	{
-		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	
 		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
 			return;
 	}

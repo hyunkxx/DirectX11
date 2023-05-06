@@ -18,7 +18,7 @@ sampler LinearClampSampler = sampler_state{
 
 sampler LinearBorderSampler = sampler_state{
 	filter = min_mag_mip_linear;
-	BorderColor = float4(1.f,1.f, 1.f,1.f);
+	BorderColor = float4(1.f, 1.f, 1.f, 0.f);
 	AddressU = Border;
 	AddressV = Border;
 };

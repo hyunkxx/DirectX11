@@ -168,6 +168,13 @@ HRESULT CPlayerGirl::Render()
 			m_pShaderCom->Begin(iPass);
 
 		m_pModelCom->Render(i);
+
+		////Rim Light
+		//if (i != 5 && 10.f > ComputeCameraLength())
+		//{
+		//	m_pShaderCom->Begin(7);
+		//	m_pModelCom->Render(i);
+		//}
 	}
 
 	return S_OK;
@@ -431,6 +438,9 @@ HRESULT CPlayerGirl::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetRawValue("g_vCamPosition", &pGameInstance->Get_CamPosition(), sizeof(_float4))))
 		return E_FAIL;
 
 	return S_OK;

@@ -5,6 +5,7 @@ float4x4  g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_LightViewMatrix, g_LightP
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 texture2D g_DepthTexture;
+texture2D g_PrevGlowTexture;
 
 texture2D g_ShadowDepthTexture;
 texture2D g_ShadowTexture;
@@ -45,7 +46,7 @@ float mask[9] =
 	-1.f, -1.f, -1.f
 };
 
-float fWeight[13] =
+float fHighWeight[13] =
 {
 	0.0561, 0.1353, 0.278, 0.4868, 0.7271, 0.9231, 1,
 	0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561
@@ -118,6 +119,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
+	vector vPrevGlow = g_PrevGlowTexture.Sample(LinearSampler, In.vTexUV);
 	vector vSSAO = g_SSAOTexture.Sample(LinearSampler, In.vTexUV);
 
 	vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
@@ -142,18 +144,19 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 	vWorldPos.z = vDepthDesc.x; /*0 ~ 1*/
 	vWorldPos.w = 1.f;
 
-	/* 로컬정점위치 * 월드 * 뷰 * 투영 */
-	vWorldPos = vWorldPos * (vDepthDesc.y * g_Far);
-	vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-	vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+	if (vPrevGlow.a > 0.f)
+	{
+		/* 로컬정점위치 * 월드 * 뷰 * 투영 */
+		vWorldPos = vWorldPos * (vDepthDesc.y * g_Far);
+		vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+		vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-	vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
-	vector vLook = vWorldPos - g_vCamPosition;
-		   
-	float  fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
+		vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
+		vector vLook = vWorldPos - g_vCamPosition;
 
-	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * fSpecular;
-	Out.vSpecular.a = 0.f;
+		float  fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 5.f);
+		Out.vSpecular = vPrevGlow * (g_vLightSpecular * g_vMtrlSpecular) * fSpecular;
+	}
 
 	return Out;
 }
@@ -165,7 +168,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
-
+	vector vPrevGlow = g_PrevGlowTexture.Sample(LinearSampler, In.vTexUV);
 	vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 
 	//Toon
@@ -187,18 +190,19 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 	vWorldPos.y = In.vTexUV.y * -2.f + 1.f;
 	vWorldPos.z = vDepthDesc.x; /*0 ~ 1*/
 	vWorldPos.w = 1.f;
+	
+	if (vPrevGlow.a > 0.f)
+	{
+		vWorldPos = vWorldPos * (vDepthDesc.y * g_Far);
+		vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+		vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-	vWorldPos = vWorldPos * (vDepthDesc.y * g_Far);
-	vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-	vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+		vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
+		vector vLook = vWorldPos - g_vCamPosition;
 
-	vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
-	vector vLook = vWorldPos - g_vCamPosition;
-
-	float  fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
-
-	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * fSpecular;
-	Out.vSpecular.a = 0.f;
+		float  fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 5.f);
+		Out.vSpecular = vPrevGlow * (g_vLightSpecular * g_vMtrlSpecular) * fSpecular;
+	}
 
 	return Out;
 }
@@ -210,6 +214,7 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
 	vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+	vector vPrevGlow = g_PrevGlowTexture.Sample(LinearSampler, In.vTexUV);
 
 	vector vWorldPos;
 
@@ -244,11 +249,11 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 
 	vector vReflect = reflect(normalize(vLightDir), normalize(vNormal));
 	vector vLook = vWorldPos - g_vCamPosition;
-		   
-	float  fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
 
-	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * fSpecular * fAtt;
-	Out.vSpecular.a = 0.f;
+	float  fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 2.f);
+
+	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * fSpecular;
+	Out.vSpecular = float4(1.f, 1.f, 0.f, 1.f);
 
 	return Out;
 }
@@ -266,7 +271,7 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 	vector vGlowColor = g_GlowTexture.Sample(LinearSampler, In.vTexUV);
 
 	//1.6~1.75배
-	float4 vFinalColor = (vDiffuse * (vShade * 1.7f));
+	float4 vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.6f));
 	if (vOutNormal.a == 1.f)
 	{
 		float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
@@ -302,7 +307,7 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 	vector vGlowColor = g_GlowTexture.Sample(LinearBorderSampler, In.vTexUV);
 
 	//1.6~1.75배
-	float4 vFinalColor = (vDiffuse * (vShade * 1.7f));
+	float4 vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.6f));
 	if (vGlowColor.a != 0.f)
 	{
 		if (vOutNormal.a == 1.f)
@@ -402,7 +407,7 @@ PS_OUT PS_Last_Blend(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+	Out.vColor = g_DiffuseTexture.Sample(LinearBorderSampler, In.vTexUV);
 
 	return Out;
 }

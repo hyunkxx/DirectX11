@@ -48,7 +48,7 @@ public:
 		return &m_bReady;
 	}
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	BaseData* Get_Data()
 	{
 		return &m_tData;
@@ -58,7 +58,7 @@ public:
 	{
 		memcpy(&m_tData, pData, sizeof m_tData);
 	}
-#endif
+//#endif
 
 	static const char* szStateKeyTag[TYPE_END];
 
@@ -68,9 +68,9 @@ protected:
 	
 	_bool	m_bReady = true;
 	_double m_ShotFrame = 0.0;
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	BaseData m_tData;
-#endif
+//#endif
 public:
 	virtual void Free() override;
 };

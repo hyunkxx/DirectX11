@@ -5,6 +5,8 @@ float4x4 g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 float3 g_LightPos;
 float4 g_LightDir;
 
+vector g_vCamPosition;
+
 float4x4 g_BoneMatrix[256];
 
 // VTF 뼈 행렬을 저장한 텍스쳐
@@ -31,6 +33,7 @@ struct VS_OUT
 	float2 vTexUV : TEXCOORD0;
 	float4 vProjPos : TEXCOORD1;
 	float4 vDepth : TEXCOORD2;
+	float4 vWorldPos : TEXCOORD3;
 
 	float3 vTangent : TANGENT;
 	float3 vBiNormal : BINORMAL;
@@ -62,6 +65,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	vector vPosition = mul(float4(In.vPosition, 1.f), AnimMatrix);
 	vector vNormal = mul(float4(In.vNormal, 0.f), AnimMatrix);
 
+	Out.vWorldPos = mul(vPosition, g_WorldMatrix);
 	Out.vPosition = mul(vPosition, matWVP);
 
 	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
@@ -142,6 +146,7 @@ VS_OUT VS_MAIN_VTF(VS_IN In)
 	vector vPosition = mul(float4(In.vPosition, 1.f), AnimMatrix);
 	vector vNormal = mul(float4(In.vNormal, 0.f), AnimMatrix);
 
+	Out.vWorldPos = mul(vPosition, g_WorldMatrix);
 	Out.vPosition = mul(vPosition, matWVP);
 	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
 	Out.vTexUV = In.vTexUV;
@@ -193,6 +198,7 @@ struct PS_IN
 	float2 vTexUV : TEXCOORD0;
 	float4 vProjPos : TEXCOORD1;
 	float4 vDepth : TEXCOORD2;
+	float4 vWorldPos : TEXCOORD3;
 
 	float3 vTangent : TANGENT;
 	float3 vBiNormal : BINORMAL;
@@ -217,6 +223,7 @@ struct PS_OUT_OUTLINE
 	float4 vNormal	: SV_TARGET1;
 	float4 vDepth	: SV_TARGET2;
 	float4 vOutNormal : SV_TARGET3;
+	float4 vGlow : SV_TARGET4;
 };
 
 struct PS_OUT_SHADOW
@@ -249,7 +256,8 @@ PS_OUT_OUTLINE PS_Outline(PS_IN In)
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-	float3	 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
 
@@ -260,6 +268,9 @@ PS_OUT_OUTLINE PS_Outline(PS_IN In)
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	if (vNormalDesc.g > vNormalDesc.b)
+		Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
 
 	return Out;
 }
@@ -286,6 +297,36 @@ PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
 	PS_OUT_SHADOW Out = (PS_OUT_SHADOW)0;
 
 	Out.vShadowDepth = vector(In.vShadowDepth.z / In.vShadowDepth.w, In.vShadowDepth.w / g_Far, 0.5f, 1.f);
+
+	return Out;
+}
+
+PS_OUT_OUTLINE PS_RimLight(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector vCamDir = normalize(In.vWorldPos - g_vCamPosition);
+	float rim = 0;
+	rim = 1 - saturate(dot(In.vNormal, -vCamDir));
+
+	rim = pow(rim, 25.0f);
+
+	float4 rimColor = float4(1.f, 1.f, 1.f, 0.7f);
+	rimColor = rim * rimColor;
+	Out.vDiffuse = rimColor;
+
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+	if (vNormalDesc.g > vNormalDesc.b)
+		Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
 
 	return Out;
 }
@@ -381,5 +422,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Eye();
+	}
+
+	pass RimLight_Pass7
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_VTF();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_RimLight();
 	}
 }

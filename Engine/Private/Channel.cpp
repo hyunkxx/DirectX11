@@ -12,10 +12,10 @@ HRESULT CChannel::Initialize(CHANNELINFO * pChannelInfo, CModel_Anim * pModel)
 {
 	lstrcpy(m_szName, pChannelInfo->s_szName);
 
-
 	m_iTargetBoneID = pModel->Get_BoneIndex(m_szName);
 
 	m_iNumKeyFrames = pChannelInfo->s_iNumKeyFrames;
+	m_KeyFrames.reserve(m_iNumKeyFrames);
 
 	_float3	vScale;
 	_float4	vRotation;

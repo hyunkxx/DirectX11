@@ -66,7 +66,7 @@ PS_OUT PS_LUT(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor = g_DiffuseTexture.Sample(LinearBorderSampler, In.vTexUV);
 	Out.vColor = float4(GetLutColor(Out.vColor.rgb), 1.f);
 
 	return Out;

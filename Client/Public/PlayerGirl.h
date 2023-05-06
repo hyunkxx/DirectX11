@@ -11,6 +11,8 @@ class CModel_Anim;
 class CModel_VTF;
 class CSphereCollider;
 class CBone;
+class CVIBuffer_Rect;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -144,7 +146,7 @@ public:
 	virtual void Free() override;
 
 	CGameObject* pStaticObject = nullptr;
-
+	
 };
 
 END

@@ -13,6 +13,7 @@ HRESULT CAnimation::Initialize(ANIMINFO * pAnimInfo, CModel_Anim * pModel)
 	m_Duration = pAnimInfo->s_Duration;
 	m_TicksPerSecond = pAnimInfo->s_TicksPerSecond;
 	m_iNumChannels = pAnimInfo->s_iNumChannels;
+	m_Channels.reserve(m_iNumChannels);
 
 	for (_uint i = 0; i < m_iNumChannels; ++i)
 	{
