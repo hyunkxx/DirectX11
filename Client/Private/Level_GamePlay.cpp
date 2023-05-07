@@ -216,10 +216,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	CameraDesc.vAt = _float3(10.f, 3.f, 10.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
-	CameraDesc.fFovy = XMConvertToRadians(90.f);
+	CameraDesc.fFovy = XMConvertToRadians(45.f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 1000.f;
+	CameraDesc.fFar = 500.f;
 	
 	//Light Setting
 	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);

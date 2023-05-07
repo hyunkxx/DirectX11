@@ -362,7 +362,6 @@ void CRenderer::Draw()
 #ifdef _DEBUG
 	if (m_pRenderSetting->IsDebug())
 	{
-		RenderDebugGroup();
 		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
 			return;
 		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
@@ -385,6 +384,8 @@ void CRenderer::Draw()
 		m_pTargetManager->Render(TEXT("MRT_Final"), m_pShader, m_pVIBuffer);
 		m_pTargetManager->Render(TEXT("MRT_FinalBlend"), m_pShader, m_pVIBuffer);
 	}
+
+	RenderDebugGroup();
 #endif
 
 }
