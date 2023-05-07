@@ -434,9 +434,11 @@ void CRenderer::Draw()
 	Render_UI();
 
 #ifdef _DEBUG
+
 	if (m_pRenderSetting->IsDebug())
 	{
 		RenderDebugGroup();
+
 		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
 			return;
 		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))

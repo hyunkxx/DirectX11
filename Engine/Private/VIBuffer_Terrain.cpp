@@ -392,10 +392,8 @@ HRESULT CVIBuffer_Terrain::Load_Vertices(const _tchar * pFilePath)
 			_uint iIndex = i * m_dwVertexCountX + j;
 
 			ReadFile(hFile, &m_pVertices[iIndex].vPosition, sizeof(_float3), &dwByte, nullptr);
-			ReadFile(hFile, &m_pVertices[iIndex].vNormal, sizeof(_float3), &dwByte, nullptr);
 
 			m_pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
-
 			m_pVertices[iIndex].vTexUV = _float2((_float)j / (m_dwVertexCountX - 1.0f), i / (m_dwVertexCountZ - 1.0f));
 
 			memcpy(&m_VertexPos[iIndex], &m_pVertices[iIndex].vPosition, sizeof(_float3));

@@ -62,6 +62,14 @@ HRESULT CApplication::Initialize()
 	//콜라이더 보이기/숨기기
 	m_pGameInstance->SetCollisionDebugRender(true);
 
+
+#ifdef _DEBUG
+	m_pNavigation = static_cast<CNavigation*>(m_pGameInstance->Clone_Component(LEVEL_STATIC, COMPONENT::NAVIGATION));
+	if (nullptr == m_pNavigation)
+		return E_FAIL;
+#endif // _DEBUG
+
+
 	return S_OK;
 }
 
@@ -96,6 +104,20 @@ HRESULT CApplication::Render()
 	m_pRenderer->Draw();
 	m_pGameInstance->CollisionRender();
 
+#ifdef _DEBUG
+	if (KEY_STATE::TAP == m_pGameInstance->InputKey(DIK_N))
+	{
+		if (false == m_Render_Navigation)
+			m_Render_Navigation = true;
+		else if (true == m_Render_Navigation)
+			m_Render_Navigation = false;
+	}
+	if (true == m_Render_Navigation)
+	{
+		m_pNavigation->Set_IntervalY(0.50f);
+		m_pNavigation->Render();
+	}
+#endif // _DEBUG
 
 #ifdef _DEBUG
 	//m_pGUIManager->RenderDrawData();
@@ -195,19 +217,19 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height3.bmp")))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::TERRAIN_1,
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::TERRAIN_D_1,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_01_D.dds")))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::TERRAIN_2,
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::TERRAIN_D_2,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Roc_01A_D.dds")))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::TERRAIN_3,
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::TERRAIN_D_3,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_06_D.dds")))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::TERRAIN_4,
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::TERRAIN_D_4,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_14_D.dds")))))
 		return E_FAIL;
 
@@ -318,6 +340,11 @@ CApplication* CApplication::Create()
 
 void CApplication::Free()
 {
+
+#ifdef _DEBUG
+	Safe_Release(m_pNavigation);
+#endif // _DEBUG
+
 	DestroyManager();
 
 	Safe_Release(m_pRenderer);

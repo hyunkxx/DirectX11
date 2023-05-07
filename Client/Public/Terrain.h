@@ -16,7 +16,7 @@ BEGIN(Client)
 class CTerrain final : public CGameObject
 {
 public:
-	enum DIFFUSE_KINDS { DIFFUSE_1, DIFFUSE_2, DIFFUSE_3, DIFFUSE_4, DIFFUSE_END };
+	enum TERRAIN_KINDS { T_1, T_2, T_3, T_4, T_END };
 
 protected:
 	explicit CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -30,6 +30,9 @@ public:
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual void RenderGUI() override;
+
+private:
+	_uint				m_iShader_PassID = { 0 };
 
 private:
 	HRESULT Add_Components();
@@ -46,7 +49,7 @@ private:
 	CVIBuffer_Terrain*	m_pVIBuffer = { nullptr };
 	CNavigation*		m_pNavigation = { nullptr };
 
-	CTexture*			m_pDiffuseTexture[DIFFUSE_END] = { nullptr };
+	CTexture*			m_pDiffuseTexture[T_END] = { nullptr };
 	CTexture*			m_pFilterTexture = { nullptr };
 
 	//HRESULT Load_Terrain_Data();

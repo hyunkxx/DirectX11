@@ -53,6 +53,7 @@ private:
 
 #ifdef _DEBUG
 	CNavigation*				m_pNavigation = { nullptr };
+	_bool						m_Render_Navigation = { false };
 #endif // _DEBUG
 
 #ifdef _DEBUG
