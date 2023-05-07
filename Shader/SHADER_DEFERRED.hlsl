@@ -7,6 +7,9 @@ texture2D g_NormalTexture;
 texture2D g_DepthTexture;
 texture2D g_PrevGlowTexture;
 
+texture2D g_SSD_DiffuseTexture;
+texture2D g_SSD_NormalTexture;
+
 texture2D g_ShadowDepthTexture;
 texture2D g_ShadowTexture;
 
@@ -112,6 +115,13 @@ struct PS_OUT_LIGHT
 	float4 vShade : SV_TARGET0;
 	float4 vSpecular : SV_TARGET1;
 };
+
+struct PS_OUT_SSD
+{
+	float4 vColor : SV_TARGET0;
+	float4 vNormal : SV_TARGET1;
+};
+
 
 PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 {
@@ -403,11 +413,52 @@ PS_OUT PS_NoOutline(PS_IN In)
 }
 
 
+
 PS_OUT PS_Last_Blend(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseTexture.Sample(LinearBorderSampler, In.vTexUV);
+	float4 vColor = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (0.f != vColor.a)
+	{
+		Out.vColor = vColor;
+		return Out;
+	}
+
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	return Out;
+}
+
+PS_OUT_SSD PS_SSD_Blend(PS_IN In)
+{
+	PS_OUT_SSD Out = (PS_OUT_SSD)0;
+
+	float4 vDiffuseColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	float4 vNormalColor = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float4 vDiffuseColor_SSD = g_SSD_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	float4 vNormalColor_SSD = g_SSD_NormalTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (0.f == vDiffuseColor_SSD.a)
+	{
+		Out.vColor = vDiffuseColor;
+	}
+	else
+	{
+		Out.vColor.rgb = vDiffuseColor.rgb * (1.f - vDiffuseColor_SSD.a) + (vDiffuseColor_SSD.rgb * vDiffuseColor_SSD.a);
+		Out.vColor.a = vDiffuseColor.a;
+	}
+
+	if (0.f == vNormalColor_SSD.a)
+	{
+		Out.vNormal = vNormalColor;
+	}
+	else
+	{
+		Out.vNormal.rgb = vNormalColor.rgb * (1.f - vNormalColor_SSD.a) + (vNormalColor_SSD.rgb * vNormalColor_SSD.a);
+		Out.vNormal.a = vNormalColor.a;
+	}
 
 	return Out;
 }
@@ -545,4 +596,18 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_DIRECTIONAL_SSAO();
 	}
+
+	pass SSD_Blend
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_SSD_Blend();
+	}
+
 }

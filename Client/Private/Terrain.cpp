@@ -42,7 +42,7 @@ void CTerrain::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	if (nullptr != m_pRenderer)
-		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
 
 #ifdef _DEBUG
 	// 디버그 모드 랜더링 안할 시 릭 나옴

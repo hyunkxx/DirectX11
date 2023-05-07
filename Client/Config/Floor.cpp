@@ -43,7 +43,7 @@ void CFloor::LateTick(_double TimeDelta)
 
 	if (nullptr != m_pRenderer)
 	{
-		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
 	}
 
 #ifdef _DEBUG

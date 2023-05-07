@@ -5,6 +5,7 @@
 
 #include "Mesh_Effect_P.h"
 #include "Particle_Effect_P.h"
+#include "Rect_Effect_P.h"
 
 CEffect_Player::CEffect_Player(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CEffect(pDevice , pContext)
@@ -31,6 +32,10 @@ HRESULT CEffect_Player::Initialize_Prototype(const char* FilePath , const list<E
 		else if (EFFECT_TYPE::ID_PARTICLE == iter->eEffectType)
 		{
 			pEffect = CParticle_Effect_P::Create(m_pDevice, m_pContext, FilePath,*iter);
+		}
+		else if (EFFECT_TYPE::TYPE_RECT ==  iter->eEffectType)
+		{
+			pEffect = CRect_Effect_P::Create(m_pDevice, m_pContext, FilePath, *iter);
 		}
 		if (nullptr != pEffect)
 		{

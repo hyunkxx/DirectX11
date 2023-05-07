@@ -13,6 +13,7 @@ namespace SHADER
 		MODEL,
 		MODELANIM,
 		SKILL_MODEL,
+		SKILL_RECT,
 		GROUD,
 		PHONG,
 

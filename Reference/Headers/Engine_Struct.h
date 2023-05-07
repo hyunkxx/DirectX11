@@ -29,26 +29,6 @@ namespace Engine
 
 	}LIGHT_DESC;
 
-	enum BUFFER_TYPE
-	{
-		BUFFER_TEX, BUFFER_MESH, BUFFER_END
-	};
-
-	enum EFFECT_TYPE
-	{
-		ID_MESH, ID_PARTICLE, EFFECT_TYPE_END
-	};
-
-	enum Figure
-	{
-		ID_RHOMBUS, ID_RECT, ID_TRIANGLE, ID_END
-	};
-
-	enum PARTICLE_PASS
-	{
-		PASS_ALPHABLEND, PASS_COLOR_T0_ALPHA, PASS_END
-	};
-
 	typedef struct tagEffectDesc
 	{
 #pragma region Effect

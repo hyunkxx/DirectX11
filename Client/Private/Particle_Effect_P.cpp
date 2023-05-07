@@ -43,17 +43,17 @@ void CParticle_Effect_P::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	m_fLifeAcc += (_float)TimeDelta;
+	m_fLifeAcc += TimeDelta;
 
 	if (m_EffectDesc.fStartDelay >= m_fLifeAcc)
 		return;
 
-	m_fEffectAcc += (_float)TimeDelta;
+	m_fEffectAcc += TimeDelta;
 	m_pVIBufferCom->Update(TimeDelta);
 
 	if (m_EffectDesc.bSprite)
 	{
-		m_fFrameAcc += m_EffectDesc.fFrameSpeed * (_float)TimeDelta;
+		m_fFrameAcc += m_EffectDesc.fFrameSpeed * TimeDelta;
 		_float FrameTime = (1.f / (m_EffectDesc.vUV.x * m_EffectDesc.vUV.y));
 
 		if (FrameTime < m_fFrameAcc)
@@ -78,7 +78,7 @@ void CParticle_Effect_P::Tick(_double TimeDelta)
 	{
 		if (m_EffectDesc.bLoop)
 		{
-			m_fDelayAcc += (_float)TimeDelta;
+			m_fDelayAcc += TimeDelta;
 
 			if (m_fDelayAcc > m_EffectDesc.fDelayTime)
 			{
@@ -115,6 +115,11 @@ void CParticle_Effect_P::LateTick(_double TimeDelta)
 	_float fLerp = m_fEffectAcc / m_EffectDesc.fEffectTime;
 	XMStoreFloat3(&vPos, XMVectorLerp(XMLoadFloat3(&m_EffectDesc.vMinPosition), XMLoadFloat3(&m_EffectDesc.vMaxPosition), fLerp));
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
+
+	_vector vStart, vEnd;
+	vStart = XMVectorSet(m_EffectDesc.vStartScale.x, m_EffectDesc.vStartScale.y, m_EffectDesc.vStartScale.z, 0.f);
+	vEnd = XMVectorSet(m_EffectDesc.vEndScale.x, m_EffectDesc.vEndScale.y, m_EffectDesc.vEndScale.z, 0.f);
+	XMStoreFloat3(&m_EffectDesc.vCurScale, XMVectorLerp(vStart, vEnd, fLerp));
 
 	if (m_EffectDesc.bGlow)
 	{
@@ -329,12 +334,15 @@ HRESULT CParticle_Effect_P::Add_Component(const char* pFileTag)
 	stParticleDesc.vMinPosition = m_EffectDesc.vMinPosition;
 	stParticleDesc.vMaxPosition = m_EffectDesc.vMaxPosition;
 
-	stParticleDesc.iNumInstance = 100;
+	stParticleDesc.iNumInstance = m_EffectDesc.iNumInstance;
 
 	stParticleDesc.fGravityPower = m_EffectDesc.fGravityPower;
 
 	stParticleDesc.bGravuty = m_EffectDesc.bGravity;
 	stParticleDesc.bLoop = m_EffectDesc.bParticleLoop;
+
+	stParticleDesc.vStartColor = m_EffectDesc.vStartColor;
+	stParticleDesc.vEndColor = m_EffectDesc.vEndColor;
 
 	m_pVIBufferCom = CVIBuffer_Particle::Create(m_pDevice, m_pContext, stParticleDesc);
 
@@ -384,6 +392,9 @@ HRESULT CParticle_Effect_P::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->SetRawValue("g_vCamPosition", &pGameInstance->Get_CamPosition(), sizeof(_float4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetRawValue("g_fScale", &m_EffectDesc.vCurScale, sizeof(_float))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

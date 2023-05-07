@@ -8,7 +8,10 @@ BEGIN(Engine)
 class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
-	enum RENDER_GROUP { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_NONLIGHT, RENDER_PARTICLE , RENDER_ALPHABLEND, RENDER_UI, RENDER_DYNAMIC_SHADOW, RENDER_END };
+	enum RENDER_GROUP {
+		RENDER_PRIORITY , RENDER_DYNAMIC , RENDER_NONLIGHT, RENDER_PARTICLE , RENDER_ALPHABLEND , RENDER_DISTORTION , RENDER_SSD , RENDER_STATIC , RENDER_GLOWSSD ,
+		RENDER_UI, RENDER_DYNAMIC_SHADOW, RENDER_END
+	};
 	enum LUT { LUT_EXPOSURE_MINUS, LUT_EXPOSURE_PLUS, LUT_FUJI, LUT_GRUNGY, LUT_SOUTH, LUT_KURO, LUT_DEFAULT };
 	enum BLUR { LOW, MIDDEL, HIGH };
 private:
@@ -26,13 +29,19 @@ private:
 
 	void Render_Priority();
 	void Render_DynamicShadowMap();
-	void Render_NonAlphaBlend();
+	void Render_Static();
+	void Render_Dynamic();
+
+	void Render_SSD();
+	void Render_SSD_BLEND();
+
 	void Render_Lights();
 	void Render_Outline();
 	void Render_Particle();
 	void Render_Shadow();
 	void Render_Blend();
 	void Render_Glow();
+	void Render_Distortion();
 	void Render_Glow_Blend();
 
 	void Render_SpecularGlow();
@@ -66,7 +75,7 @@ public:
 	static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
-	
+
 public:
 	list<class CGameObject*> m_RenderObject[RENDER_END];
 	typedef list<class CGameObject*> RENDER_OBJECT;

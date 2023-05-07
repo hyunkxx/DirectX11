@@ -234,6 +234,8 @@
     <ClInclude Include="..\public\VIBuffer_Cube.h" />
     <ClInclude Include="..\Public\VIBuffer_Particle.h" />
     <ClInclude Include="..\public\VIBuffer_Rect.h" />
+    <ClInclude Include="..\Public\VIBuffer_Rect_Nor.h" />
+    <ClInclude Include="..\Public\VIBuffer_SSDBox.h" />
     <ClInclude Include="..\public\VIBuffer_Terrain.h" />
     <ClInclude Include="..\public\VIBuffer_Triangle.h" />
   </ItemGroup>
@@ -294,6 +296,8 @@
     <ClCompile Include="..\private\VIBuffer_Cube.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Particle.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_Rect_Nor.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_SSDBox.cpp" />
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp" />
     <ClCompile Include="..\private\VIBuffer_Triangle.cpp" />
     <ClCompile Include="..\Public\Fmod\Sound_Manager.cpp" />

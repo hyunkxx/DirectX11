@@ -6,18 +6,47 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 texture2D	g_DepthTexture;
+texture2D	g_BackTexture;
 
 float4		g_vCamPosition;
 float3		g_vColor;
 
 float2		g_vUV;
 float		g_fAlpha;
+float		g_fDisPower;
+
+float		g_ihlslWinSizeX = 1280.f;
+float		g_ihlslWinSizeY = 720.f;
 
 //
 texture2D	g_DissolveTexture;
 float		g_fDissolveRate;
 float		g_fTimeAcc;
 float4		g_vDissolveColor;
+
+texture2D	g_NoiseTexture;
+
+
+
+float rand(float seed) {
+	return frac(15547.3f * sin(frac(94.3f*seed + 10579.6f) * frac(76.5f*seed + 8437.2f)));
+}
+
+float rand(float2 seed) {
+
+	if (seed.y > seed.x)
+		return lerp(seed.x, seed.y, (seed.x + 50.) / (seed.y + 250.));
+	return lerp(seed.x, seed.y, (seed.y + 50.) / (seed.x + 250.));;
+}
+
+float smooth1(float x) {
+	return x * x * (3.f - 2.f * x);
+}
+
+float smooth2(float x) {
+	return x * x * x * (x * (x * 6.f - 15.f) + 10.f);
+}
+
 
 struct VS_IN
 {
@@ -35,6 +64,19 @@ struct VS_OUT
 	float4 vProjPos : TEXCOORD1;
 	float4 vWorldPos : TEXCOORD2;
 };
+
+struct VS_OUT_DISTORTION
+{
+	float4 vPosition : SV_POSITION;
+	float4 vNormal : NORMAL;
+	float2 vTexUV : TEXCOORD0;
+	float4 vProjPos : TEXCOORD1;
+	float4 vWorldPos : TEXCOORD2;
+
+	float3 vTangent : TANGENT;
+	float3 vBiNormal : BINORMAL;
+};
+
 
 VS_OUT VS_MAIN(VS_IN In)
 {
@@ -54,6 +96,27 @@ VS_OUT VS_MAIN(VS_IN In)
 	return Out;
 }
 
+VS_OUT_DISTORTION VS_MAIN_DISTORTION(VS_IN In)
+{
+	VS_OUT_DISTORTION Out = (VS_OUT_DISTORTION)0;
+
+	matrix	matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
+	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
+	Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+
+	Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix)).xyz;
+	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent)).xyz;
+
+	return Out;
+}
+
 struct PS_IN
 {
 	float4 vPosition : SV_POSITION;
@@ -63,17 +126,29 @@ struct PS_IN
 	float4 vWorldPos : TEXCOORD2;
 };
 
+
+struct PS_IN_DISTORTION
+{
+	float4 vPosition : SV_POSITION;
+	float4 vNormal : NORMAL;
+	float2 vTexUV : TEXCOORD0;
+	float4 vProjPos : TEXCOORD1;
+	float4 vWorldPos : TEXCOORD2;
+
+	float3 vTangent : TANGENT;
+	float3 vBiNormal : BINORMAL;
+};
+
 struct PS_OUT
 {
 	float4 vDiffuse : SV_TARGET0;
-	float4 vNormal : SV_TARGET1;
-	float4 vDepth : SV_TARGET2;
+	float4 vDistortion : SV_TARGET1;
 };
 
 PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;;
-	
+
 	float2 vUV = In.vTexUV + g_vUV;
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vUV);
@@ -83,11 +158,9 @@ PS_OUT	PS_MAIN(PS_IN In)
 		discard;
 
 	Out.vDiffuse.rgb = vMtrlDiffuse.rgb * g_vColor.rgb;
-	
-	Out.vDiffuse.a = saturate(vMtrlDiffuse.a - (1.f - g_fAlpha));
 
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
+	Out.vDiffuse.a = saturate(vMtrlDiffuse.a - (1.f - g_fAlpha));
+	Out.vDistortion = float4(0.f, 1.f, 0.f, 1.f);
 
 	return Out;
 }
@@ -96,7 +169,7 @@ PS_OUT	PS_MAIN_CLAMP(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;;
 
-	float2 vUV = clamp(In.vTexUV + g_vUV , 0.f , 1.f);
+	float2 vUV = clamp(In.vTexUV + g_vUV, 0.f, 1.f);
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vUV);
 
@@ -105,12 +178,12 @@ PS_OUT	PS_MAIN_CLAMP(PS_IN In)
 	if (vMtrlDiffuse.a < 0.1f)
 		discard;
 
-	Out.vDiffuse.rgb =	vMtrlDiffuse.rgb * g_vColor.rgb;
+	Out.vDiffuse.rgb = vMtrlDiffuse.rgb * g_vColor.rgb;
 
 	Out.vDiffuse.a = saturate(vMtrlDiffuse.a - (1.f - g_fAlpha));
 
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
+	if (vMtrlDiffuse.a > 0.1f)
+		Out.vDistortion = float4(0.f, 1.f, 0.f, 1.f);
 
 	return Out;
 }
@@ -126,26 +199,21 @@ PS_OUT	PS_MAIN_ALPHA(PS_IN In)
 	Out.vDiffuse.rgb = vMtrlDiffuse.rgb * g_vColor.rgb;
 
 	Out.vDiffuse.a = saturate(vMtrlDiffuse.a - (1.f - g_fAlpha));
-
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
+	Out.vDistortion = float4(0.f, 1.f, 0.f, 1.f);
 
 	return Out;
 }
 PS_OUT	PS_MAIN_ALPHA_CLAMP(PS_IN In)
 {
-	PS_OUT Out = (PS_OUT)0;;
+	PS_OUT Out = (PS_OUT)0;
 
 	float2 vUV = clamp(In.vTexUV + g_vUV, 0.f, 1.f);
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vUV);
 
 	Out.vDiffuse.rgb = vMtrlDiffuse.rgb * g_vColor.rgb;
-
 	Out.vDiffuse.a = saturate(vMtrlDiffuse.a - (1.f - g_fAlpha));
-
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
+	Out.vDistortion = float4(0.f, 1.f, 0.f, 1.f);
 
 	return Out;
 }
@@ -161,8 +229,6 @@ PS_OUT PS_MAIN_DISSOLVE(PS_IN In)
 	if (0.1f > vColor.a)
 	{
 		Out.vDiffuse = vColor;
-		Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-		Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
 		return Out;
 	}
 
@@ -192,8 +258,97 @@ PS_OUT PS_MAIN_DISSOLVE(PS_IN In)
 	vColor += vEdgeColor;
 
 	Out.vDiffuse = lerp(vColor, clrBG, fAlpha);
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 1.f);
+	Out.vDistortion = float4(0.f, 1.f, 0.f, 1.f);
+
+	return Out;
+}
+
+PS_OUT	PS_MAIN_DISTORTION(PS_IN_DISTORTION In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector vNormalDesc = g_NoiseTexture.Sample(LinearClampSampler, In.vTexUV);
+	float3	 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	vNormal.y *= -1.f;
+
+	if (0.f == vNormalDesc.a)
+		discard;
+
+	if (0.99f <= vNormal.b)
+	{
+		if (-0.05f < vNormal.r && 0.05f > vNormal.r)
+		{
+			if (-0.05f < vNormal.g && 0.05f > vNormal.g)
+			{
+				discard;
+			}
+		}
+	}
+
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
+	float3 vWorldPos = In.vWorldPos + (normalize(vNormal) * g_fDisPower);
+
+	matrix matVP;
+	matVP = mul(g_ViewMatrix, g_ProjMatrix);
+
+	float4 vProjPos = mul(float4(vWorldPos, 1.f), matVP);
+
+	float2 vUV;
+	vUV.x = saturate((vProjPos.x / vProjPos.w) * 0.5f + 0.5f);
+	vUV.y = saturate((vProjPos.y / vProjPos.w) * -0.5f + 0.5f);
+
+	float4 vDepth = g_DepthTexture.Sample(LinearClampSampler, vUV);
+
+
+	Out.vDiffuse = g_BackTexture.Sample(LinearClampSampler, vUV);
+
+
+	Out.vDiffuse.a = 1.f;
+
+	return Out;
+}
+
+PS_OUT	PS_MAIN_DISTORTION_N0_DEPTH(PS_IN_DISTORTION In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector vNormalDesc = g_NoiseTexture.Sample(LinearClampSampler, In.vTexUV);
+	float3	 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	vNormal.y *= -1.f;
+
+	if (0.f == vNormalDesc.a)
+		discard;
+
+	if (0.99f <= vNormal.b)
+	{
+		if (-0.05f < vNormal.r && 0.05f > vNormal.r)
+		{
+			if (-0.05f < vNormal.g && 0.05f > vNormal.g)
+			{
+				discard;
+			}
+		}
+	}
+
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
+
+	float3 vWorldPos = In.vWorldPos + (normalize(vNormal) * g_fDisPower);
+
+	matrix matVP;
+	matVP = mul(g_ViewMatrix, g_ProjMatrix);
+
+	float4 vProjPos = mul(float4(vWorldPos, 1.f), matVP);
+
+	float2 vUV;
+	vUV.x = saturate((vProjPos.x / vProjPos.w) * 0.5f + 0.5f);
+	vUV.y = saturate((vProjPos.y / vProjPos.w) * -0.5f + 0.5f);
+
+	Out.vDiffuse = g_BackTexture.Sample(LinearClampSampler, vUV);
+
+
+	Out.vDiffuse.a = 1.f;
 
 	return Out;
 }
@@ -203,7 +358,7 @@ technique11 DefaultTechnique
 	pass Default
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -216,7 +371,7 @@ technique11 DefaultTechnique
 	pass Default_Clamp
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -229,7 +384,7 @@ technique11 DefaultTechnique
 	pass Alpha
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -241,7 +396,7 @@ technique11 DefaultTechnique
 	pass Alpha_Clamp
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -254,7 +409,7 @@ technique11 DefaultTechnique
 	pass Dissolve
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -262,6 +417,32 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_DISSOLVE();
+	}
+
+	pass Default_Distortion
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_DISTORTION();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_DISTORTION();
+	}
+
+	pass Default_Distortion_No_Depth
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_DISTORTION();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_DISTORTION_N0_DEPTH();
 	}
 
 }

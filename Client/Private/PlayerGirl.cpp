@@ -108,7 +108,7 @@ void CPlayerGirl::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 
 	// Parts Ã³¸®
@@ -117,7 +117,7 @@ void CPlayerGirl::LateTick(_double TimeDelta)
 		if (nullptr != m_Parts[i])
 		{
 			m_Parts[i]->LateTick(TimeDelta);
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, m_Parts[i]);
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, m_Parts[i]);
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, m_Parts[i]);
 		}
 	}

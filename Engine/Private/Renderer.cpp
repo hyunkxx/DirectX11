@@ -73,7 +73,7 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAO"), ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
-	
+
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX"), ViewPortDesc.Width * 0.5f, ViewPortDesc.Height * 0.5f,
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
@@ -118,6 +118,58 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
+#pragma region SSD
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Static_Depth", ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Diffuse_SSD", ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Normal_SSD", ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Diffuse_SSD_Blend", ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Normal_SSD_Blend", ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSD", L"Target_Diffuse_SSD")))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSD", L"Target_Normal_SSD")))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSD_BLEND", L"Target_Diffuse_SSD_Blend")))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSD_BLEND", L"Target_Normal_SSD_Blend")))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_EX", L"Target_Static_Depth")))
+		return E_FAIL;
+
+#pragma endregion
+
+#pragma region Distortion
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_Distortion"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_DistortionMap"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+#pragma endregion
+
+
 	// µğÇ»Áî, ³ë¸», µª½º
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_Diffuse")))
 		return E_FAIL;
@@ -129,7 +181,7 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_SpecGlow")))
 		return E_FAIL;
-	
+
 	// ±×¸²ÀÚ ±íÀÌ
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_LightDepth", L"Target_ShadowMap")))
 		return E_FAIL;
@@ -146,7 +198,7 @@ HRESULT CRenderer::Initialize_Prototype()
 	// ¿Ü°û¼±
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_ToonShader", L"Target_Outline")))
 		return E_FAIL;
-	
+
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Blend", L"Target_Blend")))
 		return E_FAIL;
 
@@ -159,8 +211,13 @@ HRESULT CRenderer::Initialize_Prototype()
 	//Glow
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Glow", L"Target_Glow")))
 		return E_FAIL;
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Glow", L"Target_DistortionMap")))
+		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Glow_Result", L"Target_Glow_Result")))
+		return E_FAIL;
+	//Distortion
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Distortion", L"Target_Distortion")))
 		return E_FAIL;
 
 	// SSAO
@@ -173,7 +230,7 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_BlackWhite", L"Target_BlackWhite")))
 		return E_FAIL;
-	
+
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Split", L"Target_Split")))
 		return E_FAIL;
 
@@ -272,16 +329,26 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Split"), 250.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_SpecGlow"), 250.f, 100.f, 100.f, 100.f)))
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_SpecGlow"), 250.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Diffuse_SSD"), 250, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Normal_SSD"), 250, 350.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Diffuse_SSD_Blend"), 250, 450.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Normal_SSD_Blend"), 250, 550.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Static_Depth"), 250, 650.f, 100.f, 100.f)))
+		return E_FAIL;
+
 
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Final"), 1205.f, 75.f, 150.f, 150.f)))
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_FinalBlend"), 1205.f, 225.f, 150.f, 150.f)))
 		return E_FAIL;
-
-
 
 #endif
 
@@ -306,8 +373,14 @@ void CRenderer::Draw()
 
 	Render_Priority();
 	Render_DynamicShadowMap();
-	Render_NonAlphaBlend();
-	
+	Render_Static();
+
+	Extraction(L"Target_Static_Depth", L"Target_Depth");
+
+	Render_Dynamic();
+	Render_SSD();
+	Render_SSD_BLEND();
+
 	if (m_pRenderSetting->IsActiveSSAO())
 	{
 		Ready_SSAO(L"Target_SSAO");
@@ -341,8 +414,9 @@ void CRenderer::Draw()
 	Render_SpecularGlow();
 
 	Render_Blend();
-	
+
 	Render_Glow();
+	Render_Distortion();
 	Render_Glow_Blend();
 
 	Render_NonLight();
@@ -362,6 +436,7 @@ void CRenderer::Draw()
 #ifdef _DEBUG
 	if (m_pRenderSetting->IsDebug())
 	{
+		RenderDebugGroup();
 		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
 			return;
 		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
@@ -383,9 +458,13 @@ void CRenderer::Draw()
 		m_pTargetManager->Render(TEXT("MRT_Small"), m_pShader, m_pVIBuffer);
 		m_pTargetManager->Render(TEXT("MRT_Final"), m_pShader, m_pVIBuffer);
 		m_pTargetManager->Render(TEXT("MRT_FinalBlend"), m_pShader, m_pVIBuffer);
-	}
 
-	RenderDebugGroup();
+
+		m_pTargetManager->Render(TEXT("MRT_EX"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_SSD"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_SSD_BLEND"), m_pShader, m_pVIBuffer);
+
+	}
 #endif
 
 }
@@ -399,7 +478,7 @@ void CRenderer::Render_Priority()
 
 		Safe_Release(pGameObject);
 	}
-	
+
 	m_RenderObject[RENDER_PRIORITY].clear();
 }
 
@@ -434,7 +513,7 @@ void CRenderer::Render_DynamicShadowMap()
 		return;
 }
 
-void CRenderer::Render_NonAlphaBlend()
+void CRenderer::Render_Static()
 {
 	if (nullptr == m_pTargetManager)
 		return;
@@ -442,7 +521,7 @@ void CRenderer::Render_NonAlphaBlend()
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Deferred")))
 		return;
 
-	for (auto& pGameObject : m_RenderObject[RENDER_NONALPHA])
+	for (auto& pGameObject : m_RenderObject[RENDER_STATIC])
 	{
 		if (nullptr != pGameObject)
 			pGameObject->Render();
@@ -450,7 +529,83 @@ void CRenderer::Render_NonAlphaBlend()
 		Safe_Release(pGameObject);
 	}
 
-	m_RenderObject[RENDER_NONALPHA].clear();
+	m_RenderObject[RENDER_STATIC].clear();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+}
+
+void CRenderer::Render_Dynamic()
+{
+	if (nullptr == m_pTargetManager)
+		return;
+
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Deferred",
+		CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT, false)))
+		return;
+
+	for (auto& pGameObject : m_RenderObject[RENDER_DYNAMIC])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObject[RENDER_DYNAMIC].clear();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+}
+
+void CRenderer::Render_SSD()
+{
+	if (nullptr == m_pTargetManager)
+		return;
+
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_SSD")))
+		return;
+
+	for (auto& pGameObject : m_RenderObject[RENDER_SSD])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObject[RENDER_SSD].clear();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+}
+
+void CRenderer::Render_SSD_BLEND()
+{
+	if (nullptr == m_pTargetManager)
+		return;
+
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_SSD_BLEND")))
+		return;
+
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Diffuse", "g_DiffuseTexture")))
+		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Normal", "g_NormalTexture")))
+		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Diffuse_SSD", "g_SSD_DiffuseTexture")))
+		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Normal_SSD", "g_SSD_NormalTexture")))
+		return;
+
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
@@ -488,7 +643,7 @@ void CRenderer::Render_Lights()
 			return;
 	}
 
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Normal", "g_NormalTexture")))
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Normal_SSD_Blend", "g_NormalTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Depth", "g_DepthTexture")))
 		return;
@@ -502,7 +657,7 @@ void CRenderer::Render_Lights()
 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_SSAO"), "g_SSAOTexture")))
 		return;
-	
+
 	m_pLightManager->Render(m_pShader, m_pVIBuffer);
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
@@ -565,10 +720,10 @@ void CRenderer::Render_Shadow()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CLightManager* pLighrManager = CLightManager::GetInstance();
 	CPipeLine* pPipeline = CPipeLine::GetInstance();
-	
+
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Shadow")))
 		return;
-	
+
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
 		return;
 	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -626,7 +781,7 @@ void CRenderer::Render_Blend()
 	}
 	else
 	{
-		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Diffuse"), "g_DiffuseTexture")))
+		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Diffuse_SSD_Blend"), "g_DiffuseTexture")))
 			return;
 	}
 
@@ -665,7 +820,7 @@ void CRenderer::Render_Blend()
 
 void CRenderer::Render_Glow()
 {
-	if(!m_GlowEmpty)
+	if (!m_GlowEmpty)
 		Target_Blur(L"Target_Glow", 1);
 
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Glow_Result")))
@@ -680,7 +835,7 @@ void CRenderer::Render_Glow()
 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_Blend", "g_finalTexture")))
 		return;
-	
+
 	if (m_GlowEmpty)
 	{
 		// Blur Off
@@ -709,6 +864,24 @@ void CRenderer::Render_Glow()
 		return;
 }
 
+void CRenderer::Render_Distortion()
+{
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Distortion")))
+		return;
+
+	for (auto& pGameObject : m_RenderObject[RENDER_DISTORTION])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObject[RENDER_DISTORTION].clear();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+}
+
 void CRenderer::Render_Glow_Blend()
 {
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Final")))
@@ -722,6 +895,9 @@ void CRenderer::Render_Glow_Blend()
 		return;
 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Glow_Result", "g_DiffuseTexture")))
+		return;
+	//g_NormalTexture -> DistortionTexure
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Distortion", "g_NormalTexture")))
 		return;
 
 	m_pShader->Begin(8);
@@ -831,7 +1007,7 @@ void CRenderer::ApplyLUT(_uint iIndex)
 		return;
 	if (FAILED(m_pShader_LUT->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
-	
+
 	if (FAILED(m_pLUT[iIndex]->Setup_ShaderResource(m_pShader_LUT, "g_LUT")))
 		return;
 
@@ -848,7 +1024,7 @@ void CRenderer::ApplyLUT(_uint iIndex)
 void CRenderer::RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	_float TimeDelta =	(_float)pGameInstance->GetTimeDelta();
+	_float TimeDelta = (_float)pGameInstance->GetTimeDelta();
 	m_pRenderSetting->RGBSpiltTimeAcc(TimeDelta);
 
 	_float fRatio = pGameInstance->GetRGBSplitRatio();
@@ -972,7 +1148,7 @@ void CRenderer::BlendCombine(const _tchar * pBindTargetTag, const _tchar * pSour
 }
 
 //µÎ¹øÂ° ÀÎÀÚ·Î µé¾î¿Â ·»´õÅ¸°ÙÀ» ¹ÙÀÎµùµÈ Å¸°Ù(Ã¹¹øÂ° ÀÎÀÚ)¿¡ ·»´õ
-void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag,  _uint iPass, VIEWPORT_TYPE eViewPortType)
+void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag, _uint iPass, VIEWPORT_TYPE eViewPortType)
 {
 	CRenderTarget* pSourTarget = m_pTargetManager->FindTarget(pSourTag);
 	CRenderTarget* pBindTarget = m_pTargetManager->FindTarget(pBindTargetTag);
@@ -997,7 +1173,7 @@ void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTa
 		return;
 	if (FAILED(m_pShader_Extraction->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
-	
+
 	if (pSourTarget)
 		pSourTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_SourTexture");
 
@@ -1022,7 +1198,7 @@ void CRenderer::FinalExtraction()
 
 	if (pSourTarget)
 		pSourTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_SourTexture");
-	
+
 	m_pShader_Extraction->Begin(0);
 	m_pVIBuffer->Render();
 }
@@ -1177,11 +1353,11 @@ void CRenderer::Ready_SSAO(const _tchar* pBindTargetTag)
 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_SSAO, L"Target_Diffuse", "g_DiffuseTexture")))
 		return;
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_SSAO, L"Target_Normal", "g_NormalTexture")))
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_SSAO, L"Target_Normal_SSD_Blend", "g_NormalTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_SSAO, L"Target_Depth", "g_DepthTexture")))
 		return;
-	
+
 	if (FAILED(m_pShader_SSAO->Begin(0)))
 		return;
 	if (FAILED(m_pVIBuffer->Render()))

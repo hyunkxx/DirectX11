@@ -7,24 +7,23 @@ BEGIN(Engine)
 class CShader;
 class CTexture;
 class CRenderer;
-class CModel;
+class CVIBuffer_SSDBox;
+class CVIBuffer_Rect_Nor;
 END
 
 BEGIN(Client)
 
-class CMesh_Effect_P  final : public CEffect
+class CRect_Effect_P final : public CEffect
 {
-
 public:
 	enum Effect_Texture_Type
 	{
 		TEX_NOISE, TEX_DISSOLVE, EFFECT_TEX_END
 	};
-
 protected:
-	CMesh_Effect_P(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CMesh_Effect_P(const CMesh_Effect_P& rhs);
-	virtual ~CMesh_Effect_P() = default;
+	CRect_Effect_P(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CRect_Effect_P(const CRect_Effect_P& rhs);
+	virtual ~CRect_Effect_P() = default;
 
 public:
 	virtual	HRESULT				Initialize_Prototype(const char* pFileTag , const EFFECT_DESC& MeshDesc);
@@ -40,21 +39,23 @@ public:
 private:
 	CShader*					m_pShaderCom = { nullptr };
 	CRenderer*					m_pRendererCom = { nullptr };
-	CModel*						m_pModelCom = { nullptr };
-	CTexture*					m_pDiffuseTextureCom = { nullptr };
+	CVIBuffer_Rect_Nor*			m_pVIBufferCom = { nullptr };
+	CVIBuffer_SSDBox*			m_pVIBoxCom = { nullptr };
+	CTexture*					m_pTextureCom = { nullptr };
 	CTexture*					m_pDissolveTextureCom = { nullptr };
 	CTexture*					m_pNoiseTextureCom = { nullptr };
 
 private:
-	HRESULT						Add_Component(const char* pFileTag);
+	HRESULT						Add_Component(const char* pFileTag , const EFFECT_DESC& ParticleDesc);
 	HRESULT						SetUp_ShaderResources();
+
+	HRESULT						Add_Texture(const char* pFileTag, const char* TextureName, CTexture ** pTexture);
+
 	void						SetUp_Linear();
-	
-	void						Add_Texture(const char* pFileTag, const char* TextureName, CTexture** pTexture);
-	void						Add_Model(const char* pFileTag, const char* TextureName, CModel** pModel);
+
 private:
 	_float4x4					m_WorldMatrix;
-
+	_float4x4					m_ResultMatirx;
 	_float						m_fFrameAcc = { 0.f };
 	_float						m_fLifeAcc = { 0.f };
 	_float						m_fEffectAcc = { 0.f };
@@ -63,6 +64,7 @@ private:
 	_bool						m_bDistortion = { false };
 
 private:
+
 #define STRAT_UV m_EffectDesc.vMinScale
 
 #define START_DISTIME m_EffectDesc.vMaxScale.x
@@ -73,8 +75,10 @@ private:
 #define DISTORTION_SPEED m_EffectDesc.vMinPosition.y
 #define START_DIS_POWER m_EffectDesc.vMinPosition.z
 
+#define BILLBOARD	m_EffectDesc.bSpark
+
 public:
-	static CMesh_Effect_P*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const char* pFileTag , const EFFECT_DESC& MeshDesc);
+	static CRect_Effect_P*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext , const char* pFileTag , const EFFECT_DESC& MeshDesc);
 	virtual CGameObject* Clone(void* pArg = nullptr);
 	virtual void Free()override;
 };

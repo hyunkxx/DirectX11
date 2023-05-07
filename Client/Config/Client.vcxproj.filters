@@ -52,6 +52,9 @@
     <FxCompile Include="..\..\Shader\SHADER_RGB_SPLIT.hlsl">
       <Filter>src\99. ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_VTXSKILLTEX.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ImGui\imgui.cpp">
@@ -159,12 +162,6 @@
     <ClCompile Include="..\Private\Effect_Player.cpp">
       <Filter>src\06. Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Mesh_Effect_P.cpp">
-      <Filter>src\06. Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Particle_Effect_P.cpp">
-      <Filter>src\06. Effect</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\PartsKey.cpp">
       <Filter>src\05.AnimStateKeys</Filter>
     </ClCompile>
@@ -173,6 +170,16 @@
     </ClCompile>
     <ClCompile Include="..\Private\TestVTF.cpp">
       <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sky.cpp" />
+    <ClCompile Include="..\Private\Mesh_Effect_P.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Particle_Effect_P.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rect_Effect_P.cpp">
+      <Filter>src\06. Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -311,12 +318,6 @@
     <ClInclude Include="..\Public\Effect_Player.h">
       <Filter>src\06. Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Mesh_Effect_P.h">
-      <Filter>src\06. Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Particle_Effect_P.h">
-      <Filter>src\06. Effect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\PartsKey.h">
       <Filter>src\05.AnimStateKeys</Filter>
     </ClInclude>
@@ -325,6 +326,16 @@
     </ClInclude>
     <ClInclude Include="..\Public\TestVTF.h">
       <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sky.h" />
+    <ClInclude Include="..\Public\Rect_Effect_P.h">
+      <Filter>src\06. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh_Effect_P.h">
+      <Filter>src\06. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Particle_Effect_P.h">
+      <Filter>src\06. Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

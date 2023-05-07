@@ -216,6 +216,7 @@
     <ClInclude Include="..\Public\Particle_Effect_P.h" />
     <ClInclude Include="..\public\Parts.h" />
     <ClInclude Include="..\Public\PartsKey.h" />
+    <ClInclude Include="..\Public\Rect_Effect_P.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\public\SoundKey.h" />
     <ClInclude Include="..\public\StateKey.h" />
@@ -282,6 +283,7 @@
     <ClCompile Include="..\Private\Particle_Effect_P.cpp" />
     <ClCompile Include="..\private\Parts.cpp" />
     <ClCompile Include="..\Private\PartsKey.cpp" />
+    <ClCompile Include="..\Private\Rect_Effect_P.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\private\SoundKey.cpp" />
     <ClCompile Include="..\private\StateKey.cpp" />
@@ -329,6 +331,7 @@
     <FxCompile Include="..\..\Shader\SHADER_VTXMODEL_INSTANCE.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXNORTEX.hlsl" />
     <FxCompile Include="..\..\Shader\Shader_VtxPointInstance.hlsl" />
+    <FxCompile Include="..\..\Shader\SHADER_VTXSKILLTEX.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXTEX.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
