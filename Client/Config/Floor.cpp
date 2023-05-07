@@ -46,10 +46,10 @@ void CFloor::LateTick(_double TimeDelta)
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 	}
 
-
 #ifdef _DEBUG
-	//if (nullptr != m_pRenderer && nullptr != m_pNavigation)
-		//m_pRenderer->AddDebugGroup(m_pNavigation);
+	// 디버그 모드 랜더링 안할 시 릭 나옴
+	if (nullptr != m_pRenderer && nullptr != m_pNavigation)
+		m_pRenderer->AddDebugGroup(m_pNavigation);
 #endif // _DEBUG
 }
 

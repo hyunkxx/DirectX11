@@ -3,6 +3,12 @@
 matrix				g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 texture2D			g_DiffuseTexture;
+
+texture2D			g_DiffuseTexture_1;
+texture2D			g_DiffuseTexture_2;
+texture2D			g_DiffuseTexture_3;
+texture2D			g_DiffuseTexture_4;
+
 texture2D			g_FilterTexture;
 
 texture2D			g_BrushTexture;
@@ -61,6 +67,7 @@ struct PS_OUT
 	float4			vOutNormal : SV_TARGET3;
 };
 
+/*
 PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
 {
 	PS_OUT			Out = (PS_OUT)0;
@@ -83,12 +90,54 @@ PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
 	Out.vDiffuse = vMtrlDiffuse + vBrushColor;
 	Out.vDiffuse.a = 1.f;
 
-	/* In.vNormal.xyz => -1 ~ 1 */
-	/* Out.vNormal.xyz => 0 ~ 1 */
+	// In.vNormal.xyz => -1 ~ 1 
+	// Out.vNormal.xyz => 0 ~ 1 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 
 	Out.vOutNormal = float4(0.5f, 0.5f, 0.5f, 1.f);
+
+	return Out;
+}
+*/
+
+PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector		vDiffuse_1 = g_DiffuseTexture_1.Sample(LinearSampler, In.vTexUV * 100.f);
+	vector		vDiffuse_2 = g_DiffuseTexture_2.Sample(LinearSampler, In.vTexUV * 100.f);
+	vector		vDiffuse_3 = g_DiffuseTexture_3.Sample(LinearSampler, In.vTexUV * 100.f);
+	vector		vDiffuse_4 = g_DiffuseTexture_4.Sample(LinearSampler, In.vTexUV * 100.f);
+
+	vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
+
+	vector		vMtrlDiffuse = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+	float		fTotalFilter = vFilter.r + vFilter.g + vFilter.b + vFilter.a;
+
+	if (0.0f < fTotalFilter)
+	{
+		vFilter = vFilter / fTotalFilter;
+
+		vMtrlDiffuse = (vDiffuse_1 * vFilter.r)
+			+ (vDiffuse_2 * vFilter.g)
+			+ (vDiffuse_3 * vFilter.b)
+			+ (vDiffuse_4 * (1.0f - (vFilter.r + vFilter.g + vFilter.b)));
+	}
+	else
+		vMtrlDiffuse = vDiffuse_4;
+
+	Out.vDiffuse = vMtrlDiffuse;
+
+	Out.vDiffuse.a = 1.f;
+
+	// In.vNormal.xyz => -1 ~ 1
+	// Out.vNormal.xyz => 0 ~ 1
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+
+	Out.vOutNormal = float4(1.f, 1.f, 1.f, 1.f);
 
 	return Out;
 }

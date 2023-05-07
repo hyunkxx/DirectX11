@@ -18,11 +18,12 @@ CNavigation::CNavigation(const CNavigation & rhs)
 
 	, m_vCellColor{ rhs.m_vCellColor }
 	, m_vColor{ rhs.m_vColor }
+	, m_fIntervalY{ rhs.m_fIntervalY }
 #endif // _DEBUG
 	
 
 #ifdef _DEBUG
-	, m_pShader(rhs.m_pShader)
+	, m_pShader{ rhs.m_pShader }
 #endif // _DEBUG
 
 {
@@ -212,7 +213,7 @@ _int CNavigation::Is_CurrentIn(_fvector vPosition)
 }
 
 #ifdef _DEBUG
-HRESULT CNavigation::Render(_float fIntervalY)
+HRESULT CNavigation::Render()
 {
 	_float4x4		Identity;
 	XMStoreFloat4x4(&Identity, XMMatrixIdentity());
@@ -220,7 +221,7 @@ HRESULT CNavigation::Render(_float fIntervalY)
 	CGameInstance*	pGamInstance = CGameInstance::GetInstance();
 	if (nullptr == pGamInstance)
 		return E_FAIL;
-	
+
 	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &pGamInstance->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
 		return E_FAIL;
 
@@ -239,22 +240,22 @@ HRESULT CNavigation::Render(_float fIntervalY)
 			{
 				if (CCell::CELL_STATE::FALL_CELL == pCell->Get_State())
 				{
-					Identity._42 = fIntervalY + 0.01f;
+					Identity._42 = m_fIntervalY + 0.01f;
 					m_vColor = m_vState_1_CellColor;
 				}
 				else if (CCell::CELL_STATE::CAN_UP_CELL == pCell->Get_State())
 				{
-					Identity._42 = fIntervalY + 0.01f;
+					Identity._42 = m_fIntervalY + 0.01f;
 					m_vColor = m_vState_2_CellColor;
 				}
 				else if (CCell::CELL_STATE::CAN_DOWN_CELL == pCell->Get_State())
 				{
-					Identity._42 = fIntervalY + 0.01f;
+					Identity._42 = m_fIntervalY + 0.01f;
 					m_vColor = m_vState_3_CellColor;
 				}
 				else
 				{
-					Identity._42 = fIntervalY;
+					Identity._42 = m_fIntervalY;
 					m_vColor = m_vCellColor;
 				}
 
@@ -268,7 +269,7 @@ HRESULT CNavigation::Render(_float fIntervalY)
 	else
 	{
 		/* 객체와 지형의 네비메쉬가 같은위치에 있어 구분인 안됨 -> 객체의 네비메쉬의 y를 좀 띄워준다 */
-		Identity._42 = fIntervalY + 0.02f;
+		Identity._42 = m_fIntervalY + 0.02f;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &Identity)))
 			return E_FAIL;
 

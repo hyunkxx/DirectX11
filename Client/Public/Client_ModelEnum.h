@@ -10,6 +10,9 @@ namespace SMODEL
 		SMD_TREE_1,
 		SMD_SWORD_0_SWORD,
 		SMD_SWORD_0_SCABBARD,
+
+		SMD_SKY,
+
 		SMD_END
 	};
 }

@@ -46,7 +46,9 @@ private:
 
 #ifdef _DEBUG
 public:
-	HRESULT Render(_float fIntervalY);
+	virtual HRESULT Render() override;
+
+	void Set_IntervalY(_float fIntervalY) { m_fIntervalY = fIntervalY; };
 
 private:
 	_float4							m_vState_1_CellColor = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -55,6 +57,8 @@ private:
 
 	_float4							m_vCellColor = { 0.0f, 0.0f, 0.0f, 0.0f };
 	_float4							m_vColor = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+	_float							m_fIntervalY = { 0.0f };
 
 #endif // _DEBUG
 

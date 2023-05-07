@@ -189,10 +189,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TERRAIN, pLayerTag, L"terrain")))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TERRAIN, pLayerTag, L"terrain")))
+		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::FLOOR, pLayerTag, L"floor")))
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::FLOOR, pLayerTag, L"floor")))
+		//return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SKY, pLayerTag, L"Sky")))
 		return E_FAIL;
 
 	return S_OK;
@@ -207,16 +210,16 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERA_DESC));
 
 	CameraDesc.TransformDesc.fMoveSpeed = 5.f;
-	CameraDesc.TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
+	CameraDesc.TransformDesc.fRotationSpeed = XMConvertToRadians(45.f);
 
 	CameraDesc.vEye = _float3(0.f, 10.f, -10.f);
 	CameraDesc.vAt = _float3(10.f, 3.f, 10.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
-	CameraDesc.fFovy = XMConvertToRadians(45.f);
+	CameraDesc.fFovy = XMConvertToRadians(90.f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 500.f;
+	CameraDesc.fFar = 1000.f;
 	
 	//Light Setting
 	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);

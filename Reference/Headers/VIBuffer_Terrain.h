@@ -35,6 +35,12 @@ public:
 		size.mZ = m_dwVertexCountZ;
 		return size;
 	};
+public:
+	_float Compute_Height(_fvector vPosition);
+	void Culling(_fmatrix Inverse_WorldMatrix);
+
+public:
+	HRESULT Load_Vertices(const _tchar* pFilePath);
 
 public:
 	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pHeightMapFilePath);
@@ -43,11 +49,17 @@ public:
 	virtual void Free() override;
 
 private:
-	_bool m_isHeightMap = { false };
-	_ulong m_dwVertexCountX = { 0 };
-	_ulong m_dwVertexCountZ = { 0 };
+	_bool				m_isHeightMap = { false };
+	_ulong				m_dwVertexCountX = { 0 };
+	_ulong				m_dwVertexCountZ = { 0 };
 
-	_float3* m_VertexPos = { nullptr };
+	_float3*			m_VertexPos = { nullptr };
+
+	VTXNORTEX*			m_pVertices = { nullptr };
+	FACEINDICES32*		m_pIndices = { nullptr };
+
+	class CFrustum*		m_pFrustum = { nullptr };
+	class CQuadTree*	m_pQuadTree = { nullptr };
 };
 
 END

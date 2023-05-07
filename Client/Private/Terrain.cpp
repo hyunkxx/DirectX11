@@ -45,8 +45,12 @@ void CTerrain::LateTick(_double TimeDelta)
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 #ifdef _DEBUG
+	// 디버그 모드 랜더링 안할 시 릭 나옴
 	if (nullptr != m_pRenderer && nullptr != m_pNavigation)
+	{
+		m_pNavigation->Set_IntervalY(1.0f);
 		m_pRenderer->AddDebugGroup(m_pNavigation);
+	}
 #endif // _DEBUG
 }
 
@@ -97,13 +101,29 @@ HRESULT CTerrain::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN,
-		TEXT("com_texture"), (CComponent**)&m_pTexture)))
-		return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::NAVIGATION,
 		TEXT("com_navigation"), (CComponent**)&m_pNavigation)))
 		return E_FAIL;
+
+#pragma region TERRAIN_TEX
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_1,
+		TEXT("com_texture_diffuse_1"), (CComponent**)&m_pDiffuseTexture[DIFFUSE_1])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_2,
+		TEXT("com_texture_diffuse_2"), (CComponent**)&m_pDiffuseTexture[DIFFUSE_2])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_3,
+		TEXT("com_texture_diffuse_3"), (CComponent**)&m_pDiffuseTexture[DIFFUSE_3])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_4,
+		TEXT("com_texture_diffuse_4"), (CComponent**)&m_pDiffuseTexture[DIFFUSE_4])))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_FILTER,
+		TEXT("com_texture_Filter"), (CComponent**)&m_pFilterTexture)))
+		return E_FAIL;
+	
+#pragma endregion TERRAIN_TEX
 
 	return S_OK;
 }
@@ -125,7 +145,17 @@ HRESULT CTerrain::Setup_ShaderResources()
 	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &pPipeline->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+
+	if (FAILED(m_pDiffuseTexture[CTerrain::DIFFUSE_1]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture_1")))
+		return E_FAIL;
+	if (FAILED(m_pDiffuseTexture[CTerrain::DIFFUSE_2]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture_2")))
+		return E_FAIL;
+	if (FAILED(m_pDiffuseTexture[CTerrain::DIFFUSE_3]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture_3")))
+		return E_FAIL;
+	if (FAILED(m_pDiffuseTexture[CTerrain::DIFFUSE_4]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture_4")))
+		return E_FAIL;
+
+	if (FAILED(m_pFilterTexture->Setup_ShaderResource(m_pShader, "g_FilterTexture")))
 		return E_FAIL;
 
 	return S_OK;
@@ -165,6 +195,10 @@ void CTerrain::Free()
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pRenderer);
-	Safe_Release(m_pTexture);
 	Safe_Release(m_pNavigation);
+
+	for (_uint i = 0; i < CTerrain::DIFFUSE_END; ++i)
+		Safe_Release(m_pDiffuseTexture[i]);
+
+	Safe_Release(m_pFilterTexture);
 }

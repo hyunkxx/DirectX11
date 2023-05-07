@@ -11,6 +11,8 @@
 #include "Tree_0.h"
 #include "Tree_1.h"
 
+#include "Sky.h"
+
 //AnimTool
 #include "AnimToolManager.h"
 #include "TestVTF.h"
@@ -136,6 +138,12 @@ HRESULT CLoader::Load_Level_GamePlay()
 	}
 #pragma endregion MODEL_INSTANCE_TREE
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : Sky");
+		return E_FAIL;
+	}
+
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
 		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
@@ -180,6 +188,9 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_1, CTree_1::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion MAP_OBJECT_TREE
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY, CSky::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma endregion
 

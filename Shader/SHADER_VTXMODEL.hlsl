@@ -73,6 +73,27 @@ VS_OUT_SHADOW VS_MAIN_SHADOW(VS_IN In)
 	return Out;
 }
 
+struct VS_OUT_SKY
+{
+	float4 vPosition : SV_POSITION;
+	float2 vTexUV : TEXCOORD0;
+};
+
+VS_OUT_SKY VS_MAIN_SKY(VS_IN In)
+{
+	VS_OUT_SKY		Out = (VS_OUT_SKY)0;
+
+	matrix	matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+	Out.vTexUV = In.vTexUV;
+
+	return Out;
+}
+
 struct PS_IN
 {
 	float4 vPosition : SV_POSITION;
@@ -195,6 +216,25 @@ PS_OUT PS_MAIN_MAPOBJECT_NORMALMAP(PS_IN In)
 	return Out;
 }
 
+struct PS_IN_SKY
+{
+	float4 vPosition : SV_POSITION;
+	float2 vTexUV : TEXCOORD0;
+};
+struct PS_OUT_SKY
+{
+	float4 vColor : SV_TARGET0;
+};
+
+PS_OUT_SKY PS_MAIN_SKY(PS_IN_SKY In)
+{
+	PS_OUT_SKY		Out = (PS_OUT_SKY)0;
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor.a = 1.f;
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	//아웃라인 없는 디폴트 그리기
@@ -265,5 +305,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MAPOBJECT_NORMALMAP();
+	}
+
+	// 5. Sky
+	pass Model_Sky
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_SKY();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SKY();
 	}
 }
