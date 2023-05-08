@@ -46,7 +46,7 @@ HRESULT CLight::Render(CShader * pShader, CVIBuffer_Rect * pVIBuffer)
 		return E_FAIL;
 
 	CRenderSetting* pRenderSetting = CRenderSetting::GetInstance();
-	if (pRenderSetting->IsActiveSSAO())
+	if (pRenderSetting->IsActiveSSAO() && !pRenderSetting->IsActiveBlackWhite())
 	{
 		if (iPassIndex == 1)
 		{

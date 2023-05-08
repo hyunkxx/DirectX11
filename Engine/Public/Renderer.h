@@ -25,8 +25,6 @@ public:
 	void Draw();
 
 private:
-	void AlphaSort(CRenderer::RENDER_GROUP eGroup);
-
 	void Render_Priority();
 	void Render_DynamicShadowMap();
 	void Render_Static();
@@ -50,6 +48,8 @@ private:
 	void Render_AlphaBlend();
 	void Render_UI();
 
+public:
+	void AlphaSort(CRenderer::RENDER_GROUP eGroup);
 	void ApplyLUT(_uint iIndex);
 	void RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag);
 	void AddCombine(const _tchar * pBindTargetTag, const _tchar * pSourTag, const _tchar * pDestTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT);
@@ -57,6 +57,8 @@ private:
 	void Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag, _uint iPass = 0, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT);
 	void FinalExtraction();
 	void Target_Blur(const _tchar* TargetTag, _int BlurCount = 1, BLUR eBlurLevel = BLUR::HIGH);
+	void Target_Blur_Middle(const _tchar* TargetTag, _int BlurCount = 1, BLUR eBlurLevel = BLUR::HIGH);
+	void Target_Blur_High(const _tchar* TargetTag, _int BlurCount = 1, BLUR eBlurLevel = BLUR::HIGH);
 	void Ready_SSAO(const _tchar* pBindTargetTag);
 
 public:
@@ -114,7 +116,9 @@ private:
 private:
 	_bool m_GlowEmpty = false;
 	SSAO_SETTING m_eSSAO;
-
+	
+	enum class TARGET { BLUR_X, BLUR_Y, BLUR_MIDDEL_X, BLUR_MIDDEL_Y, BLUR_HIGH_X, BLUR_HIGH_Y, TARGET_END };
+	class CRenderTarget* m_pBindTargets[(_uint)TARGET::TARGET_END];
 };
 
 END

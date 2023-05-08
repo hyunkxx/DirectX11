@@ -28,32 +28,6 @@ _float4 CPipeLine::Get_CamPosition()
 	return m_vCamPosition;
 }
 
-_float4x4 CPipeLine::Get_float4x4_WV(CTransform* pTransform)
-{
-	_float4x4 WV;
-	ZeroMemory(&WV, sizeof(_float4x4));
-
-	if (!pTransform)
-		return WV;
-
-	XMStoreFloat4x4(&WV, XMLoadFloat4x4(&pTransform->Get_WorldMatrix()) * XMLoadFloat4x4(&m_TransformMatrix[TS_VIEW]));
-
-	return WV;
-}
-
-_float4x4 CPipeLine::Get_float4x4_WVP(CTransform* pTransform)
-{
-	_float4x4 WVP;
-	ZeroMemory(&WVP, sizeof(_float4x4));
-
-	if (!pTransform)
-		return WVP;
-
-	XMStoreFloat4x4(&WVP, XMLoadFloat4x4(&pTransform->Get_WorldMatrix()) * XMLoadFloat4x4(&m_TransformMatrix[TS_VIEW]) * XMLoadFloat4x4(&m_TransformMatrix[TS_PROJ]));
-
-	return WVP;
-}
-
 void CPipeLine::Set_Transform(TRANSFORM_STATE eState, _fmatrix TransformMatrix)
 {
 	XMStoreFloat4x4(&m_TransformMatrix[eState], TransformMatrix);

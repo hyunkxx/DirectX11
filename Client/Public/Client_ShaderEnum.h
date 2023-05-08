@@ -17,6 +17,8 @@ namespace SHADER
 		GROUD,
 		PHONG,
 
+		UI_SUB,
+
 		MODEL_INSTANCE
 	};
 }

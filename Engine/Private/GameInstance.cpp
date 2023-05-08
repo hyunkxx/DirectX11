@@ -65,7 +65,9 @@ HRESULT CGameInstance::Engine_Initialize(const GRAPHIC_DESC& GraphicDesc, _uint 
 	//½¦µµ¿ì µª½º ¼Â¾÷
 	m_pTargetManager->SetupStaticShadowDepthStencilView(m_pGraphic_Device->GetStaticShadowDepthStencilView());
 	m_pTargetManager->SetupShadowDepthStencilView(m_pGraphic_Device->GetShadowDepthStencilView());
+	m_pTargetManager->SetupMiddleDepthStencilView(m_pGraphic_Device->GetMiddleDepthStencilView());
 	m_pTargetManager->SetupSmallDepthStencilView(m_pGraphic_Device->GetSmallDepthStencilView());
+
 
 	if (FAILED(m_pInput_Device->Initialize_Input(GraphicDesc.hInstance, GraphicDesc.hWnd)))
 		return E_FAIL;

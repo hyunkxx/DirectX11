@@ -156,10 +156,8 @@ HRESULT CTree_0::SetUp_ShaderResources()
 
 	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
 		return E_FAIL;
 
@@ -174,10 +172,8 @@ HRESULT CTree_0::SetUp_ShadowShaderResources()
 
 	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_PROJ))))
 		return E_FAIL;
 

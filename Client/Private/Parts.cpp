@@ -143,12 +143,12 @@ HRESULT CParts::Add_Components()
 	_uint nCurrentLevel = pGM->GetCurrentLevel();
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(nCurrentLevel, m_iModelID,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, m_iModelID,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(nCurrentLevel, SHADER::MODEL,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODEL,
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 

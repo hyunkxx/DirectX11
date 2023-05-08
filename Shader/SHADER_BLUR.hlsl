@@ -10,8 +10,7 @@ texture2D			g_BlurTexture;
 texture2D			g_GlowTexture;
 texture2D			g_GlowOriTexture;
 
-float				g_fWindowSizeX = 640.f;
-float				g_fWindowSizeY = 360.f;
+float2				g_Resolution; // 윈도우 사이즈
 
 float				g_fHighWeight[13];
 float				g_fColorRange = 24.f;
@@ -98,7 +97,7 @@ PS_OUT PS_MAIN_BLUR_X(PS_IN In)
 	float2 vUV = In.vTexUV;
 	float2 vUV2 = 0;
 
-	float fTu = 1.f / (g_fWindowSizeX / 2.f);
+	float fTu = 1.f / (g_Resolution.x / 2.f);
 
 	for (int i = -6 ; 7 > i; i++)
 	{
@@ -124,7 +123,7 @@ PS_OUT PS_MAIN_BLUR_Y(PS_IN In)
 	float2 vUV = In.vTexUV;
 	float2 vUV2 = 0;
 
-	float fTv = 1.f / (g_fWindowSizeY / 2.f);
+	float fTv = 1.f / (g_Resolution.y / 2.f);
 
 	for (int i = -6 ; 7 > i; i++)
 	{
@@ -148,7 +147,7 @@ PS_OUT PS_MAIN_BLUR_X_MIDDEL(PS_IN In)
 	float2 vUV = In.vTexUV;
 	float2 vUV2 = 0;
 
-	float fTu = 1.f / (g_fWindowSizeX / 2.f);
+	float fTu = 1.f / (g_Resolution.x / 2.f);
 
 	for (int i = -3; 4 > i; i++)
 	{
@@ -171,7 +170,7 @@ PS_OUT PS_MAIN_BLUR_Y_MIDDEL(PS_IN In)
 	float2 vUV = In.vTexUV;
 	float2 vUV2 = 0;
 
-	float fTv = 1.f / (g_fWindowSizeY / 2.f);
+	float fTv = 1.f / (g_Resolution.y / 2.f);
 
 	for (int i = -3; 4 > i; i++)
 	{
@@ -195,7 +194,7 @@ PS_OUT PS_MAIN_BLUR_X_MIN(PS_IN In)
 	float2 vUV = In.vTexUV;
 	float2 vUV2 = 0;
 
-	float fTu = 1.f / (g_fWindowSizeX / 2.f);
+	float fTu = 1.f / (g_Resolution.x / 2.f);
 
 	for (int i = -1; 2 > i; i++)
 	{
@@ -218,7 +217,7 @@ PS_OUT PS_MAIN_BLUR_Y_MIN(PS_IN In)
 	float2 vUV = In.vTexUV;
 	float2 vUV2 = 0;
 
-	float fTv = 1.f / (g_fWindowSizeY / 2.f);
+	float fTv = 1.f / (g_Resolution.y / 2.f);
 
 	for (int i = -1; 2 > i; i++)
 	{

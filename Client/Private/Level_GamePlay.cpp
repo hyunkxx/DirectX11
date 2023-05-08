@@ -15,9 +15,6 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 HRESULT CLevel_GamePlay::Initialize()
 {
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
-
 	if(FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
 
@@ -108,16 +105,21 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 		pGameInstance->StartRGBSplit(2.f);
 	}
 
+	static _bool bCamLock = false;
+	if (pGameInstance->InputKey(DIK_SCROLL) == KEY_STATE::TAP)
+	{
+		bCamLock = !bCamLock;
 
-	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::TAP)
-	{
-		m_pDynamicCamera->Set_Use(true);
-		m_pPlayerCamera->Set_Use(false);
-	}
-	if (pGameInstance->InputKey(DIK_NUMPAD1) == KEY_STATE::TAP)
-	{
-		m_pDynamicCamera->Set_Use(false);
-		m_pPlayerCamera->Set_Use(true);
+		if (bCamLock)
+		{
+			m_pDynamicCamera->Set_Use(true);
+			m_pPlayerCamera->Set_Use(false);
+		}
+		else
+		{
+			m_pDynamicCamera->Set_Use(false);
+			m_pPlayerCamera->Set_Use(true);
+		}
 	}
 }
 
@@ -176,26 +178,6 @@ void CLevel_GamePlay::RenderLevelUI()
 	ImGui::Text("[   Pause Key   ]	Target On/Off");
 
 	ImGui::End();
-}
-
-HRESULT CLevel_GamePlay::Ready_Lights()
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	LIGHT_DESC LightDesc;
-
-	// Directional
-	ZeroMemory(&LightDesc, sizeof LightDesc);
-	LightDesc.eLightType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(2.f, -1.f, 1.0f, 0.f);
-	LightDesc.vDiffuse = _float4(0.6f, 0.68f, 0.6f, 1.f);
-	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-	
-	if (FAILED(pGameInstance->AddLight(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
-	
-	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)

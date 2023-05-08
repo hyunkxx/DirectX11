@@ -53,15 +53,6 @@ void CCamera::Tick(_double TimeDelta)
 	m_pPipeLine->Set_Transform(CPipeLine::TS_VIEW, m_pMainTransform->Get_WorldMatrixInverse());
 	m_pPipeLine->Set_Transform(CPipeLine::TS_PROJ, XMMatrixPerspectiveFovLH(m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar));
 
-	//if (pInstance->Input_KeyState_Custom(DIK_LSHIFT) == KEY_STATE::HOLD)
-	//{
-	//	m_CameraDesc.TransformDesc.fMoveSpeed = m_CameraDesc.TransformDesc.fMoveSpeed * 2.f;
-	//}
-	//else
-	//{
-	//	m_CameraDesc.TransformDesc.fMoveSpeed = m_CameraDesc.TransformDesc.fMoveSpeed = m_CameraDesc.TransformDesc.fMoveSpeed * 0.5f;
-	//}
-
 }
 
 void CCamera::LateTick(_double TimeDelta)

@@ -9,11 +9,13 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 
+#include "Intro.h"
 #include "BackGround.h"
 #include "DynamicCamera.h"
+#include "IntroCamera.h"
 
+#include "Floor.h"
 #include "Character.h"
-#include "BackGround.h"
 
 #include "Effect_Player.h"
 
@@ -98,7 +100,7 @@ HRESULT CApplication::Render()
 	m_pContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
 #endif
 
-	m_pGameInstance->Clear_RenderTargetView(_float4(0.3f, 0.3f, 1.f, 0.f));
+	m_pGameInstance->Clear_RenderTargetView(_float4(0.3f, 0.3f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencilView();
 
 	m_pRenderer->Draw();
@@ -187,6 +189,10 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../Shader/SHADER_PHONG.hlsl"), VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::ElementCount))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, SHADER::UI_SUB,
+		CShader::Create(m_pDevice, m_pContext, TEXT("../../Shader/SHADER_UI_SUB.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, SHADER::VTXNORTEX,
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../Shader/SHADER_VTXNORTEX.hlsl"), VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::ElementCount))))
 		return E_FAIL;
@@ -250,6 +256,10 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/background.jpg")))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::INTRO_BACKGROUND,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/background2.jpg")))))
+		return E_FAIL;
+
 #pragma region COLLIDER
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::SPHERE,
 		CSphereCollider::Create(m_pDevice, m_pContext))))
@@ -276,11 +286,21 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 
 HRESULT CApplication::Ready_Prototype_Static_GameObject()
 {
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::FLOOR, CFloor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::BACKGROUND, CBackGround::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::INTRO, CIntro::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::DYNAMIC_CAMERA,
 		CDynamicCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::INTRO_CAMERA,
+		CIntroCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	for (_int i = 0; 20 > i; i++)

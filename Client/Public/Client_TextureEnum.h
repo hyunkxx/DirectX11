@@ -6,6 +6,7 @@ namespace TEXTURE
 	enum
 	{
 		BACKGROUND = 2000,
+		INTRO_BACKGROUND,
 		CUBEMAP,
 		TERRAIN,
 		FLOOR,

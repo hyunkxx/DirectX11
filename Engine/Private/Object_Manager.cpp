@@ -18,10 +18,10 @@ HRESULT CObject_Manager::Reserve_Manager(_uint iLevelMaxCount)
 
 HRESULT CObject_Manager::Add_Prototype(_int iObjectEnum, CGameObject* pPrototype)
 {
-	s_iObjectCurrentID++;
 	if (nullptr != Find_Prototype(iObjectEnum))
 		return E_FAIL;
 
+	s_iObjectCurrentID++;
 	m_Prototypes.emplace(iObjectEnum, pPrototype);
 	return S_OK;
 }

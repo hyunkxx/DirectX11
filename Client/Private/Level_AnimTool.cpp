@@ -36,7 +36,8 @@ void CLevel_AnimTool::Tick(_double TimeDelta)
 	CAppManager* pAppManager = CAppManager::GetInstance();
 	pAppManager->SetTitle(L"LEVEL_ANIMTOOL");
 #endif
-
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	pGameInstance->ShadowUpdate();
 }
 
 void CLevel_AnimTool::RenderLevelUI()
@@ -110,8 +111,7 @@ HRESULT CLevel_AnimTool::Ready_Layer_Player(const _tchar * pLayerTag)
 
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANIMTOOL, OBJECT::TEST_WUTHERING, pLayerTag, TEXT("TestPlayer1"))))
 	//	return E_FAIL;
-
-
+	
 	return S_OK;
 }
 

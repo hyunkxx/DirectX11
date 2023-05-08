@@ -13,7 +13,7 @@ private:
 	virtual ~CGraphic_Device() = default;
 
 public:
-	enum VIEWPORT_TYPE { VIEWPORT_DEFAULT, VIEWPORT_SHADOWDEPTH, VIEWPORT_SMALL, VIEWPORT_END };
+	enum VIEWPORT_TYPE { VIEWPORT_DEFAULT, VIEWPORT_SHADOWDEPTH, VIEWPORT_SMALL, VIEWPORT_MIDDLE, VIEWPORT_END };
 
 	ID3D11DepthStencilView* GetStaticShadowDepthStencilView() const {
 		return m_pStaticShadowDepthStencilView;
@@ -23,6 +23,9 @@ public:
 	}
 	ID3D11DepthStencilView* GetSmallDepthStencilView() const {
 		return m_pSmallDepthStencilView;
+	}
+	ID3D11DepthStencilView* GetMiddleDepthStencilView() const {
+		return m_pMiddleDepthStencilView;
 	}
 
 	HRESULT Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WIN_MODE eWinMode, _uint iWinSizeX, _uint iWinSizeY, ID3D11Device** ppDevice_out, ID3D11DeviceContext** ppContext_out);
@@ -40,6 +43,7 @@ private:
 	HRESULT Ready_StaticShadowDepthStencilView(_uint iWinSizeX, _uint iWinSizeY);
 	HRESULT Ready_ShadowDepthStencilView(_uint iWinSizeX, _uint iWinSizeY);
 	HRESULT Ready_SmallDepthStencilView(_uint iWinSizeX, _uint iWinSizeY);
+	HRESULT Ready_MiddleDepthStencilView(_uint iWinSizeX, _uint iWinSizeY);
 
 public:
 	virtual void Free() override;
@@ -57,6 +61,7 @@ private:
 	ID3D11DepthStencilView*		m_pStaticShadowDepthStencilView = { nullptr };
 	ID3D11DepthStencilView*		m_pShadowDepthStencilView = { nullptr };
 	ID3D11DepthStencilView*		m_pSmallDepthStencilView = { nullptr };
+	ID3D11DepthStencilView*		m_pMiddleDepthStencilView = { nullptr };
 
 	D3D11_VIEWPORT viewPortDesc[VIEWPORT_END];
 };

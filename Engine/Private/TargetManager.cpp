@@ -154,6 +154,25 @@ HRESULT CTargetManager::BeginTarget(ID3D11DeviceContext * pContext, CRenderTarge
 
 	pContext->OMSetRenderTargets(1, &pRTV, m_pDepthStencilView);
 	pContext->RSSetViewports(1, pGrahicDevice->GetViewport(CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT));
+	
+	return S_OK;
+}
+
+HRESULT CTargetManager::MiddleBeginTarget(ID3D11DeviceContext * pContext, CRenderTarget * pTarget, _bool bClear)
+{
+	if (!pContext || !pTarget)
+		return E_FAIL;
+
+	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
+
+	if (bClear)
+		pTarget->Clear();
+
+	ID3D11RenderTargetView* pRTV = pTarget->Get_RTV();
+	CGraphic_Device* pGrahicDevice = CGraphic_Device::GetInstance();
+
+	pContext->OMSetRenderTargets(1, &pRTV, m_pMiddleDepthStencilView);
+	pContext->RSSetViewports(1, pGrahicDevice->GetViewport(CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_MIDDLE));
 
 	return S_OK;
 }

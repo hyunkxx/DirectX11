@@ -1,10 +1,13 @@
 #include "stdafx.h"
 #include "..\Public\Level_Logo.h"
 
+#include "GameMode.h"
 #include "AppManager.h"
 #include "GameInstance.h"
 
 #include "Level_Loading.h"
+
+#include "DynamicCamera.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -13,7 +16,28 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	LIGHT_DESC LightDesc;
+
+	// Directional
+	ZeroMemory(&LightDesc, sizeof LightDesc);
+	LightDesc.eLightType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float4(2.f, -1.f, 1.0f, 0.f);
+	LightDesc.vDiffuse = _float4(0.6f, 0.68f, 0.6f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(pGameInstance->AddLight(m_pDevice, m_pContext, LightDesc)))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Character(TEXT("layer_character"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -26,10 +50,10 @@ void CLevel_Logo::Tick(_double TimeDelta)
 	pAppManager->SetTitle(L"LEVEL_LOGO");
 #endif
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	pGameInstance->ShadowUpdate();
 
 	if (pGameInstance->InputKey(DIK_RETURN) == KEY_STATE::TAP)
 	{
-	
 		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
 			return;
 	}
@@ -37,10 +61,52 @@ void CLevel_Logo::Tick(_double TimeDelta)
 
 HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar* pLayerTag)
 {
+	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
- 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::BACKGROUND, pLayerTag, L"background")))
+	_uint nCurrentLevel = pGameMode->GetCurrentLevel();
+ 	if (FAILED(pGameInstance->Add_GameObject(nCurrentLevel, OBJECT::FLOOR, pLayerTag, L"terrain")))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
+{
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	//Camera Setting
+	CCamera::CAMERA_DESC CameraDesc;
+	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERA_DESC));
+
+	CameraDesc.TransformDesc.fMoveSpeed = 5.f;
+	CameraDesc.TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
+
+	CameraDesc.vEye = _float3(0.f, 3.f, -10.f);
+	CameraDesc.vAt = _float3(0.f, 3.f, 0.f);
+	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
+
+	CameraDesc.fFovy = XMConvertToRadians(45.f);
+	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CameraDesc.fNear = 0.1f;
+	CameraDesc.fFar = 500.f;
+
+	//Light Setting
+	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);
+	pGameInstance->SetLightMatrix(vLightProjMatrix, LIGHT_MATRIX::LIGHT_PROJ);
+
+	_uint nCurrentLevel = pGameMode->GetCurrentLevel();
+	if (FAILED(pGameInstance->Add_GameObject(nCurrentLevel, OBJECT::INTRO_CAMERA, pLayerTag, L"IntroCamera", &CameraDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Layer_Character(const _tchar * pLayerTag)
+{
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	return S_OK;
 }

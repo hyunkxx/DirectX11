@@ -52,6 +52,9 @@
     <FxCompile Include="..\..\Shader\SHADER_RGB_SPLIT.hlsl">
       <Filter>src\99. ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_UI_SUB.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
     <FxCompile Include="..\..\Shader\SHADER_VTXSKILLTEX.hlsl">
       <Filter>src\99. ShaderFiles</Filter>
     </FxCompile>
@@ -115,10 +118,10 @@
       <Filter>src\01. Level\99. AnimTool</Filter>
     </ClCompile>
     <ClCompile Include="Floor.cpp">
-      <Filter>src\02. GameObject\00. Terrain</Filter>
+      <Filter>src\02. GameObject\00. Environment</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Terrain.cpp">
-      <Filter>src\02. GameObject\00. Terrain</Filter>
+      <Filter>src\02. GameObject\00. Environment</Filter>
     </ClCompile>
     <ClCompile Include="..\private\DynamicCamera.cpp">
       <Filter>src\02. GameObject\01. Camera</Filter>
@@ -171,7 +174,6 @@
     <ClCompile Include="..\Private\TestVTF.cpp">
       <Filter>src\NEW_FILES</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\Mesh_Effect_P.cpp">
       <Filter>src\06. Effect</Filter>
     </ClCompile>
@@ -181,8 +183,21 @@
     <ClCompile Include="..\Private\Rect_Effect_P.cpp">
       <Filter>src\06. Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\PlayerCamera.cpp" />
-    <ClCompile Include="..\Private\CameraCurve.cpp" />
+    <ClCompile Include="..\private\Intro.cpp">
+      <Filter>src\02. GameObject\99. UI\01. Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\IntroCamera.cpp">
+      <Filter>src\02. GameObject\01. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerCamera.cpp">
+      <Filter>src\02. GameObject\01. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraCurve.cpp">
+      <Filter>src\02. GameObject\01. Camera\Curve</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sky.cpp">
+      <Filter>src\02. GameObject\00. Environment</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -264,10 +279,10 @@
       <Filter>src\01. Level\99. AnimTool</Filter>
     </ClInclude>
     <ClInclude Include="Floor.h">
-      <Filter>src\02. GameObject\00. Terrain</Filter>
+      <Filter>src\02. GameObject\00. Environment</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Terrain.h">
-      <Filter>src\02. GameObject\00. Terrain</Filter>
+      <Filter>src\02. GameObject\00. Environment</Filter>
     </ClInclude>
     <ClInclude Include="..\public\DynamicCamera.h">
       <Filter>src\02. GameObject\01. Camera</Filter>
@@ -329,7 +344,6 @@
     <ClInclude Include="..\Public\TestVTF.h">
       <Filter>src\NEW_FILES</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\Rect_Effect_P.h">
       <Filter>src\06. Effect</Filter>
     </ClInclude>
@@ -339,8 +353,21 @@
     <ClInclude Include="..\Public\Particle_Effect_P.h">
       <Filter>src\06. Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CameraCurve.h" />
-    <ClInclude Include="..\Public\PlayerCamera.h" />
+    <ClInclude Include="..\public\Intro.h">
+      <Filter>src\02. GameObject\99. UI\01. Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\IntroCamera.h">
+      <Filter>src\02. GameObject\01. Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerCamera.h">
+      <Filter>src\02. GameObject\01. Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraCurve.h">
+      <Filter>src\02. GameObject\01. Camera\Curve</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sky.h">
+      <Filter>src\02. GameObject\00. Environment</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -407,9 +434,6 @@
     <Filter Include="src\02. GameObject">
       <UniqueIdentifier>{3f04570d-a4b1-461e-82b8-b787ccabfa73}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\02. GameObject\00. Terrain">
-      <UniqueIdentifier>{29d26517-95d4-47ce-a258-47894a317ff5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\02. GameObject\01. Camera">
       <UniqueIdentifier>{7bd6bb8e-bbda-4ff6-9d37-999f7bdb25c3}</UniqueIdentifier>
     </Filter>
@@ -436,6 +460,18 @@
     </Filter>
     <Filter Include="src\04. MapObject\00. Tree">
       <UniqueIdentifier>{b800cd01-54f2-4c93-b152-4b55258deb44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\99. UI">
+      <UniqueIdentifier>{7a685991-1531-43aa-914a-44996c7dafc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\99. UI\01. Intro">
+      <UniqueIdentifier>{f5150047-d787-42e9-b4e7-947a21b015c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\01. Camera\Curve">
+      <UniqueIdentifier>{56371cad-86c4-42b5-b88a-fb79ecc61b77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\00. Environment">
+      <UniqueIdentifier>{29d26517-95d4-47ce-a258-47894a317ff5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

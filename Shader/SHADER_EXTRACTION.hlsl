@@ -58,7 +58,7 @@ PS_OUT PS_EXTRACTION_BLACK_WHITE(PS_IN In)
 
 	vector vSourceColor = g_SourTexture.Sample(LinearBorderSampler, In.vTexUV);
 
-	if(vSourceColor.r > 0.5f)
+	if(vSourceColor.r >= 0.6f)
 		Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
 	else
 		Out.vColor = float4(0.f, 0.f, 0.f, 1.f);

@@ -10,7 +10,6 @@ class ENGINE_DLL CPipeLine : public CBase
 
 public:
 	enum TRANSFORM_STATE { TS_VIEW, TS_PROJ, TS_END };
-
 	struct RAY_DESC
 	{
 		_float3 mRayPos;
@@ -37,11 +36,9 @@ public:
 	_matrix Get_Transform_Matrix_Inverse(TRANSFORM_STATE eState);
 	_float4 Get_CamPosition();
 
-	_float4x4 Get_float4x4_WV(class CTransform* pTransform);
-	_float4x4 Get_float4x4_WVP(class CTransform* pTransform);
-
 public:
 	void Set_Transform(TRANSFORM_STATE eState, _fmatrix TransformMatrix);
+
 	RAY_DESC CreateWorldRay(const CLIENT_DESC& clientDesc, _float rayDistance = 1000.f);
 	RAY_DESC CreateLocalRay(const CLIENT_DESC& clientDesc, _matrix matWorldInverse, _float rayDistance = 1000.f);
 
@@ -55,6 +52,7 @@ public:
 private:
 	_float4x4 m_TransformMatrix[TS_END];
 	_float4x4 m_TransformMatrixInverse[TS_END];
+	
 	_float4 m_vCamPosition;
 
 };

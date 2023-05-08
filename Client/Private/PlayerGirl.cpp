@@ -235,22 +235,22 @@ HRESULT CPlayerGirl::Add_Components()
   	_uint nCurrentLevel = pGM->GetCurrentLevel();
 
 	// For.Com_Shader_ModelAnim
-	if (FAILED(__super::Add_Component(nCurrentLevel, SHADER::MODELANIM,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODELANIM,
 		TEXT("Com_Shader_ModelAnim"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Component(nCurrentLevel, DMODEL::DMD_PLAYERGIRL_MODEL,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_PLAYERGIRL_MODEL,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	/* For.Com_AnimSet_Base */
-	if (FAILED(__super::Add_Component(nCurrentLevel, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE,
 		TEXT("Com_AnimSet_Base"), (CComponent**)&m_pAnimSetCom[ANIMSET_BASE])))
 		return E_FAIL;
 
 	/* For.Com_AnimSet_Ribbon */
-	if (FAILED(__super::Add_Component(nCurrentLevel, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON,
 		TEXT("Com_AnimSet_Ribbon"), (CComponent**)&m_pAnimSetCom[ANIMSET_RIBBON])))
 		return E_FAIL;
 	
@@ -433,10 +433,8 @@ HRESULT CPlayerGirl::SetUp_ShaderResources()
 
 	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
 		return E_FAIL;
 
@@ -454,10 +452,8 @@ HRESULT CPlayerGirl::Setup_ShadowShaderResource()
 
 	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_PROJ))))
 		return E_FAIL;
 

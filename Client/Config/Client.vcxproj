@@ -207,6 +207,8 @@
     <ClInclude Include="..\public\GameMode.h" />
     <ClInclude Include="..\Public\GUIManager.h" />
     <ClInclude Include="..\public\InGameLoader.h" />
+    <ClInclude Include="..\public\Intro.h" />
+    <ClInclude Include="..\public\IntroCamera.h" />
     <ClInclude Include="..\public\Level_AnimTool.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
@@ -276,6 +278,8 @@
     <ClCompile Include="..\private\GameMode.cpp" />
     <ClCompile Include="..\Private\GUIManager.cpp" />
     <ClCompile Include="..\private\InGameLoader.cpp" />
+    <ClCompile Include="..\private\Intro.cpp" />
+    <ClCompile Include="..\private\IntroCamera.cpp" />
     <ClCompile Include="..\private\Level_AnimTool.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
@@ -329,6 +333,7 @@
     <FxCompile Include="..\..\Shader\SHADER_EXTRACTION.hlsl" />
     <FxCompile Include="..\..\Shader\Shader_SkillModel.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_SSAO.hlsl" />
+    <FxCompile Include="..\..\Shader\SHADER_UI_SUB.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXCUBE.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXMODEL.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXMODELANIM.hlsl" />

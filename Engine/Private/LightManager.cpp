@@ -31,21 +31,6 @@ const LIGHT_DESC* CLightManager::GetLightDesc(_uint Index)
 	CPipeLine* pPipeline = CPipeLine::GetInstance();
 	CRenderSetting* pRenderSetting = CRenderSetting::GetInstance();
 
-	if (pRenderSetting->IsActiveBlackWhite())
-	{
-		_float4x4 CamMatrix = pPipeline->Get_Transform_float4x4_Inverse(CPipeLine::TS_VIEW);
-
-		// Directional
-		ZeroMemory(&m_eCamLightDesc, sizeof LIGHT_DESC);
-		m_eCamLightDesc.eLightType = LIGHT_DESC::TYPE_DIRECTIONAL;
-		m_eCamLightDesc.vDirection = _float4(CamMatrix._31, CamMatrix._32, -CamMatrix._33, 0.f);
-		m_eCamLightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-		m_eCamLightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
-		m_eCamLightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-		return &m_eCamLightDesc;
-	}
-
 	auto iter = m_Lights.begin();
 
 	for (_uint i = 0; i < Index; ++i)

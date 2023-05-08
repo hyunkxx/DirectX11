@@ -71,7 +71,7 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAO"), ViewPortDesc.Width, ViewPortDesc.Height,
-		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX"), ViewPortDesc.Width * 0.5f, ViewPortDesc.Height * 0.5f,
@@ -79,6 +79,22 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurY"), ViewPortDesc.Width * 0.5f, ViewPortDesc.Height * 0.5f,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX_Middle"), ViewPortDesc.Width * 0.75f, ViewPortDesc.Height * 0.75f,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurY_Middle"), ViewPortDesc.Width * 0.75f, ViewPortDesc.Height * 0.75f,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX_High"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurY_High"), ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
@@ -169,6 +185,12 @@ HRESULT CRenderer::Initialize_Prototype()
 
 #pragma endregion
 
+	m_pBindTargets[(_uint)TARGET::BLUR_X] = m_pTargetManager->FindTarget(L"Target_BlurX");
+	m_pBindTargets[(_uint)TARGET::BLUR_Y] = m_pTargetManager->FindTarget(L"Target_BlurY");
+	m_pBindTargets[(_uint)TARGET::BLUR_MIDDEL_X] = m_pTargetManager->FindTarget(L"Target_BlurX_Middle");
+	m_pBindTargets[(_uint)TARGET::BLUR_MIDDEL_Y] = m_pTargetManager->FindTarget(L"Target_BlurY_Middle");
+	m_pBindTargets[(_uint)TARGET::BLUR_HIGH_X] = m_pTargetManager->FindTarget(L"Target_BlurX_High");
+	m_pBindTargets[(_uint)TARGET::BLUR_HIGH_Y] = m_pTargetManager->FindTarget(L"Target_BlurY_High");
 
 	// 디퓨즈, 노말, 뎁스
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_Diffuse")))
@@ -200,12 +222,6 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Blend", L"Target_Blend")))
-		return E_FAIL;
-
-	// 블러
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_BlurX", L"Target_BlurX")))
-		return E_FAIL;
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_BlurY", L"Target_BlurY")))
 		return E_FAIL;
 
 	//Glow
@@ -393,7 +409,7 @@ void CRenderer::Draw()
 
 	Render_Outline();
 
-	if (m_pRenderSetting->IsActiveShadow())
+	if (m_pRenderSetting->IsActiveShadow() && !m_pRenderSetting->IsActiveBlackWhite())
 	{
 		Render_Shadow();
 
@@ -422,13 +438,14 @@ void CRenderer::Draw()
 	Render_NonLight();
 	Render_AlphaBlend();
 
+	AddCombine(L"Target_FinalBlend", L"Target_Final", L"Target_SpecGlow");
 	if (m_pRenderSetting->IsActiveRGBSplit())
 	{
-		RGBSplit(L"Target_Split", L"Target_Final");
-		Extraction(L"Target_Final", L"Target_Split");
+		RGBSplit(L"Target_Split", L"Target_FinalBlend");
+		Extraction(L"Target_FinalBlend", L"Target_Split");
 	}
 
-	AddCombine(L"Target_FinalBlend", L"Target_Final", L"Target_SpecGlow");
+	//Final Blend를 백버퍼에 그림
 	FinalExtraction();
 
 	Render_UI();
@@ -473,6 +490,9 @@ void CRenderer::Draw()
 
 void CRenderer::Render_Priority()
 {
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Deferred")))
+		return;
+
 	for (auto& pGameObject : m_RenderObject[RENDER_PRIORITY])
 	{
 		if (nullptr != pGameObject)
@@ -482,6 +502,9 @@ void CRenderer::Render_Priority()
 	}
 
 	m_RenderObject[RENDER_PRIORITY].clear();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
 }
 
 void CRenderer::Render_DynamicShadowMap()
@@ -520,7 +543,7 @@ void CRenderer::Render_Static()
 	if (nullptr == m_pTargetManager)
 		return;
 
-	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Deferred")))
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Deferred", VIEWPORT_TYPE::VIEWPORT_DEFAULT, false)))
 		return;
 
 	for (auto& pGameObject : m_RenderObject[RENDER_STATIC])
@@ -1186,7 +1209,7 @@ void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTa
 		return;
 }
 
-// Target_FinalBlend렌더타겟을 백버퍼에 렌더
+// Final 렌더타겟을 백버퍼에 렌더
 void CRenderer::FinalExtraction()
 {
 	CRenderTarget* pSourTarget = m_pTargetManager->FindTarget(L"Target_FinalBlend");
@@ -1207,7 +1230,7 @@ void CRenderer::FinalExtraction()
 
 void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount, BLUR eBlurLevel)
 {
-	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurX", CGraphic_Device::VIEWPORT_SMALL)))
+	if (FAILED(m_pTargetManager->SmallBeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_X])))
 		return;
 
 	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
@@ -1215,6 +1238,10 @@ void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount, BLUR eBlur
 	if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
 		return;
 	if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	_float2 Resolution = { 640, 360 };
+	if (FAILED(m_pShader_Blur->SetRawValue("g_Resolution", &Resolution, sizeof(_float2))))
 		return;
 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, TargetTag, "g_BlurTexture")))
@@ -1239,14 +1266,7 @@ void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount, BLUR eBlur
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
 
-	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurY", CGraphic_Device::VIEWPORT_SMALL)))
-		return;
-
-	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
-		return;
-	if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+	if (FAILED(m_pTargetManager->SmallBeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_Y])))
 		return;
 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX", "g_BlurTexture")))
@@ -1273,14 +1293,7 @@ void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount, BLUR eBlur
 
 	for (int i = 1; BlurCount > i; i++)
 	{
-		if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurX", CGraphic_Device::VIEWPORT_SMALL)))
-			return;
-
-		if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
-			return;
-		if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
-			return;
-		if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		if (FAILED(m_pTargetManager->SmallBeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_X])))
 			return;
 
 		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY", "g_BlurTexture")))
@@ -1305,17 +1318,244 @@ void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount, BLUR eBlur
 		if (FAILED(m_pTargetManager->End(m_pContext)))
 			return;
 
-		if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_BlurY", CGraphic_Device::VIEWPORT_SMALL)))
-			return;
-
-		if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
-			return;
-		if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
-			return;
-		if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		if (FAILED(m_pTargetManager->SmallBeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_Y])))
 			return;
 
 		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX", "g_BlurTexture")))
+			return;
+
+		switch (eBlurLevel)
+		{
+		case BLUR::LOW:
+			m_pShader_Blur->Begin(1);
+			m_pVIBuffer->Render();
+			break;
+		case BLUR::MIDDEL:
+			m_pShader_Blur->Begin(8);
+			m_pVIBuffer->Render();
+			break;
+		case BLUR::HIGH:
+			m_pShader_Blur->Begin(10);
+			m_pVIBuffer->Render();
+			break;
+		}
+
+		if (FAILED(m_pTargetManager->End(m_pContext)))
+			return;
+	}
+}
+
+void CRenderer::Target_Blur_Middle(const _tchar * TargetTag, _int BlurCount, BLUR eBlurLevel)
+{
+	if (FAILED(m_pTargetManager->MiddleBeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_MIDDEL_X])))
+		return;
+
+	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	_float2 Resolution = { 960, 540 };
+	if (FAILED(m_pShader_Blur->SetRawValue("g_Resolution", &Resolution, sizeof(_float2))))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, TargetTag, "g_BlurTexture")))
+		return;
+
+	switch (eBlurLevel)
+	{
+	case BLUR::LOW:
+		m_pShader_Blur->Begin(0);
+		m_pVIBuffer->Render();
+		break;
+	case BLUR::MIDDEL:
+		m_pShader_Blur->Begin(7);
+		m_pVIBuffer->Render();
+		break;
+	case BLUR::HIGH:
+		m_pShader_Blur->Begin(9);
+		m_pVIBuffer->Render();
+		break;
+	}
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+
+	if (FAILED(m_pTargetManager->MiddleBeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_MIDDEL_Y])))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX_Middle", "g_BlurTexture")))
+		return;
+
+	switch (eBlurLevel)
+	{
+	case BLUR::LOW:
+		m_pShader_Blur->Begin(1);
+		m_pVIBuffer->Render();
+		break;
+	case BLUR::MIDDEL:
+		m_pShader_Blur->Begin(8);
+		m_pVIBuffer->Render();
+		break;
+	case BLUR::HIGH:
+		m_pShader_Blur->Begin(10);
+		m_pVIBuffer->Render();
+		break;
+	}
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+
+	for (int i = 1; BlurCount > i; i++)
+	{
+		if (FAILED(m_pTargetManager->MiddleBeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_MIDDEL_X])))
+			return;
+
+		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY_Middle", "g_BlurTexture")))
+			return;
+
+		switch (eBlurLevel)
+		{
+		case BLUR::LOW:
+			m_pShader_Blur->Begin(0);
+			m_pVIBuffer->Render();
+			break;
+		case BLUR::MIDDEL:
+			m_pShader_Blur->Begin(7);
+			m_pVIBuffer->Render();
+			break;
+		case BLUR::HIGH:
+			m_pShader_Blur->Begin(9);
+			m_pVIBuffer->Render();
+			break;
+		}
+
+		if (FAILED(m_pTargetManager->End(m_pContext)))
+			return;
+
+		if (FAILED(m_pTargetManager->MiddleBeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_MIDDEL_Y])))
+			return;
+
+		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX_Middle", "g_BlurTexture")))
+			return;
+
+		switch (eBlurLevel)
+		{
+		case BLUR::LOW:
+			m_pShader_Blur->Begin(1);
+			m_pVIBuffer->Render();
+			break;
+		case BLUR::MIDDEL:
+			m_pShader_Blur->Begin(8);
+			m_pVIBuffer->Render();
+			break;
+		case BLUR::HIGH:
+			m_pShader_Blur->Begin(10);
+			m_pVIBuffer->Render();
+			break;
+		}
+
+		if (FAILED(m_pTargetManager->End(m_pContext)))
+			return;
+	}
+}
+
+void CRenderer::Target_Blur_High(const _tchar * TargetTag, _int BlurCount, BLUR eBlurLevel)
+{
+	if (FAILED(m_pTargetManager->BeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_HIGH_X])))
+		return;
+
+	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	_float2 Resolution = { 1280.f, 720.f };
+	if (FAILED(m_pShader_Blur->SetRawValue("g_Resolution", &Resolution, sizeof(_float2))))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, TargetTag, "g_BlurTexture")))
+		return;
+
+	switch (eBlurLevel)
+	{
+	case BLUR::LOW:
+		m_pShader_Blur->Begin(0);
+		m_pVIBuffer->Render();
+		break;
+	case BLUR::MIDDEL:
+		m_pShader_Blur->Begin(7);
+		m_pVIBuffer->Render();
+		break;
+	case BLUR::HIGH:
+		m_pShader_Blur->Begin(9);
+		m_pVIBuffer->Render();
+		break;
+	}
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+
+	if (FAILED(m_pTargetManager->BeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_HIGH_Y])))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX_High", "g_BlurTexture")))
+		return;
+
+	switch (eBlurLevel)
+	{
+	case BLUR::LOW:
+		m_pShader_Blur->Begin(1);
+		m_pVIBuffer->Render();
+		break;
+	case BLUR::MIDDEL:
+		m_pShader_Blur->Begin(8);
+		m_pVIBuffer->Render();
+		break;
+	case BLUR::HIGH:
+		m_pShader_Blur->Begin(10);
+		m_pVIBuffer->Render();
+		break;
+	}
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+
+	for (int i = 1; BlurCount > i; i++)
+	{
+		if (FAILED(m_pTargetManager->BeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_HIGH_X])))
+			return;
+
+		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY_High", "g_BlurTexture")))
+			return;
+
+		switch (eBlurLevel)
+		{
+		case BLUR::LOW:
+			m_pShader_Blur->Begin(0);
+			m_pVIBuffer->Render();
+			break;
+		case BLUR::MIDDEL:
+			m_pShader_Blur->Begin(7);
+			m_pVIBuffer->Render();
+			break;
+		case BLUR::HIGH:
+			m_pShader_Blur->Begin(9);
+			m_pVIBuffer->Render();
+			break;
+		}
+
+		if (FAILED(m_pTargetManager->End(m_pContext)))
+			return;
+
+		if (FAILED(m_pTargetManager->BeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_HIGH_Y])))
+			return;
+
+		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX_High", "g_BlurTexture")))
 			return;
 
 		switch (eBlurLevel)

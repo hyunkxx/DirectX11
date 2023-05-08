@@ -21,6 +21,9 @@ public:
 	void SetupShadowDepthStencilView(ID3D11DepthStencilView* pDepthStencil) {
 		m_pShadowDepthStencilView = pDepthStencil;
 	};
+	void SetupMiddleDepthStencilView(ID3D11DepthStencilView* pDepthStencil) {
+		m_pSmallDepthStencilView = pDepthStencil;
+	};
 	void SetupSmallDepthStencilView(ID3D11DepthStencilView* pDepthStencil) {
 		m_pSmallDepthStencilView = pDepthStencil;
 	};
@@ -33,6 +36,7 @@ public:
 	HRESULT Begin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT, _bool bClear = true);
 	HRESULT ShadowBegin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
 	HRESULT BeginTarget(ID3D11DeviceContext* pContext, class CRenderTarget* pTarget, _bool bClear = true);
+	HRESULT MiddleBeginTarget(ID3D11DeviceContext* pContext, CRenderTarget * pTarget, _bool bClear = true);
 	HRESULT SmallBeginTarget(ID3D11DeviceContext* pContext, CRenderTarget * pTarget, _bool bClear = true);
 	HRESULT End(ID3D11DeviceContext* pContext);
 
@@ -59,6 +63,7 @@ private:
 	ID3D11DepthStencilView* m_pDepthStencilView = nullptr;
 	ID3D11DepthStencilView* m_pStaticShadowDepthStencilView = nullptr;
 	ID3D11DepthStencilView* m_pShadowDepthStencilView = nullptr;
+	ID3D11DepthStencilView* m_pMiddleDepthStencilView = nullptr;
 	ID3D11DepthStencilView* m_pSmallDepthStencilView = nullptr;
 };
 

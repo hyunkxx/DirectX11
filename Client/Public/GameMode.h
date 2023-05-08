@@ -5,6 +5,8 @@
 #include "GameObject.h"
 #include "Renderer.h"
 
+#define LEVEL_ANYWHERE CGameMode::GetInstance()->GetCurrentLevel()
+
 class CGameMode final : public CBase
 {
 public:
@@ -18,7 +20,7 @@ public:
 public:
 	void SetCurrentLevel(_uint nCurrentLevel) { m_nCurrentLevel = nCurrentLevel; }
 	_uint GetCurrentLevel() const { return m_nCurrentLevel; };
-
+	
 private:
 	_uint m_nCurrentLevel = 0;
 
