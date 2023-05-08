@@ -186,15 +186,21 @@ public:
 
 	enum PlayerStatePhysics
 	{
+		PSP_NONE,
+
 		PSP_WALK_F,
 		PSP_WALK_B,
-		PSP_WALK_L,
-		PSP_WALK_R,
+		PSP_WALK_LF,
+		PSP_WALK_LB,
+		PSP_WALK_RF,
+		PSP_WALK_RB ,
 
 		PSP_RUN_F,
 		PSP_RUN_B,
-		PSP_RUN_L,
-		PSP_RUN_R,
+		PSP_RUN_LF,
+		PSP_RUN_LB,
+		PSP_RUN_RF,
+		PSP_RUN_RB,
 
 		PSP_SPRINT_F,
 		PSP_SPRINT_B,

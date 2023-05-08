@@ -96,6 +96,8 @@ HRESULT CLevel_AnimTool::Ready_Layer_Camera(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANIMTOOL, OBJECT::DYNAMIC_CAMERA, pLayerTag, L"dynamic_camera", &CameraDesc)))
 		return E_FAIL;
 
+	static_cast<CDynamicCamera*>(pGameInstance->Find_GameObject(LEVEL_ANIMTOOL, L"dynamic_camera"))->Set_Use(true);
+
 	return S_OK;
 }
 

@@ -52,6 +52,7 @@ void CAnimToolManager::Save_State()
 
 		tMultiState.iAnimID[CCharacter::ANIMSET_BASE] = (_uint)m_pMultiState->iAnimID[CCharacter::ANIMSET_BASE];
 		tMultiState.iAnimID[CCharacter::ANIMSET_RIBBON] = (_uint)m_pMultiState->iAnimID[CCharacter::ANIMSET_RIBBON];
+		tMultiState.iNextState = (_uint)m_pMultiState->iNextState;
 		tMultiState.iRotationType = (_uint)m_pMultiState->iRotationType;
 		tMultiState.FramePerSec = (_double)m_pMultiState->FramePerSec;
 		tMultiState.bLoop = m_pMultiState->bLoop;
@@ -104,6 +105,7 @@ void CAnimToolManager::RenderGUI()
 
 	CGameInstance* pGI = CGameInstance::GetInstance();
 
+	ImGui::SetNextWindowSize(ImVec2(500.f, 1000.f));
 	PUSHID;
 	ImGui::Begin("AnimTool");
 
@@ -728,8 +730,8 @@ void CAnimToolManager::Update_Information()
 		// State
 		m_iStateID = *m_pTargetVTF->Get_StateID();
 
-
-		m_pTargetVTF->SetUp_Animation();
+		m_pTargetVTF->SetUp_State();
+		//m_pTargetVTF->SetUp_Animation();
 	}
 	else if (MODEL_GENERIC == m_iModelType && nullptr != m_pTargetGeneric)
 	{

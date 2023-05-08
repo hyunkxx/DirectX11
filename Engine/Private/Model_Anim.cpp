@@ -260,12 +260,12 @@ HRESULT CModel_Anim::SetUp_BoneMatrices(CShader * pShaderCom, const char * pCons
 	return  pShaderCom->Set_Matrices(pConstantName, MeshBoneMatrices, 256);
 }
 
-HRESULT CModel_Anim::SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate)
+HRESULT CModel_Anim::SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate, _bool bContinue)
 {
 	if (iAnimationIndex >= m_iNumAnimations)
 		return E_FAIL;
 
-	m_pAnimController->SetUp_Animation(iAnimationIndex, this, bInterpolate);
+	m_pAnimController->SetUp_Animation(iAnimationIndex, this, bInterpolate, bContinue);
 
 	return S_OK;
 }

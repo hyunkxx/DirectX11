@@ -17,10 +17,6 @@ HRESULT CChannel::Initialize(CHANNELINFO * pChannelInfo, CModel_Anim * pModel)
 	m_iNumKeyFrames = pChannelInfo->s_iNumKeyFrames;
 	m_KeyFrames.reserve(m_iNumKeyFrames);
 
-	_float3	vScale;
-	_float4	vRotation;
-	_float3	vPosition;
-
 	for (_uint i = 0; i < m_iNumKeyFrames; ++i)
 	{
 		m_KeyFrames.push_back(pChannelInfo->s_pKeyFrames[i]);

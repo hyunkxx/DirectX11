@@ -181,6 +181,8 @@
     <ClCompile Include="..\Private\Rect_Effect_P.cpp">
       <Filter>src\06. Effect</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\PlayerCamera.cpp" />
+    <ClCompile Include="..\Private\CameraCurve.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -337,6 +339,8 @@
     <ClInclude Include="..\Public\Particle_Effect_P.h">
       <Filter>src\06. Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CameraCurve.h" />
+    <ClInclude Include="..\Public\PlayerCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

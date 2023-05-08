@@ -14,7 +14,7 @@ HRESULT CAnimController::Initialize(_uint iNumBones)
 	return S_OK;
 }
 
-HRESULT CAnimController::SetUp_Animation(_uint iAnimationIndex, CModel_Anim * pModel, _bool bInterpolate)
+HRESULT CAnimController::SetUp_Animation(_uint iAnimationIndex, CModel_Anim * pModel, _bool bInterpolate, _bool bContinue)
 {
 	m_iPrevAnimation = m_iCurAnimation;
 	m_iCurAnimation = iAnimationIndex;
@@ -41,7 +41,11 @@ HRESULT CAnimController::SetUp_Animation(_uint iAnimationIndex, CModel_Anim * pM
 	m_tAnimState.vecCurrentKeyFrame.resize(pModel->Get_Animation(m_iCurAnimation)->Get_NumChannels());
 
 	// 0√ ±‚»≠
-	m_tAnimState.FrameAcc = m_tAnimState.FrameRemain;
+	if (true == bContinue)
+		m_tAnimState.FrameAcc = m_tAnimState.FrameRemain;
+	else
+		m_tAnimState.FrameAcc = 0.0;
+
 	m_tAnimState.FrameRemain = 0.0;
 	m_tAnimState.isFinished = false;
 	ZeroMemory(&m_tAnimState.vCurRootBoneMove, sizeof(_float3));

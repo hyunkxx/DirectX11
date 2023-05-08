@@ -46,27 +46,27 @@ public:
 		m_pRootBone = Get_BonePtr(pBoneName);
 	}
 
-	void Set_ShotBone(const _tchar* pBoneName)
-	{
-		m_pShotBone = Get_BonePtr(pBoneName);
-	}
+	//void Set_ShotBone(const _tchar* pBoneName)
+	//{
+	//	m_pShotBone = Get_BonePtr(pBoneName);
+	//}
 
-	void Set_TopBone(const _tchar* pTopBone)
-	{
-		m_pTopBone = Get_BonePtr(pTopBone);
-	}
+	//void Set_TopBone(const _tchar* pTopBone)
+	//{
+	//	m_pTopBone = Get_BonePtr(pTopBone);
+	//}
 
-	void Set_BottomBones(const _tchar* pRightBoneName, const _tchar* pLeftBoneName)
-	{
-		m_pRightBottom = Get_BonePtr(pRightBoneName);
-		m_pLeftBottom = Get_BonePtr(pLeftBoneName);
-	}
+	//void Set_BottomBones(const _tchar* pRightBoneName, const _tchar* pLeftBoneName)
+	//{
+	//	m_pRightBottom = Get_BonePtr(pRightBoneName);
+	//	m_pLeftBottom = Get_BonePtr(pLeftBoneName);
+	//}
 
 	CBone* Get_RootBone() { return m_pRootBone; }
-	CBone* Get_ShotBone() { return m_pShotBone; }
-	CBone* Get_TopBone() { return m_pTopBone; }
-	CBone* Get_RightBottomBone() { return m_pRightBottom; }
-	CBone* Get_LeftBottomBone() { return m_pLeftBottom; }
+	//CBone* Get_ShotBone() { return m_pShotBone; }
+	//CBone* Get_TopBone() { return m_pTopBone; }
+	//CBone* Get_RightBottomBone() { return m_pRightBottom; }
+	//CBone* Get_LeftBottomBone() { return m_pLeftBottom; }
 
 	void	Set_OffsetZero();
 
@@ -89,7 +89,7 @@ public:
 	HRESULT	SetUp_BoneMatrices(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex);
 
 	/* 재생할 애니메이션에 따라 AnimController를 초기화한다. */
-	HRESULT SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate); 
+	HRESULT SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate, _bool bContinue = false);
 	/* 애니메이션 재생한다.(안에서 Invalidate_CombinedMatrices 호출 안함) */
 	void	Play_Animation(_double TimeDelta, _float4* pRotationOut = nullptr, _float3* pMoveOut = nullptr, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr);
 
@@ -103,10 +103,10 @@ protected:
 	_uint					m_iNumBones = { 0 };
 	vector<class CBone*>	m_Bones;
 	CBone*					m_pRootBone = { nullptr };
-	CBone*					m_pShotBone = { nullptr };
-	CBone*					m_pTopBone = { nullptr };
-	CBone*					m_pRightBottom = { nullptr };
-	CBone*					m_pLeftBottom = { nullptr };
+	//CBone*					m_pShotBone = { nullptr };
+	//CBone*					m_pTopBone = { nullptr };
+	//CBone*					m_pRightBottom = { nullptr };
+	//CBone*					m_pLeftBottom = { nullptr };
 
 
 protected:

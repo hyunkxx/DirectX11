@@ -192,6 +192,7 @@
     <ClInclude Include="..\public\Application.h" />
     <ClInclude Include="..\public\AppManager.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\Public\CameraCurve.h" />
     <ClInclude Include="..\public\Character.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="..\Public\Particle_Effect_P.h" />
     <ClInclude Include="..\public\Parts.h" />
     <ClInclude Include="..\Public\PartsKey.h" />
+    <ClInclude Include="..\Public\PlayerCamera.h" />
     <ClInclude Include="..\Public\Rect_Effect_P.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\public\SoundKey.h" />
@@ -265,6 +267,7 @@
     <ClCompile Include="..\private\Application.cpp" />
     <ClCompile Include="..\private\AppManager.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\Private\CameraCurve.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\DissolveKey.cpp" />
     <ClCompile Include="..\private\DynamicCamera.cpp" />
@@ -283,6 +286,7 @@
     <ClCompile Include="..\Private\Particle_Effect_P.cpp" />
     <ClCompile Include="..\private\Parts.cpp" />
     <ClCompile Include="..\Private\PartsKey.cpp" />
+    <ClCompile Include="..\Private\PlayerCamera.cpp" />
     <ClCompile Include="..\Private\Rect_Effect_P.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\private\SoundKey.cpp" />

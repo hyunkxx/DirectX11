@@ -36,14 +36,19 @@ public:
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void Set_Use(_bool bUse)
+	{
+		m_bUse = bUse;
+	}
+
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;
 	virtual void Free() override;
 
 protected:
-	class CTransform*	m_pTransform = { nullptr };
 	class CPipeLine*	m_pPipeLine = { nullptr };
 	CAMERA_DESC			m_CameraDesc;
+	_bool				m_bUse = { false };
 
 };
 

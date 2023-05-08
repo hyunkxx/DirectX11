@@ -41,7 +41,7 @@ public:
 	}
 public:
 	HRESULT Initialize(_uint iNumBones);
-	HRESULT SetUp_Animation(_uint iAnimationIndex, class CModel_Anim* pModel, _bool bInterpolate);
+	HRESULT SetUp_Animation(_uint iAnimationIndex, class CModel_Anim* pModel, _bool bInterpolate, _bool bContinue);
 	void Play_Animation(_double TimeDelta, class CModel_Anim* pModel, _float4* pRotationOut = nullptr, _float3* pMoveOut = nullptr, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr);
 
 

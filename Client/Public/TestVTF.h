@@ -24,7 +24,7 @@ public:
 	{
 		PARTS_WEAPON_MAIN,
 		PARTS_WEAPON_SUB,
-		//PARTS_HULU,
+		PARTS_HULU,
 		PARTS_END
 	};
 
@@ -132,6 +132,9 @@ private:
 	// Parts
 	class CParts*		m_Parts[PARTS_END] = { nullptr, };
 	CBone*				m_PartsBone[PBONE_END] = { nullptr, };
+
+
+	_bool m_bInputLock = { false };
 
 
 

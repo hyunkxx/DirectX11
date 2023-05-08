@@ -77,7 +77,7 @@ HRESULT CPlayerGirl::Initialize(void * pArg)
 	m_Scon.ePositionState = PS_GROUND;
 	m_tCurState = m_tStates[0];
 	SetUp_State();
-
+	SetUp_Animations(false);
 	return S_OK;
 }
 
@@ -92,7 +92,9 @@ void CPlayerGirl::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 	
-	Key_Input(TimeDelta);
+
+
+		Key_Input(TimeDelta);
 
 	Tick_State(TimeDelta);
 
@@ -205,10 +207,10 @@ void CPlayerGirl::RenderGUI()
 {
 }
 
-void CPlayerGirl::SetUp_Animations()
+void CPlayerGirl::SetUp_Animations(_bool bContinue)
 {
-	m_pAnimSetCom[ANIMSET_BASE]->SetUp_Animation(m_tCurState.iAnimID[ANIMSET_BASE], m_tCurState.bLerp);
-	m_pAnimSetCom[ANIMSET_RIBBON]->SetUp_Animation(m_tCurState.iAnimID[ANIMSET_RIBBON], m_tCurState.bLerp);
+	m_pAnimSetCom[ANIMSET_BASE]->SetUp_Animation(m_tCurState.iAnimID[ANIMSET_BASE], m_tCurState.bLerp, bContinue);
+	m_pAnimSetCom[ANIMSET_RIBBON]->SetUp_Animation(m_tCurState.iAnimID[ANIMSET_RIBBON], m_tCurState.bLerp, bContinue);
 }
 
 HRESULT CPlayerGirl::Add_Components()
@@ -421,8 +423,6 @@ void CPlayerGirl::SetUp_State()
 		else
 			m_Scon.vMovement = m_Scon.vPrevMovement;
 	}
-
-	SetUp_Animations();
 }
 
 HRESULT CPlayerGirl::SetUp_ShaderResources()
@@ -482,88 +482,100 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 {
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
-	// 애니메이션 테스트용 임시 코드
-	if (pGame->InputKey(DIK_1) == KEY_STATE::TAP)
-	{
-		CEffect* pEffect = pGame->Get_Effect(L"YangYang_Jump_Attack_01");
-		pEffect->Play_Effect(&m_WorldMatrix);
-	}
-
-	if (pGame->InputKey(DIK_C) == KEY_STATE::TAP)
-	{
-		m_Scon.bWalk = !m_Scon.bWalk;
-	}
-
-	/*if (pGame->InputKey(DIK_UP) == KEY_STATE::TAP)
-	{
-		m_Scon.iNextState = m_Scon.iCurState + 1;
-
-		if (m_Scon.iNextState >= iState_End)
-			m_Scon.iNextState = iState_End - 1;
-
-		SetUp_State();
-	}
-
-	if (pGame->InputKey(DIK_DOWN) == KEY_STATE::TAP)
-	{
-		m_Scon.iNextState = m_Scon.iCurState - 1;
-
-		if (m_Scon.iNextState <= 0)
-			m_Scon.iNextState = 0;
-
-		SetUp_State();
-	}*/
-
-	if (pGame->InputKey(DIK_TAB) == KEY_STATE::TAP)
-	{
-		m_Scon.iNextState = 145;
-		SetUp_State();
-	}
-
 	//
 	INPUT eCurFrameInput = INPUT_NONE;
+	_bool bInputDir[4] = { false, false, false, false };
 
 	// 이동 기능 구현용 임시 코드
 	_matrix matCam = pGame->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
 	_vector vCamLookXZ = XMVector3Normalize(XMVectorSetY(matCam.r[2], 0.f));
 
-	// 이동 방향 체크
-	_bool bInputDir[4] = { false, false, false, false };
-	if (pGame->InputKey(DIK_UP) == KEY_STATE::HOLD)
-		bInputDir[0] = true;
-
-	else if (pGame->InputKey(DIK_DOWN) == KEY_STATE::HOLD)
-		bInputDir[1] = true;
-
-	if (pGame->InputKey(DIK_LEFT) == KEY_STATE::HOLD)
-		bInputDir[2] = true;
-
-	else if (pGame->InputKey(DIK_RIGHT) == KEY_STATE::HOLD)
-		bInputDir[3] = true;
-
-	if (bInputDir[0] ||
-		bInputDir[1] ||
-		bInputDir[2] ||
-		bInputDir[3])
-		eCurFrameInput = INPUT_MOVE;
-	else
-		eCurFrameInput = INPUT_NONE;
-		
-	// Shift 입력 시 회피
-	if (pGame->InputKey(DIK_LSHIFT) == KEY_STATE::HOLD)
+	// 입력 제한 걸기
+	if (pGame->InputKey(DIK_I) == KEY_STATE::TAP)
 	{
-		eCurFrameInput = INPUT_DASH;
+		m_bInputLock = !m_bInputLock;
 	}
 
-	//
-	if (pGame->InputKey(DIK_SPACE) == KEY_STATE::HOLD)
+	if (m_bInputLock)
 	{
-		eCurFrameInput = INPUT_SPACE;
-	}
+		// 애니메이션 테스트용 임시 코드
+		if (pGame->InputKey(DIK_1) == KEY_STATE::TAP)
+		{
+			CEffect* pEffect = pGame->Get_Effect(L"YangYang_Jump_Attack_01");
+			pEffect->Play_Effect(&m_WorldMatrix);
+		}
 
-	if (pGame->InputMouse(DIMK_LB) == KEY_STATE::TAP)
-	{
-		eCurFrameInput = INPUT_ATTACK;
+		if (pGame->InputKey(DIK_C) == KEY_STATE::TAP)
+		{
+			m_Scon.bWalk = !m_Scon.bWalk;
+		}
+
+		/*if (pGame->InputKey(DIK_UP) == KEY_STATE::TAP)
+		{
+		m_Scon.iNextState = m_Scon.iCurState + 1;
+
+		if (m_Scon.iNextState >= iState_End)
+		m_Scon.iNextState = iState_End - 1;
+
+		SetUp_State();
+		}
+
+		if (pGame->InputKey(DIK_DOWN) == KEY_STATE::TAP)
+		{
+		m_Scon.iNextState = m_Scon.iCurState - 1;
+
+		if (m_Scon.iNextState <= 0)
+		m_Scon.iNextState = 0;
+
+		SetUp_State();
+		}*/
+
+		if (pGame->InputKey(DIK_TAB) == KEY_STATE::TAP)
+		{
+			m_Scon.iNextState = 145;
+			SetUp_State();
+		}
+
+
+
+		// 이동 방향 체크
+
+		if (pGame->InputKey(DIK_UP) == KEY_STATE::HOLD)
+			bInputDir[0] = true;
+
+		else if (pGame->InputKey(DIK_DOWN) == KEY_STATE::HOLD)
+			bInputDir[1] = true;
+
+		if (pGame->InputKey(DIK_LEFT) == KEY_STATE::HOLD)
+			bInputDir[2] = true;
+
+		else if (pGame->InputKey(DIK_RIGHT) == KEY_STATE::HOLD)
+			bInputDir[3] = true;
+
+		if (bInputDir[0] ||
+			bInputDir[1] ||
+			bInputDir[2] ||
+			bInputDir[3])
+			eCurFrameInput = INPUT_MOVE;
+		else
+			eCurFrameInput = INPUT_NONE;
+
+		// Shift 입력 시 회피
+		if (pGame->InputKey(DIK_LSHIFT) == KEY_STATE::HOLD)
+		{
+			eCurFrameInput = INPUT_DASH;
+		}
+
+		//
+		if (pGame->InputKey(DIK_SPACE) == KEY_STATE::HOLD)
+		{
+			eCurFrameInput = INPUT_SPACE;
+		}
+
+		if (pGame->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
+			eCurFrameInput = INPUT_ATTACK;
+		}
 	}
 	
 
@@ -685,11 +697,10 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 	// 지금 상태를 끊고 다음 상태로 갱신 할지 여부
 	if (m_Scon.iCurState != m_Scon.iNextState)
 	{
-	
 		if (m_tCurState.iPriority <= m_tStates[m_Scon.iNextState].iPriority)
 		{
 			SetUp_State();
-
+			SetUp_Animations(false);
 			// 상태 갱신 시 1번만
 			if (CCharacter::ROT_ONSTART == m_tCurState.iRotationType)
 			{
@@ -754,6 +765,8 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 			m_Scon.iNextState = m_Scon.iCurState;
 			SetUp_State();
 			m_tCurState.bLerp = false;
+			SetUp_Animations(true);
+			
 		}
 		else
 		{
@@ -761,6 +774,7 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 			{
 				m_Scon.iNextState = m_tCurState.iNextState;
 				SetUp_State();
+				SetUp_Animations(true);
 			}
 		}
 	}
@@ -881,8 +895,8 @@ HRESULT CPlayerGirl::Init_Parts()
 	m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON7);
 	m_Parts[PARTS_WEAPON_SUB] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_SWORD_0_SCABBARD, &PartsDesc));
 	m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON7);
-	//m_Parts[PARTS_HULU] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_HULU, &PartsDesc));
-
+	m_Parts[PARTS_HULU] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_HULU_0, &PartsDesc));
+	m_Parts[PARTS_HULU]->Set_Parent(PBONE_HULU);
 
 	return S_OK;
 }

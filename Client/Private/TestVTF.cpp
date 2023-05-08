@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Parts.h"
+#include "PartsKey.h"
 
 
 CTestVTF::CTestVTF(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -62,56 +63,66 @@ void CTestVTF::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	CGameInstance* pGame = CGameInstance::GetInstance();
-	if (pGame->InputKey(DIK_RIGHT) == KEY_STATE::TAP)
+
+	if (pGame->InputKey(DIK_I) == KEY_STATE::TAP)
 	{
-		++m_tStates[m_iStateID].iAnimID[ANIMSET_BASE];
-		SetUp_State();
+		m_bInputLock = !m_bInputLock;
 	}
-	if (pGame->InputKey(DIK_LEFT) == KEY_STATE::TAP)
+	
+	if (m_bInputLock)
 	{
-		--m_tStates[m_iStateID].iAnimID[ANIMSET_BASE];
-		SetUp_State();
-	}
-
-	if (pGame->InputKey(DIK_UP) == KEY_STATE::TAP)
-	{
-		m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON2);
-		m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON1);
-	}
-
-	if (pGame->InputKey(DIK_DOWN) == KEY_STATE::TAP)
-	{
-		m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON4);
-		m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON3);
-	}
-
-	if (pGame->InputKey(DIK_F) == KEY_STATE::TAP)
-	{
-		m_tStates[m_iStateID].bLoop = !m_tStates[m_iStateID].bLoop;
-	}
-
-	if (pGame->InputKey(DIK_R) == KEY_STATE::TAP)
-	{
-		m_TrackPos[ANIMSET_BASE] = 0.f;
-		m_TrackPos[ANIMSET_RIBBON] = 0.f;
-		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-
-
-		// StateKey 처리
-		for (_int i = 0; i < m_tStates[m_iStateID].iKeyCount; ++i)
+		if (pGame->InputKey(DIK_RIGHT) == KEY_STATE::TAP)
 		{
-			if (nullptr != m_tStates[m_iStateID].ppStateKeys[i])
-				m_tStates[m_iStateID].ppStateKeys[i]->Reset();
+			++m_tStates[m_iStateID].iAnimID[ANIMSET_BASE];
+			SetUp_State();
+		}
+		if (pGame->InputKey(DIK_LEFT) == KEY_STATE::TAP)
+		{
+			--m_tStates[m_iStateID].iAnimID[ANIMSET_BASE];
+			SetUp_State();
 		}
 
+		if (pGame->InputKey(DIK_UP) == KEY_STATE::TAP)
+		{
+			m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON2);
+			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON1);
+		}
 
-		SetUp_State();
-	}
+		if (pGame->InputKey(DIK_DOWN) == KEY_STATE::TAP)
+		{
+			m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON4);
+			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON3);
+		}
 
-	if (pGame->InputKey(DIK_SPACE) == KEY_STATE::TAP)
-	{
-		m_bPlay = !m_bPlay;
+		if (pGame->InputKey(DIK_F) == KEY_STATE::TAP)
+		{
+			m_tStates[m_iStateID].bLoop = !m_tStates[m_iStateID].bLoop;
+		}
+
+		if (pGame->InputKey(DIK_R) == KEY_STATE::TAP)
+		{
+			m_TrackPos[ANIMSET_BASE] = 0.f;
+			m_TrackPos[ANIMSET_RIBBON] = 0.f;
+			m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+
+
+			// StateKey 처리
+			for (_int i = 0; i < m_tStates[m_iStateID].iKeyCount; ++i)
+			{
+				if (nullptr != m_tStates[m_iStateID].ppStateKeys[i])
+					m_tStates[m_iStateID].ppStateKeys[i]->Reset();
+			}
+
+
+			SetUp_State();
+		}
+
+		if (pGame->InputKey(DIK_SPACE) == KEY_STATE::TAP)
+		{
+			m_bPlay = !m_bPlay;
+		}
 	}
+	
 
 	Tick_State(TimeDelta);
 
@@ -234,20 +245,20 @@ void CTestVTF::Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _doubl
 
 		}
 	}
-	//// Hulu
-	//else if (1 == iParts)
-	//{
-	//	// 안보이게 한다.
-	//	if (0 == iState)
-	//	{
+	// Hulu
+	else if (1 == iParts)
+	{
+		// 안보이게 한다.
+		if (0 == iState)
+		{
 
-	//	}
-	//	//보이게 한다.
-	//	else if (1 == iState)
-	//	{
-	//		
-	//	}
-	//}
+		}
+		//보이게 한다.
+		else if (1 == iState)
+		{
+			
+		}
+	}
 }
 
 void CTestVTF::Safe_AnimID()
@@ -333,13 +344,88 @@ HRESULT CTestVTF::Init_States()
 {
 	ZeroMemory(m_tStates, sizeof(MULTISTATE_TOOL) * 200);
 
-	for (_uint i = 0; i < 200; ++i)
+	// 로드하는 코드
+	for (_int i = 0; i < 200; ++i)
 	{
-		m_tStates[i].FramePerSec = (_float)m_pAnimSetCom[ANIMSET_BASE]->Get_Animation(0)->Get_TicksPerSecond();
-		m_tStates[i].bLoop = true;
-		m_tStates[i].bLerp = true;
-		m_tStates[i].bRootMotion = true;
+		_tchar szBuffer[MAX_PATH];
+		wsprintf(szBuffer, TEXT("../../Data/CharState/PlayerGirl/PlayerGirl_%d.state"), i);
+		HANDLE hFile = CreateFile(szBuffer, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			continue;
+
+
+		DWORD dwByte = 0;
+
+		MULTISTATE tMultiState;
+		ZeroMemory(&tMultiState, sizeof(MULTISTATE));
+
+		ReadFile(hFile, &tMultiState, sizeof(CCharacter::MULTISTATE) - sizeof(CStateKey**), &dwByte, nullptr);
+
+		if (0 != tMultiState.iKeyCount)
+		{
+			tMultiState.ppStateKeys = new CStateKey*[tMultiState.iKeyCount];
+			ZeroMemory(tMultiState.ppStateKeys, sizeof(CStateKey*) * tMultiState.iKeyCount);
+
+			for (_uint j = 0; j < tMultiState.iKeyCount; ++j)
+			{
+				CStateKey::BaseData tBaseData;
+				ReadFile(hFile, &tBaseData, sizeof(CStateKey::BaseData), &dwByte, nullptr);
+
+				switch (tBaseData.iType)
+				{
+				case CStateKey::TYPE_EFFECT:
+
+					break;
+				case CStateKey::TYPE_PARTS:
+					tMultiState.ppStateKeys[j] = CPartsKey::Create(m_pDevice, m_pContext, &tBaseData);
+					break;
+				case CStateKey::TYPE_PRIORITY:
+
+					break;
+				case CStateKey::TYPE_DISSOLVE:
+
+					break;
+				case CStateKey::TYPE_OBB:
+
+					break;
+				case CStateKey::TYPE_MISSILE:
+
+					break;
+				case CStateKey::TYPE_SOUND:
+
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		else
+			tMultiState.ppStateKeys = nullptr;
+
+		;
+
+		// 읽어온 정보들을 멤버 변수에 저장
+		m_tStates[i].iAnimID[CCharacter::ANIMSET_BASE] = (_int)tMultiState.iAnimID[CCharacter::ANIMSET_BASE];
+		m_tStates[i].iAnimID[CCharacter::ANIMSET_RIBBON] = (_int)tMultiState.iAnimID[CCharacter::ANIMSET_RIBBON];
+
+		m_tStates[i].iRotationType = (_int)tMultiState.iRotationType;
+		m_tStates[i].FramePerSec = (_float)tMultiState.FramePerSec;
+		m_tStates[i].bLoop = tMultiState.bLoop;
+		m_tStates[i].bLerp = tMultiState.bLerp;
+		m_tStates[i].bRootMotion = tMultiState.bRootMotion;
+		m_tStates[i].bApplyCoolTime = tMultiState.bApplyCoolTime;
+		m_tStates[i].bWeaponState = tMultiState.bWeaponState;
+		m_tStates[i].CoolTime = (_float)tMultiState.CoolTime;
+		m_tStates[i].iPhysicMoveID = (_int)tMultiState.iPhysicMoveID;
+		m_tStates[i].iPriority = (_int)tMultiState.iPriority;
+		m_tStates[i].iKeyCount = (_int)tMultiState.iKeyCount;
+
+		m_tStates[i].ppStateKeys = tMultiState.ppStateKeys;
+
+		CloseHandle(hFile);
 	}
+
 
 	return S_OK;
 }
@@ -622,7 +708,8 @@ HRESULT CTestVTF::Init_Parts()
 	m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON7);
 	m_Parts[PARTS_WEAPON_SUB] = static_cast<CParts*>(pGame->Clone_GameObject(m_tDesc.iPartsID[PARTS_WEAPON_SUB], &PartsDesc));
 	m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON7);
-	//m_Parts[PARTS_HULU] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_HULU, &PartsDesc));
+	m_Parts[PARTS_HULU] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_HULU_0, &PartsDesc));
+	m_Parts[PARTS_HULU]->Set_Parent(PBONE_HULU);
 
 
 	return S_OK;
@@ -665,7 +752,7 @@ void CTestVTF::Free()
 		{
 			if (nullptr != m_tStates[i].ppStateKeys)
 			{
-				for (_int j = 0; j < m_tStates[i].iKeyCount; ++j)
+				for (_int j = 0; j <  m_tStates[i].iKeyCount; ++j)
 				{
 					Safe_Release(m_tStates[i].ppStateKeys[j]);
 				}

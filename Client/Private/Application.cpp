@@ -90,10 +90,10 @@ HRESULT CApplication::Render()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	/*m_pGUIManager->NewFrame();
+	m_pGUIManager->NewFrame();
 	m_pGameInstance->RenderGUI();
 	m_pGameInstance->RenderLevelUI();
-	m_pGUIManager->Render();*/
+	m_pGUIManager->Render();
 
 	m_pContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
 #endif
@@ -120,7 +120,7 @@ HRESULT CApplication::Render()
 #endif // _DEBUG
 
 #ifdef _DEBUG
-	//m_pGUIManager->RenderDrawData();
+	m_pGUIManager->RenderDrawData();
 #endif
 
 	m_pGameInstance->Present();

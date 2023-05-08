@@ -122,11 +122,13 @@ private:
 	// 이펙트 재생용 임시
 	_float4x4			m_WorldMatrix;
 
+	_bool				m_bInputLock = { false };
+
 private:
 	HRESULT Add_Components();
 	void Init_AnimSystem();
 	void SetUp_State();
-	void SetUp_Animations();
+	void SetUp_Animations(_bool bContinue);
 
 	void Key_Input(_double TimeDelta);
 	void Tick_State(_double TimeDelta);

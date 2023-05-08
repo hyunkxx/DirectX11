@@ -4,6 +4,7 @@
 #include "AppManager.h"
 #include "GameInstance.h"
 #include "DynamicCamera.h"
+#include "PlayerCamera.h"
 #include "Character.h"
 #include "PlayerGirl.h"
 
@@ -105,6 +106,18 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 	else if (pGameInstance->InputKey(DIK_5) == KEY_STATE::TAP)
 	{
 		pGameInstance->StartRGBSplit(2.f);
+	}
+
+
+	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::TAP)
+	{
+		m_pDynamicCamera->Set_Use(true);
+		m_pPlayerCamera->Set_Use(false);
+	}
+	if (pGameInstance->InputKey(DIK_NUMPAD1) == KEY_STATE::TAP)
+	{
+		m_pDynamicCamera->Set_Use(false);
+		m_pPlayerCamera->Set_Use(true);
 	}
 }
 
@@ -230,6 +243,23 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 
 	m_pDynamicCamera = (CDynamicCamera*)pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, L"dynamic_camera");
 
+	//PlayerCamera Setting
+	CPlayerCamera::PLAYERCAM_DESC PCamDesc;
+	ZeroMemory(&PCamDesc, sizeof CPlayerCamera::PLAYERCAM_DESC);
+	PCamDesc.CamDesc = CameraDesc;
+	// PCamDesc.pPlayerTransform  >> Start에서 채움
+	// PCamDesc.vDir Start에서 채움
+	PCamDesc.fDistance = 4.f;
+	PCamDesc.fXAngle = 20.f;
+	
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYER_CAMERA, pLayerTag, L"player_camera", &PCamDesc)))
+		return E_FAIL;
+
+	m_pPlayerCamera = (CPlayerCamera*)pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, L"player_camera");
+
+	m_pDynamicCamera->Set_Use(true);
+	m_pPlayerCamera->Set_Use(false);
+
 	return S_OK;
 }
 
@@ -245,7 +275,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 
 	CPlayerGirl::Init_States(m_pDevice, m_pContext);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYERGIRL, pLayerTag, TEXT("PlayerGirl"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYERGIRL, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
 
 	return S_OK;

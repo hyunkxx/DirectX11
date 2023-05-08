@@ -6,19 +6,25 @@
 CCharacter::PHYSICMOVE CCharacter::PlayerStatePhysics[PSP_END]
 {
 	// (x, -z, y) 
+	// 안 움직임
+	{ true, true, _float3(0.f, -1.f, 0.f),	0.f, 0.f, 0.f, 0.f, 0.f },
 	// 걷기 _F, 등속
 	{ true, true, _float3(0.f, -1.f, 0.f),	1.f, 0.f, 0.f, 0.f, 0.f },
 	{ true, true, _float3(0.f, 1.f, 0.f),	1.f, 0.f, 0.f, 0.f, 0.f },
-	{ true, true, _float3(-1.f, 0.f, 0.f),	1.f, 0.f, 0.f, 0.f, 0.f },
-	{ true, true, _float3(1.f, 0.f, 0.f),	1.f, 0.f, 0.f, 0.f, 0.f },
+	{ true, true, _float3(-1.f, -1.f, 0.f),	1.f, 0.f, 0.f, 0.f, 0.f },
+	{ true, true, _float3(-1.f, 1.f, 0.f),	1.f, 0.f, 0.f, 0.f, 0.f },
+	{ true, true, _float3(1.f, -1.f, 0.f),	1.f, 0.f, 0.f, 0.f, 0.f },
+	{ true, true, _float3(1.f, 1.f, 0.f),	1.f, 0.f, 0.f, 0.f, 0.f },
 	// 달리기 _F, 등속
 	{ true, true, _float3(0.f, -1.f, 0.f),	3.3f, 0.f, 0.f, 0.f, 0.f },
 	{ true, true, _float3(0.f, 1.f, 0.f),	3.3f, 0.f, 0.f, 0.f, 0.f },
-	{ true, true, _float3(-1.f, 0.f, 0.f),	3.3f, 0.f, 0.f, 0.f, 0.f },
-	{ true, true, _float3(1.f, 0.f, 0.f),	3.3f, 0.f, 0.f, 0.f, 0.f },
+	{ true, true, _float3(-1.f, -1.f, 0.f),	3.3f, 0.f, 0.f, 0.f, 0.f },
+	{ true, true, _float3(-1.f, 1.f, 0.f),	3.3f, 0.f, 0.f, 0.f, 0.f },
+	{ true, true, _float3(1.f, -1.f, 0.f),	3.3f, 0.f, 0.f, 0.f, 0.f },
+	{ true, true, _float3(1.f, 1.f, 0.f),	3.3f, 0.f, 0.f, 0.f, 0.f },
 	// 질주 _F, 등속
-	{ true, true, _float3(0.f, -1.f, 0.f),	5.f, 0.f, 0.f, 0.f, 0.f },
-	{ true, true, _float3(0.f, -1.f, 0.f),	5.5f, 0.f, 0.f, 0.f, 0.f },
+	{ true, true, _float3(0.f, -1.f, 0.f),	7.5f, 0.f, 0.f, 0.f, 0.f },
+	{ true, true, _float3(0.f, -1.f, 0.f),	9.0f, 0.f, 0.f, 0.f, 0.f },
 	/*{},
 	{},
 	{},

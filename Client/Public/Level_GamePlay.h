@@ -27,6 +27,7 @@ public:
 	virtual void Free() override;
 
 	class CDynamicCamera* m_pDynamicCamera = nullptr;
+	class CPlayerCamera* m_pPlayerCamera = nullptr;
 
 	std::thread thread1;
 	int m_iThreadTest = 0;
