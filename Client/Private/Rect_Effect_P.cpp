@@ -293,8 +293,6 @@ HRESULT CRect_Effect_P::SetUp_ShaderResources()
 	//Decal
 	if (7 < m_EffectDesc.iPass)
 	{
-		XMStoreFloat4x4(&InvWV, XMLoadFloat4x4(&InvViewMat) * XMLoadFloat4x4(&InvWorldMatrix));
-
 		if (m_EffectDesc.iRenderGroup == (_int)CRenderer::RENDER_SSD || m_EffectDesc.iRenderGroup == (_int)CRenderer::RENDER_GLOWSSD)
 		{
 			if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Diffuse"), "g_BackTexture")))
