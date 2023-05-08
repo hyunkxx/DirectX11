@@ -403,8 +403,6 @@ HRESULT CTestVTF::Init_States()
 		else
 			tMultiState.ppStateKeys = nullptr;
 
-		;
-
 		// 읽어온 정보들을 멤버 변수에 저장
 		m_tStates[i].iAnimID[CCharacter::ANIMSET_BASE] = (_int)tMultiState.iAnimID[CCharacter::ANIMSET_BASE];
 		m_tStates[i].iAnimID[CCharacter::ANIMSET_RIBBON] = (_int)tMultiState.iAnimID[CCharacter::ANIMSET_RIBBON];
@@ -710,7 +708,6 @@ HRESULT CTestVTF::Init_Parts()
 	m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON7);
 	m_Parts[PARTS_HULU] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_HULU_0, &PartsDesc));
 	m_Parts[PARTS_HULU]->Set_Parent(PBONE_HULU);
-
 
 	return S_OK;
 }
