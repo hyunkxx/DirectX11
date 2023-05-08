@@ -14,16 +14,19 @@ CLobbyCharacter::CLobbyCharacter(const CLobbyCharacter & rhs)
 	, m_eState(rhs.m_eState)
 	, m_iModelID(rhs.m_iModelID)
 	, m_iAnimID(rhs.m_iAnimID)
+	, m_iModelType(rhs.m_iModelType)
 {
 }
 
-HRESULT CLobbyCharacter::Initialize_Prototype(_uint iModelID, _uint iAnimID)
+HRESULT CLobbyCharacter::Initialize_Prototype(_uint iModelID, _uint iAnimID, _uint iModelType)
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
 	m_iModelID = iModelID;
 	m_iAnimID = iAnimID;
+	m_iModelType = iModelType;
+
 	return S_OK;
 }
 
@@ -38,7 +41,18 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 	Init_AnimSystem();
 
 	m_pAnimSetCom->SetUp_Animation(m_eState, true);
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, POSITION_ZERO);
+
+	switch (m_iModelType)
+	{
+	case LEFT_MODEL:
+		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(-90.f));
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(-1.2f, 0.f, 0.f, 1.f));
+		break;
+	case RIGHT_MODEL:
+		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(90.f));
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(1.2f, 0.f, 0.f, 1.f));
+		break;
+	}
 
 	return S_OK;
 }
@@ -55,7 +69,7 @@ void CLobbyCharacter::Tick(_double TimeDelta)
 	{
 		m_eState = STATE(m_eState + 1);
 		if (m_eState == STATE_END)
-			m_eState = STATE_IDLE;
+			m_eState = STATE_SELECTED;
 
 		m_pAnimSetCom->SetUp_Animation(m_eState, true);
 	}
@@ -64,6 +78,12 @@ void CLobbyCharacter::Tick(_double TimeDelta)
 
 void CLobbyCharacter::LateTick(_double TimeDelta)
 {
+	if(m_bOnMoused)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+	else
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
+
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 }
 
 HRESULT CLobbyCharacter::Render()
@@ -97,6 +117,12 @@ HRESULT CLobbyCharacter::Render()
 			m_pShaderCom->Begin(iPass);
 
 		m_pModelCom->Render(i);
+
+		if (m_bOnMoused)
+		{
+			m_pShaderCom->Begin(8);
+			m_pModelCom->Render(i);
+		}
 	}
 
 	return S_OK;
@@ -229,11 +255,11 @@ HRESULT CLobbyCharacter::Setup_ShadowShaderResource()
 	return S_OK;
 }
 
-CLobbyCharacter * CLobbyCharacter::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _uint iModelID, _uint iAnimID)
+CLobbyCharacter * CLobbyCharacter::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _uint iModelID, _uint iAnimID, _uint iModelType)
 {
 	CLobbyCharacter* pInstance = new CLobbyCharacter(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(iModelID, iAnimID)))
+	if (FAILED(pInstance->Initialize_Prototype(iModelID, iAnimID, iModelType)))
 	{
 		MSG_BOX("Failed to Create : CLobbyCharacter");
 		Safe_Release(pInstance);

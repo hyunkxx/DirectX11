@@ -20,7 +20,7 @@ public:
 
 	const LIGHT_DESC* GetLightDesc(_uint Index);
 
-	void ShadowUpdate();
+	void ShadowUpdate(_float fLightHight);
 	void SetLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatrix);
 	_float4x4 GetLightFloat4x4(LIGHT_MATRIX eLightMatrix);
 	_float4x4 GetLightInverseFloat4x4(LIGHT_MATRIX eLightMatrix);

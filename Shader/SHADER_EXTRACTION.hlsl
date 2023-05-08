@@ -90,6 +90,20 @@ PS_OUT PS_EXTRACTION_COMBINE_BLEND(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_EXTRACTION_FINAL(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vSourColor = g_SourTexture.Sample(LinearBorderSampler, In.vTexUV);
+	vector vDestColor = g_DestTexture.Sample(LinearBorderSampler, In.vTexUV);
+
+	if (vSourColor.a == 0.f)
+		Out.vColor = vDestColor;
+	else
+		Out.vColor = vSourColor;
+
+	return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -144,4 +158,17 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_EXTRACTION_COMBINE_BLEND();
 	}
+
+	pass Extraction_Final_Pass3
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_EXTRACTION_FINAL();
+	}	
 }

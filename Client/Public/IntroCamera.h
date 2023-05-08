@@ -2,12 +2,18 @@
 
 #include "Camera.h"
 
+BEGIN(Engine)
+class CGameObject;
+END
+
 BEGIN(Client)
+class CLobbyCharacter;
 
 class CIntroCamera final : public CCamera
 {
 public:
-	enum INTRO_STATE { ORIGIN, FIRST, SECOND };
+	enum INTRO_STATE { CAM_ORIGIN, CAM_LEFT, CAM_RIGHT };
+	enum { CHAR_LEFT, CHAR_RIGHT, CHAR_END };
 
 private:
 	explicit CIntroCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -28,6 +34,9 @@ private:
 	HRESULT Setup_ShaderResources();
 
 public:
+	void TargetChange(_double TimeDelta);
+
+public:
 	_float GetCameraSpeed();
 
 public:
@@ -36,9 +45,13 @@ public:
 	virtual void Free() override;
 
 private:
-	INTRO_STATE m_eState = INTRO_STATE::ORIGIN;
-	_float3 m_vOriginPos = { 0.f, 3.f, -10.f };
-	_float3 m_vFirstPos, m_vSecondPos;
+	_bool m_bOnMouse[CHAR_END];
+	RECT tagRectSize[CHAR_END];
+
+	_uint m_eCurrentState = INTRO_STATE::CAM_ORIGIN;
+	_float4 vLookAtPos = { 0.f, 1.f, 0.f, 1.f };
+
+	CLobbyCharacter* pLobbyCharacter[CHAR_END];
 
 };
 

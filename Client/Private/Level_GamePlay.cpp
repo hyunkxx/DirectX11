@@ -15,6 +15,13 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 HRESULT CLevel_GamePlay::Initialize()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	//Off
+	pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)SHADOW_LEVEL::SHADOW_HIGH);
+	pGameInstance->OutlineToggle();
+	pGameInstance->SSAOToggle();
+
 	if(FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
 
@@ -41,7 +48,7 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 
 	//카메라 기준으로 쉐도우 조명 갱신
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	pGameInstance->ShadowUpdate();
+	pGameInstance->ShadowUpdate(120.f);
 
 	//임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것
 	static _uint iShadowLevel = 0;

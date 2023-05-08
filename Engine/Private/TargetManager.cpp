@@ -73,9 +73,9 @@ HRESULT CTargetManager::Begin(ID3D11DeviceContext * pContext, const _tchar * pMR
 
 	for (auto& pRenderTarget : *pMRTList)
 	{
-		if(bClear)
+		if (bClear)
 			pRenderTarget->Clear();
-		
+
 		pRenderTargets[iViewCount++] = pRenderTarget->Get_RTV();
 	}
 

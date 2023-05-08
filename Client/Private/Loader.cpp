@@ -111,7 +111,12 @@ HRESULT CLoader::Load_Level_Logo()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
 		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
-	
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : Sky");
+		return E_FAIL;
+	}
 
 #pragma endregion
 
@@ -119,7 +124,13 @@ HRESULT CLoader::Load_Level_Logo()
 #pragma region GAMEOBJECTS
 	
 	m_szLoadingStateText = L"객체 원형을 준비중";
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_CHARACTER, CLobbyCharacter::Create(m_pDevice, m_pContext, DMODEL::DMD_PLAYERGIRL_MODEL, DMODEL::DMD_LOBBY_CHARACTER_MODEL))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_CHARACTER_LEFT, CLobbyCharacter::Create(m_pDevice, m_pContext, DMODEL::DMD_PLAYERGIRL_MODEL, DMODEL::DMD_LOBBY_CHARACTER_MODEL, 0))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_CHARACTER_RIGHT, CLobbyCharacter::Create(m_pDevice, m_pContext, DMODEL::DMD_PLAYERGIRL_MODEL, DMODEL::DMD_LOBBY_CHARACTER_MODEL, 1))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY, CSky::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion
@@ -182,7 +193,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 		MSG_BOX("Failed to Prototype In Loader : Sky");
 		return E_FAIL;
 	}
-
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODEL_INSTANCE, CShader::Create(m_pDevice, m_pContext,
@@ -228,9 +238,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_1, CTree_1::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY, CSky::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion

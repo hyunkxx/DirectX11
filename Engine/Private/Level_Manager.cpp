@@ -18,6 +18,8 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel* pCurrentLevel)
 	m_pCurrentLevel = pCurrentLevel;
 	m_iLevelIndex = iLevelIndex;
 
+	pObject_Manager->Start(iLevelIndex);
+
 	return S_OK;
 }
 
@@ -26,12 +28,12 @@ void CLevel_Manager::Tick_Level(_double TimeDelta)
 	if (nullptr == m_pCurrentLevel)
 		return;
 
-	if (!m_bTickStart)
-	{
-		m_bTickStart = true;
-		CObject_Manager* pObject_Manager = CObject_Manager::GetInstance();
-		pObject_Manager->Start(m_iLevelIndex);
-	}
+	//if (!m_bTickStart)
+	//{
+	//	m_bTickStart = true;
+	//	CObject_Manager* pObject_Manager = CObject_Manager::GetInstance();
+	//	pObject_Manager->Start(m_iLevelIndex);
+	//}
 
 	m_pCurrentLevel->Tick(TimeDelta);
 }

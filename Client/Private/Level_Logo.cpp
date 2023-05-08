@@ -19,7 +19,7 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 HRESULT CLevel_Logo::Initialize()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
+	
 	LIGHT_DESC LightDesc;
 
 	// Directional
@@ -30,16 +30,22 @@ HRESULT CLevel_Logo::Initialize()
 	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
+	//On
+	//pGameInstance->SetLUT(CRenderer::LUT_KURO);
+	pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)SHADOW_LEVEL::SHADOW_HIGH);
+	pGameInstance->OutlineToggle();
+	pGameInstance->SSAOToggle();
+
 	if (FAILED(pGameInstance->AddLight(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
+	if (FAILED(Ready_Layer_Character(TEXT("layer_character"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Character(TEXT("layer_character"))))
+	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -52,7 +58,7 @@ void CLevel_Logo::Tick(_double TimeDelta)
 	pAppManager->SetTitle(L"LEVEL_LOGO");
 #endif
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	pGameInstance->ShadowUpdate();
+	pGameInstance->ShadowUpdate(40.f);
 
 	if (pGameInstance->InputKey(DIK_RETURN) == KEY_STATE::TAP)
 	{
@@ -63,11 +69,12 @@ void CLevel_Logo::Tick(_double TimeDelta)
 
 HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar* pLayerTag)
 {
-	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	_uint nCurrentLevel = pGameMode->GetCurrentLevel();
- 	if (FAILED(pGameInstance->Add_GameObject(nCurrentLevel, OBJECT::FLOOR, pLayerTag, L"terrain")))
+ 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANYWHERE, OBJECT::FLOOR, pLayerTag, L"terrain")))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANYWHERE, OBJECT::SKY, pLayerTag, L"sky")))
 		return E_FAIL;
 
 	return S_OK;
@@ -84,8 +91,8 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.TransformDesc.fMoveSpeed = 5.f;
 	CameraDesc.TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
 
-	CameraDesc.vEye = _float3(0.f, 3.f, -10.f);
-	CameraDesc.vAt = _float3(0.f, 3.f, 0.f);
+	CameraDesc.vEye = _float3(0.f, 1.f, -4.f);
+	CameraDesc.vAt = _float3(0.f, 1.f, 0.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
 	CameraDesc.fFovy = XMConvertToRadians(45.f);
@@ -107,7 +114,10 @@ HRESULT CLevel_Logo::Ready_Layer_Character(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::LOBBY_CHARACTER, pLayerTag, L"Lobby_Character_0")))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::LOBBY_CHARACTER_LEFT, pLayerTag, L"LobbyCharacter_Left")))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::LOBBY_CHARACTER_RIGHT, pLayerTag, L"LobbyCharacter_Right")))
 		return E_FAIL;
 
 	return S_OK;

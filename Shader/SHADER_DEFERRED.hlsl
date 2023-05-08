@@ -2,6 +2,7 @@
 
 float4x4  g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_LightViewMatrix, g_LightProjMatrix;
 
+texture2D g_BaseTexture;
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 texture2D g_DepthTexture;
@@ -296,9 +297,6 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 
 		Out.vColor = vFinalColor;
 	}
-
-	//if (0.0f == Out.vColor.a)
-	//	discard;
 
 	return Out;
 }

@@ -42,11 +42,14 @@ const LIGHT_DESC* CLightManager::GetLightDesc(_uint Index)
 	return (*iter)->GetLightDesc();
 }
 
-void CLightManager::ShadowUpdate()
+void CLightManager::ShadowUpdate(_float fLightHight)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	_float fRatio = fLightHight * 0.45f;
+
 	_vector vCamPos = XMLoadFloat4(&pGameInstance->Get_CamPosition());
-	_vector vLightEye = XMVectorSet(XMVectorGetX(vCamPos) - 50.f, 120.f, XMVectorGetZ(vCamPos) - 50.f, 1.f);
+	_vector vLightEye = XMVectorSet(XMVectorGetX(vCamPos) - fRatio, fLightHight, XMVectorGetZ(vCamPos) - fRatio, 1.f);
 	_vector vLightAt = XMVectorSet(XMVectorGetX(vCamPos) + 10.f, 0.f, XMVectorGetZ(vCamPos) + 10.f, 1.f);
 	_matrix vLightViewMatrix = XMMatrixLookAtLH(vLightEye, vLightAt, VECTOR_UP);
 	pGameInstance->SetLightMatrix(vLightViewMatrix, LIGHT_MATRIX::LIGHT_VIEW);

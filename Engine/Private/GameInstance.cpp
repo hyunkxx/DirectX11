@@ -452,12 +452,12 @@ _float4 CGameInstance::GetLightDirection() const
 	return m_pLightManager->GetLightDirection();
 }
 
-void CGameInstance::ShadowUpdate()
+void CGameInstance::ShadowUpdate(_float fLightHight)
 {
 	if (nullptr == m_pLightManager)
 		return;
 
-	return m_pLightManager->ShadowUpdate();
+	return m_pLightManager->ShadowUpdate(fLightHight);
 }
 
 HRESULT CGameInstance::Set_ShaderRenderTargetResourceView(CShader * pShader, const _tchar * pTargetTag, const char * pContantName)

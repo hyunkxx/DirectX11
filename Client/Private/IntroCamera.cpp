@@ -2,6 +2,7 @@
 #include "..\Public\IntroCamera.h"
 
 #include "GameInstance.h"
+#include "Lobby_Character.h"
 
 CIntroCamera::CIntroCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera(pDevice, pContext)
@@ -26,22 +27,43 @@ HRESULT CIntroCamera::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	pLobbyCharacter[0] = nullptr;
+	pLobbyCharacter[1] = nullptr;
+
 	m_bUse = true;
+
+	tagRectSize[CHAR_LEFT].left = 0;
+	tagRectSize[CHAR_LEFT].right = 390;
+	tagRectSize[CHAR_LEFT].top = 0;
+	tagRectSize[CHAR_LEFT].bottom = g_iWinSizeY;
+
+	tagRectSize[CHAR_RIGHT].left = 900;
+	tagRectSize[CHAR_RIGHT].right = g_iWinSizeX;
+	tagRectSize[CHAR_RIGHT].top = 0;
+	tagRectSize[CHAR_RIGHT].bottom = g_iWinSizeY;
 
 	return S_OK;
 }
 
 void CIntroCamera::Start()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	int a = 100;
+
+ 	pLobbyCharacter[CHAR_LEFT] = static_cast<CLobbyCharacter*>(pGameInstance->Find_GameObject(LEVEL_LOGO, L"LobbyCharacter_Left"));
+	pLobbyCharacter[CHAR_RIGHT] = static_cast<CLobbyCharacter*>(pGameInstance->Find_GameObject(LEVEL_LOGO, L"LobbyCharacter_Right"));
+
+	assert(pLobbyCharacter[CHAR_LEFT]);
+	assert(pLobbyCharacter[CHAR_RIGHT]);
 }
 
 void CIntroCamera::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	//_vector vCurrentPos
-
 	__super::Tick(TimeDelta);
+
+	TargetChange(TimeDelta);
 }
 
 void CIntroCamera::LateTick(_double TimeDelta)
@@ -66,6 +88,91 @@ HRESULT CIntroCamera::Add_Components()
 HRESULT CIntroCamera::Setup_ShaderResources()
 {
 	return S_OK;
+}
+
+void CIntroCamera::TargetChange(_double TimeDelta)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	POINT pPoint;
+	GetCursorPos(&pPoint);
+	ScreenToClient(g_hWnd, &pPoint);
+
+	if (PtInRect(&tagRectSize[CHAR_LEFT], pPoint))
+	{
+		m_bOnMouse[CHAR_LEFT] = true;
+		m_bOnMouse[CHAR_RIGHT] = false;
+
+		if(m_eCurrentState != CAM_LEFT)
+			pLobbyCharacter[CHAR_LEFT]->SetMouseInRect(true);
+
+		pLobbyCharacter[CHAR_RIGHT]->SetMouseInRect(false);
+	}
+	else
+	{
+		pLobbyCharacter[CHAR_LEFT]->SetMouseInRect(false);
+	}
+
+	if (PtInRect(&tagRectSize[CHAR_RIGHT], pPoint))
+	{
+		m_bOnMouse[CHAR_LEFT] = false;
+		m_bOnMouse[CHAR_RIGHT] = true;
+
+		pLobbyCharacter[CHAR_LEFT]->SetMouseInRect(false);
+
+		if (m_eCurrentState != CAM_RIGHT)
+			pLobbyCharacter[CHAR_RIGHT]->SetMouseInRect(true);
+	}
+	else
+		static_cast<CLobbyCharacter*>(pLobbyCharacter[CHAR_RIGHT])->SetMouseInRect(false);
+
+	if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+	{
+		if (m_bOnMouse[CHAR_LEFT])
+		{
+			m_eCurrentState = CAM_LEFT;
+			pLobbyCharacter[CHAR_LEFT]->SetMouseInRect(false);
+		}
+		else if (m_bOnMouse[CHAR_RIGHT])
+		{
+			m_eCurrentState = CAM_RIGHT;
+			pLobbyCharacter[CHAR_RIGHT]->SetMouseInRect(false);
+		}
+	}
+	else if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP)
+	{
+		m_eCurrentState = CAM_ORIGIN;
+		m_bOnMouse[CHAR_LEFT] = false;
+		m_bOnMouse[CHAR_RIGHT] = false;
+	}
+
+	_vector vCurrentPos;
+	vCurrentPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+
+	switch (m_eCurrentState)
+	{
+	case CIntroCamera::CAM_ORIGIN:
+		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(0.f, 1.f, -4.f, 1.f), (_float)TimeDelta * 4.f);
+		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(0.f, 1.f, 0.f, 1.f), (_float)TimeDelta * 1.5f));
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurrentPos);
+		m_pMainTransform->LookAt(XMLoadFloat4(&vLookAtPos));
+		break;
+	case CIntroCamera::CAM_LEFT:
+		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(-2.f, 1.5f, -0.5f, 1.f), (_float)TimeDelta * 3.5f);
+		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(1.f, 0.9f, 1.5f, 1.f), (_float)TimeDelta * 0.8f));
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurrentPos);
+		m_pMainTransform->LookAt(XMLoadFloat4(&vLookAtPos));
+		
+		break;
+	case CIntroCamera::CAM_RIGHT:
+		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(2.f, 1.5f, -0.5f, 1.f), (_float)TimeDelta * 3.5f);
+		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(-1.f, 0.9f, 1.5f, 1.f), (_float)TimeDelta * 0.8f));
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurrentPos);
+		m_pMainTransform->LookAt(XMLoadFloat4(&vLookAtPos));
+
+		break;
+	}
+
 }
 
 _float CIntroCamera::GetCameraSpeed()

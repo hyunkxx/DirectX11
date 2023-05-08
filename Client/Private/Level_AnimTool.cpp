@@ -15,6 +15,9 @@ CLevel_AnimTool::CLevel_AnimTool(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 HRESULT CLevel_AnimTool::Initialize()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)SHADOW_LEVEL::SHADOW_LOW);
+
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
@@ -37,7 +40,7 @@ void CLevel_AnimTool::Tick(_double TimeDelta)
 	pAppManager->SetTitle(L"LEVEL_ANIMTOOL");
 #endif
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	pGameInstance->ShadowUpdate();
+	pGameInstance->ShadowUpdate(60.f);
 }
 
 void CLevel_AnimTool::RenderLevelUI()

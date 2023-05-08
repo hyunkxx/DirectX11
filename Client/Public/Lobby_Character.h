@@ -18,10 +18,12 @@ class CLobbyCharacter : public CGameObject
 public:
 	enum STATE
 	{
-		STATE_IDLE,
 		STATE_SELECTED,
+		STATE_IDLE,
 		STATE_END
 	};
+
+	enum { LEFT_MODEL, RIGHT_MODEL };
 
 private:
 	CLobbyCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -29,14 +31,17 @@ private:
 	virtual ~CLobbyCharacter() = default;
 
 public:
-	virtual HRESULT	Initialize_Prototype(_uint iModelID, _uint iAnimID);
+	virtual HRESULT	Initialize_Prototype(_uint iModelID, _uint iAnimID, _uint iModelType);
 	virtual HRESULT Initialize(void* pArg);
-	virtual void Start();
+	virtual void Start() override;
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render() override;
 	virtual HRESULT RenderShadow() override;
 	virtual void RenderGUI() override;
+
+public:
+	void SetMouseInRect(_bool bValue) { m_bOnMoused = bValue; };
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -45,6 +50,8 @@ private:
 	CModel_VTF*			m_pModelCom = { nullptr };
 
 private:
+	_uint m_iModelType = 0;
+
 	_uint m_iModelID = { 0 };
 	_uint m_iAnimID = { 0 };
 	// State
@@ -59,9 +66,12 @@ private:
 	HRESULT Setup_ShadowShaderResource();
 
 public:
-	static CLobbyCharacter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iModelID, _uint iAnimID);
+	static CLobbyCharacter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iModelID, _uint iAnimID, _uint iModelType);
 	CGameObject* Clone(void* pArg);
 	virtual void Free() override;
+
+private:
+	_bool m_bOnMoused = false;
 
 };
 

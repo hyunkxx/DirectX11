@@ -100,7 +100,7 @@ HRESULT CApplication::Render()
 	m_pContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
 #endif
 
-	m_pGameInstance->Clear_RenderTargetView(_float4(0.3f, 0.3f, 1.f, 1.f));
+	m_pGameInstance->Clear_RenderTargetView(_float4(0.f, 0.f, 0.f, 0.f));
 	m_pGameInstance->Clear_DepthStencilView();
 
 	m_pRenderer->Draw();

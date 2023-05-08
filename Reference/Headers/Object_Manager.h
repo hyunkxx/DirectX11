@@ -28,6 +28,7 @@ public:
 	void LateTick(_double TimeDelta);
 	void RenderGUI();
 	void Clear(_uint iLevelIndex);
+	void SetStart(_uint iLevel, _bool bValue) { m_bTickStart = bValue; }
 
 	class CLayer* Find_Layer(_uint iLevelIndex, const _tchar* pLayerTag);
 	unordered_map<const _tchar*, class CLayer*>* m_pLayers = { nullptr };
@@ -44,6 +45,9 @@ private:
 	_uint m_iLevelMaxCount;
 
 	static _uint s_iObjectCurrentID;
+
+	_uint m_iCurrentLevel = 0;
+	_bool m_bTickStart = false;
 
 };
 

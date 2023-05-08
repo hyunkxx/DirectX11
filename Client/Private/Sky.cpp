@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Sky.h"
 
+#include "GameMode.h"
 #include "GameInstance.h"
 
 CSky::CSky(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -41,6 +42,8 @@ HRESULT CSky::Initialize(void * pArg)
 void CSky::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	m_pTransformCom->Rotate(VECTOR_UP, TimeDelta);
 }
 
 void CSky::LateTick(_double TimeDelta)
@@ -48,7 +51,6 @@ void CSky::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	Correction_Y_SkyPos();
-
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vCamPos));
 
 	if (nullptr != m_pRendererCom)
@@ -64,7 +66,6 @@ HRESULT CSky::Render()
 		return E_FAIL;
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
-
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
@@ -99,7 +100,7 @@ HRESULT CSky::Add_Components()
 	ZeroMemory(&TransformDesc, sizeof TransformDesc);
 
 	TransformDesc.fMoveSpeed = 15.f;
-	TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
+	TransformDesc.fRotationSpeed = XMConvertToRadians(0.1f);
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
@@ -108,12 +109,12 @@ HRESULT CSky::Add_Components()
 	m_pTransformCom->Set_Scale(_float3(1.0f, 1.0f, 1.0f));
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, SMODEL::SMD_SKY,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SMODEL::SMD_SKY,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, SHADER::MODEL,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODEL,
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -141,9 +142,9 @@ HRESULT CSky::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CSky * CSky::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CSky* CSky::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CSky*			pInstance = new CSky(pDevice, pContext);
+	CSky* pInstance = new CSky(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -154,9 +155,9 @@ CSky * CSky::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	return pInstance;
 }
 
-CGameObject * CSky::Clone(void * pArg)
+CGameObject* CSky::Clone(void * pArg)
 {
-	CSky*			pInstance = new CSky(*this);
+	CSky* pInstance = new CSky(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{

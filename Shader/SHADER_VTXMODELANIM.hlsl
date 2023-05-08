@@ -15,6 +15,9 @@ texture2D	g_VertexTexture;
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 
+float4 g_RimColor = float4(1.f, 1.f, 1.f, 1.f);
+float g_RimPower = 1.f;
+
 struct VS_IN
 {
 	float3 vPosition : POSITION;
@@ -305,14 +308,14 @@ PS_OUT_OUTLINE PS_RimLight(PS_IN In)
 {
 	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
 
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	vector vCamDir = normalize(In.vWorldPos - g_vCamPosition);
 	float rim = 0;
 	rim = 1 - saturate(dot(In.vNormal, -vCamDir));
 
-	rim = pow(rim, 25.0f);
+	rim = pow(rim, g_RimPower);
 
-	float4 rimColor = float4(1.f, 1.f, 1.f, 0.7f);
-	rimColor = rim * rimColor;
+	float4 rimColor = rim * g_RimColor;
 	Out.vDiffuse = rimColor;
 
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
@@ -322,7 +325,35 @@ PS_OUT_OUTLINE PS_RimLight(PS_IN In)
 	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
 
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+	if (vNormalDesc.g > vNormalDesc.b)
+		Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
+
+	return Out;
+}
+
+PS_OUT_OUTLINE PS_DiffuseAddRim(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vCamDir = normalize(In.vWorldPos - g_vCamPosition);
+	float rim = 0;
+	rim = 1 - saturate(dot(In.vNormal, -vCamDir));
+
+	rim = pow(rim, g_RimPower);
+
+	float4 rimColor = (vDiffuse * 1.3f) + rim * g_RimColor;
+	Out.vDiffuse = rimColor;
+
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
 	if (vNormalDesc.g > vNormalDesc.b)
@@ -423,7 +454,7 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Eye();
 	}
-
+	
 	pass RimLight_Pass7
 	{
 		SetRasterizerState(RS_Default);
@@ -435,5 +466,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_RimLight();
+	}
+
+	pass DiffuseAddRim_Pass8
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_VTF();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_DiffuseAddRim();
 	}
 }
