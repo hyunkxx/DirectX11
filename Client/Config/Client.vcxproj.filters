@@ -183,7 +183,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\PlayerCamera.cpp" />
     <ClCompile Include="..\Private\CameraCurve.cpp" />
-    <ClCompile Include="..\private\Lobby_Character.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -342,7 +341,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\CameraCurve.h" />
     <ClInclude Include="..\Public\PlayerCamera.h" />
-    <ClInclude Include="..\public\Lobby_Character.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
