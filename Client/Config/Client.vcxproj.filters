@@ -198,6 +198,7 @@
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>src\02. GameObject\00. Environment</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Lobby_Character.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -368,6 +369,7 @@
     <ClInclude Include="..\Public\Sky.h">
       <Filter>src\02. GameObject\00. Environment</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Lobby_Character.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
