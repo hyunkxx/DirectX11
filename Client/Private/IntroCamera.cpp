@@ -26,6 +26,8 @@ HRESULT CIntroCamera::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_bUse = true;
+
 	return S_OK;
 }
 

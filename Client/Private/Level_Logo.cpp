@@ -7,7 +7,9 @@
 
 #include "Level_Loading.h"
 
+#include "IntroCamera.h"
 #include "DynamicCamera.h"
+#include "Lobby_Character.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -73,7 +75,6 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar* pLayerTag)
 
 HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
-	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	//Camera Setting
@@ -96,8 +97,7 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);
 	pGameInstance->SetLightMatrix(vLightProjMatrix, LIGHT_MATRIX::LIGHT_PROJ);
 
-	_uint nCurrentLevel = pGameMode->GetCurrentLevel();
-	if (FAILED(pGameInstance->Add_GameObject(nCurrentLevel, OBJECT::INTRO_CAMERA, pLayerTag, L"IntroCamera", &CameraDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::INTRO_CAMERA, pLayerTag, L"IntroCamera", &CameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -105,8 +105,10 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 HRESULT CLevel_Logo::Ready_Layer_Character(const _tchar * pLayerTag)
 {
-	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::LOBBY_CHARACTER, pLayerTag, L"Lobby_Character_0")))
+		return E_FAIL;
 
 	return S_OK;
 }

@@ -11,6 +11,9 @@ CLobbyCharacter::CLobbyCharacter(ID3D11Device * pDevice, ID3D11DeviceContext * p
 
 CLobbyCharacter::CLobbyCharacter(const CLobbyCharacter & rhs)
 	: CGameObject(rhs)
+	, m_eState(rhs.m_eState)
+	, m_iModelID(rhs.m_iModelID)
+	, m_iAnimID(rhs.m_iAnimID)
 {
 }
 
@@ -35,6 +38,7 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 	Init_AnimSystem();
 
 	m_pAnimSetCom->SetUp_Animation(m_eState, true);
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, POSITION_ZERO);
 
 	return S_OK;
 }
@@ -55,6 +59,7 @@ void CLobbyCharacter::Tick(_double TimeDelta)
 
 		m_pAnimSetCom->SetUp_Animation(m_eState, true);
 	}
+	Tick_State(TimeDelta);
 }
 
 void CLobbyCharacter::LateTick(_double TimeDelta)
@@ -74,7 +79,6 @@ HRESULT CLobbyCharacter::Render()
 		iPass = 3;
 	else
 		iPass = 4;
-
 
 	for (_uint i = 0; i < 6; ++i)
 	{
@@ -142,18 +146,17 @@ HRESULT CLobbyCharacter::Add_Components()
 		return E_FAIL;
 
 	// For.Com_Shader_ModelAnim
-	if (FAILED(__super::Add_Component(LEVEL_ANIMTOOL, SHADER::MODELANIM,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODELANIM,
 		TEXT("Com_Shader_ModelAnim"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Component(LEVEL_ANIMTOOL, m_iModelID,
+	if (FAILED(__super::Add_Component(LEVEL_LOGO, m_iModelID,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	/* For.Com_AnimSet_Base */
-	if (FAILED(__super::Add_Component(LEVEL_ANIMTOOL, m_iAnimID,
+	if (FAILED(__super::Add_Component(LEVEL_LOGO, m_iAnimID,
 		TEXT("Com_AnimSet_Base"), (CComponent**)&m_pAnimSetCom)))
 		return E_FAIL;
 
@@ -232,7 +235,7 @@ CLobbyCharacter * CLobbyCharacter::Create(ID3D11Device * pDevice, ID3D11DeviceCo
 
 	if (FAILED(pInstance->Initialize_Prototype(iModelID, iAnimID)))
 	{
-		MSG_BOX("Failed to Create : CTestVTF");
+		MSG_BOX("Failed to Create : CLobbyCharacter");
 		Safe_Release(pInstance);
 	}
 
@@ -246,7 +249,7 @@ CGameObject * CLobbyCharacter::Clone(void * pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Clone : CTestVTF");
+		MSG_BOX("Failed to Clone : CLobbyCharacter");
 		Safe_Release(pInstance);
 	}
 

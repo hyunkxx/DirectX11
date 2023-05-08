@@ -129,9 +129,6 @@
     <ClCompile Include="..\private\BackGround.cpp">
       <Filter>src\02. GameObject\02. BackGround</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Character.cpp">
-      <Filter>src\02. GameObject\03. Character</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Tree_0.cpp">
       <Filter>src\04. MapObject\00. Tree</Filter>
     </ClCompile>
@@ -198,7 +195,12 @@
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>src\02. GameObject\00. Environment</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Lobby_Character.cpp" />
+    <ClCompile Include="..\private\Lobby_Character.cpp">
+      <Filter>src\02. GameObject\03. Character\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Character.cpp">
+      <Filter>src\02. GameObject\03. Character\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -291,9 +293,6 @@
     <ClInclude Include="..\public\BackGround.h">
       <Filter>src\02. GameObject\02. BackGround</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Character.h">
-      <Filter>src\02. GameObject\03. Character</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Tree_0.h">
       <Filter>src\04. MapObject\00. Tree</Filter>
     </ClInclude>
@@ -369,7 +368,12 @@
     <ClInclude Include="..\Public\Sky.h">
       <Filter>src\02. GameObject\00. Environment</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Lobby_Character.h" />
+    <ClInclude Include="..\public\Lobby_Character.h">
+      <Filter>src\02. GameObject\03. Character\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Character.h">
+      <Filter>src\02. GameObject\03. Character\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -474,6 +478,9 @@
     </Filter>
     <Filter Include="src\02. GameObject\00. Environment">
       <UniqueIdentifier>{29d26517-95d4-47ce-a258-47894a317ff5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\03. Character\Base">
+      <UniqueIdentifier>{092a34af-15fc-48d5-9a09-f5da629e60c9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

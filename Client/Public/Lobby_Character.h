@@ -63,7 +63,6 @@ public:
 	CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 
-	CGameObject* pStaticObject = nullptr;
 };
 
 END
