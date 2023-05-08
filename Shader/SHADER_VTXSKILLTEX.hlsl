@@ -118,7 +118,7 @@ VS_OUT_NORMAL VS_MAIN_NORMALTEX(VS_IN In)
 	Out.vTexUV = In.vTexUV;
 	Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
 	Out.vProjPos = Out.vPosition;
-	Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix));
+	Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix)).xyz;
 	Out.vBiNormal = normalize(cross(Out.vNormal, Out.vTangent));
 
 	return Out;
@@ -322,7 +322,7 @@ PS_OUT	PS_MAIN_DISTORTION(PS_IN_NORMAL In)
 
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
-	float3 vWorldPos = In.vWorldPos + (normalize(vNormal) * g_fDisPower);
+	float3 vWorldPos = In.vWorldPos.xyz + (normalize(vNormal) * g_fDisPower);
 
 	matrix matVP;
 	matVP = mul(g_ViewMatrix, g_ProjMatrix);
@@ -366,7 +366,7 @@ PS_OUT	PS_MAIN_DISTORTION_N0_DEPTH(PS_IN_NORMAL In)
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
 
-	float3 vWorldPos = In.vWorldPos + (normalize(vNormal) * g_fDisPower);
+	float3 vWorldPos = In.vWorldPos.xyz + (normalize(vNormal) * g_fDisPower);
 
 	matrix matVP;
 	matVP = mul(g_ViewMatrix, g_ProjMatrix);
@@ -446,15 +446,15 @@ PS_OUT_DECAL	PS_MAIN_DECAL_NORMAL(PS_IN_DECAL In)
 	float3 vLook;
 
 	if(vScreenNormal.y > 0.f)
-		vLook = (0.f, 0.f, 1.f);
+		vLook = float3(0.f, 0.f, 1.f);
 	else
-		vLook = (0.f, 0.f, -1.f);
+		vLook = float3(0.f, 0.f, -1.f);
 
 	float3 vTangent;
 	float3 vBiNormal;
 
-	vTangent = normalize(cross(vScreenNormal , vLook));
-	vBiNormal = normalize(cross(vTangent , vScreenNormal));
+	vTangent = normalize(cross(vScreenNormal.xyz , vLook));
+	vBiNormal = normalize(cross(vTangent , vScreenNormal.xyz));
 
 	float3x3 WorldMatrix = float3x3(vTangent, vBiNormal, vScreenNormal.xyz);
 	Out.vNormal = float4(normalize(mul(vNormal , WorldMatrix)),1.f);

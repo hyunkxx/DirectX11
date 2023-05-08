@@ -92,8 +92,8 @@ void GS_MAIN_SPARK_RHOMBUS(point GS_IN In[1], inout TriangleStream<GS_OUT> Trian
 
 	float3 vRight, vUp;
 
-	vRight = In[0].vLook / 2.f;
-	vUp = In[0].vUp / 2.f;
+	vRight = In[0].vLook.xyz / 2.f;
+	vUp = In[0].vUp.xyz / 2.f;
 
 	Out[0].vPosition = vector(In[0].vPosition.xyz + vUp, 1.f);
 	Out[0].vPosition = mul(Out[0].vPosition, matVP);
@@ -154,8 +154,8 @@ void GS_MAIN_SPARK_RECT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangle
 
 	float3 vRight, vUp;
 
-	vRight = In[0].vLook / 2.f;
-	vUp = In[0].vUp / 2.f;
+	vRight = In[0].vLook.xyz / 2.f;
+	vUp = In[0].vUp.xyz / 2.f;
 
 	Out[0].vPosition = vector(In[0].vPosition.xyz - vRight + vUp, 1.f);
 	Out[0].vPosition = mul(Out[0].vPosition, matVP);
@@ -216,8 +216,8 @@ void GS_MAIN_SPARK_TRIANGLE(point GS_IN In[1], inout TriangleStream<GS_OUT> Tria
 
 	float3 vRight, vUp;
 
-	vRight = In[0].vLook / 2.f;
-	vUp = In[0].vUp / 2.f;
+	vRight = In[0].vLook.xyz / 2.f;
+	vUp = In[0].vUp.xyz / 2.f;
 
 	Out[0].vPosition = vector(In[0].vPosition.xyz + vRight, 1.f);
 	Out[0].vPosition = mul(Out[0].vPosition, matVP);

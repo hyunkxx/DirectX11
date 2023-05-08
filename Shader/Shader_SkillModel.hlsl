@@ -287,7 +287,7 @@ PS_OUT	PS_MAIN_DISTORTION(PS_IN_DISTORTION In)
 
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
-	float3 vWorldPos = In.vWorldPos + (normalize(vNormal) * g_fDisPower);
+	float3 vWorldPos = In.vWorldPos.xyz + (normalize(vNormal) * g_fDisPower);
 
 	matrix matVP;
 	matVP = mul(g_ViewMatrix, g_ProjMatrix);
@@ -334,7 +334,7 @@ PS_OUT	PS_MAIN_DISTORTION_N0_DEPTH(PS_IN_DISTORTION In)
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
 
-	float3 vWorldPos = In.vWorldPos + (normalize(vNormal) * g_fDisPower);
+	float3 vWorldPos = In.vWorldPos.xyz + (normalize(vNormal) * g_fDisPower);
 
 	matrix matVP;
 	matVP = mul(g_ViewMatrix, g_ProjMatrix);
