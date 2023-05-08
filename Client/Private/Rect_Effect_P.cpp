@@ -145,7 +145,7 @@ HRESULT CRect_Effect_P::Render()
 
 	m_pShaderCom->Begin(m_EffectDesc.iPass);
 
-	if (CRenderer::RENDER_SSD == m_EffectDesc.iRenderGroup)
+	if (CRenderer::RENDER_SSD == m_EffectDesc.iRenderGroup || CRenderer::RENDER_GLOWSSD == m_EffectDesc.iRenderGroup)
 		m_pVIBoxCom->Render();
 	else
 		m_pVIBufferCom->Render();
@@ -291,32 +291,38 @@ HRESULT CRect_Effect_P::SetUp_ShaderResources()
 #pragma endregion
 
 	//Decal
-	if (7 < m_EffectDesc.iPass && m_EffectDesc.iRenderGroup == (_int)CRenderer::RENDER_SSD)
+	if (7 < m_EffectDesc.iPass)
 	{
-		if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Diffuse"), "g_BackTexture")))
-			return E_FAIL;
-		if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Normal"), "g_BackNormalTexture")))
-			return E_FAIL;
-		if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Depth"), "g_DepthTexture")))
-			return E_FAIL;
-
-		_float4x4 InvViewMat = pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::TS_VIEW);
-		_float4x4 InvProjMat = pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::TS_PROJ);
-		_float4x4 InvWorldMatrix, InvWV;
-
-		XMStoreFloat4x4(&InvWorldMatrix, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_ResultMatirx)));
 		XMStoreFloat4x4(&InvWV, XMLoadFloat4x4(&InvViewMat) * XMLoadFloat4x4(&InvWorldMatrix));
 
-		if (FAILED(m_pShaderCom->SetMatrix("g_InvWV", &InvWV)))
-			return E_FAIL;
-		_float4 vInvPorj = _float4(1.f, 1.f, 1.f, 1.f);
-		XMStoreFloat4(&vInvPorj, XMVector4Transform(XMLoadFloat4(&vInvPorj), XMLoadFloat4x4(&InvProjMat)));
-		vInvPorj.y = -vInvPorj.y;
+		if (m_EffectDesc.iRenderGroup == (_int)CRenderer::RENDER_SSD || m_EffectDesc.iRenderGroup == (_int)CRenderer::RENDER_GLOWSSD)
+		{
+			if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Diffuse"), "g_BackTexture")))
+				return E_FAIL;
+			if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Normal"), "g_BackNormalTexture")))
+				return E_FAIL;
+			if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Depth"), "g_DepthTexture")))
+				return E_FAIL;
+			if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Static_Depth"), "g_Static_DepthTexture")))
+				return E_FAIL;
 
-		if (FAILED(m_pShaderCom->SetRawValue("g_InvProj", &vInvPorj, sizeof(_float4))))
-			return E_FAIL;
+			_float4x4 InvViewMat = pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::TS_VIEW);
+			_float4x4 InvProjMat = pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::TS_PROJ);
+			_float4x4 InvWorldMatrix, InvWV;
 
-	}
+			XMStoreFloat4x4(&InvWorldMatrix, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_ResultMatirx)));
+			XMStoreFloat4x4(&InvWV, XMLoadFloat4x4(&InvViewMat) * XMLoadFloat4x4(&InvWorldMatrix));
+
+			if (FAILED(m_pShaderCom->SetMatrix("g_InvWV", &InvWV)))
+				return E_FAIL;
+			_float4 vInvPorj = _float4(1.f, 1.f, 1.f, 1.f);
+			XMStoreFloat4(&vInvPorj, XMVector4Transform(XMLoadFloat4(&vInvPorj), XMLoadFloat4x4(&InvProjMat)));
+			vInvPorj.y = -vInvPorj.y;
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_InvProj", &vInvPorj, sizeof(_float4))))
+				return E_FAIL;
+		}
+	}	
 
 	if (m_bDistortion)
 	{

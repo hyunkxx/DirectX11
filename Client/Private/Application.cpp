@@ -303,18 +303,10 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 		CIntroCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	for (_int i = 0; 20 > i; i++)
-	{
-		list<EFFECT_DESC*> EffectDescList;
-		CGameInstance::GetInstance()->Load_Effect(g_hWnd, L"../../Resource/Effect/YangYang_Jump_Attack_01.bin" ,&EffectDescList);
-		CEffect* pEffect = CEffect_Player::Create(m_pDevice, m_pContext, "../../Resource/Effect/YangYang_Jump_Attack_01/", EffectDescList);
+	if (FAILED(Ready_Static_Effect()))
+		return E_FAIL;
+	
 
-		for (auto& iter : EffectDescList)
-			Safe_Delete(iter);
-		EffectDescList.clear();
-
-		CGameInstance::GetInstance()->Push_Effect(L"YangYang_Jump_Attack_01", pEffect);
-	}
 
 	return S_OK;
 }
@@ -342,6 +334,54 @@ void CApplication::DestroyManager()
 
 	CAppManager::DestroyInstance();
 	CGameMode::DestroyInstance();
+}
+
+HRESULT CApplication::Ready_Static_Effect()
+{
+	for (_int i = 0; 20 > i; i++)
+	{
+		if (FAILED(Add_Effect(g_hWnd, TEXT("../../Resource/Effect/YangYang_Jump_Attack_01.bin"),
+			"../../Resource/Effect/YangYang_Jump_Attack_01/")))
+			return E_FAIL;
+	}
+
+	for (_int i = 0; 20 > i; i++)
+	{
+		if (FAILED(Add_Effect(g_hWnd, TEXT("../../Resource/Effect/Test_SSD.bin"),
+			"../../Resource/Effect/Test_SSD/")))
+			return E_FAIL;
+	}
+
+	for (_int i = 0; 20 > i; i++)
+	{
+		if (FAILED(Add_Effect(g_hWnd, TEXT("../../Resource/Effect/Test_GLOW_SSD.bin"),
+			"../../Resource/Effect/Test_GLOW_SSD/")))
+			return E_FAIL;
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CApplication::Add_Effect(HWND _hWnd, const _tchar * EffectTag, const char * TextureTag)
+{
+	list<EFFECT_DESC*> EffectDescList;
+	CGameInstance::GetInstance()->Load_Effect(g_hWnd, EffectTag , &EffectDescList);
+	CEffect* pEffect = CEffect_Player::Create(m_pDevice, m_pContext, TextureTag , EffectDescList);
+
+	if (nullptr == pEffect)
+		return E_FAIL;
+
+	for (auto& iter : EffectDescList)
+		Safe_Delete(iter);
+	EffectDescList.clear();
+
+	_tchar FileName[MAX_PATH] = TEXT("");
+	_wsplitpath_s(EffectTag, nullptr, 0, nullptr, 0, FileName, MAX_PATH, nullptr, 0);
+	if (FAILED(CGameInstance::GetInstance()->Push_Effect(FileName, pEffect)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CApplication* CApplication::Create()
@@ -374,6 +414,4 @@ void CApplication::Free()
 
 	Safe_Release(m_pGameInstance);
 	CGameInstance::Engine_Release();
-
-
 }

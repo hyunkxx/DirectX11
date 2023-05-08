@@ -134,13 +134,15 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
-#pragma region SSD
-
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Static_Depth", ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Diffuse_SSD", ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Diffuse_Glow_SSD", ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
@@ -156,34 +158,13 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSD", L"Target_Diffuse_SSD")))
-		return E_FAIL;
-
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSD", L"Target_Normal_SSD")))
-		return E_FAIL;
-
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSD_BLEND", L"Target_Diffuse_SSD_Blend")))
-		return E_FAIL;
-
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSD_BLEND", L"Target_Normal_SSD_Blend")))
-		return E_FAIL;
-
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_EX", L"Target_Static_Depth")))
-		return E_FAIL;
-
-#pragma endregion
-
-#pragma region Distortion
-
-	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_Distortion"), ViewPortDesc.Width, ViewPortDesc.Height,
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Distortion", ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_DistortionMap"), ViewPortDesc.Width, ViewPortDesc.Height,
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_DistortionMap", ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-
-#pragma endregion
 
 	m_pBindTargets[(_uint)TARGET::BLUR_X] = m_pTargetManager->FindTarget(L"Target_BlurX");
 	m_pBindTargets[(_uint)TARGET::BLUR_Y] = m_pTargetManager->FindTarget(L"Target_BlurY");
@@ -222,6 +203,25 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Blend", L"Target_Blend")))
+		return E_FAIL;
+
+	//SSD
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSD", L"Target_Diffuse_SSD")))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSD", L"Target_Normal_SSD")))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSD_BLEND", L"Target_Diffuse_SSD_Blend")))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_SSD_BLEND", L"Target_Normal_SSD_Blend")))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_EX", L"Target_Static_Depth")))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Glow_SSD", L"Target_Diffuse_Glow_SSD")))
 		return E_FAIL;
 
 	//Glow
@@ -423,9 +423,10 @@ void CRenderer::Draw()
 	if (m_pRenderSetting->GetLUT() != CRenderer::LUT_DEFAULT)
 	{
 		ApplyLUT(m_pRenderSetting->GetLUT());
-		Extraction(L"Target_Diffuse", L"Target_LUT");
+		Extraction(L"Target_Diffuse_SSD_Blend", L"Target_LUT");
 	}
 
+	Render_GlowSSD();
 	Render_Particle();
 	Render_SpecularGlow();
 
@@ -714,6 +715,82 @@ void CRenderer::Render_Outline()
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
+}
+
+void CRenderer::Render_GlowSSD()
+{
+	if (nullptr == m_pTargetManager)
+		return;
+
+	if (m_RenderObject[RENDER_GLOWSSD].size() == 0)
+		return;
+
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Glow_SSD")))
+		return;
+
+	for (auto& pGameObject : m_RenderObject[RENDER_GLOWSSD])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObject[RENDER_GLOWSSD].clear();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+
+	CRenderTarget* pTarget = m_pTargetManager->FindTarget(L"Target_Diffuse");
+	m_pTargetManager->BeginTarget(m_pContext, pTarget);
+
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Diffuse_SSD_Blend", "g_DiffuseTexture")))
+		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Diffuse_Glow_SSD", "g_SSD_DiffuseTexture")))
+		return;
+
+	m_pShader->Begin(11);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+
+	Target_Blur(L"Target_Diffuse_Glow_SSD", 1);
+
+	CRenderTarget* pBlendTarget = m_pTargetManager->FindTarget(L"Target_Diffuse_SSD_Blend");
+	m_pTargetManager->BeginTarget(m_pContext, pBlendTarget);
+
+	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_Diffuse", "g_finalTexture")))
+		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_Diffuse_Glow_SSD", "g_GlowOriTexture")))
+		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY", "g_GlowTexture")))
+		return;
+
+	if (m_pRenderSetting->IsActiveBlackWhite())
+		m_pShader_Blur->Begin(4);
+	else
+		m_pShader_Blur->Begin(3);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+
 }
 
 void CRenderer::Render_Particle()
@@ -1020,7 +1097,7 @@ void CRenderer::AlphaSort(CRenderer::RENDER_GROUP eGroup)
 // LUT 필터 적용
 void CRenderer::ApplyLUT(_uint iIndex)
 {
-	CRenderTarget* pTargetDiffuse = m_pTargetManager->FindTarget(L"Target_Diffuse");
+	CRenderTarget* pTargetDiffuse = m_pTargetManager->FindTarget(L"Target_Diffuse_SSD_Blend");
 	CRenderTarget* pTargetLUT = m_pTargetManager->FindTarget(L"Target_LUT");
 
 	if (FAILED(m_pTargetManager->BeginTarget(m_pContext, pTargetLUT)))
@@ -1593,7 +1670,7 @@ void CRenderer::Ready_SSAO(const _tchar* pBindTargetTag)
 	if (FAILED(m_pShader_SSAO->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_SSAO, L"Target_Diffuse", "g_DiffuseTexture")))
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_SSAO, L"Target_Diffuse_SSD_Blend", "g_DiffuseTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_SSAO, L"Target_Normal_SSD_Blend", "g_NormalTexture")))
 		return;

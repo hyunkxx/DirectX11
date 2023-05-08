@@ -476,6 +476,8 @@ void CPlayerGirl::Set_WeaponUse(_bool bBool)
 
 void CPlayerGirl::Key_Input(_double TimeDelta)
 {
+	m_WorldMatrix = m_pMainTransform->Get_WorldMatrix();
+
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
 	//
@@ -500,7 +502,17 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			CEffect* pEffect = pGame->Get_Effect(L"YangYang_Jump_Attack_01");
 			pEffect->Play_Effect(&m_WorldMatrix);
 		}
-
+		if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
+		{
+			CEffect* pEffect = pGame->Get_Effect(L"Test_SSD");
+			pEffect->Play_Effect(&m_WorldMatrix);
+		}
+		if (pGame->InputKey(DIK_3) == KEY_STATE::TAP)
+		{
+			CEffect* pEffect = pGame->Get_Effect(L"Test_GLOW_SSD");
+			pEffect->Play_Effect(&m_WorldMatrix);
+		}
+		
 		if (pGame->InputKey(DIK_C) == KEY_STATE::TAP)
 		{
 			m_Scon.bWalk = !m_Scon.bWalk;

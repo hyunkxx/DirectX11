@@ -118,7 +118,7 @@ VS_OUT_NORMAL VS_MAIN_NORMALTEX(VS_IN In)
 	Out.vTexUV = In.vTexUV;
 	Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
 	Out.vProjPos = Out.vPosition;
-	Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix)).xyz;
+	Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix));
 	Out.vBiNormal = normalize(cross(Out.vNormal, Out.vTangent));
 
 	return Out;
@@ -186,6 +186,12 @@ struct PS_OUT_DECAL
 	float4			vDiffuse : SV_TARGET0;
 	float4			vNormal : SV_TARGET1;
 };
+
+struct PS_OUT_DECAL_NONORMAL
+{
+	float4			vDiffuse : SV_TARGET0;
+};
+
 
 struct PS_OUT_GLOW
 {
@@ -303,7 +309,7 @@ PS_OUT	PS_MAIN_DISTORTION(PS_IN_NORMAL In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	vector vNormalDesc = g_NormalTexture.Sample(LinearClampSampler, In.vTexUV);
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV + g_vUV);
 	float3	 vNormal = vNormalDesc.xyz * 2.f - 1.f;
 
 	if (0.f == vNormalDesc.a)
@@ -322,7 +328,7 @@ PS_OUT	PS_MAIN_DISTORTION(PS_IN_NORMAL In)
 
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
-	float3 vWorldPos = In.vWorldPos.xyz + (normalize(vNormal) * g_fDisPower);
+	float3 vWorldPos = In.vWorldPos + (normalize(vNormal) * g_fDisPower);
 
 	matrix matVP;
 	matVP = mul(g_ViewMatrix, g_ProjMatrix);
@@ -346,7 +352,7 @@ PS_OUT	PS_MAIN_DISTORTION_N0_DEPTH(PS_IN_NORMAL In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	vector vNormalDesc = g_NormalTexture.Sample(LinearClampSampler, In.vTexUV);
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV + g_vUV);
 	float3	 vNormal = vNormalDesc.xyz * 2.f - 1.f;
 
 	if (0.f == vNormalDesc.a)
@@ -366,7 +372,7 @@ PS_OUT	PS_MAIN_DISTORTION_N0_DEPTH(PS_IN_NORMAL In)
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
 
-	float3 vWorldPos = In.vWorldPos.xyz + (normalize(vNormal) * g_fDisPower);
+	float3 vWorldPos = In.vWorldPos + (normalize(vNormal) * g_fDisPower);
 
 	matrix matVP;
 	matVP = mul(g_ViewMatrix, g_ProjMatrix);
@@ -397,8 +403,8 @@ PS_OUT_DECAL	PS_MAIN_DECAL(PS_IN_DECAL In)
 	if (0.f == vDepth.a)
 		discard;
 
-	/*if(vStaitc_Depth.r != vDepth.r || vStaitc_Depth.g != vDepth.g)
-		discard;*/
+	if (vStaitc_Depth.r != vDepth.r || vStaitc_Depth.g != vDepth.g)
+		discard;
 
 	float4 vLocalpos = Get_Local(vUV, vDepth);
 
@@ -427,7 +433,7 @@ PS_OUT_DECAL	PS_MAIN_DECAL_NORMAL(PS_IN_DECAL In)
 
 	if (vStaitc_Depth.r != vDepth.r || vStaitc_Depth.g != vDepth.g)
 		discard;
-	
+
 	float4 vLocalpos = Get_Local(vUV, vDepth);
 	clip(0.5 - abs(vLocalpos.xyz));
 
@@ -436,7 +442,7 @@ PS_OUT_DECAL	PS_MAIN_DECAL_NORMAL(PS_IN_DECAL In)
 	Out.vDiffuse.a = saturate(Out.vDiffuse.a - (1.f - g_fAlpha));
 
 	//if (0.f == Out.vDiffuse.a)
-		//discard;
+	//discard;
 
 	float4 vScreenNormal = g_BackNormalTexture.Sample(LinearClampSampler, vUV);
 	vScreenNormal.xyz = vScreenNormal.xyz * 2.f - 1.f;
@@ -445,26 +451,26 @@ PS_OUT_DECAL	PS_MAIN_DECAL_NORMAL(PS_IN_DECAL In)
 
 	float3 vLook;
 
-	if(vScreenNormal.y > 0.f)
-		vLook = float3(0.f, 0.f, 1.f);
+	if (vScreenNormal.y > 0.f)
+		vLook = (0.f, 0.f, 1.f);
 	else
-		vLook = float3(0.f, 0.f, -1.f);
+		vLook = (0.f, 0.f, -1.f);
 
 	float3 vTangent;
 	float3 vBiNormal;
 
-	vTangent = normalize(cross(vScreenNormal.xyz , vLook));
-	vBiNormal = normalize(cross(vTangent , vScreenNormal.xyz));
+	vTangent = normalize(cross(vScreenNormal, vLook));
+	vBiNormal = normalize(cross(vTangent, vScreenNormal));
 
 	float3x3 WorldMatrix = float3x3(vTangent, vBiNormal, vScreenNormal.xyz);
-	Out.vNormal = float4(normalize(mul(vNormal , WorldMatrix)),1.f);
+	Out.vNormal = float4(normalize(mul(vNormal, WorldMatrix)), 1.f);
 
 	return Out;
 }
 
-PS_OUT_DECAL	PS_MAIN_DECAL_COLOR_ALPHA(PS_IN_DECAL In)
+PS_OUT_DECAL_NONORMAL	PS_MAIN_DECAL_COLOR_ALPHA(PS_IN_DECAL In)
 {
-	PS_OUT_DECAL			Out = (PS_OUT_DECAL)0;
+	PS_OUT_DECAL_NONORMAL			Out = (PS_OUT_DECAL_NONORMAL)0;
 
 	float2 vUV;
 	vUV.x = (In.vProjPos.x / In.vProjPos.w) * 0.5f + 0.5;
@@ -487,15 +493,13 @@ PS_OUT_DECAL	PS_MAIN_DECAL_COLOR_ALPHA(PS_IN_DECAL In)
 	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, decalUV);
 	Out.vDiffuse.xyz = Out.vDiffuse.xyz * g_vColor.xyz;
 	Out.vDiffuse.a = saturate(Out.vDiffuse.a - (1.f - g_fAlpha));
-	//if (0.f == Out.vDiffuse.a)
-	//discard;
 
 	return Out;
 }
 
-PS_OUT_DECAL	PS_MAIN_DECAL_COLOR(PS_IN_DECAL In)
+PS_OUT_DECAL_NONORMAL	PS_MAIN_DECAL_COLOR(PS_IN_DECAL In)
 {
-	PS_OUT_DECAL			Out = (PS_OUT_DECAL)0;
+	PS_OUT_DECAL_NONORMAL			Out = (PS_OUT_DECAL_NONORMAL)0;
 
 	float2 vUV;
 	vUV.x = (In.vProjPos.x / In.vProjPos.w) * 0.5f + 0.5;
@@ -567,7 +571,7 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_PARTICLE_CORLOR();
 	}
-	
+
 	pass Particle_Color_Clamp
 	{
 		SetRasterizerState(/*RS_Wireframe*/RS_Default);
@@ -580,7 +584,7 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_PARTICLE_CORLOR_CLAMP();
 	}
-	
+
 	pass Particle_Alpha
 	{
 		SetRasterizerState(/*RS_Wireframe*/RS_Default);
@@ -610,7 +614,7 @@ technique11 DefaultTechnique
 	pass Distortion
 	{
 		SetRasterizerState(/*RS_Wireframe*/RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN_NORMALTEX();
@@ -623,7 +627,7 @@ technique11 DefaultTechnique
 	pass Distortion_No_Depth
 	{
 		SetRasterizerState(/*RS_Wireframe*/RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
 		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN_NORMALTEX();

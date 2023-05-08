@@ -412,8 +412,6 @@ PS_OUT PS_NoOutline(PS_IN In)
 	return Out;
 }
 
-
-
 PS_OUT PS_Last_Blend(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -463,6 +461,25 @@ PS_OUT_SSD PS_SSD_Blend(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_Glow_SSD_Blend(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	float4 vDiffuseColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	float4 vDiffuseColor_SSD = g_SSD_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (0.f == vDiffuseColor_SSD.a)
+	{
+		Out.vColor = vDiffuseColor;
+	}
+	else
+	{
+		Out.vColor.rgb = vDiffuseColor.rgb * (1.f - vDiffuseColor_SSD.a) + (vDiffuseColor_SSD.rgb * vDiffuseColor_SSD.a);
+		Out.vColor.a = vDiffuseColor.a;
+	}
+
+	return Out;
+}
 
 
 technique11 DefaultTechnique
@@ -610,4 +627,16 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_SSD_Blend();
 	}
 
+	pass Glow_SSD_Blend
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Glow_SSD_Blend();
+	}
 }

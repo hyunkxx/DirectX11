@@ -35,6 +35,8 @@ private:
 
 	void Render_Lights();
 	void Render_Outline();
+
+	void Render_GlowSSD();
 	void Render_Particle();
 	void Render_Shadow();
 	void Render_Blend();
