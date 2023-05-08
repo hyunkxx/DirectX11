@@ -40,50 +40,16 @@ void CRect_Effect_P::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	m_fLifeAcc += TimeDelta;
+	m_fLifeAcc += (_float)TimeDelta;
 
 	if (m_EffectDesc.fStartDelay >= m_fLifeAcc)
 		return;
 
-	m_fEffectAcc += TimeDelta;
+	m_fEffectAcc += (_float)TimeDelta;
 
-	if (m_fEffectAcc >= START_DISTIME && m_fEffectAcc <= END_DISTIME)
-	{
-		DISTORTION_POWER += DISTORTION_SPEED * TimeDelta;
-		if (MAX_DISTORTION_POWER < DISTORTION_POWER)
-			DISTORTION_POWER = MAX_DISTORTION_POWER;
+	Distortion_Tick(TimeDelta);
+	Loop_Check(TimeDelta);
 
-		m_bDistortion = true;
-	}
-
-	if (m_fEffectAcc > END_DISTIME)
-	{
-		DISTORTION_POWER -= DISTORTION_SPEED * TimeDelta;
-		if (0.f > DISTORTION_POWER)
-		{
-			DISTORTION_POWER = 0.f;
-			m_bDistortion = false;
-		}
-	}
-
-	if (m_fEffectAcc > m_EffectDesc.fEffectTime)
-	{
-		if (m_EffectDesc.bLoop)
-		{
-			m_fDelayAcc += TimeDelta;
-
-			if (m_fDelayAcc > m_EffectDesc.fDelayTime)
-			{
-				m_fDelayAcc = 0.f;
-				m_fEffectAcc = 0.f;
-				m_EffectDesc.vMaxScale.z = 0.f;
-				if (nullptr != m_pParentsMatrix)
-					memcpy(&m_ParentsMatrix, m_pParentsMatrix, sizeof(_float4x4));
-			}
-		}
-		m_EffectDesc.vUV = { 0.f , 0.f };
-		m_fFrameAcc = { 0.f };
-	}
 }
 
 void CRect_Effect_P::LateTick(_double TimeDelta)
@@ -103,7 +69,7 @@ void CRect_Effect_P::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	SetUp_Linear();
-	XMStoreFloat2(&m_EffectDesc.vUV, XMLoadFloat2(&m_EffectDesc.vUV) + XMLoadFloat2(&m_EffectDesc.fUVSpeed) * TimeDelta);
+	XMStoreFloat2(&m_EffectDesc.vUV, XMLoadFloat2(&m_EffectDesc.vUV) + XMLoadFloat2(&m_EffectDesc.fUVSpeed) * (_float)TimeDelta);
 
 
 	if (true == BILLBOARD)
@@ -202,7 +168,7 @@ void CRect_Effect_P::Play_Effect(_float4x4 * pWorldMatrix, _bool bTracking)
 	m_fEffectAcc = 0.f;
 	m_fLifeAcc = 0.f;
 	m_pParentsMatrix = nullptr;
-
+	DISTORTION_POWER = START_DIS_POWER;
 	if (m_EffectDesc.bTracking)
 	{
 		m_pParentsMatrix = pWorldMatrix;
@@ -418,6 +384,51 @@ void CRect_Effect_P::SetUp_Linear()
 	XMStoreFloat3(&m_EffectDesc.vCurPosition, XMVectorLerp(vStart, vEnd, fLerp));
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_EffectDesc.vCurPosition));
 
+}
+
+void CRect_Effect_P::Distortion_Tick(_double TimeDelta)
+{
+	if (m_fEffectAcc >= START_DISTIME && m_fEffectAcc <= END_DISTIME)
+	{
+		DISTORTION_POWER += DISTORTION_SPEED * (_float)TimeDelta;
+		if (MAX_DISTORTION_POWER < DISTORTION_POWER)
+			DISTORTION_POWER = MAX_DISTORTION_POWER;
+	}
+
+	if (m_fEffectAcc > END_DISTIME)
+	{
+		DISTORTION_POWER -= DISTORTION_SPEED * (_float)TimeDelta;
+		if (0.f >= DISTORTION_POWER)
+		{
+			DISTORTION_POWER = 0.f;
+		}
+	}
+	if (0.f != DISTORTION_POWER)
+		m_bDistortion = true;
+	else
+		m_bDistortion = false;
+}
+
+void CRect_Effect_P::Loop_Check(_double TimeDelta)
+{
+	if (m_fEffectAcc > m_EffectDesc.fEffectTime)
+	{
+		if (m_EffectDesc.bLoop)
+		{
+			m_fDelayAcc += (_float)TimeDelta;
+
+			if (m_fDelayAcc > m_EffectDesc.fDelayTime)
+			{
+				m_fDelayAcc = 0.f;
+				m_fEffectAcc = 0.f;
+				DISTORTION_POWER = START_DIS_POWER;
+				if (nullptr != m_pParentsMatrix)
+					memcpy(&m_ParentsMatrix, m_pParentsMatrix, sizeof(_float4x4));
+			}
+		}
+		m_EffectDesc.vUV = { 0.f , 0.f };
+		m_fFrameAcc = { 0.f };
+	}
 }
 
 CRect_Effect_P * CRect_Effect_P::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const char* pFileTag ,  const EFFECT_DESC & MeshDesc)

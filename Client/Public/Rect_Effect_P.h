@@ -49,10 +49,11 @@ private:
 	HRESULT						Add_Component(const char* pFileTag , const EFFECT_DESC& ParticleDesc);
 	HRESULT						SetUp_ShaderResources();
 
-	HRESULT						Add_Texture(const char* pFileTag, const char* TextureName, CTexture ** pTexture);
-
 	void						SetUp_Linear();
+	void						Distortion_Tick(_double TimeDelta);
+	void						Loop_Check(_double TimeDelta);
 
+	HRESULT						Add_Texture(const char* pFileTag, const char* TextureName, CTexture ** pTexture);
 private:
 	_float4x4					m_WorldMatrix;
 	_float4x4					m_ResultMatirx;

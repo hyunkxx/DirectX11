@@ -48,8 +48,11 @@ private:
 private:
 	HRESULT						Add_Component(const char* pFileTag);
 	HRESULT						SetUp_ShaderResources();
+
 	void						SetUp_Linear();
-	
+	void						Distortion_Tick(_double TimeDelta);
+	void						Loop_Check(_double TimeDelta);
+
 	void						Add_Texture(const char* pFileTag, const char* TextureName, CTexture** pTexture);
 	void						Add_Model(const char* pFileTag, const char* TextureName, CModel** pModel);
 private:
