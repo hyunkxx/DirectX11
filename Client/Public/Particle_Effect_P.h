@@ -40,6 +40,9 @@ private:
 	HRESULT						Add_Component(const char* pFileTag);
 	HRESULT						SetUp_ShaderResources();
 
+	void						Loop_Check(_double TimeDelta);
+	void						Setup_Linear();
+
 	void						Add_Texture(const char* pFileTag, const char* TextureName, CTexture** pTexture);
 private:
 	_float						m_fFrameAcc = { 0.f };
