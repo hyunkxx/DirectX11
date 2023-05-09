@@ -52,7 +52,6 @@ private:
 	void						SetUp_Linear();
 	void						Distortion_Tick(_double TimeDelta);
 	void						Loop_Check(_double TimeDelta);
-	void						Setup_Matrix();
 
 	HRESULT						Add_Texture(const char* pFileTag, const char* TextureName, CTexture ** pTexture);
 private:
@@ -62,8 +61,6 @@ private:
 	_float						m_fLifeAcc = { 0.f };
 	_float						m_fEffectAcc = { 0.f };
 	_float						m_fDelayAcc = { 0.f };
-
-	_float						m_fBillboard_Angle = { 0.f };
 
 	_bool						m_bDistortion = { false };
 

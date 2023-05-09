@@ -50,7 +50,49 @@ void CParticle_Effect_P::Tick(_double TimeDelta)
 
 	m_fEffectAcc += (_float)TimeDelta;
 	m_pVIBufferCom->Update(TimeDelta);
-	Loop_Check(TimeDelta);
+
+	if (m_EffectDesc.bSprite)
+	{
+		m_fFrameAcc += m_EffectDesc.fFrameSpeed * (_float)TimeDelta;
+		_float FrameTime = (1.f / (m_EffectDesc.vUV.x * m_EffectDesc.vUV.y));
+
+		if (FrameTime < m_fFrameAcc)
+		{
+			m_fFrameAcc = 0.f;
+			m_EffectDesc.vFrame.x += 1.f;
+
+			if (m_EffectDesc.vUV.x - 1.f < m_EffectDesc.vFrame.x)
+			{
+				m_EffectDesc.vFrame.x = 0.f;
+				m_EffectDesc.vFrame.y += 1.f;
+
+				if (m_EffectDesc.vUV.y - 1.f < m_EffectDesc.vFrame.y)
+				{
+					m_EffectDesc.vFrame.y = 0.f;
+				}
+			}
+		}
+	}
+
+	if (m_fEffectAcc > m_EffectDesc.fEffectTime)
+	{
+		if (m_EffectDesc.bLoop)
+		{
+			m_fDelayAcc += (_float)TimeDelta;
+
+			if (m_fDelayAcc > m_EffectDesc.fDelayTime)
+			{
+				m_pVIBufferCom->Reset_Update(m_EffectDesc.vDir);
+
+				m_EffectDesc.vFrame = { 0.f , 0.f };
+				m_fFrameAcc = { 0.f };
+				m_fEffectAcc = 0.f;
+				m_fDelayAcc = 0.f;
+				if (nullptr != m_pParentsMatrix)
+					memcpy(&m_ParentsMatrix, m_pParentsMatrix, sizeof(_float4x4));
+			}
+		}
+	}
 
 }
 
@@ -68,7 +110,16 @@ void CParticle_Effect_P::LateTick(_double TimeDelta)
 		return;
 
 	__super::LateTick(TimeDelta);
-	Setup_Linear();
+
+	_float3 vPos;
+	_float fLerp = m_fEffectAcc / m_EffectDesc.fEffectTime;
+	XMStoreFloat3(&vPos, XMVectorLerp(XMLoadFloat3(&m_EffectDesc.vMinPosition), XMLoadFloat3(&m_EffectDesc.vMaxPosition), fLerp));
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
+
+	_vector vStart, vEnd;
+	vStart = XMVectorSet(m_EffectDesc.vStartScale.x, m_EffectDesc.vStartScale.y, m_EffectDesc.vStartScale.z, 0.f);
+	vEnd = XMVectorSet(m_EffectDesc.vEndScale.x, m_EffectDesc.vEndScale.y, m_EffectDesc.vEndScale.z, 0.f);
+	XMStoreFloat3(&m_EffectDesc.vCurScale, XMVectorLerp(vStart, vEnd, fLerp));
 
 	if (m_EffectDesc.bGlow)
 	{
@@ -235,66 +286,6 @@ EFFECT_DESC CParticle_Effect_P::Get_Effect_Desc()
 	m_EffectDesc.bParticleLoop = PrticleDesc.bLoop;
 
 	return m_EffectDesc;
-}
-
-void CParticle_Effect_P::Loop_Check(_double TimeDelta)
-{
-	if (m_EffectDesc.bSprite)
-	{
-		m_fFrameAcc += m_EffectDesc.fFrameSpeed * (_float)TimeDelta;
-		_float FrameTime = (1.f / (m_EffectDesc.vUV.x * m_EffectDesc.vUV.y));
-
-		if (FrameTime < m_fFrameAcc)
-		{
-			m_fFrameAcc = 0.f;
-			m_EffectDesc.vFrame.x += 1.f;
-
-			if (m_EffectDesc.vUV.x - 1.f < m_EffectDesc.vFrame.x)
-			{
-				m_EffectDesc.vFrame.x = 0.f;
-				m_EffectDesc.vFrame.y += 1.f;
-
-				if (m_EffectDesc.vUV.y - 1.f < m_EffectDesc.vFrame.y)
-				{
-					m_EffectDesc.vFrame.y = 0.f;
-				}
-			}
-		}
-	}
-
-	if (m_fEffectAcc > m_EffectDesc.fEffectTime)
-	{
-		if (m_EffectDesc.bLoop)
-		{
-			m_fDelayAcc += (_float)TimeDelta;
-
-			if (m_fDelayAcc > m_EffectDesc.fDelayTime)
-			{
-				m_pVIBufferCom->Reset_Update(m_EffectDesc.vDir);
-
-				m_EffectDesc.vFrame = { 0.f , 0.f };
-				m_fFrameAcc = { 0.f };
-				m_fEffectAcc = 0.f;
-				m_fDelayAcc = 0.f;
-				if (nullptr != m_pParentsMatrix)
-					memcpy(&m_ParentsMatrix, m_pParentsMatrix, sizeof(_float4x4));
-			}
-		}
-	}
-}
-
-void CParticle_Effect_P::Setup_Linear()
-{
-	_float3 vPos;
-	_float fLerp = m_fEffectAcc / m_EffectDesc.fEffectTime;
-	XMStoreFloat3(&vPos, XMVectorLerp(XMLoadFloat3(&m_EffectDesc.vMinPosition), XMLoadFloat3(&m_EffectDesc.vMaxPosition), fLerp));
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
-
-	_vector vStart, vEnd;
-	vStart = XMVectorSet(m_EffectDesc.vStartScale.x, m_EffectDesc.vStartScale.y, m_EffectDesc.vStartScale.z, 0.f);
-	vEnd = XMVectorSet(m_EffectDesc.vEndScale.x, m_EffectDesc.vEndScale.y, m_EffectDesc.vEndScale.z, 0.f);
-	XMStoreFloat3(&m_EffectDesc.vCurScale, XMVectorLerp(vStart, vEnd, fLerp));
-
 }
 
 HRESULT CParticle_Effect_P::Add_Component(const char* pFileTag)

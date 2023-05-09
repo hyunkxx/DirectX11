@@ -274,9 +274,20 @@ PS_OUT	PS_MAIN_DISTORTION(PS_IN_DISTORTION In)
 	if (0.f == vNormalDesc.a)
 		discard;
 
+	if (0.99f <= vNormal.b)
+	{
+		if (-0.05f < vNormal.r && 0.05f > vNormal.r)
+		{
+			if (-0.05f < vNormal.g && 0.05f > vNormal.g)
+			{
+				discard;
+			}
+		}
+	}
+
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
-	float3 vWorldPos = In.vWorldPos + (normalize(vNormal) - (In.vNormal)) * g_fDisPower;
+	float3 vWorldPos = In.vWorldPos.xyz + (normalize(vNormal) * g_fDisPower);
 
 	matrix matVP;
 	matVP = mul(g_ViewMatrix, g_ProjMatrix);
@@ -298,7 +309,7 @@ PS_OUT	PS_MAIN_DISTORTION(PS_IN_DISTORTION In)
 	return Out;
 }
 
-PS_OUT	PS_MAIN_DISTORTION_MASK(PS_IN_DISTORTION In)
+PS_OUT	PS_MAIN_DISTORTION_N0_DEPTH(PS_IN_DISTORTION In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
@@ -421,7 +432,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_DISTORTION();
 	}
 
-	pass Mask_Distortion
+	pass Default_Distortion_No_Depth
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -431,7 +442,7 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_DISTORTION_MASK();
+		PixelShader = compile ps_5_0 PS_MAIN_DISTORTION_N0_DEPTH();
 	}
 
 }
