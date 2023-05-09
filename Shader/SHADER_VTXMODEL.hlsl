@@ -223,14 +223,18 @@ struct PS_IN_SKY
 };
 struct PS_OUT_SKY
 {
-	float4 vColor : SV_TARGET0;
+	float4 vDiffuse : SV_TARGET0;
+	float4 vNormal : SV_TARGET1;
+	float4 vDepth : SV_TARGET2;
+	float4 vOutNormal : SV_TARGET3;
 };
 
 PS_OUT_SKY PS_MAIN_SKY(PS_IN_SKY In)
 {
 	PS_OUT_SKY	Out = (PS_OUT_SKY)0;
 
-	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 
 	return Out;
 }

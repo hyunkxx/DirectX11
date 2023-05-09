@@ -34,10 +34,6 @@ HRESULT CRenderer::Initialize_Prototype()
 
 #pragma region  RENDERTARGET_SETUP
 
-	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Base", ViewPortDesc.Width, ViewPortDesc.Height,
-		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
-		return E_FAIL;
-
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Diffuse", ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 0.f))))
 		return E_FAIL;
@@ -179,9 +175,6 @@ HRESULT CRenderer::Initialize_Prototype()
 	m_pBindTargets[(_uint)TARGET::BLUR_MIDDEL_Y] = m_pTargetManager->FindTarget(L"Target_BlurY_Middle");
 	m_pBindTargets[(_uint)TARGET::BLUR_HIGH_X] = m_pTargetManager->FindTarget(L"Target_BlurX_High");
 	m_pBindTargets[(_uint)TARGET::BLUR_HIGH_Y] = m_pTargetManager->FindTarget(L"Target_BlurY_High");
-
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Base", L"Target_Base")))
-		return E_FAIL;
 
 	// 디퓨즈, 노말, 뎁스
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_Diffuse")))
@@ -374,8 +367,6 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_FinalBlend"), 1205.f, 225.f, 150.f, 150.f)))
 		return E_FAIL;
-	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Base"), 1205.f, 375.f, 150.f, 150.f)))
-		return E_FAIL;
 
 #endif
 
@@ -473,7 +464,6 @@ void CRenderer::Draw()
 		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 			return;
 
-		m_pTargetManager->Render(TEXT("MRT_Base"), m_pShader, m_pVIBuffer);
 		m_pTargetManager->Render(TEXT("MRT_Deferred"), m_pShader, m_pVIBuffer);
 		m_pTargetManager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
 		m_pTargetManager->Render(TEXT("MRT_LightDepth"), m_pShader, m_pVIBuffer);
@@ -502,8 +492,6 @@ void CRenderer::Draw()
 
 void CRenderer::Render_Priority()
 {
-	//CRenderTarget* pTarget = m_pTargetManager->FindTarget(L"Target_Base");
-
 	m_pTargetManager->Begin(m_pContext, L"MRT_Deferred");
 
 	for (auto& pGameObject : m_RenderObject[RENDER_PRIORITY])
@@ -684,8 +672,11 @@ void CRenderer::Render_Lights()
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Depth", "g_DepthTexture")))
 		return;
+
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Outline_Result", "g_OutlineTexture")))
 		return;
+	/*if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Outline", "g_OutlineTexture")))
+		return;*/
 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Specular", "g_SpecularTexture")))
 		return;
