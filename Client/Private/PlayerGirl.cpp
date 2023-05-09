@@ -253,7 +253,7 @@ HRESULT CPlayerGirl::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON,
 		TEXT("Com_AnimSet_Ribbon"), (CComponent**)&m_pAnimSetCom[ANIMSET_RIBBON])))
 		return E_FAIL;
-
+	
 	return S_OK;
 }
 
