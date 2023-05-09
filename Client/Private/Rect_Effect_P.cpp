@@ -33,7 +33,7 @@ HRESULT CRect_Effect_P::Initialize_Prototype(const char* pFileTag , const EFFECT
 
 HRESULT CRect_Effect_P::Initialize(void * pArg)
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 void CRect_Effect_P::Tick(_double TimeDelta)
@@ -41,7 +41,6 @@ void CRect_Effect_P::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	m_fLifeAcc += (_float)TimeDelta;
-
 	if (m_EffectDesc.fStartDelay >= m_fLifeAcc)
 		return;
 
@@ -69,67 +68,8 @@ void CRect_Effect_P::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	SetUp_Linear();
+	Setup_Matrix();
 	XMStoreFloat2(&m_EffectDesc.vUV, XMLoadFloat2(&m_EffectDesc.vUV) + XMLoadFloat2(&m_EffectDesc.fUVSpeed) * (_float)TimeDelta);
-
-
-	if (true == BILLBOARD)
-	{
-		XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(&m_ParentsMatrix));
-		_float3 Scale;
-		_float4 vPos;
-		_float3 vNewRight, vNewUp, vNewLook;
-		vNewUp = _float3(0.f, 1.f, 0.f);
-
-		vPos = _float4(m_ResultMatirx._41, m_ResultMatirx._42, m_ResultMatirx._43, 1.f);
-
-		_float4 vCameraPos = CPipeLine::GetInstance()->Get_CamPosition();
-		XMStoreFloat3(&vNewLook, XMVector3Normalize(XMLoadFloat4(&vCameraPos) - XMLoadFloat4(&vPos)));
-		XMStoreFloat3(&vNewRight, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&vNewUp), XMLoadFloat3(&vNewLook))));
-		XMStoreFloat3(&vNewUp, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&vNewLook), XMLoadFloat3(&vNewRight))));
-
-		XMStoreFloat3(&vNewRight, XMLoadFloat3(&vNewRight)*m_EffectDesc.vCurScale.x);
-		XMStoreFloat3(&vNewUp, XMLoadFloat3(&vNewUp)*m_EffectDesc.vCurScale.y);
-		XMStoreFloat3(&vNewLook, XMLoadFloat3(&vNewLook)*m_EffectDesc.vCurScale.z);
-
-		m_ResultMatirx._11 = vNewRight.x;
-		m_ResultMatirx._12 = vNewRight.y;
-		m_ResultMatirx._13 = vNewRight.z;
-
-		m_ResultMatirx._21 = vNewUp.x;
-		m_ResultMatirx._22 = vNewUp.y;
-		m_ResultMatirx._23 = vNewUp.z;
-
-		m_ResultMatirx._31 = vNewLook.x;
-		m_ResultMatirx._32 = vNewLook.y;
-		m_ResultMatirx._33 = vNewLook.z;
-	}
-	else
-	{
-		m_pMainTransform->SetRotationXYZ(m_EffectDesc.vCurAngle);
-		m_WorldMatrix = m_pMainTransform->Get_WorldMatrix();
-
-		_float4 NewRight = _float4(m_WorldMatrix._11 * m_EffectDesc.vCurScale.x,
-			m_WorldMatrix._12 * m_EffectDesc.vCurScale.x,
-			m_WorldMatrix._13 * m_EffectDesc.vCurScale.x,
-			m_WorldMatrix._14);
-
-		_float4 NewUp = _float4(m_WorldMatrix._21 * m_EffectDesc.vCurScale.y,
-			m_WorldMatrix._22  * m_EffectDesc.vCurScale.y,
-			m_WorldMatrix._23  * m_EffectDesc.vCurScale.y,
-			m_WorldMatrix._24);
-
-		_float4 NewLook = _float4(m_WorldMatrix._31  * m_EffectDesc.vCurScale.z,
-			m_WorldMatrix._32  * m_EffectDesc.vCurScale.z,
-			m_WorldMatrix._33  * m_EffectDesc.vCurScale.z,
-			m_WorldMatrix._34);
-
-		memcpy(((_float4*)&m_WorldMatrix + 0), &NewRight, sizeof(_float3));
-		memcpy(((_float4*)&m_WorldMatrix + 1), &NewUp, sizeof(_float3));
-		memcpy(((_float4*)&m_WorldMatrix + 2), &NewLook, sizeof(_float3));
-
-		XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(&m_ParentsMatrix));
-
-	}
 
 	if (m_pRendererCom != nullptr)
 		m_pRendererCom->Add_RenderGroup((CRenderer::RENDER_GROUP)m_EffectDesc.iRenderGroup, this);
@@ -155,6 +95,7 @@ HRESULT CRect_Effect_P::Render()
 
 void CRect_Effect_P::RenderGUI()
 {
+
 }
 
 void CRect_Effect_P::Play_Effect(_float4x4 * pWorldMatrix, _bool bTracking)
@@ -375,6 +316,9 @@ void CRect_Effect_P::SetUp_Linear()
 	vEnd = XMVectorSet(m_EffectDesc.vEndAngle.x, m_EffectDesc.vEndAngle.y, m_EffectDesc.vEndAngle.z, 0.f);
 	XMStoreFloat3(&m_EffectDesc.vCurAngle, XMVectorLerp(vStart, vEnd, fLerp));
 
+	m_fBillboard_Angle = m_EffectDesc.vCurAngle.x - m_EffectDesc.vStartAngle.x;
+
+
 	vStart = XMVectorSet(m_EffectDesc.vStartScale.x, m_EffectDesc.vStartScale.y, m_EffectDesc.vStartScale.z, 0.f);
 	vEnd = XMVectorSet(m_EffectDesc.vEndScale.x, m_EffectDesc.vEndScale.y, m_EffectDesc.vEndScale.z, 0.f);
 	XMStoreFloat3(&m_EffectDesc.vCurScale, XMVectorLerp(vStart, vEnd, fLerp));
@@ -432,6 +376,71 @@ void CRect_Effect_P::Loop_Check(_double TimeDelta)
 		}
 		m_EffectDesc.vUV = { 0.f , 0.f };
 		m_fFrameAcc = { 0.f };
+	}
+}
+
+void CRect_Effect_P::Setup_Matrix()
+{
+	if (true == BILLBOARD)
+	{
+		XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(&m_ParentsMatrix));
+		_float3 Scale;
+		_float4 vPos;
+		_float3 vNewRight, vNewUp, vNewLook;
+		vNewUp = _float3(0.f, 1.f, 0.f);
+
+		vPos = _float4(m_ResultMatirx._41, m_ResultMatirx._42, m_ResultMatirx._43, 1.f);
+
+		_float4 vCameraPos = CPipeLine::GetInstance()->Get_CamPosition();
+		XMStoreFloat3(&vNewLook, XMVector3Normalize(XMLoadFloat4(&vCameraPos) - XMLoadFloat4(&vPos)));
+		XMStoreFloat3(&vNewRight, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&vNewUp), XMLoadFloat3(&vNewLook))));
+		XMStoreFloat3(&vNewUp, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&vNewLook), XMLoadFloat3(&vNewRight))));
+
+		XMStoreFloat3(&vNewRight, XMLoadFloat3(&vNewRight)*m_EffectDesc.vCurScale.x);
+		XMStoreFloat3(&vNewUp, XMLoadFloat3(&vNewUp)*m_EffectDesc.vCurScale.y);
+		XMStoreFloat3(&vNewLook, XMLoadFloat3(&vNewLook)*m_EffectDesc.vCurScale.z);
+
+		m_ResultMatirx._11 = vNewRight.x;
+		m_ResultMatirx._12 = vNewRight.y;
+		m_ResultMatirx._13 = vNewRight.z;
+
+		m_ResultMatirx._21 = vNewUp.x;
+		m_ResultMatirx._22 = vNewUp.y;
+		m_ResultMatirx._23 = vNewUp.z;
+
+		m_ResultMatirx._31 = vNewLook.x;
+		m_ResultMatirx._32 = vNewLook.y;
+		m_ResultMatirx._33 = vNewLook.z;
+
+		_matrix RotationMat = XMMatrixRotationAxis(XMLoadFloat3(&vNewLook), XMConvertToRadians(m_fBillboard_Angle));
+		XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_ResultMatirx) *RotationMat);
+	}
+	else
+	{
+		m_pMainTransform->SetRotationXYZ(m_EffectDesc.vCurAngle);
+		m_WorldMatrix = m_pMainTransform->Get_WorldMatrix();
+
+		_float4 NewRight = _float4(m_WorldMatrix._11 * m_EffectDesc.vCurScale.x,
+			m_WorldMatrix._12 * m_EffectDesc.vCurScale.x,
+			m_WorldMatrix._13 * m_EffectDesc.vCurScale.x,
+			m_WorldMatrix._14);
+
+		_float4 NewUp = _float4(m_WorldMatrix._21 * m_EffectDesc.vCurScale.y,
+			m_WorldMatrix._22  * m_EffectDesc.vCurScale.y,
+			m_WorldMatrix._23  * m_EffectDesc.vCurScale.y,
+			m_WorldMatrix._24);
+
+		_float4 NewLook = _float4(m_WorldMatrix._31  * m_EffectDesc.vCurScale.z,
+			m_WorldMatrix._32  * m_EffectDesc.vCurScale.z,
+			m_WorldMatrix._33  * m_EffectDesc.vCurScale.z,
+			m_WorldMatrix._34);
+
+		memcpy(((_float4*)&m_WorldMatrix + 0), &NewRight, sizeof(_float3));
+		memcpy(((_float4*)&m_WorldMatrix + 1), &NewUp, sizeof(_float3));
+		memcpy(((_float4*)&m_WorldMatrix + 2), &NewLook, sizeof(_float3));
+
+		XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(&m_ParentsMatrix));
+
 	}
 }
 

@@ -69,29 +69,9 @@ void CMesh_Effect_P::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	SetUp_Linear();
+	Setup_Matrix();
+
 	XMStoreFloat2(&m_EffectDesc.vUV, XMLoadFloat2(&m_EffectDesc.vUV) + XMLoadFloat2(&m_EffectDesc.fUVSpeed) * (_float)TimeDelta);
-	
-	m_pMainTransform->SetRotationXYZ(m_EffectDesc.vCurAngle);
-	m_WorldMatrix = m_pMainTransform->Get_WorldMatrix();
-
-	_float4 NewRight = _float4(m_WorldMatrix._11 * m_EffectDesc.vCurScale.x,
-		m_WorldMatrix._12 * m_EffectDesc.vCurScale.x,
-		m_WorldMatrix._13 * m_EffectDesc.vCurScale.x,
-		m_WorldMatrix._14);
-
-	_float4 NewUp = _float4(m_WorldMatrix._21 * m_EffectDesc.vCurScale.y,
-		m_WorldMatrix._22  * m_EffectDesc.vCurScale.y,
-		m_WorldMatrix._23  * m_EffectDesc.vCurScale.y,
-		m_WorldMatrix._24);
-
-	_float4 NewLook = _float4(m_WorldMatrix._31  * m_EffectDesc.vCurScale.z,
-		m_WorldMatrix._32  * m_EffectDesc.vCurScale.z,
-		m_WorldMatrix._33  * m_EffectDesc.vCurScale.z,
-		m_WorldMatrix._34);
-
-	memcpy(((_float4*)&m_WorldMatrix + 0), &NewRight, sizeof(_float3));
-	memcpy(((_float4*)&m_WorldMatrix + 1), &NewUp, sizeof(_float3));
-	memcpy(((_float4*)&m_WorldMatrix + 2), &NewLook, sizeof(_float3));
 
 	if (m_pRendererCom != nullptr)
 		m_pRendererCom->Add_RenderGroup((CRenderer::RENDER_GROUP)m_EffectDesc.iRenderGroup, this);
@@ -350,6 +330,31 @@ void CMesh_Effect_P::Loop_Check(_double TimeDelta)
 	}
 }
 
+void CMesh_Effect_P::Setup_Matrix()
+{
+	m_pMainTransform->SetRotationXYZ(m_EffectDesc.vCurAngle);
+	m_WorldMatrix = m_pMainTransform->Get_WorldMatrix();
+
+	_float4 NewRight = _float4(m_WorldMatrix._11 * m_EffectDesc.vCurScale.x,
+		m_WorldMatrix._12 * m_EffectDesc.vCurScale.x,
+		m_WorldMatrix._13 * m_EffectDesc.vCurScale.x,
+		m_WorldMatrix._14);
+
+	_float4 NewUp = _float4(m_WorldMatrix._21 * m_EffectDesc.vCurScale.y,
+		m_WorldMatrix._22  * m_EffectDesc.vCurScale.y,
+		m_WorldMatrix._23  * m_EffectDesc.vCurScale.y,
+		m_WorldMatrix._24);
+
+	_float4 NewLook = _float4(m_WorldMatrix._31  * m_EffectDesc.vCurScale.z,
+		m_WorldMatrix._32  * m_EffectDesc.vCurScale.z,
+		m_WorldMatrix._33  * m_EffectDesc.vCurScale.z,
+		m_WorldMatrix._34);
+
+	memcpy(((_float4*)&m_WorldMatrix + 0), &NewRight, sizeof(_float3));
+	memcpy(((_float4*)&m_WorldMatrix + 1), &NewUp, sizeof(_float3));
+	memcpy(((_float4*)&m_WorldMatrix + 2), &NewLook, sizeof(_float3));
+}
+
 void CMesh_Effect_P::Add_Texture(const char * pFileTag, const char * TextureName, CTexture ** pTexture)
 {
 	char EndTag[MAX_PATH] = ".dds";
@@ -380,8 +385,6 @@ void CMesh_Effect_P::Add_Model(const char * pFileTag, const char * TextureName, 
 	*pModel = CModel::Create(m_pDevice, m_pContext, TextureTag2);
 	_int i = 0;
 }
-
-
 
 CMesh_Effect_P * CMesh_Effect_P::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const char* pFileTag, const EFFECT_DESC & MeshDesc)
 {
