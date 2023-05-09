@@ -23,7 +23,8 @@ public:
 		_bool bWeaponState;
 		_float CoolTime;
 		_int iPhysicMoveID; // RootMotion이 false 일 경우 사용할 등가속 운동 움직임 ID
-		_int iPriority; // 우선순위
+		_int iEnterPriority;
+		_int iLeavePriority;
 
 
 		// StateKeys
@@ -45,7 +46,8 @@ public:
 		_bool bWeaponState;
 		_float CoolTime;
 		_int iPhysicMoveID; // RootMotion이 false 일 경우 사용할 등가속 운동 움직임 ID
-		_int iPriority;
+		_uint iEnterPriority;
+		_uint iLeavePriority;
 		// StateKeys
 		_int iKeyCount;
 		CStateKey** ppStateKeys;

@@ -163,21 +163,8 @@ const char CTestChar::szRotationTag[ROT_END][MAX_PATH] =
 const char CTestChar::szPhysicMoveTag[CCharacter::PSP_END][MAX_PATH] =
 {
 	"NONE",
-
 	"WALK_F",
-	"WALK_B",
-	"WALK_LF",
-	"WALK_LB",
-	"WALK_RF",
-	"WALK_RB",
-
 	"RUN_F",
-	"RUN_B",
-	"RUN_LF",
-	"RUN_LB",
-	"RUN_RF",
-	"RUN_RB",
-
 	"SPRINT_F",
 	"SPRINT_B",
 };

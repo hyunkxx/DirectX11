@@ -116,7 +116,7 @@ HRESULT CApplication::Render()
 	}
 	if (true == m_Render_Navigation)
 	{
-		m_pNavigation->Set_IntervalY(0.50f);
+		m_pNavigation->Set_IntervalY(0.01f);
 		m_pNavigation->Render();
 	}
 #endif // _DEBUG

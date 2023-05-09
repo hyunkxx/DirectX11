@@ -8,6 +8,14 @@ BEGIN(Engine)
 class ENGINE_DLL CNavigation final : public CComponent
 {
 public:
+	enum NAVISTATE {
+		NAVI_OK,
+		NAVI_NO,
+		NAVI_SLIDE,
+		NAVI_END
+	};
+
+public:
 	typedef struct tagNavigation_Desc
 	{
 		/* Navi Com을 가지는 객체의 생성 위치가 어디인지 판단할 CurrentIndex */
@@ -24,6 +32,11 @@ public:
 	_int Get_NeighborIndex() { return m_iNeighborIndex; }
 	_int Get_CellState(_uint iIndex);
 
+	void Set_CurrentIndex(_uint iIndex)
+	{
+		m_iCurrentIndex = iIndex;
+	}
+
 public:
 	/* 파일 경로를 받아와야 됨으로 override 를 사용할 수 없음 -> 부모와 형태가 달라져서 */
 	virtual	HRESULT Initialize_Prototype(const _tchar* pNavigationDataFilePath);
@@ -33,7 +46,8 @@ public:
 	/* 판단할 타입은 상황에 따라 정해주면 된다 -> 판단 상황이 여러가지라면 열거체로 반환타입을 변경 */
 	/* 움직일 수 있다/없다 , 슬라이딩을 할 수 있다/없다 */
 	/* vPosition : 객체의 움직이고 난 뒤의 결과 위치 */
-	_bool Move_OnNavigation(_fvector vPosition);
+
+	CNavigation::NAVISTATE Move_OnNavigation(_fvector vPosition, _fvector vMove, _float3* vSlideOut, _bool bClimbing = false);
 
 public:
 	_float Compute_Height(_fvector vPosition);

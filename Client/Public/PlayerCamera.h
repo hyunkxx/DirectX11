@@ -85,7 +85,7 @@ private:
 	_bool m_bApplyCurve = { false };
 	_bool m_bLockOn = { false };
 
-	const _float m_fDistanceMin = { 2.f };
+	const _float m_fDistanceMin = { 1.f };
 	const _float m_fDistanceMax = { 7.f };
 
 	const _float m_fXAngleMin = { -20.f };

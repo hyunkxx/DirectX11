@@ -127,50 +127,136 @@ HRESULT CNavigation::Initialize(void * pArg)
 	return S_OK;
 }
 
-_bool CNavigation::Move_OnNavigation(_fvector vPosition)
+CNavigation::NAVISTATE CNavigation::Move_OnNavigation(_fvector vPosition, _fvector vMove, _float3 * vSlideOut, _bool bClimbing)
 {
 	if (-1 == m_NavigationDesc.iCurrentIndex)
-		return false;
+		return  CNavigation::NAVI_NO;
+	
 
+	_int		iStartIndex = m_NavigationDesc.iCurrentIndex;
 	_int		iNeighborIndex = -1;
+	_int		iOutLine = -1;
 
-	/* 움직이고 난 결과위치가 Cell 안 */
-	if (true == m_Cells[m_NavigationDesc.iCurrentIndex]->Is_In(vPosition, &iNeighborIndex))
+	_fvector PredictedPosition = vPosition + vMove;
+
+	if (true == m_Cells[m_NavigationDesc.iCurrentIndex]->IsIn(PredictedPosition, &iNeighborIndex, bClimbing, &iOutLine))
+		return  CNavigation::NAVI_OK;
+	else
 	{
-		m_iNeighborIndex = iNeighborIndex;
-		return true;
-	}
-	else /* 움직이고 난 결과위치가 Cell 밖으로 나감 */
-	{
-		/* 나간 선분을 공유하는 이웃이 있다면 */
+		// 해당 방향에 이웃이 있다면 이동
 		if (-1 != iNeighborIndex)
 		{
-			/* 1 ~ 2 프레임 차이가 있을 수 있으며, 한 점에 삼각형 여러개가 모일 시 더 큰 오차를 낼 수 있다 */
-			/* -> 이 오차를 해결하고자 깊이 우선 탐색을 해준다 */
-			while (true)
-			{
-				/* 삼각형이 겹쳐있을 때, 시계방향으로 선분을 검색하고 삼각형의 이웃이 Null 일경우 iNeighborIndex 에 -1이 들어가게 된다 */
-				/* -> 그럴 경우 무한 루프를 도는 문제를 방지하고자 예외 처리 (움직임을 막고 루프 탈출) */
-				if (-1 == iNeighborIndex)
-				{
-					m_iNeighborIndex = iNeighborIndex;
-					return false;
-				}
-				/* CurrentIndex가 바뀌기 전 이웃의 Cell에 객체가 있는가? 를 다시 한번 확인한다 -> Cell[iNeighborIndex]->Is_In() */
-				if (true == m_Cells[iNeighborIndex]->Is_In(vPosition, &iNeighborIndex))
-					break;
+			// 이동 방향 이웃의 Type
+			// CCell::STATE > 0 == GROUND, 1 == WALL
+			_int iNeighborState = m_Cells[iNeighborIndex]->Get_State();
 
+			// 벽타기 중이 아니라면
+			if (!bClimbing)
+			{
+				// 이동 방향 이웃이 Wall이 아니라면
+				if (1/*iNeighborState != 1*/)
+				{
+					// 그냥 이동
+					while (true)
+					{
+						if (-1 == iNeighborIndex)
+						{
+							XMStoreFloat3(vSlideOut, XMVectorSet(0.f, 0.f, 0.f, 0.f));
+							return  CNavigation::NAVI_NO;
+						}
+
+						if (true == m_Cells[iNeighborIndex]->IsIn(PredictedPosition, &iNeighborIndex, bClimbing))
+							break;
+					}
+					m_NavigationDesc.iCurrentIndex = iNeighborIndex;
+					return CNavigation::NAVI_OK;
+				}
+				// 이동 방향 이웃이 Wall이라면
+				else
+				{
+
+				}
 			}
 
-			m_NavigationDesc.iCurrentIndex = iNeighborIndex;
-			m_iNeighborIndex = iNeighborIndex;
-			return true;
+			// 벽타기 중이라면
+			else
+			{
+				// 이동 방향 이웃이 Wall이라면
+				if (1/*iNeighborState != 1*/)
+				{
+					// 그냥 이동
+					while (true)
+					{
+						if (-1 == iNeighborIndex)
+						{
+							XMStoreFloat3(vSlideOut, XMVectorSet(0.f, 0.f, 0.f, 0.f));
+							return  CNavigation::NAVI_NO;
+						}
+						if (true == m_Cells[iNeighborIndex]->IsIn(PredictedPosition, &iNeighborIndex, bClimbing))
+							break;
+
+						m_NavigationDesc.iCurrentIndex = iNeighborIndex;
+						return CNavigation::NAVI_OK;
+					}
+				}
+				// 이동 방향 이웃이 Wall이 아니라면
+				else
+				{
+
+				}
+			}
 		}
+
+		// 해당 방향에 이웃이 없다면 Slide
 		else
 		{
-			m_iNeighborIndex = iNeighborIndex;
-			return false;
+			if (false == m_Cells[m_NavigationDesc.iCurrentIndex]->CrossMultiEndLine(PredictedPosition))
+			{
+				_vector vPointA = m_Cells[m_NavigationDesc.iCurrentIndex]->Get_Point((CCell::POINT)iOutLine);
+				_vector vPointB = m_Cells[m_NavigationDesc.iCurrentIndex]->Get_Point((CCell::POINT)((iOutLine + 1) % 3));
+
+				_vector vOutLine = XMVector3Normalize(vPointB - vPointA);
+				_vector vSlided = vOutLine * XMVector3Dot(vMove, vOutLine);
+
+
+				XMStoreFloat3(vSlideOut, vOutLine * XMVector3Dot(vMove, vOutLine));
+
+				_vector vSlidePos = vPosition + vSlided;
+
+				if (true == m_Cells[m_NavigationDesc.iCurrentIndex]->IsIn(vSlidePos, &iNeighborIndex, bClimbing, &iOutLine))
+					return  CNavigation::NAVI_SLIDE;
+				else
+				{
+					if (-1 != iNeighborIndex)
+					{
+						while (true)
+						{
+							if (-1 == iNeighborIndex)
+							{
+								XMStoreFloat3(vSlideOut, XMVectorSet(0.f, 0.f, 0.f, 0.f));
+								return CNavigation::NAVI_NO;
+							}
+
+							if (true == m_Cells[iNeighborIndex]->IsIn(vSlidePos, &iNeighborIndex, bClimbing))
+								break;
+						}
+						m_NavigationDesc.iCurrentIndex = iNeighborIndex;
+						return CNavigation::NAVI_SLIDE;
+					}
+					else
+					{
+						XMStoreFloat3(vSlideOut, XMVectorSet(0.f, 0.f, 0.f, 0.f));
+						return CNavigation::NAVI_NO;
+					}
+				}
+			}
+			else
+			{
+				XMStoreFloat3(vSlideOut, XMVectorSet(0.f, 0.f, 0.f, 0.f));
+				return CNavigation::NAVI_NO;
+			}
 		}
+		return CNavigation::NAVI_SLIDE;
 	}
 }
 

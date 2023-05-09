@@ -189,21 +189,10 @@ public:
 		PSP_NONE,
 
 		PSP_WALK_F,
-		PSP_WALK_B,
-		PSP_WALK_LF,
-		PSP_WALK_LB,
-		PSP_WALK_RF,
-		PSP_WALK_RB ,
-
 		PSP_RUN_F,
-		PSP_RUN_B,
-		PSP_RUN_LF,
-		PSP_RUN_LB,
-		PSP_RUN_RF,
-		PSP_RUN_RB,
-
 		PSP_SPRINT_F,
 		PSP_SPRINT_B,
+		PSP_FALL,
 
 		PSP_END,
 
@@ -246,7 +235,8 @@ public:
 		_bool bWeaponState;
 		_double CoolTime;
 		_uint iPhysicMoveID; // RootMotion이 false 일 경우 사용할 등가속 운동 움직임 ID
-		_uint iPriority; // 우선순위
+		_uint iEnterPriority;
+		_uint iLeavePriority;
 		// StateKeys
 		_uint iKeyCount;
 		CStateKey** ppStateKeys;
@@ -266,7 +256,8 @@ public:
 		_bool bWeaponState;
 		_double CoolTime;
 		_uint iPhysicMoveID; // RootMotion이 false 일 경우 사용할 등가속 운동 움직임 ID
-		_uint iPriority;
+		_uint iEnterPriority;
+		_uint iLeavePriority;
 		// StateKeys
 		_uint iKeyCount;
 		CStateKey** ppStateKeys;
@@ -294,6 +285,7 @@ public:
 		_float3			vPrevMovement;
 		PositionState	ePositionState;
 		_bool			bWalk;
+		_bool			bFalling;
 	};
 
 public: // StateKey 대응 함수 모음
@@ -318,6 +310,7 @@ public:
 
 protected:
 	StateController m_Scon;
+	
 
 public:
 	virtual void Free() override;

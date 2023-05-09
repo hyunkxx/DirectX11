@@ -13,6 +13,7 @@ class CSphereCollider;
 class CBone;
 class CVIBuffer_Rect;
 class CTexture;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -20,7 +21,6 @@ BEGIN(Client)
 class CPlayerGirl : public CCharacter
 {
 public:
-
 	typedef enum INPUT_STATE {
 		INPUT_NONE,
 		INPUT_MOVE,
@@ -29,11 +29,10 @@ public:
 		INPUT_ATTACK,
 		INPUT_ATTACK_CHARGE,
 		INPUT_ATTACK_RELEASE,
-		INPUT_ELMT_ART,
-		INPUT_ELMT_BURST,
+		INPUT_SKILL,
+		INPUT_BURST,
 		INPUT_END
 	}INPUT;
-
 
 	enum IndividualStates
 	{
@@ -108,6 +107,7 @@ private:
 	CShader*			m_pShaderCom = { nullptr };
 	CModel_Anim*		m_pAnimSetCom[ANIMSET_END] = { nullptr };
 	CModel_VTF*			m_pModelCom = { nullptr };
+	CNavigation*		m_pNaviCom = { nullptr };
 
 private:
 	// State
@@ -119,6 +119,14 @@ private:
 	class CParts*		m_Parts[PARTS_END] = { nullptr, };
 	CBone*				m_PartsBone[PBONE_END] = { nullptr, };
 
+	// 플레이어 변수
+	// 공중 점프 가능 횟수
+	_uint				m_iAirJumpCount = { 100 };
+	// 점프 위치 기록 - 착지 조건처리
+	_float3				m_fJumpPos = {};
+	// 스킬 강화 여부 체크
+	_float				m_fSkillGauge = { 100.f };
+
 	// 이펙트 재생용 임시
 	_float4x4			m_WorldMatrix;
 
@@ -128,10 +136,15 @@ private:
 	HRESULT Add_Components();
 	void Init_AnimSystem();
 	void SetUp_State();
+	// bContinue == 잔여 프레임을 사용하는 애니메이션인지?
 	void SetUp_Animations(_bool bContinue);
 
+	// 다음 행동(상태) 결정
 	void Key_Input(_double TimeDelta);
+	// 상태에 따른 행동 수행
 	void Tick_State(_double TimeDelta);
+	// 지형에 의한 예외 처리
+	void On_Cell();
 	
 	// Parts
 	HRESULT Init_Parts();

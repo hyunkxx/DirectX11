@@ -171,7 +171,10 @@ void CPlayerCamera::Tick(_double TimeDelta)
 		}*/
 
 		// At ≥Ù¿Ã
-		m_fPinHeight = 0.7f + m_fCurDistance * 0.2f;
+		if (m_fCurDistance < 2.f)
+			m_fPinHeight = 1.55f - m_fCurDistance * 0.3f;
+		else
+			m_fPinHeight = 0.7f + m_fCurDistance * 0.2f;
 
 		_vector vAxisRight = XMVector3Cross(XMLoadFloat3(&m_vDir), XMVectorSet(0.f, 1.f, 0.f, 0.f));
 

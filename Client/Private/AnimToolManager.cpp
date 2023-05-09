@@ -62,7 +62,8 @@ void CAnimToolManager::Save_State()
 		tMultiState.bWeaponState = m_pMultiState->bWeaponState;
 		tMultiState.CoolTime = (_double)m_pMultiState->CoolTime;
 		tMultiState.iPhysicMoveID = (_uint)m_pMultiState->iPhysicMoveID;
-		tMultiState.iPriority = (_uint)m_pMultiState->iPriority;
+		tMultiState.iEnterPriority = (_uint)m_pMultiState->iEnterPriority;
+		tMultiState.iLeavePriority = (_uint)m_pMultiState->iLeavePriority;
 		tMultiState.iKeyCount = (_uint)m_pMultiState->iKeyCount;
 
 		WriteFile(hFile, &tMultiState, sizeof(CCharacter::MULTISTATE) - sizeof(CStateKey**), &dwByte, nullptr);
@@ -384,12 +385,21 @@ void CAnimToolManager::RenderGUI()
 
 
 			PUSHID;
-			ImGui::Text("Priority : ");
+			ImGui::Text("EnterPriority : ");
 			POPID;
 			SAMELINE;
 			PUSHID;
 			ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
-			ImGui::InputInt("", &m_pMultiState->iPriority);
+			ImGui::InputInt("", &m_pMultiState->iEnterPriority);
+			POPID;
+
+			PUSHID;
+			ImGui::Text("LeavePriority : ");
+			POPID;
+			SAMELINE;
+			PUSHID;
+			ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
+			ImGui::InputInt("", &m_pMultiState->iLeavePriority);
 			POPID;
 
 			//

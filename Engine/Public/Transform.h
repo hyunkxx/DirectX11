@@ -38,6 +38,11 @@ public:
 	void Set_State(STATE eState, _fvector vState);
 	void Set_TransformDesc(const TRANSFORM_DESC& TransformDesc) { m_TransformDesc = TransformDesc; }
 
+	void Set_PosY(_float fPosY)
+	{
+		m_WorldMatrix._42 = fPosY;
+	}
+
 public:
 	virtual	HRESULT Initialize_Prototype() override;
 	virtual	HRESULT Initialize(void* pArg) override;
@@ -47,7 +52,9 @@ public:
 	void MoveBackward(_double TimeDelta);
 	void MoveRight(_double TimeDelta);
 	void MoveLeft(_double TimeDelta);
-	void Move_Anim(_float3* vMove);
+
+	// Animation 용 Navigation 타는 이동 함수
+	void Move_Anim(_float3* vMove, _uint iPostitionState = 0, class CNavigation* pNavigation = nullptr);
 
 	void SetRotationXYZ(_float3 fRadian); // 모든각도 회전
 	void SetRotation(_fvector vAxis, _float fRadian); //특정 각도로 회전

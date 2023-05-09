@@ -52,7 +52,10 @@ public:
 
 	/* 객체의 움직임 결과 위치 , 나간 선분을 공유하는 이웃Cell의 Index */
 	/* -> 이 안에서 NeighborIndex 를 가져올 것이기 때문에 포인터로 인자를 받는다. */
-	_bool Is_In(_fvector vPosition, _int* pNeigborIndex);
+	//_bool Is_In(_fvector vPosition, _int* pNeigborIndex);
+
+	_bool IsIn(_fvector vPosition, _int* pNeighborIndex, _bool bClimbing, _int* pOutLine = nullptr);
+	_bool CrossMultiEndLine(_fvector vPosition);
 
 #pragma region FOR_TOOL
 public:
@@ -75,6 +78,7 @@ private: /* 자신 Cell */
 
 	// Cell 옵션
 	_int							m_iState = { 0 };
+	_float3							m_vPlaneNormal;
 
 private: /* 이웃 Cell */
 		 /* 이웃의 정보는 같은 Cell 클래스이다 -> 해당 클래스에서 자신의 클래스타입의 정보를 저장하면 삭제할때 곤란한 경우가 있음 -> 그래서 Index 를 이용해서 저장한다 */

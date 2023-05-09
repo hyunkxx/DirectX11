@@ -74,6 +74,8 @@ void CLobbyCharacter::Tick(_double TimeDelta)
 		m_pAnimSetCom->SetUp_Animation(m_eState, true);
 	}
 	Tick_State(TimeDelta);
+
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 }
 
 void CLobbyCharacter::LateTick(_double TimeDelta)

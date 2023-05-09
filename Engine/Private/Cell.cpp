@@ -23,26 +23,35 @@ HRESULT CCell::Initialize(_int iIndex, const _float3 * pPoints, _int iState)
 
 	/* B - A / A->B */
 	_float A_B_LineX = pPoints[POINT_B].x - pPoints[POINT_A].x;
+	_float A_B_LineY = pPoints[POINT_B].y - pPoints[POINT_A].y;
 	_float A_B_LineZ = pPoints[POINT_B].z - pPoints[POINT_A].z;
 
 	/* C - B / B->C */
 	_float B_C_LineX = pPoints[POINT_C].x - pPoints[POINT_B].x;
+	_float B_C_LineY = pPoints[POINT_C].y - pPoints[POINT_B].y;
 	_float B_C_LineZ = pPoints[POINT_C].z - pPoints[POINT_B].z;
 
 	/* A - C / C->A */
 	_float C_A_LineX = pPoints[POINT_A].x - pPoints[POINT_C].x;
+	_float C_A_LineY = pPoints[POINT_A].y - pPoints[POINT_C].y;
 	_float C_A_LineZ = pPoints[POINT_A].z - pPoints[POINT_C].z;
 
 	/* 기준이 되는 방향벡터 에서 스왑을 하고 앞에 -1 을 곱해주면 해당 방향벡터와 수직인 벡터를 구할수 있음 */
 	/* 각 점으로 부터 플레이어 까지의 방향벡터를 이렇게 구한 Normal Vector 와 내적하여 각 축으로 부터 90도를 넘지않으면 삼각형 밖 , 90도를 넘으면 삼각형 안에 있다 */
 	/* cos 그래프 : 0 ~ 90 양수 , 90 ~ 270 음수 , 270 ~ 360 양수 -> 음수면 삼각형 안에있다 , 양수면 밖에 있다 */
 	/* 삼각형 (네비메쉬) 을 나갔냐 안나갔냐 를 판단하기 때문에 y를 구하지 않아도 괜찮다 */
-	m_vNormals[LINE_AB] = _float3(A_B_LineZ * -1.f, 0.f, A_B_LineX);
-	m_vNormals[LINE_BC] = _float3(B_C_LineZ * -1.f, 0.f, B_C_LineX);
-	m_vNormals[LINE_CA] = _float3(C_A_LineZ * -1.f, 0.f, C_A_LineX);
+	m_vNormals[LINE_AB] = _float3(A_B_LineZ * -1.f, A_B_LineY, A_B_LineX);
+	m_vNormals[LINE_BC] = _float3(B_C_LineZ * -1.f, B_C_LineY, B_C_LineX);
+	m_vNormals[LINE_CA] = _float3(C_A_LineZ * -1.f, C_A_LineY, C_A_LineX);
 
 	for (_uint i = 0; i < LINE_END; ++i)
 		XMStoreFloat3(&m_vNormals[i], XMVector3Normalize(XMLoadFloat3(&m_vNormals[i])));
+
+	// 평면의 노말 구해놓기
+	XMStoreFloat3(&m_vPlaneNormal,
+		XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&m_vPoints[POINT_B]) - XMLoadFloat3(&m_vPoints[POINT_A]),
+			XMLoadFloat3(&m_vPoints[POINT_C]) - XMLoadFloat3(&m_vPoints[POINT_A]))));
+
 
 #ifdef _DEBUG
 	m_pVIBuffer = CVIBuffer_Cell::Create(m_pDevice, m_pContext, m_vPoints);
@@ -88,27 +97,90 @@ _bool CCell::Compare_Points(_fvector vSour, _fvector vDest)
 
 	return false;
 }
+//
+//_bool CCell::Is_In(_fvector vPosition, _int * pNeigborIndex)
+//{
+//	for (_uint i = 0; i < LINE_END; ++i)
+//	{
+//		/* Normalize 를 할 때 w에 대해 명확하지 않으면 vector3 로 한다 */
+//		/* Cell 의 (3개) 각 꼭짓점 으로 부터 객체로 향하는 방향벡터를 구한다 */
+//		_vector		vDir = XMVector3Normalize(vPosition - XMLoadFloat3(&m_vPoints[i]));
+//
+//		/* 꼭짓점으로 부터 객체를 향한 방향벡터 , 미리 구해놓은 선분의 Normal벡터 를 내적한다 */
+//		/* -> 모든 결과가 양수라면 Cell 밖으로 나간 것 ,음수라면 Cell 안에 있는 것 -> Cos(세타) 결과 값 */
+//		/* 내적함수 XMVector3Dot()도 vector를 리턴함으로 XMVectorGetX() X값만 가져온다 */
+//		if (0 < XMVectorGetX(XMVector3Dot(vDir, XMLoadFloat3(&m_vNormals[i]))))
+//		{
+//			/* Cell의 밖으로 나갔다면 이웃을 갱신하고 false 리턴 */
+//			*pNeigborIndex = m_Neighbors[i];
+//			return false;
+//		}
+//	}
+//
+//	return true;
+//}
 
-_bool CCell::Is_In(_fvector vPosition, _int * pNeigborIndex)
+_bool CCell::IsIn(_fvector vPosition, _int * pNeighborIndex, _bool bClimbing, _int * pOutLine)
 {
-	for (_uint i = 0; i < LINE_END; ++i)
+	if (bClimbing)
 	{
-		/* Normalize 를 할 때 w에 대해 명확하지 않으면 vector3 로 한다 */
-		/* Cell 의 (3개) 각 꼭짓점 으로 부터 객체로 향하는 방향벡터를 구한다 */
-		_vector		vDir = XMVector3Normalize(vPosition - XMLoadFloat3(&m_vPoints[i]));
+		// 벽을 타고 있을 때 현재 셀확인
+		_vector vPlane = XMPlaneFromPoints(XMLoadFloat3(&m_vPoints[0]), XMLoadFloat3(&m_vPoints[1]), XMLoadFloat3(&m_vPoints[2]));
 
-		/* 꼭짓점으로 부터 객체를 향한 방향벡터 , 미리 구해놓은 선분의 Normal벡터 를 내적한다 */
-		/* -> 모든 결과가 양수라면 Cell 밖으로 나간 것 ,음수라면 Cell 안에 있는 것 -> Cos(세타) 결과 값 */
-		/* 내적함수 XMVector3Dot()도 vector를 리턴함으로 XMVectorGetX() X값만 가져온다 */
-		if (0 < XMVectorGetX(XMVector3Dot(vDir, XMLoadFloat3(&m_vNormals[i]))))
+		_float fDistance = XMVectorGetX(XMPlaneDotCoord(vPlane, vPosition));
+
+		_vector vPosOnPlane = vPosition - XMLoadFloat3(&m_vPlaneNormal) * fDistance;
+
+		for (_uint i = 0; i < LINE_END; ++i)
 		{
-			/* Cell의 밖으로 나갔다면 이웃을 갱신하고 false 리턴 */
-			*pNeigborIndex = m_Neighbors[i];
-			return false;
+			_vector		vDir = XMVector3Normalize(vPosOnPlane - XMLoadFloat3(&m_vPoints[i]));
+
+			if (0 < XMVectorGetX(XMVector3Dot(vDir, XMLoadFloat3(&m_vNormals[i]))))
+			{
+				*pNeighborIndex = m_Neighbors[i];
+				if (nullptr != pOutLine)
+					*pOutLine = i;
+				return false;
+			}
+		}
+	}
+	else
+	{
+		for (_uint i = 0; i < LINE_END; ++i)
+		{
+			_vector		vDir = XMVector3Normalize(XMVectorSetY(vPosition - XMLoadFloat3(&m_vPoints[i]), 0.f));
+
+			if (0 < XMVectorGetX(XMVector3Dot(vDir, XMVectorSetY(XMLoadFloat3(&m_vNormals[i]), 0.f))))
+			{
+				*pNeighborIndex = m_Neighbors[i];
+				if (nullptr != pOutLine)
+					*pOutLine = i;
+				return false;
+			}
 		}
 	}
 
+
 	return true;
+}
+
+_bool CCell::CrossMultiEndLine(_fvector vPosition)
+{
+	_uint iCrossCount = 0;
+	for (_uint i = 0; i < LINE_END; ++i)
+	{
+		_vector		vDir = XMVector3Normalize(vPosition - XMLoadFloat3(&m_vPoints[i]));
+
+		if (0 < XMVectorGetX(XMVector3Dot(vDir, XMLoadFloat3(&m_vNormals[i]))))
+		{
+			if (-1 == m_Neighbors[i])
+				++iCrossCount;
+
+			if (iCrossCount >= 2)
+				return true;
+		}
+	}
+	return false;
 }
 
 _bool CCell::Is_CurrentIn(_fvector vPosition)

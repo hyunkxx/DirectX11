@@ -360,9 +360,9 @@ HRESULT CTestVTF::Init_States()
 		MULTISTATE tMultiState;
 		ZeroMemory(&tMultiState, sizeof(MULTISTATE));
 
-		ReadFile(hFile, &tMultiState, sizeof(CCharacter::MULTISTATE) - sizeof(CStateKey**), &dwByte, nullptr);
+		ReadFile(hFile, &tMultiState, sizeof(CCharacter::MULTISTATE) - sizeof(CStateKey**) - sizeof(_uint), &dwByte, nullptr);
 
-		if (0 != tMultiState.iKeyCount)
+		/*if (0 != tMultiState.iKeyCount)
 		{
 			tMultiState.ppStateKeys = new CStateKey*[tMultiState.iKeyCount];
 			ZeroMemory(tMultiState.ppStateKeys, sizeof(CStateKey*) * tMultiState.iKeyCount);
@@ -401,14 +401,12 @@ HRESULT CTestVTF::Init_States()
 			}
 		}
 		else
-			tMultiState.ppStateKeys = nullptr;
-
-		;
+			tMultiState.ppStateKeys = nullptr;*/
 
 		// 읽어온 정보들을 멤버 변수에 저장
 		m_tStates[i].iAnimID[CCharacter::ANIMSET_BASE] = (_int)tMultiState.iAnimID[CCharacter::ANIMSET_BASE];
 		m_tStates[i].iAnimID[CCharacter::ANIMSET_RIBBON] = (_int)tMultiState.iAnimID[CCharacter::ANIMSET_RIBBON];
-
+		m_tStates[i].iNextState = (_int)tMultiState.iNextState;
 		m_tStates[i].iRotationType = (_int)tMultiState.iRotationType;
 		m_tStates[i].FramePerSec = (_float)tMultiState.FramePerSec;
 		m_tStates[i].bLoop = tMultiState.bLoop;
@@ -418,10 +416,11 @@ HRESULT CTestVTF::Init_States()
 		m_tStates[i].bWeaponState = tMultiState.bWeaponState;
 		m_tStates[i].CoolTime = (_float)tMultiState.CoolTime;
 		m_tStates[i].iPhysicMoveID = (_int)tMultiState.iPhysicMoveID;
-		m_tStates[i].iPriority = (_int)tMultiState.iPriority;
-		m_tStates[i].iKeyCount = (_int)tMultiState.iKeyCount;
+		m_tStates[i].iEnterPriority = (_int)tMultiState.iEnterPriority;
+		//m_tStates[i].iLeavePriority = (_int)tMultiState.iLeavePriority;
+		//m_tStates[i].iKeyCount = (_int)tMultiState.iKeyCount;
 
-		m_tStates[i].ppStateKeys = tMultiState.ppStateKeys;
+		//m_tStates[i].ppStateKeys = tMultiState.ppStateKeys;
 
 		CloseHandle(hFile);
 	}
@@ -550,8 +549,30 @@ void CTestVTF::Tick_State(_double TimeDelta)
 		else
 		{
 			// 가속/감속 체크하는 코드
-			XMStoreFloat3(&vMovement, XMLoadFloat3(&m_vMovement) * (_float)TimeDelta);
+			const PHYSICMOVE& PhysicMove = PlayerStatePhysics[m_tStates[m_iStateID].iPhysicMoveID];
+			if (false == PhysicMove.bConstant)
+			{
+				_vector vMove = XMLoadFloat3(&m_vPrevMovement);
+
+				_float fXZSpeed = XMVectorGetX(XMVector2Length(vMove)) * (1.f - (_float)TimeDelta * PhysicMove.fHorizontalAtten);
+				if (fabs(fXZSpeed) < 0.01f)
+					fXZSpeed = 0.f;
+				_float fYSpeed = XMVectorGetZ(vMove) - PhysicMove.fVerticalAccel * (_float)TimeDelta;
+
+				fXZSpeed = min(fXZSpeed, PhysicMove.fHorizontalMaxSpeed);
+				fYSpeed = max(fYSpeed, PhysicMove.fVerticalMaxSpeed);
+
+				_vector vFinalMove = XMVectorSetZ(XMVector2Normalize(vMove) * fXZSpeed, fYSpeed);
+
+				XMStoreFloat3(&vMovement, vFinalMove);
+
+			}
+			else
+				XMStoreFloat3(&vMovement, XMLoadFloat3(&m_vMovement) * (_float)TimeDelta);
+			
 			m_pMainTransform->Move_Anim(&vMovement);
+
+			m_vPrevMovement = vMovement;
 		}
 
 		// StateKey 처리

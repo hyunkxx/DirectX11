@@ -62,16 +62,21 @@ HRESULT CPlayerGirl::Initialize(void * pArg)
 	if (FAILED(Init_Parts()))
 		return E_FAIL;
 
+	// 애니메이션 연결
 	Init_AnimSystem();
 
+	// 루트모션용 본찾기
 	m_pAnimSetCom[ANIMSET_BASE]->Set_RootBone(TEXT("Root"));
 
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 0.f, 0.f, 1.f));
+	// 초기위치 설정
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(6.f, 30.f, 5.f, 1.f));
+	m_pNaviCom->Set_CurrentIndex(0);
+	
 	//m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
 
 	XMStoreFloat4x4(&m_WorldMatrix , XMMatrixIdentity());
 
-	//
+	// StateController 초기화
 	m_Scon.iCurState = 0;
 	m_Scon.iNextState = 0;
 	m_Scon.ePositionState = PS_GROUND;
@@ -94,9 +99,11 @@ void CPlayerGirl::Tick(_double TimeDelta)
 	
 
 
-		Key_Input(TimeDelta);
+	Key_Input(TimeDelta);
 
 	Tick_State(TimeDelta);
+
+	On_Cell();
 
 	// Parts 처리
 	for (_uint i = 0; i < PARTS_END; ++i)
@@ -253,6 +260,16 @@ HRESULT CPlayerGirl::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON,
 		TEXT("Com_AnimSet_Ribbon"), (CComponent**)&m_pAnimSetCom[ANIMSET_RIBBON])))
 		return E_FAIL;
+
+
+	CNavigation::NAVIGATION_DESC NavigationDesc;
+	ZeroMemory(&NavigationDesc, sizeof(CNavigation::NAVIGATION_DESC));
+	NavigationDesc.iCurrentIndex = 0;
+
+	/* Navigation */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::NAVIGATION,
+		TEXT("Com_Navigation"), (CComponent**)&m_pNaviCom, &NavigationDesc)))
+		return E_FAIL;
 	
 	return S_OK;
 }
@@ -316,9 +333,6 @@ HRESULT CPlayerGirl::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 		}
 		else
 			m_tStates[i].ppStateKeys = nullptr;
-		
-
-	
 
 		CloseHandle(hFile);
 	}
@@ -342,7 +356,7 @@ void CPlayerGirl::Release_States()
 	}
 }
 
-void CPlayerGirl::Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration)
+void CPlayerGirl::Shot_PartsKey(_uint iParts/*int0*/, _uint iState/*int1*/, _uint iDissolve/*int2*/, _double Duration/*float*/)
 {
 	// Weapon Main / Sub
 	if (0 == iParts)
@@ -406,6 +420,26 @@ void CPlayerGirl::SetUp_State()
 
 	m_Scon.TrackPos = 0.0;
 	m_Scon.bAnimFinished = false;
+
+	if ((SS_JUMP_WALK == m_Scon.iCurState ||
+		SS_JUMP_RUN == m_Scon.iCurState || 
+		SS_FALL == m_Scon.iCurState) &&
+		PS_AIR != m_Scon.ePositionState)
+	{
+		m_Scon.ePositionState = PS_AIR;
+		m_Scon.bFalling = false;
+		XMStoreFloat3(&m_fJumpPos, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	}
+
+	if (SS_LAND_LIGHT == m_Scon.iCurState ||
+		SS_LAND_HEAVY == m_Scon.iCurState ||
+		SS_LAND_ROLL == m_Scon.iCurState ||
+		IS_AIRATTACK_END == m_Scon.iCurState)
+	{
+		m_Scon.ePositionState = PS_GROUND;
+	}
+		
+
 
 	// 무기 위치 잡기
 	if (0 == m_tCurState.bWeaponState)
@@ -486,7 +520,10 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 
 	// 이동 기능 구현용 임시 코드
 	_matrix matCam = pGame->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
-	_vector vCamLookXZ = XMVector3Normalize(XMVectorSetY(matCam.r[2], 0.f));
+	_vector vCamLook = XMVector3Normalize(XMVectorSetY(matCam.r[2], 0.f));
+	_vector vCamRight = XMVector3Normalize(XMVectorSetY(matCam.r[0], 0.f));
+	_vector vInputDir = XMVectorZero();
+	
 
 	// 입력 제한 걸기
 	if (pGame->InputKey(DIK_I) == KEY_STATE::TAP)
@@ -544,21 +581,41 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			SetUp_State();
 		}
 
+		if (pGame->InputKey(DIK_R) == KEY_STATE::TAP)
+		{
+			// 초기위치 설정
+			m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(6.f, 30.f, 5.f, 1.f));
+			m_pNaviCom->Set_CurrentIndex(0);
+		}
+
 
 
 		// 이동 방향 체크
 
-		if (pGame->InputKey(DIK_UP) == KEY_STATE::HOLD)
+		if (pGame->InputKey(DIK_W) == KEY_STATE::HOLD)
+		{
 			bInputDir[0] = true;
-
-		else if (pGame->InputKey(DIK_DOWN) == KEY_STATE::HOLD)
+			vInputDir += vCamLook;
+		}
+		else if (pGame->InputKey(DIK_S) == KEY_STATE::HOLD)
+		{
 			bInputDir[1] = true;
+			vInputDir -= vCamLook;
+		}
+			
 
-		if (pGame->InputKey(DIK_LEFT) == KEY_STATE::HOLD)
+		if (pGame->InputKey(DIK_A) == KEY_STATE::HOLD)
+		{
 			bInputDir[2] = true;
+			vInputDir -= vCamRight;
+		}
 
-		else if (pGame->InputKey(DIK_RIGHT) == KEY_STATE::HOLD)
+		else if (pGame->InputKey(DIK_D) == KEY_STATE::HOLD)
+		{
 			bInputDir[3] = true;
+			vInputDir += vCamRight;
+		}
+			
 
 		if (bInputDir[0] ||
 			bInputDir[1] ||
@@ -569,13 +626,25 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			eCurFrameInput = INPUT_NONE;
 
 		// Shift 입력 시 회피
-		if (pGame->InputKey(DIK_LSHIFT) == KEY_STATE::HOLD)
+		if (pGame->InputKey(DIK_LSHIFT) == KEY_STATE::HOLD && INPUT_MOVE == eCurFrameInput)
 		{
 			eCurFrameInput = INPUT_DASH;
 		}
 
+		// Skill
+		if (pGame->InputKey(DIK_E) == KEY_STATE::TAP)
+		{
+			eCurFrameInput = INPUT_SKILL;
+		}
+
+		// Burst
+		if (pGame->InputKey(DIK_Q) == KEY_STATE::TAP)
+		{
+			eCurFrameInput = INPUT_BURST;
+		}
+
 		//
-		if (pGame->InputKey(DIK_SPACE) == KEY_STATE::HOLD)
+		if (pGame->InputKey(DIK_SPACE) == KEY_STATE::TAP)
 		{
 			eCurFrameInput = INPUT_SPACE;
 		}
@@ -585,6 +654,10 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			eCurFrameInput = INPUT_ATTACK;
 		}
 	}
+
+	if (0.f != XMVectorGetX(XMVector3Length(vInputDir)))
+		XMVector3Normalize(vInputDir);
+	
 	
 
 	// 입력에 따라 대응하는 다음 상태 찾기
@@ -596,20 +669,10 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			switch (m_Scon.iCurState)
 			{
 			case SS_WALK_F:
-			case SS_WALK_B:
-			case SS_WALK_LF:
-			case SS_WALK_LB:
-			case SS_WALK_RF:
-			case SS_WALK_RB:
 				m_Scon.iNextState = SS_WALK_STOP_L;
 				break;
 
 			case SS_RUN_F:
-			case SS_RUN_B:
-			case SS_RUN_LF:
-			case SS_RUN_LB:
-			case SS_RUN_RF:
-			case SS_RUN_RB:
 				m_Scon.iNextState = SS_RUN_STOP_L;
 				break;
 
@@ -628,7 +691,8 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			// WALK
 			if (m_Scon.bWalk)
 			{
-				if (true == bInputDir[0])
+				m_Scon.iNextState = SS_WALK_F;
+				/*if (true == bInputDir[0])
 					if (true == bInputDir[2])
 						m_Scon.iNextState = SS_WALK_LF;
 					else if (true == bInputDir[3])
@@ -645,12 +709,13 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 				else if (true == bInputDir[2])
 					m_Scon.iNextState = SS_WALK_LF;
 				else 
-					m_Scon.iNextState = SS_WALK_RF;
+					m_Scon.iNextState = SS_WALK_RF;*/
 			}
 			// RUN
 			else
 			{
-				if (true == bInputDir[0])
+				m_Scon.iNextState = SS_RUN_F;
+				/*if (true == bInputDir[0])
 					if (true == bInputDir[2])
 						m_Scon.iNextState = SS_RUN_LF;
 					else if (true == bInputDir[3])
@@ -667,15 +732,36 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 				else if (true == bInputDir[2])
 					m_Scon.iNextState = SS_RUN_LF;
 				else
-					m_Scon.iNextState = SS_RUN_RF;
+					m_Scon.iNextState = SS_RUN_RF;*/
 			}
 			break;
+
 		case Client::CPlayerGirl::INPUT_DASH:
-			if(!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
+			if (SS_SPRINT != m_Scon.iCurState &&
+				SS_SPRINT_IMPULSE_F != m_Scon.iCurState)
+				m_Scon.iNextState = SS_SPRINT_IMPULSE_F;
+			/*if(!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
 				m_Scon.iNextState = SS_MOVE_B;
 			else
-				m_Scon.iNextState = SS_MOVE_F;
+				m_Scon.iNextState = SS_MOVE_F;*/
 			break;
+
+		case Client::CPlayerGirl::INPUT_SPACE:
+			switch (m_Scon.iCurState)
+			{
+			case SS_STAND1:
+			case SS_STAND1_ACTION01:
+			case SS_STAND2:
+			case SS_STANDCHANGE:
+			case SS_STANDUP:
+				m_Scon.iNextState = SS_JUMP_WALK;
+				break;
+			default:
+				m_Scon.iNextState = SS_JUMP_RUN;
+				break;
+			}
+			break;
+
 		case Client::CPlayerGirl::INPUT_ATTACK:
 			switch (m_Scon.iCurState)
 			{
@@ -696,23 +782,67 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 				break;
 			}
 			break;
+
+		case Client::CPlayerGirl::INPUT_SKILL:
+			if (m_fSkillGauge >= 50.f)
+			{
+				m_fSkillGauge -= 50.f;
+				m_Scon.iNextState = IS_SKILL_02;
+			}
+			else
+				m_Scon.iNextState = IS_SKILL_01;
+			break;
+
+		case Client::CPlayerGirl::INPUT_BURST:
+				m_Scon.iNextState = IS_BURST;
+			break;
+
 		default:
 			break;
 		}
 	}
-	
+	else if (PS_AIR == m_Scon.ePositionState)
+	{
+		switch (eCurFrameInput)
+		{
+		case Client::CPlayerGirl::INPUT_SPACE:
+			switch (m_Scon.iCurState)
+			{
+			//case SS_JUMP_RUN:
+			//case SS_JUMP_WALK:
+			//	break;
+			default:
+				if (m_iAirJumpCount > 0)
+				{
+					if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
+						m_Scon.iNextState = SS_JUMP_SECOND_B;
+					else
+						m_Scon.iNextState = SS_JUMP_SECOND_F;
+					--m_iAirJumpCount;
+				}
+				break;
+			}
+			break;
+		case Client::CPlayerGirl::INPUT_ATTACK:
+			m_Scon.iNextState = IS_AIRATTACK_START;
+			break;
+		default:
+			break;
+		}
+	}
 
 	// 지금 상태를 끊고 다음 상태로 갱신 할지 여부
 	if (m_Scon.iCurState != m_Scon.iNextState)
 	{
-		if (m_tCurState.iPriority <= m_tStates[m_Scon.iNextState].iPriority)
+		if (m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
 		{
 			SetUp_State();
 			SetUp_Animations(false);
 			// 상태 갱신 시 1번만
 			if (CCharacter::ROT_ONSTART == m_tCurState.iRotationType)
 			{
-				m_pMainTransform->Set_LookDir(vCamLookXZ);
+				if(0.f != XMVectorGetX(XMVector3Length(vInputDir)))
+					m_pMainTransform->Set_LookDir(vInputDir);
 			}
 		}
 	}
@@ -720,7 +850,8 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 	// 매 프레임
 	if (CCharacter::ROT_LOOKAT == m_tCurState.iRotationType)
 	{
-		m_pMainTransform->Set_LookDir(vCamLookXZ);
+		if(0.f != XMVectorGetX(XMVector3Length(vInputDir)))
+			m_pMainTransform->Set_LookDir(vInputDir);
 	}
 
 }
@@ -747,15 +878,34 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 		{
 			// TODO : 회전 적용
 			//m_pMainTransform->Rotate_Quaternion(XMLoadFloat4(&vRotation));
-			m_pMainTransform->Move_Anim(&vMovement);
+			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom);
 			m_Scon.vPrevMovement = vMovement;
 		}
 		else
 		{
-			// TODO : 등속 운동이 아닐 경우 가속/감속 체크하는 코드
+			const PHYSICMOVE& PhysicMove = PlayerStatePhysics[m_tCurState.iPhysicMoveID];
+			if (false == PhysicMove.bConstant)
+			{
+				_vector vMove = XMLoadFloat3(&m_Scon.vPrevMovement);
 
-			XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vMovement) * (_float)TimeDelta);
-			m_pMainTransform->Move_Anim(&vMovement);
+				_float fXZSpeed = XMVectorGetX(XMVector2Length(vMove)) * (1.f - (_float)TimeDelta * PhysicMove.fHorizontalAtten);
+				if (fabs(fXZSpeed) < 0.01f)
+					fXZSpeed = 0.f;
+				_float fYSpeed = XMVectorGetZ(vMove) - PhysicMove.fVerticalAccel * (_float)TimeDelta;
+
+				fXZSpeed = min(fXZSpeed, PhysicMove.fHorizontalMaxSpeed);
+				fYSpeed = max(fYSpeed, PhysicMove.fVerticalMaxSpeed);
+
+				_vector vFinalMove = XMVectorSetZ(XMVector2Normalize(vMove) * fXZSpeed, fYSpeed);
+
+				XMStoreFloat3(&vMovement, vFinalMove);
+			}
+			else
+				XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vMovement) * (_float)TimeDelta);
+
+			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom);
+
+			m_Scon.vPrevMovement = vMovement;
 		}
 
 		// StateKey 처리
@@ -764,6 +914,10 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 			if(nullptr != m_tCurState.ppStateKeys[i])
 				m_tCurState.ppStateKeys[i]->Check(m_Scon.TrackPos, this);
 		}
+
+		// 떨어지고 있을 경우 
+		if (vMovement.z < 0.f)
+			m_Scon.bFalling = true;
 	}
 
 	if (true == m_Scon.bAnimFinished)
@@ -785,6 +939,65 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 				SetUp_Animations(true);
 			}
 		}
+	}
+}
+
+void CPlayerGirl::On_Cell()
+{
+	_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+	_float fPosY = XMVectorGetY(vPos);
+	_float fCellHeight = m_pNaviCom->Compute_Height(vPos);
+
+
+	if (PS_GROUND == m_Scon.ePositionState)
+	{
+		if (fPosY - fCellHeight > 0.2f)
+		{
+			m_Scon.iNextState = SS_FALL;
+			SetUp_State();
+			SetUp_Animations(false);
+		}
+		else
+			m_pMainTransform->Set_PosY(fCellHeight);
+	}
+	else if (PS_AIR == m_Scon.ePositionState)
+	{
+		if (fPosY - fCellHeight < 0.f )
+		{
+			// 오르막 방향으로 점프 시 예외처리
+			if (false == m_Scon.bFalling)
+				m_pMainTransform->Set_PosY(fCellHeight);
+			else
+			{
+				m_pMainTransform->Set_PosY(fCellHeight);
+
+				// 공중 공격으로 착지하는 경우
+				if (IS_AIRATTACK_START == m_Scon.iCurState ||
+					IS_AIRATTACK_LOOP == m_Scon.iCurState)
+				{
+					m_Scon.iNextState = IS_AIRATTACK_END;
+				}
+				// 일반적인 경우
+				else
+				{
+					_float fGap = m_fJumpPos.y - fCellHeight;
+					if (fGap > 4.f)
+						m_Scon.iNextState = SS_LAND_ROLL;
+					else if (fGap > 2.f)
+						m_Scon.iNextState = SS_LAND_HEAVY;
+					else
+						m_Scon.iNextState = SS_LAND_LIGHT;
+				}
+				
+
+				SetUp_State();
+				SetUp_Animations(false);
+			}
+		}
+	}
+	else if (PS_CLIMB == m_Scon.ePositionState)
+	{
+
 	}
 }
 
@@ -949,6 +1162,7 @@ void CPlayerGirl::Free()
 		Safe_Release(m_pAnimSetCom[i]);
 	}
 
+	Safe_Release(m_pNaviCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pMainTransform);
 	Safe_Release(m_pShaderCom);

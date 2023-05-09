@@ -1,5 +1,6 @@
 #include "..\Public\Transform.h"
 #include "Shader.h"
+#include "Navigation.h"
 
 CTransform::CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
@@ -109,17 +110,43 @@ void CTransform::MoveLeft(_double TimeDelta)
 	Set_State(STATE::STATE_POSITION, vPosition);
 }
 
-void CTransform::Move_Anim(_float3 * vMove)
+void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation * pNavigation)
 {
 	_vector vPos = Get_State(CTransform::STATE_POSITION);
 	_vector vRight = Get_State(CTransform::STATE_RIGHT);
 	_vector vUp = Get_State(CTransform::STATE_UP);
 	_vector vLook = Get_State(CTransform::STATE_LOOK);
 
-	_vector vMovesrc = XMVector3Normalize(vRight) * vMove->x - XMVector3Normalize(vLook) * vMove->y + XMVector3Normalize(vUp) * vMove->z;
-	_vector vPossrc = vPos + vMovesrc;
+	//_vector vMoveXZ = XMVector3Normalize(vRight) * vMove->x - XMVector3Normalize(vLook) * vMove->y;
+	_vector vMoveY = XMVector3Normalize(vUp) * vMove->z;
+	_vector vMovement = XMVector3Normalize(vRight) * vMove->x - XMVector3Normalize(vLook) * vMove->y + vMoveY;
 
-	Set_State(STATE_POSITION, vPossrc);
+
+	if (nullptr == pNavigation)
+	{
+		Set_State(STATE_POSITION, vPos + vMovement);
+		return;
+	}
+
+	_float3 vSlideOut = _float3(0.f, 0.f, 0.f);
+	
+	_uint iResult = pNavigation->Move_OnNavigation(vPos, vMovement, &vSlideOut, 2 == iPostitionState/* iPositionState == PS_CLIMB */);
+
+	if (CNavigation::NAVI_OK == iResult)
+		Set_State(STATE_POSITION, vPos + vMovement);
+	else if (CNavigation::NAVI_SLIDE == iResult)
+	{
+		_vector vSlideXZ = XMLoadFloat3(&vSlideOut);
+		
+		/* iPositionState == PS_AIR*/
+		if (1 == iPostitionState)
+		{
+			vSlideXZ = XMVectorSetY(vSlideXZ, 0.f);
+			vSlideXZ += vMoveY;
+		}
+			
+		Set_State(STATE_POSITION, vPos + vSlideXZ);
+	}
 }
 
 void CTransform::SetRotationXYZ(_float3 fRadian)
