@@ -181,6 +181,10 @@ void CLobbyCharacter::PlaySelectedAnimation()
 	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Loby_Particle_Effect_02");
 	_float4x4 WorldMatirx = m_pMainTransform->Get_WorldMatrix();
 	pEffect->Play_Effect(&WorldMatirx, false);
+
+	pEffect = CGameInstance::GetInstance()->Get_Effect(L"Test_Loby_Effect");
+	pEffect->Play_Effect(&WorldMatirx, false);
+
 }
 
 _vector CLobbyCharacter::GetEyePosition()

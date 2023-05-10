@@ -58,7 +58,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
+	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
 	//콜라이더 보이기/숨기기
@@ -439,7 +439,14 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/Double_Jump/")))
 			return E_FAIL;
 	}
+	for (_int i = 0; 10 > i; i++)
+	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Test_Loby_Effect.bin"),
+			"../../Resource/Effect/Test_Loby_Effect/")))
+			return E_FAIL;
+	}
 
+	
 	return S_OK;
 }
 
