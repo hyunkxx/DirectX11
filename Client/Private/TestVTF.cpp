@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Parts.h"
 #include "PartsKey.h"
+#include "PriorityKey.h"
 
 
 CTestVTF::CTestVTF(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -360,9 +361,9 @@ HRESULT CTestVTF::Init_States()
 		MULTISTATE tMultiState;
 		ZeroMemory(&tMultiState, sizeof(MULTISTATE));
 
-		ReadFile(hFile, &tMultiState, sizeof(CCharacter::MULTISTATE) - sizeof(CStateKey**) - sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &tMultiState, sizeof(CCharacter::MULTISTATE) - sizeof(CStateKey**), &dwByte, nullptr);
 
-		/*if (0 != tMultiState.iKeyCount)
+		if (0 != tMultiState.iKeyCount)
 		{
 			tMultiState.ppStateKeys = new CStateKey*[tMultiState.iKeyCount];
 			ZeroMemory(tMultiState.ppStateKeys, sizeof(CStateKey*) * tMultiState.iKeyCount);
@@ -381,7 +382,7 @@ HRESULT CTestVTF::Init_States()
 					tMultiState.ppStateKeys[j] = CPartsKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_PRIORITY:
-
+					tMultiState.ppStateKeys[j] = CPriorityKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_DISSOLVE:
 
@@ -401,7 +402,7 @@ HRESULT CTestVTF::Init_States()
 			}
 		}
 		else
-			tMultiState.ppStateKeys = nullptr;*/
+			tMultiState.ppStateKeys = nullptr;
 
 		// 읽어온 정보들을 멤버 변수에 저장
 		m_tStates[i].iAnimID[CCharacter::ANIMSET_BASE] = (_int)tMultiState.iAnimID[CCharacter::ANIMSET_BASE];
@@ -417,10 +418,10 @@ HRESULT CTestVTF::Init_States()
 		m_tStates[i].CoolTime = (_float)tMultiState.CoolTime;
 		m_tStates[i].iPhysicMoveID = (_int)tMultiState.iPhysicMoveID;
 		m_tStates[i].iEnterPriority = (_int)tMultiState.iEnterPriority;
-		//m_tStates[i].iLeavePriority = (_int)tMultiState.iLeavePriority;
-		//m_tStates[i].iKeyCount = (_int)tMultiState.iKeyCount;
+		m_tStates[i].iLeavePriority = (_int)tMultiState.iLeavePriority;
+		m_tStates[i].iKeyCount = (_int)tMultiState.iKeyCount;
 
-		//m_tStates[i].ppStateKeys = tMultiState.ppStateKeys;
+		m_tStates[i].ppStateKeys = tMultiState.ppStateKeys;
 
 		CloseHandle(hFile);
 	}

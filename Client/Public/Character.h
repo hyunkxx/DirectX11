@@ -291,6 +291,8 @@ public:
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration) {};
+	virtual void Shot_PriorityKey(_uint iLeavePriority) {};
+
 
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

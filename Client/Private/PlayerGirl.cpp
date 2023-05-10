@@ -6,6 +6,7 @@
 #include "Parts.h"
 #include "Effect.h"
 #include "PartsKey.h"
+#include "PriorityKey.h"
 
 const _int CPlayerGirl::iState_End = CCharacter::SS_END + (CPlayerGirl::IS_END - CPlayerGirl::IS_START);
 
@@ -327,7 +328,7 @@ HRESULT CPlayerGirl::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 					m_tStates[i].ppStateKeys[j] = CPartsKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_PRIORITY:
-
+					m_tStates[i].ppStateKeys[j] = CPriorityKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_DISSOLVE:
 
@@ -414,6 +415,11 @@ void CPlayerGirl::Shot_PartsKey(_uint iParts/*int0*/, _uint iState/*int1*/, _uin
 	//}
 }
 
+void CPlayerGirl::Shot_PriorityKey(_uint iLeavePriority)
+{
+	m_tCurState.iLeavePriority = iLeavePriority;
+}
+
 void CPlayerGirl::SetUp_State()
 {
 	// 키 리셋
@@ -435,6 +441,8 @@ void CPlayerGirl::SetUp_State()
 
 	m_Scon.TrackPos = 0.0;
 	m_Scon.bAnimFinished = false;
+
+	
 
 	if ((SS_JUMP_WALK == m_Scon.iCurState ||
 		SS_JUMP_RUN == m_Scon.iCurState || 
@@ -599,6 +607,8 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			// 초기위치 설정
 			m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(6.f, 30.f, 5.f, 1.f));
 			m_pNaviCom->Set_CurrentIndex(0);
+			m_iAirJumpCount += 10;
+			m_fSkillGauge += 50.f;
 		}
 
 
@@ -787,7 +797,7 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			case IS_ATTACK_03:
 				m_Scon.iNextState = IS_ATTACK_04;
 				break;
-			case IS_ATTACK_04:
+			case IS_SKILL_02:
 				m_Scon.iNextState = IS_ATTACK_05;
 				break;
 			default:
@@ -819,33 +829,52 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 		switch (eCurFrameInput)
 		{
 		case Client::CPlayerGirl::INPUT_SPACE:
-			switch (m_Scon.iCurState)
+			if (m_iAirJumpCount > 0)
 			{
-			//case SS_JUMP_RUN:
-			//case SS_JUMP_WALK:
-			//	break;
-			default:
-				if (m_iAirJumpCount > 0)
+				if (m_Scon.iCurState != SS_JUMP_SECOND_B)
 				{
-					if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
-					{
-						m_Scon.iNextState = SS_JUMP_SECOND_B;
-						CEffect* pEffect =CGameInstance::GetInstance()->Get_Effect(L"Double_Jump_B");
-						_float4x4 ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-						pEffect->Play_Effect(&ParentMatrix);
-					}
-					else
-					{
-						m_Scon.iNextState = SS_JUMP_SECOND_F;
-						CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Double_Jump_F");
-						_float4x4 ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-						pEffect->Play_Effect(&ParentMatrix);
-					}
-					--m_iAirJumpCount;
+					m_Scon.iNextState = SS_JUMP_SECOND_B;
+					CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Double_Jump_B");
+					_float4x4 ParentMatrix = m_pMainTransform->Get_WorldMatrix();
+					pEffect->Play_Effect(&ParentMatrix);
 				}
-				break;
+					
+				else
+				{
+					m_Scon.iNextState = SS_JUMP_SECOND_F;
+					CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Double_Jump_F");
+					_float4x4 ParentMatrix = m_pMainTransform->Get_WorldMatrix();
+					pEffect->Play_Effect(&ParentMatrix);
+				}
+				--m_iAirJumpCount;
+
+				//if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
+				//{
+				//	m_Scon.iNextState = SS_JUMP_SECOND_B;
+				//	CEffect* pEffect =CGameInstance::GetInstance()->Get_Effect(L"Double_Jump_B");
+				//	_float4x4 ParentMatrix = m_pMainTransform->Get_WorldMatrix();
+				//	pEffect->Play_Effect(&ParentMatrix);
+				//}
+				//else
+				//{
+				//	m_Scon.iNextState = SS_JUMP_SECOND_F;
+				//	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Double_Jump_F");
+				//	_float4x4 ParentMatrix = m_pMainTransform->Get_WorldMatrix();
+				//	pEffect->Play_Effect(&ParentMatrix);
+				//}
+				
 			}
 			break;
+			//switch (m_Scon.iCurState)
+			//{
+			//case SS_JUMP_RUN:
+			//case SS_JUMP_WALK:
+			//	
+			//default:
+			//	
+			//	break;
+			//}
+			//break;
 		case Client::CPlayerGirl::INPUT_ATTACK:
 			m_Scon.iNextState = IS_AIRATTACK_START;
 			break;
@@ -902,7 +931,7 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 		// 애니메이션 프레임이랑 FrameRate가 달라서 발생하는 오차값으로 인한 버그 방지
 		if(true == m_Scon.bAnimFinished && false == m_tCurState.bLoop)
 		{
-			XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vPrevMovement) * TimeDelta);
+			XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vPrevMovement) * (_float)TimeDelta);
 			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom);
 		}
 		else
@@ -918,7 +947,7 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 				const PHYSICMOVE& PhysicMove = PlayerStatePhysics[m_tCurState.iPhysicMoveID];
 				if (false == PhysicMove.bConstant)
 				{
-					_vector vMove = XMLoadFloat3(&m_Scon.vPrevMovement) * TimeDelta;
+					_vector vMove = XMLoadFloat3(&m_Scon.vPrevMovement) * (_float)TimeDelta;
 
 					_float fXZSpeed = XMVectorGetX(XMVector2Length(vMove)) * (1.f - (_float)TimeDelta * PhysicMove.fHorizontalAtten);
 					if (fabs(fXZSpeed) < 0.01f)
@@ -1102,30 +1131,62 @@ void CPlayerGirl::Init_AnimSystem()
 			const _tchar* szChannelName = pChannel->Get_Name();
 			CBone* pBone = m_pAnimSetCom[ANIMSET_RIBBON]->Get_BonePtr(pChannel->Get_TargetBoneID());
 
-			/*if (pChannel->Get_NumKeyFrames() <= 2)
-			continue;*/
-
-			if (true == pBone->Is_ChildOf(TEXT("Hair_M_B00")) ||
-				true == pBone->Is_ChildOf(TEXT("Piao_L_lingjie01")) ||
-				true == pBone->Is_ChildOf(TEXT("Piao_R_lingjie01")) ||
-				true == pBone->Is_ChildOf(TEXT("skrit_L_F02")) ||
-				true == pBone->Is_ChildOf(TEXT("skirt_M_B02")) ||
-				true == pBone->Is_ChildOf(TEXT("Piao_F01")))
+			// 필살기 
+			if (!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Rib_Burst01")))
 			{
+				if (!wcsncmp(szChannelName, TEXT("Root"), 4) ||
+					!wcsncmp(szChannelName, TEXT("Bip001"), 6) ||
+					!wcsncmp(szChannelName, TEXT("Weapon"), 6) ||
+					!wcsncmp(szChannelName, TEXT("Hulu"), 4) ||
+					!lstrcmp(szChannelName, TEXT("R2T1PlayerFemaleMd10011.ao")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair001_L")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair001_R")) ||
+					!lstrcmp(szChannelName, TEXT("Hiar_L_F01")) ||
+					!lstrcmp(szChannelName, TEXT("Hiar_R_F01")) ||
+					!lstrcmp(szChannelName, TEXT("Hair_liuhai01")))
+					continue;
+
+				/*if (pChannel->Get_NumKeyFrames() <= 2)
+					continue;*/
+
+				//if(wcsncmp(szChannelName, TEXT("Bip001"), 6))
 				pChannel->Set_Apply(true);
 			}
-			else if (!lstrcmp(szChannelName, TEXT("Hair_M_B00")) ||
-				!lstrcmp(szChannelName, TEXT("Piao_L_lingjie01")) ||
-				!lstrcmp(szChannelName, TEXT("Piao_R_lingjie01")) ||
-				!lstrcmp(szChannelName, TEXT("Piao_L_pidai01")) ||
-				!lstrcmp(szChannelName, TEXT("Piao_R_pidai01")) ||
-				!lstrcmp(szChannelName, TEXT("skrit_L_F01")) ||
-				!lstrcmp(szChannelName, TEXT("skirt_M_B01"))
-				/*!lstrcmp(szChannelName, TEXT("Piao_F01"))*/)
+			else
 			{
-				pChannel->Set_Apply(true);
+				// 이전 세팅
+				if (true == pBone->Is_ChildOf(TEXT("Hair_M_B00")) ||
+					true == pBone->Is_ChildOf(TEXT("Piao_L_lingjie01")) ||
+					true == pBone->Is_ChildOf(TEXT("Piao_R_lingjie01")) ||
+					true == pBone->Is_ChildOf(TEXT("skrit_L_F02")) ||
+					true == pBone->Is_ChildOf(TEXT("skirt_M_B02")) ||
+					true == pBone->Is_ChildOf(TEXT("Piao_F01")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Piao011_L")))
+				{
+					pChannel->Set_Apply(true);
+				}
+				else if (!lstrcmp(szChannelName, TEXT("Hair_M_B00")) ||
+					!lstrcmp(szChannelName, TEXT("Piao_L_lingjie01")) ||
+					!lstrcmp(szChannelName, TEXT("Piao_R_lingjie01")) ||
+					!lstrcmp(szChannelName, TEXT("Piao_L_pidai01")) ||
+					!lstrcmp(szChannelName, TEXT("Piao_R_pidai01")) ||
+					!lstrcmp(szChannelName, TEXT("skrit_L_F01")) ||
+					!lstrcmp(szChannelName, TEXT("skirt_M_B01")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Piao011_L"))
+					/*!lstrcmp(szChannelName, TEXT("Piao_F01"))*/)
+				{
+					pChannel->Set_Apply(true);
+				}
 			}
 		}
+	}
+
+
+	// FramePerSec 세팅
+	for(_uint i= 0; i < iState_End; ++i)
+	{ 
+		m_pAnimSetCom[ANIMSET_BASE]->Get_Animation(m_tStates[i].iAnimID[ANIMSET_BASE])->Set_TicksPerSecond(m_tStates[i].FramePerSec);
+		m_pAnimSetCom[ANIMSET_RIBBON]->Get_Animation(m_tStates[i].iAnimID[ANIMSET_RIBBON])->Set_TicksPerSecond(m_tStates[i].FramePerSec);
 	}
 }
 

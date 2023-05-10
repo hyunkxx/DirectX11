@@ -7,6 +7,7 @@
 #include "DissolveKey.h"
 #include "SoundKey.h"
 #include "PartsKey.h"
+#include "PriorityKey.h"
 
 IMPLEMENT_SINGLETON(CAnimToolManager)
 
@@ -816,6 +817,12 @@ void CAnimToolManager::Create_Key()
 	case CStateKey::TYPE_EFFECT:
 
 		break;
+	case CStateKey::TYPE_PARTS:
+		pStateKey = CPartsKey::Create(m_pDevice, m_pContext, &m_tKeyData);
+		break;
+	case CStateKey::TYPE_PRIORITY:
+		pStateKey = CPriorityKey::Create(m_pDevice, m_pContext, &m_tKeyData);
+		break;
 	case CStateKey::TYPE_DISSOLVE:
 		// 
 		//pStateKey = CDissolveKey::Create(m_pDevice, m_pContext, m_tKeyData.ShotFrame, (CDissolveKey::TYPE)m_tKeyData.iInt, (_double)m_tKeyData.fFloat);
@@ -823,9 +830,7 @@ void CAnimToolManager::Create_Key()
 	case CStateKey::TYPE_SOUND:
 
 		break;
-	case CStateKey::TYPE_PARTS:
-		pStateKey = CPartsKey::Create(m_pDevice, m_pContext, &m_tKeyData);
-		break;
+	
 	case CStateKey::TYPE_MISSILE:
 
 		break;
