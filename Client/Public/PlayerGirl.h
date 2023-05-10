@@ -41,11 +41,11 @@ public:
 		IS_ATTACK_01 = 145,
 		IS_ATTACK_02,
 		IS_ATTACK_03,
-		IS_ATTACK_04,
-		IS_ATTACK_05,
-		IS_ATTACK_09,
-		IS_ATTACK_PO_2,
-		IS_ATTACK_PO_3,
+		IS_ATTACK_04, // 4타 공격 마무리
+		IS_ATTACK_05, // 스킬2 발동 시 추가타
+		IS_ATTACK_09, // 차지 공격
+		IS_ATTACK_PO_2, // 저스트 회피 후 공격 1타
+		IS_ATTACK_PO_3, // 저스트 회피 후 공격 2타
 		IS_AIRATTACK_START,
 		IS_AIRATTACK_LOOP,
 		IS_AIRATTACK_END,
@@ -101,6 +101,7 @@ public:
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);
+	virtual void Shot_PriorityKey(_uint iLeavePriority);
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };

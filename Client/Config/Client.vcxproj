@@ -219,10 +219,12 @@
     <ClInclude Include="..\public\Lobby_Character.h" />
     <ClInclude Include="..\Public\Mesh_Effect_P.h" />
     <ClInclude Include="..\public\MissileKey.h" />
+    <ClInclude Include="..\public\OBBKey.h" />
     <ClInclude Include="..\Public\Particle_Effect_P.h" />
     <ClInclude Include="..\public\Parts.h" />
     <ClInclude Include="..\Public\PartsKey.h" />
     <ClInclude Include="..\Public\PlayerCamera.h" />
+    <ClInclude Include="..\public\PriorityKey.h" />
     <ClInclude Include="..\Public\Rect_Effect_P.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\public\SoundKey.h" />
@@ -299,10 +301,12 @@
     <ClCompile Include="..\private\Lobby_Character.cpp" />
     <ClCompile Include="..\Private\Mesh_Effect_P.cpp" />
     <ClCompile Include="..\private\MissileKey.cpp" />
+    <ClCompile Include="..\private\OBBKey.cpp" />
     <ClCompile Include="..\Private\Particle_Effect_P.cpp" />
     <ClCompile Include="..\private\Parts.cpp" />
     <ClCompile Include="..\Private\PartsKey.cpp" />
     <ClCompile Include="..\Private\PlayerCamera.cpp" />
+    <ClCompile Include="..\private\PriorityKey.cpp" />
     <ClCompile Include="..\Private\Rect_Effect_P.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\private\SoundKey.cpp" />
