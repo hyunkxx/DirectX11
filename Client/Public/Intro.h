@@ -40,10 +40,13 @@ private:
 	_float4x4	m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
 
 private:
+	HWND m_hVideo;
+
 	CRenderer*		m_pRenderer = nullptr;
 	CShader*		m_pShader = nullptr;
 	CVIBuffer_Rect* m_pVIBuffer = nullptr;
 	CTexture*		m_pTexture = nullptr;
+	CTexture*		m_pMaskTexture = nullptr;
 
 };
 

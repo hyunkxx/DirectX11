@@ -12,6 +12,8 @@ public:
 
 public:
 	enum SHADOW_LEVEL { SHADOW_OFF, SHADOW_LOW, SHADOW_HIGH, SHADOW_END };
+	enum FADE_STATE { FADE_IN, FADE_OUT, FADE_NONE };
+	enum SPLIT_DIR { SPLIT_DEFAULT, SPLIT_REVERSE };
 
 	typedef struct tagSplitRGB
 	{
@@ -19,6 +21,13 @@ public:
 		_float m_fStrength;
 		_float m_fSeparation;
 	}RGB_SPLIT_DESC;
+
+	typedef struct tagFadeDesc
+	{
+		FADE_STATE  m_eFadeState;
+		_float m_fFadeAcc;
+		_float m_fFadeLimit;
+	}FADE_DESC;
 
 public:
 	explicit CRenderSetting();
@@ -94,7 +103,12 @@ public:
 		return m_tagSplitDesc;
 	}
 
-	void StartRGBSplit(_double TotalTime) {
+	SPLIT_DIR GetSplitDir() const {
+		return m_eSplitDir;
+	}
+
+	void StartRGBSplit(SPLIT_DIR eSplitDir, _double TotalTime) {
+		m_eSplitDir = eSplitDir;
 		m_fRGBSplit_TimeAcc = (_float)TotalTime;
 		m_fRGBSplit_TotalTime = (_float)TotalTime;
 		m_bRGBSplit = true;
@@ -114,6 +128,31 @@ public:
 		return m_bRGBSplit; 
 	}
 	
+	// Fade Options
+	void StartFade(FADE_STATE eState, _double FadeTime) {
+		m_FadeDesc.m_eFadeState = eState;
+		m_FadeDesc.m_fFadeAcc = 0.f;
+		m_FadeDesc.m_fFadeLimit = (_float)FadeTime;
+	}
+
+	void FadeTimeAcc(_double TimeDelta)	{
+		if (m_FadeDesc.m_fFadeLimit > m_FadeDesc.m_fFadeAcc)
+			m_FadeDesc.m_fFadeAcc += (_float)TimeDelta;
+		else
+			m_FadeDesc.m_fFadeAcc = m_FadeDesc.m_fFadeLimit;
+	}
+
+	FADE_DESC GetFadeDesc() {
+		return m_FadeDesc;
+	}
+
+	_float GetFadeRatio()	{
+		return m_FadeDesc.m_fFadeAcc / m_FadeDesc.m_fFadeLimit;
+	}
+
+	_bool IsFade() const {
+		return m_FadeDesc.m_eFadeState != FADE_STATE::FADE_NONE;
+	}
 
 private:
 	_bool m_bDebugRenderTarget = false;
@@ -132,12 +171,17 @@ private:
 
 	// RGB 분리
 	RGB_SPLIT_DESC m_tagSplitDesc;
+	SPLIT_DIR m_eSplitDir = SPLIT_DIR::SPLIT_DEFAULT;
 	_bool m_bRGBSplit = false;
 	_float m_fRGBSplit_TimeAcc = 1.0f;
 	_float m_fRGBSplit_TotalTime = 1.f;
 
 	// 필터
 	CRenderer::LUT m_eLUTFilter = CRenderer::LUT_DEFAULT;
+
+	// 페이드 인&아웃
+	FADE_DESC m_FadeDesc;
+
 };
 
 END

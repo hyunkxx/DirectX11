@@ -31,7 +31,7 @@ HRESULT CLevel_Loading::Initialize(LEVEL_ID eNextLevel)
 
 	if (pGM->GetCurrentLevel() >= LEVEL_LOGO)
 	{
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOADING, OBJECT::BACKGROUND, L"layher_background", L"background")))
+		if (FAILED(pGameInstance->Add_GameObjectEx(&m_pLoading, LEVEL_LOADING, OBJECT::BACKGROUND, L"layher_background", L"background")))
 			return E_FAIL;
 	}
 	else
@@ -45,14 +45,29 @@ HRESULT CLevel_Loading::Initialize(LEVEL_ID eNextLevel)
 
 void CLevel_Loading::Tick(_double TimeDelta)
 {
+	CGameMode* pGM = CGameMode::GetInstance();
+	CAppManager* pApp = CAppManager::GetInstance();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+#ifdef _DEBUG
+	wstring strTitleText = L"LOADING ";
+	pApp->SetTitle(strTitleText.append(m_pLoader->GetLoadingStateText()));
+#endif
+
 	if (nullptr == m_pLoader)
 		return;
 
-	if (true == m_pLoader->IsFinished())
+	if (pGM->GetCurrentLevel() >= LEVEL_LOGO)
+	{
+		_float fLoadingRatio = pApp->GetCurrentLoadRatio();
+		static_cast<CBackGround*>(m_pLoading)->SetLoadRatio(fLoadingRatio);
+	}
+
+	if (true == m_pLoader->IsFinished() &&
+		pGameInstance->InputKey(DIK_RETURN) == KEY_STATE::TAP)
 	{
 		CLevel*	pLevel = { nullptr };
-		CGameMode* pGM = CGameMode::GetInstance();
-		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 		pGM->SetCurrentLevel(m_eNextLevel);
 
 		switch (m_eNextLevel)
@@ -73,14 +88,11 @@ void CLevel_Loading::Tick(_double TimeDelta)
 		if (FAILED(pGameInstance->Open_Level(m_eNextLevel, pLevel)))
 			return;
 
+		pApp->ResetLoadRatio();
+
 		return;
 	}
 
-#ifdef _DEBUG
-	CAppManager* pAppManager = CAppManager::GetInstance();
-	wstring strTitleText = L"LOADING ";
-	pAppManager->SetTitle(strTitleText.append(m_pLoader->GetLoadingStateText()));
-#endif
 }
 
 CLevel_Loading* CLevel_Loading::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL_ID eNextLevel)

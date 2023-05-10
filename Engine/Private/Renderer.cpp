@@ -13,6 +13,112 @@
 
 #include "RenderSetting.h"
 
+void CRenderer::Draw()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	_double TimeDelta = pGameInstance->GetTimeDelta();
+
+	Render_Priority();
+	Render_DynamicShadowMap();
+	Render_Static();
+
+	Extraction(L"Target_Static_Depth", L"Target_Depth");
+
+	Render_Dynamic();
+	Render_SSD();
+	Render_SSD_BLEND();
+
+	if (m_pRenderSetting->IsActiveSSAO())
+	{
+		Ready_SSAO(L"Target_SSAO");
+		Target_Blur(L"Target_SSAO");
+		Extraction(L"Target_SSAO", L"Target_BlurY");
+	}
+
+	Render_Lights();
+	Extraction(L"Target_BlackWhite", L"Target_Shade", 1);
+
+	Render_Outline();
+
+	if (m_pRenderSetting->IsActiveShadow() && !m_pRenderSetting->IsActiveBlackWhite())
+	{
+		Render_Shadow();
+
+		if (m_pRenderSetting->GetShadowLevel() == CRenderSetting::SHADOW_HIGH)
+		{
+			Target_Blur(L"Target_Shadow");
+			Extraction(L"Target_Shadow", L"Target_BlurY");
+		}
+	}
+
+	if (m_pRenderSetting->GetLUT() != CRenderer::LUT_DEFAULT)
+	{
+		ApplyLUT(m_pRenderSetting->GetLUT());
+		Extraction(L"Target_Diffuse_SSD_Blend", L"Target_LUT");
+	}
+
+	Render_GlowSSD();
+	Render_Particle();
+	Render_SpecularGlow();
+
+	Render_Blend();
+
+	Render_Glow();
+	Render_Distortion();
+	Render_Glow_Blend();
+
+	Render_NonLight();
+	Render_AlphaBlend();
+
+	AddCombine(L"Target_FinalBlend", L"Target_Final", L"Target_SpecGlow");
+	if (m_pRenderSetting->IsActiveRGBSplit())
+	{
+		RGBSplit(L"Target_Split", L"Target_FinalBlend");
+		Extraction(L"Target_FinalBlend", L"Target_Split");
+	}
+
+	//Final 백버퍼에 최종 렌더
+	FinalExtraction();
+
+	Render_UI();
+
+#ifdef _DEBUG
+
+	if (m_pRenderSetting->IsDebug())
+	{
+		RenderDebugGroup();
+
+		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+			return;
+		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+			return;
+
+		m_pTargetManager->Render(TEXT("MRT_Deferred"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_LightDepth"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_ToonShader"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_SSAO"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Glow"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Glow_Result"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Blend"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_BlackWhite"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Split"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Small"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_Final"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_FinalBlend"), m_pShader, m_pVIBuffer);
+
+		m_pTargetManager->Render(TEXT("MRT_EX"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_SSD"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_SSD_BLEND"), m_pShader, m_pVIBuffer);
+
+	}
+#endif
+
+}
+
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
 	, m_pTargetManager(CTargetManager::GetInstance())
@@ -33,10 +139,6 @@ HRESULT CRenderer::Initialize_Prototype()
 	m_pContext->RSGetViewports(&iViewportCount, &ViewPortDesc);
 
 #pragma region  RENDERTARGET_SETUP
-
-	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Base", ViewPortDesc.Width, ViewPortDesc.Height,
-		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
-		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Diffuse", ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 0.f))))
@@ -82,27 +184,27 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX"), ViewPortDesc.Width * 0.5f, ViewPortDesc.Height * 0.5f,
-		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurY"), ViewPortDesc.Width * 0.5f, ViewPortDesc.Height * 0.5f,
-		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX_Middle"), ViewPortDesc.Width * 0.75f, ViewPortDesc.Height * 0.75f,
-		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurY_Middle"), ViewPortDesc.Width * 0.75f, ViewPortDesc.Height * 0.75f,
-		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX_High"), ViewPortDesc.Width, ViewPortDesc.Height,
-		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurY_High"), ViewPortDesc.Width, ViewPortDesc.Height,
-		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_Blend"), ViewPortDesc.Width, ViewPortDesc.Height,
@@ -179,9 +281,6 @@ HRESULT CRenderer::Initialize_Prototype()
 	m_pBindTargets[(_uint)TARGET::BLUR_MIDDEL_Y] = m_pTargetManager->FindTarget(L"Target_BlurY_Middle");
 	m_pBindTargets[(_uint)TARGET::BLUR_HIGH_X] = m_pTargetManager->FindTarget(L"Target_BlurX_High");
 	m_pBindTargets[(_uint)TARGET::BLUR_HIGH_Y] = m_pTargetManager->FindTarget(L"Target_BlurY_High");
-
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Base", L"Target_Base")))
-		return E_FAIL;
 
 	// 디퓨즈, 노말, 뎁스
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_Diffuse")))
@@ -300,6 +399,10 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (nullptr == m_pShader_RGBSplit)
 		return E_FAIL;
 
+	m_pShader_PostEffect = CShader::Create(m_pDevice, m_pContext, L"../../Shader/SHADER_POSTEFFECT.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::ElementCount);
+	if (nullptr == m_pShader_PostEffect)
+		return E_FAIL;
+
 	XMStoreFloat4x4(&m_FullScreenWorldMatrix,
 		XMMatrixScaling(ViewPortDesc.Width, ViewPortDesc.Height, 1.f) *
 		XMMatrixTranslation(0.f, 0.f, 0.f));
@@ -374,8 +477,6 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_FinalBlend"), 1205.f, 225.f, 150.f, 150.f)))
 		return E_FAIL;
-	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_Base"), 1205.f, 375.f, 150.f, 150.f)))
-		return E_FAIL;
 
 #endif
 
@@ -393,117 +494,8 @@ HRESULT CRenderer::Add_RenderGroup(RENDER_GROUP eRenderGroup, CGameObject* pGame
 	return S_OK;
 }
 
-void CRenderer::Draw()
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	_double TimeDelta = pGameInstance->GetTimeDelta();
-
-	Render_Priority();
-	Render_DynamicShadowMap();
-	Render_Static();
-
-	Extraction(L"Target_Static_Depth", L"Target_Depth");
-
-	Render_Dynamic();
-	Render_SSD();
-	Render_SSD_BLEND();
-
-	if (m_pRenderSetting->IsActiveSSAO())
-	{
-		Ready_SSAO(L"Target_SSAO");
-		Target_Blur(L"Target_SSAO");
-		Extraction(L"Target_SSAO", L"Target_BlurY");
-	}
-
-	Render_Lights();
-	Extraction(L"Target_BlackWhite", L"Target_Shade", 1);
-
-	Render_Outline();
-
-	if (m_pRenderSetting->IsActiveShadow() && !m_pRenderSetting->IsActiveBlackWhite())
-	{
-		Render_Shadow();
-
-		if (m_pRenderSetting->GetShadowLevel() == CRenderSetting::SHADOW_HIGH)
-		{
-			Target_Blur(L"Target_Shadow");
-			Extraction(L"Target_Shadow", L"Target_BlurY");
-		}
-	}
-
-	if (m_pRenderSetting->GetLUT() != CRenderer::LUT_DEFAULT)
-	{
-		ApplyLUT(m_pRenderSetting->GetLUT());
-		Extraction(L"Target_Diffuse_SSD_Blend", L"Target_LUT");
-	}
-
-	Render_GlowSSD();
-	Render_Particle();
-	Render_SpecularGlow();
-
-	Render_Blend();
-
-	Render_Glow();
-	Render_Distortion();
-	Render_Glow_Blend();
-
-	Render_NonLight();
-	Render_AlphaBlend();
-
-	AddCombine(L"Target_FinalBlend", L"Target_Final", L"Target_SpecGlow");
-	if (m_pRenderSetting->IsActiveRGBSplit())
-	{
-		RGBSplit(L"Target_Split", L"Target_FinalBlend");
-		Extraction(L"Target_FinalBlend", L"Target_Split");
-	}
-
-	//Final Blend를 백버퍼에 그림
-	FinalExtraction();
-
-	Render_UI();
-
-#ifdef _DEBUG
-
-	if (m_pRenderSetting->IsDebug())
-	{
-		RenderDebugGroup();
-
-		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
-			return;
-		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
-			return;
-
-		m_pTargetManager->Render(TEXT("MRT_Base"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_Deferred"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_LightDepth"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_ToonShader"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_SSAO"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_Glow"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_Glow_Result"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_Blend"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_BlackWhite"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_Split"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_Small"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_Final"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_FinalBlend"), m_pShader, m_pVIBuffer);
-	
-		m_pTargetManager->Render(TEXT("MRT_EX"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_SSD"), m_pShader, m_pVIBuffer);
-		m_pTargetManager->Render(TEXT("MRT_SSD_BLEND"), m_pShader, m_pVIBuffer);
-
-	}
-#endif
-
-}
-
 void CRenderer::Render_Priority()
 {
-	//CRenderTarget* pTarget = m_pTargetManager->FindTarget(L"Target_Base");
-
 	m_pTargetManager->Begin(m_pContext, L"MRT_Deferred");
 
 	for (auto& pGameObject : m_RenderObject[RENDER_PRIORITY])
@@ -600,7 +592,7 @@ void CRenderer::Render_SSD()
 	if (nullptr == m_pTargetManager)
 		return;
 
-	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_SSD", VIEWPORT_TYPE::VIEWPORT_DEFAULT, false)))
+	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_SSD")))
 		return;
 
 	for (auto& pGameObject : m_RenderObject[RENDER_SSD])
@@ -684,8 +676,10 @@ void CRenderer::Render_Lights()
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Depth", "g_DepthTexture")))
 		return;
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Outline_Result", "g_OutlineTexture")))
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Outline", "g_OutlineTexture")))
 		return;
+	/*if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Outline_Result", "g_OutlineTexture")))
+		return;*/
 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Specular", "g_SpecularTexture")))
 		return;
@@ -727,7 +721,7 @@ void CRenderer::Render_Outline()
 	m_pTargetManager->End(m_pContext);
 
 	//잡티제거
-	Extraction(L"Target_Outline_Result", L"Target_Outline",1, VIEWPORT_TYPE::VIEWPORT_DEFAULT);
+	//Extraction(L"Target_Outline_Result", L"Target_Outline",1, VIEWPORT_TYPE::VIEWPORT_DEFAULT);
 }
 
 void CRenderer::Render_GlowSSD()
@@ -910,8 +904,6 @@ void CRenderer::Render_Blend()
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Glow"), "g_GlowTexture")))
 		return;
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Base"), "g_BaseTexture")))
-		return;
 
 	_uint iBlendPass;
 
@@ -938,7 +930,7 @@ void CRenderer::Render_Blend()
 void CRenderer::Render_Glow()
 {
 	if (!m_GlowEmpty)
-		Target_Blur(L"Target_Glow", 5 , BLUR::HIGH);
+		Target_Blur(L"Target_Glow", 5);
 
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Glow_Result")))
 		return;
@@ -1023,7 +1015,7 @@ void CRenderer::Render_Glow_Blend()
 
 void CRenderer::Render_SpecularGlow()
 {
-	Target_Blur(L"Target_Specular", 1, BLUR::LOW);
+	Target_Blur_Middle(L"Target_Specular", 1);
 
 	CRenderTarget* pTarget = m_pTargetManager->FindTarget(L"Target_SpecGlow");
 
@@ -1042,7 +1034,7 @@ void CRenderer::Render_SpecularGlow()
 	// Blur On
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_Specular", "g_GlowOriTexture")))
 		return;
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY", "g_GlowTexture")))
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY_Middle", "g_GlowTexture")))
 		return;
 
 	if (m_pRenderSetting->IsActiveBlackWhite())
@@ -1082,6 +1074,47 @@ void CRenderer::Render_AlphaBlend()
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
+}
+
+void CRenderer::Render_PostEffect()
+{
+	CRenderSetting::FADE_DESC FadeDesc = m_pRenderSetting->GetFadeDesc();
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	_double TimeDelta = pGameInstance->GetTimeDelta();
+	m_pRenderSetting->FadeTimeAcc(TimeDelta);
+
+	CRenderTarget* pSourTarget = m_pTargetManager->FindTarget(L"Target_FinalBlend");
+	CRenderTarget* pFianlTarget = m_pTargetManager->FindTarget(L"Target_Final");
+
+	if (FAILED(m_pTargetManager->BeginTarget(m_pContext, pFianlTarget)))
+		return;
+
+	_float fRatio = m_pRenderSetting->GetFadeRatio();
+
+	if (FAILED(m_pShader_PostEffect->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader_PostEffect->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader_PostEffect->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pShader_PostEffect->SetRawValue("g_fTimeAcc", &fRatio, sizeof(_float))))
+		return;
+
+	if (pSourTarget)
+		pSourTarget->Set_ShaderResourceView(m_pShader_PostEffect, "g_FinalTexture");
+	
+	if(FadeDesc.m_eFadeState == CRenderSetting::FADE_IN)
+		m_pShader_PostEffect->Begin(0);
+	else if(FadeDesc.m_eFadeState == CRenderSetting::FADE_OUT)
+		m_pShader_PostEffect->Begin(1);
+
+	m_pVIBuffer->Render();
+	
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
+
 }
 
 void CRenderer::Render_UI()
@@ -1173,7 +1206,11 @@ void CRenderer::RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag)
 	if (pSourTarget)
 		pSourTarget->Set_ShaderResourceView(m_pShader_RGBSplit, "g_SourTexture");
 
-	m_pShader_RGBSplit->Begin(0);
+	if(m_pRenderSetting->GetSplitDir() == CRenderSetting::SPLIT_DEFAULT)
+		m_pShader_RGBSplit->Begin(0);
+	else
+		m_pShader_RGBSplit->Begin(1);
+
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
@@ -1304,8 +1341,16 @@ void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTa
 // Final 렌더타겟을 백버퍼에 렌더
 void CRenderer::FinalExtraction()
 {
-	CRenderTarget* pBaseTarget = m_pTargetManager->FindTarget(L"Target_Base");
-	CRenderTarget* pSourTarget = m_pTargetManager->FindTarget(L"Target_FinalBlend");
+	CRenderTarget* pSourTarget;
+	if (m_pRenderSetting->IsFade())
+	{
+		Render_PostEffect();
+		pSourTarget = m_pTargetManager->FindTarget(L"Target_Final");
+	}
+	else
+	{
+		pSourTarget = m_pTargetManager->FindTarget(L"Target_FinalBlend");
+	}
 
 	if (FAILED(m_pShader_Extraction->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
 		return;
@@ -1314,8 +1359,6 @@ void CRenderer::FinalExtraction()
 	if (FAILED(m_pShader_Extraction->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (pBaseTarget)
-		pBaseTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_DestTexture");
 	if (pSourTarget)
 		pSourTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_SourTexture");
 
@@ -1323,7 +1366,7 @@ void CRenderer::FinalExtraction()
 	m_pVIBuffer->Render();
 }
 
-void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount, BLUR eBlurLevel)
+void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount)
 {
 	if (FAILED(m_pTargetManager->SmallBeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_X])))
 		return;
@@ -1342,21 +1385,8 @@ void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount, BLUR eBlur
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, TargetTag, "g_BlurTexture")))
 		return;
 
-	switch (eBlurLevel)
-	{
-	case BLUR::LOW:
-		m_pShader_Blur->Begin(0);
-		m_pVIBuffer->Render();
-		break;
-	case BLUR::MIDDEL:
-		m_pShader_Blur->Begin(7);
-		m_pVIBuffer->Render();
-		break;
-	case BLUR::HIGH:
-		m_pShader_Blur->Begin(9);
-		m_pVIBuffer->Render();
-		break;
-	}
+	m_pShader_Blur->Begin(0);
+	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
@@ -1367,21 +1397,8 @@ void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount, BLUR eBlur
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX", "g_BlurTexture")))
 		return;
 
-	switch (eBlurLevel)
-	{
-	case BLUR::LOW:
-		m_pShader_Blur->Begin(1);
-		m_pVIBuffer->Render();
-		break;
-	case BLUR::MIDDEL:
-		m_pShader_Blur->Begin(8);
-		m_pVIBuffer->Render();
-		break;
-	case BLUR::HIGH:
-		m_pShader_Blur->Begin(10);
-		m_pVIBuffer->Render();
-		break;
-	}
+	m_pShader_Blur->Begin(1);
+	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
@@ -1394,21 +1411,8 @@ void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount, BLUR eBlur
 		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY", "g_BlurTexture")))
 			return;
 
-		switch (eBlurLevel)
-		{
-		case BLUR::LOW:
-			m_pShader_Blur->Begin(0);
-			m_pVIBuffer->Render();
-			break;
-		case BLUR::MIDDEL:
-			m_pShader_Blur->Begin(7);
-			m_pVIBuffer->Render();
-			break;
-		case BLUR::HIGH:
-			m_pShader_Blur->Begin(9);
-			m_pVIBuffer->Render();
-			break;
-		}
+		m_pShader_Blur->Begin(0);
+		m_pVIBuffer->Render();
 
 		if (FAILED(m_pTargetManager->End(m_pContext)))
 			return;
@@ -1419,28 +1423,15 @@ void CRenderer::Target_Blur(const _tchar * TargetTag, _int BlurCount, BLUR eBlur
 		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX", "g_BlurTexture")))
 			return;
 
-		switch (eBlurLevel)
-		{
-		case BLUR::LOW:
-			m_pShader_Blur->Begin(1);
-			m_pVIBuffer->Render();
-			break;
-		case BLUR::MIDDEL:
-			m_pShader_Blur->Begin(8);
-			m_pVIBuffer->Render();
-			break;
-		case BLUR::HIGH:
-			m_pShader_Blur->Begin(10);
-			m_pVIBuffer->Render();
-			break;
-		}
+		m_pShader_Blur->Begin(1);
+		m_pVIBuffer->Render();
 
 		if (FAILED(m_pTargetManager->End(m_pContext)))
 			return;
 	}
 }
 
-void CRenderer::Target_Blur_Middle(const _tchar * TargetTag, _int BlurCount, BLUR eBlurLevel)
+void CRenderer::Target_Blur_Middle(const _tchar * TargetTag, _int BlurCount)
 {
 	if (FAILED(m_pTargetManager->MiddleBeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_MIDDEL_X])))
 		return;
@@ -1459,21 +1450,8 @@ void CRenderer::Target_Blur_Middle(const _tchar * TargetTag, _int BlurCount, BLU
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, TargetTag, "g_BlurTexture")))
 		return;
 
-	switch (eBlurLevel)
-	{
-	case BLUR::LOW:
-		m_pShader_Blur->Begin(0);
-		m_pVIBuffer->Render();
-		break;
-	case BLUR::MIDDEL:
-		m_pShader_Blur->Begin(7);
-		m_pVIBuffer->Render();
-		break;
-	case BLUR::HIGH:
-		m_pShader_Blur->Begin(9);
-		m_pVIBuffer->Render();
-		break;
-	}
+	m_pShader_Blur->Begin(0);
+	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
@@ -1484,21 +1462,8 @@ void CRenderer::Target_Blur_Middle(const _tchar * TargetTag, _int BlurCount, BLU
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX_Middle", "g_BlurTexture")))
 		return;
 
-	switch (eBlurLevel)
-	{
-	case BLUR::LOW:
-		m_pShader_Blur->Begin(1);
-		m_pVIBuffer->Render();
-		break;
-	case BLUR::MIDDEL:
-		m_pShader_Blur->Begin(8);
-		m_pVIBuffer->Render();
-		break;
-	case BLUR::HIGH:
-		m_pShader_Blur->Begin(10);
-		m_pVIBuffer->Render();
-		break;
-	}
+	m_pShader_Blur->Begin(1);
+	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
@@ -1511,21 +1476,8 @@ void CRenderer::Target_Blur_Middle(const _tchar * TargetTag, _int BlurCount, BLU
 		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY_Middle", "g_BlurTexture")))
 			return;
 
-		switch (eBlurLevel)
-		{
-		case BLUR::LOW:
-			m_pShader_Blur->Begin(0);
-			m_pVIBuffer->Render();
-			break;
-		case BLUR::MIDDEL:
-			m_pShader_Blur->Begin(7);
-			m_pVIBuffer->Render();
-			break;
-		case BLUR::HIGH:
-			m_pShader_Blur->Begin(9);
-			m_pVIBuffer->Render();
-			break;
-		}
+		m_pShader_Blur->Begin(0);
+		m_pVIBuffer->Render();
 
 		if (FAILED(m_pTargetManager->End(m_pContext)))
 			return;
@@ -1536,28 +1488,15 @@ void CRenderer::Target_Blur_Middle(const _tchar * TargetTag, _int BlurCount, BLU
 		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX_Middle", "g_BlurTexture")))
 			return;
 
-		switch (eBlurLevel)
-		{
-		case BLUR::LOW:
-			m_pShader_Blur->Begin(1);
-			m_pVIBuffer->Render();
-			break;
-		case BLUR::MIDDEL:
-			m_pShader_Blur->Begin(8);
-			m_pVIBuffer->Render();
-			break;
-		case BLUR::HIGH:
-			m_pShader_Blur->Begin(10);
-			m_pVIBuffer->Render();
-			break;
-		}
+		m_pShader_Blur->Begin(1);
+		m_pVIBuffer->Render();
 
 		if (FAILED(m_pTargetManager->End(m_pContext)))
 			return;
 	}
 }
 
-void CRenderer::Target_Blur_High(const _tchar * TargetTag, _int BlurCount, BLUR eBlurLevel)
+void CRenderer::Target_Blur_High(const _tchar * TargetTag, _int BlurCount)
 {
 	if (FAILED(m_pTargetManager->BeginTarget(m_pContext, m_pBindTargets[(_uint)TARGET::BLUR_HIGH_X])))
 		return;
@@ -1576,21 +1515,8 @@ void CRenderer::Target_Blur_High(const _tchar * TargetTag, _int BlurCount, BLUR 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, TargetTag, "g_BlurTexture")))
 		return;
 
-	switch (eBlurLevel)
-	{
-	case BLUR::LOW:
-		m_pShader_Blur->Begin(0);
-		m_pVIBuffer->Render();
-		break;
-	case BLUR::MIDDEL:
-		m_pShader_Blur->Begin(7);
-		m_pVIBuffer->Render();
-		break;
-	case BLUR::HIGH:
-		m_pShader_Blur->Begin(9);
-		m_pVIBuffer->Render();
-		break;
-	}
+	m_pShader_Blur->Begin(0);
+	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
@@ -1601,21 +1527,8 @@ void CRenderer::Target_Blur_High(const _tchar * TargetTag, _int BlurCount, BLUR 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX_High", "g_BlurTexture")))
 		return;
 
-	switch (eBlurLevel)
-	{
-	case BLUR::LOW:
-		m_pShader_Blur->Begin(1);
-		m_pVIBuffer->Render();
-		break;
-	case BLUR::MIDDEL:
-		m_pShader_Blur->Begin(8);
-		m_pVIBuffer->Render();
-		break;
-	case BLUR::HIGH:
-		m_pShader_Blur->Begin(10);
-		m_pVIBuffer->Render();
-		break;
-	}
+	m_pShader_Blur->Begin(1);
+	m_pVIBuffer->Render();
 
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
@@ -1628,21 +1541,8 @@ void CRenderer::Target_Blur_High(const _tchar * TargetTag, _int BlurCount, BLUR 
 		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY_High", "g_BlurTexture")))
 			return;
 
-		switch (eBlurLevel)
-		{
-		case BLUR::LOW:
-			m_pShader_Blur->Begin(0);
-			m_pVIBuffer->Render();
-			break;
-		case BLUR::MIDDEL:
-			m_pShader_Blur->Begin(7);
-			m_pVIBuffer->Render();
-			break;
-		case BLUR::HIGH:
-			m_pShader_Blur->Begin(9);
-			m_pVIBuffer->Render();
-			break;
-		}
+		m_pShader_Blur->Begin(0);
+		m_pVIBuffer->Render();
 
 		if (FAILED(m_pTargetManager->End(m_pContext)))
 			return;
@@ -1653,21 +1553,8 @@ void CRenderer::Target_Blur_High(const _tchar * TargetTag, _int BlurCount, BLUR 
 		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurX_High", "g_BlurTexture")))
 			return;
 
-		switch (eBlurLevel)
-		{
-		case BLUR::LOW:
-			m_pShader_Blur->Begin(1);
-			m_pVIBuffer->Render();
-			break;
-		case BLUR::MIDDEL:
-			m_pShader_Blur->Begin(8);
-			m_pVIBuffer->Render();
-			break;
-		case BLUR::HIGH:
-			m_pShader_Blur->Begin(10);
-			m_pVIBuffer->Render();
-			break;
-		}
+		m_pShader_Blur->Begin(1);
+		m_pVIBuffer->Render();
 
 		if (FAILED(m_pTargetManager->End(m_pContext)))
 			return;
@@ -1734,6 +1621,7 @@ void CRenderer::Free()
 	Safe_Release(m_pShader_SSAO);
 	Safe_Release(m_pShader_LUT);
 	Safe_Release(m_pShader_RGBSplit);
+	Safe_Release(m_pShader_PostEffect);
 
 	Safe_Release(m_pNoiseTexture);
 	Safe_Release(m_pVIBuffer);

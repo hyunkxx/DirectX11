@@ -16,6 +16,9 @@ namespace SMODEL
 
 		SMD_SKY,
 
+		SMD_FLOATING_ROCK_01,
+		SMD_FLOATING_ROCK_02,
+
 		SMD_END
 	};
 }

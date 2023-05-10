@@ -204,6 +204,7 @@
     <ClInclude Include="..\public\DynamicCamera.h" />
     <ClInclude Include="..\public\EffectKey.h" />
     <ClInclude Include="..\Public\Effect_Player.h" />
+    <ClInclude Include="..\public\FloatingStone.h" />
     <ClInclude Include="..\public\GameMode.h" />
     <ClInclude Include="..\Public\GUIManager.h" />
     <ClInclude Include="..\public\InGameLoader.h" />
@@ -276,6 +277,7 @@
     <ClCompile Include="..\private\DynamicCamera.cpp" />
     <ClCompile Include="..\private\EffectKey.cpp" />
     <ClCompile Include="..\Private\Effect_Player.cpp" />
+    <ClCompile Include="..\private\FloatingStone.cpp" />
     <ClCompile Include="..\private\GameMode.cpp" />
     <ClCompile Include="..\Private\GUIManager.cpp" />
     <ClCompile Include="..\private\InGameLoader.cpp" />
@@ -322,6 +324,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\..\Shader\SHADER_POSTEFFECT.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_RGB_SPLIT.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_BLUR.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_CELL.hlsl" />

@@ -160,6 +160,9 @@ public:
 	CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 
+	CTexture* m_pEyeBurstTexture = nullptr;
+	CTexture* m_pEyeMaskTexture = nullptr;
+
 	CGameObject* pStaticObject = nullptr;
 	
 };

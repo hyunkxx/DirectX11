@@ -36,6 +36,8 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 #pragma endregion MAP_OBJECT_TREE
 
+	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
+
 	return S_OK;
 }
 
@@ -105,11 +107,11 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 	if (pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
 		pGameInstance->InputKey(DIK_5) == KEY_STATE::TAP)
 	{
-		pGameInstance->StartRGBSplit(0.5f);
+		pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DEFAULT, 0.5f);
 	}
 	else if (pGameInstance->InputKey(DIK_5) == KEY_STATE::TAP)
 	{
-		pGameInstance->StartRGBSplit(2.f);
+		pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DEFAULT, 2.f);
 	}
 
 	static _bool bCamLock = false;
@@ -194,9 +196,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TERRAIN, pLayerTag, L"terrain")))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::FLOOR, pLayerTag, L"floor")))
-		//return E_FAIL;
-
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SKY, pLayerTag, L"Sky")))
 		return E_FAIL;
 
@@ -221,7 +220,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	CameraDesc.fFovy = XMConvertToRadians(45.f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 500.f;
+	CameraDesc.fFar = 1000.f;
 	
 	//Light Setting
 	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);

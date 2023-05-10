@@ -4,7 +4,10 @@
 matrix				g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 texture2D			g_DiffuseTexture;
+texture2D			g_MaskTexture;
 texture2D			g_DepthTexture;
+
+float				g_fFillAmount = 1.f;
 
 struct VS_IN
 {
@@ -44,12 +47,51 @@ struct PS_OUT
 	float4 vColor : SV_TARGET0;
 };
 
-PS_OUT PS_MAIN(PS_IN In)
+PS_OUT PS_Default(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	Out.vColor.a = 0.3f;
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	Out.vColor = vDiffuse;
+
+	return Out;
+}
+
+PS_OUT PS_MaskBlend(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vMask	= g_MaskTexture.Sample(LinearSampler, In.vTexUV);
+
+	Out.vColor = vDiffuse * vMask;
+
+	return Out;
+}
+
+PS_OUT PS_FillX(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor = vDiffuse;
+
+	if (In.vTexUV.x <= g_fFillAmount)
+		discard;
+
+	return Out;
+}
+
+PS_OUT PS_FillY(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor = vDiffuse;
+
+	if (In.vTexUV.y <= 1.f - g_fFillAmount)
+		discard;
 
 	return Out;
 }
@@ -60,13 +102,52 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
+		PixelShader = compile ps_5_0 PS_Default();
 	}
 	
+	pass MaskBlend_Pass1
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MaskBlend();
+	}
+
+	pass FillX_Pass1
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_FillX();
+	}
+
+	pass FillY_Pass3
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_FillY();
+	}
+
 }

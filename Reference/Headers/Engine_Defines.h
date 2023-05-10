@@ -63,6 +63,10 @@
 using namespace std;
 using namespace DirectX;
 
+// Media
+#include <vfw.h>
+#pragma comment(lib, "vfw32.lib")
+
 // FMOD
 #include "Fmod/fmod.h"
 #include "Fmod/fmod.hpp"

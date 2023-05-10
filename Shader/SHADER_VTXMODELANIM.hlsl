@@ -12,6 +12,10 @@ float4x4 g_BoneMatrix[256];
 // VTF 뼈 행렬을 저장한 텍스쳐
 texture2D	g_VertexTexture;
 
+float4		g_vEyeColor = float4(1.f, 1.f, 0.8f, 1.f);
+texture2D	g_EyeBurstTexture;
+texture2D	g_EyeMaskTexture;
+
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 
@@ -295,6 +299,33 @@ PS_OUT_OUTLINE PS_Eye(PS_IN In)
 	return Out;
 }
 
+PS_OUT_OUTLINE PS_Eye_Burst(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector vEyeMask = g_EyeMaskTexture.Sample(LinearClampSampler, In.vTexUV);
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+
+	vMtrlDiffuse.r = vMtrlDiffuse.r + vEyeMask.r;
+	vMtrlDiffuse.g = vMtrlDiffuse.g + vEyeMask.r;
+
+	vMtrlDiffuse.a = 1.f;
+
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	vEyeMask.g = 0.f;
+
+	vector vEyeBust = g_EyeBurstTexture.Sample(LinearClampSampler, In.vTexUV) * g_vEyeColor;
+	Out.vGlow = vEyeBust + vEyeMask;
+
+	return Out;
+}
+
 PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
 {
 	PS_OUT_SHADOW Out = (PS_OUT_SHADOW)0;
@@ -445,7 +476,7 @@ technique11 DefaultTechnique
 	pass VTF_Eye_6
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN_VTF();
@@ -455,7 +486,20 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Eye();
 	}
 	
-	pass RimLight_Pass7
+	pass VTF_Eye_Burst_7
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_VTF();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Eye_Burst();
+	}
+
+	pass RimLight_Pass8
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -468,7 +512,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_RimLight();
 	}
 
-	pass DiffuseAddRim_Pass8
+	pass DiffuseAddRim_Pass9
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);

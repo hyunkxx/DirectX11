@@ -58,6 +58,9 @@
     <FxCompile Include="..\..\Shader\SHADER_VTXSKILLTEX.hlsl">
       <Filter>src\99. ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_POSTEFFECT.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ImGui\imgui.cpp">
@@ -127,7 +130,7 @@
       <Filter>src\02. GameObject\01. Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BackGround.cpp">
-      <Filter>src\02. GameObject\02. BackGround</Filter>
+      <Filter>src\02. GameObject\02. LoadingImage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tree_0.cpp">
       <Filter>src\04. MapObject\00. Tree</Filter>
@@ -200,6 +203,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Character.cpp">
       <Filter>src\02. GameObject\03. Character\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FloatingStone.cpp">
+      <Filter>src\02. GameObject\00. Environment</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -291,7 +297,7 @@
       <Filter>src\02. GameObject\01. Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BackGround.h">
-      <Filter>src\02. GameObject\02. BackGround</Filter>
+      <Filter>src\02. GameObject\02. LoadingImage</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tree_0.h">
       <Filter>src\04. MapObject\00. Tree</Filter>
@@ -374,6 +380,9 @@
     <ClInclude Include="..\public\Character.h">
       <Filter>src\02. GameObject\03. Character\Base</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\FloatingStone.h">
+      <Filter>src\02. GameObject\00. Environment</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -443,9 +452,6 @@
     <Filter Include="src\02. GameObject\01. Camera">
       <UniqueIdentifier>{7bd6bb8e-bbda-4ff6-9d37-999f7bdb25c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\02. GameObject\02. BackGround">
-      <UniqueIdentifier>{975476c6-7409-4c8e-93ab-d8f8f4b64e95}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\02. GameObject\03. Character">
       <UniqueIdentifier>{9e12d510-e3fb-4470-bf45-dcac3ce8dc53}</UniqueIdentifier>
     </Filter>
@@ -481,6 +487,9 @@
     </Filter>
     <Filter Include="src\02. GameObject\03. Character\Base">
       <UniqueIdentifier>{092a34af-15fc-48d5-9a09-f5da629e60c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\02. LoadingImage">
+      <UniqueIdentifier>{975476c6-7409-4c8e-93ab-d8f8f4b64e95}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -43,6 +43,7 @@ public: //Object_Manager
 	class CGameObject* Find_GameObject(_uint iLevelIndex, const _tchar * pObjectTag);
 	HRESULT Add_Prototype(_int iObjectEnum, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(_uint iLevelIndex, _int iObjectEnum, const _tchar* pLayerTag, _tchar* strObjectTag, void* pArg = nullptr);
+	HRESULT Add_GameObjectEx(class CGameObject** pGameObjectOut, _uint iLevelIndex, _int iObjectEnum, const _tchar* pLayerTag, _tchar* strObjectTag, void* pArg = nullptr);
 	void	RenderGUI();
 
 	class CLayer* Find_Layer(_uint iLevelIndex, const _tchar* pLayerTag);
@@ -133,13 +134,16 @@ public: // RenderSetting
 	void BlackWhiteTimeAcc(_double TimeDelta);
 	_bool IsActiveBlackWhite() const;
 
+	CRenderSetting::SPLIT_DIR GetSplitDir() const;
 	void SetSplitDesc(CRenderSetting::RGB_SPLIT_DESC tagDesc);
 	CRenderSetting::RGB_SPLIT_DESC& GetSplitDesc();
-	void StartRGBSplit(_double TotalTime);
+	void StartRGBSplit(CRenderSetting::SPLIT_DIR eSplitDir, _double TotalTime);
 	void RGBSpiltTimeAcc(_double TimeDelta);
 	_bool IsActiveRGBSplit() const;
 	_float GetRGBSplitRatio() const;
 	
+	void StartFade(CRenderSetting::FADE_STATE eState, _double FadeTime);
+
 public:/*For.Save_Loader*/
 	HRESULT		Load_Effect(HWND hWnd, wstring strFileName, list<EFFECT_DESC*>* pEffectDesc);
 

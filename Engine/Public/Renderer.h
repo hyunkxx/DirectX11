@@ -48,6 +48,8 @@ private:
 
 	void Render_NonLight();
 	void Render_AlphaBlend();
+	void Render_PostEffect();
+
 	void Render_UI();
 
 public:
@@ -58,9 +60,9 @@ public:
 	void BlendCombine(const _tchar * pBindTargetTag, const _tchar * pSourTag, const _tchar * pDestTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT);
 	void Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTag, _uint iPass = 0, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT);
 	void FinalExtraction();
-	void Target_Blur(const _tchar* TargetTag, _int BlurCount = 1, BLUR eBlurLevel = BLUR::HIGH);
-	void Target_Blur_Middle(const _tchar* TargetTag, _int BlurCount = 1, BLUR eBlurLevel = BLUR::HIGH);
-	void Target_Blur_High(const _tchar* TargetTag, _int BlurCount = 1, BLUR eBlurLevel = BLUR::HIGH);
+	void Target_Blur(const _tchar* TargetTag, _int BlurCount = 1);
+	void Target_Blur_Middle(const _tchar* TargetTag, _int BlurCount = 1);
+	void Target_Blur_High(const _tchar* TargetTag, _int BlurCount = 1);
 	void Ready_SSAO(const _tchar* pBindTargetTag);
 
 public:
@@ -102,6 +104,7 @@ private:
 	class CShader* m_pShader_SSAO = nullptr;
 	class CShader* m_pShader_LUT = nullptr;
 	class CShader* m_pShader_RGBSplit = nullptr;
+	class CShader* m_pShader_PostEffect = nullptr;
 
 	_float4x4 m_FullScreenWorldMatrix;
 	_float4x4 m_ViewMatrix, m_ProjMatrix;

@@ -61,6 +61,8 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 	_float4x4 WorldMatirx = m_pMainTransform->Get_WorldMatrix();
 	pEffect->Play_Effect(&WorldMatirx, false);
 
+	m_pEyeBone = m_pModelCom->Get_BonePtr(L"Bip001_Eye_Bone_L");
+	
 	return S_OK;
 }
 
@@ -80,6 +82,7 @@ void CLobbyCharacter::Tick(_double TimeDelta)
 
 		m_pAnimSetCom->SetUp_Animation(m_eState, true);
 	}
+
 	Tick_State(TimeDelta);
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
@@ -121,7 +124,14 @@ HRESULT CLobbyCharacter::Render()
 			return E_FAIL;
 
 		if (i == 5)
-			m_pShaderCom->Begin(6); // Eye
+		{
+			if (FAILED(m_pEyeBurstTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeBurstTexture")))
+				return E_FAIL;
+			if (FAILED(m_pEyeMaskTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeMaskTexture")))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(7); // Eye
+		}
 		else
 			m_pShaderCom->Begin(iPass);
 
@@ -129,7 +139,7 @@ HRESULT CLobbyCharacter::Render()
 
 		if (m_bOnMoused)
 		{
-			m_pShaderCom->Begin(8);
+			m_pShaderCom->Begin(9);
 			m_pModelCom->Render(i);
 		}
 	}
@@ -162,6 +172,17 @@ void CLobbyCharacter::RenderGUI()
 {
 }
 
+void CLobbyCharacter::PlaySelectedAnimation()
+{
+	m_eState = STATE_SELECTED;
+	m_pAnimSetCom->SetUp_Animation(m_eState, true);
+}
+
+_vector CLobbyCharacter::GetEyePosition()
+{
+	return (XMLoadFloat4x4(&m_pEyeBone->Get_CombinedTransfromationMatrix()) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix())).r[3];
+}
+
 HRESULT CLobbyCharacter::Add_Components()
 {
 	/* For.Com_Renderer*/
@@ -183,6 +204,14 @@ HRESULT CLobbyCharacter::Add_Components()
 	// For.Com_Shader_ModelAnim
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODELANIM,
 		TEXT("Com_Shader_ModelAnim"), (CComponent**)&m_pShaderCom)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::EYE_BURST,
+		TEXT("Com_Eye_Burst_Texture"), (CComponent**)&m_pEyeBurstTexture)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::EYE_MASK,
+		TEXT("Com_Eye_Mask_Texture"), (CComponent**)&m_pEyeMaskTexture)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
@@ -220,7 +249,7 @@ void CLobbyCharacter::Init_AnimSystem()
 
 void CLobbyCharacter::Tick_State(_double TimeDelta)
 {
-	m_pAnimSetCom->Play_Animation(TimeDelta);
+	m_pAnimSetCom->Play_Animation(TimeDelta, nullptr, nullptr, &m_CurTrackPos);
 	m_pAnimSetCom->Update_TargetBones();
 	m_pModelCom->Invalidate_CombinedMatrices();
 }
@@ -299,4 +328,7 @@ void CLobbyCharacter::Free()
 	Safe_Release(m_pMainTransform);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
+
+	Safe_Release(m_pEyeBurstTexture);
+	Safe_Release(m_pEyeMaskTexture);
 }

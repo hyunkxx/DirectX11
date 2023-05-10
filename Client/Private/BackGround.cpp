@@ -34,7 +34,26 @@ HRESULT CBackGround::Initialize(void * pArg)
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = g_iWinSizeY >> 1;
 
+	m_fTextWidth = 400.f;
+	m_fTextHeight = 20.f;
+	m_fTextX = g_iWinSizeX >> 1;
+	m_fTextY = g_iWinSizeY - 40.f;
+
+	m_fGageWidth = 108.f;
+	m_fGageHeight = 280.f;
+	m_fGageX = g_iWinSizeX >> 1;
+	m_fGageY = g_iWinSizeY >> 1;
+
+	m_fSideWidth = 1280.f;
+	m_fSideHeight = 200;
+	m_fSideX = g_iWinSizeX >> 1;
+	m_fSideY = g_iWinSizeY >> 1;
+
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(m_fWidth, m_fHeight, 1.f) * XMMatrixTranslation(m_fX - g_iWinSizeX * 0.5f, -m_fY + g_iWinSizeY * 0.5f, 0.f));
+	XMStoreFloat4x4(&m_TextWorldMatrix, XMMatrixScaling(m_fTextWidth, m_fTextHeight, 1.f) * XMMatrixTranslation(m_fTextX - g_iWinSizeX * 0.5f, -m_fTextY + g_iWinSizeY * 0.5f, 0.f));
+	XMStoreFloat4x4(&m_GageWorldMatrix, XMMatrixScaling(m_fGageWidth, m_fGageHeight, 1.f) * XMMatrixTranslation(m_fGageX - g_iWinSizeX * 0.5f, -m_fGageY + g_iWinSizeY * 0.5f, 0.f));
+	XMStoreFloat4x4(&m_SideWorldMatrix, XMMatrixScaling(m_fSideWidth, m_fSideHeight, 1.f) * XMMatrixTranslation(m_fSideX - g_iWinSizeX * 0.5f, -m_fSideY + g_iWinSizeY * 0.5f, 0.f));
+
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	
@@ -44,6 +63,9 @@ HRESULT CBackGround::Initialize(void * pArg)
 void CBackGround::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	ComputeLoadRatioLerp(TimeDelta);
+
 }
 
 void CBackGround::LateTick(_double TimeDelta)
@@ -59,7 +81,31 @@ HRESULT CBackGround::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	if (FAILED(Setup_ShaderResources()))
+	if (FAILED(Setup_BackgroundResources()))
+		return E_FAIL;
+
+	m_pShader->Begin(0);
+	m_pVIBuffer->Render();
+
+	if (FAILED(Setup_TextResources()))
+		return E_FAIL;
+
+	m_pShader->Begin(0);
+	m_pVIBuffer->Render();
+
+	if (FAILED(Setup_GageResources(GAGE_BACK)))
+		return E_FAIL;
+
+	m_pShader->Begin(0);
+	m_pVIBuffer->Render();
+	
+	if (FAILED(Setup_GageResources(GAGE_FRONT)))
+		return E_FAIL;
+
+	m_pShader->Begin(3);
+	m_pVIBuffer->Render();
+
+	if (FAILED(Setup_SideResources()))
 		return E_FAIL;
 
 	m_pShader->Begin(0);
@@ -82,22 +128,32 @@ HRESULT CBackGround::Add_Components()
 		TEXT("com_vibuffer"), (CComponent**)&m_pVIBuffer)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::VTXTEX,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI_SUB,
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::BACKGROUND,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::BLACK,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::LOADING_TEXT,
+		TEXT("com_texture_text"), (CComponent**)&m_pTextTexture)))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::LOADING_SIDE,
+		TEXT("com_texture_side"), (CComponent**)&m_pSideTexture)))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::LOADING_BACK,
+		TEXT("com_texture_back"), (CComponent**)&m_pBackTexture)))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::LOADING_FRONT,
+		TEXT("com_texture_front"), (CComponent**)&m_pFrontTexture)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CBackGround::Setup_ShaderResources()
+HRESULT CBackGround::Setup_BackgroundResources()
 {
-	if (nullptr == m_pShader || nullptr == m_pTexture)
-		return E_FAIL;
-
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -105,10 +161,74 @@ HRESULT CBackGround::Setup_ShaderResources()
 	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Texture")))
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
 	 
 	return S_OK;
+}
+
+HRESULT CBackGround::Setup_TextResources()
+{
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_TextWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pTextTexture->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBackGround::Setup_GageResources(_uint nGageType)
+{
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_GageWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	switch (nGageType)
+	{
+	case GAGE_BACK:
+		if (FAILED(m_pBackTexture->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		break;
+	case GAGE_FRONT:
+		if (FAILED(m_pShader->SetRawValue("g_fFillAmount", &m_fCurLoadAcc, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pFrontTexture->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		break;
+	}
+
+	return S_OK;
+}
+
+HRESULT CBackGround::Setup_SideResources()
+{
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_SideWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pSideTexture->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CBackGround::ComputeLoadRatioLerp(_double TimeDelta)
+{
+	_vector vCurLoadAcc = XMVectorSet(m_fCurLoadAcc, 0.f, 0.f, 0.f);
+	_vector vLoadRatio = XMVectorSet(m_fLoadRatio, 0.f, 0.f, 0.f);
+
+	m_fCurLoadAcc = XMVectorGetX(XMVectorLerp(vCurLoadAcc, vLoadRatio, (_float)TimeDelta));
 }
 
 CBackGround* CBackGround::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -142,6 +262,11 @@ void CBackGround::Free()
 	__super::Free();
 
 	Safe_Release(m_pTexture);
+	Safe_Release(m_pTextTexture);
+	Safe_Release(m_pBackTexture);
+	Safe_Release(m_pFrontTexture);
+	Safe_Release(m_pSideTexture);
+
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);

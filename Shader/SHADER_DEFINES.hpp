@@ -1,6 +1,6 @@
 /* For.SamplerState */
 
-float g_Far = 500.f;
+float g_Far = 1000.f;
 
 #define EPSILON 0.00001
 

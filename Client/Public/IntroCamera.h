@@ -12,7 +12,7 @@ class CLobbyCharacter;
 class CIntroCamera final : public CCamera
 {
 public:
-	enum INTRO_STATE { CAM_ORIGIN, CAM_LEFT, CAM_RIGHT };
+	enum INTRO_STATE { CAM_LEFT, CAM_RIGHT, CAM_ORIGIN, CAM_START, CAM_END };
 	enum { CHAR_LEFT, CHAR_RIGHT, CHAR_END };
 
 private:
@@ -34,7 +34,12 @@ private:
 	HRESULT Setup_ShaderResources();
 
 public:
-	void TargetChange(_double TimeDelta);
+	_bool IsLobbyOut() const { return m_bLobbyOut; }
+
+private:
+	void StateCheck(_double TimeDelta);
+	void CameraMovement(_double TimeDelta);
+	void ZoomIn(_double TimeDelta);
 
 public:
 	_float GetCameraSpeed();
@@ -45,13 +50,24 @@ public:
 	virtual void Free() override;
 
 private:
+	_bool m_bMoveLock = false;
+	_bool m_bZoomIn = false;
+	_bool m_bLobbyOut = false;
+
+	_bool m_bSelected = false;
+	_float m_fEndAcc = 0.f;
+	const _float m_fEndLimit = 3.8f;
+
 	_bool m_bOnMouse[CHAR_END];
 	RECT tagRectSize[CHAR_END];
 
-	_uint m_eCurrentState = INTRO_STATE::CAM_ORIGIN;
-	_float4 vLookAtPos = { 0.f, 1.f, 0.f, 1.f };
+	_uint m_eCurrentState = INTRO_STATE::CAM_START;
+	_float4 vLookAtPos = { 0.f, 1.f, 16.f, 1.f };
 
 	CLobbyCharacter* pLobbyCharacter[CHAR_END];
+
+	_bool m_bStartMove = false;
+	_float m_fStartTimeAcc = 0.f;
 
 };
 

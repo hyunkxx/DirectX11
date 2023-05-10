@@ -9,6 +9,9 @@ class CShader;
 class CTransform;
 class CModel_Anim;
 class CModel_VTF;
+class CBone;
+
+class CTexture;
 END
 
 BEGIN(Client)
@@ -41,7 +44,10 @@ public:
 	virtual void RenderGUI() override;
 
 public:
+	void PlaySelectedAnimation();
 	void SetMouseInRect(_bool bValue) { m_bOnMoused = bValue; };
+	_double GetCurTrackPosition() const { return m_CurTrackPos; }
+	_vector GetEyePosition();
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -72,7 +78,11 @@ public:
 
 private:
 	_bool m_bOnMoused = false;
+	_double m_CurTrackPos = 0.f;
 
+	CBone* m_pEyeBone = nullptr;
+	CTexture* m_pEyeBurstTexture = nullptr;
+	CTexture* m_pEyeMaskTexture = nullptr;
 };
 
 END

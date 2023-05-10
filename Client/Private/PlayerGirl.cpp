@@ -172,7 +172,14 @@ HRESULT CPlayerGirl::Render()
 			return E_FAIL;
 
 		if (i == 5)
-			m_pShaderCom->Begin(6); // Eye
+		{
+			if (FAILED(m_pEyeBurstTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeBurstTexture")))
+				return E_FAIL;
+			if (FAILED(m_pEyeMaskTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeMaskTexture")))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(7); // Eye
+		}
 		else
 			m_pShaderCom->Begin(iPass);
 
@@ -271,6 +278,14 @@ HRESULT CPlayerGirl::Add_Components()
 		TEXT("Com_Navigation"), (CComponent**)&m_pNaviCom, &NavigationDesc)))
 		return E_FAIL;
 	
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::EYE_BURST,
+		TEXT("Com_Eye_Burst_Texture"), (CComponent**)&m_pEyeBurstTexture)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::EYE_MASK,
+		TEXT("Com_Eye_Mask_Texture"), (CComponent**)&m_pEyeMaskTexture)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -1178,4 +1193,7 @@ void CPlayerGirl::Free()
 	Safe_Release(m_pMainTransform);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
+
+	Safe_Release(m_pEyeBurstTexture);
+	Safe_Release(m_pEyeMaskTexture);
 }

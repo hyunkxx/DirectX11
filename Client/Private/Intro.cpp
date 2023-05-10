@@ -44,6 +44,7 @@ HRESULT CIntro::Initialize(void * pArg)
 void CIntro::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
 }
 
 void CIntro::LateTick(_double TimeDelta)
@@ -86,8 +87,12 @@ HRESULT CIntro::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::INTRO_BACKGROUND,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::BACKGROUND_INTRO,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::BACKGROUND_MASK,
+		TEXT("com_texture_mask"), (CComponent**)&m_pMaskTexture)))
 		return E_FAIL;
 
 	return S_OK;
@@ -106,6 +111,9 @@ HRESULT CIntro::Setup_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pMaskTexture->Setup_ShaderResource(m_pShader, "g_MaskTexture")))
 		return E_FAIL;
 
 	return S_OK;
@@ -142,7 +150,10 @@ void CIntro::Free()
 	__super::Free();
 
 	Safe_Release(m_pTexture);
+	Safe_Release(m_pMaskTexture);
+
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
+
 }

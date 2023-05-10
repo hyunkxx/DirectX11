@@ -178,12 +178,14 @@
     <ClCompile Include="Save_Loader.cpp">
       <Filter>system\04. SaveLoader</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\QuadTree.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Rect_Nor.cpp">
       <Filter>utility\04. Components\02. Renderer\VIBuffers</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_SSDBox.cpp">
       <Filter>utility\04. Components\02. Renderer\VIBuffers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\QuadTree.cpp">
+      <Filter>utility\04. Components\08. Navigation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -403,12 +405,14 @@
     <ClInclude Include="..\Public\Save_Loader.h">
       <Filter>system\04. SaveLoader</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\QuadTree.h" />
     <ClInclude Include="..\Public\VIBuffer_Rect_Nor.h">
       <Filter>utility\04. Components\02. Renderer\VIBuffers</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_SSDBox.h">
       <Filter>utility\04. Components\02. Renderer\VIBuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\QuadTree.h">
+      <Filter>utility\04. Components\08. Navigation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

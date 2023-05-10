@@ -203,6 +203,14 @@ HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, _int iObjectEnum, const
 	return m_pObject_Manager->Add_GameObject(iLevelIndex, iObjectEnum, pLayerTag, strObjectTag, pArg);
 }
 
+HRESULT CGameInstance::Add_GameObjectEx(CGameObject** pGameObjectOut, _uint iLevelIndex, _int iObjectEnum, const _tchar * pLayerTag, _tchar * strObjectTag, void * pArg)
+{
+	if (nullptr == m_pObject_Manager)
+		return E_FAIL;
+	
+	return m_pObject_Manager->Add_GameObjectEx(pGameObjectOut, iLevelIndex, iObjectEnum, pLayerTag, strObjectTag, pArg);
+}
+
 void CGameInstance::RenderGUI()
 {
 	if (nullptr == m_pObject_Manager)
@@ -713,12 +721,20 @@ CRenderSetting::RGB_SPLIT_DESC & CGameInstance::GetSplitDesc()
 	return m_pRenderSetting->GetSplitDesc();
 }
 
-void CGameInstance::StartRGBSplit(_double TotalTime)
+CRenderSetting::SPLIT_DIR  CGameInstance::GetSplitDir() const
+{
+	if (nullptr == m_pRenderSetting)
+		return CRenderSetting::SPLIT_DEFAULT;
+
+	return m_pRenderSetting->GetSplitDir();
+}
+
+void CGameInstance::StartRGBSplit(CRenderSetting::SPLIT_DIR eSplitDir, _double TotalTime)
 {
 	if (nullptr == m_pRenderSetting)
 		return;
 
-	return m_pRenderSetting->StartRGBSplit(TotalTime);
+	return m_pRenderSetting->StartRGBSplit(eSplitDir, TotalTime);
 }
 
 void CGameInstance::RGBSpiltTimeAcc(_double TimeDelta)
@@ -743,6 +759,14 @@ _float CGameInstance::GetRGBSplitRatio() const
 		return false;
 
 	return m_pRenderSetting->GetRGBSplitRatio();
+}
+
+void CGameInstance::StartFade(CRenderSetting::FADE_STATE eState, _double FadeTime)
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	return m_pRenderSetting->StartFade(eState, FadeTime);
 }
 
 void CGameInstance::Engine_Release()

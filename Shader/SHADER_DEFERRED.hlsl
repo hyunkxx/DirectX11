@@ -2,7 +2,6 @@
 
 float4x4  g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_LightViewMatrix, g_LightProjMatrix;
 
-texture2D g_BaseTexture;
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 texture2D g_DepthTexture;
@@ -35,7 +34,7 @@ vector	  g_vLightDiffuse;
 vector	  g_vLightAmbient;
 vector	  g_vLightSpecular;
 		  
-vector	  g_vMtrlAmbient = vector(0.8f, 0.8f, 0.8f, 1.f);
+vector	  g_vMtrlAmbient = vector(0.6f, 0.6f, 0.6f, 1.f);
 vector	  g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
 float4x4  g_ProjMatrixInv;
@@ -137,7 +136,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 
 	//Toon
 	float fDot = max(0, dot(vNormal, -g_vLightDir));
-	if (fDot < 0.2)
+	if (fDot < 0.1)
 		fDot = 0.93f;
 	else
 		fDot = 1.0f;
@@ -394,9 +393,9 @@ PS_OUT PS_Outline(PS_IN In)
 		vColor += mask[i] * g_DiffuseTexture.Sample(LinearSampler, In.vTexUV + float2(coord[i % 3] / 1280, coord[i % 3] / 720));
 
 	float fGray = 1.f - (vColor.r * 0.9f + vColor.g * 0.59f + vColor.b * 0.11f);
-	float4 Ret = float4(fGray, fGray, fGray, 1.f) / 1;
+	float4 Ret = float4(fGray + 0.1f, fGray + 0.1f, fGray + 0.1f, 1.f) / 1;
 
-	Out.vColor = smoothstep(0.1f, 1.f, Ret);
+	Out.vColor = smoothstep(0.3f, 1.f, Ret);
 
 	return Out;
 }

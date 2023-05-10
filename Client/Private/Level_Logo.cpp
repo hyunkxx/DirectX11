@@ -25,13 +25,12 @@ HRESULT CLevel_Logo::Initialize()
 	// Directional
 	ZeroMemory(&LightDesc, sizeof LightDesc);
 	LightDesc.eLightType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(2.f, -1.f, 1.0f, 0.f);
+	LightDesc.vDirection = _float4(2.f, -0.3f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(0.6f, 0.68f, 0.6f, 1.f);
-	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.65f, 0.65f, 0.65f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
-	//On
-	//pGameInstance->SetLUT(CRenderer::LUT_KURO);
+	pGameInstance->SetLUT(CRenderer::LUT_DEFAULT);
 	pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)SHADOW_LEVEL::SHADOW_HIGH);
 	pGameInstance->OutlineToggle();
 	pGameInstance->SSAOToggle();
@@ -60,11 +59,9 @@ void CLevel_Logo::Tick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	pGameInstance->ShadowUpdate(40.f);
 
-	if (pGameInstance->InputKey(DIK_RETURN) == KEY_STATE::TAP)
-	{
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
-			return;
-	}
+	if(static_cast<CIntroCamera*>(m_pIntroCam)->IsLobbyOut())
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY));
+
 }
 
 HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar* pLayerTag)
@@ -77,6 +74,15 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANYWHERE, OBJECT::SKY, pLayerTag, L"sky")))
 		return E_FAIL;
 
+	for (int i = 0; i < 30; ++i)
+	{
+		_tchar szTag[MAX_TAG] = L"";
+		wsprintf(szTag, L"rock%d", i);
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::FLOATING_STONE, pLayerTag, szTag)))
+			return E_FAIL;
+	}
+
+
 	return S_OK;
 }
 
@@ -88,23 +94,23 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CCamera::CAMERA_DESC CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERA_DESC));
 
-	CameraDesc.TransformDesc.fMoveSpeed = 5.f;
+	CameraDesc.TransformDesc.fMoveSpeed = 0.2f;
 	CameraDesc.TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
 
-	CameraDesc.vEye = _float3(0.f, 1.f, -4.f);
-	CameraDesc.vAt = _float3(0.f, 1.f, 0.f);
+	CameraDesc.vEye = _float3(0.f, 1.f, 15.f);
+	CameraDesc.vAt = _float3(0.f, 1.f, 16.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
 	CameraDesc.fFovy = XMConvertToRadians(45.f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 500.f;
+	CameraDesc.fFar = 1000.f;
 
 	//Light Setting
 	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);
 	pGameInstance->SetLightMatrix(vLightProjMatrix, LIGHT_MATRIX::LIGHT_PROJ);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::INTRO_CAMERA, pLayerTag, L"IntroCamera", &CameraDesc)))
+	if (FAILED(pGameInstance->Add_GameObjectEx(&m_pIntroCam, LEVEL_LOGO, OBJECT::INTRO_CAMERA, pLayerTag, L"IntroCamera", &CameraDesc)))
 		return E_FAIL;
 
 	return S_OK;

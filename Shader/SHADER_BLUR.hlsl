@@ -12,15 +12,11 @@ texture2D			g_GlowOriTexture;
 
 float2				g_Resolution; // 윈도우 사이즈
 
-float				g_fHighWeight[13];
 float				g_fColorRange = 24.f;
 
 float fHighWeight[13] = { 0.0561f , 0.1353f , 0.278f ,0.4868f , 0.7261f , 0.9231f,
 						1.f ,
 						0.9231f , 0.7261f , 0.4868f , 0.278f , 0.1353f , 0.0561f };
-
-float fMiddelWeight[7] = { 0.4868f , 0.7261f, 0.9231f, 1.f , 0.9231f, 0.7261f , 0.4868f };
-float fLowWeight[3] = { 0.9231f, 1.f , 0.9231f };
 
 float3 jodieReinhardTonemap(float3 c)
 {
@@ -137,100 +133,6 @@ PS_OUT PS_MAIN_BLUR_Y(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_MAIN_BLUR_X_MIDDEL(PS_IN In)
-{
-	PS_OUT		Out = (PS_OUT)0;
-
-	float4 vColor = float4(0.0f, 0.0f, 0.0f, 0.f);
-	float fTotal = 0.f;
-
-	float2 vUV = In.vTexUV;
-	float2 vUV2 = 0;
-
-	float fTu = 1.f / (g_Resolution.x / 2.f);
-
-	for (int i = -3; 4 > i; i++)
-	{
-		vUV2 = vUV + float2(fTu * i, 0);
-		vColor += fMiddelWeight[i + 3] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
-		fTotal += fMiddelWeight[i + 3];
-	}
-
-	Out.vColor = vColor / fTotal;
-
-	return Out;
-}
-
-PS_OUT PS_MAIN_BLUR_Y_MIDDEL(PS_IN In)
-{
-	PS_OUT		Out = (PS_OUT)0;
-	float4 vColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-	float fTotal = 0.f;
-
-	float2 vUV = In.vTexUV;
-	float2 vUV2 = 0;
-
-	float fTv = 1.f / (g_Resolution.y / 2.f);
-
-	for (int i = -3; 4 > i; i++)
-	{
-		vUV2 = vUV + float2(0, fTv * i);
-		vColor += fMiddelWeight[i + 3] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
-		fTotal += fMiddelWeight[i + 3];
-	}
-
-	Out.vColor = vColor / fTotal;
-
-	return Out;
-}
-
-PS_OUT PS_MAIN_BLUR_X_MIN(PS_IN In)
-{
-	PS_OUT		Out = (PS_OUT)0;
-
-	float4 vColor = float4(0.0f, 0.0f, 0.0f, 0.f);
-	float fTotal = 0.f;
-
-	float2 vUV = In.vTexUV;
-	float2 vUV2 = 0;
-
-	float fTu = 1.f / (g_Resolution.x / 2.f);
-
-	for (int i = -1; 2 > i; i++)
-	{
-		vUV2 = vUV + float2(fTu * i, 0);
-		vColor += fLowWeight[i + 1] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
-		fTotal += fLowWeight[i + 1];
-	}
-
-	Out.vColor = vColor / fTotal;
-
-	return Out;
-}
-
-PS_OUT PS_MAIN_BLUR_Y_MIN(PS_IN In)
-{
-	PS_OUT		Out = (PS_OUT)0;
-	float4 vColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-	float fTotal = 0.f;
-
-	float2 vUV = In.vTexUV;
-	float2 vUV2 = 0;
-
-	float fTv = 1.f / (g_Resolution.y / 2.f);
-
-	for (int i = -1; 2 > i; i++)
-	{
-		vUV2 = vUV + float2(0, fTv * i);
-		vColor += fLowWeight[i + 1] * g_BlurTexture.Sample(LinearClampSampler, vUV2);
-		fTotal += fLowWeight[i + 1];
-	}
-
-	Out.vColor = vColor / fTotal;
-
-	return Out;
-}
-
 PS_OUT PS_MAIN_BRIGHT(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
@@ -285,10 +187,6 @@ PS_OUT PS_MAIN_GLOW_BLACK_WHITE(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	float4 vfinalColor = g_finalTexture.Sample(LinearBorderSampler, In.vTexUV);
-
-	/*if (vfinalColor.a == 0.f)
-	discard;*/
-	// g_GlowOriTexture
 	
 	float3 color = pow(g_GlowOriTexture.Sample(LinearBorderSampler, In.vTexUV).rgb * g_fColorRange, float3(2.2f, 2.2f, 2.2f));
 	color = pow(color, float3(2.2f, 2.2f, 2.2f));
@@ -415,55 +313,4 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_NOGLOW_BLACK_WHITE();
 	}
 
-	pass LowBlurX_Pass7
-	{
-		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
-
-		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = NULL;
-		HullShader = NULL;
-		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_BLUR_X_MIN();
-	}
-
-	pass LowBlurY_Pass8
-	{
-		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
-
-		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = NULL;
-		HullShader = NULL;
-		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_BLUR_Y_MIN();
-	}
-
-	pass MiddelBlurX_Pass9
-	{
-		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
-
-		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = NULL;
-		HullShader = NULL;
-		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_BLUR_X_MIDDEL();
-	}
-
-	pass MiddelBlurY_Pass10
-	{
-		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
-
-		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = NULL;
-		HullShader = NULL;
-		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_BLUR_Y_MIDDEL();
-	}
 }

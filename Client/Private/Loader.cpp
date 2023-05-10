@@ -1,7 +1,11 @@
 #include "stdafx.h"
 #include "..\Public\Loader.h"
+
+#include "GameMode.h"
+#include "AppManager.h"
 #include "GameInstance.h"
 
+#include "FloatingStone.h"
 #include "Terrain.h"
 #include "Floor.h"
 
@@ -26,12 +30,13 @@ CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
+
+	m_pApp = Client::CAppManager::GetInstance();
 }
 
 unsigned int APIENTRY ThreadEntry(void* pArg)
 {
 	CLoader* pLoader = ((CLoader*)pArg);
-
 	EnterCriticalSection(pLoader->Get_CriticalSectionPtr());
 
 	switch (pLoader->Get_NextLevel())
@@ -73,10 +78,23 @@ HRESULT CLoader::Load_Level_Logo()
 #pragma region COMPONENTS
 	
 	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
+	m_pApp->LoadRatio(0.1f);
+	
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXTURE::EYE_BURST,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXTURE::EYE_MASK, 
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeMask.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXTURE::TAPSTART_TEXT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Background/TapStartText.dds")))))
+		return E_FAIL;
 
 	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+	m_pApp->LoadRatio(0.2f);
 
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
+	m_pApp->LoadRatio(0.5f);
 	// SMODEL
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sword.smdl")))))
 		return E_FAIL;
@@ -90,9 +108,13 @@ HRESULT CLoader::Load_Level_Logo()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_FLOATING_ROCK_01, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/FloatingRock_01.smdl")))))
+		return E_FAIL;
+
 	// DMODEL
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
 		return E_FAIL;
+
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
 		return E_FAIL;
@@ -103,7 +125,9 @@ HRESULT CLoader::Load_Level_Logo()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_LOBBY_CHARACTER_MODEL, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/LobbyPlayerGirl.dmdl")))))
 		return E_FAIL;
 
+
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
+	m_pApp->LoadRatio(0.7f);
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
 		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
@@ -124,6 +148,7 @@ HRESULT CLoader::Load_Level_Logo()
 #pragma region GAMEOBJECTS
 	
 	m_szLoadingStateText = L"객체 원형을 준비중";
+	m_pApp->LoadRatio(0.8f);
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_CHARACTER_LEFT, CLobbyCharacter::Create(m_pDevice, m_pContext, DMODEL::DMD_PLAYERGIRL_MODEL, DMODEL::DMD_LOBBY_CHARACTER_MODEL, 0))))
 		return E_FAIL;
 
@@ -133,9 +158,14 @@ HRESULT CLoader::Load_Level_Logo()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY, CSky::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::FLOATING_STONE, CFloatingStone::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion
 
 	m_szLoadingStateText = L"Load Completed";
+	m_pApp->LoadRatio(1.f);
+
 	m_isFinish = true;
 	return S_OK;
 }
@@ -148,9 +178,19 @@ HRESULT CLoader::Load_Level_GamePlay()
 #pragma region COMPONENTS
 	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::EYE_BURST, 
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::EYE_MASK, 
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeMask.dds"))))
+		return E_FAIL;
+
+	m_pApp->LoadRatio(0.1f);
 	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
 
+	m_pApp->LoadRatio(0.2f);
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
+
 	// SMODEL
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sword.smdl")))))
 		return E_FAIL;
@@ -167,7 +207,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	// DMODEL
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
 		return E_FAIL;
-
+	m_pApp->LoadRatio(0.6f);
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
 		return E_FAIL;
 
@@ -193,6 +233,8 @@ HRESULT CLoader::Load_Level_GamePlay()
 		MSG_BOX("Failed to Prototype In Loader : Sky");
 		return E_FAIL;
 	}
+
+	m_pApp->LoadRatio(0.9f);
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODEL_INSTANCE, CShader::Create(m_pDevice, m_pContext,
@@ -210,6 +252,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
+	m_pApp->LoadRatio(1.f);
 	//GamePlay GameObject
 #pragma region GAMEOBJECTS
 
@@ -242,10 +285,19 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 #pragma endregion
 
+	m_Start = (_uint)time(nullptr);
 
+	while (true)
+	{
+		m_Wait = (_uint)time(nullptr);
+
+		if (m_Wait - m_Start >= 3)
+			break;
+	}
 
 	m_szLoadingStateText = L"Load Completed";
 	m_isFinish = true;
+
 	return S_OK;
 }
 
@@ -258,8 +310,10 @@ HRESULT CLoader::Load_Level_AnimTool()
 #pragma region COMPONENTS
 	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
 
+	m_pApp->LoadRatio(0.1f);
 	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
 
+	m_pApp->LoadRatio(0.3f);
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
 
 	// SModel
@@ -278,6 +332,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 	// DModel
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
 		return E_FAIL;
+	m_pApp->LoadRatio(0.5f);
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
 		return E_FAIL;
@@ -285,7 +340,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
 		return E_FAIL;
 
-
+	m_pApp->LoadRatio(0.6f);
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
 		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
@@ -297,6 +352,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 
 #pragma endregion
 
+	m_pApp->LoadRatio(1.f);
 	//GamePlay GameObject
 #pragma region GAMEOBJECTS
 
@@ -332,7 +388,6 @@ HRESULT CLoader::Load_Level_AnimTool()
 
 	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::FLOOR, CFloor::Create(m_pDevice, m_pContext))))
 	//	return E_FAIL;
-
 
 #pragma endregion
 

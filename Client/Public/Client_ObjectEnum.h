@@ -29,6 +29,7 @@ namespace OBJECT
 		PARTS_HULU_1,
 		
 		SKY,
+		FLOATING_STONE,
 
 		// AnimTool 전용 오브젝트
 		TESTVTF_BEGIN = 900000,

@@ -2,6 +2,10 @@
 
 #include "Level.h"
 
+BEGIN(Engine)
+class CGameObject;
+END
+
 BEGIN(Client)
 
 class CLevel_Logo final : public CLevel
@@ -22,6 +26,8 @@ private:
 public:
 	static CLevel_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
+
+	CGameObject* m_pIntroCam = nullptr;
 };
 
 END

@@ -24,7 +24,7 @@ public:
 	CRITICAL_SECTION* Get_CriticalSectionPtr() { return &m_hCriticalSection; }
 	LEVEL_ID Get_NextLevel() const { return m_eNextLevel; }
 	wstring GetLoadingStateText() const { return m_szLoadingStateText; }
-	_bool IsFinished() const { return m_isFinish; }
+	_bool IsFinished() { m_Wait = 0; return m_isFinish; }
 
 private:
 	ID3D11Device*			m_pDevice = { nullptr };
@@ -37,6 +37,11 @@ private:
 
 	_bool					m_isFinish = { false };
 	wstring					m_szLoadingStateText;
+
+private:
+	class CAppManager*		m_pApp = nullptr;
+	_uint					m_Wait = 0;
+	_uint					m_Start = 0;
 
 };
 

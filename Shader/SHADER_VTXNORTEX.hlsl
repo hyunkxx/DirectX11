@@ -137,7 +137,7 @@ PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 
-	Out.vOutNormal = float4(1.f, 1.f, 1.f, 1.f);
+	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
