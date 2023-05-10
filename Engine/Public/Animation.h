@@ -25,6 +25,11 @@ public:
 		return m_Duration;
 	}
 
+	void Set_Duration(_double Duration)
+	{
+		m_Duration = Duration;
+	}
+
 	_double Get_TicksPerSecond()
 	{
 		return m_TicksPerSecond;

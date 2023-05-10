@@ -454,8 +454,6 @@ void CPlayerGirl::SetUp_State()
 
 		if (true == tPhysicMove.bInitMovement)
 			XMStoreFloat3(&m_Scon.vMovement, XMVector3Normalize(XMLoadFloat3(&tPhysicMove.vInitDir)) * tPhysicMove.fInitForce);
-		else
-			m_Scon.vMovement = m_Scon.vPrevMovement;
 	}
 }
 
@@ -873,40 +871,50 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 
 		m_pModelCom->Invalidate_CombinedMatrices();
 
-		// 루트 모션 처리(회전, 이동)
-		if (true == m_tCurState.bRootMotion)
+
+
+		// 루프하지 않는 애니메이션이 이번 프레임에 끝났으면 전프레임 움직임을 적용
+		// 애니메이션 프레임이랑 FrameRate가 달라서 발생하는 오차값으로 인한 버그 방지
+		if(true == m_Scon.bAnimFinished && false == m_tCurState.bLoop)
 		{
-			// TODO : 회전 적용
-			//m_pMainTransform->Rotate_Quaternion(XMLoadFloat4(&vRotation));
+			XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vPrevMovement) * TimeDelta);
 			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom);
-			m_Scon.vPrevMovement = vMovement;
 		}
 		else
 		{
-			const PHYSICMOVE& PhysicMove = PlayerStatePhysics[m_tCurState.iPhysicMoveID];
-			if (false == PhysicMove.bConstant)
+			// 루트 모션 처리(회전, 이동)
+			if (true == m_tCurState.bRootMotion)
 			{
-				_vector vMove = XMLoadFloat3(&m_Scon.vPrevMovement);
-
-				_float fXZSpeed = XMVectorGetX(XMVector2Length(vMove)) * (1.f - (_float)TimeDelta * PhysicMove.fHorizontalAtten);
-				if (fabs(fXZSpeed) < 0.01f)
-					fXZSpeed = 0.f;
-				_float fYSpeed = XMVectorGetZ(vMove) - PhysicMove.fVerticalAccel * (_float)TimeDelta;
-
-				fXZSpeed = min(fXZSpeed, PhysicMove.fHorizontalMaxSpeed);
-				fYSpeed = max(fYSpeed, PhysicMove.fVerticalMaxSpeed);
-
-				_vector vFinalMove = XMVectorSetZ(XMVector2Normalize(vMove) * fXZSpeed, fYSpeed);
-
-				XMStoreFloat3(&vMovement, vFinalMove);
+				// TODO : 회전 적용
+				//m_pMainTransform->Rotate_Quaternion(XMLoadFloat4(&vRotation));
 			}
 			else
-				XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vMovement) * (_float)TimeDelta);
+			{
+				const PHYSICMOVE& PhysicMove = PlayerStatePhysics[m_tCurState.iPhysicMoveID];
+				if (false == PhysicMove.bConstant)
+				{
+					_vector vMove = XMLoadFloat3(&m_Scon.vPrevMovement) * TimeDelta;
 
+					_float fXZSpeed = XMVectorGetX(XMVector2Length(vMove)) * (1.f - (_float)TimeDelta * PhysicMove.fHorizontalAtten);
+					if (fabs(fXZSpeed) < 0.01f)
+						fXZSpeed = 0.f;
+					_float fYSpeed = XMVectorGetZ(vMove) - PhysicMove.fVerticalAccel * (_float)TimeDelta;
+
+					fXZSpeed = min(fXZSpeed, PhysicMove.fHorizontalMaxSpeed);
+					fYSpeed = max(fYSpeed, PhysicMove.fVerticalMaxSpeed);
+
+					_vector vFinalMove = XMVectorSetZ(XMVector2Normalize(vMove) * fXZSpeed, fYSpeed);
+
+					XMStoreFloat3(&vMovement, vFinalMove);
+				}
+				else
+					XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vMovement) * (_float)TimeDelta);
+			}
+			// 구해진 이동값만큼 움직이고 이전 프레임 정보를 저장, + TimeDelta 대응
 			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom);
-
-			m_Scon.vPrevMovement = vMovement;
+			XMStoreFloat3(&m_Scon.vPrevMovement, XMLoadFloat3(&vMovement) / (_float)TimeDelta);
 		}
+		
 
 		// StateKey 처리
 		for (_uint i = 0; i < m_tCurState.iKeyCount; ++i)
@@ -951,7 +959,7 @@ void CPlayerGirl::On_Cell()
 
 	if (PS_GROUND == m_Scon.ePositionState)
 	{
-		if (fPosY - fCellHeight > 0.2f)
+		if (fPosY - fCellHeight > 0.1f)
 		{
 			m_Scon.iNextState = SS_FALL;
 			SetUp_State();
@@ -1010,6 +1018,9 @@ void CPlayerGirl::Init_AnimSystem()
 	for (auto& pAnim : m_pAnimSetCom[ANIMSET_BASE]->Get_Animations())
 	{
 		const _tchar* szAnimName = pAnim->Get_Name();
+
+		if (!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Start")))
+			pAnim->Set_Duration(10.0);
 
 		for (auto& pChannel : pAnim->Get_Channels())
 		{

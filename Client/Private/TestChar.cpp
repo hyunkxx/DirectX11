@@ -167,6 +167,8 @@ const char CTestChar::szPhysicMoveTag[CCharacter::PSP_END][MAX_PATH] =
 	"RUN_F",
 	"SPRINT_F",
 	"SPRINT_B",
+	"FALL",
+	"PLAYERGIRL_AIRATTACK"
 };
 
 CTestChar::CTestChar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

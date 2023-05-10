@@ -17,7 +17,9 @@ CCharacter::PHYSICMOVE CCharacter::PlayerStatePhysics[PSP_END]
 	// 질주+@ _F, 등속
 	{ true, true, _float3(0.f, -1.f, 0.f),	9.0f, 0.f, 0.f, 0.f, 0.f },
 	// 낙하, 직전 운동 상태 적용, xz감쇄율, y가속도 적용
-	{ false, false, _float3(0.f, 0.f, 0.f), 0.f, 0.3f, 0.1f, 15.f * 0.016f, -15.f * 0.016f }
+	{ false, false, _float3(0.f, 0.f, 0.f), 0.f, 0.3f, 0.1f, 15.f * 0.016f, -15.f * 0.016f },
+	// PLAYERGIRL_AIRATTACK, 등속
+	{ true, true, _float3(0.f, 0.f, -1.f), 30.f, 0.f, 0.f, 0.f, 0.f  }
 	/*{},
 	{},
 	{},
