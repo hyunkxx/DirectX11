@@ -29,14 +29,7 @@ HRESULT CIntro::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fWidth = g_iWinSizeX;
-	m_fHeight = g_iWinSizeY;
-	m_fX = g_iWinSizeX >> 1;
-	m_fY = g_iWinSizeY >> 1;
-
-	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(m_fWidth, m_fHeight, 1.f) * XMMatrixTranslation(m_fX - g_iWinSizeX * 0.5f, -m_fY + g_iWinSizeY * 0.5f, 0.f));
-	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+	Load();
 
 	return S_OK;
 }
@@ -44,6 +37,77 @@ HRESULT CIntro::Initialize(void * pArg)
 void CIntro::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	if (false == m_bLoadingEnd)
+	{
+		LoadingBar(3, TimeDelta);
+	}
+	if (true == m_bLoadingEnd)
+	{
+		m_DescList[2]->fColorA = 0.f;
+		m_DescList[3]->fColorA = 0.f;
+
+		m_DescList[1]->fColorA += (_float)TimeDelta * 180.f;
+
+		if (255.f < m_DescList[1]->fColorA)
+		{
+			m_DescList[1]->fColorA = 255.f;
+
+			m_DescList[4]->bSizeXAnimM = true;
+			m_DescList[4]->bSizeYAnimM = true;
+		}
+	}
+
+
+	if (true == m_bXYM)
+	{
+		for (_uint i = 4; i < 10; ++i)
+		{
+			m_DescList[i]->bAlphaM = true;
+		}
+	}
+
+	for (_uint i = 0; i < 10; ++i)
+	{
+		if ((m_DescList[i]->bSizeYAnimP == true) && (m_DescList[i]->bSizeXAnimP == true))
+		{
+			SizeXYM(i, TimeDelta);
+		}
+		else if (m_DescList[i]->bSizeXAnimP == true)
+		{
+			SizeXAnimP(i, TimeDelta);
+		}
+		else if (m_DescList[i]->bSizeYAnimP == true)
+		{
+			SizeYAnimP(i, TimeDelta);
+		}
+
+		if ((m_DescList[i]->bSizeXAnimM == true) && (m_DescList[i]->bSizeYAnimM == true))
+		{
+			SizeXYM(i, TimeDelta);
+		}
+		else if (m_DescList[i]->bSizeXAnimM == true)
+		{
+			SizeXAnimM(i, TimeDelta);
+		}
+		else if (m_DescList[i]->bSizeYAnimM == true)
+		{
+			SizeYAnimM(i, TimeDelta);
+		}
+
+		if (m_DescList[i]->bAlphaM == true)
+			AlphaM(i, TimeDelta);
+		if (m_DescList[i]->bAlphaP == true)
+			AlphaP(i, TimeDelta);
+	}
+
+	for (auto& Desc : m_DescList)
+	{
+		XMStoreFloat4x4(&(Desc->WorldMatrix), XMMatrixScaling(Desc->fWidth, Desc->fHeight, 1.f)
+			* XMMatrixTranslation(Desc->fX, Desc->fY, Desc->fZ));
+		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+	}
 
 }
 
@@ -57,20 +121,231 @@ void CIntro::LateTick(_double TimeDelta)
 
 HRESULT CIntro::Render()
 {
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	if (FAILED(Setup_ShaderResources()))
-		return E_FAIL;
 
-	m_pShader->Begin(0);
-	m_pVIBuffer->Render();
+	_uint Bufferindex = 0;
+	for (auto& pBuffer : m_BufferList)
+	{
+		if (nullptr != pBuffer)
+		{
+			if (FAILED(Setup_ShaderResources(Bufferindex)))
+				return E_FAIL;
+			m_pShader->Begin(m_iPass);
 
+
+			if ((2 == Bufferindex) || (3 == Bufferindex))
+			{
+				if (false == m_bLoadingEnd)
+				{
+					pBuffer->Render();
+				}
+			}
+			else
+				pBuffer->Render();
+
+			++Bufferindex;
+		}
+	}
 	return S_OK;
 }
 
 void CIntro::RenderGUI()
 {
+	ImGui::Begin("Loading ID");
+	ImGui::InputInt("ID", &m_iObjectID);
+
+	ImGui::End();
+
+
+}
+
+
+
+void CIntro::LoadingBar(_uint iNum, _double TimeDelta)
+{
+	m_DescList[iNum]->TimeAcc += (_float)TimeDelta;
+
+	if (m_DescList[iNum]->TimeAcc > m_DescList[iNum]->Duration)
+	{
+		m_DescList[iNum]->TimeAcc = 0.f;
+		m_bLoadingEnd = true;
+	}
+
+	m_fLoadingBar += (_float)TimeDelta * 180.f;
+	m_fLoading = m_fLoadingBar / m_DescList[iNum]->fWidth;
+
+}
+
+
+
+void CIntro::SizeXAnimM(_uint iNum, _double TimeDelta)
+{
+	m_DescList[iNum]->TimeAcc += (_float)TimeDelta;
+
+	if (m_DescList[iNum]->TimeAcc > m_DescList[iNum]->Duration)
+	{
+		m_DescList[iNum]->TimeAcc = 0.f;
+		m_DescList[iNum]->bSizeXAnimM = false;
+	}
+
+
+	_float fWidth = m_DescList[iNum]->fWidth - m_DescList[iNum]->fSpeedWidth * (_float)TimeDelta;
+	m_DescList[iNum]->fWidth = m_DescList[iNum]->WorldMatrix._11 = fWidth;
+	m_DescList[iNum]->WorldMatrix._22 = m_DescList[iNum]->fHeight;
+
+}
+
+void CIntro::SizeXAnimP(_uint iNum, _double TimeDelta)
+{
+	m_DescList[iNum]->TimeAcc += (_float)TimeDelta;
+
+	if (m_DescList[iNum]->TimeAcc > m_DescList[iNum]->Duration)
+	{
+		m_DescList[iNum]->TimeAcc = 0.f;
+		m_DescList[iNum]->bSizeXAnimP = false;
+	}
+
+
+	_float fWidth = m_DescList[iNum]->fWidth + m_DescList[iNum]->fSpeedWidth * (_float)TimeDelta;
+	m_DescList[iNum]->fWidth = m_DescList[iNum]->WorldMatrix._11 = fWidth;
+	m_DescList[iNum]->WorldMatrix._22 = m_DescList[iNum]->fHeight;
+
+}
+
+
+
+void CIntro::SizeYAnimM(_uint iNum, _double TimeDelta)
+{
+	m_DescList[iNum]->TimeAcc += (_float)TimeDelta;
+
+	if (m_DescList[iNum]->TimeAcc > m_DescList[iNum]->Duration)
+	{
+		m_DescList[iNum]->TimeAcc = 0.f;
+		m_DescList[iNum]->bSizeYAnimM = false;
+	}
+
+
+	_float fHeight = m_DescList[iNum]->fHeight - m_DescList[iNum]->fSpeedHeight * (_float)TimeDelta;
+	m_DescList[iNum]->WorldMatrix._11 = m_DescList[iNum]->fWidth;
+	m_DescList[iNum]->fHeight = m_DescList[iNum]->WorldMatrix._22 = fHeight;
+
+}
+
+void CIntro::SizeYAnimP(_uint iNum, _double TimeDelta)
+{
+	m_DescList[iNum]->TimeAcc += (_float)TimeDelta;
+
+	if (m_DescList[iNum]->TimeAcc > m_DescList[iNum]->Duration)
+	{
+		m_DescList[iNum]->TimeAcc = 0.f;
+		m_DescList[iNum]->bSizeYAnimP = false;
+	}
+
+	_float fWidth = m_DescList[iNum]->fWidth + m_DescList[iNum]->fSpeedWidth * (_float)TimeDelta;
+	m_DescList[iNum]->fWidth = m_DescList[iNum]->WorldMatrix._11 = fWidth;
+
+	_float fHeight = m_DescList[iNum]->fHeight + m_DescList[iNum]->fSpeedHeight * (_float)TimeDelta;
+	m_DescList[iNum]->fHeight = m_DescList[iNum]->WorldMatrix._22 = fHeight;
+
+}
+
+
+void CIntro::SizeXYP(_uint iNum, _double TimeDelta)
+{
+	m_DescList[iNum]->TimeAcc += (_float)TimeDelta;
+
+	_float fWidth = m_DescList[iNum]->fWidth + m_DescList[iNum]->fSpeedWidth * (_float)TimeDelta;
+	m_DescList[iNum]->fWidth = m_DescList[iNum]->WorldMatrix._11 = fWidth;
+
+	_float fHeight = m_DescList[iNum]->fHeight + m_DescList[iNum]->fSpeedHeight * (_float)TimeDelta;
+	m_DescList[iNum]->fHeight = m_DescList[iNum]->WorldMatrix._22 = fHeight;
+
+	if (m_DescList[iNum]->TimeAcc > m_DescList[iNum]->Duration)
+	{
+		m_bXYM = true;
+		m_DescList[iNum]->TimeAcc = 0.f;
+		m_DescList[iNum]->bSizeXAnimP = false;
+		m_DescList[iNum]->bSizeYAnimP = false;
+	}
+}
+
+
+
+void CIntro::SizeXYM(_uint iNum, _double TimeDelta)
+{
+	m_DescList[iNum]->TimeAcc += (_float)TimeDelta;
+
+	_float fWidth = m_DescList[iNum]->fWidth - m_DescList[iNum]->fSpeedWidth * (_float)TimeDelta;
+	m_DescList[iNum]->fWidth = m_DescList[iNum]->WorldMatrix._11 = fWidth;
+
+	_float fHeight = m_DescList[iNum]->fHeight - m_DescList[iNum]->fSpeedHeight * (_float)TimeDelta;
+	m_DescList[iNum]->fHeight = m_DescList[iNum]->WorldMatrix._22 = fHeight;
+
+
+	if (m_DescList[iNum]->TimeAcc > m_DescList[iNum]->Duration)
+	{
+		m_bXYM = true;
+		m_DescList[iNum]->TimeAcc = 0.f;
+		m_DescList[iNum]->bSizeXAnimM = false;
+		m_DescList[iNum]->bSizeYAnimM = false;
+	}
+}
+
+void CIntro::AlphaM(_uint iNum, _double TimeDelta)
+{
+	m_DescList[iNum]->TimeAcc += (_float)TimeDelta;
+
+	m_DescList[iNum]->fColorA -= m_DescList[iNum]->fSpeedAlpha * (_float)TimeDelta;
+
+
+	if (m_DescList[iNum]->TimeAcc > m_DescList[iNum]->Duration)
+	{
+		m_DescList[iNum]->TimeAcc = 0.f;
+		m_DescList[iNum]->bSizeYAnimM = false;
+	}
+}
+
+void CIntro::AlphaP(_uint iNum, _double TimeDelta)
+{
+	m_DescList[iNum]->TimeAcc += (_float)TimeDelta;
+
+	if (m_DescList[iNum]->TimeAcc > m_DescList[iNum]->Duration)
+	{
+		m_DescList[iNum]->TimeAcc = 0.f;
+		m_DescList[iNum]->bSizeYAnimM = false;
+	}
+
+	m_DescList[iNum]->fColorA += m_DescList[iNum]->fSpeedAlpha * (_float)TimeDelta;
+
+}
+
+void CIntro::Reset()
+{
+	for (_uint iNum = 0; iNum < 9; ++iNum)
+	{
+
+		m_DescList[iNum]->Duration = 0.f;
+		m_DescList[iNum]->TimeAcc = 0.f;
+		m_DescList[iNum]->bSizeXAnimP = false;
+		m_DescList[iNum]->bSizeXAnimM = false;
+		m_DescList[iNum]->bSizeYAnimP = false;
+		m_DescList[iNum]->bSizeYAnimM = false;
+		m_DescList[iNum]->bAlphaM = false;
+		m_DescList[iNum]->bAlphaP = false;
+		m_DescList[iNum]->fSpeedfX = 0.f;
+		m_DescList[iNum]->fSpeedfY = 0.f;
+		m_DescList[iNum]->fSpeedfZ = 0.f;
+		m_DescList[iNum]->fSpeedWidth = 0.f;
+		m_DescList[iNum]->fSpeedHeight = 0.f;
+		m_DescList[iNum]->fSpeedAlpha = 0.f;
+		m_DescList[iNum]->fColorR = 0.f;
+		m_DescList[iNum]->fColorG = 0.f;
+		m_DescList[iNum]->fColorB = 0.f;
+		m_DescList[iNum]->fColorA = 0.f;
+	}
 }
 
 HRESULT CIntro::Add_Components()
@@ -79,43 +354,58 @@ HRESULT CIntro::Add_Components()
 		TEXT("com_renderer"), (CComponent**)&m_pRenderer)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::VIBUFFER_RECT,
-		TEXT("com_vibuffer"), (CComponent**)&m_pVIBuffer)))
-		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI_SUB,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI,
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::BACKGROUND_INTRO,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::UILOADING,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::BACKGROUND_MASK,
-		TEXT("com_texture_mask"), (CComponent**)&m_pMaskTexture)))
+	CTransform::TRANSFORM_DESC TransformDesc;
+	TransformDesc.fMoveSpeed = 10.f;
+	TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
+		TEXT("com_transform"), (CComponent**)&m_pTransform, &TransformDesc)))
 		return E_FAIL;
 
 	return S_OK;
+
 }
 
-HRESULT CIntro::Setup_ShaderResources()
+HRESULT CIntro::Setup_ShaderResources(_uint i)
 {
 	if (nullptr == m_pShader || nullptr == m_pTexture)
 		return E_FAIL;
 
-	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_WorldMatrix)))
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Texture", m_DescList[i]->iTexNum)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_DescList[i]->WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
-		return E_FAIL;
 
-	if (FAILED(m_pMaskTexture->Setup_ShaderResource(m_pShader, "g_MaskTexture")))
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &m_DescList[i]->fColorR, sizeof(_float))))
 		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &m_DescList[i]->fColorG, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &m_DescList[i]->fColorB, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &m_DescList[i]->fColorA, sizeof(_float))))
+		return E_FAIL;
+	if (2 == m_DescList[i]->iTexNum)
+	{
+		if (FAILED(m_pShader->SetRawValue("g_fLoading", &m_fLoading, sizeof(_float))))
+			return E_FAIL;
 
+	}
+	m_iPass = m_DescList[i]->iPass;
 	return S_OK;
 }
 
@@ -150,10 +440,121 @@ void CIntro::Free()
 	__super::Free();
 
 	Safe_Release(m_pTexture);
-	Safe_Release(m_pMaskTexture);
-
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
-	Safe_Release(m_pVIBuffer);
+
+	for (auto& Buffer : m_BufferList)
+	{
+		Safe_Release(Buffer);
+		Buffer = nullptr;
+	}
+	m_BufferList.clear();
+
+	for (auto& Desc : m_DescList)
+	{
+		delete Desc;
+		Desc = nullptr;
+	}
+	m_DescList.clear();
+
+	CurrentDesc = nullptr;
+}
+
+void CIntro::Load()
+{
+	_uint index = 10;
+	for (_uint i = 0; i < index; ++i)
+	{
+		TCHAR	szFileName[125] = L"";
+		wsprintf(szFileName, L"../../Data/UI/Loading%d.dat", i);
+		HANDLE hFile = CreateFile(
+			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+		_ulong dwByte = 0;
+
+		LOADINGDESC*  Desc = new LOADINGDESC;
+		ZeroMemory(Desc, sizeof(LOADINGDESC));
+		XMStoreFloat4x4(&Desc->WorldMatrix, XMMatrixIdentity());
+
+		while (true)
+		{
+			ReadFile(hFile, &(Desc->fX), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fY), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fZ), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fWidth), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fHeight), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fColorR), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fColorG), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fColorB), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fColorA), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->iTexNum), sizeof(_int), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->iPass), sizeof(_int), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fDegree), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->Duration), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->Cool), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fSpeedfX), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fSpeedfY), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fSpeedfZ), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fSpeedWidth), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fSpeedHeight), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->fSpeedAlpha), sizeof(_float), &dwByte, nullptr);
+
+
+			if (0 == dwByte)
+				break;
+		}
+		CloseHandle(hFile);
+
+		if (nullptr != Desc)
+		{
+			m_DescList.push_back(Desc);
+			CurrentDesc = Desc;
+			m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
+			if (nullptr == m_pVIBuffer)
+				return;
+
+			m_BufferList.push_back(m_pVIBuffer);
+		}
+	}
 
 }
+
+
+void CIntro::Save()
+{
+	_uint index = 0;
+	for (auto& Desc : m_DescList)
+	{
+		TCHAR	szFileName[125] = L"";
+		wsprintf(szFileName, L"../../Data/Loading%d.dat", index);
+		HANDLE hFile = CreateFile(
+			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+
+		_ulong dwByte = 0;
+
+		WriteFile(hFile, &(Desc->fX), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fY), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fZ), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fWidth), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fHeight), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fColorR), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fColorG), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fColorB), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fColorA), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->iTexNum), sizeof(_int), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->iPass), sizeof(_int), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fDegree), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->Duration), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->Cool), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fSpeedfX), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fSpeedfY), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fSpeedfZ), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fSpeedWidth), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fSpeedHeight), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc->fSpeedAlpha), sizeof(_float), &dwByte, nullptr);
+
+		CloseHandle(hFile);
+		++index;
+	}
+}
+

@@ -233,6 +233,12 @@
     <ClInclude Include="..\Public\TestVTF.h" />
     <ClInclude Include="..\Public\Tree_0.h" />
     <ClInclude Include="..\Public\Tree_1.h" />
+    <ClInclude Include="..\Public\UI_MainScreen.h" />
+    <ClInclude Include="..\Public\UI_Minimap.h" />
+    <ClInclude Include="..\Public\UI_Monster.h" />
+    <ClInclude Include="..\Public\UI_Mouse.h" />
+    <ClInclude Include="..\Public\UI_TapT.h" />
+    <ClInclude Include="..\Public\UI_Terminal.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="Resource.h" />
@@ -307,6 +313,12 @@
     <ClCompile Include="..\Private\TestVTF.cpp" />
     <ClCompile Include="..\Private\Tree_0.cpp" />
     <ClCompile Include="..\Private\Tree_1.cpp" />
+    <ClCompile Include="..\Private\UI_MainScreen.cpp" />
+    <ClCompile Include="..\Private\UI_Minimap.cpp" />
+    <ClCompile Include="..\Private\UI_Monster.cpp" />
+    <ClCompile Include="..\Private\UI_Mouse.cpp" />
+    <ClCompile Include="..\Private\UI_TapT.cpp" />
+    <ClCompile Include="..\Private\UI_Terminal.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -340,6 +352,7 @@
     <FxCompile Include="..\..\Shader\SHADER_EXTRACTION.hlsl" />
     <FxCompile Include="..\..\Shader\Shader_SkillModel.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_SSAO.hlsl" />
+    <FxCompile Include="..\..\Shader\SHADER_UI.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_UI_SUB.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXCUBE.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXMODEL.hlsl" />

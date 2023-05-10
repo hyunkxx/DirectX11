@@ -17,6 +17,7 @@ namespace SHADER
 		GROUD,
 		PHONG,
 
+		UI,
 		UI_SUB,
 
 		MODEL_INSTANCE

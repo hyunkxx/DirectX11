@@ -31,6 +31,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
 		return E_FAIL;
 	
+	if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
+		return E_FAIL;
+
 #pragma region MAP_OBJECT_TREE
 	if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_Tree"))))
 		return E_FAIL;
@@ -265,6 +268,25 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYERGIRL, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+
+HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UI, pLayerTag, TEXT("UI_MainScreen"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MOUSE, pLayerTag, TEXT("UI_Mouse"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UITAPT, pLayerTag, TEXT("UI_TapT"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UIMONSTER, pLayerTag, TEXT("UI_Monster"))))
+		return E_FAIL;
+
 
 	return S_OK;
 }
