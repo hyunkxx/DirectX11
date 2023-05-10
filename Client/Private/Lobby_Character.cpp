@@ -176,6 +176,11 @@ void CLobbyCharacter::PlaySelectedAnimation()
 {
 	m_eState = STATE_SELECTED;
 	m_pAnimSetCom->SetUp_Animation(m_eState, true);
+
+	// ÀÓ½Ã ÀÌÆåÆ® ³¢¿ö³Ö±â
+	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Loby_Particle_Effect_02");
+	_float4x4 WorldMatirx = m_pMainTransform->Get_WorldMatrix();
+	pEffect->Play_Effect(&WorldMatirx, false);
 }
 
 _vector CLobbyCharacter::GetEyePosition()

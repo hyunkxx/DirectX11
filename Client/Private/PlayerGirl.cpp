@@ -828,9 +828,19 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 				if (m_iAirJumpCount > 0)
 				{
 					if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
+					{
 						m_Scon.iNextState = SS_JUMP_SECOND_B;
+						CEffect* pEffect =CGameInstance::GetInstance()->Get_Effect(L"Double_Jump_B");
+						_float4x4 ParentMatrix = m_pMainTransform->Get_WorldMatrix();
+						pEffect->Play_Effect(&ParentMatrix);
+					}
 					else
+					{
 						m_Scon.iNextState = SS_JUMP_SECOND_F;
+						CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Double_Jump_F");
+						_float4x4 ParentMatrix = m_pMainTransform->Get_WorldMatrix();
+						pEffect->Play_Effect(&ParentMatrix);
+					}
 					--m_iAirJumpCount;
 				}
 				break;

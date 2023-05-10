@@ -419,10 +419,24 @@ HRESULT CApplication::Ready_Static_Effect()
 			return E_FAIL;
 	}
 
-	for (_int i = 0; 2 > i; i++)
+	for (_int i = 0; 20 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice , m_pContext , g_hWnd, TEXT("../../Resource/Effect/Loby_Particle_Effect_02.bin"),
 			"../../Resource/Effect/Loby_Particle_Effect/")))
+			return E_FAIL;
+	}
+
+	for (_int i = 0; 30 > i; i++)
+	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Double_Jump_B.bin"),
+			"../../Resource/Effect/Double_Jump/")))
+			return E_FAIL;
+	}
+
+	for (_int i = 0; 30 > i; i++)
+	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Double_Jump_F.bin"),
+			"../../Resource/Effect/Double_Jump/")))
 			return E_FAIL;
 	}
 

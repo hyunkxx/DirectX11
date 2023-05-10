@@ -46,7 +46,7 @@ HRESULT CLevel_Logo::Initialize()
 
 	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
-
+	
 	return S_OK;
 }
 

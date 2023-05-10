@@ -38,6 +38,9 @@ public:
 
 		_int iNumInstance;
 
+		_float fMaxStartDist;
+		_float fMinStartDist;
+
 		_float fParticlePower;
 		_float fGravityPower;
 
@@ -53,6 +56,7 @@ public:
 		ID_MINSPEED , ID_MAXSPEED , ID_MINANGLE , ID_MAXANGLE , ID_MINDIST , ID_MAXDIST ,
 		ID_MINSCALE , ID_MAXSCALE , ID_ENDSCALE , ID_STARTCOLOR , ID_ENDCOLOR ,
 		ID_MINPOSITION , ID_MAXPOSITION , ID_NUMINSTANCE , ID_PARTICLE_POWER , ID_GRAVITY_POWER ,
+		ID_MAX_STARTDIST , ID_MIN_STARTDIST ,
 		ID_GRAVITY , ID_LOOP ,  ID_END
 	};
 
@@ -73,7 +77,11 @@ public:
 	void Set_Desc(ParticleNum eID, void* pArg);
 
 	HRESULT SetUp_Shader_Color(class CShader* pShader , const char* ShaderTag);
-	ParticleDesc Get_ParticleDesc() { return m_ParticleDesc; }
+	ParticleDesc Get_ParticleDesc()
+	{
+		m_ParticleDesc.iNumInstance = m_iOriMaxNumInstance;
+		return m_ParticleDesc;
+	}
 
 private:
 	ID3D11Buffer*				m_pVBInstance = { nullptr };

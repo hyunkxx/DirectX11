@@ -50,6 +50,9 @@ private:
 	_float						m_fLifeAcc = { 0.f };
 	_float						m_fDelayAcc = { 0.f };
 
+#define	 MAX_STARTDISTANCE		m_EffectDesc.vStartPosition.x
+#define	 MIN_DISTANCE			m_EffectDesc.vStartPosition.y
+
 public:
 	static CParticle_Effect_P*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext , const char* pFileTag , const EFFECT_DESC& ParticleDesc);
 	virtual CGameObject* Clone(void* pArg = nullptr);

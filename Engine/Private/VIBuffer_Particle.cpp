@@ -38,7 +38,7 @@ HRESULT CVIBuffer_Particle::Initialize_Prototype(const ParticleDesc& _ParticleDe
 	m_pSpeed = new _float[m_ParticleDesc.iNumInstance];
 	m_pRotationMatrix = new _float4x4[m_ParticleDesc.iNumInstance];
 
-	m_vCurColor = _ParticleDesc.vStartColor;	
+	m_vCurColor = _ParticleDesc.vStartColor;
 
 	for (_int i = 0; i < m_ParticleDesc.iNumInstance; ++i)
 	{
@@ -389,19 +389,16 @@ void CVIBuffer_Particle::Reset_Update(_float3 vDir)
 		((VTXMATRIX*)SubResource.pData)[i].vUp = _float4(vUp.x, vUp.y, vUp.z, 0.f);
 		((VTXMATRIX*)SubResource.pData)[i].vLook = _float4(vLook.x, vLook.y, vLook.z, 0.f);
 
-		if (!m_ParticleDesc.bCircle)
+		if (m_ParticleDesc.bCircle)
 		{
-			m_pOriPos[i].x = (rand() % ((_int)(m_ParticleDesc.vMaxPosition.x * 100.f - m_ParticleDesc.vMinPosition.x * 100.f) + 1) + m_ParticleDesc.vMinPosition.x * 100.f) / 100.f;
-			m_pOriPos[i].y = (rand() % ((_int)(m_ParticleDesc.vMaxPosition.y * 100.f - m_ParticleDesc.vMinPosition.y * 100.f) + 1) + m_ParticleDesc.vMinPosition.y * 100.f) / 100.f;
-			m_pOriPos[i].z = (rand() % ((_int)(m_ParticleDesc.vMaxPosition.z * 100.f - m_ParticleDesc.vMinPosition.z * 100.f) + 1) + m_ParticleDesc.vMinPosition.z * 100.f) / 100.f;
+			_float fDist = (rand() % ((_int)(m_ParticleDesc.fMaxStartDist * 100.f - m_ParticleDesc.fMinStartDist * 100.f) + 1) + m_ParticleDesc.fMinStartDist * 100.f) / 100.f;
+			XMStoreFloat3(&m_pOriPos[i], XMVector3Normalize(XMLoadFloat3(&vLook)) * fDist);
 		}
 		else
 		{
 			m_pOriPos[i].x = (rand() % ((_int)(m_ParticleDesc.vMaxPosition.x * 100.f - m_ParticleDesc.vMinPosition.x * 100.f) + 1) + m_ParticleDesc.vMinPosition.x * 100.f) / 100.f;
 			m_pOriPos[i].y = (rand() % ((_int)(m_ParticleDesc.vMaxPosition.y * 100.f - m_ParticleDesc.vMinPosition.y * 100.f) + 1) + m_ParticleDesc.vMinPosition.y * 100.f) / 100.f;
 			m_pOriPos[i].z = (rand() % ((_int)(m_ParticleDesc.vMaxPosition.z * 100.f - m_ParticleDesc.vMinPosition.z * 100.f) + 1) + m_ParticleDesc.vMinPosition.z * 100.f) / 100.f;
-
-			XMStoreFloat3(&m_pOriPos[i], XMVector3Normalize(XMLoadFloat3(&vLook)) * XMVectorGetX(XMLoadFloat3(&m_pOriPos[i])));
 		}
 
 		((VTXMATRIX*)SubResource.pData)[i].vPosition = _float4(m_pOriPos[i].x, m_pOriPos[i].y, m_pOriPos[i].z, 1.f);
@@ -471,7 +468,6 @@ void CVIBuffer_Particle::Set_Desc(ParticleNum eID, void * pArg)
 	case Engine::CVIBuffer_Particle::ID_NUMINSTANCE:
 		memcpy(&m_ParticleDesc.iNumInstance, pArg, sizeof(_int));
 		m_iOriMaxNumInstance = m_ParticleDesc.iNumInstance;
-		m_iOriMaxNumInstance = m_ParticleDesc.iNumInstance;
 
 		if (m_iSettimeMaxNumInst < (_uint)m_ParticleDesc.iNumInstance)
 		{
@@ -494,6 +490,12 @@ void CVIBuffer_Particle::Set_Desc(ParticleNum eID, void * pArg)
 		break;
 	case Engine::CVIBuffer_Particle::ID_GRAVITY:
 		memcpy(&m_ParticleDesc.bGravuty, pArg, sizeof(_bool));
+		break;
+	case Engine::CVIBuffer_Particle::ID_MAX_STARTDIST:
+		memcpy(&m_ParticleDesc.fMaxStartDist, pArg, sizeof(_float));
+		break;
+	case Engine::CVIBuffer_Particle::ID_MIN_STARTDIST:
+		memcpy(&m_ParticleDesc.fMinStartDist, pArg, sizeof(_float));
 		break;
 	case Engine::CVIBuffer_Particle::ID_LOOP:
 		memcpy(&m_ParticleDesc.bLoop, pArg, sizeof(_bool));

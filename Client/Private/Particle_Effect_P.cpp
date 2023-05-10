@@ -234,6 +234,9 @@ EFFECT_DESC CParticle_Effect_P::Get_Effect_Desc()
 	m_EffectDesc.bGravity = PrticleDesc.bGravuty;
 	m_EffectDesc.bParticleLoop = PrticleDesc.bLoop;
 
+	m_EffectDesc.vStartPosition.x = PrticleDesc.fMaxStartDist;
+	m_EffectDesc.vStartPosition.y = PrticleDesc.fMinStartDist;
+
 	return m_EffectDesc;
 }
 
@@ -295,6 +298,8 @@ void CParticle_Effect_P::Setup_Linear()
 	vEnd = XMVectorSet(m_EffectDesc.vEndScale.x, m_EffectDesc.vEndScale.y, m_EffectDesc.vEndScale.z, 0.f);
 	XMStoreFloat3(&m_EffectDesc.vCurScale, XMVectorLerp(vStart, vEnd, fLerp));
 
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_EffectDesc.vCurPosition));
+	m_pMainTransform->SetRotationXYZ(m_EffectDesc.vCurAngle);
 }
 
 HRESULT CParticle_Effect_P::Add_Component(const char* pFileTag)
@@ -352,6 +357,9 @@ HRESULT CParticle_Effect_P::Add_Component(const char* pFileTag)
 
 	stParticleDesc.vStartColor = m_EffectDesc.vStartColor;
 	stParticleDesc.vEndColor = m_EffectDesc.vEndColor;
+
+	stParticleDesc.fMaxStartDist = m_EffectDesc.vStartPosition.x;
+	stParticleDesc.fMinStartDist = m_EffectDesc.vStartPosition.y;
 
 	m_pVIBufferCom = CVIBuffer_Particle::Create(m_pDevice, m_pContext, stParticleDesc);
 
