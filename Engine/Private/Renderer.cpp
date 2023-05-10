@@ -1635,6 +1635,16 @@ void CRenderer::Free()
 
 	for (int i = 0; i < LUT_DEFAULT; ++i)
 		Safe_Release(m_pLUT[i]);
+
+#ifdef _DEBUG
+	for (auto& pDebugBundle : m_DebugRenderBundle)
+	{
+		if (nullptr != pDebugBundle)
+			Safe_Release(pDebugBundle);
+	}
+	m_DebugRenderBundle.clear();
+#endif // _DEBUG
+
 }
 
 #ifdef _DEBUG
@@ -1656,6 +1666,36 @@ HRESULT CRenderer::RenderDebugGroup()
 	}
 
 	m_DebugRenderObjects.clear();
+
+	return S_OK;
+}
+HRESULT CRenderer::AddDebugBundle(CComponent * pComponent)
+{
+	if (nullptr == pComponent)
+		return E_FAIL;
+
+	if (false == m_DebugBundle_Render)
+		return S_OK;
+
+	m_DebugRenderBundle.push_back(pComponent);
+	Safe_AddRef(pComponent);
+
+	return S_OK;
+}
+
+HRESULT CRenderer::RenderDebugBundle()
+{
+	if (false == m_DebugBundle_Render)
+		return S_OK;
+
+	for (auto& pComponent : m_DebugRenderBundle)
+	{
+		pComponent->Render();
+
+		Safe_Release(pComponent);
+	}
+
+	m_DebugRenderBundle.clear();
 
 	return S_OK;
 }

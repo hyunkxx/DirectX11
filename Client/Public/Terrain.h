@@ -34,6 +34,11 @@ public:
 private:
 	_uint				m_iShader_PassID = { 0 };
 
+	_float				m_fUVSampler_Ratio_1 = { 0.0f };
+	_float				m_fUVSampler_Ratio_2 = { 0.0f };
+	_float				m_fUVSampler_Ratio_3 = { 0.0f };
+	_float				m_fUVSampler_Ratio_4 = { 0.0f };
+
 private:
 	HRESULT Add_Components();
 	HRESULT Setup_ShaderResources();
@@ -49,10 +54,13 @@ private:
 	CVIBuffer_Terrain*	m_pVIBuffer = { nullptr };
 	CNavigation*		m_pNavigation = { nullptr };
 
-	CTexture*			m_pDiffuseTexture[T_END] = { nullptr };
+	CTexture*			m_pDiffuseTexture[TERRAIN_KINDS::T_END] = { nullptr };
+	CTexture*			m_pNormalTexture[TERRAIN_KINDS::T_END] = { nullptr };
+
 	CTexture*			m_pFilterTexture = { nullptr };
 
-	//HRESULT Load_Terrain_Data();
+public:
+	HRESULT Load_UVSamplerRatio_Data(const _tchar* pSamplerRatioFilePath);
 
 };
 

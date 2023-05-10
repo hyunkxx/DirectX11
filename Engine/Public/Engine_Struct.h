@@ -184,11 +184,12 @@ namespace Engine
 		XMFLOAT3 vPosition;
 		XMFLOAT3 vNormal;
 		XMFLOAT2 vTexUV;
+		XMFLOAT3 vTangent;
 	}VTXNORTEX;
 
 	typedef struct ENGINE_DLL tagVertex_Position_Normal_TexCoord_Declaration
 	{
-		const static unsigned int						ElementCount = 3;
+		const static unsigned int						ElementCount = 4;
 		static D3D11_INPUT_ELEMENT_DESC					Elements[ElementCount];
 	}VTXNORTEX_DECLARATION;
 

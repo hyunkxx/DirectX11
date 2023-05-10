@@ -7,6 +7,7 @@
 
 #include "FloatingStone.h"
 #include "Terrain.h"
+#include "CharacterSelect_Terrain.h"
 #include "Floor.h"
 
 #include "Lobby_Character.h"
@@ -161,6 +162,10 @@ HRESULT CLoader::Load_Level_Logo()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::FLOATING_STONE, CFloatingStone::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+#pragma region CHR_SELECT_TERRAIN
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHARACTERSELECT_TERRAIN, CCharacterSelect_Terrain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion CHR_SELECT_TERRAIN
 #pragma endregion
 
 	m_szLoadingStateText = L"Load Completed";
@@ -215,7 +220,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_0, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Trees/0/SM_Com_Tre_01AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Tree_0.data")))))
+		TEXT("../../Resource/Model/Static/Map/Object/Trees/0/SM_Com_Tre_05AH.smdl"), TEXT("../../Data/GamePlay/MapObject/Tree_0.data")))))
 	{
 		MSG_BOX("Failed to Prototype In Loader : Tree_0");
 		return E_FAIL;

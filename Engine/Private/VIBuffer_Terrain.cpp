@@ -25,7 +25,7 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs)
 	Safe_AddRef(m_pQuadTree);
 }
 
-HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath)
+HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath, const _tchar* pVerticeFilePath)
 {
 	m_isHeightMap = true;
 
@@ -68,7 +68,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	m_pVertices = new VTXNORTEX[m_iVertexCount];
 	ZeroMemory(m_pVertices, sizeof(VTXNORTEX) * m_iVertexCount);
 
-	if (FAILED(Load_Vertices(TEXT("../../Data/GamePlay/Terrain/Height_Map/Vertices.data"))))
+	if (FAILED(Load_Vertices(pVerticeFilePath)))
 	{
 		for (_uint i = 0; i < m_dwVertexCountZ; ++i)
 		{
@@ -79,6 +79,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 				m_pVertices[iIndex].vPosition = _float3((_float)j, (pPixel[iIndex] & 0x000000ff) / 10.0f, (_float)i);
 				m_pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 				m_pVertices[iIndex].vTexUV = _float2((_float)j / (m_dwVertexCountX - 1.0f), i / (m_dwVertexCountZ - 1.0f));
+				m_pVertices[iIndex].vTangent = _float3(0.0f, 0.0f, 0.0f);
 
 				memcpy(&m_VertexPos[iIndex], &m_pVertices[iIndex].vPosition, sizeof(_float3));
 			}
@@ -109,7 +110,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 				iIndex
 			};
 
-			_vector vFirst, vSecond, vNormal;
+			_vector vFirst, vSecond, vNormal, vTangent;
 
 			/* 우상단 삼각형의 인덱스 세개를 구성하자. */
 			m_pIndices[iNumFaces]._0 = iIndices[0];
@@ -120,9 +121,13 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 			vSecond = XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._2].vPosition) - XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._1].vPosition);
 			vNormal = XMVector3Normalize(XMVector3Cross(vFirst, vSecond));
 
-			XMStoreFloat3(&m_pVertices[m_pIndices[iNumFaces]._0].vNormal, vNormal + XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._0].vNormal) + vNormal);
-			XMStoreFloat3(&m_pVertices[m_pIndices[iNumFaces]._1].vNormal, vNormal + XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._1].vNormal) + vNormal);
-			XMStoreFloat3(&m_pVertices[m_pIndices[iNumFaces]._2].vNormal, vNormal + XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._2].vNormal) + vNormal);
+			// vNormal +  -> vNormal 앞뒤로 두번더하길래 지움.
+			XMStoreFloat3(&m_pVertices[m_pIndices[iNumFaces]._0].vNormal, XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._0].vNormal) + vNormal);
+			XMStoreFloat3(&m_pVertices[m_pIndices[iNumFaces]._1].vNormal, XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._1].vNormal) + vNormal);
+			XMStoreFloat3(&m_pVertices[m_pIndices[iNumFaces]._2].vNormal, XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._2].vNormal) + vNormal);
+
+			vTangent = XMVector3Normalize(XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._1].vPosition) - XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._0].vPosition));
+			XMStoreFloat3(&m_pVertices[iIndex].vTangent, XMLoadFloat3(&m_pVertices[iIndex].vTangent) + vTangent);
 
 			++iNumFaces;
 
@@ -134,9 +139,12 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 			vSecond = XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._2].vPosition) - XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._1].vPosition);
 			vNormal = XMVector3Normalize(XMVector3Cross(vFirst, vSecond));
 
-			XMStoreFloat3(&m_pVertices[m_pIndices[iNumFaces]._0].vNormal, vNormal + XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._0].vNormal) + vNormal);
-			XMStoreFloat3(&m_pVertices[m_pIndices[iNumFaces]._1].vNormal, vNormal + XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._1].vNormal) + vNormal);
-			XMStoreFloat3(&m_pVertices[m_pIndices[iNumFaces]._2].vNormal, vNormal + XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._2].vNormal) + vNormal);
+			XMStoreFloat3(&m_pVertices[m_pIndices[iNumFaces]._0].vNormal, XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._0].vNormal) + vNormal);
+			XMStoreFloat3(&m_pVertices[m_pIndices[iNumFaces]._1].vNormal, XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._1].vNormal) + vNormal);
+			XMStoreFloat3(&m_pVertices[m_pIndices[iNumFaces]._2].vNormal, XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._2].vNormal) + vNormal);
+
+			vTangent = XMVector3Normalize(XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._1].vPosition) - XMLoadFloat3(&m_pVertices[m_pIndices[iNumFaces]._2].vPosition));
+			XMStoreFloat3(&m_pVertices[iIndex].vTangent, XMLoadFloat3(&m_pVertices[iIndex].vTangent) + vTangent);
 
 			++iNumFaces;
 		}
@@ -374,6 +382,9 @@ void CVIBuffer_Terrain::Culling(_fmatrix Inverse_WorldMatrix)
 
 HRESULT CVIBuffer_Terrain::Load_Vertices(const _tchar * pFilePath)
 {
+	if (!wcscmp(pFilePath, L""))
+		return E_FAIL;
+
 	HANDLE		hFile = CreateFile(pFilePath, GENERIC_READ, 0, 0,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
@@ -395,6 +406,7 @@ HRESULT CVIBuffer_Terrain::Load_Vertices(const _tchar * pFilePath)
 
 			m_pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			m_pVertices[iIndex].vTexUV = _float2((_float)j / (m_dwVertexCountX - 1.0f), i / (m_dwVertexCountZ - 1.0f));
+			m_pVertices[iIndex].vTangent = _float3(0.0f, 0.0f, 0.0f);
 
 			memcpy(&m_VertexPos[iIndex], &m_pVertices[iIndex].vPosition, sizeof(_float3));
 		}
@@ -405,11 +417,11 @@ HRESULT CVIBuffer_Terrain::Load_Vertices(const _tchar * pFilePath)
 	return S_OK;
 }
 
-CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pHeightMapFilePath)
+CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pHeightMapFilePath, const _tchar* pVerticeFilePath)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pHeightMapFilePath)))
+	if (FAILED(pInstance->Initialize_Prototype(pHeightMapFilePath, pVerticeFilePath)))
 	{
 		MSG_BOX("Failed to Created : CVIBuffer_Terrain");
 		Safe_Release(pInstance);

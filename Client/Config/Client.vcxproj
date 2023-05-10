@@ -194,6 +194,7 @@
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\CameraCurve.h" />
     <ClInclude Include="..\public\Character.h" />
+    <ClInclude Include="..\public\CharacterSelect_Terrain.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Client_ModelEnum.h" />
@@ -273,6 +274,7 @@
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\CameraCurve.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
+    <ClCompile Include="..\private\CharacterSelect_Terrain.cpp" />
     <ClCompile Include="..\private\DissolveKey.cpp" />
     <ClCompile Include="..\private\DynamicCamera.cpp" />
     <ClCompile Include="..\private\EffectKey.cpp" />

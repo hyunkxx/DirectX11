@@ -19,7 +19,7 @@ protected:
 	virtual ~CVIBuffer_Terrain() = default;
 
 public:
-	virtual	HRESULT Initialize_Prototype(const _tchar* pHeightMapFilePath);
+	virtual	HRESULT Initialize_Prototype(const _tchar* pHeightMapFilePath, const _tchar* pVerticeFilePath);
 	virtual	HRESULT Initialize_Prototype(const TERRAIN_SIZE& iSize);
 	virtual	HRESULT Initialize(void* pArg);
 
@@ -43,7 +43,7 @@ public:
 	HRESULT Load_Vertices(const _tchar* pFilePath);
 
 public:
-	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pHeightMapFilePath);
+	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pHeightMapFilePath, const _tchar* pVerticeFilePath = L"");
 	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const TERRAIN_SIZE& iSize);
 	virtual CComponent* Clone(void* pArg = nullptr);
 	virtual void Free() override;

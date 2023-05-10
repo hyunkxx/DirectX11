@@ -59,7 +59,7 @@ void CLevel_Logo::Tick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	pGameInstance->ShadowUpdate(40.f);
 
-	if(static_cast<CIntroCamera*>(m_pIntroCam)->IsLobbyOut())
+	if(static_cast<CIntroCamera*>(m_pIntroCam)->IsLobbyOut() || KEY_STATE::TAP == pGameInstance->InputKey(DIK_TAB))
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY));
 
 }
@@ -68,7 +68,7 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar* pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
- 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANYWHERE, OBJECT::FLOOR, pLayerTag, L"terrain")))
+ 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANYWHERE, OBJECT::CHARACTERSELECT_TERRAIN, pLayerTag, L"terrain")))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANYWHERE, OBJECT::SKY, pLayerTag, L"sky")))

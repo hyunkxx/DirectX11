@@ -54,11 +54,6 @@ private:
 	class CAnimToolManager*		m_pAnimToolManager = { nullptr };
 
 #ifdef _DEBUG
-	CNavigation*				m_pNavigation = { nullptr };
-	_bool						m_Render_Navigation = { false };
-#endif // _DEBUG
-
-#ifdef _DEBUG
 	class CGUIManager*			m_pGUIManager = { nullptr };
 #endif
 	

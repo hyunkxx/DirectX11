@@ -94,6 +94,16 @@ public:
 private:
 	list<class CComponent*> m_DebugRenderObjects;
 
+public:
+	HRESULT AddDebugBundle(class CComponent* pComponent);
+	HRESULT RenderDebugBundle();
+
+	void DebugBundleRender_Control(_bool IsRender) { m_DebugBundle_Render = IsRender; }
+	_bool IsDebugBundleRender() { return m_DebugBundle_Render; }
+
+private:
+	list<class CComponent*> m_DebugRenderBundle;
+	_bool					m_DebugBundle_Render = { false };
 #endif
 
 private:

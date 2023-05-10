@@ -29,7 +29,15 @@ HRESULT CTerrain::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_iShader_PassID = { 0 };
+	m_iShader_PassID = { 2 };
+
+	if (FAILED(Load_UVSamplerRatio_Data(TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data"))))
+	{
+		m_fUVSampler_Ratio_1 = { 100.0f };
+		m_fUVSampler_Ratio_2 = { 100.0f };
+		m_fUVSampler_Ratio_3 = { 100.0f };
+		m_fUVSampler_Ratio_4 = { 100.0f };
+	}
 
 	return S_OK;
 }
@@ -44,10 +52,10 @@ void CTerrain::Tick(_double TimeDelta)
 
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_U))
 	{
-		if (0 == m_iShader_PassID)
+		if (2 == m_iShader_PassID)
+			m_iShader_PassID = 3;
+		else if (3 == m_iShader_PassID)
 			m_iShader_PassID = 2;
-		else if (2 == m_iShader_PassID)
-			m_iShader_PassID = 0;
 	}
 }
 
@@ -60,11 +68,11 @@ void CTerrain::LateTick(_double TimeDelta)
 
 #ifdef _DEBUG
 	// 디버그 모드 랜더링 안할 시 릭 나옴
-	/*if (nullptr != m_pRenderer && nullptr != m_pNavigation)
+	if (nullptr != m_pRenderer && nullptr != m_pNavigation)
 	{
-		m_pNavigation->Set_IntervalY(1.0f);
-		m_pRenderer->AddDebugGroup(m_pNavigation);
-	}*/
+		m_pNavigation->Set_IntervalY(0.01f);
+		m_pRenderer->AddDebugBundle(m_pNavigation);
+	}
 #endif // _DEBUG
 }
 
@@ -133,6 +141,19 @@ HRESULT CTerrain::Add_Components()
 		TEXT("com_texture_diffuse_4"), (CComponent**)&m_pDiffuseTexture[T_4])))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_N_1,
+		TEXT("com_texture_n_1"), (CComponent**)&m_pNormalTexture[TERRAIN_KINDS::T_1])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_N_2,
+		TEXT("com_texture_n_2"), (CComponent**)&m_pNormalTexture[TERRAIN_KINDS::T_2])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_N_3,
+		TEXT("com_texture_n_3"), (CComponent**)&m_pNormalTexture[TERRAIN_KINDS::T_3])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_N_4,
+		TEXT("com_texture_n_4"), (CComponent**)&m_pNormalTexture[TERRAIN_KINDS::T_4])))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_FILTER,
 		TEXT("com_texture_Filter"), (CComponent**)&m_pFilterTexture)))
 		return E_FAIL;
@@ -167,6 +188,24 @@ HRESULT CTerrain::Setup_ShaderResources()
 	if (FAILED(m_pDiffuseTexture[CTerrain::T_3]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture_3")))
 		return E_FAIL;
 	if (FAILED(m_pDiffuseTexture[CTerrain::T_4]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture_4")))
+		return E_FAIL;
+
+	if (FAILED(m_pNormalTexture[TERRAIN_KINDS::T_1]->Setup_ShaderResource(m_pShader, "g_NormalTexture_1")))
+		return E_FAIL;
+	if (FAILED(m_pNormalTexture[TERRAIN_KINDS::T_2]->Setup_ShaderResource(m_pShader, "g_NormalTexture_2")))
+		return E_FAIL;
+	if (FAILED(m_pNormalTexture[TERRAIN_KINDS::T_3]->Setup_ShaderResource(m_pShader, "g_NormalTexture_3")))
+		return E_FAIL;
+	if (FAILED(m_pNormalTexture[TERRAIN_KINDS::T_4]->Setup_ShaderResource(m_pShader, "g_NormalTexture_4")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetRawValue("g_fUVSampler_Ratio_1", &m_fUVSampler_Ratio_1, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fUVSampler_Ratio_2", &m_fUVSampler_Ratio_2, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fUVSampler_Ratio_3", &m_fUVSampler_Ratio_3, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fUVSampler_Ratio_4", &m_fUVSampler_Ratio_4, sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(m_pFilterTexture->Setup_ShaderResource(m_pShader, "g_FilterTexture")))
@@ -212,7 +251,32 @@ void CTerrain::Free()
 	Safe_Release(m_pNavigation);
 
 	for (_uint i = 0; i < CTerrain::T_END; ++i)
+	{
 		Safe_Release(m_pDiffuseTexture[i]);
-
+		Safe_Release(m_pNormalTexture[i]);
+	}
 	Safe_Release(m_pFilterTexture);
+}
+
+HRESULT CTerrain::Load_UVSamplerRatio_Data(const _tchar * pSamplerRatioFilePath)
+{
+	HANDLE		hFile = CreateFile(pSamplerRatioFilePath, GENERIC_READ, 0, 0,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Failed to Load Data In Terrain : UV Sampler Ratio");
+		return E_FAIL;
+	}
+
+	DWORD		dwByte = { 0 };
+
+	ReadFile(hFile, &m_fUVSampler_Ratio_1, sizeof(_float), &dwByte, nullptr);
+	ReadFile(hFile, &m_fUVSampler_Ratio_2, sizeof(_float), &dwByte, nullptr);
+	ReadFile(hFile, &m_fUVSampler_Ratio_3, sizeof(_float), &dwByte, nullptr);
+	ReadFile(hFile, &m_fUVSampler_Ratio_4, sizeof(_float), &dwByte, nullptr);
+
+	CloseHandle(hFile);
+
+	return S_OK;
 }
