@@ -61,6 +61,9 @@
     <FxCompile Include="..\..\Shader\SHADER_POSTEFFECT.hlsl">
       <Filter>src\99. ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Shader\SHADER_UI.hlsl">
+      <Filter>src\99. ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ImGui\imgui.cpp">
@@ -206,6 +209,25 @@
     </ClCompile>
     <ClCompile Include="..\private\FloatingStone.cpp">
       <Filter>src\02. GameObject\00. Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CharacterSelect_Terrain.cpp" />
+    <ClCompile Include="..\Private\UI_MainScreen.cpp">
+      <Filter>src\02. GameObject\99. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Minimap.cpp">
+      <Filter>src\02. GameObject\99. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Monster.cpp">
+      <Filter>src\02. GameObject\99. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Mouse.cpp">
+      <Filter>src\02. GameObject\99. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_TapT.cpp">
+      <Filter>src\02. GameObject\99. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Terminal.cpp">
+      <Filter>src\02. GameObject\99. UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -382,6 +404,25 @@
     </ClInclude>
     <ClInclude Include="..\public\FloatingStone.h">
       <Filter>src\02. GameObject\00. Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CharacterSelect_Terrain.h" />
+    <ClInclude Include="..\Public\UI_MainScreen.h">
+      <Filter>src\02. GameObject\99. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Minimap.h">
+      <Filter>src\02. GameObject\99. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Monster.h">
+      <Filter>src\02. GameObject\99. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Mouse.h">
+      <Filter>src\02. GameObject\99. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_TapT.h">
+      <Filter>src\02. GameObject\99. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Terminal.h">
+      <Filter>src\02. GameObject\99. UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

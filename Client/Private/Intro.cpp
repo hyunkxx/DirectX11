@@ -154,10 +154,10 @@ HRESULT CIntro::Render()
 
 void CIntro::RenderGUI()
 {
-	ImGui::Begin("Loading ID");
-	ImGui::InputInt("ID", &m_iObjectID);
+	//ImGui::Begin("Loading ID");
+	//ImGui::InputInt("ID", &m_iObjectID);
 
-	ImGui::End();
+	//ImGui::End();
 
 
 }
