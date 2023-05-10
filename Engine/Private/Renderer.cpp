@@ -938,7 +938,7 @@ void CRenderer::Render_Blend()
 void CRenderer::Render_Glow()
 {
 	if (!m_GlowEmpty)
-		Target_Blur(L"Target_Glow", 1);
+		Target_Blur(L"Target_Glow", 5 , BLUR::HIGH);
 
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Glow_Result")))
 		return;

@@ -12,6 +12,7 @@ float3				g_vParticleColor;
 float2				g_vUV;
 float2				g_vFrame;
 
+float				g_fScale;
 struct VS_IN
 {
 	float3			vPosition : POSITION;
@@ -64,6 +65,7 @@ struct GS_OUT
 	float2			vFrame: TEXCOORD1;
 };
 
+
 [maxvertexcount(6)]
 void GS_MAIN_SPARK_RHOMBUS(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
@@ -92,8 +94,8 @@ void GS_MAIN_SPARK_RHOMBUS(point GS_IN In[1], inout TriangleStream<GS_OUT> Trian
 
 	float3 vRight, vUp;
 
-	vRight = In[0].vLook.xyz / 2.f;
-	vUp = In[0].vUp.xyz / 2.f;
+	vRight = In[0].vLook / 2.f * g_fScale;
+	vUp = In[0].vUp / 2.f * g_fScale;
 
 	Out[0].vPosition = vector(In[0].vPosition.xyz + vUp, 1.f);
 	Out[0].vPosition = mul(Out[0].vPosition, matVP);
@@ -154,8 +156,8 @@ void GS_MAIN_SPARK_RECT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangle
 
 	float3 vRight, vUp;
 
-	vRight = In[0].vLook.xyz / 2.f;
-	vUp = In[0].vUp.xyz / 2.f;
+	vRight = In[0].vLook / 2.f * g_fScale;
+	vUp = In[0].vUp / 2.f * g_fScale;
 
 	Out[0].vPosition = vector(In[0].vPosition.xyz - vRight + vUp, 1.f);
 	Out[0].vPosition = mul(Out[0].vPosition, matVP);
@@ -216,8 +218,8 @@ void GS_MAIN_SPARK_TRIANGLE(point GS_IN In[1], inout TriangleStream<GS_OUT> Tria
 
 	float3 vRight, vUp;
 
-	vRight = In[0].vLook.xyz / 2.f;
-	vUp = In[0].vUp.xyz / 2.f;
+	vRight = In[0].vLook / 2.f * g_fScale;
+	vUp = In[0].vUp / 2.f * g_fScale;
 
 	Out[0].vPosition = vector(In[0].vPosition.xyz + vRight, 1.f);
 	Out[0].vPosition = mul(Out[0].vPosition, matVP);
@@ -271,8 +273,8 @@ void GS_MAIN_BILLBOARD_RHOMBUS(point GS_IN In[1], inout TriangleStream<GS_OUT> T
 	float fUpDist = length(UDist);
 
 	vector		vLook = g_vCamPosition - In[0].vPosition;
-	float3		vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * fRightDist * 0.5f;
-	float3		vUp = normalize(cross(vLook.xyz, vRight)) * fUpDist * 0.5f;
+	float3		vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * fRightDist * 0.5f * g_fScale;
+	float3		vUp = normalize(cross(vLook.xyz, vRight)) * fUpDist * 0.5f * g_fScale;
 
 	matrix		matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
@@ -337,8 +339,8 @@ void GS_MAIN_BILLBOARD_RECT(point GS_IN In[1], inout TriangleStream<GS_OUT> Tria
 	float fUpDist = length(UDist);
 
 	vector		vLook = g_vCamPosition - In[0].vPosition;
-	float3		vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * fRightDist  * 0.5f;
-	float3		vUp = normalize(cross(vLook.xyz, vRight)) * fUpDist * 0.5f;
+	float3		vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * fRightDist  * 0.5f * g_fScale;
+	float3		vUp = normalize(cross(vLook.xyz, vRight)) * fUpDist * 0.5f * g_fScale;
 
 	matrix		matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
@@ -405,10 +407,10 @@ void GS_MAIN_BILLBOARD_TRIANGLE(point GS_IN In[1], inout TriangleStream<GS_OUT> 
 	matrix		matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
 	vector		vLook = g_vCamPosition - In[0].vPosition;
-	float3		vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * fRightDist * 0.5f;
-	float3		vUp = normalize(cross(vLook.xyz, vRight)) * fUpDist * 0.5f;
+	float3		vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * fRightDist * 0.5f * g_fScale;
+	float3		vUp = normalize(cross(vLook.xyz, vRight)) * fUpDist * 0.5f * g_fScale;
 
-	Out[0].vPosition = vector(In[0].vPosition.xyz  + vUp, 1.f);
+	Out[0].vPosition = vector(In[0].vPosition.xyz + vUp, 1.f);
 	Out[0].vPosition = mul(Out[0].vPosition, matVP);
 	Out[0].vTexUV = float2(0.0f, 0.f);
 	Out[0].vFrame = vFrame;
@@ -428,6 +430,7 @@ void GS_MAIN_BILLBOARD_TRIANGLE(point GS_IN In[1], inout TriangleStream<GS_OUT> 
 	Triangles.Append(Out[2]);
 	Triangles.RestartStrip();
 }
+
 
 
 struct PS_IN
@@ -452,8 +455,8 @@ PS_OUT PS_MAIN(PS_IN In)
 	float2 vLength = In.vTexUV - vDist;
 
 	float fDist = sqrt((vLength.x * vLength.x) + (vLength.y * vLength.y));
-	
-	Out.vColor.a =  1.f - fDist;
+
+	Out.vColor.a = 1.f - fDist;
 
 	return Out;
 }
@@ -481,7 +484,7 @@ PS_OUT PS_MAIN_TEX_COL(PS_IN In)
 	UV += (UVSize *  In.vFrame);
 
 	Out.vColor = g_DiffuseTexture.Sample(PointSampler, UV);
-	
+
 	return Out;
 }
 
@@ -626,7 +629,7 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
-	
+
 
 	pass Particle_Spark_Texture
 	{

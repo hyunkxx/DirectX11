@@ -311,4 +311,5 @@ void CLevel_GamePlay::Free()
 	__super::Free();
 
 	CPlayerGirl::Release_States();
+	
 }

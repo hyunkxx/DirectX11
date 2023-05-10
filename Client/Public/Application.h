@@ -34,7 +34,7 @@ private:
 	void DestroyManager();
 	
 	HRESULT Ready_Static_Effect();
-	HRESULT Add_Effect(HWND _hWnd , const _tchar* EffectTag , const char* TextureTag);
+	
 public:
 	static CApplication* Create();
 	virtual void Free() override;

@@ -26,6 +26,8 @@ HRESULT CLevel_Loading::Initialize(LEVEL_ID eNextLevel)
 
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	//레벨 이동하며 전 레벨의 모든 이펙트들 정지시키기
+	pGameInstance->Stop_All_Effect();
 
 	if (pGM->GetCurrentLevel() >= LEVEL_LOGO)
 	{

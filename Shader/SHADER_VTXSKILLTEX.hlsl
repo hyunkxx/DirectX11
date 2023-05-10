@@ -441,7 +441,20 @@ PS_OUT_DECAL	PS_MAIN_DECAL_NORMAL(PS_IN_DECAL In)
 	vBiNormal = normalize(cross(vTangent, vScreenNormal.xyz));
 
 	float3x3 WorldMatrix = float3x3(vTangent, vBiNormal, vScreenNormal.xyz);
-	Out.vNormal = float4(normalize(mul(vNormal, WorldMatrix)), 1.f);
+	
+	vNormal = normalize(mul(vNormal, WorldMatrix));
+
+	float2 vDist = (0.5f - decalUV) * 2.f;
+	float fLerp = saturate(sqrt((vDist.x * vDist.x) + (vDist.y * vDist.y)));
+
+	if (fLerp > 0.7f)
+	{
+		fLerp = (fLerp - 0.7f) * 3.3f;
+
+		vNormal.xyz = lerp(vNormal.xyz, vScreenNormal.xyz, fLerp);
+	}
+
+	Out.vNormal = float4(normalize(mul(vNormal, WorldMatrix)) * 0.5f + 0.5f , 1.f);
 
 	return Out;
 }

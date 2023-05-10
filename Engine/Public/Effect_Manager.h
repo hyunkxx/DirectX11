@@ -18,6 +18,7 @@ public:
 	HRESULT Push_Effect(const _tchar* pEffectTag, class CEffect* pEffect);
 	class CEffect*	Get_Effect(const _tchar* EffectTag);
 
+	void	Stop_All_Effect();
 private:
 	list <class CEffect*>*	Find_EffectList(const _tchar* pEffecttag);
 

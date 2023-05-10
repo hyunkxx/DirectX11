@@ -146,6 +146,7 @@ public:/*For.Save_Loader*/
 public:/*For.CEffect_Manager*/
 	HRESULT Push_Effect(const _tchar* pEffectTag, class CEffect* pEffect);
 	class CEffect*	Get_Effect(const _tchar* EffectTag);
+	void  Stop_All_Effect();
 public:
 	static void Engine_Release();
 	virtual void Free() override;

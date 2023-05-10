@@ -692,6 +692,14 @@ CEffect * CGameInstance::Get_Effect(const _tchar * EffectTag)
 	return m_pEffect_Manager->Get_Effect(EffectTag);
 }
 
+void CGameInstance::Stop_All_Effect()
+{
+	if (!m_pEffect_Manager)
+		return;
+
+	m_pEffect_Manager->Stop_All_Effect();
+}
+
 void CGameInstance::SetSplitDesc(CRenderSetting::RGB_SPLIT_DESC tagDesc)
 {
 	if (nullptr == m_pRenderSetting)

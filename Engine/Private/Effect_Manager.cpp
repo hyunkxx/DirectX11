@@ -91,6 +91,23 @@ CEffect * CEffect_Manager::Get_Effect(const _tchar * pEffectTag)
 	return nullptr;
 }
 
+void CEffect_Manager::Stop_All_Effect()
+{
+	for (auto& Pair : m_Effectmap_Update)
+	{
+		if (Pair.second->empty())
+			continue;
+
+		for (auto& pEffect = Pair.second->begin(); pEffect != Pair.second->end(); )
+		{
+			auto&	Dest = find_if(m_Effectmap_NonUpdate.begin(), m_Effectmap_NonUpdate.end(), CTagFinder(Pair.first));
+			Dest->second->push_back(*pEffect);
+			pEffect = Pair.second->erase(pEffect);
+		}
+	}
+
+}
+
 list <class CEffect*>* CEffect_Manager::Find_EffectList(const _tchar * pEffecttag)
 {
 	auto	Dest = find_if(m_Effectmap_NonUpdate.begin(), m_Effectmap_NonUpdate.end(), CTagFinder(pEffecttag));

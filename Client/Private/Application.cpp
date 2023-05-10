@@ -17,7 +17,7 @@
 #include "Floor.h"
 #include "Character.h"
 
-#include "Effect_Player.h"
+
 
 CApplication::CApplication()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -338,48 +338,41 @@ void CApplication::DestroyManager()
 
 HRESULT CApplication::Ready_Static_Effect()
 {
+	CGameMode* pGameModeInst = CGameMode::GetInstance();
 	for (_int i = 0; 20 > i; i++)
 	{
-		if (FAILED(Add_Effect(g_hWnd, TEXT("../../Resource/Effect/YangYang_Jump_Attack_01.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/YangYang_Jump_Attack_01.bin"),
 			"../../Resource/Effect/YangYang_Jump_Attack_01/")))
 			return E_FAIL;
 	}
 
 	for (_int i = 0; 20 > i; i++)
 	{
-		if (FAILED(Add_Effect(g_hWnd, TEXT("../../Resource/Effect/Test_SSD.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Test_SSD.bin"),
 			"../../Resource/Effect/Test_SSD/")))
 			return E_FAIL;
 	}
 
 	for (_int i = 0; 20 > i; i++)
 	{
-		if (FAILED(Add_Effect(g_hWnd, TEXT("../../Resource/Effect/Test_GLOW_SSD.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Test_GLOW_SSD.bin"),
 			"../../Resource/Effect/Test_GLOW_SSD/")))
 			return E_FAIL;
 	}
 
+	for (_int i = 0; 2 > i; i++)
+	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Loby_Particle_Effect.bin"),
+			"../../Resource/Effect/Loby_Particle_Effect/")))
+			return E_FAIL;
+	}
 
-	return S_OK;
-}
-
-HRESULT CApplication::Add_Effect(HWND _hWnd, const _tchar * EffectTag, const char * TextureTag)
-{
-	list<EFFECT_DESC*> EffectDescList;
-	CGameInstance::GetInstance()->Load_Effect(g_hWnd, EffectTag , &EffectDescList);
-	CEffect* pEffect = CEffect_Player::Create(m_pDevice, m_pContext, TextureTag , EffectDescList);
-
-	if (nullptr == pEffect)
-		return E_FAIL;
-
-	for (auto& iter : EffectDescList)
-		Safe_Delete(iter);
-	EffectDescList.clear();
-
-	_tchar FileName[MAX_PATH] = TEXT("");
-	_wsplitpath_s(EffectTag, nullptr, 0, nullptr, 0, FileName, MAX_PATH, nullptr, 0);
-	if (FAILED(CGameInstance::GetInstance()->Push_Effect(FileName, pEffect)))
-		return E_FAIL;
+	for (_int i = 0; 2 > i; i++)
+	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice , m_pContext , g_hWnd, TEXT("../../Resource/Effect/Loby_Particle_Effect_02.bin"),
+			"../../Resource/Effect/Loby_Particle_Effect/")))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

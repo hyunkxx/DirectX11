@@ -4,6 +4,8 @@
 #include "GameInstance.h"
 #include "GameMode.h"
 
+#include "Effect.h"
+
 CLobbyCharacter::CLobbyCharacter(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -53,6 +55,11 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(1.2f, 0.f, 0.f, 1.f));
 		break;
 	}
+
+	// Lobby_Player_Particle_Effect
+	CEffect* pEffect= CGameInstance::GetInstance()->Get_Effect(L"Loby_Particle_Effect");
+	_float4x4 WorldMatirx = m_pMainTransform->Get_WorldMatrix();
+	pEffect->Play_Effect(&WorldMatirx, false);
 
 	return S_OK;
 }
