@@ -383,7 +383,13 @@ void CRect_Effect_P::Setup_Matrix()
 {
 	if (true == BILLBOARD)
 	{
-		XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(&m_ParentsMatrix));
+		m_WorldMatrix = m_pMainTransform->Get_WorldMatrix();
+
+		if (m_EffectDesc.bTracking)
+			XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(m_pParentsMatrix));
+		else
+			XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(&m_ParentsMatrix));
+
 		_float3 Scale;
 		_float4 vPos;
 		_float3 vNewRight, vNewUp, vNewLook;
@@ -392,7 +398,7 @@ void CRect_Effect_P::Setup_Matrix()
 		vPos = _float4(m_ResultMatirx._41, m_ResultMatirx._42, m_ResultMatirx._43, 1.f);
 
 		_float4 vCameraPos = CPipeLine::GetInstance()->Get_CamPosition();
-		XMStoreFloat3(&vNewLook, XMVector3Normalize(XMLoadFloat4(&vCameraPos) - XMLoadFloat4(&vPos)));
+		XMStoreFloat3(&vNewLook, XMVector3Normalize(XMLoadFloat4(&vPos) - XMLoadFloat4(&vCameraPos)));
 		XMStoreFloat3(&vNewRight, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&vNewUp), XMLoadFloat3(&vNewLook))));
 		XMStoreFloat3(&vNewUp, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&vNewLook), XMLoadFloat3(&vNewRight))));
 
@@ -439,7 +445,10 @@ void CRect_Effect_P::Setup_Matrix()
 		memcpy(((_float4*)&m_WorldMatrix + 1), &NewUp, sizeof(_float3));
 		memcpy(((_float4*)&m_WorldMatrix + 2), &NewLook, sizeof(_float3));
 
-		XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(&m_ParentsMatrix));
+		if (m_EffectDesc.bTracking)
+			XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(m_pParentsMatrix));
+		else
+			XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(&m_ParentsMatrix));
 
 	}
 }
