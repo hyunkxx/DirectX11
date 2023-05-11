@@ -48,11 +48,11 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 	{
 	case LEFT_MODEL:
 		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(-90.f));
-		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(-1.2f, 0.f, 0.f, 1.f));
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(121.8f, 0.f, 87.f, 1.f));
 		break;
 	case RIGHT_MODEL:
 		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(90.f));
-		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(1.2f, 0.f, 0.f, 1.f));
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(124.2f, 0.f, 87.f, 1.f));
 		break;
 	}
 
@@ -72,17 +72,6 @@ void CLobbyCharacter::Start()
 
 void CLobbyCharacter::Tick(_double TimeDelta)
 {
-	CGameInstance* pGame = CGameInstance::GetInstance();
-
-	if (pGame->InputKey(DIK_M) == KEY_STATE::TAP)
-	{
-		m_eState = STATE(m_eState + 1);
-		if (m_eState == STATE_END)
-			m_eState = STATE_SELECTED;
-
-		m_pAnimSetCom->SetUp_Animation(m_eState, true);
-	}
-
 	Tick_State(TimeDelta);
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
@@ -258,9 +247,14 @@ void CLobbyCharacter::Init_AnimSystem()
 
 void CLobbyCharacter::Tick_State(_double TimeDelta)
 {
-	m_pAnimSetCom->Play_Animation(TimeDelta, nullptr, nullptr, &m_CurTrackPos);
+	_bool bFinished = false;
+	m_pAnimSetCom->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, &bFinished);
 	m_pAnimSetCom->Update_TargetBones();
 	m_pModelCom->Invalidate_CombinedMatrices();
+
+	if(bFinished)
+
+		m_pAnimSetCom->SetUp_Animation(m_eState, true);
 }
 
 HRESULT CLobbyCharacter::SetUp_ShaderResources()

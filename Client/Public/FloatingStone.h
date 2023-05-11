@@ -42,6 +42,7 @@ private:
 	CRenderer* m_pRenderer = nullptr;
 	CShader* m_pShader = nullptr;
 	CModel* m_pModel = nullptr;
+	CModel* m_pModel_LOD = nullptr;
 
 private:
 	_float m_fTimeAcc = 0.f;

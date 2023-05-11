@@ -112,9 +112,7 @@ void CIntroCamera::StateCheck(_double TimeDelta)
 		m_fEndAcc += (_float)TimeDelta;
 
 		if (m_fEndAcc >= 0.8f)
-		{
 			m_bZoomIn = true;
-		}
 
 		if (m_fEndAcc >= m_fEndLimit)
 			m_bLobbyOut = true;
@@ -209,32 +207,32 @@ void CIntroCamera::CameraMovement(_double TimeDelta)
 	switch (m_eCurrentState)
 	{
 	case CIntroCamera::CAM_LEFT:
-		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(-2.0f, 1.5f, -0.5f, 1.f), (_float)TimeDelta * 3.5f);
-		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(1.f, 0.9f, 1.5f, 1.f), (_float)TimeDelta * 8.f));
+		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(121.f, 1.5f, 86.5f, 1.f), (_float)TimeDelta * 3.5f);
+		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(124.f, 0.9f, 88.5f, 1.f), (_float)TimeDelta * 8.f));
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurrentPos);
 		m_pMainTransform->LookAt(XMLoadFloat4(&vLookAtPos));
 
-		if (XMVectorGetX(XMVector3Length(vCurrentPos - XMVectorSet(-2.0f, 1.5f, -0.5f, 1.f))) < 0.08f)
+		if (XMVectorGetX(XMVector3Length(vCurrentPos - XMVectorSet(121.f, 1.5f, 86.5f, 1.f))) < 0.08f)
 			m_bMoveLock = false;
 
 		break;
 	case CIntroCamera::CAM_RIGHT:
-		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(2.0f, 1.5f, -0.5f, 1.f), (_float)TimeDelta * 3.5f);
-		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(-1.f, 0.9f, 1.5f, 1.f), (_float)TimeDelta * 8.f));
+		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(125.f, 1.5f, 86.5f, 1.f), (_float)TimeDelta * 3.5f);
+		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(122.f, 0.9f, 88.5f, 1.f), (_float)TimeDelta * 8.f));
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurrentPos);
 		m_pMainTransform->LookAt(XMLoadFloat4(&vLookAtPos));
 
-		if (XMVectorGetX(XMVector3Length(vCurrentPos - XMVectorSet(2.0f, 1.5f, -0.5f, 1.f))) < 0.08f)
+		if (XMVectorGetX(XMVector3Length(vCurrentPos - XMVectorSet(125.f, 1.5f, 86.5f, 1.f))) < 0.08f)
 			m_bMoveLock = false;
 
 		break;
 	case CIntroCamera::CAM_ORIGIN:
-		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(0.f, 1.f, -4.f, 1.f), (_float)TimeDelta * 4.f);
-		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(0.f, 1.f, 0.f, 1.f), (_float)TimeDelta * 8.f));
+		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(123.f, 1.f, 83.f, 1.f), (_float)TimeDelta * 4.f);
+		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(123.f, 1.f, 87.f, 1.f), (_float)TimeDelta * 8.f));
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurrentPos);
 		m_pMainTransform->LookAt(XMLoadFloat4(&vLookAtPos));
 
-		if (XMVectorGetX(XMVector3Length(vCurrentPos - XMVectorSet(0.f, 1.f, -4.f, 1.f))) < 0.08f)
+		if (XMVectorGetX(XMVector3Length(vCurrentPos - XMVectorSet(123.f, 1.f, 83.f, 1.f))) < 0.08f)
 			m_bMoveLock = false;
 
 		break;
@@ -262,28 +260,28 @@ void CIntroCamera::CameraMovement(_double TimeDelta)
 		else
 		{
 			CRenderSetting::RGB_SPLIT_DESC SplitDesc;
-			SplitDesc.m_fDistortion = 3.f;
+			SplitDesc.m_fDistortion = 2.5f;
 			SplitDesc.m_fSeparation = 0.1f;
 			SplitDesc.m_fStrength = 0.2f;
 
 			pGameInstance->SetSplitDesc(SplitDesc);
-			pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_REVERSE, 0.7f);
+			pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_REVERSE, 0.5f);
 			m_eCurrentState = CAM_END;
 			m_bMoveLock = true;
 		}
 
-		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(RandomX, RandomY, 25.f, 1.f), (_float)TimeDelta * 0.3f));
+		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(RandomX + 123.f, RandomY, 112.f, 1.f), (_float)TimeDelta * 0.3f));
 		m_pMainTransform->LookAt(XMLoadFloat4(&vLookAtPos));
 
 		break;
 	}
 	case CIntroCamera::CAM_END:
-		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(0.f, 1.f, -10.f, 1.f), (_float)TimeDelta * 3.f);
-		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(0.f, 1.f, -9.f, 1.f), (_float)TimeDelta * 3.f));
+		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(123.f, 1.f, -10.f + 87.f, 1.f), (_float)TimeDelta * 3.f);
+		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(123.f, 1.f, -9.f + 87.f, 1.f), (_float)TimeDelta * 3.f));
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurrentPos);
 		m_pMainTransform->LookAt(XMLoadFloat4(&vLookAtPos));
 
-		if (XMVectorGetX(XMVector3Length(vCurrentPos - XMVectorSet(0.f, 1.f, -9.f, 1.f))) < 0.1f)
+		if (XMVectorGetX(XMVector3Length(vCurrentPos - XMVectorSet(123.f, 1.f, -9.f + 87.f, 1.f))) < 0.1f)
 			m_bMoveLock = false;
 
 		break;

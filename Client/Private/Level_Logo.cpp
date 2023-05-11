@@ -97,8 +97,8 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.TransformDesc.fMoveSpeed = 0.2f;
 	CameraDesc.TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
 
-	CameraDesc.vEye = _float3(0.f, 1.f, 15.f);
-	CameraDesc.vAt = _float3(0.f, 1.f, 16.f);
+	CameraDesc.vEye = _float3(123.f, 1.f, 102.f);
+	CameraDesc.vAt = _float3(123.f, 1.f, 112.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
 	CameraDesc.fFovy = XMConvertToRadians(45.f);

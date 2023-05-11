@@ -50,7 +50,7 @@ public:
 	virtual void Free() override;
 
 private:
-	_bool m_bMoveLock = false;
+	_bool m_bMoveLock = true;
 	_bool m_bZoomIn = false;
 	_bool m_bLobbyOut = false;
 
@@ -62,7 +62,7 @@ private:
 	RECT tagRectSize[CHAR_END];
 
 	_uint m_eCurrentState = INTRO_STATE::CAM_START;
-	_float4 vLookAtPos = { 0.f, 1.f, 16.f, 1.f };
+	_float4 vLookAtPos = { 123.f, 1.f, 112.f, 1.f };
 
 	CLobbyCharacter* pLobbyCharacter[CHAR_END];
 

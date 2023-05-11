@@ -30,22 +30,23 @@ HRESULT CFloatingStone::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	_float fRandX = _float(rand() % 40 - 20);
+	_float fRandX = _float(rand() % 40 - 20) + 123.f;
 	_float fRandY = _float(rand() % 3 + 1);
-	_float fRandZ = _float(rand() % 40 - 20);
+	_float fRandZ = _float(rand() % 40 - 20) + 87.f;
 	_float fRandAngle = _float(rand() % 360);
 
 	int iRandPer = rand() % 10 + 2;
-	int iRandScale = rand() % 2;
+	_float fRandScale = (rand() % 1) * 0.5f;
+	_float fRandSec = (rand() % 5);
 
-	_float3 vScale = _float3(iRandScale + (iRandPer * 0.1f), iRandScale + (iRandPer * 0.1f), iRandScale + (iRandPer * 0.1f));
+	_float3 vScale = _float3(fRandScale + (iRandPer * 0.1f), fRandScale + (iRandPer * 0.1f), fRandScale + (iRandPer * 0.1f));
 
 	_vector vPos = XMVectorSet(fRandX, fRandY, fRandZ, 1.f);
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vPos);
 	m_pMainTransform->Set_Scale(vScale);
 	m_pMainTransform->SetRotation(VECTOR_LOOK, XMConvertToRadians(fRandAngle));
 
-	m_fStartTimeLimit = fRandY + iRandPer * 0.1f;
+	m_fStartTimeLimit = fRandSec + (iRandPer * 0.1f);
 
 	return S_OK;
 }
@@ -55,7 +56,7 @@ void CFloatingStone::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	m_fStartTimeAcc += (_float)TimeDelta;
-	if (m_fStartTimeAcc >= m_fStartTimeAcc)
+	if (m_fStartTimeAcc >= (_float)m_fStartTimeLimit)
 		floatingPosition(TimeDelta);
 }
 
@@ -75,7 +76,11 @@ HRESULT CFloatingStone::Render()
 		return E_FAIL;
 
 	m_pShader->Begin(0);
-	m_pModel->Render(0);
+
+	if(ComputeCameraLength() > 5.f)
+		m_pModel_LOD->Render(0);
+	else
+		m_pModel->Render(0);
 
 	return S_OK;
 }
@@ -93,7 +98,7 @@ HRESULT CFloatingStone::Add_Components()
 	CTransform::TRANSFORM_DESC TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORM_DESC));
 
-	TransformDesc.fMoveSpeed = 5.f;
+	TransformDesc.fMoveSpeed = 7.f;
 	TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
@@ -106,6 +111,10 @@ HRESULT CFloatingStone::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SMODEL::SMD_FLOATING_ROCK_01,
 		TEXT("com_model"), (CComponent**)&m_pModel)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SMODEL::SMD_FLOATING_ROCK_01_LOD,
+		TEXT("com_model_LOD"), (CComponent**)&m_pModel_LOD)))
 		return E_FAIL;
 
 	return S_OK;
@@ -176,4 +185,5 @@ void CFloatingStone::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pModel);
+	Safe_Release(m_pModel_LOD);
 }

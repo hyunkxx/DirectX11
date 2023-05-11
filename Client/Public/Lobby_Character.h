@@ -46,7 +46,6 @@ public:
 public:
 	void PlaySelectedAnimation();
 	void SetMouseInRect(_bool bValue) { m_bOnMoused = bValue; };
-	_double GetCurTrackPosition() const { return m_CurTrackPos; }
 	_vector GetEyePosition();
 
 private:
@@ -78,7 +77,6 @@ public:
 
 private:
 	_bool m_bOnMoused = false;
-	_double m_CurTrackPos = 0.f;
 
 	CBone* m_pEyeBone = nullptr;
 	CTexture* m_pEyeBurstTexture = nullptr;
