@@ -132,14 +132,6 @@ HRESULT CUI_Mouse::Add_Components()
 		return E_FAIL;
 
 
-	CTransform::TRANSFORM_DESC TransformDesc;
-	TransformDesc.fMoveSpeed = 10.f;
-	TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
-		TEXT("com_transform"), (CComponent**)&m_pTransform, &TransformDesc)))
-		return E_FAIL;
-
 	return S_OK;
 
 }
@@ -150,14 +142,14 @@ HRESULT CUI_Mouse::Setup_ShaderResources()
 		return E_FAIL;
 	if (1 == m_iTexNum)
 		m_iTexNum = 1;
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Texture", m_iTexNum)))
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_iTexNum)))
 			return E_FAIL;
 	
-	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_WorldMatrix)))
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
 

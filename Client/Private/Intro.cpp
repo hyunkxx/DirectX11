@@ -125,7 +125,6 @@ HRESULT CIntro::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-
 	_uint Bufferindex = 0;
 	for (auto& pBuffer : m_BufferList)
 	{
@@ -363,14 +362,6 @@ HRESULT CIntro::Add_Components()
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
-	CTransform::TRANSFORM_DESC TransformDesc;
-	TransformDesc.fMoveSpeed = 10.f;
-	TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
-		TEXT("com_transform"), (CComponent**)&m_pTransform, &TransformDesc)))
-		return E_FAIL;
-
 	return S_OK;
 
 }
@@ -380,16 +371,16 @@ HRESULT CIntro::Setup_ShaderResources(_uint i)
 	if (nullptr == m_pShader || nullptr == m_pTexture)
 		return E_FAIL;
 
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Texture", m_DescList[i]->iTexNum)))
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[i]->iTexNum)))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_DescList[i]->WorldMatrix)))
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &m_DescList[i]->WorldMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-
+/*
 
 	if (FAILED(m_pShader->SetRawValue("g_fColorR", &m_DescList[i]->fColorR, sizeof(_float))))
 		return E_FAIL;
@@ -398,7 +389,7 @@ HRESULT CIntro::Setup_ShaderResources(_uint i)
 	if (FAILED(m_pShader->SetRawValue("g_fColorB", &m_DescList[i]->fColorB, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &m_DescList[i]->fColorA, sizeof(_float))))
-		return E_FAIL;
+		return E_FAIL;*/
 	if (2 == m_DescList[i]->iTexNum)
 	{
 		if (FAILED(m_pShader->SetRawValue("g_fLoading", &m_fLoading, sizeof(_float))))
@@ -442,6 +433,7 @@ void CIntro::Free()
 	Safe_Release(m_pTexture);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
+	Safe_Release(m_pVIBuffer);
 
 	for (auto& Buffer : m_BufferList)
 	{

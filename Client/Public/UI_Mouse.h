@@ -62,7 +62,6 @@ private:
 	CShader*		m_pShader = { nullptr };
 	CVIBuffer_Rect* m_pVIBuffer = { nullptr };
 	CTexture*		m_pTexture = { nullptr };
-	CTransform*     m_pTransform = { nullptr };
 };
 
 END

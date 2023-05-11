@@ -69,7 +69,6 @@ public:
 private:
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
-	CTransform*		m_pTransform = { nullptr };
 
 
 	//¹Ì´Ï¸Ê ±â´É

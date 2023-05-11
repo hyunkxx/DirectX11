@@ -356,7 +356,9 @@
     <FxCompile Include="..\..\Shader\SHADER_EXTRACTION.hlsl" />
     <FxCompile Include="..\..\Shader\Shader_SkillModel.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_SSAO.hlsl" />
-    <FxCompile Include="..\..\Shader\SHADER_UI.hlsl" />
+    <FxCompile Include="..\..\Shader\SHADER_UI.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="..\..\Shader\SHADER_UI_SUB.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXCUBE.hlsl" />
     <FxCompile Include="..\..\Shader\SHADER_VTXMODEL.hlsl" />

@@ -117,7 +117,6 @@ public:
 private:
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
-	CTransform*		m_pTransform = { nullptr };
 	class CTerminal* m_pTerminal = { nullptr };
 
 	ID3D11Device* m_pDevice;

@@ -107,7 +107,6 @@ private:
 	_bool  m_bXYM = { false };
 
 private:
-	CTransform*		m_pTransform = { nullptr };
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
 	CTexture*		m_pTexture = { nullptr };

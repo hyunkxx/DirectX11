@@ -417,15 +417,6 @@ HRESULT CUI_MainScreen::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	CTransform::TRANSFORM_DESC TransformDesc;
-	TransformDesc.fMoveSpeed = 10.f;
-	TransformDesc.fRotationSpeed = XMConvertToRadians(180.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
-		TEXT("com_transform"), (CComponent**)&m_pTransform, &TransformDesc)))
-		return E_FAIL;
-
-
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UI,
 		TEXT("com_texFunc"), (CComponent**)&m_pTexFunc)))
 		return E_FAIL;
@@ -445,17 +436,17 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 	// 쿨타임시 보낼 텍스처
 	if ((13 == Bufferindex)&&(*Desciter)->bCoolTime)
 	{
-		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_Texture2", 3))) // 3->캐릭터텍스처의 main%d
+		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture2", 3))) // 3->캐릭터텍스처의 main%d
 			return E_FAIL;
 	}
 	if ((14 == Bufferindex) && (*Desciter)->bCoolTime)
 	{
-		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_Texture2", 4)))
+		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture2", 4)))
 			return E_FAIL;
 	}
 	if ((15 == Bufferindex) && (*Desciter)->bCoolTime)
 	{
-		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_Texture2", 5)))
+		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture2", 5)))
 			return E_FAIL;
 	}
 	
@@ -466,7 +457,7 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 	if (nullptr != m_pTexFunc)
 	{
 
-		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_Texture", (*Desciter)->iTexNum)))
+		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture", (*Desciter)->iTexNum)))
 			return E_FAIL;
 	}
 
@@ -478,11 +469,11 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 	if (nullptr != (*Desciter))
 	{
 
-		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &((*Desciter)->WorldMatrixCut))))
+		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &((*Desciter)->WorldMatrixCut))))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 			return E_FAIL;
 
 		if (FAILED(m_pShader->SetRawValue("g_fLU", &((*Desciter)->LUCutUV), sizeof(_float2))))
@@ -568,10 +559,8 @@ void CUI_MainScreen::Free()
 	m_CutDescList.clear();
 
 
-	delete m_CutDesc;
 	m_CutDesc = nullptr;
 
-	delete CurrentCutDesc;
 	CurrentCutDesc = nullptr;
 
 }

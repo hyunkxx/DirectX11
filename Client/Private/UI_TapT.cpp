@@ -242,14 +242,6 @@ HRESULT CUI_TapT::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	CTransform::TRANSFORM_DESC TransformDesc;
-	TransformDesc.fMoveSpeed = 10.f;
-	TransformDesc.fRotationSpeed = XMConvertToRadians(180.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
-		TEXT("com_transform"), (CComponent**)&m_pTransform, &TransformDesc)))
-		return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UI,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
@@ -269,7 +261,7 @@ HRESULT CUI_TapT::Setup_ShaderResources(_uint Bufferindex)
 	if (nullptr != m_pTexture)
 	{
 
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Texture", (*Desciter)->iTexNum)))
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", (*Desciter)->iTexNum)))
 			return E_FAIL;
 	}
 
@@ -281,11 +273,11 @@ HRESULT CUI_TapT::Setup_ShaderResources(_uint Bufferindex)
 		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 
-		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &((*Desciter)->WorldMatrix))))
+		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &((*Desciter)->WorldMatrix))))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetRawValue("g_fColorR", &((*Desciter)->fColorR), sizeof(_float))))
 			return E_FAIL;
@@ -336,6 +328,7 @@ void CUI_TapT::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
+	Safe_Release(m_pTexture);
 
 	for (auto& Buffer : m_BufferList)
 	{
@@ -350,7 +343,8 @@ void CUI_TapT::Free()
 		Desc = nullptr;
 	}
 	m_DescList.clear();
-
+	
+	CurrentDesc = nullptr;
 }
 
 void CUI_TapT::Load()

@@ -139,13 +139,6 @@ HRESULT CUI_Monster::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	CTransform::TRANSFORM_DESC TransformDesc;
-	TransformDesc.fMoveSpeed = 10.f;
-	TransformDesc.fRotationSpeed = XMConvertToRadians(180.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
-		TEXT("com_transform"), (CComponent**)&m_pTransform, &TransformDesc)))
-		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UIFIGHT,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
@@ -166,19 +159,19 @@ HRESULT CUI_Monster::Setup_ShaderResources(_int index)
 	if (nullptr != m_pTexture)
 	{
 
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Texture", m_DescList[index]->iTexNum)))
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index]->iTexNum)))
 			return E_FAIL;
 	}
 
 	
 
-	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &(m_DescList[index]->WorldMatrix))))
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index]->WorldMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index]->fColorR), sizeof(_float))))
@@ -234,7 +227,23 @@ void CUI_Monster::Free()
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pTexture);
-	Safe_Release(m_pTransform);
+
+	for (auto& Buffer : m_BufferList)
+	{
+		Safe_Release(Buffer);
+		Buffer = nullptr;
+	}
+	m_BufferList.clear();
+
+	for (auto& Desc : m_DescList)
+	{
+		delete Desc;
+		Desc = nullptr;
+	}
+	m_DescList.clear();
+
+	CurrentDesc = nullptr;
+
 }
 
 void CUI_Monster::HPBar(_double TimeDelta)

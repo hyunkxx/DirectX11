@@ -242,14 +242,6 @@ HRESULT CUI_Minimap::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	CTransform::TRANSFORM_DESC TransformDesc;
-	TransformDesc.fMoveSpeed = 10.f;
-	TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
-		TEXT("com_transform"), (CComponent**)&m_pTransform, &TransformDesc)))
-		return E_FAIL;
-
 	//¹Ì´Ï¸Ê
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UIMAP,
 		TEXT("com_texMap"), (CComponent**)&m_pTexMiniMap)))
@@ -282,7 +274,7 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesMiniMap()
 {
 	if (nullptr != m_pTexMiniMap)
 	{
-		if (FAILED(m_pTexMiniMap->Setup_ShaderResource(m_pShader, "g_Texture")))
+		if (FAILED(m_pTexMiniMap->Setup_ShaderResource(m_pShader, "g_MyTexture")))
 			return E_FAIL;
 	}
 
@@ -290,11 +282,11 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesMiniMap()
 	if (nullptr != m_pVIBufferMiniMap)
 	{
 
-		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_WorldMatrixMiniMap)))
+		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &m_WorldMatrixMiniMap)))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 			return E_FAIL;
 
 		if (FAILED(m_pShader->SetRawValue("g_fLU", &m_TerrainLU, sizeof(_float2))))
@@ -319,15 +311,15 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesDefaultIcon(_uint Bufferindex)
 {
 	if (nullptr != m_pTexDefaultIcon)
 	{
-		if (FAILED(m_pTexDefaultIcon->Setup_ShaderResource(m_pShader, "g_Texture", Bufferindex)))
+		if (FAILED(m_pTexDefaultIcon->Setup_ShaderResource(m_pShader, "g_MyTexture", Bufferindex)))
 			return E_FAIL;
 	}
 
-		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_WorldMatrixDefaultIcon[Bufferindex])))
+		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &m_WorldMatrixDefaultIcon[Bufferindex])))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetRawValue("g_fColorA", &m_fColorADefaultIcon[Bufferindex], sizeof(_float))))
 			return E_FAIL;
@@ -341,7 +333,7 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesIcon(_uint Bufferindex)
 	
 	if (nullptr != m_pTexIcon)
 	{
-		if (FAILED(m_pTexIcon->Setup_ShaderResource(m_pShader, "g_Texture", m_IconDescList[Bufferindex]->iTexNum)))
+		if (FAILED(m_pTexIcon->Setup_ShaderResource(m_pShader, "g_MyTexture", m_IconDescList[Bufferindex]->iTexNum)))
 			return E_FAIL;
 	}
 	
@@ -349,11 +341,11 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesIcon(_uint Bufferindex)
 	XMStoreFloat4x4(&(m_IconDescList[Bufferindex]->WorldMatrix), XMMatrixScaling(m_IconDescList[Bufferindex]->fWidth, m_IconDescList[Bufferindex]->fHeight, 1.f)
 		* XMMatrixTranslation(m_IconDescList[Bufferindex]->fX, m_IconDescList[Bufferindex]->fY, m_IconDescList[Bufferindex]->fZ));
 
-	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &(m_IconDescList[Bufferindex]->WorldMatrix))))
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_IconDescList[Bufferindex]->WorldMatrix))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_IconDescList[Bufferindex]->fColorA), sizeof(_float))))
 		return E_FAIL;
@@ -394,7 +386,6 @@ void CUI_Minimap::Free()
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexMiniMap);
 	Safe_Release(m_pVIBufferMiniMap);
-	Safe_Release(m_pTransform);
 
 	Safe_Release(m_pTexDefaultIcon);
 	for (_uint i = 0; i < 2; ++i)
@@ -404,6 +395,7 @@ void CUI_Minimap::Free()
 
 	Safe_Release(m_pVIBufferIcon);
 	Safe_Release(m_pTexIcon);
+
 	for (auto& Buffer : m_BufferList)
 	{
 		Safe_Release(Buffer);
@@ -418,8 +410,6 @@ void CUI_Minimap::Free()
 	}
 	m_IconDescList.clear();
 
-
-	delete m_IconDesc;
 	m_IconDesc = nullptr;
 
 

@@ -96,7 +96,6 @@ public:
 private:
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
-	CTransform*		m_pTransform = { nullptr };
 
 private:
 	void	Rot(_uint indexstart, _uint indexend, _double TimeDelta);

@@ -186,14 +186,6 @@ HRESULT CUI_Terminal::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	CTransform::TRANSFORM_DESC TransformDesc;
-	TransformDesc.fMoveSpeed = 10.f;
-	TransformDesc.fRotationSpeed = XMConvertToRadians(180.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
-		TEXT("com_transform"), (CComponent**)&m_pTransform, &TransformDesc)))
-		return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UI,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
@@ -208,17 +200,17 @@ HRESULT CUI_Terminal::Setup_ShaderResources(_uint Bufferindex)
 	if (nullptr != m_pTexture)
 	{
 
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Texture", m_DescList[Bufferindex]->iTexNum)))
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[Bufferindex]->iTexNum)))
 			return E_FAIL;
 	}
 
 	if (nullptr != m_DescList[Bufferindex])
 	{
-		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &(m_DescList[Bufferindex]->WorldMatrix))))
+		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[Bufferindex]->WorldMatrix))))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[Bufferindex]->fColorR), sizeof(_float))))
 			return E_FAIL;
@@ -239,18 +231,18 @@ HRESULT CUI_Terminal::Setup_ShaderResourcesRot(_uint Bufferindex)
 	if (nullptr != m_pTexture)
 	{
 
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Texture", m_RotDescList[Bufferindex]->iTexNum)))
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_RotDescList[Bufferindex]->iTexNum)))
 			return E_FAIL;
 	}
 
 	if (nullptr != m_RotDescList[Bufferindex])
 	{
 			
-		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &(m_RotDescList[Bufferindex]->WorldMatrix))))
+		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_RotDescList[Bufferindex]->WorldMatrix))))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_RotDescList[Bufferindex]->fColorR), sizeof(_float))))
 			return E_FAIL;
@@ -299,6 +291,7 @@ void CUI_Terminal::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
+	Safe_Release(m_pTexture);
 
 	for (auto& Buffer : m_BufferList)
 	{
