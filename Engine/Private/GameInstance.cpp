@@ -12,7 +12,6 @@
 #include "Effect_Manager.h"
 #include "Save_Loader.h"
 #include "Frustum.h"
-#include "../Public/Fmod/Sound_Manager.h"
 #include "RenderSetting.h"
 #include "Layer.h"
 
@@ -538,6 +537,38 @@ void CGameInstance::StopAllSound()
 		return;
 
 	m_pSound_Manager->Stop_AllSound();
+}
+
+void CGameInstance::SetVolume(SOUND_TYPE eSoundType, _float fVolume)
+{
+	if (m_pSound_Manager == nullptr)
+		return;
+
+	m_pSound_Manager->SetVolume(eSoundType, fVolume);
+}
+
+_float CGameInstance::GetVolume(SOUND_TYPE eSoundType) const
+{
+	if (m_pSound_Manager == nullptr)
+		return 1.f;
+
+	return m_pSound_Manager->GetVolume(eSoundType);
+}
+
+_bool CGameInstance::BGMSmoothOff(_double TimeDelta)
+{
+	if (m_pSound_Manager == nullptr)
+		return false;
+
+	return m_pSound_Manager->BGMSmoothOff(TimeDelta);
+}
+
+void CGameInstance::BGMSmoothOn(_double TimeDelta)
+{
+	if (m_pSound_Manager == nullptr)
+		return;
+
+	return m_pSound_Manager->BGMSmoothOn(TimeDelta);
 }
 
 void CGameInstance::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)

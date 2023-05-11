@@ -34,6 +34,7 @@ HRESULT CLevel_Logo::Initialize()
 	pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)SHADOW_LEVEL::SHADOW_HIGH);
 	pGameInstance->OutlineToggle();
 	pGameInstance->SSAOToggle();
+	pGameInstance->StartFade(CRenderSetting::FADE_IN, 3.f);
 
 	if (FAILED(pGameInstance->AddLight(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
@@ -47,6 +48,9 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
 	
+	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
+	pGameInstance->PlaySoundEx(L"Login.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
+
 	return S_OK;
 }
 
@@ -71,7 +75,7 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar* pLayerTag)
  	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANYWHERE, OBJECT::CHARACTERSELECT_TERRAIN, pLayerTag, L"terrain")))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANYWHERE, OBJECT::SKY, pLayerTag, L"sky")))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANYWHERE, OBJECT::SKY_LOBBY, pLayerTag, L"sky")))
 		return E_FAIL;
 
 	for (int i = 0; i < 30; ++i)
@@ -97,8 +101,8 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.TransformDesc.fMoveSpeed = 0.2f;
 	CameraDesc.TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
 
-	CameraDesc.vEye = _float3(123.f, 1.f, 102.f);
-	CameraDesc.vAt = _float3(123.f, 1.f, 112.f);
+	CameraDesc.vEye = _float3(123.f, 2.f, 102.f);
+	CameraDesc.vAt = _float3(123.f, 2.5f, 112.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
 	CameraDesc.fFovy = XMConvertToRadians(45.f);

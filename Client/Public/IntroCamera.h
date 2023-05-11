@@ -4,6 +4,10 @@
 
 BEGIN(Engine)
 class CGameObject;
+class CVIBuffer_Rect;
+class CShader;
+class CTexture;
+class CRenderer;
 END
 
 BEGIN(Client)
@@ -31,7 +35,13 @@ public:
 
 private:
 	HRESULT Add_Components();
-	HRESULT Setup_ShaderResources();
+
+	HRESULT setupTaptoStartResources();
+	HRESULT setupApplyResources();
+
+	void renderTapToStartTexture();
+	void renderApplyTexture();
+	void renderChooseRoverTexture();
 
 public:
 	_bool IsLobbyOut() const { return m_bLobbyOut; }
@@ -50,6 +60,36 @@ public:
 	virtual void Free() override;
 
 private:
+	CRenderer* m_pRenderer = nullptr;
+	CVIBuffer_Rect* m_pVIBuffer = nullptr;
+	CShader* m_pShader = nullptr;
+	CTexture* m_pTapStartTexture = nullptr;
+	CTexture* m_pApplyTexture = nullptr;
+	CTexture* m_pTwinklOnMask = nullptr;
+	CTexture* m_pTwinklOffMask = nullptr;
+	CTexture* m_pTextBackground = nullptr;
+	CTexture* m_pChooseRoverBack = nullptr;
+	CTexture* m_pChooseRoverText = nullptr;
+
+	_float		m_fX, m_fY, m_fWidth, m_fHeight;
+	_float4x4	m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
+
+	_float		m_fChooseX, m_fChooseY, m_fChooseWidth, m_fChooseHeight, m_fChooseTextWidth, m_fChooseTextHeight;
+	_float4x4	m_ChooseWorldMatrix, m_ChooseTextWorldMatrix;
+
+	_bool m_bTapToStartRenderStart = false;
+	_bool m_bTapToStartRender = false;
+
+	_bool m_bApplyRenderStart = false;
+	_bool m_bApplyRender = false;
+
+	_float m_fTwinklTimeAcc = 0.f;
+	_float m_fApplyTimeAcc = 0.f;
+
+	_bool m_bChooseRender = false;
+	_float m_fAlpha = 0.f;
+
+private:
 	_bool m_bMoveLock = true;
 	_bool m_bZoomIn = false;
 	_bool m_bLobbyOut = false;
@@ -62,7 +102,7 @@ private:
 	RECT tagRectSize[CHAR_END];
 
 	_uint m_eCurrentState = INTRO_STATE::CAM_START;
-	_float4 vLookAtPos = { 123.f, 1.f, 112.f, 1.f };
+	_float4 vLookAtPos = { 123.f, 2.5f, 112.f, 1.f };
 
 	CLobbyCharacter* pLobbyCharacter[CHAR_END];
 

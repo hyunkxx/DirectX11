@@ -5,12 +5,14 @@
 #include "LightManager.h"
 #include "Graphic_Device.h"
 #include "RenderSetting.h"
+#include "Sound_Manager.h"
 
 BEGIN(Engine)
 
 typedef CLightManager::LIGHT_MATRIX LIGHT_MATRIX;
 typedef CGraphic_Device::VIEWPORT_TYPE VIEWPORT_TYPE;
 typedef CRenderSetting::SHADOW_LEVEL SHADOW_LEVEL;
+typedef CSound_Manager::SOUND_TYPE SOUND_TYPE;
 
 class ENGINE_DLL CGameInstance final: public CBase
 {
@@ -108,6 +110,12 @@ public: // Sound_Manager
 	HRESULT SetSoundVolume(int eChannel, SOUND_VOLUME eVolum = CUSTOM_VOLUME, _float fVolume = 0.1f);
 	HRESULT StopSound(int eChannel);
 	void StopAllSound();
+
+	void SetVolume(SOUND_TYPE eSoundType, _float fVolume);
+	_float GetVolume(SOUND_TYPE eSoundType) const;
+
+	_bool BGMSmoothOff(_double TimeDelta);
+	void BGMSmoothOn(_double TimeDelta);
 
 public: // Frustum
 	void Transform_ToLocalSpace(_fmatrix WorldMatrixInv);

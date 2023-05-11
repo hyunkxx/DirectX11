@@ -45,7 +45,8 @@ public:
 
 public:
 	void PlaySelectedAnimation();
-	void SetMouseInRect(_bool bValue) { m_bOnMoused = bValue; };
+	void SetMouseInRect(_bool bValue);
+	_bool GetMouseInRect() const { return m_bOnMoused; }
 	_vector GetEyePosition();
 
 private:

@@ -48,11 +48,11 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 	{
 	case LEFT_MODEL:
 		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(-90.f));
-		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(121.8f, 0.f, 87.f, 1.f));
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(121.8f, 1.5f, 87.f, 1.f));
 		break;
 	case RIGHT_MODEL:
 		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(90.f));
-		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(124.2f, 0.f, 87.f, 1.f));
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(124.2f, 1.5f, 87.f, 1.f));
 		break;
 	}
 
@@ -74,16 +74,11 @@ void CLobbyCharacter::Tick(_double TimeDelta)
 {
 	Tick_State(TimeDelta);
 
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 }
 
 void CLobbyCharacter::LateTick(_double TimeDelta)
 {
-	if(m_bOnMoused)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
-	else
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
-
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 }
 
@@ -174,6 +169,18 @@ void CLobbyCharacter::PlaySelectedAnimation()
 	pEffect = CGameInstance::GetInstance()->Get_Effect(L"Test_Loby_Effect");
 	pEffect->Play_Effect(&WorldMatirx, false);
 
+}
+
+void CLobbyCharacter::SetMouseInRect(_bool bValue)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (!m_bOnMoused && bValue)
+	{
+		pGameInstance->PlaySoundEx(L"Intro_Click.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);
+	}
+
+	m_bOnMoused = bValue;
 }
 
 _vector CLobbyCharacter::GetEyePosition()

@@ -380,7 +380,7 @@ HRESULT CIntro::Setup_ShaderResources(_uint i)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-/*
+
 
 	if (FAILED(m_pShader->SetRawValue("g_fColorR", &m_DescList[i]->fColorR, sizeof(_float))))
 		return E_FAIL;
@@ -389,7 +389,7 @@ HRESULT CIntro::Setup_ShaderResources(_uint i)
 	if (FAILED(m_pShader->SetRawValue("g_fColorB", &m_DescList[i]->fColorB, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &m_DescList[i]->fColorA, sizeof(_float))))
-		return E_FAIL;*/
+		return E_FAIL;
 	if (2 == m_DescList[i]->iTexNum)
 	{
 		if (FAILED(m_pShader->SetRawValue("g_fLoading", &m_fLoading, sizeof(_float))))

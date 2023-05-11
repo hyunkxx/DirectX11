@@ -11,13 +11,16 @@ CSky::CSky(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 CSky::CSky(const CSky & rhs)
 	: CGameObject(rhs)
+	, m_eType(rhs.m_eType)
 {
 }
 
-HRESULT CSky::Initialize_Prototype()
+HRESULT CSky::Initialize_Prototype(SKY_TYPE eSkyType)
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
+
+	m_eType = eSkyType;
 
 	return S_OK;
 }
@@ -109,9 +112,23 @@ HRESULT CSky::Add_Components()
 	m_pTransformCom->Set_Scale(_float3(1.0f, 1.0f, 1.0f));
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SMODEL::SMD_SKY,
-		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-		return E_FAIL;
+	switch (m_eType)
+	{
+	case SKY_TYPE::DEFAULT:
+		if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SMODEL::SMD_SKY,
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+
+		break;
+	case SKY_TYPE::LOBBY:
+		if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SMODEL::SMD_SKY_LOBBY,
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+
+		break;
+	default:
+		break;
+	}
 
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODEL,
@@ -142,11 +159,11 @@ HRESULT CSky::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CSky* CSky::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CSky* CSky::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, SKY_TYPE eType)
 {
 	CSky* pInstance = new CSky(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype()))
+	if (FAILED(pInstance->Initialize_Prototype(eType)))
 	{
 		MSG_BOX("Failed to Create : CSky");
 		Safe_Release(pInstance);

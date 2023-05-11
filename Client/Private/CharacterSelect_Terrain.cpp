@@ -29,7 +29,7 @@ HRESULT CCharacterSelect_Terrain::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_iShader_PassID = { 2 };
+	m_iShader_PassID = { 4 };
 
 	if (FAILED(Load_UVSamplerRatio_Data(TEXT("../../Data/Lobby/Terrain/UVSamplerRatio.data"))))
 	{
@@ -49,14 +49,6 @@ void CCharacterSelect_Terrain::Tick(_double TimeDelta)
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return;
-
-	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_U))
-	{
-		if (2 == m_iShader_PassID)
-			m_iShader_PassID = 3;
-		else if (3 == m_iShader_PassID)
-			m_iShader_PassID = 2;
-	}
 }
 
 void CCharacterSelect_Terrain::LateTick(_double TimeDelta)
@@ -92,11 +84,6 @@ HRESULT CCharacterSelect_Terrain::Render()
 
 void CCharacterSelect_Terrain::RenderGUI()
 {
-	ImGui::Begin("Terrain ID");
-	ImGui::DragInt("ID", (int*)&m_iObjectID);
-	ImGui::End();
-
-	return;
 }
 
 HRESULT CCharacterSelect_Terrain::Add_Components()

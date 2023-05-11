@@ -353,7 +353,7 @@ PS_OUT_OUTLINE PS_RimLight(PS_IN In)
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	Out.vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 1.f);
 
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 
@@ -375,20 +375,18 @@ PS_OUT_OUTLINE PS_DiffuseAddRim(PS_IN In)
 
 	rim = pow(rim, g_RimPower);
 
-	float4 rimColor = (vDiffuse * 1.3f) + rim * g_RimColor;
-	Out.vDiffuse = rimColor;
+	float4 rimColor = rim * g_RimColor;
+	Out.vDiffuse = saturate(rimColor * 2.5f);
 
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	Out.vNormal	= float4(vNormalDesc.xyz * 2.f - 1.f, 1.f);
 
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
-
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
 	if (vNormalDesc.g > vNormalDesc.b)
-		Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
+		Out.vGlow = float4(vDiffuse.xyz, 1.f);
 
 	return Out;
 }

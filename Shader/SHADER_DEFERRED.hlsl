@@ -132,7 +132,8 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 	vector vPrevGlow = g_PrevGlowTexture.Sample(LinearSampler, In.vTexUV);
 	vector vSSAO = g_SSAOTexture.Sample(LinearSampler, In.vTexUV);
 
-	vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+	vector vNormal = vNormalDesc;
+	vNormal.xyz = vNormalDesc.xyz * 2.f - 1.f;
 
 	//Toon
 	float fDot = max(0, dot(vNormal, -g_vLightDir));
@@ -142,9 +143,17 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 		fDot = 1.0f;
 
 	vector vShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)));
-	Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient) * vSSAO.r);
 
-	Out.vShade.a = 1.f;
+	if (vNormal.a == 1.f)
+	{
+		Out.vShade = g_vLightDiffuse;
+		Out.vShade.a = 0.f;
+	}
+	else
+	{
+		Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient) * vSSAO.r);
+		Out.vShade.a = 1.f;
+	}
 
 	vector			vWorldPos;
 
@@ -189,9 +198,17 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 		fDot = 1.0f;
 
 	vector vShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)));
-	Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient));
 
-	Out.vShade.a = 1.f;
+	if (vNormal.a == 1.f)
+	{
+		Out.vShade = g_vLightDiffuse;
+		Out.vShade.a = 0.f;
+	}
+	else
+	{
+		Out.vShade = g_vLightDiffuse * fDot * saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient));
+		Out.vShade.a = 1.f;
+	}
 
 	vector	vWorldPos;
 

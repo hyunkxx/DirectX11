@@ -20,6 +20,10 @@ using namespace Client;
 // AnimTool
 extern int g_iGUIID;
 
+#define VOLUME_BGM CGameInstance::GetInstance()->GetVolume(CSound_Manager::SOUND_TYPE::SOUND_BGM)
+#define VOLUME_VFX  CGameInstance::GetInstance()->GetVolume(CSound_Manager::SOUND_TYPE::SOUND_VFX)
+#define VOLUME_VOICE  CGameInstance::GetInstance()->GetVolume(CSound_Manager::SOUND_TYPE::SOUND_VOICE)
+
 #define VTFID(p) p - OBJECT::TESTVTF_BEGIN
 #define VTFENUM(p) p + OBJECT::TESTVTF_BEGIN
 

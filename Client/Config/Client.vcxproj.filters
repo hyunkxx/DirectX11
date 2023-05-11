@@ -210,7 +210,6 @@
     <ClCompile Include="..\private\FloatingStone.cpp">
       <Filter>src\02. GameObject\00. Environment</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\CharacterSelect_Terrain.cpp" />
     <ClCompile Include="..\Private\UI_MainScreen.cpp">
       <Filter>src\02. GameObject\99. UI</Filter>
     </ClCompile>
@@ -228,6 +227,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Terminal.cpp">
       <Filter>src\02. GameObject\99. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CharacterSelect_Terrain.cpp">
+      <Filter>src\02. GameObject\00. Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\OBBKey.cpp">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PriorityKey.cpp">
+      <Filter>src\05.AnimStateKeys</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -405,7 +413,6 @@
     <ClInclude Include="..\public\FloatingStone.h">
       <Filter>src\02. GameObject\00. Environment</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\CharacterSelect_Terrain.h" />
     <ClInclude Include="..\Public\UI_MainScreen.h">
       <Filter>src\02. GameObject\99. UI</Filter>
     </ClInclude>
@@ -423,6 +430,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_Terminal.h">
       <Filter>src\02. GameObject\99. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CharacterSelect_Terrain.h">
+      <Filter>src\02. GameObject\00. Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PriorityKey.h">
+      <Filter>src\05.AnimStateKeys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\OBBKey.h">
+      <Filter>src\05.AnimStateKeys</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

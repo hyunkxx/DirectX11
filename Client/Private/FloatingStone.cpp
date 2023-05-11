@@ -30,18 +30,18 @@ HRESULT CFloatingStone::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	_float fRandX = _float(rand() % 40 - 20) + 123.f;
-	_float fRandY = _float(rand() % 3 + 1);
-	_float fRandZ = _float(rand() % 40 - 20) + 87.f;
+	_float fRandX = _float(rand() % 25 - 12) + 123.f;
+	_float fRandY = _float(rand() % 2 + 1);
+	_float fRandZ = _float(rand() % 25 - 12) + 87.f;
 	_float fRandAngle = _float(rand() % 360);
 
-	int iRandPer = rand() % 10 + 2;
-	_float fRandScale = (rand() % 1) * 0.5f;
-	_float fRandSec = (rand() % 5);
+	_float iRandPer = _float(rand() % 10 + 2);
+	_float fRandScale = _float(rand() % 1) * 0.8f;
+	_float fRandSec = _float(rand() % 5);
 
 	_float3 vScale = _float3(fRandScale + (iRandPer * 0.1f), fRandScale + (iRandPer * 0.1f), fRandScale + (iRandPer * 0.1f));
 
-	_vector vPos = XMVectorSet(fRandX, fRandY, fRandZ, 1.f);
+	_vector vPos = XMVectorSet(fRandX, fRandY + 1.5f, fRandZ, 1.f);
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vPos);
 	m_pMainTransform->Set_Scale(vScale);
 	m_pMainTransform->SetRotation(VECTOR_LOOK, XMConvertToRadians(fRandAngle));
@@ -75,8 +75,7 @@ HRESULT CFloatingStone::Render()
 	if (FAILED(Setup_ShaderResources()))
 		return E_FAIL;
 
-	m_pShader->Begin(0);
-
+	m_pShader->Begin(2);
 	if(ComputeCameraLength() > 5.f)
 		m_pModel_LOD->Render(0);
 	else

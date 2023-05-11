@@ -6,5 +6,6 @@ enum COLLISION_LAYER { COLL_BASE, COLL_END };
 
 enum SOUND_CHANNEL
 {
-	BGM
+	BGM,
+	VFX
 };

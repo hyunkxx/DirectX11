@@ -8,6 +8,9 @@ class CSound_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CSound_Manager)
 
+public:
+	enum SOUND_TYPE { SOUND_BGM, SOUND_VFX, SOUND_VOICE };
+
 private:
 	explicit CSound_Manager() = default;
 	virtual ~CSound_Manager() = default;
@@ -44,6 +47,35 @@ public:
 	HRESULT Stop_Sound(int eChannel);
 	void Stop_AllSound();
 
+	void SetVolume(SOUND_TYPE eSoundType, _float fVolume) {
+		switch (eSoundType)
+		{
+		case SOUND_BGM:
+			m_fVolume_BGM = fVolume;
+			break;
+		case SOUND_VFX:
+			m_fVolume_VFX = fVolume;
+			break;
+		case SOUND_VOICE:
+			m_fVolume_Voice = fVolume;
+			break;
+		}
+	}
+
+	_float GetVolume(SOUND_TYPE eSoundType) const {
+		switch (eSoundType)
+		{
+		case SOUND_BGM:
+			return m_fVolume_BGM;
+		case SOUND_VFX:
+			return m_fVolume_VFX;
+		case SOUND_VOICE:
+			return m_fVolume_Voice;
+		default:
+			return 1.f;
+		}
+	}
+
 private:
 	/* 사운드 폴더에 파일 다박고 로드할 때 */
 	HRESULT Load_SoundFile();
@@ -61,6 +93,11 @@ private:
 	FMOD_RESULT			m_eResult;
 	unsigned int		m_iVersion;
 	void*				m_pExtradriverdata = nullptr;
+
+private:
+	_float m_fVolume_BGM = 1.f;
+	_float m_fVolume_VFX = 1.f;
+	_float m_fVolume_Voice = 1.f;
 
 public:
 	virtual void Free() override;

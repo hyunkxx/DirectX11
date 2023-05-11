@@ -31,6 +31,7 @@ namespace OBJECT
 		PARTS_HULU_1,
 		
 		SKY,
+		SKY_LOBBY,
 		FLOATING_STONE,
 
 		UI,

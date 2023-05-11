@@ -102,9 +102,6 @@ HRESULT CApplication::Render()
 
 #ifdef _DEBUG
 	m_pRenderer->RenderDebugBundle();
-#endif // _DEBUG
-
-#ifdef _DEBUG
 	m_pGUIManager->RenderDrawData();
 #endif
 

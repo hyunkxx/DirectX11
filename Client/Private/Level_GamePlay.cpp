@@ -40,6 +40,7 @@ HRESULT CLevel_GamePlay::Initialize()
 #pragma endregion MAP_OBJECT_TREE
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
+	//pGameInstance->PlaySoundEx(L"Battle_BGM_0.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
 
 	return S_OK;
 }
@@ -53,6 +54,8 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 
 	//카메라 기준으로 쉐도우 조명 갱신
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	//pGameInstance->BGMSmoothOn(TimeDelta);
+
 	pGameInstance->ShadowUpdate(120.f);
 
 	//임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것

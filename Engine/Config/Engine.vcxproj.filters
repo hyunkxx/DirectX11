@@ -25,9 +25,6 @@
     <ClCompile Include="..\private\Level_Manager.cpp">
       <Filter>utility\01. Level</Filter>
     </ClCompile>
-    <ClCompile Include="..\Public\Fmod\Sound_Manager.cpp">
-      <Filter>system\02. Sounds</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Camera.cpp">
       <Filter>utility\03. Camera</Filter>
     </ClCompile>
@@ -187,6 +184,9 @@
     <ClCompile Include="..\Private\QuadTree.cpp">
       <Filter>utility\04. Components\08. Navigation</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Sound_Manager.cpp">
+      <Filter>system\02. Sounds</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Typedef.h">
@@ -251,9 +251,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Level_Manager.h">
       <Filter>utility\01. Level</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Fmod\Sound_Manager.h">
-      <Filter>system\02. Sounds</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Camera.h">
       <Filter>utility\03. Camera</Filter>
@@ -413,6 +410,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\QuadTree.h">
       <Filter>utility\04. Components\08. Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sound_Manager.h">
+      <Filter>system\02. Sounds</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -193,7 +193,6 @@
     <ClInclude Include="..\Public\Fmod\fmod_dsp_effects.h" />
     <ClInclude Include="..\Public\Fmod\fmod_errors.h" />
     <ClInclude Include="..\Public\Fmod\fmod_output.h" />
-    <ClInclude Include="..\Public\Fmod\Sound_Manager.h" />
     <ClInclude Include="..\public\FontManager.h" />
     <ClInclude Include="..\public\Frustum.h" />
     <ClInclude Include="..\public\GameInstance.h" />
@@ -223,6 +222,7 @@
     <ClInclude Include="..\public\RenderTarget.h" />
     <ClInclude Include="..\Public\Save_Loader.h" />
     <ClInclude Include="..\public\Shader.h" />
+    <ClInclude Include="..\Public\Sound_Manager.h" />
     <ClInclude Include="..\Public\SphereCollider.h" />
     <ClInclude Include="..\public\TargetManager.h" />
     <ClInclude Include="..\public\Texture.h" />
@@ -285,6 +285,7 @@
     <ClCompile Include="..\private\RenderSetting.cpp" />
     <ClCompile Include="..\private\RenderTarget.cpp" />
     <ClCompile Include="..\private\Shader.cpp" />
+    <ClCompile Include="..\Private\Sound_Manager.cpp" />
     <ClCompile Include="..\Private\SphereCollider.cpp" />
     <ClCompile Include="..\private\TargetManager.cpp" />
     <ClCompile Include="..\private\Texture.cpp" />
@@ -300,7 +301,6 @@
     <ClCompile Include="..\Private\VIBuffer_SSDBox.cpp" />
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp" />
     <ClCompile Include="..\private\VIBuffer_Triangle.cpp" />
-    <ClCompile Include="..\Public\Fmod\Sound_Manager.cpp" />
     <ClCompile Include="Save_Loader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

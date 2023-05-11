@@ -139,7 +139,7 @@ HRESULT CSound_Manager::Load_SoundFile()
 
 	char szCurPath[128] = "../../Sounds/";
 	char szFullPath[128] = "";
-	hFile = _findfirsti64("../../Sounds/*.*", &tFD);
+	hFile = _findfirsti64("../../Sounds/Sounds/*.*", &tFD);
 
 	if (-1 == hFile)
 		return E_FAIL;
