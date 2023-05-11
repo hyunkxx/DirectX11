@@ -441,3 +441,5 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,c++
 *.filters
 Resource/Model/Static/Map/Sky/Sky_0.dds
+Resource/Model/Static/Map/Sky/DarkSky.dds
+Resource/Model/Static/Map/Sky/DarkSky.png
