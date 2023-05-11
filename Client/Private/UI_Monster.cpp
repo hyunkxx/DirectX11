@@ -250,7 +250,6 @@ void CUI_Monster::Free()
 	}
 	m_DescList.clear();
 
-	delete CurrentDesc;
 	CurrentDesc = nullptr;
 
 }

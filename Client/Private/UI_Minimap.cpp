@@ -411,8 +411,6 @@ void CUI_Minimap::Free()
 	}
 	m_IconDescList.clear();
 
-	delete m_IconDesc;
-	m_IconDesc = nullptr;
 
 
 }

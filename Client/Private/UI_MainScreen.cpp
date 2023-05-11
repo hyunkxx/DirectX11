@@ -560,10 +560,8 @@ void CUI_MainScreen::Free()
 	}
 	m_CutDescList.clear();
 
-	delete m_CutDesc;
 	m_CutDesc = nullptr;
 
-	delete CurrentCutDesc;
 	CurrentCutDesc = nullptr;
 
 }
