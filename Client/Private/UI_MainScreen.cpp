@@ -394,6 +394,7 @@ void CUI_MainScreen::SerectUI()
 							pCutDesc->bCoolTime = true;
 						}
 					}
+					Safe_Release(pGameInstance);
 				}
 
 			}
@@ -543,6 +544,7 @@ void CUI_MainScreen::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexFunc);
+	Safe_Release(m_pVIBufferCut);
 
 	for (auto& Buffer : m_BufferCutList)
 	{
@@ -558,9 +560,10 @@ void CUI_MainScreen::Free()
 	}
 	m_CutDescList.clear();
 
-
+	delete m_CutDesc;
 	m_CutDesc = nullptr;
 
+	delete CurrentCutDesc;
 	CurrentCutDesc = nullptr;
 
 }

@@ -117,7 +117,16 @@ public:
 private:
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
-	class CTerminal* m_pTerminal = { nullptr };
+	CTexture*		m_pTexFunc = { nullptr };
+	CVIBuffer_Rect* m_pVIBufferCut = { nullptr }; // 생성, list푸시백용
+
+	// 내가 지정한 uv좌표
+	list<CVIBuffer_Rect*> m_BufferCutList;
+	list<CUTRECT*>		  m_CutDescList;
+	CUTRECT*			m_CutDesc = { nullptr }; // 생성, list푸시백용
+	CUTRECT*			CurrentCutDesc = { nullptr }; // imgui랜더용
+	
+	
 
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pContext;
@@ -133,14 +142,7 @@ private:
 	void	Load();
 
 
-	// 내가 지정한 uv좌표
-	list<CVIBuffer_Rect*> m_BufferCutList;
-	list<CUTRECT*>		  m_CutDescList;
-	CUTRECT*			m_CutDesc = { nullptr }; // 생성, list푸시백용
-	CUTRECT*			CurrentCutDesc = { nullptr }; // imgui랜더용
-private:
-	CTexture*		m_pTexFunc = { nullptr };
-	CVIBuffer_Rect* m_pVIBufferCut = { nullptr }; // 생성, list푸시백용
+	
 
 };
 

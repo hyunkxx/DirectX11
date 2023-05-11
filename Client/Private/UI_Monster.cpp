@@ -38,10 +38,13 @@ HRESULT CUI_Monster::Initialize(void * pArg)
 void CUI_Monster::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
 
 	for (auto& Desc : m_DescList)
 	{
-		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+		
+
 		CGameObject* pPlayer = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Player"));
 		// 가져온 오브젝트들이 준비가 되면 랜더 돌릴 수 있음-> 랜더조건
 		if (nullptr != pPlayer)
@@ -85,6 +88,7 @@ void CUI_Monster::Tick(_double TimeDelta)
 	{
 		HPRedBar(TimeDelta);
 	}
+	Safe_Release(pGameInstance);
 }
 
 void CUI_Monster::LateTick(_double TimeDelta)
@@ -152,9 +156,11 @@ HRESULT CUI_Monster::Add_Components()
 
 HRESULT CUI_Monster::Setup_ShaderResources(_int index)
 {
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
 	if (nullptr == m_pShader)
 		return E_FAIL;
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	if (nullptr != m_pTexture)
 	{
@@ -162,8 +168,6 @@ HRESULT CUI_Monster::Setup_ShaderResources(_int index)
 		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index]->iTexNum)))
 			return E_FAIL;
 	}
-
-	
 
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index]->WorldMatrix))))
 		return E_FAIL;
@@ -190,6 +194,10 @@ HRESULT CUI_Monster::Setup_ShaderResources(_int index)
 	}
 	if (FAILED(m_pShader->SetRawValue("g_fwhiteBar", &m_fWhiteBar, sizeof(_float))))
 		return E_FAIL;
+
+
+
+	Safe_Release(pGameInstance);
 	return S_OK;
 }
 
@@ -242,6 +250,7 @@ void CUI_Monster::Free()
 	}
 	m_DescList.clear();
 
+	delete CurrentDesc;
 	CurrentDesc = nullptr;
 
 }

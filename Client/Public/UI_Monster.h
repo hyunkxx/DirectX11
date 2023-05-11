@@ -77,10 +77,6 @@ private:
 	void HPRedBar(_double TimeDelta);
 	void Load();
 
-private:
-	CRenderer*		m_pRenderer = { nullptr };
-	CShader*		m_pShader = { nullptr };
-
 
 private:
 	//Hp
@@ -98,12 +94,18 @@ private:
 	_float Degree = { 0.f };
 
 private:
+	CRenderer*		m_pRenderer = { nullptr };
+	CShader*		m_pShader = { nullptr };
+
+	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
+	CTexture*		m_pTexture = { nullptr };
+
 	vector<CVIBuffer_Rect*> m_BufferList;
 	vector<MONSTERDESC*>	m_DescList;
 	MONSTERDESC*	CurrentDesc = { nullptr };
 
-	CTexture*		m_pTexture = { nullptr };
-	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
+	
+	
 
 };
 

@@ -67,10 +67,6 @@ public:
 
 	//디폴트로 항상 들고 있는 변수
 private:
-	CRenderer*		m_pRenderer = { nullptr };
-	CShader*		m_pShader = { nullptr };
-
-
 	//미니맵 기능
 	_bool m_bNull = { true };
 	// 전체맵에서 내가 출력하려고 지정한 uv좌표
@@ -81,8 +77,7 @@ private:
 	_float2			m_fPointLU = { 0.f,0.f };
 	_float2			m_fPointRB = { 0.f,0.f };
 
-	CTexture*		m_pTexMiniMap = { nullptr };
-	CVIBuffer_Rect* m_pVIBufferMiniMap = { nullptr };
+	
 
 	_float			m_fXMiniMap = { -540.f };
 	_float			m_fYMiniMap = { 260.f };
@@ -105,8 +100,7 @@ private:
 	_float2			m_fDefaultIconPointLU[2] = { {0.f,0.f} };
 	_float2			m_fDefaultIconPointRB[2] = { {0.f,0.f} };
 
-	CTexture*		m_pTexDefaultIcon = { nullptr };
-	CVIBuffer_Rect* m_pVIBufferDefaultIcon[2] = { nullptr ,nullptr };
+	
 	_float			m_fXDefaultIcon[2] = { -540.f,-540.f };
 	_float			m_fYDefaultIcon[2] = { 260.f ,260.f };
 	_float			m_fZDefaultIcon[2] = { 0.f,0.f };
@@ -120,11 +114,7 @@ private:
 	_float  m_DegreeAcc = { 0.f };
 
 	//아이콘 추가용
-	CTexture*			  m_pTexIcon = { nullptr };
-	vector<CVIBuffer_Rect*> m_BufferList;
-	CVIBuffer_Rect*		  m_pVIBufferIcon = { nullptr };
-	vector<MAPDESC*>		  m_IconDescList;
-	MAPDESC*			  m_IconDesc = { nullptr }; // 생성, list푸시백용
+	
 
 	// 아이콘 배치용 임시변수
 	_float4  OriPos = {60.f , 0.f, 20.f, 1.f};
@@ -132,11 +122,23 @@ private:
 	_float4 fPrePlayerPos = { 0.f , 0.f, 0.f, 1.f };
 
 
+private:
+	CRenderer*		m_pRenderer = { nullptr };
+	CShader*		m_pShader = { nullptr };
 
+	CTexture*		m_pTexIcon = { nullptr };
+	CTexture*		m_pTexMiniMap = { nullptr };
+	CVIBuffer_Rect* m_pVIBufferMiniMap = { nullptr };
+	CTexture*		m_pTexDefaultIcon = { nullptr };
+	CVIBuffer_Rect*	 m_pVIBufferIcon = { nullptr };
 
+	CVIBuffer_Rect* m_pVIBufferDefaultIcon[2] = { nullptr ,nullptr };
 
-
-
+	
+	vector<CVIBuffer_Rect*> m_BufferList;
+	
+	vector<MAPDESC*>		  m_IconDescList;
+	MAPDESC*			  m_IconDesc = { nullptr }; // 생성, list푸시백용
 };
 
 END

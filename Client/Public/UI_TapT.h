@@ -75,13 +75,6 @@ public:
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
 
-
-	
-
-private:
-	CRenderer*		m_pRenderer = { nullptr };
-	CShader*		m_pShader = { nullptr };
-
 private:
 	void	Rot(TAPDESC* pDesc, _double TimeDelta);
 	void	Add_Alpha(_uint indexstart, _uint indexend, _double TimeDelta);
@@ -95,12 +88,17 @@ private:
 	void	Load();
 
 private:
+	CRenderer*		m_pRenderer = { nullptr };
+	CShader*		m_pShader = { nullptr };
+
+	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
+	CTexture*		m_pTexture = { nullptr };
+
 	vector<CVIBuffer_Rect*> m_BufferList;
 	vector<TAPDESC*>		  m_DescList;
 	TAPDESC*			CurrentDesc = { nullptr }; // imgui랜더용
 
-	CTexture*		m_pTexture = { nullptr };
-	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
+	
 
 };
 

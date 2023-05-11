@@ -93,9 +93,7 @@ public:
 
 
 
-private:
-	CRenderer*		m_pRenderer = { nullptr };
-	CShader*		m_pShader = { nullptr };
+
 
 private:
 	void	Rot(_uint indexstart, _uint indexend, _double TimeDelta);
@@ -110,17 +108,22 @@ private:
 	void	Load();
 
 private:
+	CRenderer*		m_pRenderer = { nullptr };
+	CShader*		m_pShader = { nullptr };
+
+	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
+	CTexture*		m_pTexture = { nullptr };
+
 	vector<CVIBuffer_Rect*> m_BufferList;
 	vector<TERMINALDESC*>	m_DescList;
 	
-
 	vector<CVIBuffer_Rect*> m_RotBufferList;
 	vector<TERMINALDESC*>	m_RotDescList;
 
 
 
-	CTexture*		m_pTexture = { nullptr };
-	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
+	
+	
 };
 
 END

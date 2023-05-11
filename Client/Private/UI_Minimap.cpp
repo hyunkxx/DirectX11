@@ -384,17 +384,18 @@ void CUI_Minimap::Free()
 
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
+
+	Safe_Release(m_pTexIcon);
 	Safe_Release(m_pTexMiniMap);
 	Safe_Release(m_pVIBufferMiniMap);
-
 	Safe_Release(m_pTexDefaultIcon);
+	Safe_Release(m_pVIBufferIcon);
+
 	for (_uint i = 0; i < 2; ++i)
 	{
-		m_pVIBufferDefaultIcon[i];
+		Safe_Release(m_pVIBufferDefaultIcon[i]);
 	}
 
-	Safe_Release(m_pVIBufferIcon);
-	Safe_Release(m_pTexIcon);
 
 	for (auto& Buffer : m_BufferList)
 	{
@@ -410,6 +411,7 @@ void CUI_Minimap::Free()
 	}
 	m_IconDescList.clear();
 
+	delete m_IconDesc;
 	m_IconDesc = nullptr;
 
 

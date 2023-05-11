@@ -195,11 +195,11 @@ void CUI_Mouse::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pTexture);
+	
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
-	
+	Safe_Release(m_pTexture);
 }
 
 
