@@ -634,7 +634,7 @@ technique11 DefaultTechnique
 	pass Particle_Spark_Texture
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		//ALPHABLENDENABLE = TRUE;
@@ -652,7 +652,7 @@ technique11 DefaultTechnique
 	pass Particle_Billboard_Texture
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		//ALPHABLENDENABLE = TRUE;
@@ -689,7 +689,7 @@ technique11 DefaultTechnique
 	pass Particle_Spark_Texture_Color
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		//ALPHABLENDENABLE = TRUE;
@@ -707,7 +707,7 @@ technique11 DefaultTechnique
 	pass Particle_Billboard_Texture_Color
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		//ALPHABLENDENABLE = TRUE;
@@ -744,7 +744,7 @@ technique11 DefaultTechnique
 	pass Particle_Spark_Texture_ATOC
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		//ALPHABLENDENABLE = TRUE;
@@ -762,7 +762,7 @@ technique11 DefaultTechnique
 	pass Particle_Billboard_Texture_ATOC
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		//ALPHABLENDENABLE = TRUE;
@@ -799,7 +799,7 @@ technique11 DefaultTechnique
 	pass Particle_Spark_Texture_Color_ATOC
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		//ALPHABLENDENABLE = TRUE;
@@ -817,7 +817,7 @@ technique11 DefaultTechnique
 	pass Particle_Billboard_Texture_Color_ATOC
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		//ALPHABLENDENABLE = TRUE;
@@ -850,7 +850,5 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_TEX_COL_ATOC();
 	}
 }
-
-
 
 

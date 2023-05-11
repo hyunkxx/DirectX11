@@ -395,55 +395,80 @@ HRESULT CApplication::Ready_Static_Effect()
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/YangYang_Jump_Attack_01.bin"),
 			"../../Resource/Effect/YangYang_Jump_Attack_01/")))
+		{
+			MSG_BOX("Create Failed : YangYang_Jump_Attack_01");
 			return E_FAIL;
+		}
+			
 	}
 
 	for (_int i = 0; 20 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Test_SSD.bin"),
 			"../../Resource/Effect/Test_SSD/")))
+		{
+			MSG_BOX("Create Failed : Test_SSD");
 			return E_FAIL;
+		}
 	}
 
 	for (_int i = 0; 20 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Test_GLOW_SSD.bin"),
 			"../../Resource/Effect/Test_GLOW_SSD/")))
+		{
+			MSG_BOX("Create Failed : Test_GLOW_SSD");
 			return E_FAIL;
+		}
 	}
 
 	for (_int i = 0; 2 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Loby_Particle_Effect_01.bin"),
 			"../../Resource/Effect/Loby_Particle_Effect/")))
+		{
+			MSG_BOX("Create Failed : Loby_Particle_Effect_01");
 			return E_FAIL;
+		};
 	}
 
 	for (_int i = 0; 20 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice , m_pContext , g_hWnd, TEXT("../../Resource/Effect/Loby_Particle_Effect_02.bin"),
 			"../../Resource/Effect/Loby_Particle_Effect/")))
+		{
+			MSG_BOX("Create Failed : Loby_Particle_Effect_02");
 			return E_FAIL;
+		}
 	}
 
 	for (_int i = 0; 30 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Double_Jump_B.bin"),
 			"../../Resource/Effect/Double_Jump/")))
+		{
+			MSG_BOX("Create Failed : Double_Jump_B");
 			return E_FAIL;
+		}
 	}
 
 	for (_int i = 0; 30 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Double_Jump_F.bin"),
 			"../../Resource/Effect/Double_Jump/")))
+		{
+			MSG_BOX("Create Failed : Double_Jump_F");
 			return E_FAIL;
+		}
 	}
 	for (_int i = 0; 10 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Test_Loby_Effect.bin"),
 			"../../Resource/Effect/Test_Loby_Effect/")))
+		{
+			MSG_BOX("Create Failed : Test_Loby_Effect");
 			return E_FAIL;
+		}
 	}
 
 	

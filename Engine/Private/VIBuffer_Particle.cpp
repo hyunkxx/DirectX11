@@ -414,7 +414,32 @@ void CVIBuffer_Particle::Reset_Update(_float3 vDir)
 			m_pOriPos[i].z = (rand() % ((_int)(m_ParticleDesc.vMaxPosition.z * 100.f - m_ParticleDesc.vMinPosition.z * 100.f) + 1) + m_ParticleDesc.vMinPosition.z * 100.f) / 100.f;
 		}
 
+		if (m_ParticleDesc.vRotation.z > 0.f)
+		{
+			XMStoreFloat3(&vLook, XMVector3Cross(XMVector3Normalize(XMLoadFloat3(&vUp)), XMVector3Normalize(XMLoadFloat3(&vLook))));
+			XMStoreFloat3(&vRight, XMVector3Cross(XMVector3Normalize(XMLoadFloat3(&vUp)), XMVector3Normalize(XMLoadFloat3(&vLook))));
+			XMStoreFloat3(&vUp, XMVector3Cross(XMLoadFloat3(&vLook), XMLoadFloat3(&vRight)));
+
+			XMStoreFloat3(&vRight, XMLoadFloat3(&vRight) * m_pStartScale[i].x);
+			XMStoreFloat3(&vUp, XMLoadFloat3(&vUp) * m_pStartScale[i].y);
+			XMStoreFloat3(&vLook, XMLoadFloat3(&vLook) * m_pStartScale[i].z);
+		}
+		else if (m_ParticleDesc.vRotation.z < 0.f)
+		{
+			XMStoreFloat3(&vLook, XMVector3Cross(XMVector3Normalize(XMLoadFloat3(&vLook)), XMVector3Normalize(XMLoadFloat3(&vUp))));
+			XMStoreFloat3(&vRight, XMVector3Cross(XMVector3Normalize(XMLoadFloat3(&vUp)), XMVector3Normalize(XMLoadFloat3(&vLook))));
+			XMStoreFloat3(&vUp, XMVector3Cross(XMLoadFloat3(&vLook), XMLoadFloat3(&vRight)));
+
+			XMStoreFloat3(&vRight, XMLoadFloat3(&vRight) * m_pStartScale[i].x);
+			XMStoreFloat3(&vUp, XMLoadFloat3(&vUp) * m_pStartScale[i].y);
+			XMStoreFloat3(&vLook, XMLoadFloat3(&vLook) * m_pStartScale[i].z);
+		}
+
 		((VTXMATRIX*)SubResource.pData)[i].vPosition = _float4(m_pOriPos[i].x, m_pOriPos[i].y, m_pOriPos[i].z, 1.f);
+		((VTXMATRIX*)SubResource.pData)[i].vRight = _float4(vRight.x, vRight.y, vRight.z, 0.f);
+		((VTXMATRIX*)SubResource.pData)[i].vUp = _float4(vUp.x, vUp.y, vUp.z, 0.f);
+		((VTXMATRIX*)SubResource.pData)[i].vLook = _float4(vLook.x, vLook.y, vLook.z, 0.f);
+
 	}
 
 	m_pContext->Unmap(m_pVBInstance, 0);
