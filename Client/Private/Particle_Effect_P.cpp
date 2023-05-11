@@ -358,8 +358,9 @@ HRESULT CParticle_Effect_P::Add_Component(const char* pFileTag)
 	stParticleDesc.vStartColor = m_EffectDesc.vStartColor;
 	stParticleDesc.vEndColor = m_EffectDesc.vEndColor;
 
-	stParticleDesc.fMaxStartDist = m_EffectDesc.vStartPosition.x;
-	stParticleDesc.fMinStartDist = m_EffectDesc.vStartPosition.y;
+	stParticleDesc.fMaxStartDist = MAX_STARTDISTANCE;
+	stParticleDesc.fMinStartDist = MIN_DISTANCE;
+	stParticleDesc.vRotation = CUMULATIVE_ROTATION;
 
 	m_pVIBufferCom = CVIBuffer_Particle::Create(m_pDevice, m_pContext, stParticleDesc);
 

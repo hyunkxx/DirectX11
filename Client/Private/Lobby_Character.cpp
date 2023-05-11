@@ -57,7 +57,7 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 	}
 
 	// Lobby_Player_Particle_Effect
-	CEffect* pEffect= CGameInstance::GetInstance()->Get_Effect(L"Loby_Particle_Effect");
+	CEffect* pEffect= CGameInstance::GetInstance()->Get_Effect(L"Loby_Particle_Effect_01");
 	_float4x4 WorldMatirx = m_pMainTransform->Get_WorldMatrix();
 	pEffect->Play_Effect(&WorldMatirx, false);
 

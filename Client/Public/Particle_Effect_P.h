@@ -52,6 +52,7 @@ private:
 
 #define	 MAX_STARTDISTANCE		m_EffectDesc.vStartPosition.x
 #define	 MIN_DISTANCE			m_EffectDesc.vStartPosition.y
+#define  CUMULATIVE_ROTATION	m_EffectDesc.vEndPosition
 
 public:
 	static CParticle_Effect_P*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext , const char* pFileTag , const EFFECT_DESC& ParticleDesc);

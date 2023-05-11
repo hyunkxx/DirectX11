@@ -233,6 +233,19 @@ void CVIBuffer_Particle::Update(_double TimeDelta)
 		_float4 vOldPos = ((VTXMATRIX*)SubResource.pData)[i].vPosition;
 		_float3 vLook = _float3(((VTXMATRIX*)SubResource.pData)[i].vLook.x,
 			((VTXMATRIX*)SubResource.pData)[i].vLook.y, ((VTXMATRIX*)SubResource.pData)[i].vLook.z);
+		_float3 vDefaultRight = _float3(((VTXMATRIX*)SubResource.pData)[i].vRight.x,
+			((VTXMATRIX*)SubResource.pData)[i].vRight.y, ((VTXMATRIX*)SubResource.pData)[i].vRight.z);
+		_float3 vDefaultUp = _float3(((VTXMATRIX*)SubResource.pData)[i].vUp.x,
+			((VTXMATRIX*)SubResource.pData)[i].vUp.y, ((VTXMATRIX*)SubResource.pData)[i].vUp.z);
+
+		Cumulative_Rotation(&vDefaultRight, &vDefaultUp, &vLook, i);
+
+		if (!m_ParticleDesc.bGravuty)
+		{
+			((VTXMATRIX*)SubResource.pData)[i].vRight = _float4(vDefaultRight.x, vDefaultRight.y, vDefaultRight.z, 0.f);
+			((VTXMATRIX*)SubResource.pData)[i].vUp = _float4(vDefaultUp.x, vDefaultUp.y, vDefaultUp.z, 0.f);
+			((VTXMATRIX*)SubResource.pData)[i].vLook = _float4(vLook.x, vLook.y, vLook.z, 0.f);
+		}
 
 		_float3 vPos = _float3(vOldPos.x, vOldPos.y, vOldPos.z);
 
@@ -497,6 +510,9 @@ void CVIBuffer_Particle::Set_Desc(ParticleNum eID, void * pArg)
 	case Engine::CVIBuffer_Particle::ID_MIN_STARTDIST:
 		memcpy(&m_ParticleDesc.fMinStartDist, pArg, sizeof(_float));
 		break;
+	case Engine::CVIBuffer_Particle::ID_ROTATION:
+		memcpy(&m_ParticleDesc.vRotation, pArg, sizeof(_float3));
+		break;
 	case Engine::CVIBuffer_Particle::ID_LOOP:
 		memcpy(&m_ParticleDesc.bLoop, pArg, sizeof(_bool));
 		break;
@@ -514,6 +530,28 @@ HRESULT CVIBuffer_Particle::SetUp_Shader_Color(CShader * pShader, const char* Sh
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CVIBuffer_Particle::Cumulative_Rotation(_float3 * pRight, _float3 * pUp, _float3 * pLook, _int iCount)
+{
+	_float3 vNorRight, vNorUp, vNorLook;
+
+	XMStoreFloat3(&vNorRight, XMVector3Normalize(XMLoadFloat3(pRight)));
+	XMStoreFloat3(&vNorUp, XMVector3Normalize(XMLoadFloat3(pUp)));
+	XMStoreFloat3(&vNorLook, XMVector3Normalize(XMLoadFloat3(pLook)));
+
+	_float3 vResultLook;
+	XMStoreFloat3(pLook, XMVector3Normalize(XMLoadFloat3(&vNorLook) +
+		XMLoadFloat3(&vNorRight) * m_ParticleDesc.vRotation.x +
+		XMLoadFloat3(&vNorUp)* m_ParticleDesc.vRotation.y));
+
+
+	XMStoreFloat3(pRight, XMVector3Cross(XMVector3Normalize(XMLoadFloat3(pUp)), XMVector3Normalize(XMLoadFloat3(pLook))));
+	XMStoreFloat3(pUp, XMVector3Cross(XMVector3Normalize(XMLoadFloat3(pLook)), XMVector3Normalize(XMLoadFloat3(pRight))));
+
+	XMStoreFloat3(pRight, XMLoadFloat3(pRight) *m_pCurScale[iCount].x);
+	XMStoreFloat3(pUp, XMLoadFloat3(pUp) * m_pCurScale[iCount].y);
+	XMStoreFloat3(pLook, XMLoadFloat3(pLook) * m_pCurScale[iCount].z);
 }
 
 CVIBuffer_Particle * CVIBuffer_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const ParticleDesc& ParticleDesc)

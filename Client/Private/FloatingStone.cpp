@@ -54,8 +54,8 @@ void CFloatingStone::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	m_fStartTimeAcc += TimeDelta;
-	if (m_fStartTimeAcc >= m_fStartTimeAcc);
+	m_fStartTimeAcc += (_float)TimeDelta;
+	if (m_fStartTimeAcc >= m_fStartTimeAcc)
 		floatingPosition(TimeDelta);
 }
 

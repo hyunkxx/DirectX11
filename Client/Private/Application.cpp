@@ -414,7 +414,7 @@ HRESULT CApplication::Ready_Static_Effect()
 
 	for (_int i = 0; 2 > i; i++)
 	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Loby_Particle_Effect.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Loby_Particle_Effect_01.bin"),
 			"../../Resource/Effect/Loby_Particle_Effect/")))
 			return E_FAIL;
 	}

@@ -36,6 +36,8 @@ public:
 		_float3 vMinPosition;
 		_float3 vMaxPosition;
 
+		_float3 vRotation;
+
 		_int iNumInstance;
 
 		_float fMaxStartDist;
@@ -56,7 +58,7 @@ public:
 		ID_MINSPEED , ID_MAXSPEED , ID_MINANGLE , ID_MAXANGLE , ID_MINDIST , ID_MAXDIST ,
 		ID_MINSCALE , ID_MAXSCALE , ID_ENDSCALE , ID_STARTCOLOR , ID_ENDCOLOR ,
 		ID_MINPOSITION , ID_MAXPOSITION , ID_NUMINSTANCE , ID_PARTICLE_POWER , ID_GRAVITY_POWER ,
-		ID_MAX_STARTDIST , ID_MIN_STARTDIST ,
+		ID_MAX_STARTDIST , ID_MIN_STARTDIST, ID_ROTATION,
 		ID_GRAVITY , ID_LOOP ,  ID_END
 	};
 
@@ -82,6 +84,8 @@ public:
 		m_ParticleDesc.iNumInstance = m_iOriMaxNumInstance;
 		return m_ParticleDesc;
 	}
+
+	void Cumulative_Rotation(_float3* pRight, _float3* pUp, _float3* pLook, _int iCount);
 
 private:
 	ID3D11Buffer*				m_pVBInstance = { nullptr };

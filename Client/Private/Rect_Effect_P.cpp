@@ -11,7 +11,6 @@ CRect_Effect_P::CRect_Effect_P(ID3D11Device * pDevice, ID3D11DeviceContext * pCo
 CRect_Effect_P::CRect_Effect_P(const CRect_Effect_P & rhs)
 	: CEffect(rhs)
 {
-
 }
 
 HRESULT CRect_Effect_P::Initialize_Prototype(const char* pFileTag , const EFFECT_DESC & MeshDesc)
