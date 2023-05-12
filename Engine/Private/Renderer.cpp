@@ -789,9 +789,16 @@ void CRenderer::Render_GlowSSD()
 		return;
 
 	if (m_pRenderSetting->IsActiveBlackWhite())
-		m_pShader_Blur->Begin(4);
-	else
+	{
 		m_pShader_Blur->Begin(3);
+	}
+	else
+	{
+		if (m_pRenderSetting->IsActiveShadow())
+			m_pShader_Blur->Begin(4);
+		else
+			m_pShader_Blur->Begin(3);
+	}
 
 	m_pVIBuffer->Render();
 

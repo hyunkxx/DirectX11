@@ -527,7 +527,7 @@ technique11 DefaultTechnique
 	pass Default_Texture
 	{
 		SetRasterizerState(/*RS_Wireframe*/RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -540,7 +540,7 @@ technique11 DefaultTechnique
 	pass Default_NORMAL
 	{
 		SetRasterizerState(/*RS_Wireframe*/RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN_NORMALTEX();
@@ -553,7 +553,7 @@ technique11 DefaultTechnique
 	pass Particle_Color
 	{
 		SetRasterizerState(/*RS_Wireframe*/RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -566,7 +566,7 @@ technique11 DefaultTechnique
 	pass Particle_Color_Clamp
 	{
 		SetRasterizerState(/*RS_Wireframe*/RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -579,7 +579,7 @@ technique11 DefaultTechnique
 	pass Particle_Alpha
 	{
 		SetRasterizerState(/*RS_Wireframe*/RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -592,7 +592,7 @@ technique11 DefaultTechnique
 	pass Particle_Alpha_Clamp
 	{
 		SetRasterizerState(/*RS_Wireframe*/RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
