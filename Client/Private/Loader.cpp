@@ -196,7 +196,6 @@ HRESULT CLoader::Load_Level_Logo()
 	}
 #pragma endregion LOBBY_ROCK
 
-
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 	m_pApp->LoadRatio(0.7f);
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,

@@ -25,7 +25,7 @@ HRESULT CLevel_Logo::Initialize()
 	// Directional
 	ZeroMemory(&LightDesc, sizeof LightDesc);
 	LightDesc.eLightType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(2.f, -0.3f, 1.f, 0.f);
+	LightDesc.vDirection = _float4(2.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(0.6f, 0.68f, 0.6f, 1.f);
 	LightDesc.vAmbient = _float4(0.65f, 0.65f, 0.65f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);

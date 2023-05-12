@@ -29,6 +29,9 @@ HRESULT CIntro::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	pGI->PlaySoundEx(L"Intro_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
+
 	Load();
 
 	return S_OK;
@@ -36,6 +39,8 @@ HRESULT CIntro::Initialize(void * pArg)
 
 void CIntro::Tick(_double TimeDelta)
 {
+	CGameInstance* pGI = CGameInstance::GetInstance();
+
 	__super::Tick(TimeDelta);
 
 	if (false == m_bLoadingEnd)
@@ -56,6 +61,8 @@ void CIntro::Tick(_double TimeDelta)
 			m_DescList[4]->bSizeXAnimM = true;
 			m_DescList[4]->bSizeYAnimM = true;
 		}
+
+		pGI->BGMSmoothOff(TimeDelta * 0.05f);
 	}
 
 

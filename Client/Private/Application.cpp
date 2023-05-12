@@ -65,9 +65,8 @@ HRESULT CApplication::Initialize()
 	m_pGameInstance->SetCollisionDebugRender(true);
 
 #ifdef _DEBUG
-	m_pRenderer->DebugBundleRender_Control(true);
-#endif // _DEBUG
-
+	m_pRenderer->DebugBundleRender_Control(false);
+#endif
 
 	return S_OK;
 }

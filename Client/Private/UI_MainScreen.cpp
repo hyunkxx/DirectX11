@@ -59,8 +59,8 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	
 		if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP) //&& (false == pGameObject->IsActive()))
 		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UITERMINAL, TEXT("layer_UI"), TEXT("UI_Terminal"))))
-				return;
+			//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UITERMINAL, TEXT("layer_UI"), TEXT("UI_Terminal"))))
+			//	return;
 		}
 
 	if (0 != m_CutDescList.size())

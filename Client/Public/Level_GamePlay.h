@@ -2,6 +2,10 @@
 
 #include "Level.h"
 
+BEGIN(Engine)
+class CCamera;
+END
+
 BEGIN(Client)
 
 class CLevel_GamePlay final : public CLevel
@@ -28,9 +32,7 @@ public:
 
 	class CDynamicCamera* m_pDynamicCamera = nullptr;
 	class CPlayerCamera* m_pPlayerCamera = nullptr;
-
-	std::thread thread1;
-	int m_iThreadTest = 0;
+	
 };
 
 END

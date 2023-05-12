@@ -91,6 +91,10 @@ void CPlayerGirl::Start()
 {
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
+#ifdef _DEBUG
+	m_pRendererCom->DebugBundleRender_Control(true);
+#endif
+
 	//pStaticObject = pGame->Find_GameObject(LEVEL_GAMEPLAY, L"StaticTest");
 }
 
@@ -130,6 +134,19 @@ void CPlayerGirl::LateTick(_double TimeDelta)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, m_Parts[i]);
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, m_Parts[i]);
 		}
+	}
+
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	static _bool bCamLock = false;
+	if (pGameInstance->InputKey(DIK_SCROLL) == KEY_STATE::TAP)
+	{
+		bCamLock = !bCamLock;
+
+		if (bCamLock)
+			pGameMode->UseCamera(CGameMode::CAM_DYNAMIC);
+		else
+			pGameMode->UseCamera(CGameMode::CAM_PLAYER);
 	}
 }
 

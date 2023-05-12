@@ -155,7 +155,6 @@ HRESULT CIntroCamera::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_LOGO, TEXTURE::TAPSTART_TEXT,
 		TEXT("com_texture_tap"), (CComponent**)&m_pTapStartTexture)))
 		return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_LOGO, TEXTURE::LOGO_APLLY,
 		TEXT("com_texture_apply"), (CComponent**)&m_pApplyTexture)))
 		return E_FAIL;
@@ -174,7 +173,6 @@ HRESULT CIntroCamera::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_LOGO, TEXTURE::TWINKL_ON_MASK,
 		TEXT("com_twinkl_on_mask"), (CComponent**)&m_pTwinklOnMask)))
 		return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_LOGO, TEXTURE::TWINKL_OFF_MASK,
 		TEXT("com_twinkl_off_mask"), (CComponent**)&m_pTwinklOffMask)))
 		return E_FAIL;
@@ -602,6 +600,7 @@ void CIntroCamera::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
+
 	Safe_Release(m_pTextBackground);
 	Safe_Release(m_pTapStartTexture);
 	Safe_Release(m_pChooseRoverBack);

@@ -42,15 +42,15 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 
 	Init_AnimSystem();
 
-	m_pAnimSetCom->SetUp_Animation(m_eState, true);
-
 	switch (m_iModelType)
 	{
 	case LEFT_MODEL:
+		m_pAnimSetCom->SetUp_Animation(m_eState, true);
 		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(-90.f));
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(121.8f, 1.5f, 87.f, 1.f));
 		break;
 	case RIGHT_MODEL:
+		m_pAnimSetCom->SetUp_Animation(STATE_IDLE, false);
 		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(90.f));
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(124.2f, 1.5f, 87.f, 1.f));
 		break;
@@ -73,7 +73,6 @@ void CLobbyCharacter::Start()
 void CLobbyCharacter::Tick(_double TimeDelta)
 {
 	Tick_State(TimeDelta);
-
 }
 
 void CLobbyCharacter::LateTick(_double TimeDelta)
@@ -260,7 +259,6 @@ void CLobbyCharacter::Tick_State(_double TimeDelta)
 	m_pModelCom->Invalidate_CombinedMatrices();
 
 	if(bFinished)
-
 		m_pAnimSetCom->SetUp_Animation(m_eState, true);
 }
 

@@ -307,7 +307,6 @@ void CUI_Terminal::Free()
 	}
 	m_DescList.clear();
 
-
 	for (auto& Buffer : m_RotBufferList)
 	{
 		Safe_Release(Buffer);
