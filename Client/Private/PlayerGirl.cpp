@@ -681,7 +681,10 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 	if (0.f != XMVectorGetX(XMVector3Length(vInputDir)))
 		XMVector3Normalize(vInputDir);
 	
-	
+	// 임시 이펙트 재생용
+	CEffect* pEffect = nullptr;
+	_float4x4 ParentMatrix;
+
 
 	// 입력에 따라 대응하는 다음 상태 찾기
 	if (PS_GROUND == m_Scon.ePositionState)
@@ -785,23 +788,54 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			}
 			break;
 
+
 		case Client::CPlayerGirl::INPUT_ATTACK:
 			switch (m_Scon.iCurState)
 			{
 			case IS_ATTACK_01:
 				m_Scon.iNextState = IS_ATTACK_02;
+
+				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_02");
+				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
+				pEffect->Play_Effect(&ParentMatrix);
+
 				break;
 			case IS_ATTACK_02:
 				m_Scon.iNextState = IS_ATTACK_03;
-				break;
+
+				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_03");
+				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
+				pEffect->Play_Effect(&ParentMatrix);
+
+				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Link_Effect_02");
+				ParentMatrix._42 += 1.f;
+				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
+				pEffect->Play_Effect(&ParentMatrix);
+
+				break; 
 			case IS_ATTACK_03:
 				m_Scon.iNextState = IS_ATTACK_04;
+
+				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_04");
+				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
+				pEffect->Play_Effect(&ParentMatrix);
+
 				break;
 			case IS_SKILL_02:
 				m_Scon.iNextState = IS_ATTACK_05;
+
+				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_05");
+				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
+				pEffect->Play_Effect(&ParentMatrix);
+
 				break;
 			default:
 				m_Scon.iNextState = IS_ATTACK_01;
+
+				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_01");
+				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
+				pEffect->Play_Effect(&ParentMatrix);
+
 				break;
 			}
 			break;

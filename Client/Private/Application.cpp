@@ -480,7 +480,7 @@ HRESULT CApplication::Ready_Static_Effect()
 		}
 	}
 
-	/*for (_int i = 0; 2 > i; i++)
+	for (_int i = 0; 10 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_01.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack/")))
@@ -490,7 +490,7 @@ HRESULT CApplication::Ready_Static_Effect()
 		}
 	}
 
-	for (_int i = 0; 2 > i; i++)
+	for (_int i = 0; 10 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_02.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack/")))
@@ -500,7 +500,7 @@ HRESULT CApplication::Ready_Static_Effect()
 		}
 	}
 
-	for (_int i = 0; 2 > i; i++)
+	for (_int i = 0; 10 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_03.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack/")))
@@ -510,20 +510,28 @@ HRESULT CApplication::Ready_Static_Effect()
 		}
 	}
 
-	for (_int i = 0; 2 > i; i++)
+	for (_int i = 0; 10 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_04.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack/")))
 		{
-			MSG_BOX("Create Failed : Nvzhu_Attack_03");
+			MSG_BOX("Create Failed : Nvzhu_Attack_04");
 			return E_FAIL;
 		}
-	}*/
-
-
-	for (_int i = 0; 2 > i; i++)
+	}
+	for (_int i = 0; 10 > i; i++)
 	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Link_Effect.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_05.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack/")))
+		{
+			MSG_BOX("Create Failed : Nvzhu_Attack_05");
+			return E_FAIL;
+		}
+	}
+
+	for (_int i = 0; 10 > i; i++)
+	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Link_Effect_02.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Link_Effect/")))
 		{
 			MSG_BOX("Create Failed : Link_Effect");
