@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\GameMode.h"
 
+#include "Camera.h"
 #include "Effect_Player.h"
 
 IMPLEMENT_SINGLETON(CGameMode)
@@ -28,4 +29,26 @@ HRESULT CGameMode::Add_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CGameMode::ResetCameraList()
+{
+	m_pCams.clear();
+}
+
+void CGameMode::PushCamera(CCamera * pCamera)
+{
+	m_pCams.push_back(pCamera);
+}
+
+void CGameMode::UseCamera(int iCameraIndex)
+{
+	int iCameraSize = (int)m_pCams.size();
+	for (int i = 0; i < iCameraSize; ++i)
+	{
+		if (iCameraIndex == i)
+			m_pCams[i]->Set_Use(true);
+		else
+			m_pCams[i]->Set_Use(false);
+	}
 }

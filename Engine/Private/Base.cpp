@@ -19,3 +19,4 @@ _ulong CBase::Release()
 		return m_dwRefCnt--;
 	}
 }
+   

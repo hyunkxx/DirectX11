@@ -396,7 +396,6 @@ void CUI_Minimap::Free()
 		Safe_Release(m_pVIBufferDefaultIcon[i]);
 	}
 
-
 	for (auto& Buffer : m_BufferList)
 	{
 		Safe_Release(Buffer);

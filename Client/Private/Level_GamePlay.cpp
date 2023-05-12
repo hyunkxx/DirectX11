@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Level_GamePlay.h"
 
+#include "GameMode.h"
 #include "AppManager.h"
 #include "GameInstance.h"
 #include "DynamicCamera.h"
@@ -40,7 +41,9 @@ HRESULT CLevel_GamePlay::Initialize()
 #pragma endregion MAP_OBJECT_TREE
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
-	//pGameInstance->PlaySoundEx(L"Battle_BGM_0.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
+
+	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
+	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
 
 	return S_OK;
 }
@@ -52,10 +55,11 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 	pAppManager->SetTitle(L"LEVEL_GAMEPLAY");
 #endif
 
-	//카메라 기준으로 쉐도우 조명 갱신
+	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	//pGameInstance->BGMSmoothOn(TimeDelta);
 
+	//카메라 기준으로 쉐도우 조명 갱신
 	pGameInstance->ShadowUpdate(120.f);
 
 	//임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것
@@ -120,22 +124,16 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 		pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DEFAULT, 2.f);
 	}
 
-	static _bool bCamLock = false;
-	if (pGameInstance->InputKey(DIK_SCROLL) == KEY_STATE::TAP)
-	{
-		bCamLock = !bCamLock;
+	//static _bool bCamLock = false;
+	//if (pGameInstance->InputKey(DIK_SCROLL) == KEY_STATE::TAP)
+	//{
+	//	bCamLock = !bCamLock;
 
-		if (bCamLock)
-		{
-			m_pDynamicCamera->Set_Use(true);
-			m_pPlayerCamera->Set_Use(false);
-		}
-		else
-		{
-			m_pDynamicCamera->Set_Use(false);
-			m_pPlayerCamera->Set_Use(true);
-		}
-	}
+	//	if (bCamLock)
+	//		pGameMode->UseCamera(CAM_DYNAMIC);
+	//	else
+	//		pGameMode->UseCamera(CAM_PLAYER);
+	//}
 }
 
 void CLevel_GamePlay::RenderLevelUI()
@@ -210,6 +208,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 {
+	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	//Camera Setting
@@ -251,8 +250,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 
 	m_pPlayerCamera = (CPlayerCamera*)pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, L"player_camera");
 
-	m_pDynamicCamera->Set_Use(true);
-	m_pPlayerCamera->Set_Use(false);
+	pGM->PushCamera(m_pDynamicCamera);
+	pGM->PushCamera(m_pPlayerCamera);
+	
+	pGM->UseCamera(CGameMode::CAM_DYNAMIC);
 
 	return S_OK;
 }
