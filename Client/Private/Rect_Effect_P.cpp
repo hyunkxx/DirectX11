@@ -444,7 +444,7 @@ void CRect_Effect_P::Setup_Matrix()
 		memcpy(((_float4*)&m_WorldMatrix + 1), &NewUp, sizeof(_float3));
 		memcpy(((_float4*)&m_WorldMatrix + 2), &NewLook, sizeof(_float3));
 
-		if (m_EffectDesc.bTracking)
+		if (m_EffectDesc.bTracking && nullptr != m_pParentsMatrix)
 			XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(m_pParentsMatrix));
 		else
 			XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(&m_ParentsMatrix));
