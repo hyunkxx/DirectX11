@@ -357,6 +357,14 @@ namespace Engine
 		XMFLOAT3		vS = {};
 		XMFLOAT3		vA = {};
 	}SOBJECT_DESC;
+
+	typedef struct tagStaticMapObject_Desc
+	{
+		SOBJECT_DESC	SObjectDesc = {};
+
+		_uint			iModelTypeID = {};
+		_uint			iDiffuseTexID = {};
+	}SMAP_OBJECT_DESC;
 #pragma endregion STATIC_OBJECT
 
 #pragma region NAVIGATION

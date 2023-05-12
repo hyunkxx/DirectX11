@@ -23,6 +23,9 @@ private:
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Character(const _tchar* pLayerTag);
 
+private:
+	HRESULT Load_LobbyRock(const _tchar* pLobbyRockFilePath, const _tchar * pLayerTag);
+
 public:
 	static CLevel_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

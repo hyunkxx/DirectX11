@@ -720,6 +720,7 @@ HRESULT CGameInstance::Push_Effect(const _tchar * pEffectTag, CEffect * pEffect)
 	if (!m_pEffect_Manager)
 		return E_FAIL;
 
+
 	return m_pEffect_Manager->Push_Effect(pEffectTag, pEffect);
 }
 

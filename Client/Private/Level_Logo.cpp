@@ -86,6 +86,8 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar* pLayerTag)
 			return E_FAIL;
 	}
 
+	if (FAILED(Load_LobbyRock(TEXT("../../Data/Lobby/Rock/LobbyRock.data"), pLayerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -129,6 +131,53 @@ HRESULT CLevel_Logo::Ready_Layer_Character(const _tchar * pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::LOBBY_CHARACTER_RIGHT, pLayerTag, L"LobbyCharacter_Right")))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Load_LobbyRock(const _tchar* pLobbyRockFilePath, const _tchar * pLayerTag)
+{
+	HANDLE		hFile = CreateFile(pLobbyRockFilePath, GENERIC_READ, 0, 0,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Failed to Load Data in Logo : LobbyRock");
+		return E_FAIL;
+	}
+
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+
+	DWORD		dwByte = 0;
+	_uint		iLobbyRockCount = { 0 };
+
+	ReadFile(hFile, &iLobbyRockCount, sizeof(_uint), &dwByte, nullptr);
+
+	SMAP_OBJECT_DESC		sMapObjectDesc = {};
+
+	for (_uint i = 0; i < iLobbyRockCount; ++i)
+	{
+		ZeroMemory(&sMapObjectDesc, sizeof(SMAP_OBJECT_DESC));
+
+		ReadFile(hFile, &sMapObjectDesc.SObjectDesc.vP, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &sMapObjectDesc.SObjectDesc.vS, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &sMapObjectDesc.SObjectDesc.vA, sizeof(_float3), &dwByte, nullptr);
+
+		ReadFile(hFile, &sMapObjectDesc.iModelTypeID, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &sMapObjectDesc.iDiffuseTexID, sizeof(_uint), &dwByte, nullptr);
+
+		_tchar szLobbyRockTag[MAX_TAG] = L"";
+		wsprintf(szLobbyRockTag, TEXT("lobbyrock_%d"), i);
+
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::LOBBY_ROCK, pLayerTag, szLobbyRockTag, &sMapObjectDesc)))
+			return E_FAIL;
+
+	}
+
+	CloseHandle(hFile);
 
 	return S_OK;
 }

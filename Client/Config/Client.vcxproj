@@ -217,6 +217,7 @@
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\Lobby_Character.h" />
+    <ClInclude Include="..\Public\Lobby_Rock.h" />
     <ClInclude Include="..\Public\Mesh_Effect_P.h" />
     <ClInclude Include="..\public\MissileKey.h" />
     <ClInclude Include="..\public\OBBKey.h" />
@@ -299,6 +300,7 @@
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\Lobby_Character.cpp" />
+    <ClCompile Include="..\Private\Lobby_Rock.cpp" />
     <ClCompile Include="..\Private\Mesh_Effect_P.cpp" />
     <ClCompile Include="..\private\MissileKey.cpp" />
     <ClCompile Include="..\private\OBBKey.cpp" />

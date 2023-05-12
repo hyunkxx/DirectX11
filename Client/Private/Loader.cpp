@@ -10,6 +10,8 @@
 #include "CharacterSelect_Terrain.h"
 #include "Floor.h"
 
+#include "Lobby_Rock.h"
+
 #include "Lobby_Character.h"
 #include "PlayerGirl.h"
 #include "Parts.h"
@@ -156,6 +158,44 @@ HRESULT CLoader::Load_Level_Logo()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_LOBBY_CHARACTER_MODEL, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/LobbyPlayerGirl.dmdl")))))
 		return E_FAIL;
 
+#pragma region LOBBY_ROCK
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/0/SM_Com_Roc_28AS.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/1/SM_Com_Roc_52AS.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/2/SM_Com_Roc_76AL.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/3/SM_Com_Roc_77AL.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_3");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_4, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/4/SM_Com_Roc_78AL.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_4");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/5/SM_Com_Roc_82AM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_5");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_6, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/6/SM_Com_Roc_83AM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_6");
+		return E_FAIL;
+	}
+#pragma endregion LOBBY_ROCK
+
 
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 	m_pApp->LoadRatio(0.7f);
@@ -196,6 +236,11 @@ HRESULT CLoader::Load_Level_Logo()
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHARACTERSELECT_TERRAIN, CCharacterSelect_Terrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+#pragma region LOBBY_ROCK
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_ROCK, CLobby_Rock::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion LOBBY_ROCK
 
 #pragma endregion
 
