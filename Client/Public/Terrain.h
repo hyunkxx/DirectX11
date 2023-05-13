@@ -34,6 +34,8 @@ public:
 private:
 	_uint				m_iShader_PassID = { 0 };
 
+	const _tchar*		m_pUVSamplerRatio_FilePath = { TEXT("") };
+
 	_float				m_fUVSampler_Ratio_1 = { 0.0f };
 	_float				m_fUVSampler_Ratio_2 = { 0.0f };
 	_float				m_fUVSampler_Ratio_3 = { 0.0f };
@@ -44,7 +46,7 @@ private:
 	HRESULT Setup_ShaderResources();
 
 public:
-	static CTerrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CTerrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pUVSamplerRatio_FilePath);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
 

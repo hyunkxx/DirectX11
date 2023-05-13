@@ -206,11 +206,9 @@
     <ClInclude Include="..\public\LightManager.h" />
     <ClInclude Include="..\Public\Mesh.h" />
     <ClInclude Include="..\Public\Mesh_Instance.h" />
-    <ClInclude Include="..\Public\Mesh_Instance_Tree1.h" />
     <ClInclude Include="..\Public\Model.h" />
     <ClInclude Include="..\Public\Model_Anim.h" />
     <ClInclude Include="..\Public\Model_Instance.h" />
-    <ClInclude Include="..\Public\Model_Instance_Tree1.h" />
     <ClInclude Include="..\public\Model_VTF.h" />
     <ClInclude Include="..\Public\Navigation.h" />
     <ClInclude Include="..\Public\OBBCollider.h" />
@@ -270,11 +268,9 @@
     <ClCompile Include="..\private\LightManager.cpp" />
     <ClCompile Include="..\Private\Mesh.cpp" />
     <ClCompile Include="..\Private\Mesh_Instance.cpp" />
-    <ClCompile Include="..\Private\Mesh_Instance_Tree1.cpp" />
     <ClCompile Include="..\Private\Model.cpp" />
     <ClCompile Include="..\Private\Model_Anim.cpp" />
     <ClCompile Include="..\Private\Model_Instance.cpp" />
-    <ClCompile Include="..\Private\Model_Instance_Tree1.cpp" />
     <ClCompile Include="..\private\Model_VTF.cpp" />
     <ClCompile Include="..\Private\Navigation.cpp" />
     <ClCompile Include="..\Private\OBBCollider.cpp" />

@@ -48,7 +48,6 @@ public:
 	void Get_PSA_To_InstanceMatrix(_uint iGetNum, __out SOBJECT_DESC* pOut);
 
 private:
-	/* 인스턴스를 만들 개수 & 수정할 인스턴스 번호 */
 	_uint					m_iNumInstance = { 0 };
 	_float4x4*				m_pInstanceMatrix = { nullptr };
 

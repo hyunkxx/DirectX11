@@ -18,7 +18,6 @@
 #include "Character.h"
 
 
-
 CApplication::CApplication()
 	: m_pGameInstance { CGameInstance::GetInstance() }
 #ifdef _DEBUG

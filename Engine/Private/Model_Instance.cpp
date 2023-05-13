@@ -16,7 +16,7 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
 	, m_ModelMaterials(rhs.m_ModelMaterials)
 	, m_LocalMatrix(rhs.m_LocalMatrix)
-	, m_iNumInstance { rhs.m_iNumInstance }
+	, m_iNumInstance{ rhs.m_iNumInstance }
 {
 	for (auto& pInstance_Mesh : m_Instance_Meshes)
 		Safe_AddRef(pInstance_Mesh);

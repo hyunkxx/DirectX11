@@ -34,7 +34,7 @@ public:
 
 	void Set_CurrentIndex(_uint iIndex)
 	{
-		m_iCurrentIndex = iIndex;
+		m_iCell_In_CheckIndex = iIndex;
 	}
 
 public:
@@ -56,7 +56,7 @@ public:
 	_int Is_CurrentIn(_fvector vPosition);
 
 private:
-	_int							m_iCurrentIndex = { 0 };
+	_int							m_iCell_In_CheckIndex = { 0 };
 
 #ifdef _DEBUG
 public:

@@ -10,6 +10,7 @@ CTerrain::CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CTerrain::CTerrain(const CTerrain& rhs)
 	: CGameObject(rhs)
+	, m_pUVSamplerRatio_FilePath{ rhs.m_pUVSamplerRatio_FilePath }
 {
 }
 
@@ -31,7 +32,8 @@ HRESULT CTerrain::Initialize(void* pArg)
 
 	m_iShader_PassID = { 2 };
 
-	if (FAILED(Load_UVSamplerRatio_Data(TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data"))))
+	// TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data")
+	if (FAILED(Load_UVSamplerRatio_Data(m_pUVSamplerRatio_FilePath)))
 	{
 		m_fUVSampler_Ratio_1 = { 100.0f };
 		m_fUVSampler_Ratio_2 = { 100.0f };
@@ -87,7 +89,7 @@ HRESULT CTerrain::Render()
 	m_pShader->Begin(m_iShader_PassID);
 	m_pVIBuffer->Render();
 
-	return S_OK;   
+	return S_OK;
 }
 
 void CTerrain::RenderGUI()
@@ -157,7 +159,7 @@ HRESULT CTerrain::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_FILTER,
 		TEXT("com_texture_Filter"), (CComponent**)&m_pFilterTexture)))
 		return E_FAIL;
-	
+
 #pragma endregion TERRAIN_TEX
 
 	return S_OK;
@@ -165,7 +167,7 @@ HRESULT CTerrain::Add_Components()
 
 HRESULT CTerrain::Setup_ShaderResources()
 {
-	CPipeLine* pPipeline= CPipeLine::GetInstance();
+	CPipeLine* pPipeline = CPipeLine::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	if (nullptr == m_pShader)
@@ -214,7 +216,7 @@ HRESULT CTerrain::Setup_ShaderResources()
 	return S_OK;
 }
 
-CTerrain* CTerrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CTerrain* CTerrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pUVSamplerRatio_FilePath)
 {
 	CTerrain* pInstance = new CTerrain(pDevice, pContext);
 
@@ -223,6 +225,8 @@ CTerrain* CTerrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		MSG_BOX("Failed to Created : CTerrain");
 		Safe_Release(pInstance);
 	}
+
+	pInstance->m_pUVSamplerRatio_FilePath = pUVSamplerRatio_FilePath;
 
 	return pInstance;
 }

@@ -29,7 +29,7 @@ HRESULT CTree_0::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, POSITION_ZERO);
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, POSITION_ZERO);
 	m_iShaderPassID = 0;
 
 	return S_OK;
@@ -49,9 +49,9 @@ void CTree_0::Tick(_double TimeDelta)
 void CTree_0::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
-	
+
 	if (nullptr != m_pModelCom)
-		m_pModelCom->Culling(m_pTransformCom->Get_WorldMatrixInverse(), 15.0f);
+		m_pModelCom->Culling(m_pMainTransform->Get_WorldMatrixInverse(), 30.0f);
 
 	if (nullptr != m_pRendererCom)
 	{
@@ -131,9 +131,9 @@ HRESULT CTree_0::Add_Components()
 	TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
-		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
+		TEXT("Com_Transform"), (CComponent**)&m_pMainTransform, &TransformDesc)))
 		return E_FAIL;
-	m_pTransformCom->Set_Scale(_float3(1.0f, 1.0f, 1.0f));
+	m_pMainTransform->Set_Scale(_float3(1.0f, 1.0f, 1.0f));
 
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_0,
@@ -154,7 +154,7 @@ HRESULT CTree_0::SetUp_ShaderResources()
 		return E_FAIL;
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
+	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
 		return E_FAIL;
@@ -170,7 +170,7 @@ HRESULT CTree_0::SetUp_ShadowShaderResources()
 		return E_FAIL;
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
+	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
 		return E_FAIL;
@@ -210,7 +210,7 @@ void CTree_0::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pTransformCom);
+	Safe_Release(m_pMainTransform);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);

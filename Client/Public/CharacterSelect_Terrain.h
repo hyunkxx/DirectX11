@@ -4,7 +4,6 @@
 
 BEGIN(Engine)
 class CVIBuffer_Terrain;
-class CTransform;
 class CRenderer;
 class CTexture;
 class CShader;

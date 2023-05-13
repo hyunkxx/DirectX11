@@ -290,12 +290,12 @@ _int CNavigation::Is_CurrentIn(_fvector vPosition)
 	for (auto& pCell : m_Cells)
 	{
 		if (true == pCell->Is_CurrentIn(vPosition))
-			m_iCurrentIndex = iCellIndex;
+			m_iCell_In_CheckIndex = iCellIndex;
 		else
 			iCellIndex++;
 	}
 
-	return m_iCurrentIndex;
+	return m_iCell_In_CheckIndex;
 }
 
 #ifdef _DEBUG

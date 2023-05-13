@@ -10,13 +10,13 @@ CMesh_Instance::CMesh_Instance(ID3D11Device * pDevice, ID3D11DeviceContext * pCo
 
 CMesh_Instance::CMesh_Instance(const CMesh_Instance& rhs)
 	: CVIBuffer(rhs)
-	, m_iStrideInstance { rhs.m_iStrideInstance }
-	, m_pVBInstance { rhs.m_pVBInstance }
-	, m_iNumInstance { rhs.m_iNumInstance }
-	, m_pInstanceMatrix { rhs.m_pInstanceMatrix }
+	, m_iStrideInstance{ rhs.m_iStrideInstance }
+	, m_pVBInstance{ rhs.m_pVBInstance }
+	, m_iNumInstance{ rhs.m_iNumInstance }
+	, m_pInstanceMatrix{ rhs.m_pInstanceMatrix }
 	, m_pIndices{ rhs.m_pIndices }
-	, m_iTotalNumInstance { rhs.m_iTotalNumInstance }
-	, m_pTotalInstanceMatrix { rhs.m_pTotalInstanceMatrix }
+	, m_iTotalNumInstance{ rhs.m_iTotalNumInstance }
+	, m_pTotalInstanceMatrix{ rhs.m_pTotalInstanceMatrix }
 {
 	Safe_AddRef(m_pVBInstance);
 }
@@ -109,12 +109,12 @@ HRESULT CMesh_Instance::Render()
 HRESULT CMesh_Instance::Ready_VIBuffer_For_NonAnim_Instance(SMESHINFO * pMeshInfo, _float4x4* pInstanceMatrix)
 {
 	m_iStrideInstance = sizeof(VTXMATRIX);
-		
+
 	m_iStride = sizeof(VTXSMODEL);
 	m_iMaterialIndex = pMeshInfo->s_iMaterialIndex;
 	m_iVertexCount = pMeshInfo->s_iNumVertices;
 	m_iFaceCount = pMeshInfo->s_iNumFaces;
-	
+
 	lstrcpy(m_szName, pMeshInfo->s_szName);
 
 	m_iVertexBuffersCount = 2;
@@ -281,7 +281,7 @@ _float3 CMesh_Instance::GetScale_To_InstanceMatrix(_uint iGetNum)
 	vR = { fM._11, fM._12, fM._13, fM._14 };
 	vU = { fM._21, fM._22, fM._23, fM._24 };
 	vL = { fM._31, fM._32, fM._33, fM._34 };
-	
+
 	return _float3{ XMVectorGetX(XMVector3Length(vR)), XMVectorGetX(XMVector3Length(vU)), XMVectorGetX(XMVector3Length(vL)) };
 }
 
@@ -289,7 +289,7 @@ _float3 CMesh_Instance::GetAngle_To_InstanceMatrix(_uint iGetNum)
 {
 	if (m_iTotalNumInstance <= iGetNum || 0 > iGetNum)
 		return _float3{ 0.0f, 0.0f, 0.0f };
-	
+
 	_float4x4	fM;
 	ZeroMemory(&fM, sizeof(_float4x4));
 
@@ -314,7 +314,7 @@ _float3 CMesh_Instance::GetAngle_To_InstanceMatrix(_uint iGetNum)
 	// x z 축이 바뀌는거같아서 일단 순서 바꿔봄 
 	return _float3{ XMConvertToDegrees(Psi),XMConvertToDegrees(Theta),XMConvertToDegrees(Rho) };
 	//return _float3{ XMConvertToDegrees(Rho),XMConvertToDegrees(Theta),XMConvertToDegrees(Psi) };
-	
+
 	/*
 	_float4x4 fR;
 	memcpy(&fR, &m_pTotalInstanceMatrix[iGetNum], sizeof(_float4x4));
@@ -429,5 +429,5 @@ void CMesh_Instance::Free()
 
 		Safe_Delete_Array(m_pTotalInstanceMatrix);
 	}
-	
+
 }

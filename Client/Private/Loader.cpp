@@ -329,7 +329,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_1, CModel_Instance_Tree1::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_1, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/1/SM_Com_Tre_02AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Tree_1.data")))))
 	{
 		MSG_BOX("Failed to Prototype In Loader : Tree_1");
@@ -364,7 +364,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	//GamePlay GameObject
 #pragma region GAMEOBJECTS
 
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CAMERA, CPlayerCamera::Create(m_pDevice, m_pContext))))
@@ -478,7 +478,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 	//GamePlay GameObject
 #pragma region GAMEOBJECTS
 
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data")))))
 		return E_FAIL;
 
 	/*if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_NULL, CTestGeneric::Create(m_pDevice, m_pContext))))

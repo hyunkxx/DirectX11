@@ -6,7 +6,6 @@
 BEGIN(Engine)
 class CRenderer;
 class CShader;
-class CTransform;
 class CModel_Instance;
 END
 
@@ -34,11 +33,9 @@ public:
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
 	CShader*			m_pShaderCom = { nullptr };
-	CTransform*			m_pTransformCom = { nullptr };
 	CModel_Instance*	m_pModelCom = { nullptr };
 
 private:
-	_uint				m_iAnimID = { 0 };
 	_uint				m_iShaderPassID = { 0 };
 
 private:

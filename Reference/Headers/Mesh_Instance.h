@@ -26,7 +26,7 @@ private:
 	_tchar	m_szName[MAX_PATH] = TEXT("");
 	_uint	m_iMaterialIndex = { 0 };
 	_uint	m_iNumBones = { 0 };
-	
+
 private:
 	vector<_uint>	m_BoneIndices;
 
@@ -48,19 +48,14 @@ public:
 	_float3 GetAngle_To_InstanceMatrix(_uint iGetNum);
 	_float3 GetPosition_To_InstanceMatrix(_uint iGetNum);
 
-public:
-	//void GetOn_Terrain();
-
 private:
 	_uint							m_iStrideInstance = { 0 };
 	ID3D11Buffer*					m_pVBInstance = { nullptr };
 
-	/* 원본 */
 	_uint							m_iNumInstance = { 0 };
 	VTXMATRIX*						m_pInstanceMatrix = { nullptr };
 	FACEINDICES32*					m_pIndices = { nullptr };
 
-	/* 현재 총 개수 */
 	_uint							m_iTotalNumInstance = { 0 };
 	VTXMATRIX*						m_pTotalInstanceMatrix = { nullptr };
 
