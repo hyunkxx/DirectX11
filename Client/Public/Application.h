@@ -35,6 +35,16 @@ private:
 	
 	HRESULT Ready_Static_Effect();
 	
+
+	HRESULT Ready_Fonts();
+
+#ifdef _DEBUG
+private: /* For.Fps */
+	_tchar					m_szFPS[MAX_PATH] = TEXT("");
+	_uint					m_iNumRender = { 0 };
+	_double					m_TimeAcc = { 0.0 };
+#endif // _DEBUG
+
 public:
 	static CApplication* Create();
 	virtual void Free() override;

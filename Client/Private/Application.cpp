@@ -41,6 +41,9 @@ HRESULT CApplication::Initialize()
 	if (FAILED(m_pGameInstance->Engine_Initialize(GraphicDesc, LEVEL_END, COLL_END, &m_pDevice, &m_pContext)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Fonts()))
+		return E_FAIL;
+
 #ifdef _DEBUG
 	m_pContext->OMGetRenderTargets(1, &m_pRTV, &m_pDSV);
 	m_pRTV->Release();
@@ -79,6 +82,11 @@ void CApplication::Tick(_double TimeDelta)
 		return;
 
 	m_pGameInstance->Engine_Tick(TimeDelta);
+
+#ifdef _DEBUG
+	m_TimeAcc += TimeDelta;
+#endif // _DEBUG
+
 }
 
 HRESULT CApplication::Render()
@@ -100,6 +108,28 @@ HRESULT CApplication::Render()
 
 	m_pRenderer->Draw();
 	m_pGameInstance->CollisionRender();
+
+#pragma region FPS
+#ifdef _DEBUG
+	/* Render가 한번 불릴때마다 카운트 증가 */
+	++m_iNumRender;
+
+	/* 1초마다 그리는 회수를 측정 */
+	if (1.0 <= m_TimeAcc)
+	{
+		wsprintf(m_szFPS, TEXT("Fps : %d"), m_iNumRender);
+		m_TimeAcc = 0.0;
+		m_iNumRender = 0;
+	}
+
+	m_pGameInstance->Render_Font(
+		TEXT("Font_MapleStoryBold"),
+		m_szFPS,
+		_float2(0.f, 0.f),
+		XMVectorSet(1.f, 1.f, 0.f, 1.f),
+		_float2(1.f, 1.f)
+	);
+#endif // _DEBUG
 
 #ifdef _DEBUG
 	m_pRenderer->RenderDebugBundle();
@@ -549,6 +579,23 @@ HRESULT CApplication::Ready_Static_Effect()
 			return E_FAIL;
 		}
 	}
+
+	return S_OK;
+}
+
+HRESULT CApplication::Ready_Fonts()
+{
+	if (nullptr == m_pGameInstance)
+		return E_FAIL;
+
+	/* For.Font_MapleStoryBold */
+	if (FAILED(m_pGameInstance->Add_Font(
+		m_pDevice,
+		m_pContext,
+		TEXT("Font_MapleStoryBold"),
+		TEXT("../../Resource/Fonts/MapleStoryBlod.spritefont")
+	)))
+		return E_FAIL;
 
 	return S_OK;
 }
