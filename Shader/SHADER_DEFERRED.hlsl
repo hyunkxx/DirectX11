@@ -468,8 +468,7 @@ PS_OUT_SSD PS_SSD_Blend(PS_IN In)
 	}
 	else
 	{
-		Out.vNormal.rgb = vNormalColor.rgb * (1.f - vNormalColor_SSD.a) + (vNormalColor_SSD.rgb * vNormalColor_SSD.a);
-		Out.vNormal.a = vNormalColor.a;
+		Out.vNormal = vNormalColor_SSD;
 	}
 
 	return Out;

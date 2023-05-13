@@ -80,6 +80,7 @@ void CRenderer::Draw()
 	//Final 백버퍼에 최종 렌더
 	FinalExtraction();
 
+
 	Render_UI();
 
 #ifdef _DEBUG
@@ -788,17 +789,7 @@ void CRenderer::Render_GlowSSD()
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY", "g_GlowTexture")))
 		return;
 
-	if (m_pRenderSetting->IsActiveBlackWhite())
-	{
-		m_pShader_Blur->Begin(3);
-	}
-	else
-	{
-		if (m_pRenderSetting->IsActiveShadow())
-			m_pShader_Blur->Begin(4);
-		else
-			m_pShader_Blur->Begin(3);
-	}
+	m_pShader_Blur->Begin(3);
 
 	m_pVIBuffer->Render();
 
@@ -1018,6 +1009,9 @@ void CRenderer::Render_Glow_Blend()
 
 	m_pShader->Begin(8);
 	m_pVIBuffer->Render();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
 }
 
 void CRenderer::Render_SpecularGlow()
@@ -1078,9 +1072,6 @@ void CRenderer::Render_AlphaBlend()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObject[RENDER_ALPHABLEND].clear();
-
-	if (FAILED(m_pTargetManager->End(m_pContext)))
-		return;
 }
 
 void CRenderer::Render_PostEffect()

@@ -45,7 +45,10 @@ void CRect_Effect_P::Tick(_double TimeDelta)
 
 	m_fEffectAcc += (_float)TimeDelta;
 
-	Distortion_Tick(TimeDelta);
+	
+	if (CRenderer::RENDER_DISTORTION == m_EffectDesc.iRenderGroup)
+		Distortion_Tick(TimeDelta);
+
 	Loop_Check(TimeDelta);
 
 }
@@ -102,7 +105,11 @@ void CRect_Effect_P::Play_Effect(_float4x4 * pWorldMatrix, _bool bTracking)
 	if (nullptr == pWorldMatrix)
 		return;
 
-	m_bDistortion = false;
+	if (CRenderer::RENDER_DISTORTION == m_EffectDesc.iRenderGroup)
+		m_bDistortion = true;
+	else
+		m_bDistortion = false;
+
 	m_bFinish = false;
 	m_fDelayAcc = 0.f;
 	m_fEffectAcc = 0.f;
@@ -235,7 +242,7 @@ HRESULT CRect_Effect_P::SetUp_ShaderResources()
 	{
 		if (m_EffectDesc.iRenderGroup == (_int)CRenderer::RENDER_SSD || m_EffectDesc.iRenderGroup == (_int)CRenderer::RENDER_GLOWSSD)
 		{
-			if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Diffuse"), "g_BackTexture")))
+			if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Diffuse_SSD_Blend"), "g_BackTexture")))
 				return E_FAIL;
 			if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Normal"), "g_BackNormalTexture")))
 				return E_FAIL;
@@ -335,6 +342,7 @@ void CRect_Effect_P::SetUp_Linear()
 
 void CRect_Effect_P::Distortion_Tick(_double TimeDelta)
 {
+
 	if (m_fEffectAcc >= START_DISTIME && m_fEffectAcc <= END_DISTIME)
 	{
 		DISTORTION_POWER += DISTORTION_SPEED * (_float)TimeDelta;
@@ -347,13 +355,12 @@ void CRect_Effect_P::Distortion_Tick(_double TimeDelta)
 		DISTORTION_POWER -= DISTORTION_SPEED * (_float)TimeDelta;
 		if (0.f >= DISTORTION_POWER)
 		{
-			DISTORTION_POWER = 0.f;
+			DISTORTION_POWER = 0.0f;
 		}
 	}
-	if (0.f != DISTORTION_POWER)
-		m_bDistortion = true;
-	else
-		m_bDistortion = false;
+
+	
+
 }
 
 void CRect_Effect_P::Loop_Check(_double TimeDelta)

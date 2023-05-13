@@ -332,7 +332,6 @@ PS_OUT	PS_MAIN_DISTORTION(PS_IN_NORMAL In)
 
 
 	Out.vDiffuse = g_BackTexture.Sample(LinearClampSampler, vUV);
-	Out.vDiffuse.a = 1.f;
 
 	return Out;
 }
@@ -362,7 +361,6 @@ PS_OUT	PS_MAIN_DISTORTION_N0_DEPTH(PS_IN_NORMAL In)
 	vUV.y = saturate((vProjPos.y / vProjPos.w) * -0.5f + 0.5f);
 
 	Out.vDiffuse = g_BackTexture.Sample(LinearClampSampler, vUV);
-	Out.vDiffuse.a = 1.f;
 
 	return Out;
 }
