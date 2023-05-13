@@ -96,9 +96,6 @@
     <ClCompile Include="..\Private\GUIManager.cpp">
       <Filter>config\ImGui\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\InGameLoader.cpp">
-      <Filter>src\00. Application\Manager</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\GameMode.cpp">
       <Filter>src\00. Application\Manager</Filter>
     </ClCompile>
@@ -210,24 +207,6 @@
     <ClCompile Include="..\private\FloatingStone.cpp">
       <Filter>src\02. GameObject\00. Environment</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_MainScreen.cpp">
-      <Filter>src\02. GameObject\99. UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UI_Minimap.cpp">
-      <Filter>src\02. GameObject\99. UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UI_Monster.cpp">
-      <Filter>src\02. GameObject\99. UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UI_Mouse.cpp">
-      <Filter>src\02. GameObject\99. UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UI_TapT.cpp">
-      <Filter>src\02. GameObject\99. UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UI_Terminal.cpp">
-      <Filter>src\02. GameObject\99. UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\CharacterSelect_Terrain.cpp">
       <Filter>src\02. GameObject\00. Environment</Filter>
     </ClCompile>
@@ -236,6 +215,33 @@
     </ClCompile>
     <ClCompile Include="..\private\PriorityKey.cpp">
       <Filter>src\05.AnimStateKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Lobby_Rock.cpp">
+      <Filter>src\02. GameObject\00. Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MainScreen.cpp">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Minimap.cpp">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Monster.cpp">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Mouse.cpp">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_TapT.cpp">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Terminal.cpp">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AcquireSystem.cpp">
+      <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\InteractionUI.cpp">
+      <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -289,12 +295,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\GUIManager.h">
       <Filter>config\ImGui\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\InGameLoader.h">
-      <Filter>src\00. Application\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\GameMode.h">
-      <Filter>src\00. Application\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\AppManager.h">
       <Filter>src\00. Application\Manager</Filter>
@@ -413,24 +413,6 @@
     <ClInclude Include="..\public\FloatingStone.h">
       <Filter>src\02. GameObject\00. Environment</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_MainScreen.h">
-      <Filter>src\02. GameObject\99. UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UI_Minimap.h">
-      <Filter>src\02. GameObject\99. UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UI_Monster.h">
-      <Filter>src\02. GameObject\99. UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UI_Mouse.h">
-      <Filter>src\02. GameObject\99. UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UI_TapT.h">
-      <Filter>src\02. GameObject\99. UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UI_Terminal.h">
-      <Filter>src\02. GameObject\99. UI</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\CharacterSelect_Terrain.h">
       <Filter>src\02. GameObject\00. Environment</Filter>
     </ClInclude>
@@ -439,6 +421,39 @@
     </ClInclude>
     <ClInclude Include="..\public\OBBKey.h">
       <Filter>src\05.AnimStateKeys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Lobby_Rock.h">
+      <Filter>src\02. GameObject\00. Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MainScreen.h">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Minimap.h">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Monster.h">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Mouse.h">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_TapT.h">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Terminal.h">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AcquireSystem.h">
+      <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\InteractionUI.h">
+      <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Client_Struct.h">
+      <Filter>config\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\GameMode.h">
+      <Filter>src\00. Application\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -547,6 +562,15 @@
     </Filter>
     <Filter Include="src\02. GameObject\02. LoadingImage">
       <UniqueIdentifier>{975476c6-7409-4c8e-93ab-d8f8f4b64e95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\00. Application\Items">
+      <UniqueIdentifier>{9c618cb5-4af8-41bb-a406-6346157d71d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\99. UI\02. IngameUI">
+      <UniqueIdentifier>{490f9b39-a0cb-4664-858b-e8ee394d1af7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\99. UI\03. AcquireSystem">
+      <UniqueIdentifier>{d3942c92-63e4-47c0-a83e-597b1ef5f8f6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -218,13 +218,11 @@ HRESULT CLobbyCharacter::Add_Components()
 		TEXT("Com_Eye_Mask_Texture"), (CComponent**)&m_pEyeMaskTexture)))
 		return E_FAIL;
 
-	/* For.Com_Model*/
-	if (FAILED(__super::Add_Component(LEVEL_LOGO, m_iModelID,
+	if (FAILED(__super::Add_Component(LEVEL_LOGO, DMODEL::DMD_PLAYERGIRL_MODEL,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	/* For.Com_AnimSet_Base */
-	if (FAILED(__super::Add_Component(LEVEL_LOGO, m_iAnimID,
+	if (FAILED(__super::Add_Component(LEVEL_LOGO, DMODEL::DMD_LOBBY_CHARACTER_MODEL,
 		TEXT("Com_AnimSet_Base"), (CComponent**)&m_pAnimSetCom)))
 		return E_FAIL;
 

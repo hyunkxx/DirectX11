@@ -216,6 +216,30 @@ PS_OUT PS_MAIN_MAPOBJECT_NORMALMAP(PS_IN In)
 	return Out;
 }
 
+PS_OUT_OUTLINE PS_MAIN_MAPOBJECT_NORMALMAP_DARK(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector			vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector			vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+
+	float3			vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3x3		WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vDiffuse = vMtrlDiffuse * 0.5f;
+
+	if (Out.vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	return Out;
+}
+
 struct PS_IN_SKY
 {
 	float4 vPosition : SV_POSITION;
@@ -235,7 +259,7 @@ PS_OUT_SKY PS_MAIN_SKY(PS_IN_SKY In)
 	PS_OUT_SKY	Out = (PS_OUT_SKY)0;
 
 	Out.vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
-	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vOutNormal = float4(0.f, 0.f, 0.f, 1.f);
 
 	return Out;
 }
@@ -326,4 +350,17 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_SKY();
 	}
 
+	// 6 ·Îºñ¸Ê ¾îµÓ°Ô ±×¸®±â
+	pass Model_MapObject_NormalMap_Dark_Pass6
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_MAPOBJECT_NORMALMAP_DARK();
+	}
 }

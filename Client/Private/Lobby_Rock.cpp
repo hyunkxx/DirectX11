@@ -40,7 +40,7 @@ HRESULT CLobby_Rock::Initialize(void * pArg)
 
 	SetUp_State();
 
-	m_iShaderPass_ID = { 4 };
+	m_iShaderPass_ID = { 6 };
 
 	m_iDiffuseTex_ID = { m_SMap_Obejct_Desc.iDiffuseTexID };
 

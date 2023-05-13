@@ -1340,6 +1340,7 @@ void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTa
 void CRenderer::FinalExtraction()
 {
 	CRenderTarget* pSourTarget;
+
 	if (m_pRenderSetting->IsFade())
 	{
 		Render_PostEffect();

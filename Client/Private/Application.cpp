@@ -17,6 +17,9 @@
 #include "Floor.h"
 #include "Character.h"
 
+//UI
+#include "InteractionUI.h"
+#include "AcquireSystem.h"
 
 CApplication::CApplication()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -63,10 +66,11 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
-	//콜라이더 보이기/숨기기
-	m_pGameInstance->SetCollisionDebugRender(true);
+	//UI에 필요한 텍스쳐 원본 생성
 
+	m_pGameInstance->SetCollisionDebugRender(true);
 #ifdef _DEBUG
+	//콜라이더 보이기/숨기기
 	m_pRenderer->DebugBundleRender_Control(false);
 #endif
 
@@ -381,6 +385,9 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 
 HRESULT CApplication::Ready_Prototype_Static_GameObject()
 {
+	if (FAILED(Ready_UI_Data()))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::FLOOR, CFloor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
@@ -429,6 +436,46 @@ void CApplication::DestroyManager()
 
 	CAppManager::DestroyInstance();
 	CGameMode::DestroyInstance();
+}
+
+HRESULT CApplication::Ready_UI_Data()
+{
+	//Mouse
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_MOUSE_BTN_LEFT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/MouseLeft_Btn.png")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_MOUSE_BTN_MIDDLE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/MouseMiddel_Btn.png")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_MOUSE_BTN_RIGHT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/MouseRight_Btn.png")))))
+		return E_FAIL;
+
+	//Key
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_KEY_BTN_F,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/KeyF_Btn.png")))))
+		return E_FAIL;
+	// Etc
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_LISTBACK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/ListBack.png")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_LISTGARD_SPRITE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/ListGardSprite.png")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_LISTLIGHT_SPRITE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/ListLightSprite.png")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ACQUIRE_SYSTEM,
+		CAcquireSystem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::UI_INTERACTION,
+		CInteractionUI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CApplication::Ready_Static_Effect()

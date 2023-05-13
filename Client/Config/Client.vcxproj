@@ -188,6 +188,7 @@
     <ClInclude Include="..\ImGui\imstb_rectpack.h" />
     <ClInclude Include="..\ImGui\imstb_textedit.h" />
     <ClInclude Include="..\ImGui\imstb_truetype.h" />
+    <ClInclude Include="..\public\AcquireSystem.h" />
     <ClInclude Include="..\public\AnimToolManager.h" />
     <ClInclude Include="..\public\Application.h" />
     <ClInclude Include="..\public\AppManager.h" />
@@ -208,7 +209,7 @@
     <ClInclude Include="..\public\FloatingStone.h" />
     <ClInclude Include="..\public\GameMode.h" />
     <ClInclude Include="..\Public\GUIManager.h" />
-    <ClInclude Include="..\public\InGameLoader.h" />
+    <ClInclude Include="..\public\InteractionUI.h" />
     <ClInclude Include="..\public\Intro.h" />
     <ClInclude Include="..\public\IntroCamera.h" />
     <ClInclude Include="..\public\Level_AnimTool.h" />
@@ -255,6 +256,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Client_Struct.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -289,6 +291,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\private\AcquireSystem.cpp" />
     <ClCompile Include="..\private\AnimToolManager.cpp" />
     <ClCompile Include="..\private\Application.cpp" />
     <ClCompile Include="..\private\AppManager.cpp" />
@@ -303,7 +306,7 @@
     <ClCompile Include="..\private\FloatingStone.cpp" />
     <ClCompile Include="..\private\GameMode.cpp" />
     <ClCompile Include="..\Private\GUIManager.cpp" />
-    <ClCompile Include="..\private\InGameLoader.cpp" />
+    <ClCompile Include="..\private\InteractionUI.cpp" />
     <ClCompile Include="..\private\Intro.cpp" />
     <ClCompile Include="..\private\IntroCamera.cpp" />
     <ClCompile Include="..\private\Level_AnimTool.cpp" />

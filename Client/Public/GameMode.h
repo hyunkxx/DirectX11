@@ -24,6 +24,35 @@ public:
 	virtual void Free() override;
 
 public:
+	__forceinline POINT GetScreenMousePos() {
+		GetCursorPos(&m_MousePosition);
+		ScreenToClient(g_hWnd, &m_MousePosition);
+		return m_MousePosition;
+	};
+
+	__forceinline _bool InRect(RECT rect) {
+		POINT point = GetScreenMousePos();
+		if (PtInRect(&rect, point))
+			return true;
+		else
+			return false;
+	};
+
+	__forceinline _bool OnMouse(ORTHO_DESC tagDesc) {
+		RECT rect;
+		rect.left = LONG(tagDesc.fX - tagDesc.fWidth * 0.5f);
+		rect.right = LONG(tagDesc.fX + tagDesc.fWidth * 0.5f);
+		rect.top = LONG(tagDesc.fY - tagDesc.fHeight * 0.5f);
+		rect.bottom = LONG(tagDesc.fY + tagDesc.fHeight * 0.5f);
+
+		POINT point = GetScreenMousePos();
+		if (PtInRect(&rect, point))
+			return true;
+		else
+			return false;
+	};
+
+public:
 	void SetCurrentLevel(_uint nCurrentLevel) { m_nCurrentLevel = nCurrentLevel; }
 	_uint GetCurrentLevel() const { return m_nCurrentLevel; };
 	
@@ -39,5 +68,8 @@ private:
 	_uint m_nCurrentLevel = 0;
 
 	vector<CCamera*> m_pCams;
+
+private: // Utility
+	POINT m_MousePosition;
 
 };

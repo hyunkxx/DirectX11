@@ -2,6 +2,15 @@
 
 namespace Engine
 {
+	typedef struct tagOrthoDesc
+	{
+		float fX;
+		float fY;
+		float fWidth;
+		float fHeight;
+		XMFLOAT4X4 WorldMatrix;
+	}ORTHO_DESC;
+
 	typedef struct tagKeyFrame
 	{
 		XMFLOAT3	vScale;

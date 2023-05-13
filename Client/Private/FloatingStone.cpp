@@ -36,7 +36,7 @@ HRESULT CFloatingStone::Initialize(void * pArg)
 	_float fRandAngle = _float(rand() % 360);
 
 	_float iRandPer = _float(rand() % 10 + 2);
-	_float fRandScale = _float(rand() % 1) * 0.8f;
+	_float fRandScale = _float(rand() % 2) * 0.7f;
 	_float fRandSec = _float(rand() % 5);
 
 	_float3 vScale = _float3(fRandScale + (iRandPer * 0.1f), fRandScale + (iRandPer * 0.1f), fRandScale + (iRandPer * 0.1f));

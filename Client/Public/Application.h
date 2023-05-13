@@ -8,7 +8,7 @@ class CRenderer;
 
 #ifdef _DEBUG
 class CNavigation;
-#endif // _DEBUG
+#endif
 END
 
 BEGIN(Client)
@@ -28,14 +28,14 @@ private:
 	HRESULT Open_Level(LEVEL_ID eLevelID);
 	HRESULT Ready_Prototype_Static_Component();
 	HRESULT Ready_Prototype_Static_GameObject();
+	HRESULT Ready_UI_Data();
 
 private:
 	HRESULT InitializeManager();
 	void DestroyManager();
 	
-	HRESULT Ready_Static_Effect();
 	
-
+	HRESULT Ready_Static_Effect();
 	HRESULT Ready_Fonts();
 
 #ifdef _DEBUG
@@ -43,7 +43,7 @@ private: /* For.Fps */
 	_tchar					m_szFPS[MAX_PATH] = TEXT("");
 	_uint					m_iNumRender = { 0 };
 	_double					m_TimeAcc = { 0.0 };
-#endif // _DEBUG
+#endif
 
 public:
 	static CApplication* Create();
@@ -58,11 +58,9 @@ private:
 	ID3D11DepthStencilView*		m_pDSV = { nullptr };
 
 	CGameInstance*				m_pGameInstance = { nullptr };
-
 	CRenderer*					m_pRenderer = { nullptr };
 
 	class CAnimToolManager*		m_pAnimToolManager = { nullptr };
-
 #ifdef _DEBUG
 	class CGUIManager*			m_pGUIManager = { nullptr };
 #endif

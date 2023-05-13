@@ -3,6 +3,7 @@
 float4x4  g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 texture2D g_SourTexture, g_DestTexture;
+texture2D g_DepthTexture;
 
 struct VS_IN
 {
@@ -170,5 +171,6 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_EXTRACTION_FINAL();
-	}	
+	}
+
 }

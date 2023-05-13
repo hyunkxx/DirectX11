@@ -137,7 +137,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 
 	//Toon
 	float fDot = max(0, dot(vNormal, -g_vLightDir));
-	if (fDot < 0.1)
+	if (fDot < 0.2)
 		fDot = 0.93f;
 	else
 		fDot = 1.0f;
