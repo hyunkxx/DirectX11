@@ -96,7 +96,6 @@ private:
 
 	vector<CVIBuffer_Rect*> m_BufferList;
 	vector<TAPDESC*>		  m_DescList;
-	TAPDESC*			CurrentDesc = { nullptr }; // imgui·£´õ¿ë
 
 	
 

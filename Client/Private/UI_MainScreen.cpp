@@ -19,6 +19,15 @@ CUI_MainScreen::CUI_MainScreen(const CUI_MainScreen& rhs)
 	, m_pDevice(rhs.m_pDevice)
 	, m_pContext(rhs.m_pContext)
 {
+	for (auto& Buffer : rhs.m_BufferCutList)
+	{
+		m_BufferCutList.push_back(Buffer);
+		Safe_AddRef(Buffer);
+	}
+	for (auto& Desc : rhs.m_CutDescList)
+	{
+		m_CutDescList.push_back(Desc);
+	}
 }
 
 HRESULT CUI_MainScreen::Initialize_Prototype()
@@ -26,6 +35,7 @@ HRESULT CUI_MainScreen::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	Load();
 	return S_OK;
 }
 
@@ -37,7 +47,7 @@ HRESULT CUI_MainScreen::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	Load();
+	
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
@@ -512,60 +522,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 }
 
 
-CUI_MainScreen* CUI_MainScreen::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-{
-	CUI_MainScreen* pInstance = new CUI_MainScreen(pDevice, pContext);
-	if (FAILED(pInstance->Initialize_Prototype()))
-	{
-		wstring message = L"Failed to Create : CUI_MainScreen";
-		MESSAGE(message);
-		Safe_Release(pInstance);
-	}
-	
-	return pInstance;
-}
-
-CGameObject* CUI_MainScreen::Clone(void* pArg)
-{
-	CUI_MainScreen* pInstance = new CUI_MainScreen(*this);
-	if (FAILED(pInstance->Initialize(pArg)))
-	{
-		wstring message = L"Failed to Clone : CUI_MainScreen";
-		MESSAGE(message);
-		Safe_Release(pInstance);
-	}
-
-	return pInstance;
-}
-
-void CUI_MainScreen::Free()
-{
-	__super::Free();
-	Safe_Release(m_pRenderer);
-	Safe_Release(m_pShader);
-	Safe_Release(m_pTexFunc);
-	Safe_Release(m_pVIBufferCut);
-
-	for (auto& Buffer : m_BufferCutList)
-	{
-		Safe_Release(Buffer);
-		Buffer = nullptr;
-	}
-	m_BufferCutList.clear();
-
-	for (auto& Desc : m_CutDescList)
-	{
-		delete Desc;
-		Desc = nullptr;
-	}
-	m_CutDescList.clear();
-
-	m_CutDesc = nullptr;
-
-	CurrentCutDesc = nullptr;
-
-}
-
 void CUI_MainScreen::Load()
 {
 	_uint index = 35;
@@ -630,8 +586,6 @@ void CUI_MainScreen::Load()
 
 		if (nullptr != Desc)
 		{
-			CurrentCutDesc = Desc;
-			m_CutDesc = Desc;
 			m_CutDescList.push_back(Desc);
 
 			m_pVIBufferCut = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
@@ -840,4 +794,59 @@ void CUI_MainScreen::Set_Texchange(_int Texindex)
 	advance(iter, 4);
 	(*iter)->iTexNum = Texindex;
 
+}
+
+
+CUI_MainScreen* CUI_MainScreen::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	CUI_MainScreen* pInstance = new CUI_MainScreen(pDevice, pContext);
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		wstring message = L"Failed to Create : CUI_MainScreen";
+		MESSAGE(message);
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CGameObject* CUI_MainScreen::Clone(void* pArg)
+{
+	CUI_MainScreen* pInstance = new CUI_MainScreen(*this);
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		wstring message = L"Failed to Clone : CUI_MainScreen";
+		MESSAGE(message);
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CUI_MainScreen::Free()
+{
+	__super::Free();
+	Safe_Release(m_pRenderer);
+	Safe_Release(m_pShader);
+	Safe_Release(m_pTexFunc);
+	m_pVIBufferCut = nullptr;
+	Safe_Release(m_pVIBufferCut);
+
+
+	for (auto& Buffer : m_BufferCutList)
+	{
+		Safe_Release(Buffer);
+	}
+	m_BufferCutList.clear();
+
+	if (!m_bClone)
+	{
+		for (auto& Desc : m_CutDescList)
+		{
+			delete Desc;
+			Desc = nullptr;
+		}
+		m_CutDescList.clear();
+
+	}
 }

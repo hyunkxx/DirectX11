@@ -120,11 +120,8 @@ private:
 	CTexture*		m_pTexFunc = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCut = { nullptr }; // 생성, list푸시백용
 
-	// 내가 지정한 uv좌표
 	list<CVIBuffer_Rect*> m_BufferCutList;
 	list<CUTRECT*>		  m_CutDescList;
-	CUTRECT*			m_CutDesc = { nullptr }; // 생성, list푸시백용
-	CUTRECT*			CurrentCutDesc = { nullptr }; // imgui랜더용
 	
 	
 

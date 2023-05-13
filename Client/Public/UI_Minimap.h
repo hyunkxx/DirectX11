@@ -136,8 +136,8 @@ private:
 
 	
 	vector<CVIBuffer_Rect*> m_BufferList;
-	
 	vector<MAPDESC*>		  m_IconDescList;
+	CVIBuffer_Rect*			 m_BufferIcon = { nullptr };
 };
 
 END

@@ -12,6 +12,25 @@ CUI_Terminal::CUI_Terminal(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CUI_Terminal::CUI_Terminal(const CUI_Terminal& rhs)
 	: CGameObject(rhs)
 {
+	for (auto& Buffer : rhs.m_BufferList)
+	{
+		m_BufferList.push_back(Buffer);
+		Safe_AddRef(Buffer);
+	}
+	for (auto& RotBuffer : rhs.m_RotBufferList)
+	{
+		m_BufferList.push_back(RotBuffer);
+		Safe_AddRef(RotBuffer);
+	}
+
+	for (auto& Desc : rhs.m_DescList)
+	{
+		m_DescList.push_back(Desc);
+	}
+	for (auto& RotDesc : rhs.m_RotDescList)
+	{
+		m_RotDescList.push_back(RotDesc);
+	}
 }
 
 HRESULT CUI_Terminal::Initialize_Prototype()
@@ -19,6 +38,7 @@ HRESULT CUI_Terminal::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	Load();
 	return S_OK;
 }
 
@@ -30,7 +50,7 @@ HRESULT CUI_Terminal::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	Load();
+	
 
 	return S_OK;
 }
@@ -290,38 +310,42 @@ void CUI_Terminal::Free()
 	__super::Free();
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
-	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pTexture);
+	m_pVIBuffer = nullptr;
+	Safe_Release(m_pVIBuffer);
 
-	for (auto& Buffer : m_BufferList)
+	
+		for (auto& Buffer : m_BufferList)
+		{
+			Safe_Release(Buffer);
+		}
+		m_BufferList.clear();
+	
+		for (auto& Buffer : m_RotBufferList)
+		{
+			Safe_Release(Buffer);
+		}
+		m_RotBufferList.clear();
+	
+
+	if (!m_bClone)
 	{
-		Safe_Release(Buffer);
-		Buffer = nullptr;
+		for (auto& Desc : m_DescList)
+		{
+			delete Desc;
+			Desc = nullptr;
+		}
+		m_DescList.clear();
+
+
+		for (auto& Desc : m_RotDescList)
+		{
+			delete Desc;
+			Desc = nullptr;
+		}
+		m_RotDescList.clear();
+
 	}
-	m_BufferList.clear();
-
-	for (auto& Desc : m_DescList)
-	{
-		delete Desc;
-		Desc = nullptr;
-	}
-	m_DescList.clear();
-
-	for (auto& Buffer : m_RotBufferList)
-	{
-		Safe_Release(Buffer);
-		Buffer = nullptr;
-	}
-	m_RotBufferList.clear();
-
-	for (auto& Desc : m_RotDescList)
-	{
-		delete Desc;
-		Desc = nullptr;
-	}
-	m_RotDescList.clear();
-
-
 }
 
 void CUI_Terminal::Load()

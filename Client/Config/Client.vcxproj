@@ -236,12 +236,24 @@
     <ClInclude Include="..\Public\TestVTF.h" />
     <ClInclude Include="..\Public\Tree_0.h" />
     <ClInclude Include="..\Public\Tree_1.h" />
-    <ClInclude Include="..\Public\UI_MainScreen.h" />
-    <ClInclude Include="..\Public\UI_Minimap.h" />
-    <ClInclude Include="..\Public\UI_Monster.h" />
-    <ClInclude Include="..\Public\UI_Mouse.h" />
-    <ClInclude Include="..\Public\UI_TapT.h" />
-    <ClInclude Include="..\Public\UI_Terminal.h" />
+    <ClInclude Include="..\Public\UI_MainScreen.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Minimap.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Monster.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Mouse.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_TapT.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Terminal.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Client.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="Resource.h" />
@@ -298,7 +310,9 @@
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
-    <ClCompile Include="..\private\Loader.cpp" />
+    <ClCompile Include="..\private\Loader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\private\Lobby_Character.cpp" />
     <ClCompile Include="..\Private\Lobby_Rock.cpp" />
     <ClCompile Include="..\Private\Mesh_Effect_P.cpp" />
@@ -319,12 +333,24 @@
     <ClCompile Include="..\Private\TestVTF.cpp" />
     <ClCompile Include="..\Private\Tree_0.cpp" />
     <ClCompile Include="..\Private\Tree_1.cpp" />
-    <ClCompile Include="..\Private\UI_MainScreen.cpp" />
-    <ClCompile Include="..\Private\UI_Minimap.cpp" />
-    <ClCompile Include="..\Private\UI_Monster.cpp" />
-    <ClCompile Include="..\Private\UI_Mouse.cpp" />
-    <ClCompile Include="..\Private\UI_TapT.cpp" />
-    <ClCompile Include="..\Private\UI_Terminal.cpp" />
+    <ClCompile Include="..\Private\UI_MainScreen.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Minimap.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Monster.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Mouse.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_TapT.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Terminal.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="stdafx.cpp">

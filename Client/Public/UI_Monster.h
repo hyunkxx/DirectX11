@@ -102,7 +102,6 @@ private:
 
 	vector<CVIBuffer_Rect*> m_BufferList;
 	vector<MONSTERDESC*>	m_DescList;
-	MONSTERDESC*	CurrentDesc = { nullptr };
 
 	
 	

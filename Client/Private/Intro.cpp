@@ -11,12 +11,20 @@ CIntro::CIntro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CIntro::CIntro(const CIntro& rhs)
 	: CGameObject(rhs)
 {
+	for (_uint i = 0; i <(_uint)rhs.m_BufferList.size(); ++i)
+	{
+		m_BufferList.push_back(rhs.m_BufferList[i]);
+		Safe_AddRef(rhs.m_BufferList[i]);
+		m_DescList.push_back(rhs.m_DescList[i]);
+	}
 }
 
 HRESULT CIntro::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
+
+	Load();
 
 	return S_OK;
 }
@@ -32,7 +40,7 @@ HRESULT CIntro::Initialize(void * pArg)
 	CGameInstance* pGI = CGameInstance::GetInstance();
 	pGI->PlaySoundEx(L"Intro_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
 
-	Load();
+	
 
 	return S_OK;
 }
@@ -440,23 +448,33 @@ void CIntro::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexture);
+	m_pVIBuffer = nullptr; // 먼저 null 만들어야 리스트에서 해제할때안터짐
 	Safe_Release(m_pVIBuffer);
-
-	for (auto& Buffer : m_BufferList)
+	
+	
+		for (_uint i = 0; i < m_BufferList.size(); ++i)
+		{
+			if (nullptr != m_BufferList[i])
+			{
+				Safe_Release(m_BufferList[i]);
+			}
+		}
+		m_BufferList.clear();
+		
+	if (!m_bClone)
 	{
-		Safe_Release(Buffer);
-		Buffer = nullptr;
-	}
-	m_BufferList.clear();
+		for (_uint i = 0; i<m_DescList.size(); ++i)
+		{
+			if (nullptr != m_DescList[i])
+			{
+				delete  m_DescList[i];
+				m_DescList[i] = nullptr;
+			}
+		}
 
-	for (auto& Desc : m_DescList)
-	{
-		delete Desc;
-		Desc = nullptr;
+		
+		m_DescList.clear();
 	}
-	m_DescList.clear();
-
-	CurrentDesc = nullptr;
 }
 
 void CIntro::Load()
@@ -507,7 +525,7 @@ void CIntro::Load()
 		if (nullptr != Desc)
 		{
 			m_DescList.push_back(Desc);
-			CurrentDesc = Desc;
+			
 			m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
 			if (nullptr == m_pVIBuffer)
 				return;

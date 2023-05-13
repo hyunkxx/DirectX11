@@ -13,6 +13,15 @@ CUI_Monster::CUI_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CUI_Monster::CUI_Monster(const CUI_Monster& rhs)
 	: CGameObject(rhs)
 {
+	for (auto& Buffer : rhs.m_BufferList)
+	{
+		m_BufferList.push_back(Buffer);
+		Safe_AddRef(Buffer);
+	}
+	for (auto& Desc : rhs.m_DescList)
+	{
+		m_DescList.push_back(Desc);
+	}
 }
 
 HRESULT CUI_Monster::Initialize_Prototype()
@@ -20,6 +29,7 @@ HRESULT CUI_Monster::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	Load();
 	return S_OK;
 }
 
@@ -30,7 +40,7 @@ HRESULT CUI_Monster::Initialize(void * pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
-	Load();
+	
 	
 	return S_OK;
 }
@@ -233,24 +243,27 @@ void CUI_Monster::Free()
 	__super::Free();
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
-	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pTexture);
+	m_pVIBuffer = nullptr;
+	Safe_Release(m_pVIBuffer);
 
-	for (auto& Buffer : m_BufferList)
-	{
-		Safe_Release(Buffer);
-		Buffer = nullptr;
-	}
-	m_BufferList.clear();
+	
+		for (auto& Buffer : m_BufferList)
+		{
+			Safe_Release(Buffer);
+		}
+		m_BufferList.clear();
+	
 
-	for (auto& Desc : m_DescList)
-	{
-		delete Desc;
-		Desc = nullptr;
-	}
-	m_DescList.clear();
-
-	CurrentDesc = nullptr;
+		if (!m_bClone)
+		{
+			for (auto& Desc : m_DescList)
+			{
+				delete Desc;
+				Desc = nullptr;
+			}
+			m_DescList.clear();
+		}
 
 }
 
@@ -336,7 +349,6 @@ void CUI_Monster::Load()
 				Desc->fColorG = -255.f;
 				Desc->fColorB = -255.f;
 			}
-			CurrentDesc = Desc;
 			m_DescList.push_back(Desc);
 
 			m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);

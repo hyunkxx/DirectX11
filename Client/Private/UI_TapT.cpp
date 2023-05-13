@@ -12,12 +12,23 @@ CUI_TapT::CUI_TapT(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CUI_TapT::CUI_TapT(const CUI_TapT& rhs)
 	: CGameObject(rhs)
 {
+	for (auto& Buffer : rhs.m_BufferList)
+	{
+		m_BufferList.push_back(Buffer);
+		Safe_AddRef(Buffer);
+	}
+	for (auto& Desc : rhs.m_DescList)
+	{
+		m_DescList.push_back(Desc);
+	}
+
 }
 
 HRESULT CUI_TapT::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
+	Load();
 
 	return S_OK;
 }
@@ -29,8 +40,6 @@ HRESULT CUI_TapT::Initialize(void * pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
-
-	Load();
 
 	return S_OK;
 }
@@ -136,11 +145,11 @@ HRESULT CUI_TapT::Render()
 				{
 					if (true == m_DescList[Bufferindex]->OnRect)
 					{
-						m_pVIBuffer->Render();
+						pBuffer->Render();
 					}
 				}
 				else
-					m_pVIBuffer->Render();
+					pBuffer->Render();
 			}
 			++Bufferindex;
 		}
@@ -150,7 +159,7 @@ HRESULT CUI_TapT::Render()
 		if (FAILED(Setup_ShaderResources(3)))
 			return E_FAIL;
 		m_pShader->Begin(m_iPass);
-		m_pVIBuffer->Render();
+		m_BufferList[3]->Render();
 	}
 	return S_OK;
 }
@@ -327,24 +336,25 @@ void CUI_TapT::Free()
 	__super::Free();
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
-	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pTexture);
-
-	for (auto& Buffer : m_BufferList)
-	{
-		Safe_Release(Buffer);
-		Buffer = nullptr;
-	}
-	m_BufferList.clear();
-
+	m_pVIBuffer = nullptr;
+	Safe_Release(m_pVIBuffer);
+	
+		for (auto& Buffer : m_BufferList)
+		{
+			Safe_Release(Buffer);
+		}
+		m_BufferList.clear();
+	
+if (!m_bClone)
+{
 	for (auto& Desc : m_DescList)
 	{
 		delete Desc;
 		Desc = nullptr;
 	}
 	m_DescList.clear();
-	
-	CurrentDesc = nullptr;
+}
 }
 
 void CUI_TapT::Load()

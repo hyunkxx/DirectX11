@@ -13,6 +13,15 @@ CUI_Minimap::CUI_Minimap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CUI_Minimap::CUI_Minimap(const CUI_Minimap& rhs)
 	: CGameObject(rhs)
 {
+	for (auto& Buffer : rhs.m_BufferList)
+	{
+		m_BufferList.push_back(Buffer);
+		Safe_AddRef(Buffer);
+	}
+	for (auto& Desc : rhs.m_IconDescList)
+	{
+		m_IconDescList.push_back(Desc);
+	}
 }
 
 HRESULT CUI_Minimap::Initialize_Prototype()
@@ -20,6 +29,7 @@ HRESULT CUI_Minimap::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	//Load();
 	return S_OK;
 }
 
@@ -390,26 +400,26 @@ void CUI_Minimap::Free()
 	Safe_Release(m_pVIBufferMiniMap);
 	Safe_Release(m_pTexDefaultIcon);
 	Safe_Release(m_pVIBufferIcon);
+	Safe_Release(m_pVIBufferDefaultIcon[0]);
+	Safe_Release(m_pVIBufferDefaultIcon[1]);
+	m_BufferIcon = nullptr;
+	Safe_Release(m_BufferIcon);
 
-	for (_uint i = 0; i < 2; ++i)
+		for (auto& Buffer : m_BufferList)
+		{
+			Safe_Release(Buffer);
+		}
+		m_BufferList.clear();
+	
+	if (!m_bClone)
 	{
-		Safe_Release(m_pVIBufferDefaultIcon[i]);
+		for (auto& Desc : m_IconDescList)
+		{
+			delete Desc;
+			Desc = nullptr;
+		}
+		m_IconDescList.clear();
 	}
-
-	for (auto& Buffer : m_BufferList)
-	{
-		Safe_Release(Buffer);
-		Buffer = nullptr;
-	}
-	m_BufferList.clear();
-
-	for (auto& Desc : m_IconDescList)
-	{
-		delete Desc;
-		Desc = nullptr;
-	}
-	m_IconDescList.clear();
-
 
 
 }
