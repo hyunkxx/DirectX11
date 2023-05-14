@@ -91,9 +91,6 @@
     <ClCompile Include="..\Private\Mesh_Instance.cpp">
       <Filter>utility\04. Components\06. Model</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Mesh_Instance_Tree1.cpp">
-      <Filter>utility\04. Components\06. Model</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>utility\04. Components\06. Model</Filter>
     </ClCompile>
@@ -101,9 +98,6 @@
       <Filter>utility\04. Components\06. Model</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Model_Instance.cpp">
-      <Filter>utility\04. Components\06. Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Model_Instance_Tree1.cpp">
       <Filter>utility\04. Components\06. Model</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Model_VTF.cpp">
@@ -318,9 +312,6 @@
     <ClInclude Include="..\Public\Mesh_Instance.h">
       <Filter>utility\04. Components\06. Model</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Mesh_Instance_Tree1.h">
-      <Filter>utility\04. Components\06. Model</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Model.h">
       <Filter>utility\04. Components\06. Model</Filter>
     </ClInclude>
@@ -328,9 +319,6 @@
       <Filter>utility\04. Components\06. Model</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Model_Instance.h">
-      <Filter>utility\04. Components\06. Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Model_Instance_Tree1.h">
       <Filter>utility\04. Components\06. Model</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Model_VTF.h">

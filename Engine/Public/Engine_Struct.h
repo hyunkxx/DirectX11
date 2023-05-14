@@ -374,6 +374,12 @@ namespace Engine
 		_uint			iModelTypeID = {};
 		_uint			iDiffuseTexID = {};
 	}SMAP_OBJECT_DESC;
+
+	typedef struct tagStaticObjectEdition_Desc
+	{
+		const _tchar*	pEditionFilePath = {};
+		_float			fCullingRatio = {};
+	}SOBJECT_EDITION_DESC;
 #pragma endregion STATIC_OBJECT
 
 #pragma region NAVIGATION

@@ -241,7 +241,7 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		return E_FAIL;
 
 #pragma region TERRAIN
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::VIBUFFER_TERRAIN,
+	/*if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::VIBUFFER_TERRAIN,
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height3.bmp"), TEXT("../../Data/GamePlay/Terrain/Height_Map/Vertices.data")))))
 		return E_FAIL;
 
@@ -273,7 +273,7 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::TERRAIN_FILTER,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Terrain/Filter_Map/Filter.dds")))))
-		return E_FAIL;
+		return E_FAIL;*/
 	
 #pragma endregion TERRAIN
 

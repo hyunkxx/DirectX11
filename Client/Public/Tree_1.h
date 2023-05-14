@@ -21,6 +21,7 @@ private:
 public:
 	virtual HRESULT	Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
+	virtual void Start();
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render() override;
@@ -29,13 +30,23 @@ public:
 public:
 	HRESULT DrawDefault();
 
-private:
-	CRenderer*				m_pRendererCom = { nullptr };
-	CShader*				m_pShaderCom = { nullptr };
-	CModel_Instance*		m_pModelCom = { nullptr };
+public:
+	HRESULT Load_EditionColor(const _tchar* pEditionColorFilePath);
 
 private:
-	_uint				m_iShaderPassID = { 0 };
+	SOBJECT_EDITION_DESC	m_EditionDesc = {};
+	_bool					m_UseEditionColor = { false };
+	_uint					m_iEditionColor_MeshNum = { 0 };
+	_float3					m_vEditionColor = { 0.0f, 0.0f, 0.0f };
+
+	_float					m_fCullingRatio = { 0.0f };
+
+	_uint					m_iShaderPassID = { 0 };
+
+private:
+	CRenderer*			m_pRendererCom = { nullptr };
+	CShader*			m_pShaderCom = { nullptr };
+	CModel_Instance*	m_pModelCom = { nullptr };
 
 private:
 	HRESULT Add_Components();

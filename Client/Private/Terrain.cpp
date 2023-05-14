@@ -2,6 +2,7 @@
 #include "..\Public\Terrain.h"
 
 #include "GameInstance.h"
+#include "GameMode.h"
 
 CTerrain::CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -10,7 +11,6 @@ CTerrain::CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CTerrain::CTerrain(const CTerrain& rhs)
 	: CGameObject(rhs)
-	, m_pUVSamplerRatio_FilePath{ rhs.m_pUVSamplerRatio_FilePath }
 {
 }
 
@@ -30,16 +30,29 @@ HRESULT CTerrain::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_iShader_PassID = { 2 };
+	ZeroMemory(&m_EditionDesc, sizeof(SOBJECT_EDITION_DESC));
 
-	// TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data")
-	if (FAILED(Load_UVSamplerRatio_Data(m_pUVSamplerRatio_FilePath)))
+	if (nullptr != pArg)
+	{
+		memcpy(&m_EditionDesc, pArg, sizeof(SOBJECT_EDITION_DESC));
+
+		if (FAILED(Load_UVSamplerRatio_Data(m_EditionDesc.pEditionFilePath)))
+		{
+			m_fUVSampler_Ratio_1 = { 100.0f };
+			m_fUVSampler_Ratio_2 = { 100.0f };
+			m_fUVSampler_Ratio_3 = { 100.0f };
+			m_fUVSampler_Ratio_4 = { 100.0f };
+		}
+	}
+	else
 	{
 		m_fUVSampler_Ratio_1 = { 100.0f };
 		m_fUVSampler_Ratio_2 = { 100.0f };
 		m_fUVSampler_Ratio_3 = { 100.0f };
 		m_fUVSampler_Ratio_4 = { 100.0f };
 	}
+
+	m_iShader_PassID = { 2 };
 
 	return S_OK;
 }
@@ -64,6 +77,8 @@ void CTerrain::Tick(_double TimeDelta)
 void CTerrain::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
+
+	m_pVIBuffer->Culling(m_pMainTransform->Get_WorldMatrixInverse());
 
 	if (nullptr != m_pRenderer)
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
@@ -117,7 +132,7 @@ HRESULT CTerrain::Add_Components()
 		TEXT("com_transform"), (CComponent**)&m_pMainTransform)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::VIBUFFER_TERRAIN,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, COMPONENT::VIBUFFER_TERRAIN,
 		TEXT("com_vibuffer"), (CComponent**)&m_pVIBuffer)))
 		return E_FAIL;
 
@@ -130,33 +145,33 @@ HRESULT CTerrain::Add_Components()
 		return E_FAIL;
 
 #pragma region TERRAIN_TEX
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_D_1,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::TERRAIN_D_1,
 		TEXT("com_texture_diffuse_1"), (CComponent**)&m_pDiffuseTexture[T_1])))
 		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_D_2,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::TERRAIN_D_2,
 		TEXT("com_texture_diffuse_2"), (CComponent**)&m_pDiffuseTexture[T_2])))
 		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_D_3,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::TERRAIN_D_3,
 		TEXT("com_texture_diffuse_3"), (CComponent**)&m_pDiffuseTexture[T_3])))
 		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_D_4,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::TERRAIN_D_4,
 		TEXT("com_texture_diffuse_4"), (CComponent**)&m_pDiffuseTexture[T_4])))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_N_1,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::TERRAIN_N_1,
 		TEXT("com_texture_n_1"), (CComponent**)&m_pNormalTexture[TERRAIN_KINDS::T_1])))
 		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_N_2,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::TERRAIN_N_2,
 		TEXT("com_texture_n_2"), (CComponent**)&m_pNormalTexture[TERRAIN_KINDS::T_2])))
 		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_N_3,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::TERRAIN_N_3,
 		TEXT("com_texture_n_3"), (CComponent**)&m_pNormalTexture[TERRAIN_KINDS::T_3])))
 		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_N_4,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::TERRAIN_N_4,
 		TEXT("com_texture_n_4"), (CComponent**)&m_pNormalTexture[TERRAIN_KINDS::T_4])))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_FILTER,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::TERRAIN_FILTER,
 		TEXT("com_texture_Filter"), (CComponent**)&m_pFilterTexture)))
 		return E_FAIL;
 
@@ -216,7 +231,7 @@ HRESULT CTerrain::Setup_ShaderResources()
 	return S_OK;
 }
 
-CTerrain* CTerrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pUVSamplerRatio_FilePath)
+CTerrain* CTerrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CTerrain* pInstance = new CTerrain(pDevice, pContext);
 
@@ -225,8 +240,6 @@ CTerrain* CTerrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 		MSG_BOX("Failed to Created : CTerrain");
 		Safe_Release(pInstance);
 	}
-
-	pInstance->m_pUVSamplerRatio_FilePath = pUVSamplerRatio_FilePath;
 
 	return pInstance;
 }

@@ -2,6 +2,7 @@
 #include "..\Public\Tree_0.h"
 
 #include "GameInstance.h"
+#include "GameMode.h"
 
 CTree_0::CTree_0(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -29,6 +30,18 @@ HRESULT CTree_0::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	ZeroMemory(&m_EditionDesc, sizeof(SOBJECT_EDITION_DESC));
+
+	if (nullptr != pArg)
+	{
+		memcpy(&m_EditionDesc, pArg, sizeof(SOBJECT_EDITION_DESC));
+
+		if (FAILED(Load_EditionColor(m_EditionDesc.pEditionFilePath)))
+			return E_FAIL;
+
+		m_fCullingRatio = m_EditionDesc.fCullingRatio;
+	}
+
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, POSITION_ZERO);
 	m_iShaderPassID = 0;
 
@@ -51,7 +64,7 @@ void CTree_0::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	if (nullptr != m_pModelCom)
-		m_pModelCom->Culling(m_pMainTransform->Get_WorldMatrixInverse(), 30.0f);
+		m_pModelCom->Culling(m_pMainTransform->Get_WorldMatrixInverse(), m_fCullingRatio);
 
 	if (nullptr != m_pRendererCom)
 	{
@@ -86,17 +99,54 @@ HRESULT CTree_0::DrawDefault()
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsDistinction_NormalTex)))
 			return E_FAIL;
 
-		if (true == m_IsDistinction_NormalTex)
+		// 쉐이더에 색상을 던짐 && 던진 색상이 적용될 매쉬 번호
+		if (true == m_UseEditionColor && i == m_iEditionColor_MeshNum)
 		{
-			m_iShaderPassID = 0;
-			m_IsDistinction_NormalTex = false;
+			// 그중 노말맵이 없는경우.
+			if (true == m_IsDistinction_NormalTex)
+			{
+				m_iShaderPassID = 3;
+				m_IsDistinction_NormalTex = false;
+			}
+			else
+				m_iShaderPassID = 4;
 		}
 		else
-			m_iShaderPassID = 1;
+		{
+			if (true == m_IsDistinction_NormalTex)
+			{
+				m_iShaderPassID = 0;
+				m_IsDistinction_NormalTex = false;
+			}
+			else
+				m_iShaderPassID = 1;
+		}
 
 		m_pShaderCom->Begin(m_iShaderPassID);
 		m_pModelCom->Render(i);
 	}
+
+	return S_OK;
+}
+
+HRESULT CTree_0::Load_EditionColor(const _tchar * pEditionColorFilePath)
+{
+	HANDLE		hFile = CreateFile(pEditionColorFilePath, GENERIC_READ, 0, 0,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Failed to Load Data in CTree_0 : EditionColor");
+		return E_FAIL;
+	}
+
+	DWORD		dwByte = 0;
+
+	ReadFile(hFile, &m_UseEditionColor, sizeof(_bool), &dwByte, nullptr);
+	ReadFile(hFile, &m_iEditionColor_MeshNum, sizeof(_uint), &dwByte, nullptr);
+	ReadFile(hFile, &m_vEditionColor, sizeof(_float3), &dwByte, nullptr);
+
+	CloseHandle(hFile);
 
 	return S_OK;
 }
@@ -136,12 +186,12 @@ HRESULT CTree_0::Add_Components()
 	m_pMainTransform->Set_Scale(_float3(1.0f, 1.0f, 1.0f));
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_0,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SMODEL::SMD_TREE_0,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	/* For.Com_Shader */ // MODEL_INSTANCE MODEL
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, SHADER::MODEL_INSTANCE,
+	/* For.Com_Shader */
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODEL_INSTANCE,
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -159,6 +209,9 @@ HRESULT CTree_0::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetRawValue("g_vEditionColor", &m_vEditionColor, sizeof(_float3))))
 		return E_FAIL;
 
 	return S_OK;

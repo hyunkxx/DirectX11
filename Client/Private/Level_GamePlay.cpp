@@ -36,8 +36,11 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 
 #pragma region MAP_OBJECT_TREE
-	if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_Tree"))))
+	if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_tree"))))
 		return E_FAIL;
+
+	//if (FAILED(Ready_Layer_MapObject_Rock(TEXT("layer_rock"))))
+		//return E_FAIL;
 #pragma endregion MAP_OBJECT_TREE
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
@@ -196,8 +199,14 @@ void CLevel_GamePlay::RenderLevelUI()
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TERRAIN, pLayerTag, L"terrain")))
+	SOBJECT_EDITION_DESC		EditionDesc = {};
+	ZeroMemory(&EditionDesc, sizeof EditionDesc);
+
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TERRAIN, pLayerTag, L"terrain", &EditionDesc)))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SKY, pLayerTag, L"Sky")))
@@ -305,18 +314,290 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 
 	if (nullptr == pGameInstance)
 		return E_FAIL;
-	;
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_0, pLayerTag, TEXT("ObjectTree"))))
-	{
-		MSG_BOX("Failed to AddGameObject In GamePlay : ObjectTree");
-		return E_FAIL;
-	}
+	
+	SOBJECT_EDITION_DESC		EditionDesc = {};
+	ZeroMemory(&EditionDesc, sizeof EditionDesc);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_1, pLayerTag, TEXT("ObjectTree"))))
-	{
-		MSG_BOX("Failed to AddGameObject In GamePlay : ObjectTree");
+	EditionDesc.fCullingRatio = { 30.0f };
+
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_0_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_0, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
 		return E_FAIL;
-	}
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_1_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_1, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+
+	/*
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_2_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_2, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_3_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_3, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_4_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_4, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_5_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_5, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_6_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_6, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_7_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_7, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_8_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_8, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_9_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_9, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_10_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_10, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_11_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_11, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_12_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_12, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_13_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_13, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_14_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_14, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_15_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_15, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_16_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_16, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_17_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_17, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_18_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_18, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_19_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_19, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_20_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_20, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_21_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_21, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_22_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_22, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_23_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_23, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_24_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_24, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_25_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_25, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_26_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_26, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_27_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_27, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_28_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_28, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_29_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_29, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_30_EditionColor.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_TREE_30, pLayerTag, TEXT("ObjectTree"), &EditionDesc)))
+		return E_FAIL;
+	*/
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	SOBJECT_EDITION_DESC		EditionDesc = {};
+	ZeroMemory(&EditionDesc, sizeof EditionDesc);
+
+	EditionDesc.fCullingRatio = { 30.0f };
+
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_0_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_0, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_1_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_1, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_2_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_2, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_3_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_3, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_4_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_4, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_5_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_5, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_6_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_6, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_7_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_7, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_8_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_8, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_9_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_9, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_10_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_10, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_11_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_11, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_12_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_12, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_13_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_13, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_14_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_14, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_15_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_15, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_16_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_16, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_17_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_17, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_18_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_18, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_19_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_19, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_20_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_20, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_21_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_21, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_22_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_22, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_23_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_23, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_24_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_24, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_25_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_25, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_26_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_26, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_27_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_27, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_28_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_28, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_29_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_29, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_30_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_30, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_31_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_31, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_32_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_32, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_33_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_33, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_34_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_34, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_35_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_35, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_36_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_36, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_37_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_37, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_38_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_38, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_39_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_39, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_40_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_40, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_41_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_41, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_42_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_42, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_43_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_43, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_44_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_44, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_45_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_45, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_46_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_46, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_47_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_47, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_48_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_48, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_49_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_49, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_50_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_50, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_51_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_51, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_51_DiffuseTexID.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::OBJECT_ROCK_51, pLayerTag, TEXT("ObjectRock"), &EditionDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
