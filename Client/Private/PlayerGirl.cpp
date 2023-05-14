@@ -275,7 +275,7 @@ HRESULT CPlayerGirl::Add_Components()
 	ZeroMemory(&TransformDesc, sizeof TransformDesc);
 
 	TransformDesc.fMoveSpeed = 15.f;
-	TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
+	TransformDesc.fRotationSpeed = XMConvertToRadians(270.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
 		TEXT("Com_Transform"), (CComponent**)&m_pMainTransform, &TransformDesc)))
@@ -869,11 +869,6 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			{
 			case IS_ATTACK_01:
 				m_Scon.iNextState = IS_ATTACK_02;
-
-				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_02");
-				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-				pEffect->Play_Effect(&ParentMatrix);
-
 				break;
 			case IS_ATTACK_02:
 				m_Scon.iNextState = IS_ATTACK_03;
@@ -890,27 +885,12 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 				break; 
 			case IS_ATTACK_03:
 				m_Scon.iNextState = IS_ATTACK_04;
-
-				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_04");
-				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-				pEffect->Play_Effect(&ParentMatrix);
-
 				break;
 			case IS_SKILL_02:
 				m_Scon.iNextState = IS_ATTACK_05;
-
-				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_05");
-				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-				pEffect->Play_Effect(&ParentMatrix);
-
 				break;
 			default:
 				m_Scon.iNextState = IS_ATTACK_01;
-
-				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_01");
-				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-				pEffect->Play_Effect(&ParentMatrix);
-
 				break;
 			}
 			break;
@@ -1247,8 +1227,19 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 	if (CCharacter::ROT_LOOKAT == m_tCurState.iRotationType)
 	{
 		if (PS_CLIMB != m_Scon.ePositionState)
-			if (0.f != XMVectorGetX(XMVector3Length(vInputDir)))
-				m_pMainTransform->Set_LookDir(vInputDir);
+		{
+			_vector vAxis = XMVector3Cross(m_pMainTransform->Get_State(CTransform::STATE_LOOK), vInputDir);
+			_float fAngle = acosf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_LOOK)), XMVector3Normalize(vInputDir))));
+
+			if (!XMVector3Equal(vAxis, XMVectorZero()))
+			{
+				if (fAngle > m_pMainTransform->Get_RotationSpeed() * TimeDelta)
+					m_pMainTransform->Rotate(vAxis, TimeDelta);
+				else
+					m_pMainTransform->Set_LookDir(vInputDir);
+			}
+		}
+			
 	}
 
 }
