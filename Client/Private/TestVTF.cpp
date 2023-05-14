@@ -2,6 +2,8 @@
 #include "..\Public\TestVTF.h"
 
 #include "GameInstance.h"
+#include "Effect.h"
+#include "EffectKey.h"
 #include "Parts.h"
 #include "PartsKey.h"
 #include "PriorityKey.h"
@@ -44,8 +46,13 @@ HRESULT CTestVTF::Initialize(void * pArg)
 		return E_FAIL;
 
 	Init_AnimSystem();
-
 	m_pAnimSetCom[ANIMSET_BASE]->Set_RootBone(TEXT("Root"));
+
+	if (FAILED(Init_EffectBones()))
+		return E_FAIL;
+	
+
+	
 
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
@@ -150,8 +157,10 @@ void CTestVTF::LateTick(_double TimeDelta)
 			m_Parts[i]->LateTick(TimeDelta);
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, m_Parts[i]);
 		}
-
 	}
+
+	//Effect Bones 처리
+	Update_EffectBones();
 }
 
 HRESULT CTestVTF::Render()
@@ -260,6 +269,18 @@ void CTestVTF::Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _doubl
 			
 		}
 	}
+}
+
+void CTestVTF::Shot_EffectKey(_tchar * szEffectTag, _uint EffectBoneID, _bool bTracking)
+{
+	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag);
+	if (nullptr == pEffect || EBONE_END <= EffectBoneID)
+		return;
+
+	if (0 == EffectBoneID)
+		pEffect->Play_Effect(&m_pMainTransform->Get_WorldMatrix(), bTracking);
+	else
+		pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
 }
 
 void CTestVTF::Safe_AnimID()
@@ -376,7 +397,7 @@ HRESULT CTestVTF::Init_States()
 				switch (tBaseData.iType)
 				{
 				case CStateKey::TYPE_EFFECT:
-
+					tMultiState.ppStateKeys[j] = CEffectKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_PARTS:
 					tMultiState.ppStateKeys[j] = CPartsKey::Create(m_pDevice, m_pContext, &tBaseData);
@@ -735,6 +756,25 @@ HRESULT CTestVTF::Init_Parts()
 
 
 	return S_OK;
+}
+
+HRESULT CTestVTF::Init_EffectBones()
+{
+	//NONE은 걍 월드 매트릭스 던짐
+	m_EffectBones[EBONE_SPINE] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine"));
+	m_EffectBones[EBONE_WEAPON] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp03"));
+	
+	return S_OK;
+}
+
+void CTestVTF::Update_EffectBones()
+{
+	for (_uint i = 1; i < EBONE_END; ++i)
+	{
+		XMStoreFloat4x4(&m_EffectBoneMatrices[i], XMLoadFloat4x4(&m_EffectBones[i]->Get_CombinedTransfromationMatrix())
+			* XMMatrixRotationY(XMConvertToRadians(180.f))
+			* XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+	}
 }
 
 CTestVTF * CTestVTF::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, TESTVTF_DESC* pDesc)

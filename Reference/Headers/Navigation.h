@@ -14,6 +14,14 @@ public:
 		NAVI_SLIDE,
 		NAVI_END
 	};
+	enum EXIT
+	{
+		EXIT_NO,
+		EXIT_UP,
+		EXIT_DOWN,
+		EXIT_ALL,
+		EXIT_END
+	};
 
 public:
 	typedef struct tagNavigation_Desc
@@ -32,9 +40,25 @@ public:
 	_int Get_NeighborIndex() { return m_iNeighborIndex; }
 	_int Get_CellState(_uint iIndex);
 
+	_uint Get_CurCellState();
+
 	void Set_CurrentIndex(_uint iIndex)
 	{
 		m_iCell_In_CheckIndex = iIndex;
+	}
+	CCell* Get_CurCell()
+	{
+		return  m_Cells[m_NavigationDesc.iCurrentIndex];
+	}
+
+	_uint Get_ExitClimb()
+	{
+		return m_iExitClimb;
+	}
+
+	void Set_ExitClimb(_uint iExitClimb)
+	{
+		m_iExitClimb = iExitClimb;
 	}
 
 public:
@@ -47,13 +71,18 @@ public:
 	/* 움직일 수 있다/없다 , 슬라이딩을 할 수 있다/없다 */
 	/* vPosition : 객체의 움직이고 난 뒤의 결과 위치 */
 
-	CNavigation::NAVISTATE Move_OnNavigation(_fvector vPosition, _fvector vMove, _float3* vSlideOut, _bool bClimbing = false);
+	CNavigation::NAVISTATE Move_OnNavigation(_fvector vPosition, _fvector vMove, _float3* vSlideOut);
+	CNavigation::NAVISTATE Climb_OnNavigation(_fvector vPosition, _fvector vTopPosition, _fvector vMove, _float3* vSlideOut);
 
 public:
 	_float Compute_Height(_fvector vPosition);
 
 public:
 	_int Is_CurrentIn(_fvector vPosition);
+	_int Get_CurrentIndex()
+	{
+		return m_NavigationDesc.iCurrentIndex;
+	}
 
 private:
 	_int							m_iCell_In_CheckIndex = { 0 };
@@ -86,6 +115,11 @@ private:
 	/* 네비게이션을 이용하는 객체가 존재하는 Cell 의 위치(인덱스) */
 	NAVIGATION_DESC					m_NavigationDesc;
 	_int							m_iNeighborIndex = { -1 };
+
+private:
+	// Climb 상태를 끝낼건지 확인하는 함수
+	// 0 == 이동 안함, 1 == 위로 나감, 2 == 아래로 나감, 3 == 둘다 나감
+	_uint	m_iExitClimb = { EXIT_NO };
 
 #ifdef _DEBUG
 	class CShader*					m_pShader = { nullptr };

@@ -42,6 +42,16 @@ public:
 		PBONE_END
 	};
 
+	// 이펙트용 본 월드 행렬 배열 인덱스 
+	// 각 본마다 현재 Tracking Effect가 실행중인지 파악하고 사용 중인 이펙트에게 전달할 행렬을 갱신함
+	enum EffectBone
+	{
+		EBONE_NONE,
+		EBONE_SPINE,
+		EBONE_WEAPON,
+		EBONE_END
+	};
+
 public:
 	struct TESTVTF_DESC
 	{
@@ -109,8 +119,9 @@ public:
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);
+	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _bool bTracking);
 
-	
+
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -133,6 +144,12 @@ private:
 	class CParts*		m_Parts[PARTS_END] = { nullptr, };
 	CBone*				m_PartsBone[PBONE_END] = { nullptr, };
 
+	// Effects
+	CBone*				m_EffectBones[EBONE_END] = { nullptr, };
+	_float4x4			m_EffectBoneMatrices[EBONE_END] = {};
+	// 매 프레임 이펙트 본 사용중인지 체크해서 저장, 사용중인 본만 행렬 갱신해줌
+	_bool				m_bEffectBoneActive[EBONE_END] = { false, };
+
 
 	_bool m_bInputLock = { false };
 
@@ -148,6 +165,11 @@ private:
 
 	// Parts
 	HRESULT Init_Parts();
+	
+	// Effect
+	HRESULT	Init_EffectBones();
+	void	Update_EffectBones();
+
 
 	HRESULT	SetUp_ShaderResources();
 	HRESULT Setup_ShadowShaderResource();

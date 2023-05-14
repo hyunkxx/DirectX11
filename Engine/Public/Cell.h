@@ -6,7 +6,7 @@
 
 BEGIN(Engine)
 
-class CCell final : public CBase
+class ENGINE_DLL CCell final : public CBase
 {
 public:
 	enum POINT {
@@ -40,6 +40,13 @@ public:
 			iState = 0;
 		m_iState = iState;
 	};
+
+	_float DistanceToWall(_fvector vPosition);
+
+	_vector Get_Normal()
+	{
+		return XMLoadFloat3(&m_vPlaneNormal);
+	}
 
 public:
 	virtual HRESULT Initialize(_int iIndex, const _float3 * pPoints, _int iState = 0);
@@ -75,6 +82,7 @@ private:
 private: /* 자신 Cell */
 	_float3							m_vPoints[POINT_END];
 	_float3							m_vNormals[LINE_END];
+	_float3							m_vNormals3D[LINE_END];
 
 	// Cell 옵션
 	_int							m_iState = { 0 };
