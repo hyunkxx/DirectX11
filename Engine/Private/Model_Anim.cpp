@@ -66,6 +66,24 @@ const _bool CModel_Anim::Get_AnimInterpolating() const
 	return m_pAnimController->Get_AnimInterpolating();
 }
 
+_float3 * CModel_Anim::Get_TopBoneCombinedPos()
+{
+	if (m_pTopBones[0]->Get_CombinedPosition_Float3()->y < m_pTopBones[1]->Get_CombinedPosition_Float3()->y)
+		if (m_pTopBones[1]->Get_CombinedPosition_Float3()->y < m_pTopBones[2]->Get_CombinedPosition_Float3()->y)
+			return m_pTopBones[2]->Get_CombinedPosition_Float3();
+		else
+			return m_pTopBones[1]->Get_CombinedPosition_Float3();
+	else
+		return m_pTopBones[0]->Get_CombinedPosition_Float3();
+}
+
+void CModel_Anim::Set_TopBones(_tchar * pTag1, _tchar * pTag2, _tchar * pTag3)
+{
+	m_pTopBones[0] = Get_BonePtr(pTag1);
+	m_pTopBones[1] = Get_BonePtr(pTag2);
+	m_pTopBones[2] = Get_BonePtr(pTag3);
+}
+
 void CModel_Anim::Set_OffsetZero()
 {
 	for (auto& pBone : m_Bones)

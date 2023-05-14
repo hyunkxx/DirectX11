@@ -110,7 +110,7 @@ void CTransform::MoveLeft(_double TimeDelta)
 	Set_State(STATE::STATE_POSITION, vPosition);
 }
 
-void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation * pNavigation)
+void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation * pNavigation, _float3* pTopPosition)
 {
 	_vector vPos = Get_State(CTransform::STATE_POSITION);
 	_vector vRight = Get_State(CTransform::STATE_RIGHT);
@@ -121,7 +121,6 @@ void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation *
 	_vector vMoveY = XMVector3Normalize(vUp) * vMove->z;
 	_vector vMovement = XMVector3Normalize(vRight) * vMove->x - XMVector3Normalize(vLook) * vMove->y + vMoveY;
 
-
 	if (nullptr == pNavigation)
 	{
 		Set_State(STATE_POSITION, vPos + vMovement);
@@ -129,8 +128,19 @@ void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation *
 	}
 
 	_float3 vSlideOut = _float3(0.f, 0.f, 0.f);
-	
-	_uint iResult = pNavigation->Move_OnNavigation(vPos, vMovement, &vSlideOut, 2 == iPostitionState/* iPositionState == PS_CLIMB */);
+
+	_uint iResult = UINT_MAX;
+	// 2 == Climb
+	if (nullptr != pTopPosition && 2 == iPostitionState)
+	{
+		_vector vHeadPosition = XMVector3TransformCoord(XMVector3TransformCoord(XMLoadFloat3(pTopPosition), XMMatrixRotationY(180.f)), XMLoadFloat4x4(&m_WorldMatrix));
+		iResult = pNavigation->Climb_OnNavigation(vPos, vHeadPosition, vMovement, &vSlideOut);
+	}
+	else
+		iResult = pNavigation->Move_OnNavigation(vPos, vMovement, &vSlideOut);
+
+	if (UINT_MAX == iResult)
+		MSG_BOX("BUG!");
 
 	if (CNavigation::NAVI_OK == iResult)
 		Set_State(STATE_POSITION, vPos + vMovement);
@@ -147,6 +157,11 @@ void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation *
 			
 		Set_State(STATE_POSITION, vPos + vSlideXZ);
 	}
+}
+
+void CTransform::Push_Position(_fvector vPush)
+{
+	Set_State(STATE_POSITION, Get_State(STATE_POSITION) + vPush);
 }
 
 void CTransform::SetRotationXYZ(_float3 fRadian)

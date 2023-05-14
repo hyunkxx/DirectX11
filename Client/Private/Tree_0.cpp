@@ -98,6 +98,10 @@ HRESULT CTree_0::DrawDefault()
 		// Model 중 NormalTextrue 가 없는 Model 은 m_IsDistinction_NormalTex 가 true 가 되어서 노말맵 을 적용시키지 않음.
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsDistinction_NormalTex)))
 			return E_FAIL;
+		
+
+		// Map LOD 0번  배열로 버퍼 세팅
+		// > 그린다.
 
 		// 쉐이더에 색상을 던짐 && 던진 색상이 적용될 매쉬 번호
 		if (true == m_UseEditionColor && i == m_iEditionColor_MeshNum)

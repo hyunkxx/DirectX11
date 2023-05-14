@@ -54,7 +54,10 @@ public:
 	void MoveLeft(_double TimeDelta);
 
 	// Animation 용 Navigation 타는 이동 함수
-	void Move_Anim(_float3* vMove, _uint iPostitionState = 0, class CNavigation* pNavigation = nullptr);
+	void Move_Anim(_float3* vMove, _uint iPostitionState = 0, class CNavigation* pNavigation = nullptr, _float3* vHeadPosition = nullptr);
+
+	// 현재 위치에서 입력받은 방향벡터만큼 이동시키는 함수
+	void Push_Position(_fvector vPush);
 
 	void SetRotationXYZ(_float3 fRadian); // 모든각도 회전
 	void SetRotation(_fvector vAxis, _float fRadian); //특정 각도로 회전

@@ -11,6 +11,13 @@ CCell::CCell(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	Safe_AddRef(m_pContext);
 }
 
+_float CCell::DistanceToWall(_fvector vPosition)
+{
+	_vector vPlane = XMPlaneFromPoints(XMLoadFloat3(&m_vPoints[POINT_A]), XMLoadFloat3(&m_vPoints[POINT_B]), XMLoadFloat3(&m_vPoints[POINT_C]));
+
+	return XMVectorGetX(XMPlaneDotCoord(vPlane,	vPosition));
+}
+
 HRESULT CCell::Initialize(_int iIndex, const _float3 * pPoints, _int iState)
 {
 	m_iIndex = iIndex;
@@ -21,36 +28,50 @@ HRESULT CCell::Initialize(_int iIndex, const _float3 * pPoints, _int iState)
 
 	memcpy(m_vPoints, pPoints, sizeof(_float3) * POINT_END);
 
-	/* B - A / A->B */
-	_float A_B_LineX = pPoints[POINT_B].x - pPoints[POINT_A].x;
-	_float A_B_LineY = pPoints[POINT_B].y - pPoints[POINT_A].y;
-	_float A_B_LineZ = pPoints[POINT_B].z - pPoints[POINT_A].z;
 
-	/* C - B / B->C */
-	_float B_C_LineX = pPoints[POINT_C].x - pPoints[POINT_B].x;
-	_float B_C_LineY = pPoints[POINT_C].y - pPoints[POINT_B].y;
-	_float B_C_LineZ = pPoints[POINT_C].z - pPoints[POINT_B].z;
-
-	/* A - C / C->A */
-	_float C_A_LineX = pPoints[POINT_A].x - pPoints[POINT_C].x;
-	_float C_A_LineY = pPoints[POINT_A].y - pPoints[POINT_C].y;
-	_float C_A_LineZ = pPoints[POINT_A].z - pPoints[POINT_C].z;
-
-	/* 기준이 되는 방향벡터 에서 스왑을 하고 앞에 -1 을 곱해주면 해당 방향벡터와 수직인 벡터를 구할수 있음 */
-	/* 각 점으로 부터 플레이어 까지의 방향벡터를 이렇게 구한 Normal Vector 와 내적하여 각 축으로 부터 90도를 넘지않으면 삼각형 밖 , 90도를 넘으면 삼각형 안에 있다 */
-	/* cos 그래프 : 0 ~ 90 양수 , 90 ~ 270 음수 , 270 ~ 360 양수 -> 음수면 삼각형 안에있다 , 양수면 밖에 있다 */
-	/* 삼각형 (네비메쉬) 을 나갔냐 안나갔냐 를 판단하기 때문에 y를 구하지 않아도 괜찮다 */
-	m_vNormals[LINE_AB] = _float3(A_B_LineZ * -1.f, A_B_LineY, A_B_LineX);
-	m_vNormals[LINE_BC] = _float3(B_C_LineZ * -1.f, B_C_LineY, B_C_LineX);
-	m_vNormals[LINE_CA] = _float3(C_A_LineZ * -1.f, C_A_LineY, C_A_LineX);
-
-	for (_uint i = 0; i < LINE_END; ++i)
-		XMStoreFloat3(&m_vNormals[i], XMVector3Normalize(XMLoadFloat3(&m_vNormals[i])));
 
 	// 평면의 노말 구해놓기
 	XMStoreFloat3(&m_vPlaneNormal,
 		XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&m_vPoints[POINT_B]) - XMLoadFloat3(&m_vPoints[POINT_A]),
 			XMLoadFloat3(&m_vPoints[POINT_C]) - XMLoadFloat3(&m_vPoints[POINT_A]))));
+
+	/* 기준이 되는 방향벡터 에서 스왑을 하고 앞에 -1 을 곱해주면 해당 방향벡터와 수직인 벡터를 구할수 있음 */
+	/* 각 점으로 부터 플레이어 까지의 방향벡터를 이렇게 구한 Normal Vector 와 내적하여 각 축으로 부터 90도를 넘지않으면 삼각형 밖 , 90도를 넘으면 삼각형 안에 있다 */
+	/* cos 그래프 : 0 ~ 90 양수 , 90 ~ 270 음수 , 270 ~ 360 양수 -> 음수면 삼각형 안에있다 , 양수면 밖에 있다 */
+	/* 삼각형 (네비메쉬) 을 나갔냐 안나갔냐 를 판단하기 때문에 y를 구하지 않아도 괜찮다 */
+
+	
+
+
+	/* B - A / A->B */
+	_float A_B_LineX = pPoints[POINT_B].x - pPoints[POINT_A].x;
+	_float A_B_LineZ = pPoints[POINT_B].z - pPoints[POINT_A].z;
+
+	/* C - B / B->C */
+	_float B_C_LineX = pPoints[POINT_C].x - pPoints[POINT_B].x;
+	_float B_C_LineZ = pPoints[POINT_C].z - pPoints[POINT_B].z;
+
+	/* A - C / C->A */
+	_float C_A_LineX = pPoints[POINT_A].x - pPoints[POINT_C].x;
+	_float C_A_LineZ = pPoints[POINT_A].z - pPoints[POINT_C].z;
+	m_vNormals[LINE_AB] = _float3(A_B_LineZ * -1.f, 0.f, A_B_LineX);
+	m_vNormals[LINE_BC] = _float3(B_C_LineZ * -1.f, 0.f, B_C_LineX);
+	m_vNormals[LINE_CA] = _float3(C_A_LineZ * -1.f, 0.f, C_A_LineX);
+
+	for (_uint i = 0; i < LINE_END; ++i)
+		XMStoreFloat3(&m_vNormals[i], XMVector3Normalize(XMLoadFloat3(&m_vNormals[i])));
+
+	_vector vLineAB, vLineBC, vLineCA;
+	vLineAB = XMLoadFloat3(&m_vPoints[POINT_B]) - XMLoadFloat3(&m_vPoints[POINT_A]);
+	vLineBC = XMLoadFloat3(&m_vPoints[POINT_C]) - XMLoadFloat3(&m_vPoints[POINT_B]);
+	vLineCA = XMLoadFloat3(&m_vPoints[POINT_A]) - XMLoadFloat3(&m_vPoints[POINT_C]);
+
+	XMStoreFloat3(&m_vNormals3D[LINE_AB], XMVector3Normalize(XMVector3Cross(vLineAB, XMLoadFloat3(&m_vPlaneNormal))));
+	XMStoreFloat3(&m_vNormals3D[LINE_BC], XMVector3Normalize(XMVector3Cross(vLineBC, XMLoadFloat3(&m_vPlaneNormal))));
+	XMStoreFloat3(&m_vNormals3D[LINE_CA], XMVector3Normalize(XMVector3Cross(vLineCA, XMLoadFloat3(&m_vPlaneNormal))));
+
+
+
 
 
 #ifdef _DEBUG
@@ -130,12 +151,12 @@ _bool CCell::IsIn(_fvector vPosition, _int * pNeighborIndex, _bool bClimbing, _i
 		_float fDistance = XMVectorGetX(XMPlaneDotCoord(vPlane, vPosition));
 
 		_vector vPosOnPlane = vPosition - XMLoadFloat3(&m_vPlaneNormal) * fDistance;
-
+		
 		for (_uint i = 0; i < LINE_END; ++i)
 		{
-			_vector		vDir = XMVector3Normalize(vPosOnPlane - XMLoadFloat3(&m_vPoints[i]));
+			_vector		vDir = XMVector3Normalize(vPosOnPlane - XMVectorSetW(XMLoadFloat3(&m_vPoints[i]), 1.f));
 
-			if (0 < XMVectorGetX(XMVector3Dot(vDir, XMLoadFloat3(&m_vNormals[i]))))
+			if (0 < XMVectorGetX(XMVector3Dot(vDir, XMLoadFloat3(&m_vNormals3D[i]))))
 			{
 				*pNeighborIndex = m_Neighbors[i];
 				if (nullptr != pOutLine)
@@ -148,9 +169,9 @@ _bool CCell::IsIn(_fvector vPosition, _int * pNeighborIndex, _bool bClimbing, _i
 	{
 		for (_uint i = 0; i < LINE_END; ++i)
 		{
-			_vector		vDir = XMVector3Normalize(XMVectorSetY(vPosition - XMLoadFloat3(&m_vPoints[i]), 0.f));
+			_vector		vDir = XMVector3Normalize(vPosition - XMVectorSetY(XMLoadFloat3(&m_vPoints[i]), 0.f));
 
-			if (0 < XMVectorGetX(XMVector3Dot(vDir, XMVectorSetY(XMLoadFloat3(&m_vNormals[i]), 0.f))))
+			if (0 < XMVectorGetX(XMVector3Dot(vDir, XMVector3Normalize(XMLoadFloat3(&m_vNormals[i])))))
 			{
 				*pNeighborIndex = m_Neighbors[i];
 				if (nullptr != pOutLine)
@@ -159,7 +180,6 @@ _bool CCell::IsIn(_fvector vPosition, _int * pNeighborIndex, _bool bClimbing, _i
 			}
 		}
 	}
-
 
 	return true;
 }

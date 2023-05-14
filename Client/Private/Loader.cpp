@@ -254,10 +254,10 @@ HRESULT CLoader::Load_Level_Logo()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_LOBBY_CHARACTER_MODEL, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/LobbyPlayerGirl.dmdl")))))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_LOBBY_MALE_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/LobbyMale/LobbyMale_Model.dmdl")))))
-	//	return E_FAIL;
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_LOBBY_MALE_ANIMSET, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/LobbyMale/LobbyMale_Anim.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_LOBBY_MALE_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/LobbyMale/Male_Model.dmdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_LOBBY_MALE_ANIMSET, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/LobbyMale/Male_Anim.dmdl")))))
+		return E_FAIL;
 
 #pragma region LOBBY_ROCK
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/0/SM_Com_Roc_28AS.smdl")))))
@@ -323,7 +323,7 @@ HRESULT CLoader::Load_Level_Logo()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_CHARACTER_LEFT, CLobbyCharacter::Create(m_pDevice, m_pContext, DMODEL::DMD_PLAYERGIRL_MODEL, DMODEL::DMD_LOBBY_CHARACTER_MODEL, 0))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_CHARACTER_RIGHT, CLobbyCharacter::Create(m_pDevice, m_pContext, DMODEL::DMD_PLAYERGIRL_MODEL, DMODEL::DMD_LOBBY_CHARACTER_MODEL, 1))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_CHARACTER_RIGHT, CLobbyCharacter::Create(m_pDevice, m_pContext, DMODEL::DMD_LOBBY_MALE_MODEL, DMODEL::DMD_LOBBY_MALE_ANIMSET, 1))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY, CSky::Create(m_pDevice, m_pContext, CSky::DEFAULT))))

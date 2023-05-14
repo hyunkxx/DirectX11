@@ -46,6 +46,9 @@ public:
 		m_pRootBone = Get_BonePtr(pBoneName);
 	}
 
+	_float3* Get_TopBoneCombinedPos();
+	void Set_TopBones(_tchar* pTag1, _tchar* pTag2, _tchar* pTag3);
+
 	//void Set_ShotBone(const _tchar* pBoneName)
 	//{
 	//	m_pShotBone = Get_BonePtr(pBoneName);
@@ -103,10 +106,11 @@ protected:
 	_uint					m_iNumBones = { 0 };
 	vector<class CBone*>	m_Bones;
 	CBone*					m_pRootBone = { nullptr };
-	//CBone*					m_pShotBone = { nullptr };
-	//CBone*					m_pTopBone = { nullptr };
-	//CBone*					m_pRightBottom = { nullptr };
-	//CBone*					m_pLeftBottom = { nullptr };
+	CBone*					m_pTopBones[3] = { nullptr, };
+	//CBone*				m_pShotBone = { nullptr };
+	//CBone*				m_pTopBone = { nullptr };
+	//CBone*				m_pRightBottom = { nullptr };
+	//CBone*				m_pLeftBottom = { nullptr };
 
 
 protected:

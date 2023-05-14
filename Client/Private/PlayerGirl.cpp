@@ -5,6 +5,7 @@
 #include "GameInstance.h"
 #include "Parts.h"
 #include "Effect.h"
+#include "EffectKey.h"
 #include "PartsKey.h"
 #include "PriorityKey.h"
 
@@ -63,11 +64,21 @@ HRESULT CPlayerGirl::Initialize(void * pArg)
 	if (FAILED(Init_Parts()))
 		return E_FAIL;
 
+	if (FAILED(Init_EffectBones()))
+		return E_FAIL;
+
 	// 애니메이션 연결
 	Init_AnimSystem();
 
 	// 루트모션용 본찾기
 	m_pAnimSetCom[ANIMSET_BASE]->Set_RootBone(TEXT("Root"));
+	
+	// 벽타기용 모델 중심뼈 잡아주기
+	m_pClimbBones[CBONE_HEAD] = m_pModelCom->Get_BonePtr(TEXT("Bip001Head"));
+	m_pClimbBones[CBONE_SPINE] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine"));
+	m_pClimbBones[CBONE_ROOT] = m_pModelCom->Get_BonePtr(TEXT("Root"));
+
+	m_pModelCom->Set_TopBones(TEXT("Bip001Head"), TEXT("Bip001LHand"), TEXT("Bip001RHand"));
 
 	// 초기위치 설정
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(6.f, 30.f, 5.f, 1.f));
@@ -81,6 +92,7 @@ HRESULT CPlayerGirl::Initialize(void * pArg)
 	m_Scon.iCurState = 0;
 	m_Scon.iNextState = 0;
 	m_Scon.ePositionState = PS_GROUND;
+	m_Scon.iPrevCellState = 0;
 	m_tCurState = m_tStates[0];
 	SetUp_State();
 	SetUp_Animations(false);
@@ -102,13 +114,12 @@ void CPlayerGirl::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 	
+	Key_Input(TimeDelta); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
 
+	Tick_State(TimeDelta); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 
-	Key_Input(TimeDelta);
-
-	Tick_State(TimeDelta);
-
-	On_Cell();
+	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
+	
 
 	// Parts 처리
 	for (_uint i = 0; i < PARTS_END; ++i)
@@ -122,10 +133,11 @@ void CPlayerGirl::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
+	// On_Hit(TimeDelta) 피격 처리
+
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 
-	// Parts 처리
 	for (_uint i = 0; i < PARTS_END; ++i)
 	{
 		if (nullptr != m_Parts[i])
@@ -148,6 +160,10 @@ void CPlayerGirl::LateTick(_double TimeDelta)
 		else
 			pGameMode->UseCamera(CGameMode::CAM_PLAYER);
 	}
+
+
+	//Effect Bones 처리
+	Update_EffectBones();
 }
 
 HRESULT CPlayerGirl::Render()
@@ -185,7 +201,7 @@ HRESULT CPlayerGirl::Render()
 
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS)))
 			return E_FAIL;
-
+		
 		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
 			return E_FAIL;
 
@@ -210,6 +226,8 @@ HRESULT CPlayerGirl::Render()
 		//	m_pModelCom->Render(i);
 		//}
 	}
+
+	m_pNaviCom->Render();
 
 	return S_OK;
 }
@@ -257,7 +275,7 @@ HRESULT CPlayerGirl::Add_Components()
 	ZeroMemory(&TransformDesc, sizeof TransformDesc);
 
 	TransformDesc.fMoveSpeed = 15.f;
-	TransformDesc.fRotationSpeed = XMConvertToRadians(90.f);
+	TransformDesc.fRotationSpeed = XMConvertToRadians(270.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
 		TEXT("Com_Transform"), (CComponent**)&m_pMainTransform, &TransformDesc)))
@@ -339,7 +357,7 @@ HRESULT CPlayerGirl::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 				switch (tBaseData.iType)
 				{
 				case CStateKey::TYPE_EFFECT:
-
+					m_tStates[i].ppStateKeys[j] = CEffectKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_PARTS:
 					m_tStates[i].ppStateKeys[j] = CPartsKey::Create(pDevice, pContext, &tBaseData);
@@ -437,6 +455,18 @@ void CPlayerGirl::Shot_PriorityKey(_uint iLeavePriority)
 	m_tCurState.iLeavePriority = iLeavePriority;
 }
 
+void CPlayerGirl::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _bool bTracking/*iInt1*/)
+{
+	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag);
+	if (nullptr == pEffect || EBONE_END <= EffectBoneID)
+		return;
+
+	if (0 == EffectBoneID)
+		pEffect->Play_Effect(&m_pMainTransform->Get_WorldMatrix(), bTracking);
+	else
+		pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
+}
+
 void CPlayerGirl::SetUp_State()
 {
 	// 키 리셋
@@ -463,6 +493,8 @@ void CPlayerGirl::SetUp_State()
 
 	if ((SS_JUMP_WALK == m_Scon.iCurState ||
 		SS_JUMP_RUN == m_Scon.iCurState || 
+		SS_FIXHOOK_END_UP == m_Scon.iCurState ||
+		SS_CLIMB_MOVE == m_Scon.iCurState ||
 		SS_FALL == m_Scon.iCurState) &&
 		PS_AIR != m_Scon.ePositionState)
 	{
@@ -474,12 +506,30 @@ void CPlayerGirl::SetUp_State()
 	if (SS_LAND_LIGHT == m_Scon.iCurState ||
 		SS_LAND_HEAVY == m_Scon.iCurState ||
 		SS_LAND_ROLL == m_Scon.iCurState ||
+		SS_CLIMB_ONTOP == m_Scon.iCurState ||
+		SS_CLIMB_BOOST_ONTOP == m_Scon.iCurState ||
 		IS_AIRATTACK_END == m_Scon.iCurState)
 	{
 		m_Scon.ePositionState = PS_GROUND;
 	}
-		
 
+	if ((SS_CLIMB_START_UP == m_Scon.iCurState ||
+		SS_CLIMB_START_DOWN == m_Scon.iCurState ||
+		SS_CLIMB_STAND == m_Scon.iCurState ||
+		SS_CLIMB_BOOST_U_START == m_Scon.iCurState) &&
+		PS_CLIMB != m_Scon.ePositionState)
+	{
+		m_Scon.ePositionState = PS_CLIMB;
+	}
+
+	// Climb 종료 시 Look 방향 되돌리기
+	if(SS_CLIMB_ONTOP == m_Scon.iCurState ||
+		SS_CLIMB_BOOST_ONTOP == m_Scon.iCurState ||
+		SS_CLIMB_MOVE == m_Scon.iCurState ||
+		SS_LAND_LIGHT == m_Scon.iCurState)
+	{
+		m_pMainTransform->Set_LookDir(XMVectorSetY(m_pMainTransform->Get_State(CTransform::STATE_LOOK), 0.f));
+	}
 
 	// 무기 위치 잡기
 	if (0 == m_tCurState.bWeaponState)
@@ -589,9 +639,7 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 		}
 		
 		if (pGame->InputKey(DIK_C) == KEY_STATE::TAP)
-		{
 			m_Scon.bWalk = !m_Scon.bWalk;
-		}
 
 		/*if (pGame->InputKey(DIK_UP) == KEY_STATE::TAP)
 		{
@@ -626,9 +674,9 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			m_pNaviCom->Set_CurrentIndex(0);
 			m_iAirJumpCount += 10;
 			m_fSkillGauge += 50.f;
+
+			m_Scon.ePositionState = PS_AIR;
 		}
-
-
 
 		// 이동 방향 체크
 
@@ -677,21 +725,29 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			eCurFrameInput = INPUT_SKILL;
 		}
 
+
 		// Burst
 		if (pGame->InputKey(DIK_Q) == KEY_STATE::TAP)
 		{
 			eCurFrameInput = INPUT_BURST;
 		}
 
-		//
+		// Jump
 		if (pGame->InputKey(DIK_SPACE) == KEY_STATE::TAP)
 		{
 			eCurFrameInput = INPUT_SPACE;
 		}
 
+		// Attack
 		if (pGame->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			eCurFrameInput = INPUT_ATTACK;
+		}
+
+		// Tool
+		if (pGame->InputKey(DIK_T) == KEY_STATE::TAP)
+		{
+			eCurFrameInput = INPUT_TOOL;
 		}
 	}
 
@@ -783,6 +839,8 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			if (SS_SPRINT != m_Scon.iCurState &&
 				SS_SPRINT_IMPULSE_F != m_Scon.iCurState)
 				m_Scon.iNextState = SS_SPRINT_IMPULSE_F;
+			else if (SS_CLIMB_BOOST_ONTOPTOSTOP == m_Scon.iCurState)
+				m_Scon.iNextState = SS_CLIMB_BOOST_ONTOPTOSPRINT;
 			/*if(!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
 				m_Scon.iNextState = SS_MOVE_B;
 			else
@@ -811,11 +869,6 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			{
 			case IS_ATTACK_01:
 				m_Scon.iNextState = IS_ATTACK_02;
-
-				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_02");
-				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-				pEffect->Play_Effect(&ParentMatrix);
-
 				break;
 			case IS_ATTACK_02:
 				m_Scon.iNextState = IS_ATTACK_03;
@@ -832,27 +885,12 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 				break; 
 			case IS_ATTACK_03:
 				m_Scon.iNextState = IS_ATTACK_04;
-
-				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_04");
-				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-				pEffect->Play_Effect(&ParentMatrix);
-
 				break;
 			case IS_SKILL_02:
 				m_Scon.iNextState = IS_ATTACK_05;
-
-				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_05");
-				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-				pEffect->Play_Effect(&ParentMatrix);
-
 				break;
 			default:
 				m_Scon.iNextState = IS_ATTACK_01;
-
-				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_01");
-				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-				pEffect->Play_Effect(&ParentMatrix);
-
 				break;
 			}
 			break;
@@ -868,9 +906,12 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CPlayerGirl::INPUT_BURST:
-				m_Scon.iNextState = IS_BURST;
+			m_Scon.iNextState = IS_BURST;
 			break;
 
+		case Client::CPlayerGirl::INPUT_TOOL:
+			m_Scon.iNextState = SS_FIXHOOK_END_UP;
+			break;
 		default:
 			break;
 		}
@@ -883,51 +924,283 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			if (m_iAirJumpCount > 0)
 			{
 				if (m_Scon.iCurState != SS_JUMP_SECOND_B)
-				{
 					m_Scon.iNextState = SS_JUMP_SECOND_B;
-					CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Double_Jump_B");
-					_float4x4 ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-					pEffect->Play_Effect(&ParentMatrix);
-				}
-					
 				else
-				{
 					m_Scon.iNextState = SS_JUMP_SECOND_F;
-					CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Double_Jump_F");
-					_float4x4 ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-					pEffect->Play_Effect(&ParentMatrix);
-				}
+
 				--m_iAirJumpCount;
 
 				//if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
 				//{
-				//	m_Scon.iNextState = SS_JUMP_SECOND_B;
-				//	CEffect* pEffect =CGameInstance::GetInstance()->Get_Effect(L"Double_Jump_B");
-				//	_float4x4 ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-				//	pEffect->Play_Effect(&ParentMatrix);
 				//}
-				//else
+				//switch (m_Scon.iCurState)
 				//{
-				//	m_Scon.iNextState = SS_JUMP_SECOND_F;
-				//	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Double_Jump_F");
-				//	_float4x4 ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-				//	pEffect->Play_Effect(&ParentMatrix);
+				//case SS_JUMP_RUN:
+				//case SS_JUMP_WALK:
+				//	
+				//default:
+				//	
+				//	break;
 				//}
-				
+				//break;
 			}
 			break;
-			//switch (m_Scon.iCurState)
-			//{
-			//case SS_JUMP_RUN:
-			//case SS_JUMP_WALK:
-			//	
-			//default:
-			//	
-			//	break;
-			//}
-			//break;
+		
 		case Client::CPlayerGirl::INPUT_ATTACK:
 			m_Scon.iNextState = IS_AIRATTACK_START;
+			break;
+		case Client::CPlayerGirl::INPUT_TOOL:
+			m_Scon.iNextState = SS_FIXHOOK_END_UP;
+			break;
+		default:
+			break;
+		}
+	}
+	else if (PS_CLIMB == m_Scon.ePositionState)
+	{
+		switch (eCurFrameInput)
+		{
+		case Client::CPlayerGirl::INPUT_NONE:
+			switch (m_Scon.iCurState)
+			{
+			case SS_CLIMB_D1:
+				m_Scon.iNextState = SS_CLIMB_D1_STOP;
+				break;
+			case SS_CLIMB_D2:
+				m_Scon.iNextState = SS_CLIMB_D2_STOP;
+				break;
+			case SS_CLIMB_DL1:
+				m_Scon.iNextState = SS_CLIMB_DL1_STOP;
+				break;
+			case SS_CLIMB_DL2:
+				m_Scon.iNextState = SS_CLIMB_DL2_STOP;
+				break;
+			case SS_CLIMB_DR1:
+				m_Scon.iNextState = SS_CLIMB_DR1_STOP;
+				break;
+			case SS_CLIMB_DR2:
+				m_Scon.iNextState = SS_CLIMB_DR2_STOP;
+				break;
+			case SS_CLIMB_L1:
+				m_Scon.iNextState = SS_CLIMB_L1_STOP;
+				break;
+			case SS_CLIMB_L2:
+				m_Scon.iNextState = SS_CLIMB_L2_STOP;
+				break;
+			case SS_CLIMB_R1:
+				m_Scon.iNextState = SS_CLIMB_R1_STOP;
+				break;
+			case SS_CLIMB_R2:
+				m_Scon.iNextState = SS_CLIMB_R2_STOP;
+				break;
+			case SS_CLIMB_U1:
+				m_Scon.iNextState = SS_CLIMB_U1_STOP;
+				break;
+			case SS_CLIMB_U2:
+				m_Scon.iNextState = SS_CLIMB_U2_STOP;
+				break;
+			case SS_CLIMB_UL1:
+				m_Scon.iNextState = SS_CLIMB_UL1_STOP;
+				break;
+			case SS_CLIMB_UL2:
+				m_Scon.iNextState = SS_CLIMB_UL2_STOP;
+				break;
+			case SS_CLIMB_UR1:
+				m_Scon.iNextState = SS_CLIMB_UR1_STOP;
+				break;
+			case SS_CLIMB_UR2:
+				m_Scon.iNextState = SS_CLIMB_UR2_STOP;
+				break;
+			case SS_CLIMB_BOOST_U:
+			case SS_CLIMB_BOOST_U_START:
+				m_Scon.iNextState = SS_CLIMB_BOOST_U_STOP;
+				break;
+			case SS_CLIMB_BOOST_L:
+			case SS_CLIMB_BOOST_L_START:
+				m_Scon.iNextState = SS_CLIMB_BOOST_L_STOP;
+				break;
+			case SS_CLIMB_BOOST_R:
+			case SS_CLIMB_BOOST_R_START:
+				m_Scon.iNextState = SS_CLIMB_BOOST_R_STOP;
+				break;
+			default:
+				m_Scon.iNextState = SS_CLIMB_STAND;
+				break;
+			}
+			break;
+
+		case Client::CPlayerGirl::INPUT_MOVE:
+			if (SS_CLIMB_BOOST_U_START == m_Scon.iCurState ||
+				SS_CLIMB_BOOST_U == m_Scon.iCurState)
+			{
+				m_Scon.iNextState = SS_CLIMB_BOOST_U_STOP;
+			}
+			else if (SS_CLIMB_BOOST_L_START == m_Scon.iCurState ||
+				SS_CLIMB_BOOST_L == m_Scon.iCurState)
+			{
+				m_Scon.iNextState = SS_CLIMB_BOOST_L_STOP;
+			}
+			else if (SS_CLIMB_BOOST_R_START == m_Scon.iCurState ||
+				SS_CLIMB_BOOST_R == m_Scon.iCurState)
+			{
+				m_Scon.iNextState = SS_CLIMB_BOOST_R_STOP;
+			}
+
+			if (bInputDir[0])
+			{
+				if (bInputDir[2])
+				{
+					if (SS_CLIMB_UL1 == m_Scon.iCurState ||
+						SS_CLIMB_UL1_STOP == m_Scon.iCurState)
+						m_Scon.iNextState = SS_CLIMB_UL2;
+					else
+						m_Scon.iNextState = SS_CLIMB_UL1;
+				}
+				else if (bInputDir[3])
+				{
+					if (SS_CLIMB_UR1 == m_Scon.iCurState ||
+						SS_CLIMB_UR1_STOP == m_Scon.iCurState)
+						m_Scon.iNextState = SS_CLIMB_UR2;
+					else
+						m_Scon.iNextState = SS_CLIMB_UR1;
+				}
+				else
+				{
+					if (SS_CLIMB_U1 == m_Scon.iCurState ||
+						SS_CLIMB_U1_STOP == m_Scon.iCurState)
+						m_Scon.iNextState = SS_CLIMB_U2;
+					else
+						m_Scon.iNextState = SS_CLIMB_U1;
+				}
+			}
+			else if (bInputDir[1])
+			{
+				if (bInputDir[2])
+				{
+					if (SS_CLIMB_DL1 == m_Scon.iCurState ||
+						SS_CLIMB_DL1_STOP == m_Scon.iCurState)
+						m_Scon.iNextState = SS_CLIMB_DL2;
+					else
+						m_Scon.iNextState = SS_CLIMB_DL1;
+				}
+				else if (bInputDir[3])
+				{
+					if (SS_CLIMB_DR1 == m_Scon.iCurState ||
+						SS_CLIMB_DR1_STOP == m_Scon.iCurState)
+						m_Scon.iNextState = SS_CLIMB_DR2;
+					else
+						m_Scon.iNextState = SS_CLIMB_DR1;
+				}
+				else
+				{
+					if (SS_CLIMB_D1 == m_Scon.iCurState ||
+						SS_CLIMB_D1_STOP == m_Scon.iCurState)
+						m_Scon.iNextState = SS_CLIMB_D2;
+					else
+						m_Scon.iNextState = SS_CLIMB_D1;
+				}
+			}
+			else
+			{
+				if (bInputDir[2])
+				{
+					if (SS_CLIMB_L1 == m_Scon.iCurState ||
+						SS_CLIMB_L1_STOP == m_Scon.iCurState)
+						m_Scon.iNextState = SS_CLIMB_L2;
+					else
+						m_Scon.iNextState = SS_CLIMB_L1;
+				}
+				else if (bInputDir[3])
+				{
+					if (SS_CLIMB_R1 == m_Scon.iCurState ||
+						SS_CLIMB_R1_STOP == m_Scon.iCurState)
+						m_Scon.iNextState = SS_CLIMB_R2;
+					else
+						m_Scon.iNextState = SS_CLIMB_R1;
+				}
+			}
+			break;
+		case Client::CPlayerGirl::INPUT_DASH:
+			if (bInputDir[0])
+			{
+				switch (m_Scon.iCurState)
+				{
+				case SS_CLIMB_BOOST_U_START:
+				case SS_CLIMB_BOOST_U:
+				case SS_CLIMB_BOOST_L_START:
+				case SS_CLIMB_BOOST_L:
+				case SS_CLIMB_BOOST_R_START:
+				case SS_CLIMB_BOOST_R:
+					m_Scon.iNextState = SS_CLIMB_BOOST_U;
+					break;
+				default:
+					m_Scon.iNextState = SS_CLIMB_BOOST_U_START;
+					break;
+				}
+			}
+			else if (bInputDir[2])
+			{
+				switch (m_Scon.iCurState)
+				{
+				case SS_CLIMB_BOOST_U_START:
+				case SS_CLIMB_BOOST_U:
+				case SS_CLIMB_BOOST_L_START:
+				case SS_CLIMB_BOOST_L:
+				case SS_CLIMB_BOOST_R_START:
+				case SS_CLIMB_BOOST_R:
+					m_Scon.iNextState = SS_CLIMB_BOOST_L;
+					break;
+				default:
+					m_Scon.iNextState = SS_CLIMB_BOOST_L_START;
+					break;
+				}
+			}
+			else if(bInputDir[3])
+			{
+				switch (m_Scon.iCurState)
+				{
+				case SS_CLIMB_BOOST_U_START:
+				case SS_CLIMB_BOOST_U:
+				case SS_CLIMB_BOOST_L_START:
+				case SS_CLIMB_BOOST_L:
+				case SS_CLIMB_BOOST_R_START:
+				case SS_CLIMB_BOOST_R:
+					m_Scon.iNextState = SS_CLIMB_BOOST_R;
+					break;
+				default:
+					m_Scon.iNextState = SS_CLIMB_BOOST_R_START;
+					break;
+				}
+			}
+			break;
+		case Client::CPlayerGirl::INPUT_SPACE:
+			if (bInputDir[0])
+			{
+				if (bInputDir[2])
+					m_Scon.iNextState = SS_CLIMB_DASH_UL;
+				else if (bInputDir[3])
+					m_Scon.iNextState = SS_CLIMB_DASH_UR;
+				else
+					m_Scon.iNextState = SS_CLIMB_DASH_U;
+			}
+			else if (bInputDir[1])
+			{
+				if (bInputDir[2])
+					m_Scon.iNextState = SS_CLIMB_DASH_DL;
+				else if (bInputDir[3])
+					m_Scon.iNextState = SS_CLIMB_DASH_DR;
+				else
+					m_Scon.iNextState = SS_CLIMB_DASH_D;
+			}
+			else
+			{
+				if (bInputDir[2])
+					m_Scon.iNextState = SS_CLIMB_DASH_L;
+				else if (bInputDir[3])
+					m_Scon.iNextState = SS_CLIMB_DASH_R;
+				else
+					m_Scon.iNextState = SS_CLIMB_MOVE;
+			}
 			break;
 		default:
 			break;
@@ -953,8 +1226,20 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 	// 매 프레임
 	if (CCharacter::ROT_LOOKAT == m_tCurState.iRotationType)
 	{
-		if(0.f != XMVectorGetX(XMVector3Length(vInputDir)))
-			m_pMainTransform->Set_LookDir(vInputDir);
+		if (PS_CLIMB != m_Scon.ePositionState)
+		{
+			_vector vAxis = XMVector3Cross(m_pMainTransform->Get_State(CTransform::STATE_LOOK), vInputDir);
+			_float fAngle = acosf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_LOOK)), XMVector3Normalize(vInputDir))));
+
+			if (!XMVector3Equal(vAxis, XMVectorZero()))
+			{
+				if (fAngle > m_pMainTransform->Get_RotationSpeed() * TimeDelta)
+					m_pMainTransform->Rotate(vAxis, TimeDelta);
+				else
+					m_pMainTransform->Set_LookDir(vInputDir);
+			}
+		}
+			
 	}
 
 }
@@ -973,18 +1258,14 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 
 		m_pAnimSetCom[ANIMSET_BASE]->Update_TargetBones();
 		m_pAnimSetCom[ANIMSET_RIBBON]->Ribbon_TargetBones();
+		// 여기까지 PlayPlayanimation
 
 		m_pModelCom->Invalidate_CombinedMatrices();
-
-
 
 		// 루프하지 않는 애니메이션이 이번 프레임에 끝났으면 전프레임 움직임을 적용
 		// 애니메이션 프레임이랑 FrameRate가 달라서 발생하는 오차값으로 인한 버그 방지
 		if(true == m_Scon.bAnimFinished && false == m_tCurState.bLoop)
-		{
 			XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vPrevMovement) * (_float)TimeDelta);
-			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom);
-		}
 		else
 		{
 			// 루트 모션 처리(회전, 이동)
@@ -1015,12 +1296,15 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 				else
 					XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vMovement) * (_float)TimeDelta);
 			}
-			// 구해진 이동값만큼 움직이고 이전 프레임 정보를 저장, + TimeDelta 대응
-			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom);
-			XMStoreFloat3(&m_Scon.vPrevMovement, XMLoadFloat3(&vMovement) / (_float)TimeDelta);
 		}
+		// 구해진 이동값만큼 움직이고 이전 프레임 정보를 저장, + TimeDelta 대응
+		if(SS_CLIMB_ONTOP == m_Scon.iCurState || 
+			SS_CLIMB_BOOST_ONTOP == m_Scon.iCurState)
+			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, nullptr, m_pModelCom->Get_TopBoneCombinedPos());
+		else
+			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom, m_pModelCom->Get_TopBoneCombinedPos());
+		XMStoreFloat3(&m_Scon.vPrevMovement, XMLoadFloat3(&vMovement) / (_float)TimeDelta);
 		
-
 		// StateKey 처리
 		for (_uint i = 0; i < m_tCurState.iKeyCount; ++i)
 		{
@@ -1030,7 +1314,10 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 
 		// 떨어지고 있을 경우 
 		if (vMovement.z < 0.f)
-			m_Scon.bFalling = true;
+		{
+			if(!(SS_FIXHOOK_END_UP == m_Scon.iCurState && 10.f > m_Scon.TrackPos))
+				m_Scon.bFalling = true;
+		}
 	}
 
 	if (true == m_Scon.bAnimFinished)
@@ -1060,49 +1347,121 @@ void CPlayerGirl::On_Cell()
 	_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
 	_float fPosY = XMVectorGetY(vPos);
 	_float fCellHeight = m_pNaviCom->Compute_Height(vPos);
-
+	CCell* pCell = m_pNaviCom->Get_CurCell();
+	_uint iCurCellState = m_pNaviCom->Get_CurCellState();
 
 	if (PS_GROUND == m_Scon.ePositionState)
 	{
-		if (fPosY - fCellHeight > 0.1f)
+		if (m_Scon.iPrevCellState != iCurCellState && CELL_WALL == iCurCellState &&
+			pCell->DistanceToWall(vPos) < 0.f)
 		{
-			m_Scon.iNextState = SS_FALL;
-			SetUp_State();
-			SetUp_Animations(false);
+			if (SS_SPRINT == m_Scon.iCurState ||
+				SS_SPRINT_IMPULSE_F == m_Scon.iCurState)
+			{
+				m_Scon.iNextState = SS_CLIMB_BOOST_U_START;
+				SetUp_State();
+				SetUp_Animations(false);
+			}
+			else
+			{
+				m_Scon.iNextState = SS_CLIMB_START_UP;
+				SetUp_State();
+				SetUp_Animations(false);
+			}
+		}
+		else if (SS_CLIMB_ONTOP == m_Scon.iCurState)
+		{
+			if (m_Scon.TrackPos < 14.0)
+			{
+				_vector vExitPos = XMLoadFloat3(&m_vClimbExitPos);
+				_vector vExitLook = m_pMainTransform->Get_State(CTransform::STATE_LOOK);
+
+				vExitPos += XMVector3Normalize(vExitLook) * 1.3f * (_float)m_Scon.TrackPos / 14.0;
+
+				vExitPos = XMVectorSetY(vExitPos, XMVectorGetY(m_pMainTransform->Get_State(CTransform::STATE_POSITION)));
+
+				m_pMainTransform->Set_State(CTransform::STATE_POSITION, vExitPos);
+			}
+			else
+			{
+				if (CELL_GROUND == iCurCellState)
+				{
+					m_pMainTransform->Set_LookDir(XMVectorSetY(m_pMainTransform->Get_State(CTransform::STATE_LOOK), 0.f));
+					m_pMainTransform->Set_PosY(fCellHeight);
+				}
+			}
+		}
+		else if (SS_CLIMB_BOOST_ONTOP == m_Scon.iCurState)
+		{
+			_vector vExitPos = XMLoadFloat3(&m_vClimbExitPos);
+			_vector vExitLook = m_pMainTransform->Get_State(CTransform::STATE_LOOK);
+
+			vExitPos += XMVector3Normalize(vExitLook) * 1.3f * (_float)m_Scon.TrackPos / 9.0;
+
+			vExitPos = XMVectorSetY(vExitPos, XMVectorGetY(m_pMainTransform->Get_State(CTransform::STATE_POSITION)));
+
+			m_pMainTransform->Set_State(CTransform::STATE_POSITION, vExitPos);
+
+			if (CELL_GROUND == iCurCellState)
+			{
+				m_pMainTransform->Set_LookDir(XMVectorSetY(m_pMainTransform->Get_State(CTransform::STATE_LOOK), 0.f));
+				m_pMainTransform->Set_PosY(fCellHeight);
+			}
 		}
 		else
-			m_pMainTransform->Set_PosY(fCellHeight);
+		{
+			if (fPosY - fCellHeight > 0.1f)
+			{
+				m_Scon.iNextState = SS_FALL;
+				SetUp_State();
+				SetUp_Animations(false);
+			}
+			else
+				m_pMainTransform->Set_PosY(fCellHeight);
+		}
 	}
 	else if (PS_AIR == m_Scon.ePositionState)
 	{
-		if (fPosY - fCellHeight < 0.f )
+		if (CELL_GROUND == iCurCellState)
 		{
-			// 오르막 방향으로 점프 시 예외처리
-			if (false == m_Scon.bFalling)
-				m_pMainTransform->Set_PosY(fCellHeight);
-			else
+			if (fPosY - fCellHeight < 0.f)
 			{
-				m_pMainTransform->Set_PosY(fCellHeight);
-
-				// 공중 공격으로 착지하는 경우
-				if (IS_AIRATTACK_START == m_Scon.iCurState ||
-					IS_AIRATTACK_LOOP == m_Scon.iCurState)
+				if (false == m_Scon.bFalling)
 				{
-					m_Scon.iNextState = IS_AIRATTACK_END;
+					// 오르막 방향으로 점프 시 예외처리
+					m_pMainTransform->Set_PosY(fCellHeight);
 				}
-				// 일반적인 경우
 				else
 				{
-					_float fGap = m_fJumpPos.y - fCellHeight;
-					if (fGap > 4.f)
-						m_Scon.iNextState = SS_LAND_ROLL;
-					else if (fGap > 2.f)
-						m_Scon.iNextState = SS_LAND_HEAVY;
+					// 공중 공격으로 착지하는 경우
+					if (IS_AIRATTACK_START == m_Scon.iCurState ||
+						IS_AIRATTACK_LOOP == m_Scon.iCurState)
+					{
+						m_Scon.iNextState = IS_AIRATTACK_END;
+					}
+					// 일반적인 경우
 					else
-						m_Scon.iNextState = SS_LAND_LIGHT;
-				}
-				
+					{
+						_float fGap = m_fJumpPos.y - fCellHeight;
+						if (fGap > 4.f)
+							m_Scon.iNextState = SS_LAND_ROLL;
+						else if (fGap > 2.f)
+							m_Scon.iNextState = SS_LAND_HEAVY;
+						else
+							m_Scon.iNextState = SS_LAND_LIGHT;
+					}
 
+					SetUp_State();
+					SetUp_Animations(false);
+				}
+			}
+		}
+		else if (CELL_WALL == iCurCellState)
+		{
+			if (pCell->DistanceToWall(vPos) < 0.f)
+			{
+				m_Scon.iNextState = SS_CLIMB_STAND;
+				
 				SetUp_State();
 				SetUp_Animations(false);
 			}
@@ -1110,7 +1469,56 @@ void CPlayerGirl::On_Cell()
 	}
 	else if (PS_CLIMB == m_Scon.ePositionState)
 	{
+		_uint iExit = m_pNaviCom->Get_ExitClimb();
+	
+		// 벽에 딱 붙임
 
+		if (CELL_WALL == iCurCellState)
+		{
+			_vector vRootPos = XMVector3TransformCoord(m_pClimbBones[CBONE_SPINE]->Get_CombinedPosition(), XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+			_float fDistToWall = pCell->DistanceToWall(vRootPos);
+			m_pMainTransform->Push_Position(pCell->Get_Normal() * (0.3f - fDistToWall));
+
+			// 벽을 바라보게 함
+			m_pMainTransform->Set_LookDir(pCell->Get_Normal() * -1.f);
+		}
+		
+		if (CNavigation::EXIT_UP == iExit)
+		{
+			//m_pMainTransform->Push_Position(pCell->Get_Normal() * (-0.3f));
+			XMStoreFloat3(&m_vClimbExitPos, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+
+			if (SS_CLIMB_BOOST_U == m_Scon.iCurState ||
+				SS_CLIMB_BOOST_U_START == m_Scon.iCurState ||
+				SS_CLIMB_BOOST_L == m_Scon.iCurState ||
+				SS_CLIMB_BOOST_L_START == m_Scon.iCurState ||
+				SS_CLIMB_BOOST_R == m_Scon.iCurState ||
+				SS_CLIMB_BOOST_R_START == m_Scon.iCurState)
+			{
+				m_Scon.iNextState = SS_CLIMB_BOOST_ONTOP;
+			}
+			else
+			{
+				m_Scon.iNextState = SS_CLIMB_ONTOP;
+			}
+
+			
+			SetUp_State();
+			SetUp_Animations(false);
+			m_pNaviCom->Set_ExitClimb(CNavigation::EXIT_NO);
+
+		}
+		else if (CNavigation::EXIT_DOWN == iExit)
+		{
+			m_Scon.iNextState = SS_LAND_LIGHT;
+			SetUp_State();
+			SetUp_Animations(false);
+			m_pNaviCom->Set_ExitClimb(CNavigation::EXIT_NO);
+		}
+		else if (CNavigation::EXIT_ALL == iExit)
+		{
+			m_pNaviCom->Set_ExitClimb(CNavigation::EXIT_NO);
+		}
 	}
 }
 
@@ -1126,6 +1534,29 @@ void CPlayerGirl::Init_AnimSystem()
 
 		if (!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Start")))
 			pAnim->Set_Duration(10.0);
+
+		if (!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_D_1")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_D_2")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_DL_1")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_DL_2")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_DR_1")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_DR_2")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_L_1")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_L_2")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_R_1")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_R_2")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_U_1")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_U_2")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_UL_1")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_UL_2")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_UR_1")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_UR_2")))
+			pAnim->Set_Duration(15.0);
+
+
+		if (!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_OnTop")))
+			pAnim->Set_Duration(48.0);
+
 
 		for (auto& pChannel : pAnim->Get_Channels())
 		{
@@ -1268,6 +1699,27 @@ HRESULT CPlayerGirl::Init_Parts()
 	m_Parts[PARTS_HULU]->Set_Parent(PBONE_HULU);
 
 	return S_OK;
+}
+
+HRESULT CPlayerGirl::Init_EffectBones()
+{
+	//NONE은 걍 월드 매트릭스 던짐
+	m_EffectBones[EBONE_SPINE] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine"));
+	m_EffectBones[EBONE_WEAPON] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp03"));
+
+	return S_OK;
+}
+
+void CPlayerGirl::Update_EffectBones()
+{
+	// TODO : 살아있는 이펙트가 걸려있는
+
+	for (_uint i = 1; i < EBONE_END; ++i)
+	{
+		XMStoreFloat4x4(&m_EffectBoneMatrices[i], XMLoadFloat4x4(&m_EffectBones[i]->Get_CombinedTransfromationMatrix())
+			* XMMatrixRotationY(XMConvertToRadians(180.f))
+			* XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+	}
 }
 
 CPlayerGirl * CPlayerGirl::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

@@ -9,6 +9,15 @@ BEGIN(Client)
 class CCharacter abstract : public CGameObject
 {
 public:
+	// 네비 메쉬 cell Type
+	enum CELL
+	{
+		CELL_GROUND,
+		CELL_WALL,
+		CELL_END
+	};
+
+	// AnimSet 타입
 	enum AnimSets
 	{
 		ANIMSET_BASE,
@@ -16,6 +25,7 @@ public:
 		ANIMSET_END
 	};
 
+	// 플레이어 캐릭터들이 공유할 상태들, 기본 움직임
 	enum PlayerCharacterSharedStates
 	{
 		// 정지
@@ -184,6 +194,7 @@ public:
 		SS_END
 	};
 
+	// 플레이어 상태에서 사용할 등가속 운동 움직임
 	enum PlayerStatePhysics
 	{
 		PSP_NONE,
@@ -210,6 +221,7 @@ public:
 		ROT_END,
 	};
 
+	// 캐릭터가 현재 위치 상태, 지상, 공중, 벽
 	enum PositionState
 	{
 		PS_GROUND,
@@ -218,26 +230,37 @@ public:
 		PS_SWIM,
 		PS_END
 	};
-	//
+
+	// 
 	typedef struct tagMultiAnimStateInfo
 	{
 		_uint iAnimID[ANIMSET_END];
-		//
+		
+		// 이 애니메이션이 정상적으로 재생되고 끝났을 때 진입할 다음 상태
 		_uint iNextState;
+
 
 		// NONE : 회전 안함, ONSTART : 상태 진입 시 1회 타겟 방향을 바라봄, LOOKAT : 상태 적용 중 매 프레임 타겟 방향을 바라봄
 		// TURN : 상태 적용 중 매 프레임 타겟 방향으로 Transform의 회전 각속도 만큼 회전함
 		_uint iRotationType;
+
 		_double FramePerSec; // == TicksPerSec
+
+		// 반복 여부, true면 가만히 뒀을 때 영원히 반복함
 		_bool bLoop;
+		// 보간 여부
 		_bool bLerp;
+		// Root 모션 여부
 		_bool bRootMotion;
+		// 상태의 쿨타임 진입 시 
 		_bool bApplyCoolTime;
+		// 사용중, 수납중
 		_bool bWeaponState;
+		// 쿨타임 값 
 		_double CoolTime;
 		_uint iPhysicMoveID; // RootMotion이 false 일 경우 사용할 등가속 운동 움직임 ID
-		_uint iEnterPriority;
-		_uint iLeavePriority;
+		_uint iEnterPriority; // 진입 우선순위
+		_uint iLeavePriority; // 이탈 우선순위
 		// StateKeys
 		_uint iKeyCount;
 		CStateKey** ppStateKeys;
@@ -278,20 +301,22 @@ public:
 	
 	struct StateController
 	{
-		_uint			iCurState;
-		_uint			iNextState;
-		_double			TrackPos;
+		_uint			iCurState;		// 현재 상태 ID
+		_uint			iNextState;		// 다음 상태 ID > Setup_State 호출 시 다음 상태로 넘어가게 됨
+		_double			TrackPos;		// 현재 재생 중인 애니메이션의 트랙포지션(누적 '프레임' 값 ~~ 24fps ~~ 1 frame = 1/24 sec)
+		_uint			iPrevCellState;	// 전 프레임 네비 셀 타입 저장
+		PositionState	ePositionState;
 		_bool			bAnimFinished;
 		_float3			vMovement;
 		_float3			vPrevMovement;
-		PositionState	ePositionState;
 		_bool			bWalk;
 		_bool			bFalling;
 	};
 
 public: // StateKey 대응 함수 모음
-	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration) {};
-	virtual void Shot_PriorityKey(_uint iLeavePriority) {};
+	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration) {}
+	virtual void Shot_PriorityKey(_uint iLeavePriority) {}
+	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _bool bTracking) {}
 
 
 protected:

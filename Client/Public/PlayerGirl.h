@@ -26,6 +26,7 @@ public:
 		INPUT_MOVE,
 		INPUT_DASH,
 		INPUT_SPACE,
+		INPUT_TOOL,
 		INPUT_ATTACK,
 		INPUT_ATTACK_CHARGE,
 		INPUT_ATTACK_RELEASE,
@@ -64,7 +65,7 @@ public:
 		PARTS_END
 	};
 
-	// 무기 거는 본 배열 인덱스
+	// 파츠용 본 배열 인덱스
 	enum PARTSBONE
 	{
 		PBONE_WEAPON1, // 무기 사용 중 칼집 위치
@@ -76,6 +77,25 @@ public:
 		PBONE_WEAPON7, // 등(가장 멀리 // 세로?)?
 		PBONE_HULU,		// 항아리 위치
 		PBONE_END
+	};
+
+	// 이펙트용 본 월드 행렬 배열 인덱스 
+	// 각 본마다 현재 Tracking Effect가 실행중인지 파악하고 사용 중인 이펙트에게 전달할 행렬을 갱신함
+	enum EffectBone
+	{
+		EBONE_NONE,
+		EBONE_SPINE,
+		EBONE_WEAPON,
+		EBONE_END
+	};
+
+	// 벽타기용 본
+	enum ClimbBone
+	{
+		CBONE_HEAD,
+		CBONE_SPINE,
+		CBONE_ROOT,
+		CBONE_END
 	};
 
 private:
@@ -102,6 +122,7 @@ public:
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);
 	virtual void Shot_PriorityKey(_uint iLeavePriority);
+	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _bool bTracking);
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -119,6 +140,18 @@ private:
 	// Parts
 	class CParts*		m_Parts[PARTS_END] = { nullptr, };
 	CBone*				m_PartsBone[PBONE_END] = { nullptr, };
+
+	// Effects
+	CBone*				m_EffectBones[EBONE_END] = { nullptr, };
+	_float4x4			m_EffectBoneMatrices[EBONE_END] = {};
+
+	// 매 프레임 이펙트 본 사용중인지 체크해서 저장, 사용중인 본만 행렬 갱신해줌
+	_bool				m_bEffectBoneActive[EBONE_END] = { false, };
+
+	// 벽타기용 본
+	CBone*				m_pClimbBones[CBONE_END] = { nullptr };
+	CBone*				m_pHeadBone = { nullptr };
+	_float3				m_vClimbExitPos = {};
 
 	// 플레이어 변수
 	// 공중 점프 가능 횟수
@@ -149,6 +182,10 @@ private:
 	
 	// Parts
 	HRESULT Init_Parts();
+
+	// Effect
+	HRESULT	Init_EffectBones();
+	void	Update_EffectBones();
 
 	HRESULT	SetUp_ShaderResources();
 	HRESULT Setup_ShadowShaderResource();

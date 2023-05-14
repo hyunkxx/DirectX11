@@ -6,6 +6,7 @@
 #include "StateKey.h"
 #include "DissolveKey.h"
 #include "SoundKey.h"
+#include "EffectKey.h"
 #include "PartsKey.h"
 #include "PriorityKey.h"
 
@@ -815,7 +816,7 @@ void CAnimToolManager::Create_Key()
 	switch (m_tKeyData.iType)
 	{
 	case CStateKey::TYPE_EFFECT:
-
+		pStateKey = CEffectKey::Create(m_pDevice, m_pContext, &m_tKeyData);
 		break;
 	case CStateKey::TYPE_PARTS:
 		pStateKey = CPartsKey::Create(m_pDevice, m_pContext, &m_tKeyData);

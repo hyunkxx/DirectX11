@@ -39,6 +39,11 @@ public:
 		memcpy((_float3*)&m_TransformationMatrix.m[3], &vPosition, sizeof(_float3));
 	}
 
+	_float3* Get_CombinedPosition_Float3()
+	{
+		return (_float3*)&m_CombinedTransformationMatrix.m[3];
+	}
+
 	_vector	Get_CombinedPosition()
 	{
 		return XMLoadFloat3((_float3*)&m_CombinedTransformationMatrix.m[3]);
