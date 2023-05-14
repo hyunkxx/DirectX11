@@ -16,6 +16,9 @@
 #include "PlayerGirl.h"
 #include "Parts.h"
 
+#include "InteractionObject.h"
+#include "Chest.h"
+
 #include "PlayerCamera.h"
 
 #pragma region TREE
@@ -1008,22 +1011,18 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CAMERA, CPlayerCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYERGIRL, CPlayerGirl::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SWORD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SWORD))))
 		return E_FAIL;
-
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SCABBARD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SCABBARD))))
 		return E_FAIL;
 	
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_0, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_0))))
 		return E_FAIL;
-
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
 		return E_FAIL;
 
@@ -1207,6 +1206,9 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_52, CRock_52::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ROCK
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST, CChest::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	//UIUI
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UI, CUI_MainScreen::Create(m_pDevice, m_pContext))))

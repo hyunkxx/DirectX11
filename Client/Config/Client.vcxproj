@@ -196,6 +196,7 @@
     <ClInclude Include="..\Public\CameraCurve.h" />
     <ClInclude Include="..\public\Character.h" />
     <ClInclude Include="..\public\CharacterSelect_Terrain.h" />
+    <ClInclude Include="..\public\Chest.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Client_ModelEnum.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="..\public\FloatingStone.h" />
     <ClInclude Include="..\public\GameMode.h" />
     <ClInclude Include="..\Public\GUIManager.h" />
+    <ClInclude Include="..\public\InteractionObject.h" />
     <ClInclude Include="..\public\InteractionUI.h" />
     <ClInclude Include="..\public\Intro.h" />
     <ClInclude Include="..\public\IntroCamera.h" />
@@ -381,6 +383,7 @@
     <ClCompile Include="..\Private\CameraCurve.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\CharacterSelect_Terrain.cpp" />
+    <ClCompile Include="..\private\Chest.cpp" />
     <ClCompile Include="..\private\DissolveKey.cpp" />
     <ClCompile Include="..\private\DynamicCamera.cpp" />
     <ClCompile Include="..\private\EffectKey.cpp" />
@@ -388,6 +391,7 @@
     <ClCompile Include="..\private\FloatingStone.cpp" />
     <ClCompile Include="..\private\GameMode.cpp" />
     <ClCompile Include="..\Private\GUIManager.cpp" />
+    <ClCompile Include="..\private\InteractionObject.cpp" />
     <ClCompile Include="..\private\InteractionUI.cpp" />
     <ClCompile Include="..\private\Intro.cpp" />
     <ClCompile Include="..\private\IntroCamera.cpp" />

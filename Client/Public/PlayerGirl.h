@@ -2,6 +2,7 @@
 #include "Client_Defines.h"
 #include "Character.h"
 #include "Renderer.h"
+#include "Collider.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -14,11 +15,17 @@ class CBone;
 class CVIBuffer_Rect;
 class CTexture;
 class CNavigation;
+
 END
 
 BEGIN(Client)
 
-class CPlayerGirl : public CCharacter
+class CPlayerGirl 
+	: public CCharacter
+	, public IOnCollisionEnter
+	, public IOnCollisionStay
+	, public IOnCollisionExit
+	
 {
 public:
 	typedef enum INPUT_STATE {
@@ -198,9 +205,15 @@ public:
 	CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 
+	CCollider* GetDefaultCollider() const { return m_pCollider; }
+	void CPlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest) override;
+	void CPlayerGirl::OnCollisionStay(CCollider * src, CCollider * dest) override;
+	void CPlayerGirl::OnCollisionExit(CCollider * src, CCollider * dest) override;
+
 	CTexture* m_pEyeBurstTexture = nullptr;
 	CTexture* m_pEyeMaskTexture = nullptr;
 
+	CCollider* m_pCollider = nullptr;
 	CGameObject* pStaticObject = nullptr;
 	
 };

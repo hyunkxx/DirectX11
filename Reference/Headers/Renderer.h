@@ -134,6 +134,7 @@ private:
 	
 	enum class TARGET { BLUR_X, BLUR_Y, BLUR_MIDDEL_X, BLUR_MIDDEL_Y, BLUR_HIGH_X, BLUR_HIGH_Y, TARGET_END };
 	class CRenderTarget* m_pBindTargets[(_uint)TARGET::TARGET_END];
+
 };
 
 END

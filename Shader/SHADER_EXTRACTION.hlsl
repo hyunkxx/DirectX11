@@ -5,6 +5,9 @@ float4x4  g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_SourTexture, g_DestTexture;
 texture2D g_DepthTexture;
 
+float4 g_vCamPosition;
+float g_fFogStart, g_fFogEnd;
+
 struct VS_IN
 {
 	float3 vPosition : POSITION;
@@ -36,7 +39,6 @@ struct PS_IN
 {
 	float4 vPosition : SV_POSITION;
 	float2 vTexUV : TEXCOORD0;
-
 };
 
 struct PS_OUT
@@ -106,6 +108,22 @@ PS_OUT PS_EXTRACTION_FINAL(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_EXTRACTION_FINAL_FOG(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	float4 vFogColor = float4(0.9f, 0.9f, 0.9f, 1.0f);
+
+	vector vSourColor = g_SourTexture.Sample(LinearBorderSampler, In.vTexUV);
+	vector vDepthDesc = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);
+
+	float fFogFactor = saturate((g_fFogEnd - vDepthDesc.y * g_Far) / (g_fFogEnd - g_fFogStart));
+	Out.vColor = fFogFactor * vSourColor + (1.0 - fFogFactor) * vFogColor;
+
+	return Out;
+}   
+
+
 technique11 DefaultTechnique
 {
 	pass Extraction_Pass0
@@ -147,7 +165,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_EXTRACTION_COMBINE_ADD();
 	}
 
-	pass Extraction_BlendCombine_Pass2
+	pass Extraction_BlendCombine_Pass3
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -160,7 +178,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_EXTRACTION_COMBINE_BLEND();
 	}
 
-	pass Extraction_Final_Pass3
+	pass Extraction_Final_Pass4
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
@@ -173,4 +191,16 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_EXTRACTION_FINAL();
 	}
 
+	pass Extraction_Final_FOG_Pass5
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_EXTRACTION_FINAL_FOG();
+	}
 }

@@ -50,7 +50,7 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(121.8f, 1.5f, 87.f, 1.f));
 		break;
 	case RIGHT_MODEL:
-		m_pAnimSetCom->SetUp_Animation(STATE_IDLE, false);
+		m_pAnimSetCom->SetUp_Animation(m_eState, true);
 		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(90.f));
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(124.2f, 1.5f, 87.f, 1.f));
 		break;
@@ -99,7 +99,6 @@ HRESULT CLobbyCharacter::Render()
 	{
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
 			return E_FAIL;
-
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS)))
 			return E_FAIL;
 
@@ -206,7 +205,7 @@ HRESULT CLobbyCharacter::Add_Components()
 		return E_FAIL;
 
 	// For.Com_Shader_ModelAnim
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODELANIM,
+	if (FAILED(__super::Add_Component(LEVEL_LOGO, SHADER::MODELANIM,
 		TEXT("Com_Shader_ModelAnim"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -329,6 +328,7 @@ CGameObject * CLobbyCharacter::Clone(void * pArg)
 void CLobbyCharacter::Free()
 {
 	__super::Free();
+
 	Safe_Release(m_pAnimSetCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pMainTransform);

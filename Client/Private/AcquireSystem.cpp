@@ -33,7 +33,6 @@ HRESULT CAcquireSystem::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 	
-	// Á¾¼ÓÀû UI
 	m_pInteraction = static_cast<CInteractionUI*>(pGameInstance->Clone_GameObject(OBJECT::UI_INTERACTION));
 
 	return S_OK;
@@ -70,6 +69,11 @@ void CAcquireSystem::RenderGUI()
 {
 	m_pInteraction->RenderGUI();
 
+}
+
+void CAcquireSystem::SetRender(CInteractionUI::INTERACT_TYPE eType, _bool bValue)
+{
+	m_pInteraction->SetRender(eType, bValue);
 }
 
 CAcquireSystem * CAcquireSystem::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

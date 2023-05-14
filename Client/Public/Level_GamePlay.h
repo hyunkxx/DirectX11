@@ -4,6 +4,7 @@
 
 BEGIN(Engine)
 class CCamera;
+class CGameObject;
 END
 
 BEGIN(Client)
@@ -34,7 +35,7 @@ public:
 	class CDynamicCamera* m_pDynamicCamera = nullptr;
 	class CPlayerCamera* m_pPlayerCamera = nullptr;
 	
-	class CAcquireSystem* m_pAcquireSystem = nullptr;
+	CGameObject* m_pAcquireSystem = nullptr;
 };
 
 END

@@ -32,21 +32,38 @@ HRESULT CInteractionUI::Initialize(void * pArg)
 
 	m_SpriteSize = { 4.f, 4.f };
 
-	m_KeyDesc.fX = 790.f;
+	m_KeyDesc.fX = 780.f;
 	m_KeyDesc.fY = 410.f;
 	m_KeyDesc.fWidth = 28.f;
 	m_KeyDesc.fHeight = 36.f;
 
-	m_InteractionBack.fX = 940.f;
+	m_InteractionBack.fX = 980.f;
 	m_InteractionBack.fY = 410.f;
-	m_InteractionBack.fWidth = 256.f;
-	m_InteractionBack.fHeight = 32.f;
+	m_InteractionBack.fWidth = 332.f;
+	m_InteractionBack.fHeight = 44.f;
+
+	m_Text.fX = 980.f;
+	m_Text.fY = 412.f;
+	m_Text.fWidth = 256.f;
+	m_Text.fHeight = 32.f;
+
+	m_Sprite = m_InteractionBack;
+	m_Sprite.fWidth = m_InteractionBack.fWidth + 12.f;
+	m_Sprite.fHeight = m_InteractionBack.fHeight + 10.f;
+
+	m_InterIcon = m_KeyDesc;
+	m_InterIcon.fX += 52.f;
+	m_InterIcon.fWidth = 32.f;
+	m_InterIcon.fHeight = 32.f;
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	
 	XMStoreFloat4x4(&m_KeyDesc.WorldMatrix, XMMatrixScaling(m_KeyDesc.fWidth, m_KeyDesc.fHeight, 1.f) * XMMatrixTranslation(m_KeyDesc.fX - g_iWinSizeX * 0.5f, -m_KeyDesc.fY + g_iWinSizeY * 0.5f, 0.f));
 	XMStoreFloat4x4(&m_InteractionBack.WorldMatrix, XMMatrixScaling(m_InteractionBack.fWidth, m_InteractionBack.fHeight, 1.f) * XMMatrixTranslation(m_InteractionBack.fX - g_iWinSizeX * 0.5f, -m_InteractionBack.fY + g_iWinSizeY * 0.5f, 0.f));
+	XMStoreFloat4x4(&m_Text.WorldMatrix, XMMatrixScaling(m_Text.fWidth, m_Text.fHeight, 1.f) * XMMatrixTranslation(m_Text.fX - g_iWinSizeX * 0.5f, -m_Text.fY + g_iWinSizeY * 0.5f, 0.f));
+	XMStoreFloat4x4(&m_Sprite.WorldMatrix, XMMatrixScaling(m_Sprite.fWidth, m_Sprite.fHeight, 1.f) * XMMatrixTranslation(m_Sprite.fX - g_iWinSizeX * 0.5f, -m_Sprite.fY + g_iWinSizeY * 0.5f, 0.f));
+	XMStoreFloat4x4(&m_InterIcon.WorldMatrix, XMMatrixScaling(m_InterIcon.fWidth, m_InterIcon.fHeight, 1.f) * XMMatrixTranslation(m_InterIcon.fX - g_iWinSizeX * 0.5f, -m_InterIcon.fY + g_iWinSizeY * 0.5f, 0.f));
 
 	return S_OK;
 }
@@ -66,19 +83,11 @@ void CInteractionUI::Tick(_double TimeDelta)
 	//else
 	//	m_bActive = false;
 
-	if (pGameInstance->InputKey(DIK_T) == KEY_STATE::TAP)
+	if (m_bUIActive)
 	{
-		if(m_bActive)
-			SetRender(false);
-		else
-			SetRender(true);
-	}
-
-	if (m_UIRender)
-	{
-		m_fAlpha += (_float)TimeDelta * 2.f;
-		if (m_fAlpha >= 1.f)
-			m_fAlpha = 1.f;
+		m_fUIAlpha += (_float)TimeDelta * 2.f;
+		if (m_fUIAlpha >= 1.f)
+			m_fUIAlpha = 1.f;
 
 		// Sprite
 		m_fSpriteAcc += (_float)TimeDelta;
@@ -93,16 +102,30 @@ void CInteractionUI::Tick(_double TimeDelta)
 	}
 	else
 	{
-		m_fAlpha -= (_float)TimeDelta * 2.f;
-		if (m_fAlpha <= 0.f)
+		m_fUIAlpha -= (_float)TimeDelta * 2.f;
+		if (m_fUIAlpha <= 0.f)
 		{
-			m_fAlpha = 0.f;
-			m_bActive = false;
-			m_UIRender = false;
+			m_bUIRender = false;
+			m_fUIAlpha = 0.f;
 			m_fCurrentSpriteIndex = 0.f;
 		}
 	}
 
+	if (m_bFButtonActive)
+	{
+		m_fFButtonAlpha += (_float)TimeDelta * 2.f;
+		if (m_fFButtonAlpha >= 1.f)
+			m_fFButtonAlpha = 1.f;
+	}
+	else
+	{
+		m_fFButtonAlpha -= (_float)TimeDelta * 2.f;
+		if (m_fFButtonAlpha <= 0.f)
+		{
+			m_fFButtonAlpha = 0.f;
+			m_bFButtonRender = false;
+		}
+	}
 
 }
 
@@ -111,30 +134,33 @@ void CInteractionUI::LateTick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	__super::LateTick(TimeDelta);
 
-	if(m_bActive)
+	if(m_bUIRender || m_bFButtonRender)
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }
 
 HRESULT CInteractionUI::Render()
 {
 	// F Button
-	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_KeyDesc.WorldMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fAlpha, sizeof(_float))))
-		return E_FAIL;
-	
-	if (FAILED(m_pKeyTexture->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
-		return E_FAIL;
+	if (m_bFButtonRender)
+	{
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_KeyDesc.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fFButtonAlpha, sizeof(_float))))
+			return E_FAIL;
 
-	m_pShader->Begin(5);
-	m_pVIBuffer->Render();
+		if (FAILED(m_pKeyTexture->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(5);
+		m_pVIBuffer->Render();
+	}
 
 	// Interaction Back
-	if (m_UIRender)
+	if (m_bUIRender)
 	{
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_InteractionBack.WorldMatrix)))
 			return E_FAIL;
@@ -145,13 +171,7 @@ HRESULT CInteractionUI::Render()
 		m_pVIBuffer->Render();
 
 		// Sprite
-		ORTHO_DESC orthoDesc;
-		orthoDesc = m_InteractionBack;
-		orthoDesc.fWidth = m_InteractionBack.fWidth + 8.f;
-		orthoDesc.fHeight = m_InteractionBack.fHeight + 8.f;
-		XMStoreFloat4x4(&orthoDesc.WorldMatrix, XMMatrixScaling(orthoDesc.fWidth, orthoDesc.fHeight, 1.f) * XMMatrixTranslation(orthoDesc.fX - g_iWinSizeX * 0.5f, -orthoDesc.fY + g_iWinSizeY * 0.5f, 0.f));
-
-		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &orthoDesc.WorldMatrix)))
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_Sprite.WorldMatrix)))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetRawValue("g_SpriteXY", &m_SpriteSize, sizeof(_float2))))
 			return E_FAIL;
@@ -167,6 +187,80 @@ HRESULT CInteractionUI::Render()
 		m_pShader->Begin(6);
 		m_pVIBuffer->Render();
 
+		// Icon
+		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fUIAlpha, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_InterIcon.WorldMatrix)))
+			return E_FAIL;
+		switch (m_eInterType)
+		{
+		case INTER_ACTIVATE:
+			if (FAILED(m_pInterTypeTexture[INTER_ACTIVATE]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			break;
+		case INTER_INSPECT:
+			if (FAILED(m_pInterTypeTexture[INTER_INSPECT]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			break;
+		case INTER_SIMPLE_CHEST:
+		case INTER_STANDARD_CHEST:
+		case INTER_EXPANDED_CHEST:
+			if (FAILED(m_pInterTypeTexture[INTER_SIMPLE_CHEST]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			break;
+		default:
+			MSG_BOX("Interaction Type Unknown : CInteractionUI::Render()");
+			break;
+		}
+
+		m_pShader->Begin(5);
+		m_pVIBuffer->Render();
+
+		// Text
+		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fUIAlpha, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_Text.WorldMatrix)))
+			return E_FAIL;
+
+		switch (m_eInterType)
+		{
+		case INTER_ACTIVATE:
+			if (FAILED(m_pTextTexture[INTER_ACTIVATE]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			break;
+		case INTER_INSPECT:
+			if (FAILED(m_pTextTexture[INTER_INSPECT]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			break;
+		case INTER_SIMPLE_CHEST:
+			if (FAILED(m_pTextTexture[INTER_SIMPLE_CHEST]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			break;
+		case INTER_STANDARD_CHEST:
+			if (FAILED(m_pTextTexture[INTER_STANDARD_CHEST]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			break;
+		case INTER_EXPANDED_CHEST:
+			if (FAILED(m_pTextTexture[INTER_EXPANDED_CHEST]->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			break;
+		default:
+			MSG_BOX("Interaction Type Unknown : CInteractionUI::Render()");
+			break;
+		}
+
+		m_pShader->Begin(5);
+		m_pVIBuffer->Render();
 	}
 
 	return S_OK;
@@ -174,25 +268,22 @@ HRESULT CInteractionUI::Render()
 
 void CInteractionUI::RenderGUI()
 {
-	ImGui::Begin("On Button");
-
-	if (m_bActive)
-		ImGui::Text("Mouse In");
-	else
-		ImGui::Text("Mouse Out");
-
-	ImGui::End();
 }
 
-void CInteractionUI::SetRender(_bool bValue)
+void CInteractionUI::SetRender(INTERACT_TYPE eType, _bool bValue)
 {
+	m_eInterType = eType;
+
 	if (bValue)
 	{
-		m_bActive = bValue;
-		m_UIRender = bValue;
+		m_bUIRender = m_bUIActive = bValue;
+		m_bFButtonRender = m_bFButtonActive = bValue;
 	}
 	else
-		m_UIRender = bValue;
+	{
+		m_bUIActive = bValue;
+		m_bFButtonActive = bValue;
+	}
 }
 
 HRESULT CInteractionUI::addComponents()
@@ -212,13 +303,37 @@ HRESULT CInteractionUI::addComponents()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::UI_KEY_BTN_F,
 		TEXT("com_texture_keybtn"), (CComponent**)&m_pKeyTexture)))
 		return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::UI_LISTBACK,
 		TEXT("com_texture_listback"), (CComponent**)&m_pListBackTexture)))
 		return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::UI_LISTGARD_SPRITE,
 		TEXT("com_texture_listgard"), (CComponent**)&m_pSpriteTexture)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::UI_ICON_ACTIVATE,
+		TEXT("com_texture_icon_0"), (CComponent**)&m_pInterTypeTexture[0])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::UI_ICON_INSPECT,
+		TEXT("com_texture_icon_1"), (CComponent**)&m_pInterTypeTexture[1])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::UI_ICON_CHEST,
+		TEXT("com_texture_icon_2"), (CComponent**)&m_pInterTypeTexture[2])))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::UI_ACTIVATE_TEXT,
+		TEXT("com_texture_text_0"), (CComponent**)&m_pTextTexture[0])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::UI_INSPECT_TEXT,
+		TEXT("com_texture_text_1"), (CComponent**)&m_pTextTexture[1])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::UI_SIMPLE_CHEST_TEXT,
+		TEXT("com_texture_text_2"), (CComponent**)&m_pTextTexture[2])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::UI_STANDARD_CHEST_TEXT,
+		TEXT("com_texture_text_3"), (CComponent**)&m_pTextTexture[3])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::UI_EXPANDED_CHEST_TEXT,
+		TEXT("com_texture_text_4"), (CComponent**)&m_pTextTexture[4])))
 		return E_FAIL;
 
 	return S_OK;
@@ -260,4 +375,13 @@ void CInteractionUI::Free()
 	Safe_Release(m_pListBackTexture);
 	Safe_Release(m_pSpriteTexture);
 
+	Safe_Release(m_pInterTypeTexture[0]);
+	Safe_Release(m_pInterTypeTexture[1]);
+	Safe_Release(m_pInterTypeTexture[2]);
+
+	Safe_Release(m_pTextTexture[0]);
+	Safe_Release(m_pTextTexture[1]);
+	Safe_Release(m_pTextTexture[2]);
+	Safe_Release(m_pTextTexture[3]);
+	Safe_Release(m_pTextTexture[4]);
 }

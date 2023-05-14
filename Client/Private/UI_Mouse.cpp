@@ -59,7 +59,7 @@ void CUI_Mouse::Tick(_double TimeDelta)
 	Safe_Delete_Array(pViewPort);
 
 	_float3	fMousePos;
-	m_fX = MousePos.x - (Viewport_Width * 0.5f);
+	m_fX =  MousePos.x - (Viewport_Width  * 0.5f);
 	m_fY = -MousePos.y + (Viewport_Height * 0.5f);
 
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(m_fWidth, m_fHeight, 1.f) * XMMatrixTranslation(m_fX, m_fY, m_fZ));

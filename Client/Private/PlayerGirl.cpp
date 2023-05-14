@@ -9,6 +9,8 @@
 #include "PartsKey.h"
 #include "PriorityKey.h"
 
+#include "Chest.h"
+
 const _int CPlayerGirl::iState_End = CCharacter::SS_END + (CPlayerGirl::IS_END - CPlayerGirl::IS_START);
 
 const char CPlayerGirl::szIndividualStateTag[CPlayerGirl::IS_END - CPlayerGirl::IS_START][MAX_PATH] =
@@ -112,6 +114,8 @@ void CPlayerGirl::Start()
 
 void CPlayerGirl::Tick(_double TimeDelta)
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 	__super::Tick(TimeDelta);
 	
 	Key_Input(TimeDelta); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
@@ -120,13 +124,15 @@ void CPlayerGirl::Tick(_double TimeDelta)
 
 	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
 	
-
 	// Parts 처리
 	for (_uint i = 0; i < PARTS_END; ++i)
 	{
 		if (nullptr != m_Parts[i])
 			m_Parts[i]->Tick(TimeDelta);
 	}
+
+	pGameInstance->AddCollider(m_pCollider);
+	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 }
 
 void CPlayerGirl::LateTick(_double TimeDelta)
@@ -320,6 +326,15 @@ HRESULT CPlayerGirl::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::EYE_MASK,
 		TEXT("Com_Eye_Mask_Texture"), (CComponent**)&m_pEyeMaskTexture)))
+		return E_FAIL;
+
+	CCollider::COLLIDER_DESC CollDesc;
+	CollDesc.owner = this;
+	CollDesc.vCenter = { 0.f, 0.f, 0.f };
+	CollDesc.vExtents = { 0.8f, 0.8f, 0.8f };
+	CollDesc.vRotation = { 0.f, 0.f, 0.f };
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
+		TEXT("Com_Collider"), (CComponent**)&m_pCollider, &CollDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -1770,4 +1785,18 @@ void CPlayerGirl::Free()
 
 	Safe_Release(m_pEyeBurstTexture);
 	Safe_Release(m_pEyeMaskTexture);
+
+	Safe_Release(m_pCollider);
+}
+
+void CPlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
+{
+}
+
+void CPlayerGirl::OnCollisionStay(CCollider * src, CCollider * dest)
+{
+}
+
+void CPlayerGirl::OnCollisionExit(CCollider * src, CCollider * dest)
+{
 }

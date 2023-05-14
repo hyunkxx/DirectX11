@@ -8,6 +8,7 @@
 #include "PlayerCamera.h"
 #include "Character.h"
 #include "PlayerGirl.h"
+#include "AcquireSystem.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -35,16 +36,10 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
 		return E_FAIL;
 
-#pragma region MAP_OBJECT_TREE
-	if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_tree"))))
+	if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_Tree"))))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Layer_MapObject_Rock(TEXT("layer_rock"))))
-		//return E_FAIL;
-#pragma endregion MAP_OBJECT_TREE
-
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
-
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
 	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
 
@@ -209,7 +204,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TERRAIN, pLayerTag, L"terrain", &EditionDesc)))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SKY, pLayerTag, L"Sky")))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SKY, pLayerTag, L"sky")))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST, pLayerTag, L"chest")))
 		return E_FAIL;
 
 	return S_OK;
@@ -288,6 +286,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 {
+	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UI, pLayerTag, TEXT("UI_MainScreen"))))
@@ -298,12 +297,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UITAPT, pLayerTag, TEXT("UI_TapT"))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::ACQUIRE_SYSTEM, pLayerTag, TEXT("AcquireSystem"))))
+	if (FAILED(pGameInstance->Add_GameObjectEx(&m_pAcquireSystem, LEVEL_GAMEPLAY, OBJECT::ACQUIRE_SYSTEM, pLayerTag, TEXT("AcquireSystem"))))
 		return E_FAIL;
-	
+
+	pGameMode->SetupAcquireSystem(static_cast<CAcquireSystem*>(m_pAcquireSystem));
+
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UIMONSTER, pLayerTag, TEXT("UI_Monster"))))
 	//	return E_FAIL;
-	
 
 	return S_OK;
 }

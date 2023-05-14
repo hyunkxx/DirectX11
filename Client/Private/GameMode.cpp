@@ -52,3 +52,8 @@ void CGameMode::UseCamera(int iCameraIndex)
 			m_pCams[i]->Set_Use(false);
 	}
 }
+
+void CGameMode::SetRenderInteractUI(CInteractionUI::INTERACT_TYPE eInteractType, _bool bValue)
+{
+
+}

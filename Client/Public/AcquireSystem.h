@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "InteractionUI.h"
 
 BEGIN(Engine)
 class CVIBuffer_Rect;
@@ -11,8 +12,6 @@ class CShader;
 END
 
 BEGIN(Client)
-
-class CInteractionUI;
 
 class CAcquireSystem final : public CGameObject
 {
@@ -29,6 +28,8 @@ public:
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render();
 	virtual void RenderGUI();
+
+	void SetRender(CInteractionUI::INTERACT_TYPE eType, _bool bValue);
 
 public:
 	static CAcquireSystem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

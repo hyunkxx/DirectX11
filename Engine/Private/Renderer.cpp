@@ -1339,7 +1339,10 @@ void CRenderer::Extraction(const _tchar * pBindTargetTag, const _tchar * pSourTa
 // Final ·»´õÅ¸°ÙÀ» ¹é¹öÆÛ¿¡ ·»´õ
 void CRenderer::FinalExtraction()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 	CRenderTarget* pSourTarget;
+	CRenderTarget* pDepthTarget = m_pTargetManager->FindTarget(L"Target_Depth");
 
 	if (m_pRenderSetting->IsFade())
 	{
@@ -1358,10 +1361,21 @@ void CRenderer::FinalExtraction()
 	if (FAILED(m_pShader_Extraction->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
+	if (FAILED(m_pShader_Extraction->SetRawValue("g_vCamPosition", &pGameInstance->Get_CamPosition(), sizeof(_float4))))
+		return;
+
+	_float2 fFog = { 100.f, 1000.f };
+	if (FAILED(m_pShader_Extraction->SetRawValue("g_fFogStart", &fFog.x, sizeof(_float))))
+		return;
+	if (FAILED(m_pShader_Extraction->SetRawValue("g_fFogEnd", &fFog.y, sizeof(_float))))
+		return;
+
 	if (pSourTarget)
 		pSourTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_SourTexture");
+	if (pDepthTarget)
+		pDepthTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_DepthTexture");
 
-	m_pShader_Extraction->Begin(0);
+	m_pShader_Extraction->Begin(5);
 	m_pVIBuffer->Render();
 }
 

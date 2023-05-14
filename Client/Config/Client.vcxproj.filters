@@ -243,6 +243,12 @@
     <ClCompile Include="..\private\InteractionUI.cpp">
       <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\InteractionObject.cpp">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Chest.cpp">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -455,6 +461,12 @@
     <ClInclude Include="..\public\GameMode.h">
       <Filter>src\00. Application\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\InteractionObject.h">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Chest.h">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -571,6 +583,9 @@
     </Filter>
     <Filter Include="src\02. GameObject\99. UI\03. AcquireSystem">
       <UniqueIdentifier>{d3942c92-63e4-47c0-a83e-597b1ef5f8f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\04. InteractionObject">
+      <UniqueIdentifier>{e03bdba0-de55-45b4-a514-5ebc5048b6a9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
