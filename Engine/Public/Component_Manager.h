@@ -41,11 +41,16 @@ private:
 public:
 	HRESULT Reserve_Manager(_uint iLevelMaxCount);
 	HRESULT Add_Prototype(_uint iLevelIndex, _int iComponent, class CComponent* pPrototype);
+	HRESULT Add_Texture(_int iTexture, class CTexture* pPrototype);
+
 	class CComponent* Clone_Component(_uint iLevelIndex, _int iComponent, void* pArg = nullptr);
 	void Clear(_uint iLevelIndex);
 
+	HRESULT Setup_ShaderResource(_uint iTexture, class CShader* pShader, const char* pContantName, _uint iTextureIndex = 0);
+
 private:
 	class CComponent* Find_Prototype(_uint iLevelIndex, _int iComponent);
+	class CTexture* Find_Prototype_Texture(_int iTexture);
 
 public:
 	virtual void Free() override;
@@ -55,6 +60,7 @@ private:
 	unordered_map<_int , class CComponent*>* m_pPrototypes = { nullptr };
 	typedef unordered_map<_int, class CComponent*> PROTOTYPES;
 
+	unordered_map<_int, class CTexture*> m_pPrototypeTextures;
 };
 
 END

@@ -162,7 +162,7 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			{
 				fRadian *= -1.f;
 			}
-			if (0.98 > Degree)
+			if (0.99 > Degree)
 			{
 				_matrix ScaleMat = XMMatrixScaling(m_fWidthDefaultIcon[1], m_fHeightDefaultIcon[1], 1.f);
 

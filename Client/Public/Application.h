@@ -28,6 +28,8 @@ private:
 	HRESULT Open_Level(LEVEL_ID eLevelID);
 	HRESULT Ready_Prototype_Static_Component();
 	HRESULT Ready_Prototype_Static_GameObject();
+	HRESULT Ready_Item_Image();
+	HRESULT Ready_Item_Data();
 	HRESULT Ready_UI_Data();
 
 private:

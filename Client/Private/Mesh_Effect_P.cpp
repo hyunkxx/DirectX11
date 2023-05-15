@@ -47,7 +47,9 @@ void CMesh_Effect_P::Tick(_double TimeDelta)
 
 	m_fEffectAcc += (_float)TimeDelta;
 
-	Distortion_Tick(TimeDelta);
+	if (CRenderer::RENDER_DISTORTION == m_EffectDesc.iRenderGroup)
+		Distortion_Tick(TimeDelta);
+
 	Loop_Check(TimeDelta);
 
 }
@@ -108,7 +110,11 @@ void CMesh_Effect_P::Play_Effect(_float4x4 * pWorldMatrix, _bool bTracking)
 	if (nullptr == pWorldMatrix)
 		return;
 
-	m_bDistortion = false;
+	if (CRenderer::RENDER_DISTORTION == m_EffectDesc.iRenderGroup)
+		m_bDistortion = true;
+	else
+		m_bDistortion = false;
+
 	m_bFinish = false;
 	m_fDelayAcc = 0.f;
 	m_fEffectAcc = 0.f;
@@ -212,6 +218,9 @@ HRESULT CMesh_Effect_P::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->SetRawValue("g_vColor", &m_EffectDesc.vTextrueColor, sizeof(_float3))))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->SetRawValue("g_vMaskColor", &MASK_COLOR, sizeof(_float3))))
+		return E_FAIL;
+
 	_float2 vUV;
 	vUV.x = m_EffectDesc.vUV.x + m_EffectDesc.vMinScale.x;
 	vUV.y = m_EffectDesc.vUV.y + m_EffectDesc.vMinScale.y;
@@ -259,6 +268,11 @@ void CMesh_Effect_P::SetUp_Linear()
 {
 	_float fLerp = (m_fEffectAcc) / (m_EffectDesc.fEffectTime);
 
+	if (1.f < fLerp)
+		fLerp = 1.f;
+	if (0.f > fLerp)
+		fLerp = 0.f;
+
 	_vector vStart, vEnd;
 
 	//Color
@@ -283,6 +297,7 @@ void CMesh_Effect_P::SetUp_Linear()
 	vEnd = XMVectorSet(m_EffectDesc.vEndPosition.x, m_EffectDesc.vEndPosition.y, m_EffectDesc.vEndPosition.z, 0.f);
 	XMStoreFloat3(&m_EffectDesc.vCurPosition, XMVectorLerp(vStart, vEnd, fLerp));
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_EffectDesc.vCurPosition));
+
 }
 
 void CMesh_Effect_P::Distortion_Tick(_double TimeDelta)
@@ -302,10 +317,6 @@ void CMesh_Effect_P::Distortion_Tick(_double TimeDelta)
 			DISTORTION_POWER = 0.f;
 		}
 	}
-	if (0.f != DISTORTION_POWER)
-		m_bDistortion = true;
-	else
-		m_bDistortion = false;
 }
 
 void CMesh_Effect_P::Loop_Check(_double TimeDelta)

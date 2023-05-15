@@ -93,9 +93,7 @@ private:
 	void	SizeXYM(_uint iNum, _double TimeDelta);
 	void	AlphaM(_uint iNum, _double TimeDelta);
 	void	AlphaP(_uint iNum, _double TimeDelta);
-	void	Reset();
 	void	Load();
-	void	Save();
 
 private:
 	_float4x4	m_ViewMatrix, m_ProjMatrix;

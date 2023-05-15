@@ -23,6 +23,16 @@ HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, _int iComponent, CC
 	return S_OK;
 }
 
+HRESULT CComponent_Manager::Add_Texture(_int iTexture, CTexture * pPrototype)
+{
+	if (nullptr != Find_Prototype_Texture(iTexture))
+		return E_FAIL;
+
+	m_pPrototypeTextures.emplace(iTexture, pPrototype);
+
+	return S_OK;
+}
+
 CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, _int iComponent, void* pArg)
 {
 	CComponent* pPrototype = Find_Prototype(iLevelIndex, iComponent);
@@ -48,6 +58,15 @@ void CComponent_Manager::Clear(_uint iLevelIndex)
 	m_pPrototypes[iLevelIndex].clear();
 }
 
+HRESULT CComponent_Manager::Setup_ShaderResource(_uint iTexture, CShader * pShader, const char * pContantName, _uint iTextureIndex)
+{
+	CTexture* pTexture = Find_Prototype_Texture(iTexture);
+	if (FAILED(pTexture->Setup_ShaderResource(pShader, pContantName, iTextureIndex)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 CComponent * CComponent_Manager::Find_Prototype(_uint iLevelIndex, _int iComponent)
 {
 	if (nullptr == m_pPrototypes || iLevelIndex >= m_iLevelMaxCount)
@@ -56,6 +75,20 @@ CComponent * CComponent_Manager::Find_Prototype(_uint iLevelIndex, _int iCompone
 	for (auto iter = m_pPrototypes[iLevelIndex].begin(); iter != m_pPrototypes[iLevelIndex].end() ; ++iter)
 	{
 		if (iter->first == iComponent)
+			return iter->second;
+	}
+
+	return nullptr;
+}
+
+CTexture * CComponent_Manager::Find_Prototype_Texture(_int iTexture)
+{
+	if (m_pPrototypeTextures.empty())
+		return nullptr;
+
+	for (auto iter = m_pPrototypeTextures.begin(); iter != m_pPrototypeTextures.end(); ++iter)
+	{
+		if (iter->first == iTexture)
 			return iter->second;
 	}
 
@@ -74,4 +107,10 @@ void CComponent_Manager::Free()
 	}
 
 	Safe_Delete_Array(m_pPrototypes);
+
+	for (auto& pTexture : m_pPrototypeTextures)
+	{
+		Safe_Release(pTexture.second);
+	}
+	m_pPrototypeTextures.clear();
 }

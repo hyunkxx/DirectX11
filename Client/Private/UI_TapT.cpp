@@ -175,64 +175,49 @@ ImGui::End();
 
 void CUI_TapT::SerectUI()
 {
-	POINT		MousePos{};
-
-	GetCursorPos(&MousePos);
-	ScreenToClient(g_hWnd, &MousePos);
-
-	UINT           pNumViewports;
-	m_pContext->RSGetViewports(&pNumViewports, NULL);
-	D3D11_VIEWPORT*		pViewPort = new D3D11_VIEWPORT[pNumViewports];
-	m_pContext->RSGetViewports(&pNumViewports, pViewPort);
-
-	float Viewport_Width = (float)pViewPort[0].Width;
-	float Viewport_Height = (float)pViewPort[0].Height;
-
-	Safe_Delete_Array(pViewPort);
-
-	_float3	fMousePos;
-	fMousePos.x = MousePos.x - (Viewport_Width * 0.5f);
-	fMousePos.y = -MousePos.y + (Viewport_Height * 0.5f);
-	fMousePos.z = 0.f;
-
-	 vMousePos = XMLoadFloat3(&fMousePos);
-
-	if (0 != m_DescList.size())
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+	CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("layer_UI"), TEXT("UI_Mouse"));
+	if (nullptr != pMouse)
 	{
-		for (auto& pCutDesc : m_DescList)
-		{
-			_float Dist = 1.f;
-			// 버퍼의 각 꼭지점
-			_vector P0 = XMVectorSet(pCutDesc->fX - pCutDesc->fWidth * 0.5f, pCutDesc->fY + pCutDesc->fHeight * 0.5f, pCutDesc->fZ, 1.f);
-			_vector P1 = XMVectorSet(pCutDesc->fX + pCutDesc->fWidth * 0.5f, pCutDesc->fY + pCutDesc->fHeight * 0.5f, pCutDesc->fZ, 1.f);
-			_vector P2 = XMVectorSet(pCutDesc->fX + pCutDesc->fWidth * 0.5f, pCutDesc->fY - pCutDesc->fHeight * 0.5f, pCutDesc->fZ, 1.f);
-			_vector P3 = XMVectorSet(pCutDesc->fX - pCutDesc->fWidth * 0.5f, pCutDesc->fY - pCutDesc->fHeight * 0.5f, pCutDesc->fZ, 1.f);
+		_float3	fMousePos = dynamic_cast<CUI_Mouse*>(pMouse)->Get_MousePos();
+		vMousePos = XMLoadFloat3(&fMousePos);
 
-			// UI크기에 맞춰서 범위체크
-			if ((XMVectorGetX(P0) < XMVectorGetX(vMousePos)) && (XMVectorGetX(P1) > XMVectorGetX(vMousePos)))
+		if (0 != m_DescList.size())
+		{
+			for (auto& pCutDesc : m_DescList)
 			{
-				if ((XMVectorGetY(P0) > XMVectorGetY(vMousePos)) && (XMVectorGetY(P2) < XMVectorGetY(vMousePos)))
+				_float Dist = 1.f;
+				// 버퍼의 각 꼭지점
+				_vector P0 = XMVectorSet(pCutDesc->fX - pCutDesc->fWidth * 0.5f, pCutDesc->fY + pCutDesc->fHeight * 0.5f, pCutDesc->fZ, 1.f);
+				_vector P1 = XMVectorSet(pCutDesc->fX + pCutDesc->fWidth * 0.5f, pCutDesc->fY + pCutDesc->fHeight * 0.5f, pCutDesc->fZ, 1.f);
+				_vector P2 = XMVectorSet(pCutDesc->fX + pCutDesc->fWidth * 0.5f, pCutDesc->fY - pCutDesc->fHeight * 0.5f, pCutDesc->fZ, 1.f);
+				_vector P3 = XMVectorSet(pCutDesc->fX - pCutDesc->fWidth * 0.5f, pCutDesc->fY - pCutDesc->fHeight * 0.5f, pCutDesc->fZ, 1.f);
+
+				// UI크기에 맞춰서 범위체크
+				if ((XMVectorGetX(P0) < XMVectorGetX(vMousePos)) && (XMVectorGetX(P1) > XMVectorGetX(vMousePos)))
 				{
+					if ((XMVectorGetY(P0) > XMVectorGetY(vMousePos)) && (XMVectorGetY(P2) < XMVectorGetY(vMousePos)))
+					{
 						pCutDesc->OnRect = true;
-						CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-						Safe_AddRef(pGameInstance);
 						CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("UI_Mouse"));
 						dynamic_cast<CUI_Mouse*>(pMouse)->Set_Texchange(true);
-						Safe_Release(pGameInstance);
+					}
+					else
+					{
+						pCutDesc->OnRect = false;
+
+					}
 				}
 				else
 				{
-						pCutDesc->OnRect = false;
+					pCutDesc->OnRect = false;
 
 				}
 			}
-			else
-			{
-					pCutDesc->OnRect = false;
-
-			}
 		}
 	}
+	Safe_Release(pGameInstance);
 }
 
 

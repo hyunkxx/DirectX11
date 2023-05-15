@@ -382,7 +382,7 @@ HRESULT CPlayerGirl::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 				switch (tBaseData.iType)
 				{
 				case CStateKey::TYPE_EFFECT:
-					//m_tStates[i].ppStateKeys[j] = CEffectKey::Create(pDevice, pContext, &tBaseData);
+					m_tStates[i].ppStateKeys[j] = CEffectKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_PARTS:
 					m_tStates[i].ppStateKeys[j] = CPartsKey::Create(pDevice, pContext, &tBaseData);
@@ -480,16 +480,13 @@ void CPlayerGirl::Shot_PriorityKey(_uint iLeavePriority)
 	m_tCurState.iLeavePriority = iLeavePriority;
 }
 
-void CPlayerGirl::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, EFFECT_ID eEffectID , _bool bTracking/*iInt1*/)
+void CPlayerGirl::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _uint iEffectTypeID, _bool bTracking/*iInt1*/)
 {
-	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag , eEffectID);
+	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag , Engine::EFFECT_ID(iEffectTypeID));
 	if (nullptr == pEffect || EBONE_END <= EffectBoneID)
 		return;
 
-	if (0 == EffectBoneID)
-		pEffect->Play_Effect(&m_pMainTransform->Get_WorldMatrix(), bTracking);
-	else
-		pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
+	pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
 }
 
 void CPlayerGirl::SetUp_State()
@@ -904,16 +901,6 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 				break;
 			case IS_ATTACK_02:
 				m_Scon.iNextState = IS_ATTACK_03;
-
-				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_03", EFFECT_ID::PLAYER_NVZHU);
-				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-				pEffect->Play_Effect(&ParentMatrix);
-
-				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Link_Effect", EFFECT_ID::PLAYER_NVZHU);
-				ParentMatrix._42 += 1.f;
-				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
-				pEffect->Play_Effect(&ParentMatrix);
-
 				break; 
 			case IS_ATTACK_03:
 				if (m_Scon.TrackPos > 20.0)
@@ -1735,15 +1722,18 @@ HRESULT CPlayerGirl::Init_Parts()
 HRESULT CPlayerGirl::Init_EffectBones()
 {
 	//NONE은 걍 월드 매트릭스 던짐
-	m_EffectBones[EBONE_SPINE] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine"));
-	m_EffectBones[EBONE_WEAPON] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp03"));
+	m_EffectBones[EBONE_SPINE2] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine2"));
+	m_EffectBones[EBONE_WEAPON01] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp01"));
+	m_EffectBones[EBONE_WEAPON02] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp02"));
+	m_EffectBones[EBONE_LHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001LHand"));
+	m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
 
 	return S_OK;
 }
 
 void CPlayerGirl::Update_EffectBones()
 {
-	// TODO : 살아있는 이펙트가 걸려있는
+	memcpy(&m_EffectBoneMatrices[EBONE_NONE], &m_pMainTransform->Get_WorldMatrix(), sizeof(_float4x4));
 
 	for (_uint i = 1; i < EBONE_END; ++i)
 	{

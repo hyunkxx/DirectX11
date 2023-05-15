@@ -10,6 +10,7 @@ texture2D	g_BackTexture;
 
 float4		g_vCamPosition;
 float3		g_vColor;
+float3		g_vMaskColor;
 
 float2		g_vUV;
 float		g_fAlpha;
@@ -26,7 +27,16 @@ float4		g_vDissolveColor;
 
 texture2D	g_NoiseTexture;
 
+float3 Set_Mask_Color(float3 vColor)
+{
+	float3 vCol;
+	vCol = (vColor * g_vMaskColor);
+	vCol.r = max(vCol.r, vCol.g);
+	vCol.r = max(vCol.r, vCol.b);
+	vCol.gb = vCol.r;
 
+	return vCol * g_vColor;
+}
 
 float rand(float seed) {
 	return frac(15547.3f * sin(frac(94.3f*seed + 10579.6f) * frac(76.5f*seed + 8437.2f)));
@@ -157,7 +167,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 	if (vMtrlDiffuse.a < 0.1f)
 		discard;
 
-	Out.vDiffuse.rgb = vMtrlDiffuse.rgb * g_vColor.rgb;
+	Out.vDiffuse.rgb = Set_Mask_Color(float3(vMtrlDiffuse.rgb));
 
 	Out.vDiffuse.a = saturate(vMtrlDiffuse.a - (1.f - g_fAlpha));
 	Out.vDistortion = float4(0.f, 1.f, 0.f, 1.f);
@@ -178,7 +188,7 @@ PS_OUT	PS_MAIN_CLAMP(PS_IN In)
 	if (vMtrlDiffuse.a < 0.1f)
 		discard;
 
-	Out.vDiffuse.rgb = vMtrlDiffuse.rgb * g_vColor.rgb;
+	Out.vDiffuse.rgb = Set_Mask_Color(float3(vMtrlDiffuse.rgb));
 
 	Out.vDiffuse.a = saturate(vMtrlDiffuse.a - (1.f - g_fAlpha));
 
@@ -196,7 +206,7 @@ PS_OUT	PS_MAIN_ALPHA(PS_IN In)
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vUV);
 
-	Out.vDiffuse.rgb = vMtrlDiffuse.rgb * g_vColor.rgb;
+	Out.vDiffuse.rgb = Set_Mask_Color(float3(vMtrlDiffuse.rgb));
 
 	Out.vDiffuse.a = saturate(vMtrlDiffuse.a - (1.f - g_fAlpha));
 	Out.vDistortion = float4(0.f, 1.f, 0.f, 1.f);
@@ -210,6 +220,8 @@ PS_OUT	PS_MAIN_ALPHA_CLAMP(PS_IN In)
 	float2 vUV = clamp(In.vTexUV + g_vUV, 0.f, 1.f);
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vUV);
+
+	vMtrlDiffuse.rgb = Set_Mask_Color(float3(vMtrlDiffuse.rgb));
 
 	Out.vDiffuse.rgb = vMtrlDiffuse.rgb * g_vColor.rgb;
 	Out.vDiffuse.a = saturate(vMtrlDiffuse.a - (1.f - g_fAlpha));

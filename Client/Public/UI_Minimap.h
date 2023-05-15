@@ -82,8 +82,8 @@ private:
 	_float			m_fXMiniMap = { -540.f };
 	_float			m_fYMiniMap = { 260.f };
 	_float			m_fZMiniMap = { 0.f };
-	_float			m_fWidthMiniMap = { 300.f };
-	_float			m_fHeightMiniMap = { 300.f };
+	_float			m_fWidthMiniMap = { 150.f };
+	_float			m_fHeightMiniMap = { 150.f };
 	_float4x4		m_WorldMatrixMiniMap;
 	_float4x4		m_ViewMatrix, m_ProjMatrix;
 

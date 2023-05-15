@@ -47,8 +47,11 @@ public:
 	enum EffectBone
 	{
 		EBONE_NONE,
-		EBONE_SPINE,
-		EBONE_WEAPON,
+		EBONE_SPINE2,	// ¸íÄ¡
+		EBONE_WEAPON01,	// ¿Þ¼Õ ¹«±â»À 
+		EBONE_WEAPON02,	// ¿À¸¥¼Õ ¹«±â»À
+		EBONE_LHAND,	// ¿Þ¼Õ»À 
+		EBONE_RHAND,	// ¿À¸¥¼Õ»À
 		EBONE_END
 	};
 
@@ -119,7 +122,7 @@ public:
 
 public: // StateKey ´ëÀÀ ÇÔ¼ö ¸ðÀ½
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);
-	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID , EFFECT_ID eEffectID , _bool bTracking);
+	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID , _uint iEffectID, _bool bTracking);
 
 
 

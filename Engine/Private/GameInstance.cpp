@@ -267,6 +267,22 @@ CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, _int iComponent, 
 	return m_pComponent_Manager->Clone_Component(iLevelIndex, iComponent, pArg);
 }
 
+HRESULT CGameInstance::Add_Texture(_int iTexture, CTexture * pPrototype)
+{
+	if (nullptr == m_pComponent_Manager)
+		return E_FAIL;
+
+	return m_pComponent_Manager->Add_Texture(iTexture, pPrototype);
+}
+
+HRESULT CGameInstance::SetupSRV(_uint iTexture, CShader * pShader, const char * pContantName, _uint iTextureIndex)
+{
+	if (nullptr == m_pComponent_Manager)
+		return E_FAIL;
+
+	return m_pComponent_Manager->Setup_ShaderResource(iTexture, pShader, pContantName, iTextureIndex);
+}
+
 _float4x4 CGameInstance::Get_Transform_float4x4(CPipeLine::TRANSFORM_STATE eState)
 {
 	if (nullptr == m_pPipeLine)

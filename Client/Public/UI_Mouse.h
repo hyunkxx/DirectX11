@@ -28,7 +28,10 @@ public:
 	virtual void RenderGUI() override;
 
 	
+
+	
 public:
+	_float3 Get_MousePos();
 	void Set_Texchange(_bool change);
 private:
 	HRESULT Add_Components();

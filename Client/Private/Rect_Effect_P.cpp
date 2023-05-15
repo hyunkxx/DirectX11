@@ -320,6 +320,11 @@ void CRect_Effect_P::SetUp_Linear()
 {
 	_float fLerp = (m_fEffectAcc) / (m_EffectDesc.fEffectTime);
 
+	if (1.f < fLerp)
+		fLerp = 1.f;
+	if (0.f > fLerp)
+		fLerp = 0.f;
+
 	_vector vStart, vEnd;
 
 	//Color
@@ -352,7 +357,6 @@ void CRect_Effect_P::SetUp_Linear()
 
 void CRect_Effect_P::Distortion_Tick(_double TimeDelta)
 {
-
 	if (m_fEffectAcc >= START_DISTIME && m_fEffectAcc <= END_DISTIME)
 	{
 		DISTORTION_POWER += DISTORTION_SPEED * (_float)TimeDelta;
@@ -368,9 +372,6 @@ void CRect_Effect_P::Distortion_Tick(_double TimeDelta)
 			DISTORTION_POWER = 0.0f;
 		}
 	}
-
-	
-
 }
 
 void CRect_Effect_P::Loop_Check(_double TimeDelta)
@@ -401,7 +402,7 @@ void CRect_Effect_P::Setup_Matrix()
 	{
 		m_WorldMatrix = m_pMainTransform->Get_WorldMatrix();
 
-		if (m_EffectDesc.bTracking)
+		if (m_EffectDesc.bTracking  && nullptr != m_pParentsMatrix)
 			XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(m_pParentsMatrix));
 		else
 			XMStoreFloat4x4(&m_ResultMatirx, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(&m_ParentsMatrix));

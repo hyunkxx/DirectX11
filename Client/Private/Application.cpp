@@ -17,6 +17,9 @@
 #include "Floor.h"
 #include "Character.h"
 
+// Item
+#include "Item.h"
+
 //UI
 #include "InteractionUI.h"
 #include "AcquireSystem.h"
@@ -127,11 +130,11 @@ HRESULT CApplication::Render()
 	}
 
 	m_pGameInstance->Render_Font(
-		TEXT("Font_MapleStoryBold"),
+		TEXT("HeirofLightBold"),
 		m_szFPS,
 		_float2(0.f, 0.f),
-		XMVectorSet(1.f, 1.f, 0.f, 1.f),
-		_float2(1.f, 1.f)
+		XMVectorSet(1.f, 1.f, 1.f, 1.f),
+		_float2(0.5f, 0.5f)
 	);
 #endif // _DEBUG
 
@@ -388,6 +391,12 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 	if (FAILED(Ready_UI_Data()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Item_Image()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Item_Data()))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::FLOOR, CFloor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
@@ -503,6 +512,28 @@ HRESULT CApplication::Ready_UI_Data()
 	return S_OK;
 }
 
+HRESULT CApplication::Ready_Item_Image()
+{
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, STATIC_IMAGE::ITEM_DEFAULT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Items/IconCook80/T_IconCook80_001_UI.png")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_DEFAULT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Items/IconCook80/T_IconCook80_001_UI.png")))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CApplication::Ready_Item_Data()
+{
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ITEM,
+		CItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CApplication::Ready_Static_Effect()
 {
 	CGameMode* pGameModeInst = CGameMode::GetInstance();
@@ -600,6 +631,12 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/Player_Nvzhu/Attack_Po_3_Effect.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Attack_Po/")))
 			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill_01.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill/")))
+			return E_FAIL;
+		
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
 			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill_02.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill/")))
@@ -718,8 +755,8 @@ HRESULT CApplication::Ready_Fonts()
 	if (FAILED(m_pGameInstance->Add_Font(
 		m_pDevice,
 		m_pContext,
-		TEXT("Font_MapleStoryBold"),
-		TEXT("../../Resource/Fonts/MapleStoryBlod.spritefont")
+		TEXT("HeirofLightBold"),
+		TEXT("../../Resource/Fonts/HeirofLightBold.spritefont")
 	)))
 		return E_FAIL;
 

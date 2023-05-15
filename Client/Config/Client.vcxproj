@@ -215,6 +215,8 @@
     <ClInclude Include="..\public\InteractionUI.h" />
     <ClInclude Include="..\public\Intro.h" />
     <ClInclude Include="..\public\IntroCamera.h" />
+    <ClInclude Include="..\public\Item.h" />
+    <ClInclude Include="..\public\ItemDB.h" />
     <ClInclude Include="..\public\Level_AnimTool.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
@@ -258,6 +260,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Client_StaticTextureEnum.h" />
     <ClInclude Include="Client_Struct.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="Resource.h" />
@@ -313,6 +316,8 @@
     <ClCompile Include="..\private\InteractionUI.cpp" />
     <ClCompile Include="..\private\Intro.cpp" />
     <ClCompile Include="..\private\IntroCamera.cpp" />
+    <ClCompile Include="..\private\Item.cpp" />
+    <ClCompile Include="..\private\ItemDB.cpp" />
     <ClCompile Include="..\private\Level_AnimTool.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />

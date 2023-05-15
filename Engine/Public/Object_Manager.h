@@ -41,7 +41,7 @@ public:
 
 private: // 원형 객체 보관
 	unordered_map<_int, class CGameObject*> m_Prototypes;
-
+	
 private:
 	_uint m_iLevelMaxCount;
 

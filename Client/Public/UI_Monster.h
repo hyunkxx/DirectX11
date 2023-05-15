@@ -14,6 +14,14 @@ BEGIN(Client)
 
 class CUI_Monster final : public CGameObject
 {
+public: enum class MONSTERTYPE
+{
+	TYPE0, // 레벨, HP
+	TYPE1, // 레벨, HP, 실드아이콘, 추가방어력바
+	BOSS
+
+};
+
 public:
 	typedef struct tagMonster
 	{
@@ -28,16 +36,15 @@ public:
 		_int		iPass = { 1 };
 		_bool		bRot = { false };
 		_float		fDegree = { 0.f };
+		_float2		PosSet = { 0.f,0.f }; // 플레이어 위치에서 추가로 이동할 거리
 
 		//툴변수 저장은 안하지만 제로메모리로 불러서 각 버퍼마다 쓰는 변수
+		_bool		bRender = { true };
 		_float4x4	WorldMatrix;
 		_float4 Color;
 		_float fColorR = { 0.f };
 		_float fColorG = { 0.f };
 		_float fColorB = { 0.f };
-		_bool  OnRect; // 마우스가 버퍼 위에 있는지
-		_float2 PrePos;
-		_float2 OriPos;
 	}MONSTERDESC;
 
 protected:
@@ -55,18 +62,11 @@ public:
 
 private:
 	HRESULT Add_Components();
+	HRESULT Setup_ShaderResourcesHP(_int index);
 	HRESULT Setup_ShaderResources(_int index);
+	HRESULT Setup_ShaderResourcesMask(_int index);
+	HRESULT Setup_ShaderResourcesBoss(_int index);
 
-private:
-
-	_float4x4	m_ViewMatrix, m_ProjMatrix;
-
-	_float  m_fX = { 0.f }, m_fY = { 0.f }, m_fZ = { 0.f }, m_fWidth = { 10.f }, m_fHeight = { 10.f };
-	_float  m_fColorR = { 0.f };
-	_float  m_fColorG = { 0.f };
-	_float  m_fColorB = { 0.f };
-	_float  m_fColorA = { 0.f };
-	_float4 Color = { 0.f, 0.f, 0.f, 0.f };
 public:
 	static CUI_Monster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
@@ -75,10 +75,13 @@ public:
 private:
 	void HPBar(_double TimeDelta);
 	void HPRedBar(_double TimeDelta);
+	void CommonHP();
+	void CommonLevel();
 	void Load();
 
 
 private:
+	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	//Hp
 	_bool m_bHit = { false };
 	_bool m_bRedStart = { false };
@@ -89,9 +92,14 @@ private:
 	_float m_fWhiteBar = { 1.f };
 	_float m_RedDamageACC = { 250.f };
 	_float m_fRedBar = { 1.f };
-	_float Point = 250.f;
 	_int m_Index = { 0 };
-	_float Degree = { 0.f };
+
+	_int m_MonsterLevel = { 10 };
+	_int m_MaskTextureNum = { 57 };
+	_int m_MaskTextureNum2 = { 67 };
+	_float2 m_MonsterUV = { 0.f, 0.f };
+	_float m_MonsterGauge = { 0.f };
+	MONSTERTYPE m_MonsterType = { MONSTERTYPE::TYPE1 };
 
 private:
 	CRenderer*		m_pRenderer = { nullptr };

@@ -49,11 +49,9 @@ HRESULT CUI_MainScreen::Initialize(void * pArg)
 
 	
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
 
  	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UIMINIMAP, TEXT("layer_UI"), TEXT("UI_Minimap"))))
 		return E_FAIL;
-	Safe_Release(pGameInstance);
 	return S_OK;
 }
 
@@ -61,202 +59,128 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
 
 	CGameObject* pGameObject = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("layer_UI"), TEXT("UI_Terminal"));
-	
-		if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP) //&& (false == pGameObject->IsActive()))
-		{
-			//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UITERMINAL, TEXT("layer_UI"), TEXT("UI_Terminal"))))
-			//	return;
-		}
 
-	if (0 != m_CutDescList.size())
+	if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP) //&& (false == pGameObject->IsActive()))
 	{
-		list<CUTRECT*>::iterator Desciter = m_CutDescList.begin();
-		advance(Desciter, 14);
-		if (false == (*Desciter)->bCoolTime)
+		//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UITERMINAL, TEXT("layer_UI"), TEXT("UI_Terminal"))))
+		//	return;
+	}
+
+
+
+	if ((nullptr != m_CutDescList[14]) && (false == m_CutDescList[13]->bCoolTime) && (false == m_CutDescList[14]->bCoolTime) && (false == m_CutDescList[15]->bCoolTime))
+	{
+		if (pGameInstance->InputKey(DIK_1) == KEY_STATE::TAP)
 		{
-			if (pGameInstance->InputKey(DIK_1) == KEY_STATE::TAP)
+			m_iPrePlayer = m_iCurrentPlayer;
+			m_iCurrentPlayer = ePlayer::YANGYANG;
+
+			if (ePlayer::DANSUN == m_iPrePlayer) // 2번에서 1번 플레이어 선택
 			{
-				m_iPrePlayer = m_iCurrentPlayer;
-				m_iCurrentPlayer = 1;
+				RenderPlayer1();
+				DisappearPlayer3();
+				m_CutDescList[14]->bRender = true;
+				m_CutDescList[14]->bCoolTime = true; //14 쿨타임 시작
+				m_CutDescList[11]->bRender = true;  //번호나타남
+				m_CutDescList[17]->bRender = false; //연기 사라짐
 
-				if (2 == m_iPrePlayer) // 2번에서 1번 플레이어 선택
-				{
-					(*Desciter)->bCoolTime = true; //14 쿨타임 시작
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 10);
-					(*Desciter)->fColorACut = -255.f; // 번호사라짐
-
-					++Desciter; //11
-					(*Desciter)->fColorACut = 0.f; //번호나타남
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 16);
-					(*Desciter)->fColorACut = 0.f; //연기 나타남
-
-					++Desciter; //17
-					(*Desciter)->fColorACut = -255.f; //연기 사라짐
-				}
-				if (3 == m_iPrePlayer) // 3번에서 1번 플레이어 선택
-				{
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 15);
-					(*Desciter)->bCoolTime = true; //15 쿨타임 시작 
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 10);
-					(*Desciter)->fColorACut = -255.f; // 번호 사라짐
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 12);
-					(*Desciter)->fColorACut = 0.f; // 번호 나타남
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 16);
-					(*Desciter)->fColorACut = 0.f; // 연기 나타남
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 18);
-					(*Desciter)->fColorACut = -255.f; // 연기 사라짐
-				}
-				// 스킬 3개 그림 달라짐
-				Desciter = m_CutDescList.begin();
-				advance(Desciter, 5);
-				(*Desciter)->iTexNum = 72;
-				++Desciter; //6
-				(*Desciter)->iTexNum = 75;
-				++Desciter; //7
-				(*Desciter)->iTexNum = 76;
-			}
-		}
-		Desciter = m_CutDescList.begin();
-		advance(Desciter, 13);
-		if (false == (*Desciter)->bCoolTime)
-		{
-			if (pGameInstance->InputKey(DIK_2) == KEY_STATE::TAP)
-			{
-				m_iPrePlayer = m_iCurrentPlayer;
-				m_iCurrentPlayer = 2;
-
-				if (1 == m_iPrePlayer) // 1번에서 2번 플레이어 선택
-				{
-					(*Desciter)->bCoolTime = true; // 13 쿨타임 시작
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 11);
-					(*Desciter)->fColorACut = -255.f; //번호 사라짐
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 10);
-					(*Desciter)->fColorACut = 0.f; // 번호 나타남
-				
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 16);
-					(*Desciter)->fColorACut = -255.f; //연기 사라짐
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 17);
-					(*Desciter)->fColorACut = 0.f; // 연기 나타남
-
-				}
-				if (3 == m_iPrePlayer) // 3번에서 2번 플레이어 선택
-				{
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 15);
-					(*Desciter)->bCoolTime = true;
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 11);
-					(*Desciter)->fColorACut = -255.f; // 번호 사라짐
-
-					++Desciter;
-					(*Desciter)->fColorACut = 0.f; // 번호 나타남
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 17);
-					(*Desciter)->fColorACut = 0.f; // 연기 나타남
-					++Desciter; //18
-					(*Desciter)->fColorACut = -255.f; // 연기 사라짐
-				}
-
-				// 스킬 4개 그림 달라짐
-				Desciter = m_CutDescList.begin();
-				advance(Desciter, 5);
-				(*Desciter)->iTexNum = 78;
-				++Desciter; //6
-				(*Desciter)->iTexNum = 79;
-				++Desciter; //7
-				(*Desciter)->iTexNum = 80;
+				m_CutDescList[47]->bRender = true;
+				m_CutDescList[48]->bRender = true;
+				m_CutDescList[65]->bRender = true;
 
 			}
-		}
-
-		Desciter = m_CutDescList.begin();
-		advance(Desciter, 13);
-		if (false == (*Desciter)->bCoolTime)
-		{
-			if (pGameInstance->InputKey(DIK_3) == KEY_STATE::TAP)
+			if (ePlayer::RED == m_iPrePlayer) // 3번에서 1번 플레이어 선택
 			{
-				m_iPrePlayer = m_iCurrentPlayer;
-				m_iCurrentPlayer = 3;
+				RenderPlayer1();
+				DisappearPlayer2();
+				m_CutDescList[15]->bRender = true;
+				m_CutDescList[15]->bCoolTime = true; //15 쿨타임 시작 
+				m_CutDescList[12]->bRender = true;  // 번호 나타남
+				m_CutDescList[18]->bRender = false; // 연기 사라짐
 
-				if (1 == m_iPrePlayer) // 1번에서 3번 플레이어 선택
-				{
-					(*Desciter)->bCoolTime = true;
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 10);
-					(*Desciter)->fColorACut = 0.f; // 번호 나타남
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 12);
-					(*Desciter)->fColorACut = -255.f; // 번호 사라짐
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 16);
-					(*Desciter)->fColorACut = -255.f; //연기 사라짐
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 18);
-					(*Desciter)->fColorACut = 0.f; // 연기 나타남
-				}
-
-				if (2 == m_iPrePlayer) // 2번에서 3번 플레이어 선택
-				{
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 14);
-					(*Desciter)->bCoolTime = true;
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 11);
-					(*Desciter)->fColorACut = 0.f; //번호 나타남
-					++Desciter;
-					(*Desciter)->fColorACut = -255.f; // 번호 사라짐
-
-					Desciter = m_CutDescList.begin();
-					advance(Desciter, 17);
-					(*Desciter)->fColorACut = -255.f; // 연기 사라짐
-
-					++Desciter; //18
-					(*Desciter)->fColorACut = 0.f; // 연기 나타남
-					
-				}
-				// 스킬 4개 그림 달라짐
-				Desciter = m_CutDescList.begin();
-				advance(Desciter, 5);
-				(*Desciter)->iTexNum = 82;
-				++Desciter; //6
-				(*Desciter)->iTexNum = 83;
-				++Desciter; //7
-				(*Desciter)->iTexNum = 84;
+				m_CutDescList[49]->bRender = true;
+				m_CutDescList[50]->bRender = true;
+				m_CutDescList[64]->bRender = true;
 			}
 		}
 	}
+	if ((nullptr != m_CutDescList[13]) && (false == m_CutDescList[13]->bCoolTime) && (false == m_CutDescList[14]->bCoolTime) && (false == m_CutDescList[15]->bCoolTime))
+	{
+		if (pGameInstance->InputKey(DIK_2) == KEY_STATE::TAP)
+		{
+			m_iPrePlayer = m_iCurrentPlayer;
+			m_iCurrentPlayer = ePlayer::DANSUN;
+
+			if (ePlayer::YANGYANG == m_iPrePlayer) // 1번에서 2번 플레이어 선택
+			{
+				RenderPlayer2();
+				DisappearPlayer3();
+				m_CutDescList[13]->bRender = true;
+				m_CutDescList[13]->bCoolTime = true; // 13 쿨타임 시작
+				m_CutDescList[10]->bRender = true; // 번호 나타남
+				m_CutDescList[16]->bRender = false; //연기 사라짐
+
+				m_CutDescList[45]->bRender = true;
+				m_CutDescList[46]->bRender = true;
+				m_CutDescList[66]->bRender = true;
+			}
+			if (ePlayer::RED == m_iPrePlayer) // 3번에서 2번 플레이어 선택
+			{
+				RenderPlayer2();
+				DisappearPlayer1();
+				m_CutDescList[15]->bRender = true;
+				m_CutDescList[15]->bCoolTime = true;
+				m_CutDescList[12]->bRender = true;  // 번호 나타남
+				m_CutDescList[18]->bRender = false; // 연기 사라짐
+
+				m_CutDescList[49]->bRender = true;
+				m_CutDescList[50]->bRender = true;
+				m_CutDescList[64]->bRender = true;
+			}
+		}
+	}
+
+	if ((nullptr != m_CutDescList[13]) && (false == m_CutDescList[13]->bCoolTime) && (false == m_CutDescList[14]->bCoolTime) && (false == m_CutDescList[15]->bCoolTime))
+	{
+		if (pGameInstance->InputKey(DIK_3) == KEY_STATE::TAP)
+		{
+			m_iPrePlayer = m_iCurrentPlayer;
+			m_iCurrentPlayer = ePlayer::RED;
+
+			if (ePlayer::YANGYANG == m_iPrePlayer) // 1번에서 3번 플레이어 선택
+			{
+				RenderPlayer3();
+				DisappearPlayer2();
+				m_CutDescList[13]->bRender = true;
+				m_CutDescList[13]->bCoolTime = true;
+				m_CutDescList[10]->bRender = true;  // 번호 나타남
+				m_CutDescList[16]->bRender = false; //연기 사라짐
+
+
+				m_CutDescList[45]->bRender = true;
+				m_CutDescList[46]->bRender = true;
+				m_CutDescList[66]->bRender = true;
+			}
+
+			if (ePlayer::DANSUN == m_iPrePlayer) // 2번에서 3번 플레이어 선택
+			{
+				RenderPlayer3();
+				DisappearPlayer1();
+				m_CutDescList[14]->bRender = true;
+				m_CutDescList[14]->bCoolTime = true;
+				m_CutDescList[11]->bRender = true;  //번호 나타남
+				m_CutDescList[17]->bRender = false; // 연기 사라짐
+
+				m_CutDescList[47]->bRender = true;
+				m_CutDescList[48]->bRender = true;
+				m_CutDescList[65]->bRender = true;
+			}
+		}
+	}
+
 
 	for (auto& Desc : m_CutDescList)
 	{
@@ -296,7 +220,6 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 		HPRedBar(TimeDelta);
 	}
 
-	Safe_Release(pGameInstance);
 }
 
 void CUI_MainScreen::LateTick(_double TimeDelta)
@@ -309,37 +232,20 @@ void CUI_MainScreen::LateTick(_double TimeDelta)
 
 HRESULT CUI_MainScreen::Render()
 {
-	
-	if (FAILED(__super::Render()))
-		return E_FAIL;
-
-	_uint Bufferindex = 0;
-	for (auto& pBuffer : m_BufferCutList)
+	for (_uint i = 0; i<(_uint)m_CutDescList.size(); ++i)
 	{
-		if (nullptr != pBuffer)
+		if (true == m_CutDescList[i]->bRender)
 		{
-			if (FAILED(Setup_ShaderResourcesCut(Bufferindex)))
+			if (FAILED(__super::Render()))
+				return E_FAIL;
+			if (FAILED(Setup_ShaderResourcesCut(i)))
 				return E_FAIL;
 
 			m_pShader->Begin(m_iPass);
 
-			list<CUTRECT*>::iterator Desciter = m_CutDescList.begin();
-			advance(Desciter, Bufferindex);
-
-			if(4 == (*Desciter)->iPass)
-			{
-				if(true == (*Desciter)->bCoolTime)
-				pBuffer->Render();
-			}
-			else 
-			{
-					pBuffer->Render();
-			}
+			m_BufferCutList[i]->Render();
 		}
-
-		++Bufferindex;
 	}
-
 
 	return S_OK;
 }
@@ -355,30 +261,14 @@ ImGui::End();
 
 void CUI_MainScreen::SerectUI()
 {
-	POINT		MousePos{};
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 
-	GetCursorPos(&MousePos);
-	ScreenToClient(g_hWnd, &MousePos);
-
-	UINT           pNumViewports;
-	m_pContext->RSGetViewports(&pNumViewports, NULL);
-	D3D11_VIEWPORT*		pViewPort = new D3D11_VIEWPORT[pNumViewports];
-	m_pContext->RSGetViewports(&pNumViewports, pViewPort);
-
-	float Viewport_Width = (float)pViewPort[0].Width;
-	float Viewport_Height = (float)pViewPort[0].Height;
-
-	Safe_Delete_Array(pViewPort);
-
-	_float3	fMousePos;
-	fMousePos.x = MousePos.x - (Viewport_Width * 0.5f);
-	fMousePos.y = -MousePos.y + (Viewport_Height * 0.5f);
-	fMousePos.z = 0.f;
-
-	_vector vMousePos = XMLoadFloat3(&fMousePos);
-
-	if (0 != m_CutDescList.size())
+	CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("layer_UI"), TEXT("UI_Mouse"));
+	if (nullptr != pMouse)
 	{
+		_float3	fMousePos = dynamic_cast<CUI_Mouse*>(pMouse)->Get_MousePos();
+		_vector vMousePos = XMLoadFloat3(&fMousePos);
+
 		for (auto& pCutDesc : m_CutDescList)
 		{
 			_float Dist = 1.f;
@@ -393,18 +283,9 @@ void CUI_MainScreen::SerectUI()
 			{
 				if ((XMVectorGetY(P0) > XMVectorGetY(vMousePos)) && (XMVectorGetY(P2) < XMVectorGetY(vMousePos)))
 				{
-					CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-					Safe_AddRef(pGameInstance);
-
-					if (pGameInstance->InputMouse(Engine::MOUSE_KEYSTATE::DIMK_LB)) // 범위 안에서 클릭하면
-					{
-						//마우스가 올려져 있는 텍스처의 패스가 4(쿨)이라면
-						if ((4 == pCutDesc->iPass) && (false == pCutDesc->bCoolTime))
-						{
-							pCutDesc->bCoolTime = true;
-						}
-					}
-					Safe_Release(pGameInstance);
+					pCutDesc->OnRect = true;
+					CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("UI_Mouse"));
+					dynamic_cast<CUI_Mouse*>(pMouse)->Set_Texchange(true);
 				}
 
 			}
@@ -438,72 +319,59 @@ HRESULT CUI_MainScreen::Add_Components()
 
 HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 {
-	
-	list<CUTRECT*>::iterator Desciter = m_CutDescList.begin();
-	advance(Desciter, Bufferindex);
-	// iter를 Bufferindex만큼 ++연산
-
-
-	// 쿨타임시 보낼 텍스처
-	if ((13 == Bufferindex)&&(*Desciter)->bCoolTime)
+	if (nullptr != m_CutDescList[Bufferindex])
 	{
-		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture2", 3))) // 3->캐릭터텍스처의 main%d
-			return E_FAIL;
-	}
-	if ((14 == Bufferindex) && (*Desciter)->bCoolTime)
-	{
-		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture2", 4)))
-			return E_FAIL;
-	}
-	if ((15 == Bufferindex) && (*Desciter)->bCoolTime)
-	{
-		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture2", 5)))
-			return E_FAIL;
-	}
-	
+		// 쿨타임시 보낼 텍스처
+		if (m_CutDescList[13]->bCoolTime)
+		{
+			if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture2", 3))) // 3->캐릭터텍스처의 main%d
+				return E_FAIL;
+		}
+		if (m_CutDescList[14]->bCoolTime)
+		{
+			if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture2", 4)))
+				return E_FAIL;
+		}
+		if (m_CutDescList[15]->bCoolTime)
+		{
+			if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture2", 5)))
+				return E_FAIL;
+		}
 
-	Desciter = m_CutDescList.begin();
-	advance(Desciter, Bufferindex);
+		if (nullptr != m_pTexFunc)
+		{
 
-	if (nullptr != m_pTexFunc)
-	{
+			if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture", m_CutDescList[Bufferindex]->iTexNum)))
+				return E_FAIL;
 
-		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture", (*Desciter)->iTexNum)))
-			return E_FAIL;
-	}
+		}
 
-	XMStoreFloat4x4(&((*Desciter)->WorldMatrixCut), XMMatrixScaling((*Desciter)->fWidthCut, (*Desciter)->fHeightCut, 1.f) *
-		XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians((*Desciter)->fDegree))	
-		* XMMatrixTranslation((*Desciter)->fXCut, (*Desciter)->fYCut, (*Desciter)->fZCut));
-	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-	if (nullptr != (*Desciter))
-	{
+		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f) *
+			XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(m_CutDescList[Bufferindex]->fDegree))
+			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
+		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 
-		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &((*Desciter)->WorldMatrixCut))))
+
+		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 			return E_FAIL;
 
-		if (FAILED(m_pShader->SetRawValue("g_fLU", &((*Desciter)->LUCutUV), sizeof(_float2))))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fRB", &((*Desciter)->RBCutUV), sizeof(_float2))))
-			return E_FAIL;
-
 		if (FAILED(m_pShader->SetRawValue("g_UV", &m_fUV, sizeof(_float2))))
 			return E_FAIL;
 
-		if (FAILED(m_pShader->SetRawValue("g_fColorR", &((*Desciter)->fColorRCut), sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_CutDescList[Bufferindex]->fColorRCut), sizeof(_float))))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fColorG", &((*Desciter)->fColorGCut), sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_CutDescList[Bufferindex]->fColorGCut), sizeof(_float))))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fColorB", &((*Desciter)->fColorBCut), sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_CutDescList[Bufferindex]->fColorBCut), sizeof(_float))))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fColorA", &((*Desciter)->fColorACut), sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_CutDescList[Bufferindex]->fColorACut), sizeof(_float))))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fCoolTime", &((*Desciter)->Cool), sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fCoolTime", &(m_CutDescList[Bufferindex]->Cool), sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetRawValue("g_RadianAcc", &m_RadianAcc, sizeof(_float))))
 			return E_FAIL;
@@ -516,7 +384,8 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 		if (FAILED(m_pShader->SetRawValue("g_fLoading", &m_fWhiteBar, sizeof(_float))))
 			return E_FAIL;
 
-		m_iPass = (*Desciter)->iPass;
+
+		m_iPass = m_CutDescList[Bufferindex]->iPass;
 	}
 	return S_OK;
 }
@@ -524,7 +393,7 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 
 void CUI_MainScreen::Load()
 {
-	_uint index = 35;
+	_uint index = 71;
 	for (_uint i = 0; i<index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -566,6 +435,7 @@ void CUI_MainScreen::Load()
 			ReadFile(hFile, &(Desc->bRot), sizeof(_bool), &dwByte, nullptr);
 			ReadFile(hFile, &(Desc->iPass), sizeof(_int), &dwByte, nullptr);
 			ReadFile(hFile, &(Desc->fDegree), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc->Playertype), sizeof(_int), &dwByte, nullptr);
 			if (0 >= dwByte)
 				break;
 		}
@@ -586,6 +456,7 @@ void CUI_MainScreen::Load()
 
 		if (nullptr != Desc)
 		{
+			Desc->bRender = true;
 			m_CutDescList.push_back(Desc);
 
 			m_pVIBufferCut = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
@@ -695,6 +566,26 @@ void CUI_MainScreen::CoolTime(CUTRECT* pDesc, _double TimeDelta)
 		pDesc->TimeAcc = 0.f;
 		pDesc->bCoolTime = false;
 		pDesc->Cool = 0.f;
+		switch ((ePlayer)pDesc->Playertype)
+		{
+		case Client::CUI_MainScreen::ePlayer::YANGYANG:
+		{
+			DisappearPlayer1();
+		}
+		break;
+		case Client::CUI_MainScreen::ePlayer::DANSUN:
+		{
+			DisappearPlayer2();
+		}
+		break;
+		case Client::CUI_MainScreen::ePlayer::RED:
+		{
+			DisappearPlayer3();
+		}
+		break;
+		default:
+			break;
+		}
 	}
 
 	if (1.f > pDesc->Cool)
@@ -742,43 +633,34 @@ void CUI_MainScreen::UVCircle(_double TimeDelta)
 void CUI_MainScreen::HPBar(_double TimeDelta)
 { //83->빨 82->흰
 	//흰색 줄어듬
-	list<CUTRECT*>  ::iterator iter = m_CutDescList.begin();
-	advance(iter, 31);
 	if (0.f < m_fWhiteBar)
 	{
 		if (0 < m_Damage) // 힐
 		{
-			if(m_PreHp + m_Damage <m_CurrentHp) // 힐 받은만큼만 참
+			if (m_PreHp + m_Damage <m_CurrentHp) // 힐 받은만큼만 참
 			{
 				m_bHit = false;
 				m_PreHp = m_RedDamageACC = m_CurrentHp;
 			}
 			m_CurrentHp += m_Damage * (_float)TimeDelta;
-			m_fWhiteBar = m_CurrentHp / (*iter)->fWidthCut;
+			m_fWhiteBar = m_CurrentHp / m_CutDescList[31]->fWidthCut;
 		}
 		else
 		{
 			m_CurrentHp += m_Damage;
-			m_fWhiteBar = m_CurrentHp / (*iter)->fWidthCut;
+			m_fWhiteBar = m_CurrentHp / m_CutDescList[31]->fWidthCut;
 			m_PreHp = m_CurrentHp;
 			m_bHit = false;
 			m_bRedStart = true;
 		}
 	}
-
-
 }
 void CUI_MainScreen::HPRedBar(_double TimeDelta)
 {
-	list<CUTRECT*>  ::iterator iter = m_CutDescList.begin();
-	advance(iter, 32);
 	if (m_CurrentHp < m_RedDamageACC)
 	{
-	
 		m_RedDamageACC += (m_CurrentHp - m_RedDamageACC) * (_float)TimeDelta;
-		m_fRedBar = m_RedDamageACC / (*iter)->fWidthCut;
-	
-
+		m_fRedBar = m_RedDamageACC / m_CutDescList[32]->fWidthCut;
 	}
 	else
 	{
@@ -790,10 +672,117 @@ void CUI_MainScreen::HPRedBar(_double TimeDelta)
 
 void CUI_MainScreen::Set_Texchange(_int Texindex)
 {
-	list<CUTRECT*>  ::iterator iter = m_CutDescList.begin();
-	advance(iter, 4);
-	(*iter)->iTexNum = Texindex;
+	m_CutDescList[4]->iTexNum = Texindex;
+}
 
+void	CUI_MainScreen::RenderPlayer1()
+{
+	/*
+	레벨
+	경험치
+	공
+	방
+	체
+	크리확률
+	*/
+	m_CutDescList[0]->bRender = true;
+	m_CutDescList[10]->bRender = false;
+	m_CutDescList[13]->bRender = false;
+	m_CutDescList[16]->bRender = true;
+	m_CutDescList[45]->bRender = false;
+	m_CutDescList[46]->bRender = false;
+	m_CutDescList[51]->bRender = true;
+	m_CutDescList[54]->bRender = true;
+	m_CutDescList[58]->bRender = true;
+	m_CutDescList[66]->bRender = false;
+
+
+	//스킬
+	m_CutDescList[5]->iTexNum = 170;
+	m_CutDescList[6]->iTexNum = 114;
+	m_CutDescList[7]->iTexNum = 115;
+
+}
+
+void CUI_MainScreen::RenderPlayer2()
+{
+	m_CutDescList[1]->bRender = true;
+	m_CutDescList[11]->bRender = false;
+	m_CutDescList[14]->bRender = false;
+	m_CutDescList[17]->bRender = true;
+	m_CutDescList[47]->bRender = false;
+	m_CutDescList[48]->bRender = false;
+	m_CutDescList[52]->bRender = true;
+	m_CutDescList[55]->bRender = true;
+	m_CutDescList[59]->bRender = true;
+	m_CutDescList[65]->bRender = false;
+
+	//스킬
+	m_CutDescList[5]->iTexNum = 78;
+	m_CutDescList[6]->iTexNum = 79;
+	m_CutDescList[7]->iTexNum = 80;
+}
+
+void CUI_MainScreen::RenderPlayer3()
+{
+	m_CutDescList[2]->bRender = true;
+	m_CutDescList[12]->bRender = false;
+	m_CutDescList[15]->bRender = false;
+	m_CutDescList[18]->bRender = true;
+	m_CutDescList[49]->bRender = false;
+	m_CutDescList[50]->bRender = false;
+	m_CutDescList[53]->bRender = true;
+	m_CutDescList[56]->bRender = true;
+	m_CutDescList[60]->bRender = true;
+	m_CutDescList[64]->bRender = false;
+
+
+	//스킬
+	m_CutDescList[5]->iTexNum = 82;
+	m_CutDescList[6]->iTexNum = 83;
+	m_CutDescList[7]->iTexNum = 84;
+}
+
+void CUI_MainScreen::DisappearPlayer1()
+{
+	m_CutDescList[0]->bRender = false;
+	m_CutDescList[10]->bRender = false;
+	m_CutDescList[13]->bRender = false;
+	m_CutDescList[16]->bRender = false;
+	m_CutDescList[45]->bRender = false;
+	m_CutDescList[46]->bRender = false;
+	m_CutDescList[51]->bRender = false;
+	m_CutDescList[54]->bRender = false;
+	m_CutDescList[58]->bRender = false;
+	m_CutDescList[66]->bRender = false;
+}
+
+void CUI_MainScreen::DisappearPlayer2()
+{
+	m_CutDescList[1]->bRender = false;
+	m_CutDescList[11]->bRender = false;
+	m_CutDescList[14]->bRender = false;
+	m_CutDescList[17]->bRender = false;
+	m_CutDescList[47]->bRender = false;
+	m_CutDescList[48]->bRender = false;
+	m_CutDescList[52]->bRender = false;
+	m_CutDescList[55]->bRender = false;
+	m_CutDescList[59]->bRender = false;
+	m_CutDescList[65]->bRender = false;
+}
+
+void CUI_MainScreen::DisappearPlayer3()
+{
+	m_CutDescList[2]->bRender = false;
+	m_CutDescList[12]->bRender = false;
+	m_CutDescList[15]->bRender = false;
+	m_CutDescList[18]->bRender = false;
+	m_CutDescList[49]->bRender = false;
+	m_CutDescList[50]->bRender = false;
+	m_CutDescList[53]->bRender = false;
+	m_CutDescList[56]->bRender = false;
+	m_CutDescList[60]->bRender = false;
+	m_CutDescList[64]->bRender = false;
 }
 
 
