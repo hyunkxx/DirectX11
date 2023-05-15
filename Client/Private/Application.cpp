@@ -600,6 +600,11 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/Player_Nvzhu/Attack_Po_3_Effect.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Attack_Po/")))
 			return E_FAIL;
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill_02.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill/")))
+			return E_FAIL;
+		
 		//칼 집어 넣을때 나오는 이펙트
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
 			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Sheath_Effect.bin"),
@@ -611,10 +616,10 @@ HRESULT CApplication::Ready_Static_Effect()
 	//Nvzhu 기본 공격에 따른 히트 이펙트
 	for (_int i = 0; 5 > i; i++)
 	{
-	/*	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
 			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_01.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Hit_Effect/")))
-			return E_FAIL;*/
+			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
 			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_02.bin"),
@@ -644,6 +649,61 @@ HRESULT CApplication::Ready_Static_Effect()
 
 #pragma endregion
 
+#pragma region Comon
+
+	for (_int i = 0; 5 > i; i++)
+	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Flare_Effect.bin"),
+			"../../Resource/Effect/Comon/Flare/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Smoke_01_Black.bin"),
+			"../../Resource/Effect/Comon/Smoke/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Smoke_01_Gray.bin"),
+			"../../Resource/Effect/Comon/Smoke/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Smoke_02_Black.bin"),
+			"../../Resource/Effect/Comon/Smoke/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Smoke_02_Gray.bin"),
+			"../../Resource/Effect/Comon/Smoke/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Smoke_03_Black.bin"),
+			"../../Resource/Effect/Comon/Smoke/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Smoke_03_Gray.bin"),
+			"../../Resource/Effect/Comon/Smoke/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Smoke_04_Black.bin"),
+			"../../Resource/Effect/Comon/Smoke/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Smoke_04_Gray.bin"),
+			"../../Resource/Effect/Comon/Smoke/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Smoke_05_Gray.bin"),
+			"../../Resource/Effect/Comon/Smoke/")))
+			return E_FAIL;
+	}
+#pragma endregion
 
 
 	return S_OK;
