@@ -204,6 +204,7 @@
     <ClInclude Include="..\Public\Client_ObjectEnum.h" />
     <ClInclude Include="..\Public\Client_ShaderEnum.h" />
     <ClInclude Include="..\Public\Client_TextureEnum.h" />
+    <ClInclude Include="..\public\Sandbag.h" />
     <ClInclude Include="..\public\DissolveKey.h" />
     <ClInclude Include="..\public\DynamicCamera.h" />
     <ClInclude Include="..\public\EffectKey.h" />
@@ -305,6 +306,7 @@
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\CharacterSelect_Terrain.cpp" />
     <ClCompile Include="..\private\Chest.cpp" />
+    <ClCompile Include="..\private\Sandbag.cpp" />
     <ClCompile Include="..\private\DissolveKey.cpp" />
     <ClCompile Include="..\private\DynamicCamera.cpp" />
     <ClCompile Include="..\private\EffectKey.cpp" />

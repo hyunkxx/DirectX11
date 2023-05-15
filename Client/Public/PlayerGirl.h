@@ -222,7 +222,6 @@ public:
 
 	CCollider* m_pCollider = nullptr;
 	CGameObject* pStaticObject = nullptr;
-	
 };
 
 END
