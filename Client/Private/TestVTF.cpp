@@ -271,15 +271,12 @@ void CTestVTF::Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _doubl
 	}
 }
 
-void CTestVTF::Shot_EffectKey(_tchar * szEffectTag, _uint EffectBoneID , EFFECT_ID eEffectID , _bool bTracking)
+void CTestVTF::Shot_EffectKey(_tchar * szEffectTag, _uint EffectBoneID , _uint iEffectID , _bool bTracking)
 {
-	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag , eEffectID);
+	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag , EFFECT_ID(iEffectID));
 	if (nullptr == pEffect || EBONE_END <= EffectBoneID)
 		return;
 
-	if (0 == EffectBoneID)
-		pEffect->Play_Effect(&m_pMainTransform->Get_WorldMatrix(), bTracking);
-	else
 		pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
 }
 
@@ -762,14 +759,19 @@ HRESULT CTestVTF::Init_Parts()
 HRESULT CTestVTF::Init_EffectBones()
 {
 	//NONEÀº °Á ¿ùµå ¸ÅÆ®¸¯½º ´øÁü
-	m_EffectBones[EBONE_SPINE] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine"));
-	m_EffectBones[EBONE_WEAPON] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp03"));
-	
+	m_EffectBones[EBONE_SPINE2] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine2"));
+	m_EffectBones[EBONE_WEAPON01] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp01"));
+	m_EffectBones[EBONE_WEAPON02] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp02"));
+	m_EffectBones[EBONE_LHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001LHand"));
+	m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
 	return S_OK;
 }
 
 void CTestVTF::Update_EffectBones()
 {
+	memcpy(&m_EffectBoneMatrices[EBONE_NONE], &m_pMainTransform->Get_WorldMatrix(), sizeof(_float4x4));
+
+
 	for (_uint i = 1; i < EBONE_END; ++i)
 	{
 		XMStoreFloat4x4(&m_EffectBoneMatrices[i], XMLoadFloat4x4(&m_EffectBones[i]->Get_CombinedTransfromationMatrix())

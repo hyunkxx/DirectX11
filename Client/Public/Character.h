@@ -317,7 +317,7 @@ public:
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration) {}
 	virtual void Shot_PriorityKey(_uint iLeavePriority) {}
-	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _bool bTracking) {}
+	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint iEffectBoneID, _uint iTypeID, _bool bTracking) {}
 
 
 protected:

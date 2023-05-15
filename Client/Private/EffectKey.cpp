@@ -16,7 +16,10 @@ HRESULT CEffectKey::Initialize(BaseData * pData)
 		sizeof(_tchar) * MAX_PATH);
 	
 	m_iEffectBoneID = pData->iInt0;
-	if (0 == pData->iInt1)
+
+	m_iTypeID = pData->iInt1;
+
+	if (0 == pData->iInt2)
 		m_bTracking = false;
 	else
 		m_bTracking = true;
@@ -27,7 +30,7 @@ HRESULT CEffectKey::Initialize(BaseData * pData)
 
 void CEffectKey::Shot(CCharacter * pMyCharacter)
 {
-	pMyCharacter->Shot_EffectKey(m_szEffectTag, m_iEffectBoneID, m_bTracking);
+	pMyCharacter->Shot_EffectKey(m_szEffectTag, m_iEffectBoneID, m_iTypeID, m_bTracking);
 }
 
 CEffectKey * CEffectKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, BaseData* pData)
