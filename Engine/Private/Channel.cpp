@@ -70,7 +70,7 @@ void CChannel::Invalidate_Transform(_uint ChannelID, CAnimController::ANIMSTATE&
 
 				vScale = XMVectorLerp(vDestScale, vScale, (_float)DestRatio);
 				vRotation = XMQuaternionSlerp(vDestRotation, vRotation, (_float)DestRatio);
-				//vPosition = XMVectorLerp(vDestPosition, vPosition, (_float)DestRatio);
+				vPosition = XMVectorLerp(vDestPosition, vPosition, (_float)DestRatio);
 			}
 			else
 				tState.IsInterpolate = false;
@@ -83,12 +83,15 @@ void CChannel::Invalidate_Transform(_uint ChannelID, CAnimController::ANIMSTATE&
 	{
 		CBone* pRootBone = pModel->Get_RootBone();
 		_vector	vCurRootBoneMove = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+		_vector	vCurRootBoneRot = XMQuaternionIdentity();
 
 		if (true == tState.isFirstFrame)
 		{
 			vCurRootBoneMove += XMVectorSet(XMVectorGetX(vPosition) - m_KeyFrames[0].vPosition.x,
 				XMVectorGetY(vPosition) - m_KeyFrames[0].vPosition.y,
 				XMVectorGetZ(vPosition) - m_KeyFrames[0].vPosition.z, 0.f);
+
+			vCurRootBoneRot = XMQuaternionMultiply(XMQuaternionNormalize(vRotation), XMQuaternionInverse(XMLoadFloat4(&m_KeyFrames[0].vRotation)));
 
 			tState.isFirstFrame = false;
 		}
@@ -98,10 +101,15 @@ void CChannel::Invalidate_Transform(_uint ChannelID, CAnimController::ANIMSTATE&
 				XMVectorGetY(vPosition) - tState.vPrevRootBonePos.y,
 				XMVectorGetZ(vPosition) - tState.vPrevRootBonePos.z, 0.f);
 
+			vCurRootBoneRot = XMQuaternionMultiply(XMQuaternionNormalize(vRotation), XMQuaternionInverse(XMLoadFloat4(&tState.vPrevRootBoneRot)));
 		}
-
+		// 이동량
 		XMStoreFloat3(&tState.vCurRootBoneMove, XMVector3TransformNormal(vCurRootBoneMove, pModel->Get_LocalMatrix()));
 		XMStoreFloat3(&tState.vPrevRootBonePos, vPosition);
+
+		// 회전량 
+		XMStoreFloat4(&tState.vCurRootBoneRot, vCurRootBoneRot);
+		XMStoreFloat4(&tState.vPrevRootBoneRot, vRotation);
 	}
 
 	_matrix TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);

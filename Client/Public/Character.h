@@ -311,6 +311,7 @@ public:
 		_float3			vPrevMovement;
 		_bool			bWalk;
 		_bool			bFalling;
+		_float4x4		DefaultMatrix; // 애니메이션 시작 상태 행렬
 	};
 
 public: // StateKey 대응 함수 모음

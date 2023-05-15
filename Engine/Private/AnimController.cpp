@@ -51,12 +51,15 @@ HRESULT CAnimController::SetUp_Animation(_uint iAnimationIndex, CModel_Anim * pM
 	ZeroMemory(&m_tAnimState.vCurRootBoneMove, sizeof(_float3));
 	ZeroMemory(&m_tAnimState.vPrevRootBonePos, sizeof(_float3));
 
+	m_tAnimState.vCurRootBoneRot = _float4(0.f, 0.f, 0.f, 1.f);
+	m_tAnimState.vPrevRootBoneRot = _float4(0.f, 0.f, 0.f, 1.f);
+
 	m_tAnimState.isFirstFrame = true;
 
 	return S_OK;
 }
 
-void CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * pModel, _float4* pRotationOut, _float3* pMoveOut, _double* pFrameAccOut, _bool* pFinishedOut)
+void CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * pModel, _float4* pRotOut, _float3* pMoveOut, _double* pFrameAccOut, _bool* pFinishedOut)
 {
 	if (true == m_tAnimState.isFinished)
 		return;
@@ -76,13 +79,27 @@ void CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * pModel, _f
 
 	CBone* pRootBone = pModel->Get_RootBone();
 	if (nullptr != pRootBone)
-		pRootBone->Set_Position(_float3(0.f, 0.f, /*pRootBone->Get_TransformationMatrix()._43*/0.f));
+	{
+		_vector vScale, vRot, vTrans;
+		XMMatrixDecompose(&vScale, &vRot, &vTrans, XMLoadFloat4x4(&pRootBone->Get_TransformationMatrix()));
+		vRot = XMQuaternionIdentity();
+		vTrans = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		pRootBone->Set_TransformationMatrix(XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRot, vTrans));
+	}
 
-	if (nullptr != pRotationOut)
-		*pRotationOut = m_tAnimState.vCurRootBoneRot;
+	
 
 	if (nullptr != pMoveOut)
-		*pMoveOut = m_tAnimState.vCurRootBoneMove;
+	{
+		if (nullptr != pRotOut)
+		{
+			*pRotOut = m_tAnimState.vCurRootBoneRot;
+			XMStoreFloat3(pMoveOut, XMVector3TransformNormal(XMLoadFloat3(&m_tAnimState.vCurRootBoneMove), XMMatrixRotationQuaternion(XMQuaternionMultiply(XMLoadFloat4(&m_tAnimState.vCurRootBoneRot), XMLoadFloat4(&m_tAnimState.vPrevRootBoneRot)))));
+		}
+		else
+			*pMoveOut = m_tAnimState.vCurRootBoneMove;
+	}
+		
 
 	
 

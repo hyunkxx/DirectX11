@@ -110,7 +110,7 @@ void CTransform::MoveLeft(_double TimeDelta)
 	Set_State(STATE::STATE_POSITION, vPosition);
 }
 
-void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation * pNavigation, _float3* pTopPosition)
+void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation * pNavigation, _float3* pTopPosition, _float4x4* pDefaultMatrix)
 {
 	_vector vPos = Get_State(CTransform::STATE_POSITION);
 	_vector vRight = Get_State(CTransform::STATE_RIGHT);
@@ -257,6 +257,37 @@ void CTransform::Rotate(_fvector vAxis, _double TimeDelta)
 	Set_State(STATE::STATE_RIGHT, vRight);
 	Set_State(STATE::STATE_UP, vUp);
 	Set_State(STATE::STATE_LOOK, vLook);
+}
+
+void CTransform::Rotate_Quaternion(_fvector vQuat)
+{
+	_vector vRight, vUp, vLook;
+	_float3 vScale = Get_Scale();
+
+	vRight = Get_State(STATE::STATE_RIGHT);
+	vUp = Get_State(STATE::STATE_UP);
+	vLook = Get_State(STATE::STATE_LOOK);
+
+	_vector vAxis;
+	_float fAngle;
+	_matrix RotationMatrix;
+
+	XMQuaternionToAxisAngle(&vAxis, &fAngle, vQuat);
+
+	vAxis = XMVectorSet(XMVectorGetX(vAxis), -XMVectorGetZ(vAxis), XMVectorGetY(vAxis), XMVectorGetW(vAxis));
+
+	if (!XMVector3Equal(vAxis, XMVectorZero()) && 0.f != fAngle)
+	{
+		RotationMatrix = XMMatrixRotationAxis(vAxis, fAngle);
+
+		vRight = XMVector3TransformNormal(vRight, RotationMatrix);
+		vUp = XMVector3TransformNormal(vUp, RotationMatrix);
+		vLook = XMVector3TransformNormal(vLook, RotationMatrix);
+
+		Set_State(STATE::STATE_RIGHT, vRight);
+		Set_State(STATE::STATE_UP, vUp);
+		Set_State(STATE::STATE_LOOK, vLook);
+	}
 }
 
 void CTransform::Set_LookDir(_fvector vTargetDir)

@@ -288,9 +288,9 @@ HRESULT CModel_Anim::SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate, 
 	return S_OK;
 }
 
-void CModel_Anim::Play_Animation(_double TimeDelta, _float4* pRotationOut, _float3* pMoveOut, _double* pFrameAccOut, _bool* pFinishedOut)
+void CModel_Anim::Play_Animation(_double TimeDelta, _float4* pRotOut, _float3* pMoveOut, _double* pFrameAccOut, _bool* pFinishedOut)
 {
-	m_pAnimController->Play_Animation(TimeDelta, this, pRotationOut, pMoveOut, pFrameAccOut, pFinishedOut);
+	m_pAnimController->Play_Animation(TimeDelta, this, pRotOut, pMoveOut, pFrameAccOut, pFinishedOut);
 }
 
 void CModel_Anim::Invalidate_CombinedMatrices()

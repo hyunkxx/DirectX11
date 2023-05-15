@@ -115,12 +115,28 @@ void CPlayerGirl::Start()
 void CPlayerGirl::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	_double TimeDelay = 1.0;
 
 	__super::Tick(TimeDelta);
 	
 	Key_Input(TimeDelta); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
 
-	Tick_State(TimeDelta); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
+
+	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::HOLD)
+	{
+		TimeDelay = 0.1;
+	}
+	else
+	{
+		TimeDelay = 1.0;
+	}
+
+	__super::Tick(TimeDelta * TimeDelay);
+	
+
+	Key_Input(TimeDelta * TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
+
+	Tick_State(TimeDelta * TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 
 	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
 	
@@ -128,7 +144,7 @@ void CPlayerGirl::Tick(_double TimeDelta)
 	for (_uint i = 0; i < PARTS_END; ++i)
 	{
 		if (nullptr != m_Parts[i])
-			m_Parts[i]->Tick(TimeDelta);
+			m_Parts[i]->Tick(TimeDelta * TimeDelay);
 	}
 
 	pGameInstance->AddCollider(m_pCollider);
@@ -546,6 +562,11 @@ void CPlayerGirl::SetUp_State()
 		m_pMainTransform->Set_LookDir(XMVectorSetY(m_pMainTransform->Get_State(CTransform::STATE_LOOK), 0.f));
 	}
 
+	// 2단 점프 횟수 차감
+	if(SS_JUMP_SECOND_B == m_Scon.iCurState ||
+		SS_JUMP_SECOND_F == m_Scon.iCurState)
+		--m_iAirJumpCount;
+
 	// 무기 위치 잡기
 	if (0 == m_tCurState.bWeaponState)
 		Set_WeaponUse(false);
@@ -742,6 +763,25 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			eCurFrameInput = INPUT_ATTACK;
 		}
 
+		if (pGame->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
+		{
+			if (m_ChargeAcc > 0.5)
+			{
+				eCurFrameInput = INPUT_ATTACK_RELEASE;
+			}
+		}
+
+		if (pGame->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+		{
+			m_ChargeAcc += TimeDelta;
+			if (m_ChargeAcc > 0.5)
+				eCurFrameInput = INPUT_ATTACK_CHARGE;
+		}
+		else
+			m_ChargeAcc = 0.0;
+
+		
+
 		// Tool
 		if (pGame->InputKey(DIK_T) == KEY_STATE::TAP)
 		{
@@ -882,15 +922,31 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 
 				break; 
 			case IS_ATTACK_03:
-				m_Scon.iNextState = IS_ATTACK_04;
+				if (m_Scon.TrackPos > 20.0)
+					m_Scon.iNextState = IS_ATTACK_PO_2;
+				else
+					m_Scon.iNextState = IS_ATTACK_04;
+				break;
+			case IS_ATTACK_09:
+				if (m_Scon.TrackPos > 20.0)
+					m_Scon.iNextState = IS_ATTACK_PO_2;
+				else
+					m_Scon.iNextState = IS_ATTACK_01;
 				break;
 			case IS_SKILL_02:
 				m_Scon.iNextState = IS_ATTACK_05;
+				break;
+			case IS_ATTACK_PO_2:
+				m_Scon.iNextState = IS_ATTACK_PO_3;
 				break;
 			default:
 				m_Scon.iNextState = IS_ATTACK_01;
 				break;
 			}
+			break;
+
+		case Client::CPlayerGirl::INPUT_ATTACK_CHARGE:
+			m_Scon.iNextState = IS_ATTACK_09;
 			break;
 
 		case Client::CPlayerGirl::INPUT_SKILL:
@@ -921,29 +977,12 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 		case Client::CPlayerGirl::INPUT_SPACE:
 			if (m_iAirJumpCount > 0)
 			{
-				if (m_Scon.iCurState != SS_JUMP_SECOND_B)
+				if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
 					m_Scon.iNextState = SS_JUMP_SECOND_B;
 				else
 					m_Scon.iNextState = SS_JUMP_SECOND_F;
-
-				--m_iAirJumpCount;
-
-				//if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
-				//{
-				//}
-				//switch (m_Scon.iCurState)
-				//{
-				//case SS_JUMP_RUN:
-				//case SS_JUMP_WALK:
-				//	
-				//default:
-				//	
-				//	break;
-				//}
-				//break;
 			}
 			break;
-		
 		case Client::CPlayerGirl::INPUT_ATTACK:
 			m_Scon.iNextState = IS_AIRATTACK_START;
 			break;
@@ -1237,7 +1276,6 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 					m_pMainTransform->Set_LookDir(vInputDir);
 			}
 		}
-			
 	}
 
 }
@@ -1247,7 +1285,7 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 	//
 	if (false == m_Scon.bAnimFinished)
 	{
-		_float4 vRotation;
+		_float4 vRotation = _float4(0.f, 0.f, 0.f, 1.f);
 		_float3 vMovement;
 
 		// 애니메이션 갱신
@@ -1256,7 +1294,7 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 
 		m_pAnimSetCom[ANIMSET_BASE]->Update_TargetBones();
 		m_pAnimSetCom[ANIMSET_RIBBON]->Ribbon_TargetBones();
-		// 여기까지 PlayPlayanimation
+		// 여기까지 Playanimation
 
 		m_pModelCom->Invalidate_CombinedMatrices();
 
@@ -1269,8 +1307,8 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 			// 루트 모션 처리(회전, 이동)
 			if (true == m_tCurState.bRootMotion)
 			{
-				// TODO : 회전 적용
-				//m_pMainTransform->Rotate_Quaternion(XMLoadFloat4(&vRotation));
+				if (!XMVector4Equal(XMQuaternionIdentity(), XMLoadFloat4(&vRotation)))
+					m_pMainTransform->Rotate_Quaternion(XMLoadFloat4(&vRotation));
 			}
 			else
 			{
@@ -1301,6 +1339,7 @@ void CPlayerGirl::Tick_State(_double TimeDelta)
 			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, nullptr, m_pModelCom->Get_TopBoneCombinedPos());
 		else
 			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom, m_pModelCom->Get_TopBoneCombinedPos());
+		
 		XMStoreFloat3(&m_Scon.vPrevMovement, XMLoadFloat3(&vMovement) / (_float)TimeDelta);
 		
 		// StateKey 처리

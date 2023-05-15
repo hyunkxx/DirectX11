@@ -12,7 +12,10 @@ HRESULT COBBKey::Initialize(BaseData* pData)
 	__super::Initialize(pData);
 
 	//_int0
-	m_bTargetState = _bool(pData->iInt0);
+	if (pData->iInt0 != 0)
+		m_bTargetState = true;
+	else
+		m_bTargetState = false; 
 
 	return S_OK;
 }

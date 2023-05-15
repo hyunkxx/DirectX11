@@ -54,15 +54,17 @@ public:
 	void MoveLeft(_double TimeDelta);
 
 	// Animation 용 Navigation 타는 이동 함수
-	void Move_Anim(_float3* vMove, _uint iPostitionState = 0, class CNavigation* pNavigation = nullptr, _float3* vHeadPosition = nullptr);
+	void Move_Anim(_float3* vMove, _uint iPostitionState = 0, class CNavigation* pNavigation = nullptr, _float3* vHeadPosition = nullptr, _float4x4* pDefaultMatrix = nullptr);
 
 	// 현재 위치에서 입력받은 방향벡터만큼 이동시키는 함수
 	void Push_Position(_fvector vPush);
 
 	void SetRotationXYZ(_float3 fRadian); // 모든각도 회전
 	void SetRotation(_fvector vAxis, _float fRadian); //특정 각도로 회전
-	void Rotate(_fvector vAxis, _double TimeDelta);  //현재 각도에서 추가 회전
+	void Rotate(_fvector vAxis, _double TimeDelta);  //현재 각도에서 각속도만큼 추가 회전
+	void Rotate_Quaternion(_fvector vQuat); //현재 각도에서 회전각을 받아 추가 회전
 	void Set_LookDir(_fvector vTargetDir); // 특정 방향을 바라보도록 상태 갱신
+	
 
 	void LookAt(_fvector vTargetPos);
 	_float Compute_Distance(_fvector vTargetPos);

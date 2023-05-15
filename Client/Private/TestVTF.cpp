@@ -548,9 +548,10 @@ void CTestVTF::Tick_State(_double TimeDelta)
 	//
 	if (true == m_bPlay)
 	{
+		_float4 vRotation;
 		_float3 vMovement;
 
-		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &m_vRotation, &vMovement, &BaseTrackPos, &m_Scon.bAnimFinished);
+		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &vRotation, &vMovement, &BaseTrackPos, &m_Scon.bAnimFinished);
 		m_pAnimSetCom[ANIMSET_RIBBON]->Play_Animation(TimeDelta, nullptr, nullptr, &RibbonTrackPos, &bRibbonFinished);
 
 		m_TrackPos[ANIMSET_BASE] = (_float)BaseTrackPos;
