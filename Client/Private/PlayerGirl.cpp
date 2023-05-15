@@ -118,9 +118,6 @@ void CPlayerGirl::Tick(_double TimeDelta)
 	_double TimeDelay = 1.0;
 
 	__super::Tick(TimeDelta);
-	
-	Key_Input(TimeDelta); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
-
 
 	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::HOLD)
 	{
@@ -130,9 +127,6 @@ void CPlayerGirl::Tick(_double TimeDelta)
 	{
 		TimeDelay = 1.0;
 	}
-
-	__super::Tick(TimeDelta * TimeDelay);
-	
 
 	Key_Input(TimeDelta * TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
 
