@@ -56,6 +56,9 @@ public: //Component_Manager
 	HRESULT Add_Prototype(_uint iLevelIndex, _int iComponent, class CComponent* pPrototype);
 	class CComponent* Clone_Component(_uint iLevelIndex, _int iComponent, void* pArg = nullptr);
 
+	HRESULT Add_Texture(_int iTexture, class CTexture* pPrototype);
+	HRESULT SetupSRV(_uint iTexture, class CShader* pShader, const char* pContantName, _uint iTextureIndex = 0);
+
 public: //PipeLine
 	_float4x4 Get_Transform_float4x4(CPipeLine::TRANSFORM_STATE eState);
 	_float4x4 Get_Transform_float4x4_Inverse(CPipeLine::TRANSFORM_STATE eState);

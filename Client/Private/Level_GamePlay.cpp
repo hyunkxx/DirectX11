@@ -12,6 +12,8 @@
 
 #include "MapObject.h"
 
+#include "Item.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
 {

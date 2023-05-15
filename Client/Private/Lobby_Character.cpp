@@ -62,7 +62,7 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 	pEffect->Play_Effect(&WorldMatirx, false);
 
 	m_pEyeBone = m_pModelCom->Get_BonePtr(L"Bip001_Eye_Bone_L");
-	
+		
 	return S_OK;
 }
 

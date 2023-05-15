@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Client_Enum.h"
+#include "Client_StaticTextureEnum.h"
 #include "Client_ShaderEnum.h"
 #include "Client_TextureEnum.h"
 #include "Client_ObjectEnum.h"

@@ -52,7 +52,7 @@ HRESULT CInteractionUI::Initialize(void * pArg)
 	m_Sprite.fHeight = m_InteractionBack.fHeight + 10.f;
 
 	m_InterIcon = m_KeyDesc;
-	m_InterIcon.fX += 52.f;
+	m_InterIcon.fX += 56.f;
 	m_InterIcon.fWidth = 32.f;
 	m_InterIcon.fHeight = 32.f;
 
@@ -140,6 +140,8 @@ void CInteractionUI::LateTick(_double TimeDelta)
 
 HRESULT CInteractionUI::Render()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 	// F Button
 	if (m_bFButtonRender)
 	{
