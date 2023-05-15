@@ -600,6 +600,12 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/Player_Nvzhu/Attack_Po_3_Effect.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Attack_Po/")))
 			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill_01.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill/")))
+			return E_FAIL;
+		
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
 			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill_02.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill/")))
