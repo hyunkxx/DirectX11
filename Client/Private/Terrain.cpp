@@ -7,10 +7,12 @@
 CTerrain::CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
 {
+	ZeroMemory(&m_EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 }
 
 CTerrain::CTerrain(const CTerrain& rhs)
 	: CGameObject(rhs)
+	, m_EditionDesc(rhs.m_EditionDesc)
 {
 }
 
@@ -30,11 +32,9 @@ HRESULT CTerrain::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	ZeroMemory(&m_EditionDesc, sizeof(SOBJECT_EDITION_DESC));
-
 	if (nullptr != pArg)
 	{
-		memcpy(&m_EditionDesc, pArg, sizeof(SOBJECT_EDITION_DESC));
+		memcpy(&m_EditionDesc, pArg, sizeof(SMAP_OBJECT_EDITION_DESC));
 
 		if (FAILED(Load_UVSamplerRatio_Data(m_EditionDesc.pEditionFilePath)))
 		{
@@ -78,7 +78,7 @@ void CTerrain::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	m_pVIBuffer->Culling(m_pMainTransform->Get_WorldMatrixInverse());
+	//m_pVIBuffer->Culling(m_pMainTransform->Get_WorldMatrixInverse());
 
 	if (nullptr != m_pRenderer)
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_STATIC, this);

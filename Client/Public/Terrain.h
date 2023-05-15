@@ -32,14 +32,14 @@ public:
 	virtual void RenderGUI() override;
 
 private:
-	_uint					m_iShader_PassID = { 0 };
+	_uint						m_iShader_PassID = { 0 };
 
-	SOBJECT_EDITION_DESC	m_EditionDesc = {};
+	SMAP_OBJECT_EDITION_DESC	m_EditionDesc = {};
 
-	_float					m_fUVSampler_Ratio_1 = { 0.0f };
-	_float					m_fUVSampler_Ratio_2 = { 0.0f };
-	_float					m_fUVSampler_Ratio_3 = { 0.0f };
-	_float					m_fUVSampler_Ratio_4 = { 0.0f };
+	_float						m_fUVSampler_Ratio_1 = { 0.0f };
+	_float						m_fUVSampler_Ratio_2 = { 0.0f };
+	_float						m_fUVSampler_Ratio_3 = { 0.0f };
+	_float						m_fUVSampler_Ratio_4 = { 0.0f };
 
 private:
 	HRESULT Add_Components();

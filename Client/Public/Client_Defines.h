@@ -5,6 +5,7 @@
 #include "Client_TextureEnum.h"
 #include "Client_ObjectEnum.h"
 #include "Client_ModelEnum.h"
+#include "Client_InstanceModelEnum.h"
 
 namespace Client
 {

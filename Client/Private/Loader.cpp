@@ -21,104 +21,7 @@
 
 #include "PlayerCamera.h"
 
-#pragma region TREE
-
-#include "Tree_0.h"
-#include "Tree_1.h"
-#include "Tree_2.h"
-#include "Tree_3.h"
-#include "Tree_4.h"
-#include "Tree_5.h"
-#include "Tree_6.h"
-#include "Tree_7.h"
-#include "Tree_8.h"
-#include "Tree_9.h"
-#include "Tree_10.h"
-#include "Tree_11.h"
-#include "Tree_12.h"
-#include "Tree_13.h"
-#include "Tree_14.h"
-#include "Tree_15.h"
-#include "Tree_16.h"
-#include "Tree_17.h"
-#include "Tree_18.h"
-#include "Tree_19.h"
-#include "Tree_20.h"
-#include "Tree_21.h"
-#include "Tree_22.h"
-#include "Tree_23.h"
-#include "Tree_24.h"
-#include "Tree_25.h"
-#include "Tree_26.h"
-#include "Tree_27.h"
-#include "Tree_28.h"
-#include "Tree_29.h"
-#include "Tree_30.h"  
-
-#pragma endregion TREE
-
-#pragma region ROCK
-
-#include "Rock_0.h"
-#include "Rock_1.h"
-#include "Rock_2.h"
-#include "Rock_3.h"
-#include "Rock_4.h"
-#include "Rock_5.h"
-#include "Rock_6.h"
-#include "Rock_7.h"
-#include "Rock_8.h"
-#include "Rock_9.h"
-#include "Rock_10.h"
-
-#include "Rock_11.h"
-#include "Rock_12.h"
-#include "Rock_13.h"
-#include "Rock_14.h"
-#include "Rock_15.h"
-#include "Rock_16.h"
-#include "Rock_17.h"
-#include "Rock_18.h"
-#include "Rock_19.h"
-#include "Rock_20.h"
-
-#include "Rock_21.h"
-#include "Rock_22.h"
-#include "Rock_23.h"
-#include "Rock_24.h"
-#include "Rock_25.h"
-#include "Rock_26.h"
-#include "Rock_27.h"
-#include "Rock_28.h"
-#include "Rock_29.h"
-#include "Rock_30.h"
-
-#include "Rock_31.h"
-#include "Rock_32.h"
-#include "Rock_33.h"
-#include "Rock_34.h"
-#include "Rock_35.h"
-#include "Rock_36.h"
-#include "Rock_37.h"
-#include "Rock_38.h"
-#include "Rock_39.h"
-#include "Rock_40.h"
-
-#include "Rock_41.h"
-#include "Rock_42.h"
-#include "Rock_43.h"
-#include "Rock_44.h"
-#include "Rock_45.h"
-#include "Rock_46.h"
-#include "Rock_47.h"
-#include "Rock_48.h"
-#include "Rock_49.h"
-#include "Rock_50.h"
-
-#include "Rock_51.h"
-#include "Rock_52.h"
-
-#pragma endregion ROCK
+#include "MapObject.h"
 
 #include "Sky.h"
 
@@ -427,518 +330,518 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 
 #pragma region TREE
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_0, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_0, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/0/SM_Com_Tre_02AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_0.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_0");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_0");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_1, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_1, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/1/SM_Com_Tre_03AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_1.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_1");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_1");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_2, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_2, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/2/SM_Com_Tre_04AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_2.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_2");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_2");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_3, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_3, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/3/SM_Com_Tre_05AH.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_3.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_3");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_3");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_4, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_4, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/4/SM_Com_Tre_07AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_4.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_4");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_4");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_5, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_5, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/5/SM_Com_Tre_07BS.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_5.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_5");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_5");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_6, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_6, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/6/SM_Com_Tre_07CS.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_6.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_6");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_6");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_7, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_7, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/7/SM_Com_Tre_09AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_7.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_7");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_7");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_8, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_8, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/8/SM_Com_Tre_10AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_8.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_8");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_8");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_9, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_9, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/9/SM_Com_Tre_11AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_9.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_9");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_9");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_10, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_10, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/10/SM_Com_Tre_12AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_10.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_10");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_10");
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_11, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_11, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/11/SM_Com_Tre_13AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_11.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_11");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_11");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_12, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_12, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/12/SM_Com_Tre_14AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_12.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_12");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_12");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_13, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_13, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/13/SM_Com_Tre_15AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_13.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_13");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_13");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_14, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_14, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/14/SM_Com_Tre_15BL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_14.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_14");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_14");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_15, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_15, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/15/SM_Com_Tre_16AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_15.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_15");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_15");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_16, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_16, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/16/SM_Com_Tre_16BL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_16.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_16");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_16");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_17, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_17, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/17/SM_Com_Tre_17AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_17.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_17");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_17");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_18, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_18, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/18/SM_Com_Tre_18AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_18.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_18");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_18");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_19, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_19, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/19/SM_Com_Tre_19AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_19.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_19");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_19");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_20, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_20, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/20/SM_Com_Tre_21AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_20.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_20");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_20");
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_21, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_21, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/21/SM_Com_Tre_27BL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_21.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_21");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_21");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_22, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_22, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/22/SM_Com_Tre_28AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_22.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_22");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_22");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_23, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_23, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/23/SM_Com_Tre_29BM.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_23.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_23");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_23");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_24, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_24, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/24/SM_Com_Tre_30AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_24.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_24");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_24");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_25, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_25, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/25/SM_Com_Tre_32BH.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_25.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_25");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_25");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_26, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_26, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/26/SM_Com_Tre_33AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_26.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_26");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_26");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_27, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_27, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/27/SM_Com_Tre_34AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_27.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_27");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_27");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_28, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_28, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/28/SM_Com_Tre_34BL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_28.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_28");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_28");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_29, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_29, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/29/SM_Com_Tre_36AH.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_29.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_29");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_29");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_TREE_30, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_30, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/30/SM_Com_Tre_38AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_30.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_TREE_30");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_30");
 		return E_FAIL;
 	}
 #pragma endregion TREE
 
 #pragma region ROCK
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_0, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_0, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/0/SM_Com_Roc_05AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_0.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_0");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_0");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_1, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_1, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/1/SM_Com_Roc_06AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_1.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_1");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_1");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_2, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_2, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/2/SM_Com_Roc_07AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_2.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_2");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_2");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_3, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_3, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/3/SM_Com_Roc_08AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_3.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_3");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_3");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_4, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_4, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/4/SM_Com_Roc_09AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_4.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_4");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_4");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_5, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_5, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/5/SM_Com_Roc_10AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_5.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_5");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_5");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_6, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_6, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/6/SM_Com_Roc_11AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_6.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_6");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_6");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_7, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_7, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/7/SM_Com_Roc_12AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_7.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_7");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_7");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_8, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_8, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/8/SM_Com_Roc_13AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_8.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_8");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_8");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_9, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_9, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/9/SM_Com_Roc_14AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_9.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_9");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_9");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_10, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_10, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/10/SM_Com_Roc_15AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_10.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_10");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_10");
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_11, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_11, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/11/SM_Com_Roc_16AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_11.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_11");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_11");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_12, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_12, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/12/SM_Com_Roc_17AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_12.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_12");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_12");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_13, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_13, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/13/SM_Com_Roc_22AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_13.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_13");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_13");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_14, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_14, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/14/SM_Com_Roc_23AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_14.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_14");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_14");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_15, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_15, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/15/SM_Com_Roc_24AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_15.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_15");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_15");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_16, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_16, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/16/SM_Com_Roc_25AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_16.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_16");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_16");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_17, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_17, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/17/SM_Com_Roc_26AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_17.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_17");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_17");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_18, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_18, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/18/SM_Com_Roc_27AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_18.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_18");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_18");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_19, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_19, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/19/SM_Com_Roc_28AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_19.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_19");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_19");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_20, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_20, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/20/SM_Com_Roc_29AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_20.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_20");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_20");
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_21, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_21, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/21/SM_Com_Roc_30AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_21.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_21");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_21");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_22, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_22, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/22/SM_Com_Roc_31AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_22.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_22");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_22");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_23, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_23, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/23/SM_Com_Roc_32AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_23.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_23");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_23");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_24, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_24, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/24/SM_Com_Roc_33AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_24.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_24");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_24");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_25, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_25, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/25/SM_Com_Roc_34AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_25.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_25");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_25");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_26, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_26, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/26/SM_Com_Roc_35AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_26.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_26");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_26");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_27, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_27, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/27/SM_Com_Roc_36AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_27.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_27");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_27");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_28, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_28, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/28/SM_Com_Roc_37AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_28.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_28");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_28");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_29, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_29, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/29/SM_Com_Roc_38AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_29.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_29");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_29");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_30, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_30, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/30/SM_Com_Roc_39AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_30.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_30");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_30");
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_31, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_31, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/31/SM_Com_Roc_40AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_31.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_31");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_31");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_32, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_32, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/32/SM_Com_Roc_41AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_32.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_32");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_32");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_33, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_33, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/33/SM_Com_Roc_41BS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_33.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_33");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_33");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_34, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_34, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/34/SM_Com_Roc_42AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_34.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_34");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_34");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_35, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_35, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/35/SM_Com_Roc_43AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_35.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_35");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_35");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_36, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_36, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/36/SM_Com_Roc_44AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_36.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_36");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_36");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_37, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_37, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/37/SM_Com_Roc_45AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_37.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_37");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_37");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_38, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_38, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/38/SM_Com_Roc_49AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_38.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_38");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_38");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_39, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_39, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/39/SM_Com_Roc_52AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_39.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_39");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_39");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_40, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_40, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/40/SM_Com_Roc_55AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_40.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_40");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_40");
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_41, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_41, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/41/SM_Com_Roc_66AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_41.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_41");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_41");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_42, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_42, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/42/SM_Com_Roc_67AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_42.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_42");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_42");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_43, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_43, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/43/SM_Com_Roc_68AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_43.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_43");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_43");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_44, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_44, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/44/SM_Com_Roc_70AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_44.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_44");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_44");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_45, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_45, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/45/SM_Com_Roc_71AH.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_45.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_45");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_45");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_46, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_46, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/46/SM_Com_Roc_72AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_46.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_46");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_46");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_47, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_47, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/47/SM_Com_Roc_76AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_47.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_47");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_47");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_48, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_48, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/48/SM_Com_Roc_77AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_48.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_48");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_48");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_49, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_49, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/49/SM_Com_Roc_78AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_49.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_49");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_49");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_50, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_50, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/50/SM_Com_Roc_80AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_50.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_50");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_50");
 		return E_FAIL;
 	}
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_51, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_51, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/51/SM_Com_Roc_82AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_51.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_51");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_51");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_ROCK_52, CModel_Instance::Create(m_pDevice, m_pContext,
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_ROCK_52, CModel_Instance::Create(m_pDevice, m_pContext,
 		TEXT("../../Resource/Model/Static/Map/Object/Rocks/52/SM_Com_Roc_83AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_52.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_ROCK_52");
+		MSG_BOX("Failed to Prototype In Loader : SIMD_ROCK_52");
 		return E_FAIL;
 	}
 #pragma endregion ROCK
@@ -1026,186 +929,8 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
 		return E_FAIL;
 
-#pragma region TREE
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_0, CTree_0::Create(m_pDevice, m_pContext))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MAP_OBJECT, CMapObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_1, CTree_1::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_2, CTree_2::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_3, CTree_3::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_4, CTree_4::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_5, CTree_5::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_6, CTree_6::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_7, CTree_7::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_8, CTree_8::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_9, CTree_9::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_10, CTree_10::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_11, CTree_11::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_12, CTree_12::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_13, CTree_13::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_14, CTree_14::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_15, CTree_15::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_16, CTree_16::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_17, CTree_17::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_18, CTree_18::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_19, CTree_19::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_20, CTree_20::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_21, CTree_21::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_22, CTree_22::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_23, CTree_23::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_24, CTree_24::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_25, CTree_25::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_26, CTree_26::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_27, CTree_27::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_28, CTree_28::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_29, CTree_29::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_TREE_30, CTree_30::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-#pragma endregion TREE
-
-#pragma region ROCK
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_0, CRock_0::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_1, CRock_1::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_2, CRock_2::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_3, CRock_3::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_4, CRock_4::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_5, CRock_5::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_6, CRock_6::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_7, CRock_7::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_8, CRock_8::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_9, CRock_9::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_10, CRock_10::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_11, CRock_11::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_12, CRock_12::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_13, CRock_13::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_14, CRock_14::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_15, CRock_15::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_16, CRock_16::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_17, CRock_17::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_18, CRock_18::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_19, CRock_19::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_20, CRock_20::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_21, CRock_21::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_22, CRock_22::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_23, CRock_23::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_24, CRock_24::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_25, CRock_25::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_26, CRock_26::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_27, CRock_27::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_28, CRock_28::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_29, CRock_29::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_30, CRock_30::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_31, CRock_31::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_32, CRock_32::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_33, CRock_33::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_34, CRock_34::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_35, CRock_35::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_36, CRock_36::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_37, CRock_37::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_38, CRock_38::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_39, CRock_39::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_40, CRock_40::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_41, CRock_41::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_42, CRock_42::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_43, CRock_43::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_44, CRock_44::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_45, CRock_45::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_46, CRock_46::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_47, CRock_47::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_48, CRock_48::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_49, CRock_49::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_50, CRock_50::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_51, CRock_51::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::OBJECT_ROCK_52, CRock_52::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-#pragma endregion ROCK
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST, CChest::Create(m_pDevice, m_pContext))))
 		return E_FAIL;

@@ -375,11 +375,27 @@ namespace Engine
 		_uint			iDiffuseTexID = {};
 	}SMAP_OBJECT_DESC;
 
-	typedef struct tagStaticObjectEdition_Desc
+	typedef struct tagStaticMapObjectEdition_Desc
 	{
-		const _tchar*	pEditionFilePath = {};
-		_float			fCullingRatio = {};
-	}SOBJECT_EDITION_DESC;
+		// 밖에서 전달 받을 정보
+		const _tchar*		pEditionFilePath = { L"" };
+		_float				fCullingRatio = { 0.0f };
+
+		// 인스턴싱 모델 구분용
+		_uint				iSIMD_ID = { 0 };
+
+		// 오브젝트 구분 용
+		_uint				iTypeID = { 0 };
+
+		// Tree
+		_bool				UseEditionColor = { false };
+		_uint				iEditionColor_MeshNum = { 0 };
+		_float3				vEditionColor = { 0.0f, 0.0f, 0.0f };
+
+		// Rock
+		_uint				iDiffuseTex_ID = { 0 };
+
+	}SMAP_OBJECT_EDITION_DESC;
 #pragma endregion STATIC_OBJECT
 
 #pragma region NAVIGATION
