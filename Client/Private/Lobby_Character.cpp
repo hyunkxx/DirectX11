@@ -51,8 +51,8 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 		break;
 	case RIGHT_MODEL:
 		m_pAnimSetCom->SetUp_Animation(m_eState, true);
-		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(90.f));
-		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(124.2f, 1.5f, 87.f, 1.f));
+		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(110.f));
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(124.2f, 1.8f, 87.f, 1.f));
 		break;
 	}
 
@@ -99,6 +99,7 @@ HRESULT CLobbyCharacter::Render()
 	{
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
 			return E_FAIL;
+
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS)))
 			return E_FAIL;
 

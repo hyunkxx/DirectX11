@@ -13,13 +13,16 @@ BEGIN(Client)
 class CChest final : 
 	public CInteractionObject
 {
+public:
+	enum CHEST_TYPE { CHEST_SIMPLE, CHEST_STANDARD, CHEST_EXPANDED };
+
 private:
 	explicit CChest(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	explicit CChest(const CChest& rhs);
 	virtual ~CChest() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype();
+	HRESULT Initialize_Prototype(CHEST_TYPE eChestType);
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Start();
 	virtual void Tick(_double TimeDelta);
@@ -29,13 +32,14 @@ public:
 	virtual void RenderGUI();
 
 public:
-	CCollider* GetCollider() const { return m_pCollider; };
+	virtual void Interaction(void* pArg = nullptr);
 
 private:
 	HRESULT addComponents();
+	void interactionRenderUI(_bool bRender);
 
 public:
-	static CChest* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CChest* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CHEST_TYPE eChestType);
 	CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 
@@ -43,12 +47,16 @@ public:
 	virtual void OnCollisionStay(CCollider * src, CCollider * dest) override;
 	virtual void OnCollisionExit(CCollider * src, CCollider * dest) override;
 
+public:
+	CCollider* GetCollider() const { return m_pCollider; };
+
 private:
 	CRenderer* m_pRenderer = nullptr;
 	CCollider* m_pCollider = nullptr;
 	CShader* m_pShader = nullptr;
 
 private:
+	CHEST_TYPE m_eChestType = CHEST_SIMPLE;
 	_bool m_bOverlapedPlayer = false;
 
 };

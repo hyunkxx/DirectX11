@@ -62,7 +62,7 @@ HRESULT CIntroCamera::Initialize(void* pArg)
 
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(m_fWidth, m_fHeight, 1.f) * XMMatrixTranslation(m_fX - g_iWinSizeX * 0.5f, -m_fY + g_iWinSizeY * 0.5f, 0.f));
 	XMStoreFloat4x4(&m_ChooseWorldMatrix, XMMatrixScaling(m_fChooseWidth, m_fChooseHeight, 1.f) * XMMatrixTranslation(m_fChooseX - g_iWinSizeX * 0.5f, -m_fChooseY + g_iWinSizeY * 0.5f, 0.f));
-	XMStoreFloat4x4(&m_ChooseTextWorldMatrix, XMMatrixScaling(m_fChooseTextWidth, m_fChooseTextHeight, 1.f) * XMMatrixTranslation(m_fChooseX - g_iWinSizeX * 0.5f, -m_fChooseY + g_iWinSizeY * 0.5f, 0.f));
+	XMStoreFloat4x4(&m_ChooseTextWorldMatrix, XMMatrixScaling(m_fChooseTextWidth, m_fChooseTextHeight, 1.f) * XMMatrixTranslation(m_fChooseX - g_iWinSizeX * 0.5f, -(m_fChooseY + 50.f) + g_iWinSizeY * 0.5f, 0.f));
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
@@ -342,12 +342,12 @@ void CIntroCamera::CameraMovement(_double TimeDelta)
 
 		break;
 	case CIntroCamera::CAM_RIGHT:
-		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(125.f, 3.f, 86.5f, 1.f), (_float)TimeDelta * 3.5f);
+		vCurrentPos = XMVectorLerp(vCurrentPos, XMVectorSet(125.f, 2.2f, 86.5f, 1.f), (_float)TimeDelta * 3.5f);
 		XMStoreFloat4(&vLookAtPos, XMVectorLerp(XMLoadFloat4(&vLookAtPos), XMVectorSet(122.f, 2.4f, 88.5f, 1.f), (_float)TimeDelta * 8.f));
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurrentPos);
 		m_pMainTransform->LookAt(XMLoadFloat4(&vLookAtPos));
 
-		if (XMVectorGetX(XMVector3Length(vCurrentPos - XMVectorSet(125.f, 3.f, 86.5f, 1.f))) < 0.08f)
+		if (XMVectorGetX(XMVector3Length(vCurrentPos - XMVectorSet(125.f, 2.2f, 86.5f, 1.f))) < 0.08f)
 		{
 			m_bChooseRender = true;
 			m_bApplyRenderStart = true;

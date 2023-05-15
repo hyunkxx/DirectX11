@@ -26,8 +26,11 @@ public:
 	virtual HRESULT RenderShadow();
 	virtual void RenderGUI();
 	
-	virtual void Free() override;
+public:
+	virtual void Interaction(void* pArg = nullptr) = 0;
 
+public:
+	virtual void Free() override;
 	virtual void OnCollisionEnter(CCollider * src, CCollider * dest) = 0;
 	virtual void OnCollisionStay(CCollider * src, CCollider * dest) = 0;
 	virtual void OnCollisionExit(CCollider * src, CCollider * dest) = 0;

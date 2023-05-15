@@ -13,13 +13,16 @@ CChest::CChest(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 CChest::CChest(const CChest & rhs)
 	: CInteractionObject(rhs)
+	, m_eChestType(rhs.m_eChestType)
 {
 }
 
-HRESULT CChest::Initialize_Prototype()
+HRESULT CChest::Initialize_Prototype(CHEST_TYPE eChestType)
 {
 	if (FAILED(CInteractionObject::Initialize_Prototype()))
 		return E_FAIL;
+
+	m_eChestType = eChestType;
 
 	return S_OK;
 }
@@ -32,8 +35,11 @@ HRESULT CChest::Initialize(void * pArg)
 	if (FAILED(addComponents()))
 		return E_FAIL;
 
-	_vector vPos = XMVectorSet(9.f, 30.f, 5.f, 1.f);
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vPos);
+	if (pArg)
+	{
+		_float3 vPos = *(_float3*)pArg;
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
+	}
 
 	return S_OK;
 }
@@ -48,10 +54,7 @@ void CChest::Tick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	if (m_bOverlapedPlayer && pGameInstance->InputKey(DIK_F) == KEY_STATE::TAP)
-	{
-		m_pCollider->SetActive(false);
-		pGameMode->m_pAcquireSystem->SetRender(CInteractionUI::INTER_SIMPLE_CHEST, false);
-	}
+		Interaction();
 
 }
 
@@ -77,6 +80,12 @@ void CChest::RenderGUI()
 {
 }
 
+void CChest::Interaction(void * pArg)
+{
+	m_pCollider->SetActive(false);
+	interactionRenderUI(false);
+}
+
 HRESULT CChest::addComponents()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
@@ -95,7 +104,7 @@ HRESULT CChest::addComponents()
 	CCollider::COLLIDER_DESC CollDesc;
 	CollDesc.owner = this;
 	CollDesc.vCenter = { 0.f, 0.f, 0.f };
-	CollDesc.vExtents = { 2.f, 2.f, 2.f };
+	CollDesc.vExtents = { 1.f, 1.f, 1.f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::OBB,
 		TEXT("Com_Collider"), (CComponent**)&m_pCollider, &CollDesc)))
@@ -106,11 +115,29 @@ HRESULT CChest::addComponents()
 	return S_OK;
 }
 
-CChest * CChest::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+void CChest::interactionRenderUI(_bool bRender)
+{
+	CGameMode* pGameMode = CGameMode::GetInstance();
+
+	switch (m_eChestType)
+	{
+	case CChest::CHEST_SIMPLE:
+		pGameMode->m_pAcquireSystem->SetRender(CInteractionUI::INTER_SIMPLE_CHEST, bRender);
+		break;
+	case CChest::CHEST_STANDARD:
+		pGameMode->m_pAcquireSystem->SetRender(CInteractionUI::INTER_STANDARD_CHEST, bRender);
+		break;
+	case CChest::CHEST_EXPANDED:
+		pGameMode->m_pAcquireSystem->SetRender(CInteractionUI::INTER_EXPANDED_CHEST, bRender);
+		break;
+	}
+}
+
+CChest * CChest::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, CHEST_TYPE eChestType)
 {
 	CChest* pInstance = new CChest(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype()))
+	if (FAILED(pInstance->Initialize_Prototype(eChestType)))
 	{
 		MSG_BOX("Failed to Create : CChest");
 		Safe_Release(pInstance);
@@ -151,7 +178,7 @@ void CChest::OnCollisionEnter(CCollider * src, CCollider * dest)
 	if (pPlayer)
 	{
 		m_bOverlapedPlayer = true;
-		pGameMode->m_pAcquireSystem->SetRender(CInteractionUI::INTER_STANDARD_CHEST, true);
+		interactionRenderUI(true);
 	}
 }
 
@@ -167,8 +194,6 @@ void CChest::OnCollisionExit(CCollider * src, CCollider * dest)
 	if (pPlayer)
 	{
 		m_bOverlapedPlayer = false;
-
-		/* 이미지 확인하려고 다르게 넣음 변경필수 */
-		pGameMode->m_pAcquireSystem->SetRender(CInteractionUI::INTER_EXPANDED_CHEST, false);
+		interactionRenderUI(false);
 	}
 }

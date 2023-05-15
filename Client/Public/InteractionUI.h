@@ -66,7 +66,7 @@ private:
 private: // Sprite
 	_float2 m_SpriteSize;
 	_float m_fSpriteAcc = 0.0f;
-	_float m_fSpriteSpeed = 0.02f;
+	_float m_fSpriteSpeed = 0.04f;
 	_float m_fCurrentSpriteIndex = 0.f;
 
 private:

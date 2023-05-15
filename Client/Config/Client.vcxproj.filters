@@ -249,6 +249,252 @@
     <ClCompile Include="..\private\Chest.cpp">
       <Filter>src\02. GameObject\04. InteractionObject</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Rock_0.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_1.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_2.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_3.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_4.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_5.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_6.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_7.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_8.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_9.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_10.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_11.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_12.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_13.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_14.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_15.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_16.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_17.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_18.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_19.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_20.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_21.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_22.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_23.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_24.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_25.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_26.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_27.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_28.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_29.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_30.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_31.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_32.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_33.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_34.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_35.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_36.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_37.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_38.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_39.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_40.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_41.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_42.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_43.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_44.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_45.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_46.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_47.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_48.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_49.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_50.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_51.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_52.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_2.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_3.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_4.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_5.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_6.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_7.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_8.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_9.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_10.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_11.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_12.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_13.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_14.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_15.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_16.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_17.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_18.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_19.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_20.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_21.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_22.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_23.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_24.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_25.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_26.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_27.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_28.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_29.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree_30.cpp">
+      <Filter>src\NEW_FILES</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -466,6 +712,252 @@
     </ClInclude>
     <ClInclude Include="..\public\Chest.h">
       <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_0.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_1.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_2.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_3.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_4.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_5.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_6.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_7.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_8.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_9.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_10.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_11.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_12.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_13.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_14.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_15.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_16.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_17.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_18.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_19.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_20.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_21.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_22.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_23.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_24.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_25.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_26.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_27.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_28.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_29.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_30.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_31.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_32.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_33.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_34.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_35.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_36.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_37.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_38.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_39.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_40.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_41.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_42.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_43.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_44.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_45.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_46.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_47.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_48.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_49.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_50.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_51.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_52.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_2.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_3.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_4.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_5.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_6.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_7.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_8.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_9.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_10.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_11.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_12.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_13.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_14.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_15.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_16.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_17.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_18.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_19.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_20.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_21.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_22.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_23.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_24.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_25.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_26.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_27.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_28.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_29.h">
+      <Filter>src\NEW_FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree_30.h">
+      <Filter>src\NEW_FILES</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
