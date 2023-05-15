@@ -77,6 +77,7 @@ private:
 #define DISTORTION_SPEED m_EffectDesc.vMinPosition.y
 #define START_DIS_POWER m_EffectDesc.vMinPosition.z
 
+#define MASK_COLOR m_EffectDesc.vMinAngle
 public:
 	static CMesh_Effect_P*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const char* pFileTag , const EFFECT_DESC& MeshDesc);
 	virtual CGameObject* Clone(void* pArg = nullptr);

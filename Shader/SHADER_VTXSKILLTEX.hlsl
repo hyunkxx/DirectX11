@@ -26,6 +26,7 @@ float		g_ihlslWinSizeY = 720.f;
 
 float		g_fTimeAcc;
 
+float2		g_TexSize = { 128.f , 128.f };
 
 float4 Get_Local(float2 vUV, float4 vDepth)
 {
@@ -205,8 +206,11 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	vector		vDiffuseColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
+	if (vDiffuseColor.a < 0.1f)
+		discard;
+	Out.vDiffuse.rgb = vDiffuseColor.rgb * g_vColor.rgb;
+	Out.vDiffuse.a = saturate(vDiffuseColor.a - (1.f - g_fAlpha));
 
-	Out.vDiffuse = vDiffuseColor;
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 
@@ -332,6 +336,7 @@ PS_OUT	PS_MAIN_DISTORTION(PS_IN_NORMAL In)
 
 
 	Out.vDiffuse = g_BackTexture.Sample(LinearClampSampler, vUV);
+	Out.vDiffuse.a = 1.f;
 
 	return Out;
 }
