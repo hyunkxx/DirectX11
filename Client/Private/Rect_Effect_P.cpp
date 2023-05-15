@@ -163,14 +163,24 @@ HRESULT CRect_Effect_P::Add_Component(const char* pFileTag , const EFFECT_DESC &
 
 	if (m_EffectDesc.bNoiseTexure)
 	{
-		if (FAILED(Add_Texture(pFileTag, m_EffectDesc.NoiseTexName, &m_pNoiseTextureCom)))
-			return E_FAIL;
+		if (2 > strlen(m_EffectDesc.NoiseTexName))
+			m_EffectDesc.bNoiseTexure = false;
+		else
+		{
+			if (FAILED(Add_Texture(pFileTag, m_EffectDesc.NoiseTexName, &m_pNoiseTextureCom)))
+				return E_FAIL;
+		}
 	}
 
 	if (m_EffectDesc.bDissolveTexure)
 	{
-		if (FAILED(Add_Texture(pFileTag, m_EffectDesc.DissolveTexName, &m_pDissolveTextureCom)))
-			return E_FAIL;
+		if (2 > strlen(m_EffectDesc.DissolveTexName))
+			m_EffectDesc.bDissolveTexure = false;
+		else
+		{
+			if (FAILED(Add_Texture(pFileTag, m_EffectDesc.DissolveTexName, &m_pDissolveTextureCom)))
+				return E_FAIL;
+		}
 	}
 
 	return S_OK;
