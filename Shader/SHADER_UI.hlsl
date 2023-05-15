@@ -16,10 +16,12 @@ float2 g_fLU;
 float2 g_fRB;
 float2 g_UV;
 float  g_RadianAcc;
+float2  g_MonUV;
+float  g_MonsterGauge;
 texture2D			g_MyTexture;
 texture2D			g_MyTexture2;
-
-
+texture2D			g_Mask;
+texture2D			g_Mask2;
 struct VS_IN
 {
 	float3			vPosition : POSITION;
@@ -91,7 +93,7 @@ PS_OUT PS_MAIN_LOADING(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	Out.vColor = g_MyTexture.Sample(PointSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
 	if(In.vTexUV.x > g_fLoading)
 	   discard;
 	
@@ -100,13 +102,15 @@ PS_OUT PS_MAIN_LOADING(PS_IN In)
 	Out.vColor.b += g_fColorB/255.f;
 	Out.vColor.a += g_fColorA/255.f;
 
+	if(Out.vColor.a < 0.1)
+	discard;
 	return Out;
 }
 PS_OUT PS_REDBAR(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	Out.vColor = g_MyTexture.Sample(PointSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
 	if(In.vTexUV.x > g_fRedBar)
 	   discard;
 	
@@ -123,7 +127,7 @@ PS_OUT PS_MONHPW(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	Out.vColor = g_MyTexture.Sample(PointSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
 	if(In.vTexUV.x > g_fwhiteBar)
 	   discard;
 	
@@ -138,7 +142,7 @@ PS_OUT PS_MONHPR(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	Out.vColor = g_MyTexture.Sample(PointSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
 	if(In.vTexUV.x > g_fRedBar)
 	   discard;
 	
@@ -226,11 +230,34 @@ PS_OUT PS_CYCLE(PS_IN In)
 
    Out.vColor = vMtrlDiffuse;
 
+   return Out;
 
+}
+
+PS_OUT PS_CYCLESKILL(PS_IN In)
+{
+   PS_OUT Out = (PS_OUT)0;;
+
+   vector vMtrlDiffuse = g_MyTexture.Sample(LinearSampler, In.vTexUV);
+
+   float2 vCurDir = In.vTexUV - float2(0.5f, 0.5f);
+
+   float angle = degrees(atan2(-vCurDir.x , +vCurDir.y));
+
+   if ((angle + 180.f) / 360.f < (1 - g_RadianAcc))
+   {
+      vMtrlDiffuse.a -= 0.5f;
+      vMtrlDiffuse.a = max(vMtrlDiffuse.a, 0.f);
+   }
+
+
+   Out.vColor = vMtrlDiffuse;
 
    return Out;
 
 }
+
+
 PS_OUT PS_TWO(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
@@ -268,14 +295,21 @@ PS_OUT PS_DOWN(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_DOWN2(PS_IN In)
+PS_OUT PS_MASK(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
-
-	Out.vColor = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	vector Defuse ,Mask, Mask2;
+	Mask = g_Mask.Sample(LinearSampler,  float2(In.vTexUV.x - g_MonUV.x  ,In.vTexUV.y)); // Èå¸£´Â ÀÌ¹ÌÁö
+	Mask2 = g_Mask2.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y)); // ·£´õºÎºÐ ÀÌ¹ÌÁö
+	Defuse = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
 	
-	Out.vColor.a += g_fColorA/255.f;
+	Defuse *= (Mask.a +  Mask2.a);
+
+
+	Out.vColor.a = Defuse;
+
 	return Out;
+
 }
 
 technique11 DefaultTechnique
@@ -411,7 +445,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_DOWN();
 	}
 
-	pass UI_DOWN2 // 10
+	pass UI_MASK // 10 -> ¾ê Áö¿ì°í ¸¶½ºÅ© ÀÌ¹ÌÁö
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -421,39 +455,13 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_DOWN2();
+		PixelShader = compile ps_5_0 PS_MASK();
 	}
 
-			pass UI_NoZWrite //11 ¾ËÆÄdiscard
+		pass UI_MONHPW //11 Ã¼·Â Èò
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
-
-		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = NULL;
-		HullShader = NULL;
-		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
-	}
-
-			pass UI_NoZWrite2 //12 ¾ËÆÄdiscard
-	{
-		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
-		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
-
-		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = NULL;
-		HullShader = NULL;
-		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
-	}
-
-				pass UI_NoZWrite3 //13 Ã¼·Â Èò
-	{
-		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -463,10 +471,10 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MONHPW();
 	}
 
-				pass UI_NoZWrite4 //14 Ã¼·Â »¡
+		pass UI_MONHPR //12 Ã¼·Â »¡
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -475,6 +483,20 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MONHPR();
 	}
+
+			pass UI_CYCLESKILL // 13
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_CYCLESKILL();
+	}
+
 }
 
 	

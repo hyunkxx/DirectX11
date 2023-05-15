@@ -39,35 +39,11 @@ HRESULT CUI_Mouse::Initialize(void * pArg)
 void CUI_Mouse::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-
-	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	POINT		MousePos{};
-	ShowCursor(true); // 일단은 트루 겜돌릴때false
-	GetCursorPos(&MousePos);
-	ScreenToClient(g_hWnd, &MousePos);
-
-	UINT           pNumViewports;
-	m_pContext->RSGetViewports(&pNumViewports, NULL);
-	D3D11_VIEWPORT*		pViewPort = new D3D11_VIEWPORT[pNumViewports];
-	m_pContext->RSGetViewports(&pNumViewports, pViewPort);
-
-	float Viewport_Width = (float)pViewPort[0].Width;
-	float Viewport_Height = (float)pViewPort[0].Height;
-
-	Safe_Delete_Array(pViewPort);
-
-	_float3	fMousePos;
-	m_fX =  MousePos.x - (Viewport_Width  * 0.5f);
-	m_fY = -MousePos.y + (Viewport_Height * 0.5f);
-
-	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(m_fWidth, m_fHeight, 1.f) * XMMatrixTranslation(m_fX, m_fY, m_fZ));
+	Get_MousePos();
+	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(m_fWidth, m_fHeight, 1.f) * XMMatrixTranslation(m_fX + 5.f, m_fY - 6.f, m_fZ));
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-	
 
-	Safe_Release(pGameInstance);
 }
 
 void CUI_Mouse::LateTick(_double TimeDelta)
@@ -102,6 +78,29 @@ void CUI_Mouse::RenderGUI()
 		
 }
 
+_float3	CUI_Mouse::Get_MousePos()
+{
+	POINT		MousePos{};
+	ShowCursor(true); // 일단은 트루 겜돌릴때false
+	GetCursorPos(&MousePos);
+	ScreenToClient(g_hWnd, &MousePos);
+
+	UINT           pNumViewports;
+	m_pContext->RSGetViewports(&pNumViewports, NULL);
+	D3D11_VIEWPORT*		pViewPort = new D3D11_VIEWPORT[pNumViewports];
+	m_pContext->RSGetViewports(&pNumViewports, pViewPort);
+
+	float Viewport_Width = (float)pViewPort[0].Width;
+	float Viewport_Height = (float)pViewPort[0].Height;
+
+	Safe_Delete_Array(pViewPort);
+
+	_float3	fMousePos;
+	m_fX = MousePos.x - (Viewport_Width * 0.5f);
+	m_fY = -MousePos.y + (Viewport_Height * 0.5f);
+
+	return _float3(m_fX, m_fY, 0.0f);
+}
 
 
 void CUI_Mouse::Set_Texchange(_bool change)

@@ -16,12 +16,15 @@ class CTerminal;
 
 class CUI_MainScreen final : public CGameObject
 {
+public: enum class ePlayer
+{
+	YANGYANG, DANSUN, RED, PLAYEREND
+};
+
 public:
 	typedef struct tagCutRect
 	{
 		//클라변수
-		_float2		LUCutUV;
-		_float2		RBCutUV;
 		_float		fXCut = { 0.f };
 		_float		fYCut = { 0.f };
 		_float		fZCut = { 0.f };
@@ -48,6 +51,8 @@ public:
 		_bool		bCoolTime = { false };
 		_bool		bRot = { false };
 		_float		fDegree = { 0.f };
+		_int		Playertype;
+		_bool		bRender = { true };
 		
 		//툴변수 저장은 안하지만 제로메모리로 불러서 각 버퍼마다 쓰는 변수
 		_float4x4	WorldMatrixCut;
@@ -78,13 +83,30 @@ private:
 
 public:
 	void	Set_Texchange(_int Texindex);
+
 private:
 	void	SerectUI();
 	void    UVWave(_double TimeDelta);
 	void    UVCircle(_double TimeDelta);
 	void	HPBar(_double TimeDelta);
 	void	HPRedBar(_double TimeDelta);
-	
+	void	SizeXAnimP(CUTRECT* pDesc, _double TimeDelta);
+	void	SizeXAnimM(CUTRECT* pDesc, _double TimeDelta);
+	void	SizeYAnimP(CUTRECT* pDesc, _double TimeDelta);
+	void	SizeYAnimM(CUTRECT* pDesc, _double TimeDelta);
+	void	AlphaM(CUTRECT* pDesc, _double TimeDelta);
+	void	AlphaP(CUTRECT* pDesc, _double TimeDelta);
+	void	CoolTime(CUTRECT* pDesc, _double TimeDelta);
+	void	Rot(CUTRECT* pDesc, _double TimeDelta);
+	void	Load();
+
+	void RenderPlayer1();
+	void RenderPlayer2();
+	void RenderPlayer3();
+
+	void DisappearPlayer1();
+	void DisappearPlayer2();
+	void DisappearPlayer3();
 
 
 private:
@@ -92,8 +114,8 @@ private:
 	_uint   m_iPass = { 1 };
 	_float  m_RadianAcc = { 0.f };
 	_float2 m_fUV = { 0.f, 0.f };
-	_uint m_iCurrentPlayer = { 1 };
-	_uint m_iPrePlayer = { 1 };
+	ePlayer m_iCurrentPlayer = { ePlayer::YANGYANG };
+	ePlayer m_iPrePlayer = { ePlayer::YANGYANG };
 	//Hp
 	_bool m_bHit = { false };
 	_bool m_bRedStart = { false };
@@ -103,7 +125,6 @@ private:
 	_float m_fWhiteBar = { 1.f };
 	_float m_RedDamageACC = {250.f };
 	_float m_fRedBar = { 1.f };
-	_float Point = 250.f;
 
 	
 public:
@@ -120,25 +141,13 @@ private:
 	CTexture*		m_pTexFunc = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCut = { nullptr }; // 생성, list푸시백용
 
-	list<CVIBuffer_Rect*> m_BufferCutList;
-	list<CUTRECT*>		  m_CutDescList;
+	vector<CVIBuffer_Rect*> m_BufferCutList;
+	vector<CUTRECT*>		  m_CutDescList;
 	
 	
 
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pContext;
-private:
-	void	SizeXAnimP(CUTRECT* pDesc, _double TimeDelta);
-	void	SizeXAnimM(CUTRECT* pDesc, _double TimeDelta);
-	void	SizeYAnimP(CUTRECT* pDesc, _double TimeDelta);
-	void	SizeYAnimM(CUTRECT* pDesc, _double TimeDelta);
-	void	AlphaM(CUTRECT* pDesc, _double TimeDelta);
-	void	AlphaP(CUTRECT* pDesc, _double TimeDelta);
-	void	CoolTime(CUTRECT* pDesc, _double TimeDelta);
-	void	Rot(CUTRECT* pDesc, _double TimeDelta);
-	void	Load();
-
-
 	
 
 };

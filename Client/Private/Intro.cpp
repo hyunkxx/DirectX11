@@ -76,13 +76,13 @@ void CIntro::Tick(_double TimeDelta)
 
 	if (true == m_bXYM)
 	{
-		for (_uint i = 4; i < 10; ++i)
+		for (_uint i = 4; i < 9; ++i)
 		{
 			m_DescList[i]->bAlphaM = true;
 		}
 	}
 
-	for (_uint i = 0; i < 10; ++i)
+	for (_uint i = 0; i < 9; ++i)
 	{
 		if ((m_DescList[i]->bSizeYAnimP == true) && (m_DescList[i]->bSizeXAnimP == true))
 		{
@@ -336,32 +336,6 @@ void CIntro::AlphaP(_uint iNum, _double TimeDelta)
 
 }
 
-void CIntro::Reset()
-{
-	for (_uint iNum = 0; iNum < 9; ++iNum)
-	{
-
-		m_DescList[iNum]->Duration = 0.f;
-		m_DescList[iNum]->TimeAcc = 0.f;
-		m_DescList[iNum]->bSizeXAnimP = false;
-		m_DescList[iNum]->bSizeXAnimM = false;
-		m_DescList[iNum]->bSizeYAnimP = false;
-		m_DescList[iNum]->bSizeYAnimM = false;
-		m_DescList[iNum]->bAlphaM = false;
-		m_DescList[iNum]->bAlphaP = false;
-		m_DescList[iNum]->fSpeedfX = 0.f;
-		m_DescList[iNum]->fSpeedfY = 0.f;
-		m_DescList[iNum]->fSpeedfZ = 0.f;
-		m_DescList[iNum]->fSpeedWidth = 0.f;
-		m_DescList[iNum]->fSpeedHeight = 0.f;
-		m_DescList[iNum]->fSpeedAlpha = 0.f;
-		m_DescList[iNum]->fColorR = 0.f;
-		m_DescList[iNum]->fColorG = 0.f;
-		m_DescList[iNum]->fColorB = 0.f;
-		m_DescList[iNum]->fColorA = 0.f;
-	}
-}
-
 HRESULT CIntro::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
@@ -479,7 +453,7 @@ void CIntro::Free()
 
 void CIntro::Load()
 {
-	_uint index = 10;
+	_uint index = 9;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[125] = L"";
@@ -535,43 +509,3 @@ void CIntro::Load()
 	}
 
 }
-
-
-void CIntro::Save()
-{
-	_uint index = 0;
-	for (auto& Desc : m_DescList)
-	{
-		TCHAR	szFileName[125] = L"";
-		wsprintf(szFileName, L"../../Data/Loading%d.dat", index);
-		HANDLE hFile = CreateFile(
-			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-
-		_ulong dwByte = 0;
-
-		WriteFile(hFile, &(Desc->fX), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fY), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fZ), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fWidth), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fHeight), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fColorR), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fColorG), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fColorB), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fColorA), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->iTexNum), sizeof(_int), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->iPass), sizeof(_int), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fDegree), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->Duration), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->Cool), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fSpeedfX), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fSpeedfY), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fSpeedfZ), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fSpeedWidth), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fSpeedHeight), sizeof(_float), &dwByte, nullptr);
-		WriteFile(hFile, &(Desc->fSpeedAlpha), sizeof(_float), &dwByte, nullptr);
-
-		CloseHandle(hFile);
-		++index;
-	}
-}
-
