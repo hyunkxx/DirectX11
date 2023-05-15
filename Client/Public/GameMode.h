@@ -64,7 +64,7 @@ public:
 	_uint GetCurrentLevel() const { return m_nCurrentLevel; };
 	
 	//Effect
-	HRESULT Add_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext , HWND _hWnd, const _tchar* EffectTag, const char* TextureTag);
+	HRESULT Add_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext , HWND _hWnd, EFFECT_ID eEffectID , const _tchar* EffectTag, const char* TextureTag);
 
 public: // Cam
 	void ResetCameraList();

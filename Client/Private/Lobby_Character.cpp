@@ -57,7 +57,7 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 	}
 
 	// Lobby_Player_Particle_Effect
-	CEffect* pEffect= CGameInstance::GetInstance()->Get_Effect(L"Loby_Particle_Effect_01");
+	CEffect* pEffect= CGameInstance::GetInstance()->Get_Effect(L"Loby_Particle_Effect_01", EFFECT_ID::PLAYER_NVZHU);
 	_float4x4 WorldMatirx = m_pMainTransform->Get_WorldMatrix();
 	pEffect->Play_Effect(&WorldMatirx, false);
 
@@ -160,12 +160,12 @@ void CLobbyCharacter::PlaySelectedAnimation()
 	m_pAnimSetCom->SetUp_Animation(m_eState, true);
 
 	// ÀÓ½Ã ÀÌÆåÆ® ³¢¿ö³Ö±â
-	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Loby_Particle_Effect_02");
+	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Loby_Particle_Effect_02", EFFECT_ID::PLAYER_NVZHU);
 	_float4x4 WorldMatirx = m_pMainTransform->Get_WorldMatrix();
 	pEffect->Play_Effect(&WorldMatirx, false);
 
-	pEffect = CGameInstance::GetInstance()->Get_Effect(L"Test_Loby_Effect");
-	pEffect->Play_Effect(&WorldMatirx, false);
+	pEffect = CGameInstance::GetInstance()->Get_Effect(L"Test_Loby_Effect",EFFECT_ID::PLAYER_NVZHU);
+ 	pEffect->Play_Effect(&WorldMatirx, false);
 
 }
 

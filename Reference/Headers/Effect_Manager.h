@@ -15,16 +15,16 @@ public:
 	void Late_Tick(_double TimeDelta);
 
 public:
-	HRESULT Push_Effect(const _tchar* pEffectTag, class CEffect* pEffect);
-	class CEffect*	Get_Effect(const _tchar* EffectTag);
+	HRESULT Push_Effect(const _tchar* pEffectTag, class CEffect* pEffect , EFFECT_ID eEffectID);
+	class CEffect*	Get_Effect(const _tchar* EffectTag , EFFECT_ID eEffectID);
 
 	void	Stop_All_Effect();
 private:
-	list <class CEffect*>*	Find_EffectList(const _tchar* pEffecttag);
+	list <class CEffect*>*	Find_EffectList(const _tchar* pEffecttag, EFFECT_ID eEffectID);
 
 private:
-	unordered_map <_tchar*, list <class CEffect*>* > m_Effectmap_Update;
-	unordered_map <_tchar*, list <class CEffect*>* > m_Effectmap_NonUpdate;
+	unordered_map <_tchar*, list <class CEffect*>* > m_Effectmap_Update[EFFECT_ID_END];
+	unordered_map <_tchar*, list <class CEffect*>* > m_Effectmap_NonUpdate[EFFECT_ID_END];
 
 public:
 	virtual void Free()override;

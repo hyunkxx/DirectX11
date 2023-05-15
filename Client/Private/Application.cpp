@@ -506,151 +506,145 @@ HRESULT CApplication::Ready_UI_Data()
 HRESULT CApplication::Ready_Static_Effect()
 {
 	CGameMode* pGameModeInst = CGameMode::GetInstance();
-	for (_int i = 0; 20 > i; i++)
-	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/YangYang_Jump_Attack_01.bin"),
-			"../../Resource/Effect/YangYang_Jump_Attack_01/")))
-		{
-			MSG_BOX("Create Failed : YangYang_Jump_Attack_01");
-			return E_FAIL;
-		}
-			
-	}
-
-	for (_int i = 0; 20 > i; i++)
-	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Test_SSD.bin"),
-			"../../Resource/Effect/Test_SSD/")))
-		{
-			MSG_BOX("Create Failed : Test_SSD");
-			return E_FAIL;
-		}
-	}
-
-	for (_int i = 0; 20 > i; i++)
-	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Test_GLOW_SSD.bin"),
-			"../../Resource/Effect/Test_GLOW_SSD/")))
-		{
-			MSG_BOX("Create Failed : Test_GLOW_SSD");
-			return E_FAIL;
-		}
-	}
-
 	
 #pragma region Player_Nvzhu
 
+	//Lobby_Effect
 	for (_int i = 0; 2 > i; i++)
 	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Loby_Particle_Effect_01.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU ,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Loby_Particle_Effect_01.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Loby_Particle_Effect/")))
-		{
-			MSG_BOX("Create Failed : Loby_Particle_Effect_01");
 			return E_FAIL;
-		};
-	}
 
-	for (_int i = 0; 20 > i; i++)
-	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Loby_Particle_Effect_02.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Loby_Particle_Effect_02.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Loby_Particle_Effect/")))
-		{
-			MSG_BOX("Create Failed : Loby_Particle_Effect_02");
 			return E_FAIL;
-		}
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU ,
+			TEXT("../../Resource/Effect/Test_Loby_Effect.bin"),
+			"../../Resource/Effect/Test_Loby_Effect/")))
+			return E_FAIL;
 	}
 
-	for (_int i = 0; 10 > i; i++)
+	for (_int i = 0; 3 > i; i++)
 	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Double_Jump_B.bin"),
+		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
+			TEXT("../../Resource/Effect/Player_Nvzhu/Double_Jump_B.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Double_Jump/")))
-		{
-			MSG_BOX("Create Failed : Double_Jump_B");
 			return E_FAIL;
-		}
-	}
 
-	for (_int i = 0; 10 > i; i++)
-	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Double_Jump_F.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Double_Jump_F.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Double_Jump/")))
-		{
-			MSG_BOX("Create Failed : Double_Jump_F");
 			return E_FAIL;
-		}
-	}
 
-	for (_int i = 0; 10 > i; i++)
-	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_01.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_01.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack/")))
-		{
-			MSG_BOX("Create Failed : Nvzhu_Attack_01");
 			return E_FAIL;
-		}
-	}
 
-	for (_int i = 0; 10 > i; i++)
-	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_02.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_02.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack/")))
-		{
-			MSG_BOX("Create Failed : Nvzhu_Attack_02");
 			return E_FAIL;
-		}
-	}
 
-	for (_int i = 0; 10 > i; i++)
-	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_03.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_03.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack/")))
-		{
-			MSG_BOX("Create Failed : Nvzhu_Attack_03");
 			return E_FAIL;
-		}
-	}
 
-	for (_int i = 0; 10 > i; i++)
-	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_04.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_04.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack/")))
-		{
-			MSG_BOX("Create Failed : Nvzhu_Attack_04");
 			return E_FAIL;
-		}
-	}
-	for (_int i = 0; 10 > i; i++)
-	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_05.bin"),
-			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack/")))
-		{
-			MSG_BOX("Create Failed : Nvzhu_Attack_05");
-			return E_FAIL;
-		}
-	}
 
-	for (_int i = 0; 10 > i; i++)
-	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Player_Nvzhu/Link_Effect_02.bin"),
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_05_01.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack_05_02.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Link_Effect.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Link_Effect/")))
-		{
-			MSG_BOX("Create Failed : Link_Effect");
 			return E_FAIL;
-		}
+		// 공중에서 바닥에 내리찍는 공격
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
+			TEXT("../../Resource/Effect/Player_Nvzhu/Rib_AirAttack.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Rib_AirAttack/")))
+			return E_FAIL;
+		//돌진공격 터지는 이펙트 위치는 플레이어 World_Matrix
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Attack_Po_2_Boom_Effect.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Attack_Po/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
+			TEXT("../../Resource/Effect/Player_Nvzhu/Attack_Po_2_Effect.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Attack_Po/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Attack_Po_2_Smoke.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Attack_Po/")))
+			return E_FAIL;
+		// 돌진후 돌아오면서 터트리는 이펙트(위의 돌진공격이 명중 시 추가 연계 후속타 느낌(?))
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Attack_Po_3_Effect.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Attack_Po/")))
+			return E_FAIL;
+		//칼 집어 넣을때 나오는 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
+			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Sheath_Effect.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Sheath_Effect/")))
+			return E_FAIL;
+		
 	}
 
+	//Nvzhu 기본 공격에 따른 히트 이펙트
+	for (_int i = 0; 5 > i; i++)
+	{
+	/*	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
+			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_01.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Hit_Effect/")))
+			return E_FAIL;*/
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_02.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Hit_Effect/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
+			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_03.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Hit_Effect/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_04.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Hit_Effect/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_05_01.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Hit_Effect/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_05_02.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Hit_Effect/")))
+			return E_FAIL;
+	}
 
 #pragma endregion
 
-	for (_int i = 0; 10 > i; i++)
-	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, TEXT("../../Resource/Effect/Test_Loby_Effect.bin"),
-			"../../Resource/Effect/Test_Loby_Effect/")))
-		{
-			MSG_BOX("Create Failed : Test_Loby_Effect");
-			return E_FAIL;
-		}
-	}
+
 
 	return S_OK;
 }

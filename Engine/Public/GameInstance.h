@@ -156,8 +156,8 @@ public:/*For.Save_Loader*/
 	HRESULT		Load_Effect(HWND hWnd, wstring strFileName, list<EFFECT_DESC*>* pEffectDesc);
 
 public:/*For.CEffect_Manager*/
-	HRESULT Push_Effect(const _tchar* pEffectTag, class CEffect* pEffect);
-	class CEffect*	Get_Effect(const _tchar* EffectTag);
+	HRESULT Push_Effect(const _tchar* pEffectTag, class CEffect* pEffect , EFFECT_ID eEffectID);
+	class CEffect*	Get_Effect(const _tchar* EffectTag , EFFECT_ID eEffectID);
 	void  Stop_All_Effect();
 public:
 	static void Engine_Release();

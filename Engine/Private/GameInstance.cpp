@@ -715,21 +715,21 @@ HRESULT CGameInstance::Load_Effect(HWND hWnd, wstring strFileName, list<EFFECT_D
 	return m_pSaveLoader->Load_Effect(hWnd , strFileName , pEffectDesc);
 }
 
-HRESULT CGameInstance::Push_Effect(const _tchar * pEffectTag, CEffect * pEffect)
+HRESULT CGameInstance::Push_Effect(const _tchar * pEffectTag, CEffect * pEffect, EFFECT_ID eEffectID)
 {
 	if (!m_pEffect_Manager)
 		return E_FAIL;
 
 
-	return m_pEffect_Manager->Push_Effect(pEffectTag, pEffect);
+	return m_pEffect_Manager->Push_Effect(pEffectTag, pEffect , eEffectID);
 }
 
-CEffect * CGameInstance::Get_Effect(const _tchar * EffectTag)
+CEffect * CGameInstance::Get_Effect(const _tchar * EffectTag , EFFECT_ID eEffectID)
 {
 	if (!m_pEffect_Manager)
 		return nullptr;
 
-	return m_pEffect_Manager->Get_Effect(EffectTag);
+	return m_pEffect_Manager->Get_Effect(EffectTag , eEffectID);
 }
 
 void CGameInstance::Stop_All_Effect()

@@ -10,76 +10,95 @@ CEffect_Manager::CEffect_Manager()
 
 void CEffect_Manager::Tick(_double TimeDelta)
 {
-	for (auto& Pair : m_Effectmap_Update)
-	{
-		if (Pair.second->empty())
-			continue;
 
-		for (auto& pEffect : (*Pair.second))
+	for (_int i = 0; EFFECT_ID_END > i; i++)
+	{
+		for (auto& Pair : m_Effectmap_Update[i])
 		{
-			pEffect->Tick(TimeDelta);
+			if (Pair.second->empty())
+				continue;
+
+			for (auto& pEffect : (*Pair.second))
+			{
+				pEffect->Tick(TimeDelta);
+			}
 		}
 	}
+
 }
 
 void CEffect_Manager::Late_Tick(_double TimeDelta)
 {
-	for (auto& Pair : m_Effectmap_Update)
+	for (_int i = 0; EFFECT_ID_END > i; i++)
 	{
-		if (Pair.second->empty())
-			continue;
-
-		for (auto& pEffect = Pair.second->begin(); pEffect != Pair.second->end(); )
+		for (auto& Pair : m_Effectmap_Update[i])
 		{
-			_bool bUpdate = (*pEffect)->Get_UpdateOK();
-			if (true == bUpdate)
+			if (Pair.second->empty())
+				continue;
+
+			for (auto& pEffect = Pair.second->begin(); pEffect != Pair.second->end();)
 			{
-				(*pEffect)->LateTick(TimeDelta);
-				pEffect++;
-			}
-			else if (false == bUpdate)
-			{
-				auto&	Dest = find_if(m_Effectmap_NonUpdate.begin(), m_Effectmap_NonUpdate.end(), CTagFinder(Pair.first));
-				Dest->second->push_back(*pEffect);
-				pEffect = Pair.second->erase(pEffect);
+				_bool bUpdate = (*pEffect)->Get_UpdateOK();
+				if (true == bUpdate)
+				{
+					(*pEffect)->LateTick(TimeDelta);
+					pEffect++;
+				}
+				else if (false == bUpdate)
+				{
+					auto&	Dest = find_if(m_Effectmap_NonUpdate[i].begin(), m_Effectmap_NonUpdate[i].end(), CTagFinder(Pair.first));
+					Dest->second->push_back(*pEffect);
+					pEffect = Pair.second->erase(pEffect);
+				}
 			}
 		}
 	}
+	
 }
 
-HRESULT CEffect_Manager::Push_Effect(const _tchar * pEffectTag, CEffect * pEffect)
+HRESULT CEffect_Manager::Push_Effect(const _tchar * pEffectTag, CEffect * pEffect, EFFECT_ID eEffectID)
 {
-	if (nullptr != Find_EffectList(pEffectTag))
+	if (EFFECT_ID_END <= eEffectID)
+		return E_FAIL;
+
+	list <class CEffect*>* pEffectList = nullptr;
+	pEffectList = Find_EffectList(pEffectTag, eEffectID);
+
+	if (nullptr != pEffectList)
 	{
-		Find_EffectList(pEffectTag)->push_back(pEffect);
-		return S_OK;
+		pEffectList->push_back(pEffect);
 	}
+	else
+	{
+		list <class CEffect*>* EffectList = new list <class CEffect*>;
+		list <class CEffect*>* EffectListUpdate = new list <class CEffect*>;
 
-	list <class CEffect*>* EffectList = new list <class CEffect*>;
-	list <class CEffect*>* EffectListUpdate = new list <class CEffect*>;
+		EffectList->push_back(pEffect);
 
-	EffectList->push_back(pEffect);
+		_tchar* pFileName = new _tchar[MAX_PATH];
+		lstrcpy(pFileName, pEffectTag);
 
-	_tchar* pFileName = new _tchar[MAX_PATH];
-	lstrcpy(pFileName, pEffectTag);
-
-	m_Effectmap_NonUpdate.emplace(pFileName, EffectList);
-	m_Effectmap_Update.emplace(pFileName, EffectListUpdate);
+		m_Effectmap_NonUpdate[eEffectID].emplace(pFileName, EffectList);
+		m_Effectmap_Update[eEffectID].emplace(pFileName, EffectListUpdate);
+	}
 
 	return S_OK;
 }
 
-CEffect * CEffect_Manager::Get_Effect(const _tchar * pEffectTag)
+CEffect * CEffect_Manager::Get_Effect(const _tchar * pEffectTag, EFFECT_ID eEffectID)
 {
-	if (nullptr != Find_EffectList(pEffectTag))
+	if (EFFECT_ID_END <= eEffectID)
+		return nullptr;
+
+	if (nullptr != Find_EffectList(pEffectTag , eEffectID))
 	{
-		list<CEffect*>* pEfectlist = Find_EffectList(pEffectTag);
+		list<CEffect*>* pEfectlist = Find_EffectList(pEffectTag , eEffectID);
 		auto& iter = ((*pEfectlist).begin());
 		CEffect*  pEffect = (*iter);
 		(*pEfectlist).erase(iter);
 
-		auto	Dest = find_if(m_Effectmap_Update.begin(), m_Effectmap_Update.end(), CTagFinder(pEffectTag));
-		if (Dest == m_Effectmap_Update.end())
+		auto	Dest = find_if(m_Effectmap_Update[eEffectID].begin(), m_Effectmap_Update[eEffectID].end(), CTagFinder(pEffectTag));
+		if (Dest == m_Effectmap_Update[eEffectID].end())
 			return nullptr;
 
 		pEffect->Set_UpdateOK(true);
@@ -93,27 +112,32 @@ CEffect * CEffect_Manager::Get_Effect(const _tchar * pEffectTag)
 
 void CEffect_Manager::Stop_All_Effect()
 {
-	for (auto& Pair : m_Effectmap_Update)
+	for (_int i = 0; EFFECT_ID_END > i; i++)
 	{
-		if (Pair.second->empty())
-			continue;
-
-		for (auto& pEffect = Pair.second->begin(); pEffect != Pair.second->end(); )
+		for (auto& Pair : m_Effectmap_Update[i])
 		{
-			auto&	Dest = find_if(m_Effectmap_NonUpdate.begin(), m_Effectmap_NonUpdate.end(), CTagFinder(Pair.first));
-			Dest->second->push_back(*pEffect);
-			pEffect = Pair.second->erase(pEffect);
+			if (Pair.second->empty())
+				continue;
+
+			for (auto& pEffect = Pair.second->begin(); pEffect != Pair.second->end(); )
+			{
+				auto&	Dest = find_if(m_Effectmap_NonUpdate[i].begin(), m_Effectmap_NonUpdate[i].end(), CTagFinder(Pair.first));
+				Dest->second->push_back(*pEffect);
+				pEffect = Pair.second->erase(pEffect);
+			}
 		}
 	}
-
 }
 
-list <class CEffect*>* CEffect_Manager::Find_EffectList(const _tchar * pEffecttag)
+list <class CEffect*>* CEffect_Manager::Find_EffectList(const _tchar * pEffecttag, EFFECT_ID eEffectID)
 {
-	auto	Dest = find_if(m_Effectmap_NonUpdate.begin(), m_Effectmap_NonUpdate.end(), CTagFinder(pEffecttag));
+	if (EFFECT_ID_END <= eEffectID)
+		return nullptr;
+
+	auto	Dest = find_if(m_Effectmap_NonUpdate[eEffectID].begin(), m_Effectmap_NonUpdate[eEffectID].end(), CTagFinder(pEffecttag));
 
 
-	if (Dest == m_Effectmap_NonUpdate.end())
+	if (Dest == m_Effectmap_NonUpdate[eEffectID].end())
 		return nullptr;
 
 	return Dest->second;
@@ -121,26 +145,28 @@ list <class CEffect*>* CEffect_Manager::Find_EffectList(const _tchar * pEffectta
 
 void CEffect_Manager::Free()
 {
-	for (auto& Pair : m_Effectmap_Update)
+	for (_int i = 0; EFFECT_ID_END > i; i++)
 	{
-		for (auto& pEffect : (*Pair.second))
-			Safe_Release(pEffect);
+		for (auto& Pair : m_Effectmap_Update[i])
+		{
+			for (auto& pEffect : (*Pair.second))
+				Safe_Release(pEffect);
 
-		Pair.second->clear();
-		Safe_Delete(Pair.second);
+			Pair.second->clear();
+			Safe_Delete(Pair.second);
+		}
+		m_Effectmap_Update[i].clear();
+
+		for (auto& Pair : m_Effectmap_NonUpdate[i])
+		{
+			for (auto& pEffect : (*Pair.second))
+				Safe_Release(pEffect);
+
+			Pair.second->clear();
+			Safe_Delete(Pair.second);
+			_tchar* pEffectTag = Pair.first;
+			Safe_Delete_Array(pEffectTag);
+		}
+		m_Effectmap_NonUpdate[i].clear();
 	}
-	m_Effectmap_Update.clear();
-
-	for (auto& Pair : m_Effectmap_NonUpdate)
-	{
-		for (auto& pEffect : (*Pair.second))
-			Safe_Release(pEffect);
-
-		Pair.second->clear();
-		Safe_Delete(Pair.second);
-		_tchar* pEffectTag = Pair.first;
-		Safe_Delete_Array(pEffectTag);
-	} 
-	m_Effectmap_NonUpdate.clear();
-
 }

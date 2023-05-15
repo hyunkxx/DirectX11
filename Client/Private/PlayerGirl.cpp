@@ -372,7 +372,7 @@ HRESULT CPlayerGirl::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 				switch (tBaseData.iType)
 				{
 				case CStateKey::TYPE_EFFECT:
-					m_tStates[i].ppStateKeys[j] = CEffectKey::Create(pDevice, pContext, &tBaseData);
+					//m_tStates[i].ppStateKeys[j] = CEffectKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_PARTS:
 					m_tStates[i].ppStateKeys[j] = CPartsKey::Create(pDevice, pContext, &tBaseData);
@@ -470,9 +470,9 @@ void CPlayerGirl::Shot_PriorityKey(_uint iLeavePriority)
 	m_tCurState.iLeavePriority = iLeavePriority;
 }
 
-void CPlayerGirl::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _bool bTracking/*iInt1*/)
+void CPlayerGirl::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, EFFECT_ID eEffectID , _bool bTracking/*iInt1*/)
 {
-	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag);
+	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag , eEffectID);
 	if (nullptr == pEffect || EBONE_END <= EffectBoneID)
 		return;
 
@@ -636,23 +636,6 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 
 	if (m_bInputLock)
 	{
-		// 애니메이션 테스트용 임시 코드
-		if (pGame->InputKey(DIK_1) == KEY_STATE::TAP)
-		{
-			CEffect* pEffect = pGame->Get_Effect(L"YangYang_Jump_Attack_01");
-			pEffect->Play_Effect(&m_WorldMatrix);
-		}
-		if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
-		{
-			CEffect* pEffect = pGame->Get_Effect(L"Test_SSD");
-			pEffect->Play_Effect(&m_WorldMatrix);
-		}
-		if (pGame->InputKey(DIK_3) == KEY_STATE::TAP)
-		{
-			CEffect* pEffect = pGame->Get_Effect(L"Test_GLOW_SSD");
-			pEffect->Play_Effect(&m_WorldMatrix);
-		}
-		
 		if (pGame->InputKey(DIK_C) == KEY_STATE::TAP)
 			m_Scon.bWalk = !m_Scon.bWalk;
 
@@ -888,11 +871,11 @@ void CPlayerGirl::Key_Input(_double TimeDelta)
 			case IS_ATTACK_02:
 				m_Scon.iNextState = IS_ATTACK_03;
 
-				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_03");
+				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Nvzhu_Attack_03", EFFECT_ID::PLAYER_NVZHU);
 				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
 				pEffect->Play_Effect(&ParentMatrix);
 
-				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Link_Effect_02");
+				pEffect = CGameInstance::GetInstance()->Get_Effect(L"Link_Effect", EFFECT_ID::PLAYER_NVZHU);
 				ParentMatrix._42 += 1.f;
 				ParentMatrix = m_pMainTransform->Get_WorldMatrix();
 				pEffect->Play_Effect(&ParentMatrix);

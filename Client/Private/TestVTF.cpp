@@ -271,9 +271,9 @@ void CTestVTF::Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _doubl
 	}
 }
 
-void CTestVTF::Shot_EffectKey(_tchar * szEffectTag, _uint EffectBoneID, _bool bTracking)
+void CTestVTF::Shot_EffectKey(_tchar * szEffectTag, _uint EffectBoneID , EFFECT_ID eEffectID , _bool bTracking)
 {
-	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag);
+	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag , eEffectID);
 	if (nullptr == pEffect || EBONE_END <= EffectBoneID)
 		return;
 
