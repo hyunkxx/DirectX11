@@ -106,7 +106,7 @@ HRESULT CModel_Instance::Initialize_Prototype(const _tchar* pModelFilePath, cons
 	CloseHandle(hFile);
 	//MSG_BOX("Load Succeed");
 
-	if (FAILED(Load_InstanceData(pInstanceFilePath)))
+	if (FAILED(Load_InstanceData(pInstanceFilePath)))	
 		return E_FAIL;
 
 	if (FAILED(Ready_Meshes(&Model, m_pInstanceMatrix)))
@@ -186,17 +186,38 @@ HRESULT CModel_Instance::Load_InstanceData(const _tchar * pInstanceFilePath)
 
 	if (INVALID_HANDLE_VALUE == hFile)
 	{
-		MSG_BOX("Failed to Load File In Model_Instance");
-		return E_FAIL;
+		//MSG_BOX("Failed to Load File In Model_Instance");
+		//return E_FAIL;
+
+		m_iNumInstance = { 1 };
+
+		m_pInstanceMatrix = new _float4x4[m_iNumInstance];
+		ZeroMemory(m_pInstanceMatrix, sizeof(_float4x4) * m_iNumInstance);
+
+		XMStoreFloat4x4(&m_pInstanceMatrix[0], XMMatrixIdentity());
 	}
+	else
+	{
+		ReadFile(hFile, &m_iNumInstance, sizeof(int), &dwByte, nullptr);
 
-	ReadFile(hFile, &m_iNumInstance, sizeof(int), &dwByte, nullptr);
+		if (0 >= m_iNumInstance)
+		{
+			m_iNumInstance = { 1 };
 
-	m_pInstanceMatrix = new _float4x4[m_iNumInstance];
-	ZeroMemory(m_pInstanceMatrix, sizeof(_float4x4) * m_iNumInstance);
+			m_pInstanceMatrix = new _float4x4[m_iNumInstance];
+			ZeroMemory(m_pInstanceMatrix, sizeof(_float4x4) * m_iNumInstance);
 
-	for (_uint i = 0; i < m_iNumInstance; ++i)
-		ReadFile(hFile, &m_pInstanceMatrix[i], sizeof(_float4x4), &dwByte, nullptr);
+			XMStoreFloat4x4(&m_pInstanceMatrix[0], XMMatrixIdentity());
+		}
+		else
+		{
+			m_pInstanceMatrix = new _float4x4[m_iNumInstance];
+			ZeroMemory(m_pInstanceMatrix, sizeof(_float4x4) * m_iNumInstance);
+
+			for (_uint i = 0; i < m_iNumInstance; ++i)
+				ReadFile(hFile, &m_pInstanceMatrix[i], sizeof(_float4x4), &dwByte, nullptr);
+		}
+	}
 
 	CloseHandle(hFile);
 
