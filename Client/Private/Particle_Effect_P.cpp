@@ -52,7 +52,6 @@ void CParticle_Effect_P::Tick(_double TimeDelta)
 		return;
 	}
 		
-
 	m_fEffectAcc += (_float)TimeDelta;
 	m_pVIBufferCom->Update(TimeDelta);
 	Loop_Check(TimeDelta);
@@ -347,8 +346,8 @@ HRESULT CParticle_Effect_P::Add_Component(const char* pFileTag)
 	stParticleDesc.fMinDist = m_EffectDesc.fMinDist;
 	stParticleDesc.fMaxDist = m_EffectDesc.fMaxDist;
 
-	stParticleDesc.vMaxScale = m_EffectDesc.vMinScale;
-	stParticleDesc.vMinScale = m_EffectDesc.vMaxScale;
+	stParticleDesc.vMaxScale = m_EffectDesc.vMaxScale;
+	stParticleDesc.vMinScale = m_EffectDesc.vMinScale;
 
 	stParticleDesc.vMinPosition = m_EffectDesc.vMinPosition;
 	stParticleDesc.vMaxPosition = m_EffectDesc.vMaxPosition;

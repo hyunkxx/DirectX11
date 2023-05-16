@@ -642,6 +642,12 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill_02.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill/")))
 			return E_FAIL;
+
+		//sKill_02 쓸떄 나오는 원반
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill_02_Circle.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Skill/")))
+			return E_FAIL;
 		
 		//칼 집어 넣을때 나오는 이펙트
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
