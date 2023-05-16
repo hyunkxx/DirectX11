@@ -267,7 +267,6 @@ HRESULT CMesh_Effect_P::SetUp_ShaderResources()
 void CMesh_Effect_P::SetUp_Linear()
 {
 	_float fLerp = (m_fEffectAcc) / (m_EffectDesc.fEffectTime);
-
 	if (1.f < fLerp)
 		fLerp = 1.f;
 	if (0.f > fLerp)
@@ -278,7 +277,7 @@ void CMesh_Effect_P::SetUp_Linear()
 	//Color
 	vStart = XMVectorSet(m_EffectDesc.vStartColor.x, m_EffectDesc.vStartColor.y, m_EffectDesc.vStartColor.z, 0.f);
 	vEnd = XMVectorSet(m_EffectDesc.vEndColor.x, m_EffectDesc.vEndColor.y, m_EffectDesc.vEndColor.z, 0.f);
-	XMStoreFloat3(&m_EffectDesc.vTextrueColor, XMVectorLerp(vStart, vEnd, fLerp));
+	XMStoreFloat3(&m_EffectDesc.vTextrueColor, XMVectorLerp(vStart, vEnd, fLerp * 2.f));
 
 	// Angle
 	vStart = XMVectorSet(m_EffectDesc.vStartAngle.x, m_EffectDesc.vStartAngle.y, m_EffectDesc.vStartAngle.z, 0.f);
