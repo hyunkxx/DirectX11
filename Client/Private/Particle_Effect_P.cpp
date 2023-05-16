@@ -46,7 +46,12 @@ void CParticle_Effect_P::Tick(_double TimeDelta)
 	m_fLifeAcc += (_float)TimeDelta;
 
 	if (m_EffectDesc.fStartDelay >= m_fLifeAcc)
+	{
+		if (nullptr != m_pParentsMatrix)
+			m_ParentsMatrix = *m_pParentsMatrix;
 		return;
+	}
+		
 
 	m_fEffectAcc += (_float)TimeDelta;
 	m_pVIBufferCom->Update(TimeDelta);

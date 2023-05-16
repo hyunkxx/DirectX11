@@ -606,11 +606,7 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/Player_Nvzhu/Link_Effect.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Link_Effect/")))
 			return E_FAIL;
-		// 공중에서 바닥에 내리찍는 공격
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
-			TEXT("../../Resource/Effect/Player_Nvzhu/Rib_AirAttack.bin"),
-			"../../Resource/Effect/Player_Nvzhu/Rib_AirAttack/")))
-			return E_FAIL;
+		
 		//돌진공격 터지는 이펙트 위치는 플레이어 World_Matrix
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
 			TEXT("../../Resource/Effect/Player_Nvzhu/Attack_Po_2_Boom_Effect.bin"),
@@ -647,7 +643,15 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/Player_Nvzhu/Nvzhu_Sheath_Effect.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Nvzhu_Sheath_Effect/")))
 			return E_FAIL;
-		
+
+		for (_int j = 0; 2 > j; j++)
+		{
+			// 공중에서 바닥에 내리찍는 공격
+			if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+				TEXT("../../Resource/Effect/Player_Nvzhu/Rib_AirAttack.bin"),
+				"../../Resource/Effect/Player_Nvzhu/Rib_AirAttack/")))
+				return E_FAIL;
+		}
 	}
 
 	//Nvzhu 기본 공격에 따른 히트 이펙트
