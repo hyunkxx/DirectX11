@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Application.h"
 
+#include "ItemDB.h"
 #include "GameMode.h"
 #include "AppManager.h"
 #include "GUIManager.h"
@@ -21,11 +22,13 @@
 #include "Item.h"
 
 //UI
+#include "AcquireUI.h"
 #include "InteractionUI.h"
 #include "AcquireSystem.h"
 
 CApplication::CApplication()
 	: m_pGameInstance { CGameInstance::GetInstance() }
+	, m_pItemDB { CItemDB::GetInstance() }
 #ifdef _DEBUG
 	, m_pGUIManager(CGUIManager::GetInstance())
 	, m_pAnimToolManager {CAnimToolManager::GetInstance()}
@@ -130,7 +133,7 @@ HRESULT CApplication::Render()
 	}
 
 	m_pGameInstance->Render_Font(
-		TEXT("HeirofLightBold"),
+		TEXT("DefaultFont"),
 		m_szFPS,
 		_float2(0.f, 0.f),
 		XMVectorSet(1.f, 1.f, 1.f, 1.f),
@@ -438,11 +441,11 @@ void CApplication::DestroyManager()
 {
 #ifdef _DEBUG
 	m_pGUIManager->Shutdown();
-
-	m_pAnimToolManager = nullptr;
 	CAnimToolManager::DestroyInstance();
+	m_pAnimToolManager = nullptr;
 #endif
 
+	CItemDB::DestroyInstance();
 	CAppManager::DestroyInstance();
 	CGameMode::DestroyInstance();
 }
@@ -451,55 +454,55 @@ HRESULT CApplication::Ready_UI_Data()
 {
 	//Mouse
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_MOUSE_BTN_LEFT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/MouseLeft_Btn.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/MouseLeft_Btn.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_MOUSE_BTN_MIDDLE,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/MouseMiddel_Btn.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/MouseMiddel_Btn.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_MOUSE_BTN_RIGHT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/MouseRight_Btn.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/MouseRight_Btn.dds")))))
 		return E_FAIL;
 
 	//Key
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_KEY_BTN_F,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/KeyF_Btn.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/KeyF_Btn.dds")))))
 		return E_FAIL;
 	// Etc
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_LISTBACK,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/ListBack.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/GradBack.png")))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_LISTGARD_SPRITE,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/ListGardSprite.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/ListGardSprite4x4.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_LISTLIGHT_SPRITE,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/ListLightSprite.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/ListLightSprite.dds")))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_ICON_ACTIVATE,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/icon_activate.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/icon_activate.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_ICON_INSPECT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/icon_inspect.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/icon_inspect.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_ICON_CHEST,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/icon_chest.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/icon_chest.dds")))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_ACTIVATE_TEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/activate_text.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/activate_text.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_INSPECT_TEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/insptect_text.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/insptect_text.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_SIMPLE_CHEST_TEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/simple_chest_text.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/simple_chest_text.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_STANDARD_CHEST_TEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/standard_chest_text.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/standard_chest_text.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::UI_EXPANDED_CHEST_TEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/expanded_chest_text.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/expanded_chest_text.dds")))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ACQUIRE_SYSTEM,
@@ -508,18 +511,23 @@ HRESULT CApplication::Ready_UI_Data()
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::UI_INTERACTION,
 		CInteractionUI::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::UI_ACQUIRE,
+		CAcquireUI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	return S_OK;
 }
 
 HRESULT CApplication::Ready_Item_Image()
 {
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, STATIC_IMAGE::ITEM_DEFAULT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Items/IconCook80/T_IconCook80_001_UI.png")))))
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_TACTREITE_VOUCHER,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconCommon/T_IconA160_zcpq_UI.png")))))
 		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_DEFAULT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Items/IconCook80/T_IconCook80_001_UI.png")))))
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_COMMEMORATIVE_COIN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconCommon/T_IconA160_currency_5_UI.png")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_TACTITE_COIN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconCommon/T_IconA160_hsb_UI.png")))))
 		return E_FAIL;
 
 	return S_OK;
@@ -527,9 +535,6 @@ HRESULT CApplication::Ready_Item_Image()
 
 HRESULT CApplication::Ready_Item_Data()
 {
-	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ITEM,
-		CItem::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -759,7 +764,7 @@ HRESULT CApplication::Ready_Fonts()
 	if (FAILED(m_pGameInstance->Add_Font(
 		m_pDevice,
 		m_pContext,
-		TEXT("HeirofLightBold"),
+		TEXT("DefaultFont"),
 		TEXT("../../Resource/Fonts/HeirofLightBold.spritefont")
 	)))
 		return E_FAIL;

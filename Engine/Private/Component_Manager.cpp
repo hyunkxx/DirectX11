@@ -72,10 +72,10 @@ CComponent * CComponent_Manager::Find_Prototype(_uint iLevelIndex, _int iCompone
 	if (nullptr == m_pPrototypes || iLevelIndex >= m_iLevelMaxCount)
 		return nullptr;
 
-	for (auto iter = m_pPrototypes[iLevelIndex].begin(); iter != m_pPrototypes[iLevelIndex].end() ; ++iter)
+	auto iter = m_pPrototypes[iLevelIndex].find(iComponent);
+	if (iter != m_pPrototypes[iLevelIndex].end())
 	{
-		if (iter->first == iComponent)
-			return iter->second;
+		return iter->second;
 	}
 
 	return nullptr;
@@ -86,10 +86,10 @@ CTexture * CComponent_Manager::Find_Prototype_Texture(_int iTexture)
 	if (m_pPrototypeTextures.empty())
 		return nullptr;
 
-	for (auto iter = m_pPrototypeTextures.begin(); iter != m_pPrototypeTextures.end(); ++iter)
+	auto iter = m_pPrototypeTextures.find(iTexture);
+	if (iter != m_pPrototypeTextures.end())
 	{
-		if (iter->first == iTexture)
-			return iter->second;
+		return iter->second;
 	}
 
 	return nullptr;

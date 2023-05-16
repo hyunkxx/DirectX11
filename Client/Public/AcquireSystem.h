@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "AcquireUI.h"
 #include "InteractionUI.h"
 
 BEGIN(Engine)
@@ -29,7 +30,7 @@ public:
 	virtual HRESULT Render();
 	virtual void RenderGUI();
 
-	void SetRender(CInteractionUI::INTERACT_TYPE eType, _bool bValue);
+	void SetInteractionActive(CInteractionUI::INTERACT_TYPE eType, _bool bValue);
 
 public:
 	static CAcquireSystem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -37,7 +38,10 @@ public:
 	virtual void Free() override;
 
 private:
-	CInteractionUI* m_pInteraction = nullptr;
+	CInteractionUI* m_pInteractionUI = nullptr;
+	CAcquireUI*		m_pAcquireUI = nullptr;
+
+private:
 
 };
 

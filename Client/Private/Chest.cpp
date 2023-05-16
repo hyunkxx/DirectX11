@@ -6,6 +6,8 @@
 #include "AcquireSystem.h"
 #include "PlayerGirl.h"
 
+#include "ItemDB.h"
+
 CChest::CChest(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CInteractionObject(pDevice, pContext)
 {
@@ -78,12 +80,19 @@ HRESULT CChest::RenderShadow()
 
 void CChest::RenderGUI()
 {
+	ImGui::Begin("item");
+
+	CItem::ITEM_DESC item = CItemDB::GetInstance()->GetItemData("item_cook");
+	_float fValue = (_float)item.iImageIndex;
+	ImGui::DragFloat("item index1", &fValue);
+
+	ImGui::End();
 }
 
 void CChest::Interaction(void * pArg)
 {
 	m_pCollider->SetActive(false);
-	interactionRenderUI(false);
+	interactionUIActive(false);
 }
 
 HRESULT CChest::addComponents()
@@ -103,8 +112,8 @@ HRESULT CChest::addComponents()
 
 	CCollider::COLLIDER_DESC CollDesc;
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 0.f, 0.f };
-	CollDesc.vExtents = { 1.f, 1.f, 1.f };
+	CollDesc.vCenter = { 0.f, 0.5f, 0.f };
+	CollDesc.vExtents = { 0.5f, 0.5f, 0.5f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::OBB,
 		TEXT("Com_Collider"), (CComponent**)&m_pCollider, &CollDesc)))
@@ -115,20 +124,20 @@ HRESULT CChest::addComponents()
 	return S_OK;
 }
 
-void CChest::interactionRenderUI(_bool bRender)
+void CChest::interactionUIActive(_bool bRender)
 {
 	CGameMode* pGameMode = CGameMode::GetInstance();
 
 	switch (m_eChestType)
 	{
 	case CChest::CHEST_SIMPLE:
-		pGameMode->m_pAcquireSystem->SetRender(CInteractionUI::INTER_SIMPLE_CHEST, bRender);
+		pGameMode->m_pAcquireSystem->SetInteractionActive(CInteractionUI::INTER_SIMPLE_CHEST, bRender);
 		break;
 	case CChest::CHEST_STANDARD:
-		pGameMode->m_pAcquireSystem->SetRender(CInteractionUI::INTER_STANDARD_CHEST, bRender);
+		pGameMode->m_pAcquireSystem->SetInteractionActive(CInteractionUI::INTER_STANDARD_CHEST, bRender);
 		break;
 	case CChest::CHEST_EXPANDED:
-		pGameMode->m_pAcquireSystem->SetRender(CInteractionUI::INTER_EXPANDED_CHEST, bRender);
+		pGameMode->m_pAcquireSystem->SetInteractionActive(CInteractionUI::INTER_EXPANDED_CHEST, bRender);
 		break;
 	}
 }
@@ -178,7 +187,7 @@ void CChest::OnCollisionEnter(CCollider * src, CCollider * dest)
 	if (pPlayer)
 	{
 		m_bOverlapedPlayer = true;
-		interactionRenderUI(true);
+		interactionUIActive(true);
 	}
 }
 
@@ -194,6 +203,6 @@ void CChest::OnCollisionExit(CCollider * src, CCollider * dest)
 	if (pPlayer)
 	{
 		m_bOverlapedPlayer = false;
-		interactionRenderUI(false);
+		interactionUIActive(false);
 	}
 }

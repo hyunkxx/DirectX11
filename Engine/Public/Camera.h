@@ -36,10 +36,7 @@ public:
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
-	void Set_Use(_bool bUse)
-	{
-		m_bUse = bUse;
-	}
+	void Set_Use(_bool bUse) { m_bUse = bUse; }
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;

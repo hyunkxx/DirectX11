@@ -410,9 +410,9 @@ PS_OUT PS_Outline(PS_IN In)
 		vColor += mask[i] * g_DiffuseTexture.Sample(LinearSampler, In.vTexUV + float2(coord[i % 3] / 1280, coord[i % 3] / 720));
 
 	float fGray = 1.f - (vColor.r * 0.9f + vColor.g * 0.59f + vColor.b * 0.11f);
-	float4 Ret = float4(fGray + 0.1f, fGray + 0.1f, fGray + 0.1f, 1.f) / 1;
+	float4 Ret = float4(fGray + 0.4f, fGray + 0.4f, fGray + 0.4f, 1.f) / 1;
 
-	Out.vColor = smoothstep(0.3f, 1.f, Ret);
+	Out.vColor = smoothstep(0.1f, 1.f, Ret);
 
 	return Out;
 }

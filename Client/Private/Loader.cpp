@@ -113,7 +113,7 @@ HRESULT CLoader::Load_Level_Logo()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Background/ChooseRoverBack.png")))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXTURE::CHOOSE_ROVER_TEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Background/ChooseRoverText.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Background/ChooseRoverText.dds")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXTURE::TWINKL_ON_MASK,

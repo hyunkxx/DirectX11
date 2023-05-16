@@ -61,7 +61,7 @@ HRESULT CSphereCollider::Initialize(void * arg)
 
 	_matrix transformMatrix = XMMatrixIdentity();
 
-	_sphere = new BoundingSphere(_float3(0.f, 0.f, 0.f), 0.5f);
+	_sphere = new BoundingSphere(_float3(0.f, 0.f, 0.f), 1.f);
 	transformMatrix = scaleMatrix * rotationMatrix * translationMatrix;
 	_sphere->Transform(*_sphere, transformMatrix);
 	_sphereOriginal = new BoundingSphere(*_sphere);
@@ -74,9 +74,9 @@ void CSphereCollider::Update(_matrix transformMatrix)
 	if (!m_isActive)
 		return;
 
-	transformMatrix.r[0] = XMVector3Normalize(transformMatrix.r[0]) * CollDesc.vExtents.x;
-	transformMatrix.r[1] = XMVector3Normalize(transformMatrix.r[1]) * CollDesc.vExtents.y;
-	transformMatrix.r[2] = XMVector3Normalize(transformMatrix.r[2]) * CollDesc.vExtents.z;
+	transformMatrix.r[0] = XMVector3Normalize(transformMatrix.r[0]) * (CollDesc.vExtents.x * 2.f);
+	transformMatrix.r[1] = XMVector3Normalize(transformMatrix.r[1]) * (CollDesc.vExtents.y * 2.f);
+	transformMatrix.r[2] = XMVector3Normalize(transformMatrix.r[2]) * (CollDesc.vExtents.z * 2.f);
 
 	m_isColl = false;
 	_sphereOriginal->Transform(*_sphere, transformMatrix);

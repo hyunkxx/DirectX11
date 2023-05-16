@@ -189,6 +189,7 @@
     <ClInclude Include="..\ImGui\imstb_textedit.h" />
     <ClInclude Include="..\ImGui\imstb_truetype.h" />
     <ClInclude Include="..\public\AcquireSystem.h" />
+    <ClInclude Include="..\public\AcquireUI.h" />
     <ClInclude Include="..\public\AnimToolManager.h" />
     <ClInclude Include="..\public\Application.h" />
     <ClInclude Include="..\public\AppManager.h" />
@@ -298,6 +299,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\private\AcquireSystem.cpp" />
+    <ClCompile Include="..\private\AcquireUI.cpp" />
     <ClCompile Include="..\private\AnimToolManager.cpp" />
     <ClCompile Include="..\private\Application.cpp" />
     <ClCompile Include="..\private\AppManager.cpp" />

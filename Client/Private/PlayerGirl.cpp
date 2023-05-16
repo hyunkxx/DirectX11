@@ -320,7 +320,6 @@ HRESULT CPlayerGirl::Add_Components()
 		TEXT("Com_AnimSet_Ribbon"), (CComponent**)&m_pAnimSetCom[ANIMSET_RIBBON])))
 		return E_FAIL;
 
-
 	CNavigation::NAVIGATION_DESC NavigationDesc;
 	ZeroMemory(&NavigationDesc, sizeof(CNavigation::NAVIGATION_DESC));
 	NavigationDesc.iCurrentIndex = 0;
@@ -340,8 +339,8 @@ HRESULT CPlayerGirl::Add_Components()
 
 	CCollider::COLLIDER_DESC CollDesc;
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 0.f, 0.f };
-	CollDesc.vExtents = { 0.8f, 0.8f, 0.8f };
+	CollDesc.vCenter = { 0.f, 0.5f, 0.f };
+	CollDesc.vExtents = { 0.5f, 0.5f, 0.5f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_Collider"), (CComponent**)&m_pCollider, &CollDesc)))

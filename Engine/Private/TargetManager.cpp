@@ -58,7 +58,7 @@ HRESULT CTargetManager::AddMRT(const _tchar * pMRTTag, const _tchar * pTargetTag
 	return S_OK;
 }
 
-HRESULT CTargetManager::Begin(ID3D11DeviceContext * pContext, const _tchar * pMRTTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType, _bool bClear)
+HRESULT CTargetManager::Begin(ID3D11DeviceContext * pContext, wstring pMRTTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType, _bool bClear)
 {
 	CGraphic_Device* pGrahicDevice = CGraphic_Device::GetInstance();
 
@@ -115,7 +115,7 @@ HRESULT CTargetManager::SmallBeginTarget(ID3D11DeviceContext * pContext, CRender
 	return S_OK;
 }
 
-HRESULT CTargetManager::ShadowBegin(ID3D11DeviceContext * pContext, const _tchar * pMRTTag)
+HRESULT CTargetManager::ShadowBegin(ID3D11DeviceContext * pContext, wstring pMRTTag)
 {
 	list<CRenderTarget*>* pMRTList = FindMRT(pMRTTag);
 	if (nullptr == pMRTList)
@@ -202,18 +202,18 @@ HRESULT CTargetManager::Set_ShaderResourceView(CShader * pShader, const _tchar *
 	return pTarget->Set_ShaderResourceView(pShader, pContantName);
 }
 
-CRenderTarget * CTargetManager::FindTarget(const _tchar * pTargetTag)
+CRenderTarget * CTargetManager::FindTarget(wstring pTargetTag)
 {
-	auto iter = find_if(m_RTVs.begin(), m_RTVs.end(), CTagFinder(pTargetTag));
+	auto iter = m_RTVs.find(pTargetTag);
 	if (iter == m_RTVs.end())
 		return nullptr;
 
 	return iter->second;
 }
 
-list<class CRenderTarget*>* CTargetManager::FindMRT(const _tchar * pMRTTag)
+list<class CRenderTarget*>* CTargetManager::FindMRT(wstring pMRTTag)
 {
-	auto iter = find_if(m_MRTs.begin(), m_MRTs.end(), CTagFinder(pMRTTag));
+	auto iter = m_MRTs.find(pMRTTag);
 	if (iter == m_MRTs.end())
 		return nullptr;
 

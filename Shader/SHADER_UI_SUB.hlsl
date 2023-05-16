@@ -60,7 +60,7 @@ PS_OUT PS_Default(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
 
 	Out.vColor = vDiffuse;
 
@@ -71,8 +71,8 @@ PS_OUT PS_MaskBlend(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	vector vMask	= g_MaskTexture.Sample(LinearSampler, In.vTexUV);
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+	vector vMask	= g_MaskTexture.Sample(LinearClampSampler, In.vTexUV);
 
 	Out.vColor = vDiffuse * vMask;
 
@@ -83,7 +83,7 @@ PS_OUT PS_FillX(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
 	Out.vColor = vDiffuse;
 
 	if (In.vTexUV.x > g_fFillAmount)
@@ -96,7 +96,7 @@ PS_OUT PS_FillY(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
 	Out.vColor = vDiffuse;
 
 	if (In.vTexUV.y <= 1.f - g_fFillAmount)

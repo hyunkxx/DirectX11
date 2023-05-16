@@ -252,6 +252,10 @@
     <ClCompile Include="..\private\ItemDB.cpp">
       <Filter>src\00. Application\Items</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Sandbag.cpp" />
+    <ClCompile Include="..\private\AcquireUI.cpp">
+      <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -478,6 +482,10 @@
     </ClInclude>
     <ClInclude Include="..\public\ItemDB.h">
       <Filter>src\00. Application\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Sandbag.h" />
+    <ClInclude Include="..\public\AcquireUI.h">
+      <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -61,7 +61,7 @@ HRESULT COBBCollider::Initialize(void * arg)
 
 	_matrix transformMatrix = XMMatrixIdentity();
 	
-	_obbOriginal = _obb = new BoundingOrientedBox(_float3(0.f, 0.f, 0.f), _float3(0.5f, 0.5f, 0.5f), _float4(0.f, 0.f, 0.f, 1.f));
+	_obbOriginal = _obb = new BoundingOrientedBox(_float3(0.f, 0.f, 0.f), _float3(1.f, 1.f, 1.f), _float4(0.f, 0.f, 0.f, 1.f));
 	transformMatrix = rotationMatrix * translationMatrix;
 	_obb->Transform(*_obb, transformMatrix);
 	XMStoreFloat3(&_obb->Extents, XMLoadFloat3(&_obb->Extents) * XMLoadFloat3(&CollDesc.vExtents));
@@ -75,9 +75,9 @@ void COBBCollider::Update(_matrix transformMatrix)
 	if (!m_isActive)
 		return;
 
-	transformMatrix.r[0] = XMVector3Normalize(transformMatrix.r[0]) * CollDesc.vExtents.x;
-	transformMatrix.r[1] = XMVector3Normalize(transformMatrix.r[1]) * CollDesc.vExtents.y;
-	transformMatrix.r[2] = XMVector3Normalize(transformMatrix.r[2]) * CollDesc.vExtents.z;
+	transformMatrix.r[0] = XMVector3Normalize(transformMatrix.r[0]) * (CollDesc.vExtents.x * 2.f);
+	transformMatrix.r[1] = XMVector3Normalize(transformMatrix.r[1]) * (CollDesc.vExtents.y * 2.f);
+	transformMatrix.r[2] = XMVector3Normalize(transformMatrix.r[2]) * (CollDesc.vExtents.z * 2.f);
 
 	m_isColl = false;
 	_obbOriginal->Transform(*_obb, transformMatrix);

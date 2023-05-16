@@ -31,7 +31,7 @@ public:
 	virtual void RenderGUI();
 
 public:
-	void SetRender(INTERACT_TYPE eType, _bool bValue);
+	void SetInteractionActive(INTERACT_TYPE eType, _bool bValue);
 
 private:
 	HRESULT addComponents();
@@ -63,6 +63,10 @@ private:
 	ORTHO_DESC m_Sprite;
 	ORTHO_DESC m_Text;
 
+	ORTHO_DESC test80;
+	ORTHO_DESC test160;
+	ORTHO_DESC test160ex;
+	ORTHO_DESC test160es;
 private: // Sprite
 	_float2 m_SpriteSize;
 	_float m_fSpriteAcc = 0.0f;

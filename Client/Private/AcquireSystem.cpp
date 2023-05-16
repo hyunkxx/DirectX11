@@ -33,14 +33,16 @@ HRESULT CAcquireSystem::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 	
-	m_pInteraction = static_cast<CInteractionUI*>(pGameInstance->Clone_GameObject(OBJECT::UI_INTERACTION));
+	m_pInteractionUI = static_cast<CInteractionUI*>(pGameInstance->Clone_GameObject(OBJECT::UI_INTERACTION));
+	m_pAcquireUI = static_cast<CAcquireUI*>(pGameInstance->Clone_GameObject(OBJECT::UI_ACQUIRE));
 
 	return S_OK;
 }
 
 void CAcquireSystem::Start()
 {
-	m_pInteraction->Start();
+	m_pInteractionUI->Start();
+	m_pAcquireUI->Start();
 }
 
 void CAcquireSystem::Tick(_double TimeDelta)
@@ -48,7 +50,8 @@ void CAcquireSystem::Tick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	__super::Tick(TimeDelta);
 
-	m_pInteraction->Tick(TimeDelta);
+	m_pInteractionUI->Tick(TimeDelta);
+	m_pAcquireUI->Tick(TimeDelta);
 }
 
 void CAcquireSystem::LateTick(_double TimeDelta)
@@ -56,7 +59,8 @@ void CAcquireSystem::LateTick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	__super::LateTick(TimeDelta);
 
-	m_pInteraction->LateTick(TimeDelta);
+	m_pInteractionUI->LateTick(TimeDelta);
+	m_pAcquireUI->LateTick(TimeDelta);
 }
 
 HRESULT CAcquireSystem::Render()
@@ -67,13 +71,13 @@ HRESULT CAcquireSystem::Render()
 
 void CAcquireSystem::RenderGUI()
 {
-	m_pInteraction->RenderGUI();
-
+	m_pInteractionUI->RenderGUI();
+	m_pAcquireUI->RenderGUI();
 }
 
-void CAcquireSystem::SetRender(CInteractionUI::INTERACT_TYPE eType, _bool bValue)
+void CAcquireSystem::SetInteractionActive(CInteractionUI::INTERACT_TYPE eType, _bool bValue)
 {
-	m_pInteraction->SetRender(eType, bValue);
+	m_pInteractionUI->SetInteractionActive(eType, bValue);
 }
 
 CAcquireSystem * CAcquireSystem::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -104,5 +108,6 @@ void CAcquireSystem::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pInteraction);
+	Safe_Release(m_pInteractionUI);
+	Safe_Release(m_pAcquireUI);
 }

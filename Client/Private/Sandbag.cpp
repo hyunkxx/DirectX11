@@ -146,8 +146,8 @@ HRESULT CSandbag::Add_Components()
 	// Collider
 	CCollider::COLLIDER_DESC CollDesc;
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 1.f, 0.f };
-	CollDesc.vExtents = { 2.f, 2.f, 2.f };
+	CollDesc.vCenter = { 0.f, 0.7f, 0.f };
+	CollDesc.vExtents = { 0.7f, 0.7f, 0.7f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_Collider"), (CComponent**)&m_pCollider, &CollDesc)))

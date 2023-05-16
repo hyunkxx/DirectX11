@@ -91,7 +91,6 @@ private:
 	const _float m_fXAngleMin = { -20.f };
 	const _float m_fXAngleMax = { 80.f };
 
-
 public:
 	static CPlayerCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject * Clone(void * pArg = nullptr) override;

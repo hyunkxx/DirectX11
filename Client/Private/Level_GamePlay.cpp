@@ -223,7 +223,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_STANDARD, pLayerTag, L"chest_standard", &vPos)))
 		return E_FAIL;
 
-	vPos = { 9.f, 30.f, 10.f };
+	vPos = { 9.f, 30.7f, 10.f };
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_EXPANDED, pLayerTag, L"chest_expanded", &vPos)))
 		return E_FAIL;
 

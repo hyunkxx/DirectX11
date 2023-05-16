@@ -33,8 +33,8 @@ public:
 
 	 
 	// [ Begin : MRT바인딩 ]   [ ShadowBegin : 12800x7200 바인딩 ]   [ BeginTarget : 지정한 단일타겟 바인딩 ]   [ SmallBeginTarget : 절반사이즈 단일타겟 바인딩 ]
-	HRESULT Begin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT, _bool bClear = true);
-	HRESULT ShadowBegin(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
+	HRESULT Begin(ID3D11DeviceContext* pContext, wstring strMRTTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT, _bool bClear = true);
+	HRESULT ShadowBegin(ID3D11DeviceContext* pContext, wstring strMRTTag);
 	HRESULT BeginTarget(ID3D11DeviceContext* pContext, class CRenderTarget* pTarget, _bool bClear = true);
 	HRESULT MiddleBeginTarget(ID3D11DeviceContext* pContext, CRenderTarget * pTarget, _bool bClear = true);
 	HRESULT SmallBeginTarget(ID3D11DeviceContext* pContext, CRenderTarget * pTarget, _bool bClear = true);
@@ -42,9 +42,9 @@ public:
 
 	HRESULT Set_ShaderResourceView(class CShader* pShader, const _tchar* pTargetTag, const char* pContantName);
 
-	class CRenderTarget* FindTarget(const _tchar* pTargetTag);
+	class CRenderTarget* FindTarget(wstring strTargetTag);
 private:
-	class list<class CRenderTarget*>* FindMRT(const _tchar* pMRTTag);
+	class list<class CRenderTarget*>* FindMRT(wstring strMRTTag);
 
 
 #ifdef _DEBUG
@@ -55,8 +55,8 @@ public:
 	HRESULT Render(const _tchar* pMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 
 private:
-	unordered_map<const _tchar*, class CRenderTarget*>		 m_RTVs;
-	unordered_map<const _tchar*, list<class CRenderTarget*>> m_MRTs;
+	unordered_map<wstring, class CRenderTarget*>	   m_RTVs;
+	unordered_map<wstring, list<class CRenderTarget*>> m_MRTs;
 
 private:
 	ID3D11RenderTargetView* m_pBackBufferView = nullptr;

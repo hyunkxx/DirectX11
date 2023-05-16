@@ -36,7 +36,7 @@ public:
 
 private:
 	HRESULT addComponents();
-	void interactionRenderUI(_bool bRender);
+	void interactionUIActive(_bool bRender);
 
 public:
 	static CChest* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CHEST_TYPE eChestType);

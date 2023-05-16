@@ -40,7 +40,7 @@ HRESULT CInteractionUI::Initialize(void * pArg)
 	m_InteractionBack.fX = 980.f;
 	m_InteractionBack.fY = 410.f;
 	m_InteractionBack.fWidth = 332.f;
-	m_InteractionBack.fHeight = 44.f;
+	m_InteractionBack.fHeight = 42.f;
 
 	m_Text.fX = 980.f;
 	m_Text.fY = 412.f;
@@ -49,12 +49,38 @@ HRESULT CInteractionUI::Initialize(void * pArg)
 
 	m_Sprite = m_InteractionBack;
 	m_Sprite.fWidth = m_InteractionBack.fWidth + 12.f;
-	m_Sprite.fHeight = m_InteractionBack.fHeight + 10.f;
+	m_Sprite.fHeight = m_InteractionBack.fHeight + 12.f;
 
 	m_InterIcon = m_KeyDesc;
 	m_InterIcon.fX += 56.f;
 	m_InterIcon.fWidth = 32.f;
 	m_InterIcon.fHeight = 32.f;
+
+	test80.fX = 500.f;
+	test80.fY = 100.f;
+	test80.fWidth = 80.f;
+	test80.fHeight = 80.f;
+
+	test160.fX = 200.f;
+	test160.fY = 100.f;
+	test160.fWidth = 160.f;
+	test160.fHeight = 160.f;
+
+	test160ex.fX = 300.f;
+	test160ex.fY = 100.f;
+	test160ex.fWidth = 80.f;
+	test160ex.fHeight = 80.f;
+
+	test160es.fX = 400.f;
+	test160es.fY = 100.f;
+	test160es.fWidth = 80.f;
+	test160es.fHeight = 80.f;
+
+	XMStoreFloat4x4(&test80.WorldMatrix, XMMatrixScaling(test80.fWidth, test80.fHeight, 1.f) * XMMatrixTranslation(test80.fX - g_iWinSizeX * 0.5f, -test80.fY + g_iWinSizeY * 0.5f, 0.f));
+	XMStoreFloat4x4(&test160.WorldMatrix, XMMatrixScaling(test160.fWidth, test160.fHeight, 1.f) * XMMatrixTranslation(test160.fX - g_iWinSizeX * 0.5f, -test160.fY + g_iWinSizeY * 0.5f, 0.f));
+	XMStoreFloat4x4(&test160ex.WorldMatrix, XMMatrixScaling(test160ex.fWidth, test160ex.fHeight, 1.f) * XMMatrixTranslation(test160ex.fX - g_iWinSizeX * 0.5f, -test160ex.fY + g_iWinSizeY * 0.5f, 0.f));
+	XMStoreFloat4x4(&test160es.WorldMatrix, XMMatrixScaling(test160es.fWidth, test160es.fHeight, 1.f) * XMMatrixTranslation(test160es.fX - g_iWinSizeX * 0.5f, -test160es.fY + g_iWinSizeY * 0.5f, 0.f));
+
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
@@ -157,6 +183,27 @@ HRESULT CInteractionUI::Render()
 		if (FAILED(m_pKeyTexture->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
 			return E_FAIL;
 
+		m_pShader->Begin(5);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &test80.WorldMatrix)))
+			return E_FAIL;
+		pGameInstance->SetupSRV(STATIC_IMAGE::ITEM_COMMEMORATIVE_COIN, m_pShader, "g_DiffuseTexture");
+		m_pShader->Begin(5);
+		m_pVIBuffer->Render();
+		pGameInstance->SetupSRV(STATIC_IMAGE::ITEM_TACTITE_COIN, m_pShader, "g_DiffuseTexture");
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &test160.WorldMatrix)))
+			return E_FAIL;
+		m_pShader->Begin(5);
+		m_pVIBuffer->Render();
+		pGameInstance->SetupSRV(STATIC_IMAGE::ITEM_TACTREITE_VOUCHER, m_pShader, "g_DiffuseTexture");
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &test160ex.WorldMatrix)))
+			return E_FAIL;
+		m_pShader->Begin(5);
+		m_pVIBuffer->Render();
+		pGameInstance->SetupSRV(STATIC_IMAGE::ITEM_TACTITE_COIN, m_pShader, "g_DiffuseTexture");
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &test160es.WorldMatrix)))
+			return E_FAIL;
 		m_pShader->Begin(5);
 		m_pVIBuffer->Render();
 	}
@@ -263,6 +310,7 @@ HRESULT CInteractionUI::Render()
 
 		m_pShader->Begin(5);
 		m_pVIBuffer->Render();
+
 	}
 
 	return S_OK;
@@ -272,7 +320,7 @@ void CInteractionUI::RenderGUI()
 {
 }
 
-void CInteractionUI::SetRender(INTERACT_TYPE eType, _bool bValue)
+void CInteractionUI::SetInteractionActive(INTERACT_TYPE eType, _bool bValue)
 {
 	m_eInterType = eType;
 

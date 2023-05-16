@@ -166,11 +166,10 @@ void CObject_Manager::Clear(_uint iLevelIndex)
 
 CGameObject* CObject_Manager::Find_Prototype(_int iObjectEnum)
 {
-	for (auto iter = m_Prototypes.begin(); iter != m_Prototypes.end(); ++iter)
-	{
-		if (iter->first == iObjectEnum)
-			return iter->second;
-	}
+	auto iter = m_Prototypes.find(iObjectEnum);
+
+	if(iter != m_Prototypes.end())
+		return iter->second;
 
 	return nullptr;
 }

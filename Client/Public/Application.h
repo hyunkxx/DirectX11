@@ -62,6 +62,8 @@ private:
 	CGameInstance*				m_pGameInstance = { nullptr };
 	CRenderer*					m_pRenderer = { nullptr };
 
+
+	class CItemDB*				m_pItemDB = { nullptr };
 	class CAnimToolManager*		m_pAnimToolManager = { nullptr };
 #ifdef _DEBUG
 	class CGUIManager*			m_pGUIManager = { nullptr };

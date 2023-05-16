@@ -240,8 +240,6 @@ void CPlayerCamera::Tick(_double TimeDelta)
 
 	//여기서 월드매트릭스랑 원하는 상태를 보간
 
-
-
 	__super::Tick(TimeDelta);
 
 }

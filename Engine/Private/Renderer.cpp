@@ -67,8 +67,6 @@ void CRenderer::Draw()
 	Render_Distortion();
 	Render_Glow_Blend();
 
-	Render_NonLight();
-
 	AddCombine(L"Target_FinalBlend", L"Target_Final", L"Target_SpecGlow");
 	if (m_pRenderSetting->IsActiveRGBSplit())
 	{
@@ -79,6 +77,7 @@ void CRenderer::Draw()
 	//Final 백버퍼에 최종 렌더
 	FinalExtraction();
 
+	Render_NonLight();
 	Render_AlphaBlend();
 	Render_UI();
 
