@@ -596,7 +596,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 {
-	return S_OK;
+	//return S_OK;
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
