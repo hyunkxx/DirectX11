@@ -100,6 +100,7 @@ HRESULT CGameInstance::Engine_Tick(_double TimeDelta)
 	m_TimeDelta = TimeDelta;
 	m_pInput_Device->Update();
 
+	
 	m_pLevel_Manager->Tick_Level(TimeDelta);
 	m_pObject_Manager->Tick(TimeDelta);
 	m_pEffect_Manager->Tick(TimeDelta);

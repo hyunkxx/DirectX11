@@ -145,13 +145,13 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 	pGameInstance->AddCollider(m_pCollider);
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
-	pGameInstance->AddCollider(m_pAttackCollider);
+	pGameInstance->AddCollider(m_pAttackCollider, COLL_ATTACKNHIT);
 	m_pAttackCollider->Update(XMLoadFloat4x4(m_Parts[PARTS_WEAPON_MAIN]->Get_WorldMatrix()));
 
-	pGameInstance->AddCollider(m_pHitCollider);
+	pGameInstance->AddCollider(m_pHitCollider, COLL_ATTACKNHIT);
 	m_pHitCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
-	pGameInstance->AddCollider(m_pMoveCollider);
+	pGameInstance->AddCollider(m_pMoveCollider, COLL_MOVE);
 	m_pMoveCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 }
 
@@ -965,13 +965,13 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				m_Scon.iNextState = IS_ATTACK_03;
 				break; 
 			case IS_ATTACK_03:
-				if (m_Scon.TrackPos > 20.0)
+				if (m_Scon.TrackPos > 17.0)
 					m_Scon.iNextState = IS_ATTACK_PO_2;
 				else
 					m_Scon.iNextState = IS_ATTACK_04;
 				break;
 			case IS_ATTACK_09:
-				if (m_Scon.TrackPos > 20.0)
+				if (m_Scon.TrackPos > 18.0)
 					m_Scon.iNextState = IS_ATTACK_PO_2;
 				else
 					m_Scon.iNextState = IS_ATTACK_01;
@@ -1867,10 +1867,45 @@ void CP_PlayerGirl::Free()
 
 void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
+	// 피격자
+	// player1, player2, player3
+	////  
+	//CCharacter >> CharType, PLAYERCHAR ,MONSTER, NPC
+	CCharacter* pHitOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
+	
+	if (pHitOpponent)
+	{
+		// 플레이어의 Attack 콜라이더와 몬스터의 Hit 콜라이더가 만났을 경우
+		if (src->Compare(GetAttackCollider()) &&
+			dest->Compare(pHitOpponent->GetHitCollider()))
+		{
+			
+		}
+	}
+
+	// 공격자
+	CCharacter* pAttackOppnent = dynamic_cast<CCharacter*>(dest->GetOwner());
+	if(pHitOpponent)
+	{
+
+	}
+
+	
+	
 }
 
 void CP_PlayerGirl::OnCollisionStay(CCollider * src, CCollider * dest)
 {
+	CCharacter* pPushOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
+	if (pPushOpponent)
+	{
+		// 플레이어의 Move 콜라이더와 몬스터의? Move콜라이더가 만났을 때
+		if (src->Compare(GetAttackCollider()) &&
+			dest->Compare(pPushOpponent->GetHitCollider()))
+		{
+
+		}
+	}
 }
 
 void CP_PlayerGirl::OnCollisionExit(CCollider * src, CCollider * dest)

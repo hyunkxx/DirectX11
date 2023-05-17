@@ -322,6 +322,9 @@ public:
 	};
 public:
 	virtual void Check_Nearst(CCharacter* pChar, _float fDist) {}
+	virtual CCollider* GetAttackCollider() const { return nullptr; }
+	virtual CCollider* GetHitCollider() const { return nullptr; }
+	virtual CCollider* GetMoveCollider() const { return nullptr; }
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration) {}

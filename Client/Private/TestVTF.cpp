@@ -644,15 +644,15 @@ void CTestVTF::Init_AnimSystem()
 			const _tchar* szChannelName = pChannel->Get_Name();
 			CBone* pBone = m_pAnimSetCom[ANIMSET_BASE]->Get_BonePtr(pChannel->Get_TargetBoneID());
 
-			if (!(wcsncmp(szChannelName, TEXT("Bip001"), 6) &&
+			if (wcsncmp(szChannelName, TEXT("Bip001"), 6) &&
 				lstrcmp(szChannelName, TEXT("WeaponProp01")) &&
 				lstrcmp(szChannelName, TEXT("WeaponProp02")) &&
-				wcsncmp(szChannelName, TEXT("Root"), 4)))
-				continue;
+				wcsncmp(szChannelName, TEXT("Root"), 4))
+				pChannel->Set_Apply(false);
 
 			if (true == pBone->Is_ChildOf(TEXT("Bip001Head")))
 			{
-				if (!(lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_End")) &&
+				if (lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_End")) &&
 					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Loop")) &&
 					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Start")) &&
 					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack01")) &&
@@ -670,13 +670,13 @@ void CTestVTF::Init_AnimSystem()
 					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action02")) &&
 					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action03")) &&
 					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand2")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|StandChange"))))
+					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|StandChange")))
 				{
-					continue;
+					pChannel->Set_Apply(false);
 				}
 			}
 
-			pChannel->Set_Apply(false);
+
 
 		}
 	}

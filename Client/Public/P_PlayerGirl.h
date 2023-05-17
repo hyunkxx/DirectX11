@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 #include "Client_Defines.h"
 #include "Character.h"
 #include "Renderer.h"
@@ -214,6 +214,9 @@ public:
 	virtual void Free() override;
 
 	CCollider* GetDefaultCollider() const { return m_pCollider; }
+	virtual CCollider* GetAttackCollider() const override { return m_pAttackCollider; }
+	virtual CCollider* GetHitCollider() const override { return m_pHitCollider; }
+	virtual CCollider* GetMoveCollider() const override { return m_pMoveCollider; }
 	void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest) override;
 	void CP_PlayerGirl::OnCollisionStay(CCollider * src, CCollider * dest) override;
 	void CP_PlayerGirl::OnCollisionExit(CCollider * src, CCollider * dest) override;
