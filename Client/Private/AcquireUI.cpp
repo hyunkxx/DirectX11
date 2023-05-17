@@ -5,7 +5,7 @@
 #include "GameInstance.h"
 #include "ItemDB.h"
 
-#define FONT_WITDH 8.f
+#define FONT_WITDH 12.f
 
 CAcquireUI::CAcquireUI(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -58,14 +58,14 @@ HRESULT CAcquireUI::Initialize(void * pArg)
 		m_ItemAmountBegin[i].fX = 65.f;
 		m_ItemAmountBegin[i].fY = 460.f + (i * 39.f);
 		m_ItemAmountBegin[i].fWidth = FONT_WITDH;
-		m_ItemAmountBegin[i].fHeight = 14.f;
+		m_ItemAmountBegin[i].fHeight = 22.f;
 
 		for (int iRow = 0; iRow < 5; ++iRow)
 		{
 			m_ItemAmountDesc[iRow][i].fX = 65.f;
 			m_ItemAmountDesc[iRow][i].fY = 460.f + (i * 39.f);
 			m_ItemAmountDesc[iRow][i].fWidth = FONT_WITDH;
-			m_ItemAmountDesc[iRow][i].fHeight = 14.f;
+			m_ItemAmountDesc[iRow][i].fHeight = 22.f;
 		}
 	}
 
@@ -169,7 +169,7 @@ void CAcquireUI::Tick(_double TimeDelta)
 				// UI ItemAmount
 				for (int iDigit = 0; iDigit < 5; ++iDigit)
 				{
-					m_ItemAmountDesc[iDigit][i].fX = m_AcquireOrthoDesc[i].fX + 133.f + (iDigit * FONT_WITDH);
+					m_ItemAmountDesc[iDigit][i].fX = m_AcquireOrthoDesc[i].fX + (120.f + FONT_WITDH) + (iDigit * FONT_WITDH);
 					XMStoreFloat4x4(&m_ItemAmountDesc[iDigit][i].WorldMatrix, XMMatrixScaling(m_ItemAmountDesc[iDigit][i].fWidth, m_ItemAmountDesc[iDigit][i].fHeight, 1.f) * XMMatrixTranslation(m_ItemAmountDesc[iDigit][i].fX - g_iWinSizeX * 0.5f, -m_ItemAmountDesc[iDigit][i].fY + g_iWinSizeY * 0.5f, 0.f));
 				}
 			}

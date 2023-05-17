@@ -230,7 +230,9 @@ struct PS_OUT_OUTLINE
 	float4 vNormal	: SV_TARGET1;
 	float4 vDepth	: SV_TARGET2;
 	float4 vOutNormal : SV_TARGET3;
-	float4 vGlow : SV_TARGET4;
+	float4 vSpecGlow : SV_TARGET4;
+	float4 vGlow : SV_TARGET5;
+
 };
 
 struct PS_OUT_SHADOW
@@ -253,6 +255,7 @@ PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
 	Out.vDiffuse = vMtrlDiffuse;
 	Out.vNormal = float4(vNormal * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 1.f);
 
 	return Out;
 }
@@ -277,7 +280,9 @@ PS_OUT_OUTLINE PS_Outline(PS_IN In)
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
 	if (vNormalDesc.g > vNormalDesc.b)
-		Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
+		Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 1.f);
+
+	Out.vGlow = float4(0.f, 0.f, 0.f, 1.f);
 
 	return Out;
 }
@@ -295,6 +300,7 @@ PS_OUT_OUTLINE PS_Eye(PS_IN In)
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 	Out.vNormal	= vector(1.f, 1.f, 1.f, 0.f);
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 1.f);
 
 	return Out;
 }
@@ -321,7 +327,9 @@ PS_OUT_OUTLINE PS_Eye_Burst(PS_IN In)
 	vEyeMask.g = 0.f;
 
 	vector vEyeBust = g_EyeBurstTexture.Sample(LinearClampSampler, In.vTexUV) * g_vEyeColor;
-	Out.vGlow = vEyeBust + vEyeMask;
+	Out.vSpecGlow = vEyeBust + vEyeMask;
+
+	Out.vGlow = float4(0.f, 0.f, 0.f, 1.f);
 
 	return Out;
 }
@@ -353,13 +361,15 @@ PS_OUT_OUTLINE PS_RimLight(PS_IN In)
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-	Out.vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 1.f);
+	Out.vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
 	if (vNormalDesc.g > vNormalDesc.b)
-		Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
+		Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 1.f);
+
+	Out.vGlow = float4(0.f, 0.f, 0.f, 1.f);
 
 	return Out;
 }
@@ -386,7 +396,36 @@ PS_OUT_OUTLINE PS_DiffuseAddRim(PS_IN In)
 
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 	if (vNormalDesc.g > vNormalDesc.b)
-		Out.vGlow = float4(vDiffuse.xyz, 1.f);
+		Out.vSpecGlow = float4(vDiffuse.xyz, 1.f);
+
+	Out.vGlow = float4(0.f, 0.f, 0.f, 1.f);
+
+	return Out;
+}
+
+PS_OUT_OUTLINE PS_GlowModel(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
+	vMtrlDiffuse.a = 1.f;
+
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vNormal = float4(vNormal * 0.5f + 0.5f, 0.99f);
+
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+
+	if (vNormalDesc.g > vNormalDesc.b)
+		Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
 
 	return Out;
 }
@@ -522,4 +561,18 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_DiffuseAddRim();
 	}
+
+	pass VTF_GlowModel_Pass10
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_VTF();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_GlowModel();
+	}
+	
 }

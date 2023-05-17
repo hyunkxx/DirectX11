@@ -162,7 +162,7 @@ HRESULT CM_GAzizi::Render()
 		if (FAILED(m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(1);
+		m_pShaderCom->Begin(10);
 		m_pModelCom->Render(i);
 
 	}

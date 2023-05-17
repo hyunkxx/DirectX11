@@ -45,6 +45,7 @@ private:
 	void Render_Glow_Blend();
 
 	void Render_SpecularGlow();
+	void Render_ModelGlow();
 
 	void Render_NonLight();
 	void Render_AlphaBlend();

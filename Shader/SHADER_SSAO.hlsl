@@ -10,10 +10,10 @@ float4x4 g_ViewMatrixInv, g_ProjMatrixInv;
 texture2D g_DiffuseTexture, g_NormalTexture, g_DepthTexture;
 texture2D g_NoiseTexture;
 
-float g_fRadius = 0.000015f;
+float g_fRadius = 0.0015f;
 float g_fFalloff = 0.000002f;
-float g_fStrength = 0.0003f;
-float g_fTotStrength = 0.8f;
+float g_fStrength = 0.0007f;
+float g_fTotStrength = 1.38f;
 float g_fInvSamples = 1.f / 16.f;
 
 //노이즈 생성
@@ -83,7 +83,7 @@ tagSSAO_Out GetSSAO(tagSSAO_In In)
 		vRandomUV = In.vUV + vReflect.xy;
 
 		vector NearDepthInfo = g_DepthTexture.Sample(LinearSampler, vRandomUV);
-		fOccNormal = NearDepthInfo.g * g_Far * In.fViewZ;
+		fOccNormal = NearDepthInfo.g * g_Far;// *In.fViewZ;
 
 		if (fOccNormal <= In.fDepth + 0.05f)
 			++iColor;
@@ -149,7 +149,7 @@ PS_OUT PS_SSAO(PS_IN In)
 	SSAO_In.vUV = In.vTexUV;
 	SSAO_In.vNormal = vNormal.rgb;
 	SSAO_In.fViewZ = vDepth.r * g_Far;
-	SSAO_In.fDepth = vDepth.g * g_Far * SSAO_In.fViewZ;
+	SSAO_In.fDepth = vDepth.g * g_Far;// *SSAO_In.fViewZ;
 
 	tagSSAO_Out SSAO_Out = GetSSAO(SSAO_In);
 

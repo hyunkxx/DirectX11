@@ -60,6 +60,8 @@ void CRenderer::Draw()
 	Render_GlowSSD();
 	Render_Particle();
 	Render_SpecularGlow();
+	Render_ModelGlow();
+	AddCombine(L"Target_BlendGlow", L"Target_SpecGlow", L"Target_ModelGlow");
 
 	Render_Blend();
 
@@ -67,7 +69,7 @@ void CRenderer::Draw()
 	Render_Distortion();
 	Render_Glow_Blend();
 
-	AddCombine(L"Target_FinalBlend", L"Target_Final", L"Target_SpecGlow");
+	AddCombine(L"Target_FinalBlend", L"Target_Final", L"Target_BlendGlow");
 	if (m_pRenderSetting->IsActiveRGBSplit())
 	{
 		RGBSplit(L"Target_Split", L"Target_FinalBlend");
@@ -177,7 +179,7 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_ShadowMap", (_float)g_iShadowWidth, (_float)g_iShadowHeight,
-		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.0f, 1.f))))
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_Shadow", ViewPortDesc.Width, ViewPortDesc.Height,
@@ -240,6 +242,17 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 0.0f))))
 		return E_FAIL;
 
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_ModelLight"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_ModelGlow"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_BlendGlow"), ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.0f))))
+		return E_FAIL;
+
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, TEXT("Target_Final"), ViewPortDesc.Width, ViewPortDesc.Height,
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.0f))))
 		return E_FAIL;
@@ -298,6 +311,8 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_SpecGlow")))
 		return E_FAIL;
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_ModelLight")))
+		return E_FAIL;
 
 	// ±×¸²ÀÚ ±íÀÌ
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_LightDepth", L"Target_ShadowMap")))
@@ -340,8 +355,6 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	//Glow
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Glow", L"Target_Glow")))
-		return E_FAIL;
-	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Glow", L"Target_DistortionMap")))
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Glow_Result", L"Target_Glow_Result")))
@@ -931,7 +944,7 @@ void CRenderer::Render_Blend()
 
 void CRenderer::Render_Glow()
 {
-	if (!m_GlowEmpty)
+	if(!m_GlowEmpty)
 		Target_Blur(L"Target_Glow", 5);
 
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Glow_Result")))
@@ -1050,6 +1063,38 @@ void CRenderer::Render_SpecularGlow()
 	m_pVIBuffer->Render();
 
 	m_pTargetManager->End(m_pContext);
+}
+
+void CRenderer::Render_ModelGlow()
+{
+	Target_Blur_Middle(L"Target_ModelLight", 1);
+	CRenderTarget* pTarget = m_pTargetManager->FindTarget(L"Target_ModelGlow");
+	m_pTargetManager->BeginTarget(m_pContext, pTarget);
+
+	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader_Blur->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_ModelLight", "g_finalTexture")))
+		return;
+
+	// Blur On
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_ModelLight", "g_GlowOriTexture")))
+		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY_Middle", "g_GlowTexture")))
+		return;
+
+	if (m_pRenderSetting->IsActiveBlackWhite())
+		m_pShader_Blur->Begin(4);
+	else
+		m_pShader_Blur->Begin(3);
+	
+	m_pVIBuffer->Render();
+	m_pTargetManager->End(m_pContext);
+
 }
 
 void CRenderer::Render_NonLight()
