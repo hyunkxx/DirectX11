@@ -47,7 +47,15 @@ public:
 	_bool IsDestroy() const { return m_eState == STATE::DESTROY; }
 
 	_int GetID() const { return m_iObjectID; }
+	_tchar* GetTag() { return m_ObjectTag; }
 	_bool Compare(CGameObject* pGameObject) const { return this == pGameObject; }
+
+private:
+	friend class CLayer;
+	void SetTag(const _tchar* pTag)
+	{
+		lstrcpy(m_ObjectTag, pTag);
+	}
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;
@@ -60,6 +68,8 @@ protected:
 protected:
 	_bool m_bClone = false;
 	_int m_iObjectID = -1;
+	_tchar m_ObjectTag[MAX_TAG] = L"";
+
 	STATE m_eState = { ACTIVE };
 
 protected:

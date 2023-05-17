@@ -62,7 +62,7 @@ private:
 	vector<CItem::ITEM_DESC> m_ItemDescs;
 	queue<CItem::ITEM_DESC> m_ItemDescQueue;
 
-private:
+private: // 좌하단 획득 아이템 리스트 표시
 	_bool m_bAquireDisable = false;
 	_float m_fActiveTimeAcc = 0.f;
 
@@ -72,6 +72,9 @@ private:
 
 	_float m_fAcquireTextAlpha = 0.f;
 	_float m_fAcquireAlpha[ACQUIRE_MAX] = { 0.f, };
+
+private: // 최고 등급 표시
+	ORTHO_DESC m_HighestAcquireOrtho;
 
 };
 

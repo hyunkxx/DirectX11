@@ -192,7 +192,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 
 	//Toon
 	float fDot = max(0, dot(vNormal, -g_vLightDir));
-	if (fDot < 0.2)
+	if (fDot < 0.3)
 		fDot = 0.93f;
 	else
 		fDot = 1.0f;
@@ -247,7 +247,7 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 
 	//Toon
 	float fDot = max(0, dot(vNormal, -g_vLightDir));
-	if (fDot < 0.2)
+	if (fDot < 0.3)
 		fDot = 0.93f;
 	else
 		fDot = 1.0f;
@@ -298,7 +298,7 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 	vector vGlowColor = g_GlowTexture.Sample(LinearSampler, In.vTexUV);
 
 	//1.6~1.75น่
-	float4 vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.6f));
+	float4 vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
 	if (vOutNormal.a == 1.f)
 	{
 		float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
@@ -331,7 +331,7 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 	vector vGlowColor = g_GlowTexture.Sample(LinearBorderSampler, In.vTexUV);
 
 	//1.6~1.75น่
-	float4 vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.6f));
+	float4 vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
 	if (vGlowColor.a != 0.f)
 	{
 		if (vOutNormal.a == 1.f)

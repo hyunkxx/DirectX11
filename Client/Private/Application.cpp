@@ -580,6 +580,12 @@ HRESULT CApplication::Ready_Item_Image()
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_LISTBACK,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/GradBack.png")))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_GLOWGARD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Background/GlowGardBack.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_SIDEALPHA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Background/SideAlphaBack.dds")))))
+		return E_FAIL;
 
 #pragma endregion
 

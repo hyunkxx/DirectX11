@@ -23,6 +23,11 @@ _uint CAppManager::GetNumberLength(_uint iAmount)
 	return iLength;
 }
 
+void CAppManager::ComputeOrtho(ORTHO_DESC* eOrtho)
+{
+	XMStoreFloat4x4(&eOrtho->WorldMatrix, XMMatrixScaling(eOrtho->fWidth, eOrtho->fHeight, 1.f) * XMMatrixTranslation(eOrtho->fX - g_iWinSizeX * 0.5f, -eOrtho->fY + g_iWinSizeY * 0.5f, 0.f));
+}
+
 void CAppManager::SetTitle(wstring strTitle)
 {
 	if (m_strTitleText != strTitle)

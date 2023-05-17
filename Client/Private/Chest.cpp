@@ -204,7 +204,6 @@ void CChest::OnCollisionExit(CCollider * src, CCollider * dest)
 	{
 		m_bOverlapedPlayer = false;
 		interactionUIActive(false);
-		this->Destroy();
-		//this->SetState(STATE::);
+		SetState(STATE::DESTROY);
 	}
 }

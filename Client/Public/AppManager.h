@@ -15,6 +15,7 @@ private:
 public:
 	static _uint ConvertNumberToTexture(_uint iNumber, _uint iDigit);
 	static _uint GetNumberLength(_uint iAmount);
+	static void ComputeOrtho(ORTHO_DESC* eOrtho);
 
 	void SetTitle(wstring strTitle);
 

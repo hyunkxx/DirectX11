@@ -61,8 +61,10 @@ PS_OUT PS_Default(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	vector vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
-
 	Out.vColor = vDiffuse;
+
+	if (Out.vColor.a < 0.1f)
+		discard;
 
 	return Out;
 }
@@ -75,6 +77,9 @@ PS_OUT PS_MaskBlend(PS_IN In)
 	vector vMask	= g_MaskTexture.Sample(LinearClampSampler, In.vTexUV);
 
 	Out.vColor = vDiffuse * vMask;
+
+	if (Out.vColor.a < 0.1f)
+		discard;
 
 	return Out;
 }
@@ -89,6 +94,9 @@ PS_OUT PS_FillX(PS_IN In)
 	if (In.vTexUV.x > g_fFillAmount)
 		discard;
 
+	if (Out.vColor.a < 0.1f)
+		discard;
+
 	return Out;
 }
 
@@ -100,6 +108,9 @@ PS_OUT PS_FillY(PS_IN In)
 	Out.vColor = vDiffuse;
 
 	if (In.vTexUV.y <= 1.f - g_fFillAmount)
+		discard;
+
+	if (Out.vColor.a < 0.1f)
 		discard;
 
 	return Out;
@@ -119,6 +130,9 @@ PS_OUT PS_Twinkl(PS_IN In)
 	Out.vColor = vDiffuse;
 	Out.vColor.a = Out.vColor.a * vTwinklMask.a;
 
+	if (Out.vColor.a < 0.1f)
+		discard;
+
 	return Out;
 }
 
@@ -130,6 +144,9 @@ PS_OUT PS_Alpha(PS_IN In)
 
 	Out.vColor = vDiffuse;
 	Out.vColor.a = Out.vColor.a * g_fTimeAcc;
+
+	if (Out.vColor.a < 0.1f)
+		discard;
 
 	return Out;
 }
@@ -150,6 +167,9 @@ PS_OUT PS_Sprite(PS_IN In)
 	Out.vColor = g_DiffuseTexture.Sample(LinearClampSampler, uv);
 	Out.vColor = Out.vColor * float4(g_vColor, Out.vColor.a);
 
+	if (Out.vColor.a < 0.1f)
+		discard;
+
 	return Out;
 }
 
@@ -163,9 +183,27 @@ PS_OUT PS_AlphaColor(PS_IN In)
 	Out.vColor.rgb = Out.vColor.rgb * g_vColor;
 	Out.vColor.a = Out.vColor.a * g_fTimeAcc;
 
+	if (Out.vColor.a < 0.1f)
+		discard;
+
 	return Out;
 }
 
+PS_OUT PS_HalfAlphaColor(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+
+	Out.vColor = vDiffuse;
+	Out.vColor.rgb = Out.vColor.rgb * g_vColor;
+	Out.vColor.a = (Out.vColor.a * g_fTimeAcc) * 0.5f;
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -271,5 +309,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_AlphaColor();
+	}
+
+	pass AlphaColor_Pass8
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_HalfAlphaColor();
 	}
 }

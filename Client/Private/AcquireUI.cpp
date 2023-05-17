@@ -4,8 +4,9 @@
 #include "GameMode.h"
 #include "GameInstance.h"
 #include "ItemDB.h"
+#include "AppManager.h"
 
-#define FONT_WITDH 12.f
+#define FONT_WITDH 10.f
 
 CAcquireUI::CAcquireUI(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -58,14 +59,14 @@ HRESULT CAcquireUI::Initialize(void * pArg)
 		m_ItemAmountBegin[i].fX = 65.f;
 		m_ItemAmountBegin[i].fY = 460.f + (i * 39.f);
 		m_ItemAmountBegin[i].fWidth = FONT_WITDH;
-		m_ItemAmountBegin[i].fHeight = 22.f;
+		m_ItemAmountBegin[i].fHeight = 18.f;
 
 		for (int iRow = 0; iRow < 5; ++iRow)
 		{
 			m_ItemAmountDesc[iRow][i].fX = 65.f;
 			m_ItemAmountDesc[iRow][i].fY = 460.f + (i * 39.f);
 			m_ItemAmountDesc[iRow][i].fWidth = FONT_WITDH;
-			m_ItemAmountDesc[iRow][i].fHeight = 22.f;
+			m_ItemAmountDesc[iRow][i].fHeight = 18.f;
 		}
 	}
 
@@ -74,6 +75,14 @@ HRESULT CAcquireUI::Initialize(void * pArg)
 	m_AcquireTextDesc.fWidth = 350.f;
 	m_AcquireTextDesc.fHeight = 70.f;
 	XMStoreFloat4x4(&m_AcquireTextDesc.WorldMatrix, XMMatrixScaling(m_AcquireTextDesc.fWidth, m_AcquireTextDesc.fHeight, 1.f) * XMMatrixTranslation(m_AcquireTextDesc.fX - g_iWinSizeX * 0.5f, -m_AcquireTextDesc.fY + g_iWinSizeY * 0.5f, 0.f));
+
+	// 획득한 아이템중 최고등급 아이템 표시
+
+	m_HighestAcquireOrtho.fX = _float(g_iWinSizeX >> 1);
+	m_HighestAcquireOrtho.fY = _float(100.f);
+	m_HighestAcquireOrtho.fWidth = 200.f;
+	m_HighestAcquireOrtho.fHeight = 120.f;
+	CAppManager::ComputeOrtho(&m_HighestAcquireOrtho);
 
 	return S_OK;
 }
@@ -275,6 +284,20 @@ HRESULT CAcquireUI::Render()
 					m_pVIBuffer->Render();
 				}
 			}
+
+
+			// 최고등급 표시
+			if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_HighestAcquireOrtho.WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SIDEALPHA, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+
+			m_pShader->Begin(8);
+			m_pVIBuffer->Render();
 
 		}
 	}

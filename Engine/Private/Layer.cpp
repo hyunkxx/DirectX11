@@ -5,10 +5,8 @@ HRESULT CLayer::Add_GameObject(_tchar* szObjectTag, CGameObject* pGameObject)
 	if (nullptr == pGameObject)
 		return E_FAIL;
 	
-	_tchar* pTag = new _tchar[MAX_TAG];
-	lstrcpy(pTag, szObjectTag);
-
-	m_GameObjects.emplace(pTag, pGameObject);
+	pGameObject->SetTag(szObjectTag);
+	m_GameObjects.emplace(pGameObject->GetTag(), pGameObject);
 	
 	return S_OK;
 }
@@ -82,10 +80,7 @@ CLayer* CLayer::Create()
 void CLayer::Free()
 {
 	for (auto& pGameObject : m_GameObjects)
-	{
 		Safe_Release(pGameObject.second);
-		delete pGameObject.first;
-	}
 
 	m_GameObjects.clear();
 }
