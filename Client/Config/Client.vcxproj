@@ -205,6 +205,7 @@
     <ClInclude Include="..\Public\Client_ObjectEnum.h" />
     <ClInclude Include="..\Public\Client_ShaderEnum.h" />
     <ClInclude Include="..\Public\Client_TextureEnum.h" />
+    <ClInclude Include="..\public\M_GAzizi.h" />
     <ClInclude Include="..\public\Sandbag.h" />
     <ClInclude Include="..\public\DissolveKey.h" />
     <ClInclude Include="..\public\DynamicCamera.h" />
@@ -240,8 +241,9 @@
     <ClInclude Include="..\public\SoundKey.h" />
     <ClInclude Include="..\public\StateKey.h" />
     <ClInclude Include="..\public\Terrain.h" />
-    <ClInclude Include="..\public\PlayerGirl.h" />
+    <ClInclude Include="..\public\P_PlayerGirl.h" />
     <ClInclude Include="..\Public\TestChar.h" />
+    <ClInclude Include="..\public\TestGeneric.h" />
     <ClInclude Include="..\Public\TestVTF.h" />
     <ClInclude Include="..\Public\UI_MainScreen.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -308,6 +310,7 @@
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\CharacterSelect_Terrain.cpp" />
     <ClCompile Include="..\private\Chest.cpp" />
+    <ClCompile Include="..\private\M_GAzizi.cpp" />
     <ClCompile Include="..\private\Sandbag.cpp" />
     <ClCompile Include="..\private\DissolveKey.cpp" />
     <ClCompile Include="..\private\DynamicCamera.cpp" />
@@ -345,8 +348,9 @@
     <ClCompile Include="..\private\SoundKey.cpp" />
     <ClCompile Include="..\private\StateKey.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
-    <ClCompile Include="..\private\PlayerGirl.cpp" />
+    <ClCompile Include="..\private\P_PlayerGirl.cpp" />
     <ClCompile Include="..\Private\TestChar.cpp" />
+    <ClCompile Include="..\private\TestGeneric.cpp" />
     <ClCompile Include="..\Private\TestVTF.cpp" />
     <ClCompile Include="..\Private\UI_MainScreen.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

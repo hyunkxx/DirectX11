@@ -46,8 +46,8 @@ public:
 		_bool bWeaponState;
 		_float CoolTime;
 		_int iPhysicMoveID; // RootMotion이 false 일 경우 사용할 등가속 운동 움직임 ID
-		_uint iEnterPriority;
-		_uint iLeavePriority;
+		_int iEnterPriority;
+		_int iLeavePriority;
 		// StateKeys
 		_int iKeyCount;
 		CStateKey** ppStateKeys;
@@ -78,7 +78,7 @@ public:
 
 	static const char szSharedStateTag[SS_END][MAX_PATH];
 	static const char szRotationTag[ROT_END][MAX_PATH];
-	static const char szPhysicMoveTag[CCharacter::PSP_END][MAX_PATH];
+	static const char szPhysicMoveTag[CCharacter::SP_END][MAX_PATH];
 
 
 

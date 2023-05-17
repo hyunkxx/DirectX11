@@ -4,6 +4,7 @@
 #include "Client_Defines.h"
 #include "Character.h"
 #include "TestVTF.h"
+#include "TestGeneric.h"
 
 BEGIN(Client)
 
@@ -70,10 +71,12 @@ private:
 	// Infos
 	char m_szActionName[CTestVTF::ANIMSET_END][MAX_PATH] = { "", };
 	_int m_iActionIndex[CTestVTF::ANIMSET_END] = { 0, };
+	
 
 	// Parameters
 	_float m_Duration[CTestVTF::ANIMSET_END] = { 0.f };
 	_float m_TicksPerSecond = { 0.f };
+
 
 	// 'State' Treenode
 	// 루트 모션인지, 등가속 운동인지
@@ -85,7 +88,13 @@ private:
 	_int m_iKeyExist = { 0 };
 	CStateKey::BaseData m_tKeyData;
 
-	char m_szClassName[MAX_PATH] = { "" };
+	//char m_szClassName[MAX_PATH] = { "" };
+
+	// for Generic
+	char m_szActionName_s [MAX_PATH] = { "" };
+	_int m_iActionIndex_s = { 0 };
+
+	_float m_Duration_s = { 0.f };
 
 private:
 	void Save_State();

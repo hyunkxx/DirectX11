@@ -160,7 +160,7 @@ const char CTestChar::szRotationTag[ROT_END][MAX_PATH] =
 	"ROT_TURN",
 };
 
-const char CTestChar::szPhysicMoveTag[CCharacter::PSP_END][MAX_PATH] =
+const char CTestChar::szPhysicMoveTag[CCharacter::SP_END][MAX_PATH] =
 {
 	"NONE",
 	"WALK_F",

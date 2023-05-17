@@ -21,23 +21,28 @@ int g_iGUIID = 10000; // static, extern 해서 고정해놓는 변수, 매프레임 같은 값으
 
 void CAnimToolManager::Save_State()
 {
-	char szBuffer[MAX_PATH] = "";
-	char szPath[MAX_PATH] = "../../Data/CharState/";
+	//char szBuffer[MAX_PATH] = "";
+	//char szPath[MAX_PATH] = "../../Data/CharState/";
 	_tchar szFileName[MAX_PATH] = TEXT("");
 
+	if (MODEL_VTF == m_iModelType)
+		wsprintf(szFileName, m_pTargetVTF->Get_FilePath(), *m_pTargetVTF->Get_StateID());
+	else if(MODEL_GENERIC == m_iModelType)
+		wsprintf(szFileName, m_pTargetGeneric->Get_FilePath(), *m_pTargetGeneric->Get_StateID());
+
 	
-	strcat_s(szPath, m_szClassName);
+	/*strcat_s(szPath, m_szClassName);
 	strcat_s(szPath, "/");
 	strcat_s(szPath, m_szClassName);
-	strcat_s(szPath, "_");
-	_itoa_s(*m_pTargetVTF->Get_StateID(), szBuffer, 10);
+	strcat_s(szPath, "_");*/
+	/*_itoa_s(*m_pTargetVTF->Get_StateID(), szBuffer, 10);
 	strcat_s(szPath, szBuffer);
-	strcat_s(szPath, ".state");
+	strcat_s(szPath, ".state");*/
 	
-	MultiByteToWideChar(CP_ACP, 0,
-		szPath,
-		int(strlen(szPath)), szFileName,
-		sizeof(_tchar) * MAX_PATH);
+	//MultiByteToWideChar(CP_ACP, 0,
+	//	szPath,
+	//	int(strlen(szPath)), szFileName,
+	//	sizeof(_tchar) * MAX_PATH);
 	
 	HANDLE hFile = CreateFile(szFileName, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -79,6 +84,28 @@ void CAnimToolManager::Save_State()
 
 	else if (nullptr != m_pTargetGeneric)
 	{
+		CCharacter::SINGLESTATE tSingleState;
+		ZeroMemory(&tSingleState, sizeof tSingleState);
+
+		tSingleState.iAnimID = (_uint)m_pSingleState->iAnimID;
+		tSingleState.iNextState = (_uint)m_pSingleState->iNextState;
+		tSingleState.iRotationType = (_uint)m_pSingleState->iRotationType;
+		tSingleState.FramePerSec = (_double)m_pSingleState->FramePerSec;
+		tSingleState.bLoop = m_pSingleState->bLoop;
+		tSingleState.bLerp = m_pSingleState->bLerp;
+		tSingleState.bRootMotion = m_pSingleState->bRootMotion;
+		tSingleState.bApplyCoolTime = m_pSingleState->bApplyCoolTime;
+		tSingleState.bWeaponState = m_pSingleState->bWeaponState;
+		tSingleState.CoolTime = (_double)m_pSingleState->CoolTime;
+		tSingleState.iPhysicMoveID = (_uint)m_pSingleState->iPhysicMoveID;
+		tSingleState.iEnterPriority = (_uint)m_pSingleState->iEnterPriority;
+		tSingleState.iLeavePriority = (_uint)m_pSingleState->iLeavePriority;
+		tSingleState.iKeyCount = (_uint)m_pSingleState->iKeyCount;
+
+		WriteFile(hFile, &tSingleState, sizeof(CCharacter::SINGLESTATE) - sizeof(CStateKey**), &dwByte, nullptr);
+
+		for (_uint i = 0; i < tSingleState.iKeyCount; ++i)
+			WriteFile(hFile, m_pSingleState->ppStateKeys[i]->Get_Data(), sizeof(CStateKey::BaseData), &dwByte, nullptr);
 
 	}
 	
@@ -161,19 +188,7 @@ void CAnimToolManager::RenderGUI()
 				}
 				POPID;
 
-				PUSHID;
-				if (ImGui::Button("Load Model"))
-				{
-					CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-					if (MODEL_VTF == m_iModelType)
-					{
-						LoadPCModel();
-					}
-					else if (MODEL_GENERIC == m_iModelType)
-						LoadGenericModel();
-				}
-				POPID;
+				
 
 				break;
 
@@ -202,7 +217,6 @@ void CAnimToolManager::RenderGUI()
 				}
 				POPID;
 
-
 				break;
 			case Client::CAnimToolManager::MODEL_END:
 				ImGui::Text("m_eModelType == MODEL_END");
@@ -211,6 +225,22 @@ void CAnimToolManager::RenderGUI()
 				ImGui::Text("Something is wrong");
 				break;
 			}
+
+			PUSHID;
+			if (ImGui::Button("Load Model"))
+			{
+				CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+				if (MODEL_VTF == m_iModelType)
+				{
+					LoadPCModel();
+				}
+				else if (MODEL_GENERIC == m_iModelType)
+					LoadGenericModel();
+			}
+			POPID;
+
+
 		}
 		else
 		{
@@ -316,7 +346,80 @@ void CAnimToolManager::RenderGUI()
 		}
 		else if (nullptr != m_pTargetGeneric)
 		{
+			// 정보 갱신
+			if (m_pSingleState->iAnimID != m_iActionIndex_s ||
+				m_pSingleState->iAnimID != m_iActionIndex_s)
+				Update_Information();
 
+			//
+			PUSHID;
+			ImGui::Text("Base Action");
+			POPID;
+			PUSHID;
+			ImGui::Text("Anim Name : ");
+			POPID;
+			SAMELINE;
+			PUSHID;
+			ImGui::Text(m_szActionName_s);
+			POPID;
+			PUSHID;
+			ImGui::Text("Anim ID : ");
+			POPID;
+			SAMELINE;
+			PUSHID;
+			PUSHID;
+			ImGui::InputInt("", &m_pSingleState->iAnimID);
+			POPID;
+			POPID;
+			PUSHID;
+			ImGui::Text("Track");
+			POPID;
+			PUSHID;
+			ImGui::Text("0");
+			POPID;
+			SAMELINE;
+			PUSHID;
+			if (ImGui::SliderFloat("", m_pTargetGeneric->Get_TrackPos(), 0.0f, m_Duration_s))
+				m_pTargetGeneric->Set_TrackPos();
+			POPID;
+			SAMELINE;
+			PUSHID;
+			ImGui::Text("%.1f", m_Duration_s);
+			POPID;
+
+			//
+			//PUSHID;
+			//ImGui::Text("Ribbon Action");
+			//POPID;
+			//PUSHID;
+			//ImGui::Text("Anim Name : ");
+			//POPID;
+			//SAMELINE;
+			//PUSHID;
+			//ImGui::Text(m_szActionName_s);
+			//POPID;
+			//PUSHID;
+			//ImGui::Text("Anim ID : ");
+			//POPID;
+			//SAMELINE;
+			//PUSHID;
+			//ImGui::InputInt("", &m_pSingleState->iAnimID);
+			//POPID;
+			//PUSHID;
+			//ImGui::Text("Track");
+			//POPID;
+			//PUSHID;
+			//ImGui::Text("0");
+			//POPID;
+			//SAMELINE;
+			//PUSHID;
+			//if (ImGui::SliderFloat("", m_pTargetGeneric->Get_TrackPos(), 0.0f, m_Duration_s))
+			//	m_pTargetGeneric->Set_TrackPos();
+			//POPID;
+			//SAMELINE;
+			//PUSHID;
+			//ImGui::Text("%.1f", m_Duration_s);
+			//POPID;
 		}
 
 
@@ -464,7 +567,134 @@ void CAnimToolManager::RenderGUI()
 		}
 		else if (nullptr != m_pTargetGeneric)
 		{
+			if (m_pSingleState->FramePerSec != m_TicksPerSecond ||
+				*(m_pTargetGeneric->Get_StateID()) != m_iStateID)
+				Update_Information();
 
+			PUSHID;
+			ImGui::Text("State ID : ");
+			POPID;
+			SAMELINE;
+			PUSHID;
+			ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
+			ImGui::InputInt("", m_pTargetGeneric->Get_StateID());
+			m_pTargetGeneric->Safe_StateParams();
+			POPID;
+			/*ImGui::SameLine(ImGui::GetWindowWidth() * 0.7f);
+			PUSHID;
+			ImGui::Text(m_pTargetGeneric->Get_StateTag(*m_pTargetGeneric->Get_StateID()));
+			POPID;*/
+
+			PUSHID;
+			ImGui::Text("Next State ID : ");
+			POPID;
+			SAMELINE;
+			PUSHID;
+			ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
+			ImGui::InputInt("", &m_pSingleState->iNextState);
+			m_pTargetGeneric->Safe_StateParams();
+			POPID;
+		/*	ImGui::SameLine(ImGui::GetWindowWidth() * 0.7f);
+			PUSHID;
+			ImGui::Text(CTestChar::szSharedStateTag[m_pSingleState->iNextState]);
+			POPID;*/
+
+			PUSHID;
+			ImGui::Text("FramePerSec: ");
+			POPID;
+			SAMELINE;
+			PUSHID;
+			ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
+			ImGui::InputFloat("", &m_pSingleState->FramePerSec, 0.0f, 0.0f, "%.1f");
+			POPID;
+
+			PUSHID;
+			ImGui::Text("Rotation Type : ");
+			POPID;
+			SAMELINE;
+			PUSHID;
+			ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
+			ImGui::InputInt("", &m_pSingleState->iRotationType);
+			m_pTargetGeneric->Safe_StateParams();
+			POPID;
+			ImGui::SameLine(ImGui::GetWindowWidth() * 0.7f);
+			PUSHID;
+			ImGui::Text(CTestChar::szRotationTag[m_pSingleState->iRotationType]);
+			POPID;
+
+
+			PUSHID;
+			ImGui::Text("EnterPriority : ");
+			POPID;
+			SAMELINE;
+			PUSHID;
+			ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
+			ImGui::InputInt("", &m_pSingleState->iEnterPriority);
+			POPID;
+
+			PUSHID;
+			ImGui::Text("LeavePriority : ");
+			POPID;
+			SAMELINE;
+			PUSHID;
+			ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
+			ImGui::InputInt("", &m_pSingleState->iLeavePriority);
+			POPID;
+
+			//
+			PUSHID;
+			ImGui::Checkbox("Loop", &m_pSingleState->bLoop);
+			POPID;
+			SAMELINE;
+			PUSHID;
+			ImGui::Checkbox("Lerp", &m_pSingleState->bLerp);
+			POPID;
+			SAMELINE;
+			PUSHID;
+			ImGui::Checkbox("RootMotion", &m_pSingleState->bRootMotion);
+			POPID;
+
+			if (m_pSingleState->bRootMotion == false)
+			{
+				PUSHID;
+				ImGui::Text("PhysicMoveID : ");
+				POPID;
+				SAMELINE;
+				ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
+				PUSHID;
+				ImGui::InputInt("", &m_pSingleState->iPhysicMoveID);
+				m_pTargetGeneric->Safe_StateParams();
+				POPID;
+				ImGui::SameLine(ImGui::GetWindowWidth() * 0.7f);
+				PUSHID;
+				ImGui::Text(CTestChar::szPhysicMoveTag[m_pSingleState->iPhysicMoveID]);
+				POPID;
+			}
+
+			PUSHID;
+			ImGui::Checkbox("Use Weapon", &m_pSingleState->bWeaponState);
+			POPID;
+
+			SAMELINE;
+
+			PUSHID;
+			ImGui::Checkbox("Use Cooltime", &m_pSingleState->bApplyCoolTime);
+			// 쿨타임 값 입력
+			if (true == m_pSingleState->bApplyCoolTime)
+			{
+				SAMELINE;
+				PUSHID;
+				ImGui::Text("Cooltime: ");
+				POPID;
+				SAMELINE;
+				PUSHID;
+				ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
+				ImGui::InputFloat("", &m_pSingleState->CoolTime, 0.0f, 0.0f, "%.1f");
+				POPID;
+			}
+			//
+
+			POPID;
 		}
 
 		ImGui::TreePop();
@@ -645,7 +875,173 @@ void CAnimToolManager::RenderGUI()
 		}
 		else if (nullptr != m_pTargetGeneric)
 		{
+			Safe_Params();
 
+			// 키 카운트 설정
+			PUSHID;
+			ImGui::Text("Target Count : ");
+			POPID;
+			SAMELINE;
+			ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
+			PUSHID;
+			ImGui::InputInt("", &m_iKeyCount);
+			POPID;
+			SAMELINE;
+			PUSHID;
+			if (ImGui::Button("Set Key Count"))
+			{
+				Set_KeyCount();
+			}
+			POPID;
+
+			SEPERATOR;
+
+			int iKeyCount = m_pSingleState->iKeyCount;
+			if (0 != iKeyCount)
+			{
+				PUSHID;
+				m_iKeyExist = 0;
+				for (_int i = 0; i < iKeyCount; ++i)
+				{
+					if (nullptr != m_pSingleState->ppStateKeys[i])
+						++m_iKeyExist;
+					else
+						break;
+				}
+				ImGui::Text("KeyCount : %d / %d", m_iKeyExist, m_pSingleState->iKeyCount);
+				POPID;
+
+				//
+				PUSHID;
+				if (ImGui::TreeNode("Add Key"))
+				{
+					PUSHID;
+					ImGui::Text("Type : ");
+					POPID;
+					SAMELINE;
+					ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
+					PUSHID;
+					ImGui::InputInt("", &m_tKeyData.iType);
+					Safe_Params();
+					POPID;
+					ImGui::SameLine(ImGui::GetWindowWidth() * 0.5f);
+					PUSHID;
+					ImGui::Text(CStateKey::szStateKeyTag[m_tKeyData.iType]);
+					POPID;
+
+					PUSHID;
+					ImGui::Text("ShotFrame : ");
+					POPID;
+					SAMELINE;
+					ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.2f);
+					PUSHID;
+					ImGui::InputFloat("", &m_tKeyData.ShotFrame, 0.f, 0.f, "%.1f");
+					POPID;
+
+					PUSHID;
+					if (ImGui::TreeNode("Additional Parameters"))
+					{
+						PUSHID;
+						ImGui::Text("szTag : ");
+						POPID;
+						SAMELINE;
+						PUSHID;
+						ImGui::InputText("", m_tKeyData.szTag, MAX_PATH);
+						POPID;
+
+						PUSHID;
+						ImGui::Text("iInt0 : ");
+						POPID;
+						SAMELINE;
+						ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.3f);
+						PUSHID;
+						ImGui::InputInt("", &m_tKeyData.iInt0);
+						Safe_Params();
+						POPID;
+
+						PUSHID;
+						ImGui::Text("iInt1 : ");
+						POPID;
+						SAMELINE;
+						ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.3f);
+						PUSHID;
+						ImGui::InputInt("", &m_tKeyData.iInt1);
+						Safe_Params();
+						POPID;
+
+						PUSHID;
+						ImGui::Text("iInt2 : ");
+						POPID;
+						SAMELINE;
+						ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.3f);
+						PUSHID;
+						ImGui::InputInt("", &m_tKeyData.iInt2);
+						Safe_Params();
+						POPID;
+
+						PUSHID;
+						ImGui::Text("fFloat : ");
+						POPID;
+						SAMELINE;
+						ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.3f);
+						PUSHID;
+						ImGui::InputFloat("", &m_tKeyData.fFloat, 0.f, 0.f, "%.1f");
+						POPID;
+
+						ImGui::TreePop();
+					}
+					POPID;
+
+					PUSHID;
+					if (ImGui::Button("Create Key"))
+					{
+						Create_Key();
+					}
+					POPID;
+
+					ImGui::TreePop();
+				}
+				POPID;
+				//
+
+
+
+				for (int i = 0; i < m_pSingleState->iKeyCount; i++)
+				{
+					CStateKey* pStateKey = m_pSingleState->ppStateKeys[i];
+					if (nullptr != pStateKey)
+					{
+						PUSHID;
+						if (ImGui::TreeNode(CStateKey::szStateKeyTag[pStateKey->Get_Data()->iType]))
+						{
+							ImGui::SameLine(ImGui::GetWindowWidth() * 0.7f);
+							PUSHID;
+							ImGui::Checkbox("Ready", pStateKey->Get_Ready());
+							POPID;
+
+
+							ImGui::TreePop();
+						}
+						POPID;
+					}
+					else
+					{
+						PUSHID;
+						ImGui::Text("%d. empty", i);
+						POPID;
+					}
+				}
+
+				SEPERATOR;
+
+
+			}
+			else
+			{
+				PUSHID;
+				ImGui::Text("KeyCount is zero!");
+				POPID;
+			}
 		}
 
 		PUSHID;
@@ -692,7 +1088,7 @@ void CAnimToolManager::LoadPCModel()
 		if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANIMTOOL, VTFENUM(m_iListBoxIDArray[MODEL_VTF]), TEXT("Layer_Player"), TEXT("TestPlayer0"))))
 			return;
 
-		strcpy_s(m_szClassName, m_szListBoxItemsArray[MODEL_VTF][m_iListBoxIDArray[MODEL_VTF]]);
+		//strcpy_s(m_szClassName, m_szListBoxItemsArray[MODEL_VTF][m_iListBoxIDArray[MODEL_VTF]]);
 
 		m_pTargetVTF = static_cast<CTestVTF*>(pGameInstance->Find_GameObject(LEVEL_ANIMTOOL, TEXT("TestPlayer0")));
 
@@ -702,6 +1098,19 @@ void CAnimToolManager::LoadPCModel()
 
 void CAnimToolManager::LoadGenericModel()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (MODEL_GENERIC == m_iModelType)
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANIMTOOL, GENERICENUM(m_iListBoxIDArray[MODEL_GENERIC]), TEXT("Layer_Generic"), TEXT("TestGeneric0"))))
+			return;
+
+		//strcpy_s(m_szClassName, m_szListBoxItemsArray[MODEL_GENERIC][m_iListBoxIDArray[MODEL_GENERIC]]);
+
+		m_pTargetGeneric = static_cast<CTestGeneric*>(pGameInstance->Find_GameObject(LEVEL_ANIMTOOL, TEXT("TestGeneric0")));
+
+		Update_Information();
+	}
 }
 
 void CAnimToolManager::Update_Information()
@@ -747,7 +1156,29 @@ void CAnimToolManager::Update_Information()
 	}
 	else if (MODEL_GENERIC == m_iModelType && nullptr != m_pTargetGeneric)
 	{
+		m_pTargetGeneric->Safe_StateParams();
+		m_pTargetGeneric->Safe_AnimID();
 
+		m_pSingleState = m_pTargetGeneric->Get_CurState();
+
+		// Action - CTestVTF::ANIMSET_BASE
+		CModel_Anim* pModel = m_pTargetGeneric->Get_Action();
+		m_iActionIndex_s = m_pSingleState->iAnimID;
+		CAnimation* pAnim = pModel->Get_Animation((_uint)m_iActionIndex_s);
+
+		_tchar szBuffer[MAX_PATH] = TEXT("");
+		lstrcpy(szBuffer, pAnim->Get_Name());
+		WideCharToMultiByte(CP_ACP, 0, szBuffer, lstrlen(szBuffer) + 1, m_szActionName_s, MAX_PATH, nullptr, nullptr);
+
+		m_Duration_s = (_float)pAnim->Get_Duration();
+
+		pAnim->Set_TicksPerSecond(m_pSingleState->FramePerSec);
+		m_TicksPerSecond = (_float)m_pSingleState->FramePerSec;
+
+		// State
+		m_iStateID = *m_pTargetGeneric->Get_StateID();
+
+		m_pTargetGeneric->SetUp_State();
 	}
 }
 
@@ -796,7 +1227,44 @@ void CAnimToolManager::Set_KeyCount()
 	}
 	else if (nullptr != m_pTargetGeneric)
 	{
+		_int iOldCount = m_pSingleState->iKeyCount;
 
+		if (iOldCount != m_iKeyCount)
+		{
+			CStateKey** ppStateKeys = nullptr;
+
+			if (m_iKeyCount != 0)
+			{
+				ppStateKeys = new CStateKey*[m_iKeyCount];
+				ZeroMemory(ppStateKeys, sizeof(CStateKey*) * m_iKeyCount);
+			}
+
+			if (iOldCount != 0)
+			{
+				if (iOldCount > m_iKeyCount)
+				{
+					for (_int i = m_iKeyCount; i < iOldCount; ++i)
+					{
+						Safe_Release(m_pSingleState->ppStateKeys[i]);
+					}
+
+					for (_int i = 0; i < m_iKeyCount; ++i)
+					{
+						ppStateKeys[i] = m_pSingleState->ppStateKeys[i];
+					}
+				}
+				else if (iOldCount < m_iKeyCount)
+				{
+					for (_int i = 0; i < iOldCount; ++i)
+					{
+						ppStateKeys[i] = m_pSingleState->ppStateKeys[i];
+					}
+				}
+				Safe_Delete_Array(m_pSingleState->ppStateKeys);
+			}
+			m_pSingleState->ppStateKeys = ppStateKeys;
+			m_pSingleState->iKeyCount = m_iKeyCount;
+		}
 	}
 
 }
@@ -888,7 +1356,6 @@ void CAnimToolManager::Create_Key()
 			MSG_BOX("No Slot?");
 			return;
 		}
-
 	}
 
 }

@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "UI_MainScreen.h"
 #include "UI_Mouse.h"
-#include "PlayerGirl.h"
+#include "P_PlayerGirl.h"
 #include "DynamicCamera.h"
 CUI_Monster::CUI_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -500,9 +500,9 @@ void CUI_Monster::CommonHP()
 		m_DescList[i]->bRender = true;
 		CGameObject* pPlayer = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Player"));
 		// 가져온 오브젝트들이 준비가 되면 랜더 돌릴 수 있음-> 랜더조건
-		if (nullptr != dynamic_cast<CPlayerGirl*>(pPlayer)) // 다이나믹캐스트 조건 검사완료했으므로 아래에서는 스테틱캐스트로 변경
+		if (nullptr != dynamic_cast<CP_PlayerGirl*>(pPlayer)) // 다이나믹캐스트 조건 검사완료했으므로 아래에서는 스테틱캐스트로 변경
 		{
-			CTransform* pComponent = static_cast<CTransform*>(static_cast<CPlayerGirl*>(pPlayer)->Find_Component(TEXT("Com_Transform")));	 // 가져오는건 무조건 트랜스폼->스테틱캐스트 후 애초에 트랜스폼*으로 받음
+			CTransform* pComponent = static_cast<CTransform*>(static_cast<CP_PlayerGirl*>(pPlayer)->Find_Component(TEXT("Com_Transform")));	 // 가져오는건 무조건 트랜스폼->스테틱캐스트 후 애초에 트랜스폼*으로 받음
 			_float4 fPlayerPos;
 			_vector vPlayerPos;
 			vPlayerPos = pComponent->Get_State(CTransform::STATE_POSITION); // 바꾸려면 여기서 위치조정

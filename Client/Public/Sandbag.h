@@ -15,9 +15,6 @@ BEGIN(Client)
 
 class CSandbag 
 	: public CCharacter
-	, public IOnCollisionEnter
-	, public IOnCollisionStay
-	, public IOnCollisionExit
 {
 private:
 	CSandbag(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

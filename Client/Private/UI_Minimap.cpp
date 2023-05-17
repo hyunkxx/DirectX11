@@ -2,7 +2,7 @@
 #include "..\Public\UI_Minimap.h"
 #include "GameInstance.h"
 #include "UI_Mouse.h"
-#include "PlayerGirl.h"
+#include "P_PlayerGirl.h"
 #include "Terrain.h"
 
 CUI_Minimap::CUI_Minimap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -65,7 +65,7 @@ void CUI_Minimap::Tick(_double TimeDelta)
 	if(nullptr != pPlayer)
 	{
  		m_bNull = false;
-		CComponent* pComponent = dynamic_cast<CPlayerGirl*>(pPlayer)->Find_Component(TEXT("Com_Transform"));
+		CComponent* pComponent = dynamic_cast<CP_PlayerGirl*>(pPlayer)->Find_Component(TEXT("Com_Transform"));
 		XMStoreFloat4(&fPlayerPos, dynamic_cast<CTransform*>(pComponent)->Get_State(CTransform::STATE_POSITION));
 
 		//미니맵에 출력될 텍스처 uv의 전체 지형에서의 pos X,Z값

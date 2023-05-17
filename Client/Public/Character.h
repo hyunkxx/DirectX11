@@ -3,13 +3,18 @@
 #include "GameObject.h"
 #include "Client_Defines.h"
 #include "StateKey.h"
+#include "Collider.h"
 
 BEGIN(Client)
 
-class CCharacter abstract : public CGameObject
+class CCharacter abstract 
+	: public CGameObject
+	, public IOnCollisionEnter
+	, public IOnCollisionStay
+	, public IOnCollisionExit
 {
 public:
-	// 네비 메쉬 cell Type
+	// 네비 메쉬 Cell Type
 	enum CELL
 	{
 		CELL_GROUND,
@@ -187,26 +192,28 @@ public:
 		// 피격 ~ 사망
 		SS_BEHIT_S, // Small
 		SS_BEHIT_B, // Big
-		SS_BEHIT_FLY, // or PUSH  ~~ 둘이 비슷함
+		SS_BEHIT_FLY_START, // or PUSH  ~~ 둘이 비슷함
+		SS_BEHIT_FLY_LOOP,
+		SS_BEHIT_FLY_FALL,
 		SS_BEHIT_PRESS, // 바닥에 쳐박힘
 		SS_DEATH_IN_WATER, // 익사
 		SS_DEATH, // 일반 사망
 		SS_END
 	};
 
-	// 플레이어 상태에서 사용할 등가속 운동 움직임
-	enum PlayerStatePhysics
+	// 플레이어가 사용할 등가속 운동 움직임
+	enum StatePhysics
 	{
-		PSP_NONE,
+		SP_NONE,
 
-		PSP_WALK_F,
-		PSP_RUN_F,
-		PSP_SPRINT_F,
-		PSP_SPRINT_B,
-		PSP_FALL,
-		PSP_PLAYERGIRL_AIRATTACK,
+		SP_WALK_F,
+		SP_RUN_F,
+		SP_SPRINT_F,
+		SP_SPRINT_B,
+		SP_FALL,
+		SP_PLAYERGIRL_AIRATTACK,
 
-		PSP_END,
+		SP_END,
 
 	};
 
@@ -221,7 +228,7 @@ public:
 		ROT_END,
 	};
 
-	// 캐릭터가 현재 위치 상태, 지상, 공중, 벽
+	// 캐릭터의 현재 위치 상태, 지상, 공중, 벽
 	enum PositionState
 	{
 		PS_GROUND,
@@ -313,12 +320,13 @@ public:
 		_bool			bFalling;
 		_float4x4		DefaultMatrix; // 애니메이션 시작 상태 행렬
 	};
+public:
+	virtual void Check_Nearst(CCharacter* pChar, _float fDist) {}
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration) {}
 	virtual void Shot_PriorityKey(_uint iLeavePriority) {}
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint iEffectBoneID, _uint iTypeID, _bool bTracking) {}
-
 
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -335,11 +343,10 @@ public:
 	virtual HRESULT RenderShadow();
 	virtual void RenderGUI();
 
-	static PHYSICMOVE PlayerStatePhysics[PSP_END];
+	static PHYSICMOVE StatePhysics[SP_END];
 
 protected:
 	StateController m_Scon;
-	
 
 public:
 	virtual void Free() override;

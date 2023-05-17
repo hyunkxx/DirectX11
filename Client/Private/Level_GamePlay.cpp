@@ -7,7 +7,8 @@
 #include "DynamicCamera.h"
 #include "PlayerCamera.h"
 #include "Character.h"
-#include "PlayerGirl.h"
+#include "P_PlayerGirl.h"
+#include "M_GAzizi.h"
 #include "AcquireSystem.h"
 
 #include "MapObject.h"
@@ -28,6 +29,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	pGameInstance->OutlineToggle();
 	pGameInstance->SSAOToggle();
 
+	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
+	CM_GAzizi::Init_States(m_pDevice, m_pContext);
+
 	if(FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
 
@@ -35,6 +39,9 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Monster(TEXT("layer_monster"))))
 		return E_FAIL;
 	
 	if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
@@ -292,9 +299,20 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHARACTER, pLayerTag, szTag, &j)))
 		return E_FAIL;*/
 
-	CPlayerGirl::Init_States(m_pDevice, m_pContext);
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
+		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYERGIRL, pLayerTag, TEXT("Player"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MONSTER_GAZIZI, pLayerTag, TEXT("GAzizi"))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
@@ -1060,6 +1078,7 @@ void CLevel_GamePlay::Free()
 {
 	__super::Free();
 
-	CPlayerGirl::Release_States();
+	CP_PlayerGirl::Release_States();
+	CM_GAzizi::Release_States();
 	
 }

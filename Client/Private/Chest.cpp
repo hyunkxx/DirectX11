@@ -4,7 +4,7 @@
 #include "GameMode.h"
 #include "GameInstance.h"
 #include "AcquireSystem.h"
-#include "PlayerGirl.h"
+#include "P_PlayerGirl.h"
 
 #include "ItemDB.h"
 
@@ -183,7 +183,7 @@ void CChest::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
 	CGameMode* pGameMode = CGameMode::GetInstance();
 
-	CPlayerGirl* pPlayer = dynamic_cast<CPlayerGirl*>(dest->GetOwner());
+	CP_PlayerGirl* pPlayer = dynamic_cast<CP_PlayerGirl*>(dest->GetOwner());
 	if (pPlayer)
 	{
 		m_bOverlapedPlayer = true;
@@ -199,7 +199,7 @@ void CChest::OnCollisionExit(CCollider * src, CCollider * dest)
 {
 	CGameMode* pGameMode = CGameMode::GetInstance();
 
-	CPlayerGirl* pPlayer = dynamic_cast<CPlayerGirl*>(dest->GetOwner());
+	CP_PlayerGirl* pPlayer = dynamic_cast<CP_PlayerGirl*>(dest->GetOwner());
 	if (pPlayer)
 	{
 		m_bOverlapedPlayer = false;

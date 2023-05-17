@@ -54,6 +54,11 @@ public:
 		m_bOutline = bValue;
 	}
 
+	_float4x4* Get_WorldMatrix()
+	{
+		return &m_WorldMatrix;
+	}
+
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };

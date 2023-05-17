@@ -22,7 +22,7 @@ HRESULT CChannel::Initialize(CHANNELINFO * pChannelInfo, CModel_Anim * pModel)
 		m_KeyFrames.push_back(pChannelInfo->s_pKeyFrames[i]);
 	}
 
-	m_bApply = false;
+	m_bApply = true;
 
 	return S_OK;
 }

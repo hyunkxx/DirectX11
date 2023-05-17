@@ -61,6 +61,7 @@ public:
 		_uint iModelID;
 		_uint iAnimSetID[ANIMSET_END];
 		_uint iPartsID[PARTS_END];
+		_tchar szFilePath[MAX_PATH];
 	};
 
 private:
@@ -91,6 +92,11 @@ public:
 	MULTISTATE_TOOL* Get_CurState()
 	{
 		return &m_tStates[m_iStateID];
+	}
+
+	const _tchar* Get_FilePath()
+	{
+		return m_tDesc.szFilePath;
 	}
 
 	int* Get_StateID()
@@ -185,6 +191,17 @@ public:
 	CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 
+
+
+	CCollider* GetDefaultCollider() const { return m_pCollider; }
+	void CTestVTF::OnCollisionEnter(CCollider * src, CCollider * dest) override;
+	void CTestVTF::OnCollisionStay(CCollider * src, CCollider * dest) override;
+	void CTestVTF::OnCollisionExit(CCollider * src, CCollider * dest) override;
+
+	CTexture* m_pEyeBurstTexture = nullptr;
+	CTexture* m_pEyeMaskTexture = nullptr;
+
+	CCollider* m_pCollider = nullptr;
 	CGameObject* pStaticObject = nullptr;
 };
 

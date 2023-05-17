@@ -3,7 +3,7 @@
 
 #include "GameMode.h"
 
-CCharacter::PHYSICMOVE CCharacter::PlayerStatePhysics[PSP_END]
+CCharacter::PHYSICMOVE CCharacter::StatePhysics[SP_END]
 {
 	// (x, -z, y) 
 	// 안 움직임

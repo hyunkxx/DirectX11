@@ -50,9 +50,6 @@ HRESULT CTestVTF::Initialize(void * pArg)
 
 	if (FAILED(Init_EffectBones()))
 		return E_FAIL;
-	
-
-	
 
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
@@ -121,7 +118,6 @@ void CTestVTF::Tick(_double TimeDelta)
 					m_tStates[m_iStateID].ppStateKeys[i]->Reset();
 			}
 
-
 			SetUp_State();
 		}
 
@@ -130,7 +126,6 @@ void CTestVTF::Tick(_double TimeDelta)
 			m_bPlay = !m_bPlay;
 		}
 	}
-	
 
 	Tick_State(TimeDelta);
 
@@ -305,7 +300,7 @@ void CTestVTF::SetUp_State()
 
 	if (false == m_tStates[m_iStateID].bRootMotion)
 	{
-		PHYSICMOVE tPhysicMove = PlayerStatePhysics[m_tStates[m_iStateID].iPhysicMoveID];
+		PHYSICMOVE tPhysicMove = StatePhysics[m_tStates[m_iStateID].iPhysicMoveID];
 
 		if (true == tPhysicMove.bInitMovement)
 			XMStoreFloat3(&m_vMovement, XMVector3Normalize(XMLoadFloat3(&tPhysicMove.vInitDir)) * tPhysicMove.fInitForce);
@@ -367,7 +362,7 @@ HRESULT CTestVTF::Init_States()
 	for (_int i = 0; i < 200; ++i)
 	{
 		_tchar szBuffer[MAX_PATH];
-		wsprintf(szBuffer, TEXT("../../Data/CharState/PlayerGirl/PlayerGirl_%d.state"), i);
+		wsprintf(szBuffer, m_tDesc.szFilePath, i);
 		HANDLE hFile = CreateFile(szBuffer, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
 		if (INVALID_HANDLE_VALUE == hFile)
@@ -526,8 +521,8 @@ void CTestVTF::Safe_StateParams()
 
 	if (m_tStates[m_iStateID].iPhysicMoveID < 0)
 		m_tStates[m_iStateID].iPhysicMoveID = 0;
-	else if (m_tStates[m_iStateID].iPhysicMoveID >= CCharacter::PSP_END)
-		m_tStates[m_iStateID].iPhysicMoveID = CCharacter::PSP_END - 1;
+	else if (m_tStates[m_iStateID].iPhysicMoveID >= CCharacter::SP_END)
+		m_tStates[m_iStateID].iPhysicMoveID = CCharacter::SP_END - 1;
 
 }
 
@@ -569,7 +564,7 @@ void CTestVTF::Tick_State(_double TimeDelta)
 		else
 		{
 			// 가속/감속 체크하는 코드
-			const PHYSICMOVE& PhysicMove = PlayerStatePhysics[m_tStates[m_iStateID].iPhysicMoveID];
+			const PHYSICMOVE& PhysicMove = StatePhysics[m_tStates[m_iStateID].iPhysicMoveID];
 			if (false == PhysicMove.bConstant)
 			{
 				_vector vMove = XMLoadFloat3(&m_vPrevMovement);
@@ -649,15 +644,15 @@ void CTestVTF::Init_AnimSystem()
 			const _tchar* szChannelName = pChannel->Get_Name();
 			CBone* pBone = m_pAnimSetCom[ANIMSET_BASE]->Get_BonePtr(pChannel->Get_TargetBoneID());
 
-			if (wcsncmp(szChannelName, TEXT("Bip001"), 6) &&
+			if (!(wcsncmp(szChannelName, TEXT("Bip001"), 6) &&
 				lstrcmp(szChannelName, TEXT("WeaponProp01")) &&
 				lstrcmp(szChannelName, TEXT("WeaponProp02")) &&
-				wcsncmp(szChannelName, TEXT("Root"), 4))
+				wcsncmp(szChannelName, TEXT("Root"), 4)))
 				continue;
 
 			if (true == pBone->Is_ChildOf(TEXT("Bip001Head")))
 			{
-				if (lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_End")) &&
+				if (!(lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_End")) &&
 					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Loop")) &&
 					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Start")) &&
 					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack01")) &&
@@ -675,13 +670,13 @@ void CTestVTF::Init_AnimSystem()
 					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action02")) &&
 					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action03")) &&
 					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand2")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|StandChange")))
+					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|StandChange"))))
 				{
 					continue;
 				}
 			}
 
-			pChannel->Set_Apply(true);
+			pChannel->Set_Apply(false);
 
 		}
 	}
@@ -702,25 +697,25 @@ void CTestVTF::Init_AnimSystem()
 			/*if (pChannel->Get_NumKeyFrames() <= 2)
 				continue;*/
 
-			if (true == pBone->Is_ChildOf(TEXT("Hair_M_B00")) ||
+			if (!(true == pBone->Is_ChildOf(TEXT("Hair_M_B00")) ||
 				true == pBone->Is_ChildOf(TEXT("Piao_L_lingjie01")) ||
 				true == pBone->Is_ChildOf(TEXT("Piao_R_lingjie01")) ||
 				true == pBone->Is_ChildOf(TEXT("skrit_L_F02")) ||
 				true == pBone->Is_ChildOf(TEXT("skirt_M_B02")) ||
-				true == pBone->Is_ChildOf(TEXT("Piao_F01")))
+				true == pBone->Is_ChildOf(TEXT("Piao_F01"))))
 			{
-				pChannel->Set_Apply(true);
+				pChannel->Set_Apply(false);
 			}
-			else if (!lstrcmp(szChannelName, TEXT("Hair_M_B00")) ||
+			else if (!(!lstrcmp(szChannelName, TEXT("Hair_M_B00")) ||
 				!lstrcmp(szChannelName, TEXT("Piao_L_lingjie01")) ||
 				!lstrcmp(szChannelName, TEXT("Piao_R_lingjie01")) ||
 				!lstrcmp(szChannelName, TEXT("Piao_L_pidai01")) ||
 				!lstrcmp(szChannelName, TEXT("Piao_R_pidai01")) ||
 				!lstrcmp(szChannelName, TEXT("skrit_L_F01")) ||
-				!lstrcmp(szChannelName, TEXT("skirt_M_B01")) 
+				!lstrcmp(szChannelName, TEXT("skirt_M_B01"))) 
 				/*!lstrcmp(szChannelName, TEXT("Piao_F01"))*/)
 			{
-				pChannel->Set_Apply(true);
+				pChannel->Set_Apply(false);
 			}
 		}
 	}
@@ -842,4 +837,16 @@ void CTestVTF::Free()
 	Safe_Release(m_pMainTransform);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
+}
+
+void CTestVTF::OnCollisionEnter(CCollider * src, CCollider * dest)
+{
+}
+
+void CTestVTF::OnCollisionStay(CCollider * src, CCollider * dest)
+{
+}
+
+void CTestVTF::OnCollisionExit(CCollider * src, CCollider * dest)
+{
 }
