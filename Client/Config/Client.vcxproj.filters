@@ -132,9 +132,6 @@
     <ClCompile Include="..\private\BackGround.cpp">
       <Filter>src\02. GameObject\02. LoadingImage</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\PlayerGirl.cpp">
-      <Filter>src\02. GameObject\03. Character</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Parts.cpp">
       <Filter>src\02. GameObject\03. Character</Filter>
     </ClCompile>
@@ -256,6 +253,11 @@
     <ClCompile Include="..\private\AcquireUI.cpp">
       <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\M_GAzizi.cpp" />
+    <ClCompile Include="..\private\TestGeneric.cpp" />
+    <ClCompile Include="..\private\P_PlayerGirl.cpp">
+      <Filter>src\02. GameObject\03. Character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -341,9 +343,6 @@
     </ClInclude>
     <ClInclude Include="..\public\BackGround.h">
       <Filter>src\02. GameObject\02. LoadingImage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\PlayerGirl.h">
-      <Filter>src\02. GameObject\03. Character</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>config\res</Filter>
@@ -486,6 +485,11 @@
     <ClInclude Include="..\public\Sandbag.h" />
     <ClInclude Include="..\public\AcquireUI.h">
       <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\M_GAzizi.h" />
+    <ClInclude Include="..\public\TestGeneric.h" />
+    <ClInclude Include="..\public\P_PlayerGirl.h">
+      <Filter>src\02. GameObject\03. Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

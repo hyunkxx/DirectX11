@@ -377,8 +377,8 @@ HRESULT CP_PlayerGirl::Add_Components()
 		return E_FAIL;
 
 	CollDesc.owner = this;
-	CollDesc.vCenter = { -0.0f, 0.f, 0.f };
-	CollDesc.vExtents = { 12.f, 0.1f, 0.1f };
+	CollDesc.vCenter = { -0.4f, 0.f, 0.f };
+	CollDesc.vExtents = { 0.5f, 0.05f, 0.05f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::OBB,
 		TEXT("Com_AttackCollider"), (CComponent**)&m_pAttackCollider, &CollDesc)))

@@ -75,9 +75,9 @@ void COBBCollider::Update(_matrix transformMatrix)
 	if (!m_isActive)
 		return;
 
-	transformMatrix.r[0] = XMVector3Normalize(transformMatrix.r[0]) * (CollDesc.vExtents.x * 2.f);
-	transformMatrix.r[1] = XMVector3Normalize(transformMatrix.r[1]) * (CollDesc.vExtents.y * 2.f);
-	transformMatrix.r[2] = XMVector3Normalize(transformMatrix.r[2]) * (CollDesc.vExtents.z * 2.f);
+	//transformMatrix.r[0] = XMVector3Normalize(transformMatrix.r[0]) * (CollDesc.vExtents.x * 2.f);
+	//transformMatrix.r[1] = XMVector3Normalize(transformMatrix.r[1]) * (CollDesc.vExtents.y * 2.f);
+	//transformMatrix.r[2] = XMVector3Normalize(transformMatrix.r[2]) * (CollDesc.vExtents.z * 2.f);
 
 	m_isColl = false;
 	_obbOriginal->Transform(*_obb, transformMatrix);
