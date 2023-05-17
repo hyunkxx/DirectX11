@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\P_PlayerGirl.h"
 
+#include "ItemDB.h"
 #include "GameMode.h"
 #include "GameInstance.h"
 #include "Parts.h"
@@ -189,6 +190,24 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 
 	//Effect Bones 贸府
 	Update_EffectBones();
+
+	//烙矫 UI 贸府
+
+	if (pGameInstance->InputKey(DIK_F) == KEY_STATE::TAP)
+	{
+		CItem::ITEM_DESC item0 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
+		item0.iAmount = 4424;
+
+		CItem::ITEM_DESC item1 = CItemDB::GetInstance()->GetItemData(ITEM::COMMEMORATIVE_COIN);
+		item1.iAmount = 12349;
+
+		CItem::ITEM_DESC item2 = CItemDB::GetInstance()->GetItemData(ITEM::TACTREITE_VOUCHER);
+		item2.iAmount = 1;
+
+		CGameMode::GetInstance()->EnqueueItemDesc(item0);
+		CGameMode::GetInstance()->EnqueueItemDesc(item1);
+		CGameMode::GetInstance()->EnqueueItemDesc(item2);
+	}
 }
 
 HRESULT CP_PlayerGirl::Render()

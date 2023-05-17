@@ -80,19 +80,19 @@ HRESULT CChest::RenderShadow()
 
 void CChest::RenderGUI()
 {
-	ImGui::Begin("item");
-
-	CItem::ITEM_DESC item = CItemDB::GetInstance()->GetItemData("item_cook");
-	_float fValue = (_float)item.iImageIndex;
-	ImGui::DragFloat("item index1", &fValue);
-
-	ImGui::End();
 }
 
 void CChest::Interaction(void * pArg)
 {
 	m_pCollider->SetActive(false);
+	m_bOverlapedPlayer = false;
+
 	interactionUIActive(false);
+
+	//CItem::ITEM_DESC item = CItemDB::GetInstance()->GetItemData("item_cook");
+	//CGameMode::GetInstance()->EnqueueItemDesc(item);
+	//CGameMode::GetInstance()->EnqueueItemDesc(item);
+	//CGameMode::GetInstance()->EnqueueItemDesc(item);
 }
 
 HRESULT CChest::addComponents()
@@ -131,13 +131,13 @@ void CChest::interactionUIActive(_bool bRender)
 	switch (m_eChestType)
 	{
 	case CChest::CHEST_SIMPLE:
-		pGameMode->m_pAcquireSystem->SetInteractionActive(CInteractionUI::INTER_SIMPLE_CHEST, bRender);
+		pGameMode->SetInteractionActive(CInteractionUI::INTER_SIMPLE_CHEST, bRender);
 		break;
 	case CChest::CHEST_STANDARD:
-		pGameMode->m_pAcquireSystem->SetInteractionActive(CInteractionUI::INTER_STANDARD_CHEST, bRender);
+		pGameMode->SetInteractionActive(CInteractionUI::INTER_STANDARD_CHEST, bRender);
 		break;
 	case CChest::CHEST_EXPANDED:
-		pGameMode->m_pAcquireSystem->SetInteractionActive(CInteractionUI::INTER_EXPANDED_CHEST, bRender);
+		pGameMode->SetInteractionActive(CInteractionUI::INTER_EXPANDED_CHEST, bRender);
 		break;
 	}
 }

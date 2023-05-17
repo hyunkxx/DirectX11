@@ -31,6 +31,7 @@ public:
 	virtual void RenderGUI();
 
 	void SetInteractionActive(CInteractionUI::INTERACT_TYPE eType, _bool bValue);
+	void EnqueueItemDesc(CItem::ITEM_DESC ItemDesc);
 
 public:
 	static CAcquireSystem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

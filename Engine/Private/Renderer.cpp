@@ -79,10 +79,16 @@ void CRenderer::Draw()
 
 	Render_NonLight();
 	Render_AlphaBlend();
+
+#ifdef _DEBUG
+	RenderDebugBundle();
+	
+#endif
+	pGameInstance->CollisionRender();
+
 	Render_UI();
 
 #ifdef _DEBUG
-
 	if (m_pRenderSetting->IsDebug())
 	{
 		RenderDebugGroup();

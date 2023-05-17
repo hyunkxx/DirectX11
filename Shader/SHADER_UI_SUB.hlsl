@@ -153,6 +153,20 @@ PS_OUT PS_Sprite(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_AlphaColor(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+
+	Out.vColor = vDiffuse;
+	Out.vColor.rgb = Out.vColor.rgb * g_vColor;
+	Out.vColor.a = Out.vColor.a * g_fTimeAcc;
+
+	return Out;
+}
+
+
 technique11 DefaultTechnique
 {
 	pass Default_Pass0
@@ -244,5 +258,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Sprite();
+	}
+
+	pass AlphaColor_Pass7
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_AlphaColor();
 	}
 }

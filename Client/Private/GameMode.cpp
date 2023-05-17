@@ -3,6 +3,7 @@
 
 #include "Camera.h"
 #include "Effect_Player.h"
+#include "AcquireSystem.h"
 
 IMPLEMENT_SINGLETON(CGameMode)
 
@@ -53,7 +54,12 @@ void CGameMode::UseCamera(int iCameraIndex)
 	}
 }
 
-void CGameMode::SetRenderInteractUI(CInteractionUI::INTERACT_TYPE eInteractType, _bool bValue)
+void CGameMode::SetInteractionActive(CInteractionUI::INTERACT_TYPE eInteractType, _bool bValue)
 {
+	m_pAcquireSystem->SetInteractionActive(eInteractType, bValue);
+}
 
+void CGameMode::EnqueueItemDesc(CItem::ITEM_DESC ItemDesc)
+{
+	m_pAcquireSystem->EnqueueItemDesc(ItemDesc);
 }

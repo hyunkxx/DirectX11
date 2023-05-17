@@ -41,11 +41,11 @@ private:
 	HRESULT Ready_Fonts();
 
 #ifdef _DEBUG
+#endif
 private: /* For.Fps */
 	_tchar					m_szFPS[MAX_PATH] = TEXT("");
 	_uint					m_iNumRender = { 0 };
 	_double					m_TimeAcc = { 0.0 };
-#endif
 
 public:
 	static CApplication* Create();

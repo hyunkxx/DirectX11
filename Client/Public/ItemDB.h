@@ -15,10 +15,27 @@ public:
 	virtual ~CItemDB() = default;
 	virtual void Free() override;
 
-	CItem::ITEM_DESC GetItemData(string pItemTag);
+public:
+	static _float3 GetItemColor(CItem::ITEM_GRADE eItemGrade);
+
+public:
+	CItem::ITEM_DESC GetItemData(_uint iKey);
+
 private:
-	unordered_map<string , CItem::ITEM_DESC> m_DataBase;
+	unordered_map<_uint, CItem::ITEM_DESC> m_DataBase;
 
 };
+
+namespace ITEM
+{
+	enum
+	{
+		TACTREITE_VOUCHER = 0,
+		COMMEMORATIVE_COIN,
+		TACTITE_COIN,
+		
+	};
+
+}
 
 END

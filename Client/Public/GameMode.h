@@ -5,6 +5,7 @@
 #include "GameObject.h"
 #include "GameInstance.h"
 #include "InteractionUI.h"
+#include "AcquireUI.h"
 
 #define LEVEL_ANYWHERE CGameMode::GetInstance()->GetCurrentLevel()
 
@@ -78,8 +79,12 @@ private: // Utility
 	POINT m_MousePosition;
 
 public: // UI Handler
-	void SetRenderInteractUI(CInteractionUI::INTERACT_TYPE eInteractType, _bool bValue);
+	void SetInteractionActive(CInteractionUI::INTERACT_TYPE eInteractType, _bool bValue);
+	void EnqueueItemDesc(CItem::ITEM_DESC ItemDesc);
+
+private: 
 	class CAcquireSystem* m_pAcquireSystem = nullptr;
+
 
 };
 

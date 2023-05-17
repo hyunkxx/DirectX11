@@ -13,6 +13,9 @@ private:
 	virtual ~CAppManager() = default;
 
 public:
+	static _uint ConvertNumberToTexture(_uint iNumber, _uint iDigit);
+	static _uint GetNumberLength(_uint iAmount);
+
 	void SetTitle(wstring strTitle);
 
 	void ResetLoadRatio() {

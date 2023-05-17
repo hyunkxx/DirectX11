@@ -47,8 +47,8 @@ HRESULT CIntroCamera::Initialize(void* pArg)
 	tagRectSize[CHAR_RIGHT].bottom = g_iWinSizeY;
 
 
-	m_fWidth = g_iWinSizeX * 0.6f;
-	m_fHeight = 70.f;
+	m_fWidth = g_iWinSizeX * 0.55f;
+	m_fHeight = 67.f;
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = g_iWinSizeY - 100.f;
 
@@ -296,6 +296,17 @@ void CIntroCamera::CameraMovement(_double TimeDelta)
 		{
 			if (m_bOnMouse[CHAR_LEFT])
 			{
+				if (!m_bMoveLock)
+				{
+					CRenderSetting::RGB_SPLIT_DESC SplitDesc;
+					SplitDesc.m_fDistortion = 3.5f;
+					SplitDesc.m_fSeparation = 0.1f;
+					SplitDesc.m_fStrength = 0.2f;
+
+					pGameInstance->SetSplitDesc(SplitDesc);
+					pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DEFAULT, 1.f);
+				}
+
 				m_bMoveLock = true;
 				pGameInstance->PlaySoundEx(L"Intro_Selet.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);
 				pGameInstance->PlaySoundEx(L"Intro_CameraMove.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);
@@ -304,6 +315,17 @@ void CIntroCamera::CameraMovement(_double TimeDelta)
 			}
 			else if (m_bOnMouse[CHAR_RIGHT])
 			{
+				if (!m_bMoveLock)
+				{
+					CRenderSetting::RGB_SPLIT_DESC SplitDesc;
+					SplitDesc.m_fDistortion = 3.5f;
+					SplitDesc.m_fSeparation = 0.1f;
+					SplitDesc.m_fStrength = 0.2f;
+
+					pGameInstance->SetSplitDesc(SplitDesc);
+					pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DEFAULT, 1.f);
+				}
+
 				m_bMoveLock = true;
 				pGameInstance->PlaySoundEx(L"Intro_Selet.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);
 				pGameInstance->PlaySoundEx(L"Intro_CameraMove.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);

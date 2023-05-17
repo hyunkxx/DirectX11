@@ -4,6 +4,7 @@
 #include "GameMode.h"
 #include "GameInstance.h"
 
+#include "Item.h"
 #include "InteractionUI.h"
 
 CAcquireSystem::CAcquireSystem(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -78,6 +79,11 @@ void CAcquireSystem::RenderGUI()
 void CAcquireSystem::SetInteractionActive(CInteractionUI::INTERACT_TYPE eType, _bool bValue)
 {
 	m_pInteractionUI->SetInteractionActive(eType, bValue);
+}
+
+void CAcquireSystem::EnqueueItemDesc(CItem::ITEM_DESC ItemDesc)
+{
+	m_pAcquireUI->EnqueueItemDesc(ItemDesc);
 }
 
 CAcquireSystem * CAcquireSystem::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

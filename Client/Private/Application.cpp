@@ -93,8 +93,8 @@ void CApplication::Tick(_double TimeDelta)
 
 	m_pGameInstance->Engine_Tick(TimeDelta);
 
-#ifdef _DEBUG
 	m_TimeAcc += TimeDelta;
+#ifdef _DEBUG
 #endif // _DEBUG
 
 }
@@ -117,10 +117,7 @@ HRESULT CApplication::Render()
 	m_pGameInstance->Clear_DepthStencilView();
 
 	m_pRenderer->Draw();
-	m_pGameInstance->CollisionRender();
 
-#pragma region FPS
-#ifdef _DEBUG
 	/* Render가 한번 불릴때마다 카운트 증가 */
 	++m_iNumRender;
 
@@ -139,10 +136,7 @@ HRESULT CApplication::Render()
 		XMVectorSet(1.f, 1.f, 1.f, 1.f),
 		_float2(0.5f, 0.5f)
 	);
-#endif // _DEBUG
-
-#ifdef _DEBUG
-	m_pRenderer->RenderDebugBundle();
+#ifdef _DEBUG 
 	m_pGUIManager->RenderDrawData();
 #endif
 
@@ -520,6 +514,8 @@ HRESULT CApplication::Ready_UI_Data()
 
 HRESULT CApplication::Ready_Item_Image()
 {
+
+#pragma region ITEM_ICON
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_TACTREITE_VOUCHER,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconCommon/T_IconA160_zcpq_UI.png")))))
 		return E_FAIL;
@@ -529,6 +525,63 @@ HRESULT CApplication::Ready_Item_Image()
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_TACTITE_COIN,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconCommon/T_IconA160_hsb_UI.png")))))
 		return E_FAIL;
+
+#pragma endregion
+
+#pragma region TEXT
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_0,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Text/Number/0.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Text/Number/1.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Text/Number/2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Text/Number/3.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Text/Number/4.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_5,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Text/Number/5.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_6,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Text/Number/6.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_7,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Text/Number/7.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_8,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Text/Number/8.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_9,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Text/Number/9.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_X,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Text/Number/x.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_ACQUIRE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Text/Acquire.dds")))))
+		return E_FAIL;
+	
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TACTREITE_VOUCHER,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/Text/TacetreiteVoucher.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_COMMEMORATIVE_COIN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/Text/CommemorativeCoin.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TACTITE_COIN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/Text/TacetiteCoin.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_LISTBACK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Button/GradBack.png")))))
+		return E_FAIL;
+
+#pragma endregion
 
 	return S_OK;
 }

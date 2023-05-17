@@ -109,11 +109,6 @@ HRESULT CTerrain::Render()
 
 void CTerrain::RenderGUI()
 {
-	ImGui::Begin("Terrain ID");
-	ImGui::DragInt("ID", (int*)&m_iObjectID);
-	ImGui::End();
-
-	return;
 }
 
 HRESULT CTerrain::Add_Components()
