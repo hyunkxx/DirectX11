@@ -32,7 +32,7 @@ HRESULT CSandbag::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(6.f, 30.f, 15.f, 1.f));
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(100.f, 5.f, 90.f, 1.f));
 
 	m_pModelCom->SetUp_Animation(0, false);
 	m_pModelCom->Invalidate_CombinedMatrices();
