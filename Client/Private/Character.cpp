@@ -80,3 +80,14 @@ void CCharacter::Free()
 {
 	__super::Free();
 }
+
+_vector CCharacter::Get_Position()
+{
+	return m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+}
+
+void CCharacter::Push_Position(_fvector PushVector)
+{
+	m_pMainTransform->Push_Position(PushVector);
+}
+

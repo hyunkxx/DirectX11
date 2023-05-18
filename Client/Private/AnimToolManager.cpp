@@ -9,6 +9,7 @@
 #include "EffectKey.h"
 #include "PartsKey.h"
 #include "PriorityKey.h"
+#include "OBBKey.h"
 
 IMPLEMENT_SINGLETON(CAnimToolManager)
 
@@ -1293,16 +1294,17 @@ void CAnimToolManager::Create_Key()
 		pStateKey = CPriorityKey::Create(m_pDevice, m_pContext, &m_tKeyData);
 		break;
 	case CStateKey::TYPE_DISSOLVE:
-		// 
 		//pStateKey = CDissolveKey::Create(m_pDevice, m_pContext, m_tKeyData.ShotFrame, (CDissolveKey::TYPE)m_tKeyData.iInt, (_double)m_tKeyData.fFloat);
 		break;
-	case CStateKey::TYPE_SOUND:
-
+	case CStateKey::TYPE_OBB:
+		pStateKey = COBBKey::Create(m_pDevice, m_pContext, &m_tKeyData);
 		break;
-	
 	case CStateKey::TYPE_MISSILE:
 
 		break;
+	case CStateKey::TYPE_SOUND:
+
+		break;	
 	default:
 		break;
 	}

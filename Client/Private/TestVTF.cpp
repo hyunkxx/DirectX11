@@ -7,7 +7,7 @@
 #include "Parts.h"
 #include "PartsKey.h"
 #include "PriorityKey.h"
-
+#include "OBBKey.h"
 
 CTestVTF::CTestVTF(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CTestChar(pDevice, pContext)
@@ -401,7 +401,7 @@ HRESULT CTestVTF::Init_States()
 
 					break;
 				case CStateKey::TYPE_OBB:
-
+					tMultiState.ppStateKeys[j] = COBBKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_MISSILE:
 

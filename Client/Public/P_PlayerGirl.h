@@ -106,26 +106,24 @@ public:
 	// 공격 종류
 	enum Attacks
 	{
+		ATK_NONE,		// 0은 예외처리용으로 NONE으로 넣어줘야 함
 		ATK_ATTACK_01,
 		ATK_ATTACK_02,
 		ATK_ATTACK_03,
 		ATK_ATTACK_04, 
 		ATK_ATTACK_05_01, // 스킬2 추가타 中 1타 
 		ATK_ATTACK_05_02, // 스킬2 추가타 中 2타
-		ATK_ATTACK_09_01, // 차지 공격 투사체 다단 히트
-		ATK_ATTACK_09_02, // 차지 공격 투사체 폭발
+		ATK_ATTACK_09,	// 차지 공격 투사체 다단 히트
 		ATK_ATTACK_PO_2, // 저스트 회피 후 공격 1타
 		ATK_ATTACK_PO_3, // 저스트 회피 후 공격 2타
-		ATK_AIRATTACK_START,
-		ATK_AIRATTACK_LOOP,
-		ATK_AIRATTACK_END,
+		ATK_AIRATTACK,
 		ATK_SKILL_01,
-		ATK_SKILL_02,
-		ATK_SKILL_QTE,
-		ATK_BURST,
-
-
-
+		ATK_SKILL_02_01, // 스킬2 1타
+		ATK_SKILL_02_02, // 스킬2 2타
+		ATK_SKILL_02_03, // 스킬2 미사일
+		ATK_SKILL_QTE,	// 교체 QTE
+		ATK_BURST,		// 필살기
+		ATK_END
 	};
 
 private:
@@ -151,10 +149,25 @@ public:
 
 	// 
 	virtual void Check_Nearst(CCharacter* pChar, _float fDist) override;
+
+	// 주변 몬스터 리스트
+	// 몬스터 쪽에서 플레이어랑의 거리가 일정값 이하일 때? 플레이어를 발견했을 때 부터
+	// 
+	
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);
 	virtual void Shot_PriorityKey(_uint iLeavePriority);
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID , _uint iEffectTypeID, _bool bTracking);
+	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID);
+
+public:
+	virtual _uint Get_AttackID() override { return m_iCurAttackID; }
+	virtual void Get_AttackInfo(_uint iAttackID, TAGATTACK* pAttackInfoOut, _float* fAttackOut) override
+	{
+		memcpy(pAttackInfoOut, &m_AttackInfos[iAttackID], sizeof(TAGATTACK));
+		*fAttackOut = m_tCharInfo.fAttack;
+	}
+	virtual _float Get_PushWeight() override { return m_fPushWeight; }
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -187,7 +200,8 @@ private:
 	_float				m_fClimbExitYGap = {};
 
 	// 공격 구조체
-	//ATTACK				m_AttackInfos[];
+	TAGATTACK			m_AttackInfos[ATK_END];
+	_uint				m_iCurAttackID = { 0 };
 
 	// 플레이어 변수
 	// 공중 점프 가능 횟수
@@ -208,10 +222,15 @@ private:
 	CCharacter*			m_pNearst = { nullptr };
 	_float				m_fNearstDist = { 0.f };
 	CCharacter*			m_pFixedTarget = { nullptr };
+	
+	// MoveCollider 충돌 시 비교할 무게
+	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
+	_float				m_fPushWeight = { 0.f };
 
 private:
 	HRESULT Add_Components();
 	void Init_AnimSystem();
+	void Init_AttackInfos();
 	void SetUp_State();
 	// bContinue == 잔여 프레임을 사용하는 애니메이션인지?
 	void SetUp_Animations(_bool bContinue);

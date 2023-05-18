@@ -17,12 +17,14 @@ HRESULT COBBKey::Initialize(BaseData* pData)
 	else
 		m_bTargetState = false; 
 
+	m_iAttackInfoID = pData->iInt1;
+
 	return S_OK;
 }
 
-void COBBKey::Shot(CCharacter * pMyCharacter)
+void COBBKey::Shot(CCharacter * pCharacter)
 {
-	//pMyCharacter->Change_WeaponCollsionState(m_bTargetState);
+	pCharacter->Shot_OBBKey(m_bTargetState, m_iAttackInfoID);
 }
 
 COBBKey * COBBKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, BaseData* pData)
@@ -40,4 +42,5 @@ COBBKey * COBBKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext
 
 void COBBKey::Free()
 {
+	__super::Free();
 }
