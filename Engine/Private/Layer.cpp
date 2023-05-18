@@ -19,6 +19,18 @@ void CLayer::Start()
 	}
 }
 
+void CLayer::PreTick(_double TimeDelta)
+{
+	for (auto& pGameObject : m_GameObjects)
+	{
+		if (nullptr != pGameObject.second)
+		{
+			if (pGameObject.second->IsActive())
+				pGameObject.second->PreTick(TimeDelta);
+		}
+	}
+}
+
 void CLayer::Tick(_double TimeDelta)
 {
 	for (auto& pGameObject : m_GameObjects)

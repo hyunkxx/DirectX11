@@ -77,12 +77,29 @@ HRESULT CAcquireUI::Initialize(void * pArg)
 	XMStoreFloat4x4(&m_AcquireTextDesc.WorldMatrix, XMMatrixScaling(m_AcquireTextDesc.fWidth, m_AcquireTextDesc.fHeight, 1.f) * XMMatrixTranslation(m_AcquireTextDesc.fX - g_iWinSizeX * 0.5f, -m_AcquireTextDesc.fY + g_iWinSizeY * 0.5f, 0.f));
 
 	// 획득한 아이템중 최고등급 아이템 표시
+	m_HighestItemTextOrtho.fX = _float(g_iWinSizeX >> 1);
+	m_HighestItemTextOrtho.fY = _float(200.f);
+	m_HighestItemTextOrtho.fWidth = 320.f;
+	m_HighestItemTextOrtho.fHeight = 60.f;
+	CAppManager::ComputeOrtho(&m_HighestItemTextOrtho);
 
 	m_HighestAcquireOrtho.fX = _float(g_iWinSizeX >> 1);
-	m_HighestAcquireOrtho.fY = _float(100.f);
-	m_HighestAcquireOrtho.fWidth = 200.f;
-	m_HighestAcquireOrtho.fHeight = 120.f;
+	m_HighestAcquireOrtho.fY = _float(250.f);
+	m_HighestAcquireOrtho.fWidth = 150.f;
+	m_HighestAcquireOrtho.fHeight = 80.f;
 	CAppManager::ComputeOrtho(&m_HighestAcquireOrtho);
+
+	m_HighestItemSlotOrtho.fX = _float(g_iWinSizeX >> 1);
+	m_HighestItemSlotOrtho.fY = _float(250.f);
+	m_HighestItemSlotOrtho.fWidth = 80.f;
+	m_HighestItemSlotOrtho.fHeight = 80.f;
+	CAppManager::ComputeOrtho(&m_HighestItemSlotOrtho);
+
+	m_HighestItemIconOrtho.fX = _float(g_iWinSizeX >> 1);
+	m_HighestItemIconOrtho.fY = _float(250.f);
+	m_HighestItemIconOrtho.fWidth = 60.f;
+	m_HighestItemIconOrtho.fHeight = 60.f;
+	CAppManager::ComputeOrtho(&m_HighestItemIconOrtho);
 
 	return S_OK;
 }
@@ -97,6 +114,51 @@ void CAcquireUI::Tick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	__super::Tick(TimeDelta);
 
+	if (m_ItemDescQueue.size() > 0 && !m_bHighestCheck)
+	{
+		ZeroMemory(&m_HighestItem, sizeof m_HighestItem);
+
+		m_Highest = m_Highest = m_ItemDescQueue[0].eItemGrade;
+		m_HighestItem = m_ItemDescQueue[0];
+
+		m_bHighestCheck = true;
+		m_bHighestRenderBegin = true;
+
+		for (int i = 0; i < m_ItemDescQueue.size(); ++i)
+		{
+			if (m_Highest < m_ItemDescQueue[i].eItemGrade)
+			{
+				m_Highest = m_ItemDescQueue[i].eItemGrade;
+				m_HighestItem = m_ItemDescQueue[i];
+			}
+		}
+	}
+	
+	if (m_bHighestRenderBegin && m_bHighestCheck)
+	{
+		m_fHighestAlpha = m_fHighestTimeAcc += (_float)TimeDelta;
+		if (m_fHighestAlpha > 1.f)
+			m_fHighestAlpha = 1.f;
+
+		if (m_fHighestTimeAcc >= 3.f)
+			m_bHighestRenderBegin = false;
+	}
+	else
+	{
+		m_fHighestAlpha -= (_float)TimeDelta;
+		if (m_fHighestAlpha <= 0.f)
+			m_fHighestAlpha = 0.f;
+
+		m_fHighestTimeAcc -= (_float)TimeDelta;
+		if (m_fHighestTimeAcc <= 0.f)
+		{
+			m_fHighestTimeAcc = 0.f;
+
+			if(m_ItemDescQueue.empty())
+				m_bHighestCheck = false;
+		}
+	}
+
 	// 활성화 시키기
 	if (m_iCurrentActiveCount < ACQUIRE_MAX)
 	{
@@ -107,10 +169,11 @@ void CAcquireUI::Tick(_double TimeDelta)
 			if (!m_ItemDescQueue.empty())
 			{
 				m_ItemDescs.emplace_back(m_ItemDescQueue.front());
-				m_ItemDescQueue.pop();
+				m_ItemDescQueue.pop_front();
 
 				m_iCurrentActiveCount++;
 				m_fActiveTimeAcc = 0.f;
+
 			}
 		}
 	}
@@ -284,22 +347,55 @@ HRESULT CAcquireUI::Render()
 					m_pVIBuffer->Render();
 				}
 			}
-
-
-			// 최고등급 표시
-			if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
-				return E_FAIL;
-			if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
-				return E_FAIL;
-			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_HighestAcquireOrtho.WorldMatrix)))
-				return E_FAIL;
-			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SIDEALPHA, m_pShader, "g_DiffuseTexture")))
-				return E_FAIL;
-
-			m_pShader->Begin(8);
-			m_pVIBuffer->Render();
-
 		}
+	}
+
+	if (m_fHighestAlpha > 0.f)
+	{
+		// 최고등급 표시
+		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+			return E_FAIL;
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fHighestAlpha, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_HighestAcquireOrtho.WorldMatrix)))
+			return E_FAIL;
+
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SIDEALPHA, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_HighestItemSlotOrtho.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &CItemDB::GetItemColor(m_HighestItem.eItemGrade), sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_GLOWGARD, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(7);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_HighestItemIconOrtho.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(m_HighestItem.iImageIndex, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(5);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_HighestItemTextOrtho.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_ACQUIRE, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(5);
+		m_pVIBuffer->Render();
 	}
 
 	return S_OK;
@@ -311,7 +407,16 @@ void CAcquireUI::RenderGUI()
 
 void CAcquireUI::EnqueueItemDesc(CItem::ITEM_DESC ItemDesc)
 {
-	m_ItemDescQueue.push(ItemDesc);
+	if (m_bHighestCheck)
+	{
+		m_bHighestRenderBegin = false;
+		m_bHighestCheck = false;
+		m_fHighestAlpha = 0.f;
+		m_fHighestTimeAcc = 0.f;
+	}
+
+	m_ItemDescQueue.push_back(ItemDesc);
+
 }
 
 HRESULT CAcquireUI::addComponents()

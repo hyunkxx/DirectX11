@@ -133,6 +133,17 @@ void CObject_Manager::Tick(_double TimeDelta)
 	}
 }
 
+void CObject_Manager::PreTick(_double TimeDelta)
+{
+	for (_uint i = 0; i < m_iLevelMaxCount; ++i)
+	{
+		for (auto& pair : m_pLayers[i])
+		{
+			pair.second->PreTick(TimeDelta);
+		}
+	}
+}
+
 void CObject_Manager::LateTick(_double TimeDelta)
 {
 	for (_uint i = 0; i < m_iLevelMaxCount; ++i)

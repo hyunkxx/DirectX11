@@ -70,6 +70,10 @@ void CLobbyCharacter::Start()
 {
 }
 
+void CLobbyCharacter::PreTick(_double TimeDelta)
+{
+}
+
 void CLobbyCharacter::Tick(_double TimeDelta)
 {
 	Tick_State(TimeDelta);

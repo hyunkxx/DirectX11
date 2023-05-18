@@ -37,6 +37,7 @@ public:
 	virtual HRESULT	Initialize_Prototype(_uint iModelID, _uint iAnimID, _uint iModelType);
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Start() override;
+	virtual void PreTick(_double TimeDelta);
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render() override;

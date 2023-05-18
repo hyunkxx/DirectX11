@@ -25,6 +25,7 @@ public:
 	HRESULT Initialize_Prototype(CHEST_TYPE eChestType);
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Start();
+	virtual void PreTick(_double TimeDelta);
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render();

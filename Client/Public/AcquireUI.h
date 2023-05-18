@@ -60,8 +60,8 @@ private:
 	ORTHO_DESC m_ItemAmountDesc[5][ACQUIRE_MAX];//수량
 private:
 	vector<CItem::ITEM_DESC> m_ItemDescs;
-	queue<CItem::ITEM_DESC> m_ItemDescQueue;
-
+	deque<CItem::ITEM_DESC> m_ItemDescQueue;
+	
 private: // 좌하단 획득 아이템 리스트 표시
 	_bool m_bAquireDisable = false;
 	_float m_fActiveTimeAcc = 0.f;
@@ -73,8 +73,19 @@ private: // 좌하단 획득 아이템 리스트 표시
 	_float m_fAcquireTextAlpha = 0.f;
 	_float m_fAcquireAlpha[ACQUIRE_MAX] = { 0.f, };
 
-private: // 최고 등급 표시
+private: // 획득 최고 등급 표시
 	ORTHO_DESC m_HighestAcquireOrtho;
+	ORTHO_DESC m_HighestItemSlotOrtho;
+	ORTHO_DESC m_HighestItemIconOrtho;
+	ORTHO_DESC m_HighestItemTextOrtho;
+
+	_bool m_bHighestCheck = false;
+	_bool m_bHighestRenderBegin = false;
+	_float m_fHighestTimeAcc = 0.f;
+	_float m_fHighestAlpha = 0.f;
+	CItem::ITEM_GRADE m_Highest = CItem::ITEM_GRADE::NORMAL;
+	CItem::ITEM_DESC m_HighestItem;
+
 
 };
 

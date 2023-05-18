@@ -8,7 +8,7 @@ class CItem
 {
 public:
 	enum ITEM_TYPE { ITEM_MATERIAL, ITEM_COOK, ITEM_EQUITMENT, ITEM_MONEY };
-	enum ITEM_GRADE { NORMAL, ADVANCED, RARE, HERO, LEGEND, MYTH };
+	enum ITEM_GRADE { NORMAL, ADVANCED, RARE, UNIQUE };
 
 	typedef struct tagItemDesc
 	{

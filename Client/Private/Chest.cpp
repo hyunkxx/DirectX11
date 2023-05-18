@@ -50,6 +50,10 @@ void CChest::Start()
 {
 }
 
+void CChest::PreTick(_double TimeDelta)
+{
+}
+
 void CChest::Tick(_double TimeDelta)
 {
 	CGameMode* pGameMode = CGameMode::GetInstance();
@@ -84,15 +88,47 @@ void CChest::RenderGUI()
 
 void CChest::Interaction(void * pArg)
 {
-	m_pCollider->SetActive(false);
-	m_bOverlapedPlayer = false;
+	//interactionUIActive(false);
 
-	interactionUIActive(false);
+	CGameMode* pGameMode = CGameMode::GetInstance();
 
-	//CItem::ITEM_DESC item = CItemDB::GetInstance()->GetItemData("item_cook");
-	//CGameMode::GetInstance()->EnqueueItemDesc(item);
-	//CGameMode::GetInstance()->EnqueueItemDesc(item);
-	//CGameMode::GetInstance()->EnqueueItemDesc(item);
+	//임시 아이템 처리
+	switch (m_eChestType)
+	{
+	case CChest::CHEST_SIMPLE:
+	{
+		CItem::ITEM_DESC item0 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
+		item0.iAmount = 12900;
+		CGameMode::GetInstance()->EnqueueItemDesc(item0);
+		break;
+	}
+	case CChest::CHEST_STANDARD:
+	{
+		CItem::ITEM_DESC item0 = CItemDB::GetInstance()->GetItemData(ITEM::COMMEMORATIVE_COIN);
+		item0.iAmount = 2;
+		CItem::ITEM_DESC item1 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
+		item1.iAmount = 99000;
+
+		CGameMode::GetInstance()->EnqueueItemDesc(item0);
+		CGameMode::GetInstance()->EnqueueItemDesc(item1);
+		break;
+	}
+	case CChest::CHEST_EXPANDED:
+	{
+		CItem::ITEM_DESC item0 = CItemDB::GetInstance()->GetItemData(ITEM::TACTREITE_VOUCHER);
+		item0.iAmount = 10;
+		CItem::ITEM_DESC item2 = CItemDB::GetInstance()->GetItemData(ITEM::COMMEMORATIVE_COIN);
+		item2.iAmount = 2;
+		CItem::ITEM_DESC item3 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
+		item1.iAmount = 99000;
+		CGameMode::GetInstance()->EnqueueItemDesc(item0);
+		CGameMode::GetInstance()->EnqueueItemDesc(item1);
+		CGameMode::GetInstance()->EnqueueItemDesc(item2);
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 HRESULT CChest::addComponents()
@@ -204,6 +240,5 @@ void CChest::OnCollisionExit(CCollider * src, CCollider * dest)
 	{
 		m_bOverlapedPlayer = false;
 		interactionUIActive(false);
-		SetState(STATE::DESTROY);
 	}
 }

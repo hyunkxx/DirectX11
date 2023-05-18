@@ -18,6 +18,7 @@ public:
 public:
 	HRESULT Add_GameObject(_tchar* szObjectTag, CGameObject* pGameObject);
 	void Start();
+	void PreTick(_double TimeDelta);
 	void Tick(_double TimeDelta);
 	void LateTick(_double TimeDelta);
 	void RenderGUI();

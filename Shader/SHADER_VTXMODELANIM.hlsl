@@ -413,6 +413,33 @@ PS_OUT_OUTLINE PS_GlowModel(PS_IN In)
 
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
+
+	vMtrlDiffuse.a = 1.f;
+
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vNormal = float4(vNormal * 0.5f + 0.5f, 0.99f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+
+	if (vNormalDesc.g > vNormalDesc.b)
+		Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
+
+	return Out;
+}
+
+PS_OUT_OUTLINE PS_GlowModel_VTF(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
 	vMtrlDiffuse.a = 1.f;
 
 	Out.vDiffuse = vMtrlDiffuse;
@@ -568,11 +595,25 @@ technique11 DefaultTechnique
 		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-		VertexShader = compile vs_5_0 VS_MAIN_VTF();
+		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_GlowModel();
+	}
+
+
+	pass VTF_GlowModel_VTF_Pass11
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_VTF();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_GlowModel_VTF();
 	}
 	
 }

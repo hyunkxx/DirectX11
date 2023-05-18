@@ -37,6 +37,10 @@ void CGameObject::Start()
 {
 }
 
+void CGameObject::PreTick(_double TimeDelta)
+{
+}
+
 void CGameObject::Tick(_double TimeDelta)
 {
 }

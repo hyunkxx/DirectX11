@@ -99,7 +99,7 @@ void CM_GAzizi::Tick(_double TimeDelta)
 
 	Apply_CoolTime(TimeDelta); // 쿨타임 갱신
 
-	Select_State(TimeDelta); // 상태 확인
+ 	Select_State(TimeDelta); // 상태 확인
 
 	Tick_State(TimeDelta); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 	
