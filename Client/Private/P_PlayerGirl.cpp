@@ -9,6 +9,7 @@
 #include "EffectKey.h"
 #include "PartsKey.h"
 #include "PriorityKey.h"
+#include "OBBKey.h"
 
 #include "Chest.h"
 
@@ -70,6 +71,10 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	if (FAILED(Init_EffectBones()))
 		return E_FAIL;
 
+	// 공격 정보 세팅
+	Init_AttackInfos();
+	m_iCurAttackID = ATK_NONE;
+
 	// 애니메이션 연결
 	Init_AnimSystem();
 
@@ -100,8 +105,26 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	SetUp_State();
 	SetUp_Animations(false);
 
+	// CharInfo 초기화
+	lstrcpy(m_tCharInfo.szName, TEXT("Rover"));
+	m_tCharInfo.eElement = ELMT_SPECTRA;
+	m_tCharInfo.iLevel = 10;
+	m_tCharInfo.iExp = 0;
+	m_tCharInfo.fMaxHP = 100.f;
+	m_tCharInfo.fCurHP = m_tCharInfo.fMaxHP;
+	m_tCharInfo.fMaxSP = 100.f;
+	m_tCharInfo.fCurSP = 0.f;
+	m_tCharInfo.fMaxTP = 100.f;
+	m_tCharInfo.fCurTP = 0.f;
+	m_tCharInfo.fAttack = 50.f;
+	m_tCharInfo.fDefense = 50.f;
+	m_tCharInfo.fCriticalRate = 0.1f; 
+	
+
 	// 충돌 타입 처리
 	m_eCollisionType = CT_PLAYER;
+	m_fPushWeight = 50.f;
+
 	return S_OK;
 }
 
@@ -194,6 +217,27 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 	//Effect Bones 처리
 	Update_EffectBones();
 
+	//임시 UI 처리
+
+	if (pGameInstance->InputKey(DIK_F) == KEY_STATE::TAP)
+	{
+		CItem::ITEM_DESC item0 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
+		item0.iAmount = 4424;
+
+		CItem::ITEM_DESC item1 = CItemDB::GetInstance()->GetItemData(ITEM::COMMEMORATIVE_COIN);
+		item1.iAmount = 12349;
+
+		CItem::ITEM_DESC item2 = CItemDB::GetInstance()->GetItemData(ITEM::TACTREITE_VOUCHER);
+		item2.iAmount = 1;
+
+		CGameMode::GetInstance()->EnqueueItemDesc(item0);
+		CGameMode::GetInstance()->EnqueueItemDesc(item1);
+		CGameMode::GetInstance()->EnqueueItemDesc(item2);
+	}
+
+	// 다음프레임을 위해 초기화
+	m_pNearst = nullptr;
+	m_fNearstDist = 30.f;
 }
 
 HRESULT CP_PlayerGirl::Render()
@@ -430,10 +474,10 @@ HRESULT CP_PlayerGirl::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* p
 					m_tStates[i].ppStateKeys[j] = CPriorityKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_DISSOLVE:
-
+					
 					break;
 				case CStateKey::TYPE_OBB:
-
+					m_tStates[i].ppStateKeys[j] = COBBKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_MISSILE:
 
@@ -537,6 +581,12 @@ void CP_PlayerGirl::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint Effect
 	pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
 }
 
+void CP_PlayerGirl::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
+{
+	m_pAttackCollider->SetActive(bOBB);
+	m_iCurAttackID = iAttackInfoID;
+}
+
 void CP_PlayerGirl::SetUp_State()
 {
 	// 키 리셋
@@ -558,9 +608,8 @@ void CP_PlayerGirl::SetUp_State()
 
 	m_Scon.TrackPos = 0.0;
 	m_Scon.bAnimFinished = false;
-
 	
-
+	// PositionState 처리
 	if ((SS_JUMP_WALK == m_Scon.iCurState ||
 		SS_JUMP_RUN == m_Scon.iCurState || 
 		SS_FIXHOOK_END_UP == m_Scon.iCurState ||
@@ -686,6 +735,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 	_vector vCamLook = XMVector3Normalize(XMVectorSetY(matCam.r[2], 0.f));
 	_vector vCamRight = XMVector3Normalize(XMVectorSetY(matCam.r[0], 0.f));
 	_vector vInputDir = XMVectorZero();
+
 	
 
 	// 입력 제한 걸기
@@ -951,13 +1001,13 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				m_Scon.iNextState = IS_ATTACK_03;
 				break; 
 			case IS_ATTACK_03:
-				if (m_Scon.TrackPos > 17.0)
+				if (m_Scon.TrackPos > 17.5 && m_Scon.TrackPos < 18.5)
 					m_Scon.iNextState = IS_ATTACK_PO_2;
 				else
 					m_Scon.iNextState = IS_ATTACK_04;
 				break;
 			case IS_ATTACK_09:
-				if (m_Scon.TrackPos > 18.0)
+				if (m_Scon.TrackPos > 18.5 && m_Scon.TrackPos < 19.5)
 					m_Scon.iNextState = IS_ATTACK_PO_2;
 				else
 					m_Scon.iNextState = IS_ATTACK_01;
@@ -1276,6 +1326,33 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		}
 	}
 
+	// TargetDir
+	_vector vTargetDir;
+	if (nullptr != m_pFixedTarget)
+		vTargetDir = XMVector3Normalize(XMVectorSetY(m_pFixedTarget->Get_Position() - this->Get_Position(), 0.f));
+	else if (nullptr != m_pNearst)
+		vTargetDir = XMVector3Normalize(XMVectorSetY(m_pNearst->Get_Position() - this->Get_Position(), 0.f));
+	else
+		vTargetDir = XMVectorZero();
+
+	// 그래서 어느 방향을 바라보는가
+	_vector vFinalDir;
+
+	// 공격 행동일 경우
+	if (eCurFrameInput >= INPUT_ATTACK)
+	{
+		// 고정 타겟이 있거나 가장 가까운 몬스터와의 거리가 10 미만일 때 타겟 방향
+		if ((nullptr != m_pFixedTarget) ||
+			(nullptr != m_pNearst && 10.f > m_fNearstDist))
+			vFinalDir = vTargetDir;
+		// 그 외 입력 방향
+		else
+			vFinalDir = vInputDir;
+	}
+	else
+		vFinalDir = vInputDir;
+
+
 	// 지금 상태를 끊고 다음 상태로 갱신 할지 여부
 	if (m_Scon.iCurState != m_Scon.iNextState)
 	{
@@ -1283,11 +1360,12 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		{
 			SetUp_State();
 			SetUp_Animations(false);
-			// 상태 갱신 시 1번만
+
 			if (CCharacter::ROT_ONSTART == m_tCurState.iRotationType)
 			{
-				if(0.f != XMVectorGetX(XMVector3Length(vInputDir)))
-					m_pMainTransform->Set_LookDir(vInputDir);
+				// 제로 벡터 뜨는 경우는 갱신X
+				if (!XMVector3Equal(vFinalDir, XMVectorZero()))
+					m_pMainTransform->Set_LookDir(vFinalDir);
 			}
 		}
 	}
@@ -1297,20 +1375,20 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 	{
 		if (CCharacter::ROT_LOOKAT == m_tCurState.iRotationType)
 		{
-			if (!XMVector3Equal(vInputDir, XMVectorZero()))
-				m_pMainTransform->Set_LookDir(vInputDir);
+			if (!XMVector3Equal(vFinalDir, XMVectorZero()))
+				m_pMainTransform->Set_LookDir(vFinalDir);
 		}
 		else if (CCharacter::ROT_TURN == m_tCurState.iRotationType)
 		{
-			_vector vAxis = XMVector3Cross(m_pMainTransform->Get_State(CTransform::STATE_LOOK), vInputDir);
-			_float fAngle = acosf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_LOOK)), XMVector3Normalize(vInputDir))));
+			_vector vAxis = XMVector3Cross(m_pMainTransform->Get_State(CTransform::STATE_LOOK), vFinalDir);
+			_float fAngle = acosf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_LOOK)), XMVector3Normalize(vFinalDir))));
 
 			if (!XMVector3Equal(vAxis, XMVectorZero()))
 			{
 				if (fAngle > m_pMainTransform->Get_RotationSpeed() * TimeDelta)
 					m_pMainTransform->Rotate(vAxis, TimeDelta);
 				else
-					m_pMainTransform->Set_LookDir(vInputDir);
+					m_pMainTransform->Set_LookDir(vFinalDir);
 			}
 		}
 	}
@@ -1741,6 +1819,107 @@ void CP_PlayerGirl::Init_AnimSystem()
 	}
 }
 
+void CP_PlayerGirl::Init_AttackInfos()
+{
+	ZeroMemory(&m_AttackInfos[ATK_NONE], sizeof TAGATTACK);
+
+	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_ATTACK_01].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_01].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK_01].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_01].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 1.2f;
+	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK_02].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_02].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 0.3f;
+	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_NONE;
+	m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK_03].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_03].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_ATTACK_04].fDamageFactor = 1.8f;
+	m_AttackInfos[ATK_ATTACK_04].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK_04].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK_04].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_04].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_ATTACK_05_01].fDamageFactor = 0.8f;
+	m_AttackInfos[ATK_ATTACK_05_01].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_05_01].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK_05_01].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_05_01].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_ATTACK_05_02].fDamageFactor = 1.2f;
+	m_AttackInfos[ATK_ATTACK_05_02].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK_05_02].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK_05_02].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_05_02].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_ATTACK_09].fDamageFactor = 0.45f;
+	m_AttackInfos[ATK_ATTACK_09].eHitIntensity = HIT_NONE;
+	m_AttackInfos[ATK_ATTACK_09].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK_09].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_09].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_ATTACK_PO_2].fDamageFactor = 1.3f;
+	m_AttackInfos[ATK_ATTACK_PO_2].eHitIntensity = HIT_NONE;
+	m_AttackInfos[ATK_ATTACK_PO_2].eElementType = ELMT_SPECTRA;
+	m_AttackInfos[ATK_ATTACK_PO_2].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_PO_2].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_ATTACK_PO_3].fDamageFactor = 2.15f;
+	m_AttackInfos[ATK_ATTACK_PO_3].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK_PO_3].eElementType = ELMT_SPECTRA;
+	m_AttackInfos[ATK_ATTACK_PO_3].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_PO_3].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 1.55f;
+	m_AttackInfos[ATK_AIRATTACK].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_AIRATTACK].eElementType = ELMT_SPECTRA;
+	m_AttackInfos[ATK_AIRATTACK].fSPGain = 1.5f;
+	m_AttackInfos[ATK_AIRATTACK].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_SKILL_01].fDamageFactor = 2.3f;
+	m_AttackInfos[ATK_SKILL_01].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_SKILL_01].eElementType = ELMT_SPECTRA;
+	m_AttackInfos[ATK_SKILL_01].fSPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_01].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_SKILL_02_01].fDamageFactor = 1.7f;
+	m_AttackInfos[ATK_SKILL_02_01].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_SKILL_02_01].eElementType = ELMT_SPECTRA;
+	m_AttackInfos[ATK_SKILL_02_01].fSPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_02_01].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_SKILL_02_02].fDamageFactor = 2.4f;
+	m_AttackInfos[ATK_SKILL_02_02].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_SKILL_02_02].eElementType = ELMT_SPECTRA;
+	m_AttackInfos[ATK_SKILL_02_02].fSPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_02_02].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_SKILL_02_03].fDamageFactor = 2.15f;
+	m_AttackInfos[ATK_SKILL_02_03].eHitIntensity = HIT_NONE;
+	m_AttackInfos[ATK_SKILL_02_03].eElementType = ELMT_SPECTRA;
+	m_AttackInfos[ATK_SKILL_02_03].fSPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_02_03].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_SKILL_QTE].fDamageFactor = 1.95f;
+	m_AttackInfos[ATK_SKILL_QTE].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_SKILL_QTE].eElementType = ELMT_SPECTRA;
+	m_AttackInfos[ATK_SKILL_QTE].fSPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_QTE].fTPGain = 1.5f;
+
+	m_AttackInfos[ATK_BURST].fDamageFactor = 4.98f;
+	m_AttackInfos[ATK_BURST].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_BURST].eElementType = ELMT_SPECTRA;
+	m_AttackInfos[ATK_BURST].fSPGain = 1.5f;
+	m_AttackInfos[ATK_BURST].fTPGain = 1.5f;
+}
+
 HRESULT CP_PlayerGirl::Init_Parts()
 {
 	CGameInstance* pGame = CGameInstance::GetInstance();
@@ -1853,25 +2032,37 @@ void CP_PlayerGirl::Free()
 
 void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
-	CCharacter* pHitOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
+	CCharacter* pOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
 	
-	if (pHitOpponent)
+	if (pOpponent)
 	{
+#pragma region Attack & Hit
 		// 상대가 몬스터일 경우
-		if (CT_MONSTER == pHitOpponent->Get_CollType())
+		if (CT_MONSTER == pOpponent->Get_CollType())
 		{
 			// 내 공격이 상대에게 적중한 경우
 			if (true == src->Compare(GetAttackCollider()) &&
-				true == dest->Compare(pHitOpponent->GetHitCollider()))
+				true == dest->Compare(pOpponent->GetHitCollider()))
 			{
 				// 플/몬 공통 : 히트 이펙트는 공격자 쪽에서 처리
+				// 콜라이더 2개 사이의 중점 찾아서
 
 				// 플레이어 전용 : 카메라 쉐이크 / 블러 / 쉐이더 / 히트렉(혼자 1~2프레임 애니메이션 정지 or 느려지기) 등 
+				// SP TP 수치 회복 처리
+				
+				m_tCharInfo.fCurSP += m_AttackInfos[m_iCurAttackID].fSPGain;
+				if (m_tCharInfo.fCurSP > m_tCharInfo.fMaxSP)
+					m_tCharInfo.fCurSP = m_tCharInfo.fMaxSP;
+
+				m_tCharInfo.fCurTP += m_AttackInfos[m_iCurAttackID].fTPGain;
+				if (m_tCharInfo.fCurTP > m_tCharInfo.fMaxTP)
+					m_tCharInfo.fCurTP = m_tCharInfo.fMaxTP;
+
 			}
 
 			// 회피 상태일 때 상대의 공격이 나에게 적중한 경우 (저스트 회피)  
 			if (true == src->Compare(GetHitCollider()) &&
-				true == dest->Compare(pHitOpponent->GetAttackCollider()))
+				true == dest->Compare(pOpponent->GetAttackCollider()))
 			{
 				// 슬로우 모션, 회피 이펙트 / 블러, 저스트 회피 애니메이션 이행
 				
@@ -1880,33 +2071,65 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 			// 상대의 공격이 나에게 적중한 경우 
 			if (true == src->Compare(GetHitCollider()) &&
-				true == dest->Compare(pHitOpponent->GetAttackCollider()))
+				true == dest->Compare(pOpponent->GetAttackCollider()))
 			{
 				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
+				TAGATTACK tAttackInfo;
+				ZeroMemory(&tAttackInfo, sizeof(tAttackInfo));
+				_float fAttackPoint = 0.f;
+				
+				pOpponent->Get_AttackInfo(pOpponent->Get_AttackID(), &tAttackInfo, &fAttackPoint);
 
+				// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
+				// 공격력과 방어력이 같을 때 1배 대미지 나옴
+				_float fFinalDamage = tAttackInfo.fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tCharInfo.fDefense) / fAttackPoint) /* * 속성 보너스 */;
 
 			}
 		}
-			
+#pragma endregion
+
+		
+		
 	}
 
-
-	
-	
 }
 
 void CP_PlayerGirl::OnCollisionStay(CCollider * src, CCollider * dest)
 {
-	CCharacter* pPushOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
-	if (pPushOpponent)
-	{
-		// 플레이어의 Move 콜라이더와 몬스터의? Move콜라이더가 만났을 때
-		if (src->Compare(GetAttackCollider()) &&
-			dest->Compare(pPushOpponent->GetHitCollider()))
-		{
+	CCharacter* pOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
 
+#pragma region Move
+	// pushWeight 값에 따라 서로를 밀어냄
+	// 밀어내는 로직은 플레이어 쪽에서 처리?
+	if (true == src->Compare(GetMoveCollider()) &&
+		true == dest->Compare(pOpponent->GetMoveCollider()))
+	{
+		_float fTargetDistance = src->GetExtents().x + dest->GetExtents().x;
+		_float fPushDistance =  fTargetDistance - XMVectorGetX(XMVector3Length(pOpponent->Get_Position() - this->Get_Position()));
+		_float fPushRatio = 1 - m_fPushWeight / (pOpponent->Get_PushWeight() + m_fPushWeight);
+		_vector vPushDir = -XMVector3Normalize(XMVectorSetY(pOpponent->Get_Position() - this->Get_Position(), 0.f));
+
+
+		// TODO: 내비메쉬 관련 예외처리 해야 함
+		m_pMainTransform->Push_Position(vPushDir * fPushDistance * fPushRatio);
+		pOpponent->Push_Position(vPushDir * -1.f * fPushDistance * (1 - fPushRatio));
+
+		//// 전진형 공격을 정지시킴
+		if (IS_ATTACK_01 == m_Scon.iCurState ||
+			IS_ATTACK_02 == m_Scon.iCurState ||
+			IS_ATTACK_03 == m_Scon.iCurState ||
+			IS_ATTACK_04 == m_Scon.iCurState ||
+			IS_ATTACK_05 == m_Scon.iCurState ||
+			IS_ATTACK_PO_2 == m_Scon.iCurState ||
+			IS_ATTACK_PO_3 == m_Scon.iCurState ||
+			IS_SKILL_01 == m_Scon.iCurState ||
+			IS_SKILL_02 == m_Scon.iCurState)
+		{
+			m_tCurState.bRootMotion = false;
+			m_Scon.vMovement = _float3(0.f, 0.f, 0.f);
 		}
 	}
+#pragma endregion 
 }
 
 void CP_PlayerGirl::OnCollisionExit(CCollider * src, CCollider * dest)

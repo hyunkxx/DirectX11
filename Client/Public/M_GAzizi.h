@@ -68,6 +68,7 @@ public:
 	virtual HRESULT	Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Start();
+	virtual void PreTick(_double TimeDelta);
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render() override;
@@ -82,6 +83,9 @@ public:
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _uint iEffectTypeID, _bool bTracking);
+
+public:
+	virtual _float Get_PushWeight() override { return m_fPushWeight; }
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -118,6 +122,10 @@ private:
 	_double				m_GlobalCoolTime = { 0.0 };
 	_bool				m_bAttackReady = { false };
 
+	// MoveCollider 충돌 시 비교할 무게
+	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
+	_float				m_fPushWeight = {};
+
 private:
 	HRESULT Add_Components();
 	void SetUp_State();
@@ -148,11 +156,16 @@ public:
 	virtual void Free() override;
 
 	CCollider* GetDefaultCollider() const { return m_pCollider; }
+	virtual CCollider* GetHitCollider() const override { return m_pHitCollider; }
+	virtual CCollider* GetMoveCollider() const override { return m_pMoveCollider; }
 	void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest) override;
 	void CM_GAzizi::OnCollisionStay(CCollider * src, CCollider * dest) override;
 	void CM_GAzizi::OnCollisionExit(CCollider * src, CCollider * dest) override;
 
 	CCollider* m_pCollider = nullptr;
+
+	CCollider* m_pHitCollider = nullptr;
+	CCollider* m_pMoveCollider = nullptr;
 };
 
 END

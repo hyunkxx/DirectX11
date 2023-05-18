@@ -7,6 +7,7 @@
 #include "Parts.h"
 #include "PartsKey.h"
 #include "PriorityKey.h"
+#include "OBBKey.h"
 
 
 CTestGeneric::CTestGeneric(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -378,10 +379,10 @@ HRESULT CTestGeneric::Init_States()
 
 					break;
 				case CStateKey::TYPE_OBB:
-
+					tSingleState.ppStateKeys[j] = COBBKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_MISSILE:
-
+					
 					break;
 				case CStateKey::TYPE_SOUND:
 

@@ -49,7 +49,7 @@ HRESULT CM_GAzizi::Initialize(void * pArg)
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
 	// 초기위치 설정
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(6.f, 30.f, 5.f, 1.f));
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(13.f, 30.f, 12.f, 1.f));
 	m_pNaviCom->Set_CurrentIndex(0);
 
 	// StateController 초기화
@@ -66,7 +66,26 @@ HRESULT CM_GAzizi::Initialize(void * pArg)
 	m_fAttackRange = 12.f;
 	m_bAttackReady = true;
 
+	// CharInfo 초기화
+	lstrcpy(m_tCharInfo.szName, TEXT("ZigZag"));
+	m_tCharInfo.eElement = ELMT_SPECTRA;
+	m_tCharInfo.iLevel = 1;
+	m_tCharInfo.iExp = 0;
+	m_tCharInfo.fMaxHP = 100.f;
+	m_tCharInfo.fCurHP = m_tCharInfo.fMaxHP;
+	m_tCharInfo.fMaxSP = 100.f;
+	m_tCharInfo.fCurSP = 0.f;
+	m_tCharInfo.fMaxTP = 100.f;
+	m_tCharInfo.fCurTP = 0.f;
+	m_tCharInfo.fAttack = 50.f;
+	m_tCharInfo.fDefense = 50.f;
+	m_tCharInfo.fCriticalRate = 0.1f;
+
 	// 충돌 타입 처리
+	m_eCollisionType = CT_MONSTER;
+
+	//
+	m_fPushWeight = 25.f;
 	return S_OK;
 }
 
@@ -85,35 +104,38 @@ void CM_GAzizi::Start()
 	m_pTargetTransform = static_cast<CTransform*>(m_pTarget->Find_Component(TEXT("Com_Transform")));
 }
 
+void CM_GAzizi::PreTick(_double TimeDelta)
+{
+	// 플레이어 교체시 현재 선택된 캐릭터로 타겟을 변경하는 함수
+	//if(false == m_pTarget->IsActive())
+	//	 Find ActivePlayer
+
+	// 매 프레임 타겟까지의 거리를 계산하는 함수, 위에서 컬링해야 함
+	Find_Target();
+}
+
 void CM_GAzizi::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	
 	__super::Tick(TimeDelta);
 
-	//if(false == m_pTarget->IsActive())
-	//	 Find ActivePlayer
-
-	// 매 프레임 타겟까지의 거리를 계산하는 함수, 위에서 컬링해야 함
-	Find_Target();
-
 	Apply_CoolTime(TimeDelta); // 쿨타임 갱신
 
  	Select_State(TimeDelta); // 상태 확인
 
 	Tick_State(TimeDelta); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
-	
-	/*_bool bAnimFinish = false;
-	m_pModelCom->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, &bAnimFinish);
-	m_pModelCom->Invalidate_CombinedMatrices();
 
-	if (true == bAnimFinish)
-		m_pModelCom->SetUp_Animation(0, true);*/
-
-	//On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
+	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
 
 	pGameInstance->AddCollider(m_pCollider);
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+
+	pGameInstance->AddCollider(m_pHitCollider, COLL_PLAYERATTACK);
+	m_pHitCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+
+	pGameInstance->AddCollider(m_pMoveCollider, COLL_MOVE);
+	m_pMoveCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 }
 
 void CM_GAzizi::LateTick(_double TimeDelta)
@@ -164,7 +186,7 @@ HRESULT CM_GAzizi::Render()
 		if (FAILED(m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(10);
+		m_pShaderCom->Begin(1);
 		m_pModelCom->Render(i);
 
 	}
@@ -243,6 +265,24 @@ HRESULT CM_GAzizi::Add_Components()
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_Collider"), (CComponent**)&m_pCollider, &CollDesc)))
+		return E_FAIL;
+
+	// Hit / Move
+
+	CollDesc.owner = this;
+	CollDesc.vCenter = { 0.f, 1.5f, 0.f };
+	CollDesc.vExtents = { 1.5f, 1.5f, 1.5f };
+	CollDesc.vRotation = { 0.f, 0.f, 0.f };
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
+		TEXT("Com_HitCollider"), (CComponent**)&m_pHitCollider, &CollDesc)))
+		return E_FAIL;
+
+	CollDesc.owner = this;
+	CollDesc.vCenter = { 0.f, 0.f, 0.f };
+	CollDesc.vExtents = { 0.4f, 0.f, 0.4f };
+	CollDesc.vRotation = { 0.f, 0.f, 0.f };
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
+		TEXT("Com_MoveCollider"), (CComponent**)&m_pMoveCollider, &CollDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -579,7 +619,6 @@ void CM_GAzizi::Select_State(_double TimeDelta)
 				m_pMainTransform->Set_LookDir(vTargetDir);
 		}
 	}
-
 }
 
 void CM_GAzizi::Tick_State(_double TimeDelta)
@@ -685,61 +724,19 @@ void CM_GAzizi::On_Cell()
 	_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
 	_float fPosY = XMVectorGetY(vPos);
 	_float fCellHeight = m_pNaviCom->Compute_Height(vPos);
-	CCell* pCell = m_pNaviCom->Get_CurCell();
-	_uint iCurCellState = m_pNaviCom->Get_CurCellState();
 
 	if (PS_GROUND == m_Scon.ePositionState)
 	{
-		if (m_Scon.iPrevCellState != iCurCellState && CELL_WALL == iCurCellState &&
-			pCell->DistanceToWall(vPos) < 0.f)
-		{
-			if (SS_SPRINT == m_Scon.iCurState ||
-				SS_SPRINT_IMPULSE_F == m_Scon.iCurState)
-			{
-				m_Scon.iNextState = SS_CLIMB_BOOST_U_START;
-				SetUp_State();
-				m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, m_tCurState.bLerp, false);
-			}
-			else
-			{
-				m_Scon.iNextState = SS_CLIMB_START_UP;
-				SetUp_State();
-				m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, m_tCurState.bLerp, false);
-			}
-		}
-		else
-		{
-			if (fPosY - fCellHeight > 0.1f)
-			{
-				m_Scon.iNextState = SS_FALL;
-				SetUp_State();
-				m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, m_tCurState.bLerp, false);
-			}
-			else
-				m_pMainTransform->Set_PosY(fCellHeight);
-		}
+		m_pMainTransform->Set_PosY(fCellHeight);
 	}
 	else if (PS_AIR == m_Scon.ePositionState)
 	{
-		if (CELL_GROUND == iCurCellState)
+		if (fPosY - fCellHeight < 0.f)
 		{
-			if (fPosY - fCellHeight < 0.f)
+			if (false == m_Scon.bFalling)
 			{
-				if (false == m_Scon.bFalling)
-				{
-					// 오르막 방향으로 점프 시 예외처리
-					m_pMainTransform->Set_PosY(fCellHeight);
-				}
-			}
-		}
-		else if (CELL_WALL == iCurCellState)
-		{
-			if (pCell->DistanceToWall(vPos) < 0.f)
-			{
-				m_Scon.iNextState = SS_CLIMB_STAND;
-
-				SetUp_State();
-				m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, m_tCurState.bLerp, false);
+				// 오르막 방향으로 점프 시 예외처리
+				m_pMainTransform->Set_PosY(fCellHeight);
 			}
 		}
 	}
@@ -811,6 +808,95 @@ void CM_GAzizi::Free()
 
 void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
+	CCharacter* pOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
+
+	if (pOpponent)
+	{
+		// 상대가 플레이어일 경우
+		if (CT_PLAYER == pOpponent->Get_CollType())
+		{
+			// 내 공격이 상대에게 적중한 경우
+			if (true == src->Compare(GetAttackCollider()) &&
+				true == dest->Compare(pOpponent->GetHitCollider()))
+			{
+				// 타격 위치를 찾아서 히트 이펙트 출력
+			}
+
+			// 상대의 공격이 나에게 적중한 경우 
+			if (true == src->Compare(GetHitCollider()) &&
+				true == dest->Compare(pOpponent->GetAttackCollider()))
+			{
+				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
+				TAGATTACK tAttackInfo;
+				ZeroMemory(&tAttackInfo, sizeof(tAttackInfo));
+				_float fAttackPoint = 0.f;
+
+				pOpponent->Get_AttackInfo(pOpponent->Get_AttackID(), &tAttackInfo, &fAttackPoint);
+
+				// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
+				// 공격력과 방어력이 같을 때 1배 대미지
+				_float fFinalDamage = tAttackInfo.fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tCharInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
+
+				m_tCharInfo.fCurHP -= fFinalDamage;
+
+				// TODO: 여기서 대미지 폰트 출력
+
+				// 사망 시 사망 애니메이션 실행
+				if (0.f >= m_tCharInfo.fCurHP)
+				{
+					m_tCharInfo.fCurHP = 0.f;
+					m_Scon.iNextState = IS_DEAD;
+				}
+				// 피격 애니메이션 실행
+				else if (PS_GROUND == m_Scon.ePositionState)
+				{
+					if (IS_BEHIT_FLY_FALL != m_Scon.iCurState &&
+						IS_BEHIT_PRESS != m_Scon.iCurState)
+					{
+						switch (tAttackInfo.eHitIntensity)
+						{
+						case HIT_SMALL:
+							m_Scon.iNextState = IS_BEHIT_S;
+							break;
+						case HIT_BIG:
+							m_Scon.iNextState = IS_BEHIT_B;
+							break;
+						case HIT_FLY:
+							m_Scon.iNextState = IS_BEHIT_FLY_START;
+							break;
+						default:
+							break;
+						}
+					}
+					else
+					{
+						switch (tAttackInfo.eHitIntensity)
+						{
+						case HIT_SMALL:
+						case HIT_BIG:
+							m_Scon.iNextState = IS_BEHIT_PRESS;
+							break;
+						case HIT_FLY:
+							m_Scon.iNextState = IS_BEHIT_FLY_START;
+							break;
+						default:
+							break;
+						}
+					}
+				}
+				else if(PS_AIR == m_Scon.ePositionState)
+					m_Scon.iNextState = IS_BEHIT_HOVER;
+
+				if (1/*m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority*/)
+				{
+					SetUp_State();
+					m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
+				}
+
+			}
+		}
+
+	}
 }
 
 void CM_GAzizi::OnCollisionStay(CCollider * src, CCollider * dest)

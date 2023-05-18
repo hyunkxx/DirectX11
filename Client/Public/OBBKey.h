@@ -17,7 +17,8 @@ public:
 	virtual void Shot(class CCharacter* pMyCharacter) override;
 
 private:
-	_bool m_bTargetState = false;
+	_bool m_bTargetState = false;	// iInt0 : OBB On/Off
+	_uint m_iAttackInfoID = 0;		// iInt1 : 대상의 iAttackInfoID를 세팅해주는 변수
 
 public:
 	static COBBKey* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, BaseData* pData);

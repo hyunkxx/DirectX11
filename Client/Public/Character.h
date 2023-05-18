@@ -343,13 +343,33 @@ public:
 		HIT_END
 	}HIT;
 
+	typedef struct tagCharacterInformation
+	{
+		_tchar	szName[MAX_PATH];
+		ELEMENT	eElement;
+		_uint	iLevel;
+		_uint	iExp;
+		_float	fMaxHP;
+		_float	fCurHP;
+		_float	fMaxSP;	// Skill Point - 스킬 강화 게이지
+		_float	fCurSP;
+		_float	fMaxTP;	// Tag Point - QTE 게이지
+		_float	fCurTP;
+		_float	fAttack;
+		_float	fDefense;
+		_float	fCriticalRate;
+		
+	}TAGCHAR;
+
 	// 공격 정보를 정의하는 구조체
 	typedef struct tagAttackInformation
 	{
 		_float	fDamageFactor;	// 대미지 계수
 		ELEMENT	eElementType;	// 공격 속성
 		HIT		eHitIntensity;	// 피격 강도
-	}ATTACK;
+		_float	fSPGain;		// 스킬 게이지 회복량
+		_float	fTPGain;		// QTE 게이지 회복량
+	}TAGATTACK;
 
 public:
 	virtual void Check_Nearst(CCharacter* pChar, _float fDist) {}
@@ -358,10 +378,19 @@ public:
 	virtual CCollider* GetMoveCollider() const { return nullptr; }
 	const _uint	Get_CollType() { return m_eCollisionType; }
 
+	virtual _uint Get_AttackID() { return 0; }
+	virtual void Get_AttackInfo(_uint iAttackID, TAGATTACK* pAttackInfoOut, _float* fAttackOut) {}
+
+	virtual _vector Get_Position();
+	void Push_Position(_fvector PushVector);
+
+	virtual _float Get_PushWeight() { return 0.f; }
+
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration) {}
 	virtual void Shot_PriorityKey(_uint iLeavePriority) {}
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint iEffectBoneID, _uint iTypeID, _bool bTracking) {}
+	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID) {}
 
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -381,6 +410,7 @@ public:
 	static PHYSICMOVE StatePhysics[SP_END];
 
 protected:
+	TAGCHAR			m_tCharInfo;
 	StateController m_Scon;
 	CollisionType	m_eCollisionType;
 
