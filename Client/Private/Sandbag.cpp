@@ -37,6 +37,9 @@ HRESULT CSandbag::Initialize(void * pArg)
 	m_pModelCom->SetUp_Animation(0, false);
 	m_pModelCom->Invalidate_CombinedMatrices();
 
+	// 충돌 타입 처리
+	m_eCollisionType = CT_MONSTER;
+
 	return S_OK;
 }
 

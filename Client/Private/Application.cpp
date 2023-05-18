@@ -69,7 +69,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성
@@ -105,10 +105,10 @@ HRESULT CApplication::Render()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	//m_pGUIManager->NewFrame();
-	//m_pGameInstance->RenderGUI();
-	//m_pGameInstance->RenderLevelUI();
-	//m_pGUIManager->Render();
+	m_pGUIManager->NewFrame();
+	m_pGameInstance->RenderGUI();
+	m_pGameInstance->RenderLevelUI();
+	m_pGUIManager->Render();
 
 	m_pContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
 #endif
@@ -137,7 +137,7 @@ HRESULT CApplication::Render()
 		_float2(0.5f, 0.5f)
 	);
 #ifdef _DEBUG 
-	//m_pGUIManager->RenderDrawData();
+	m_pGUIManager->RenderDrawData();
 #endif
 
 	m_pGameInstance->Present();

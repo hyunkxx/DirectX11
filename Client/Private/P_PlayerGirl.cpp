@@ -99,6 +99,9 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	m_tCurState = m_tStates[0];
 	SetUp_State();
 	SetUp_Animations(false);
+
+	// 충돌 타입 처리
+	m_eCollisionType = CT_PLAYER;
 	return S_OK;
 }
 
@@ -145,10 +148,10 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 	pGameInstance->AddCollider(m_pCollider);
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
-	pGameInstance->AddCollider(m_pAttackCollider, COLL_ATTACKNHIT);
+	pGameInstance->AddCollider(m_pAttackCollider, COLL_PLAYERATTACK);
 	m_pAttackCollider->Update(XMLoadFloat4x4(m_Parts[PARTS_WEAPON_MAIN]->Get_WorldMatrix()));
 
-	pGameInstance->AddCollider(m_pHitCollider, COLL_ATTACKNHIT);
+	pGameInstance->AddCollider(m_pHitCollider, COLL_MONSTERATTACK);
 	m_pHitCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
 	pGameInstance->AddCollider(m_pMoveCollider, COLL_MOVE);
@@ -1867,28 +1870,43 @@ void CP_PlayerGirl::Free()
 
 void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
-	// 피격자
-	// player1, player2, player3
-	////  
-	//CCharacter >> CharType, PLAYERCHAR ,MONSTER, NPC
 	CCharacter* pHitOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
 	
 	if (pHitOpponent)
 	{
-		// 플레이어의 Attack 콜라이더와 몬스터의 Hit 콜라이더가 만났을 경우
-		if (src->Compare(GetAttackCollider()) &&
-			dest->Compare(pHitOpponent->GetHitCollider()))
+		// 상대가 몬스터일 경우
+		if (CT_MONSTER == pHitOpponent->Get_CollType())
 		{
-			
+			// 내 공격이 상대에게 적중한 경우
+			if (true == src->Compare(GetAttackCollider()) &&
+				true == dest->Compare(pHitOpponent->GetHitCollider()))
+			{
+				// 플/몬 공통 : 히트 이펙트는 공격자 쪽에서 처리
+
+				// 플레이어 전용 : 카메라 쉐이크 / 블러 / 쉐이더 / 히트렉(혼자 1~2프레임 애니메이션 정지 or 느려지기) 등 
+			}
+
+			// 회피 상태일 때 상대의 공격이 나에게 적중한 경우 (저스트 회피)  
+			if (true == src->Compare(GetHitCollider()) &&
+				true == dest->Compare(pHitOpponent->GetAttackCollider()))
+			{
+				// 슬로우 모션, 회피 이펙트 / 블러, 저스트 회피 애니메이션 이행
+				
+
+			}
+
+			// 상대의 공격이 나에게 적중한 경우 
+			if (true == src->Compare(GetHitCollider()) &&
+				true == dest->Compare(pHitOpponent->GetAttackCollider()))
+			{
+				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
+
+
+			}
 		}
+			
 	}
 
-	// 공격자
-	CCharacter* pAttackOppnent = dynamic_cast<CCharacter*>(dest->GetOwner());
-	if(pHitOpponent)
-	{
-
-	}
 
 	
 	

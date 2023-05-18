@@ -103,6 +103,31 @@ public:
 		CBONE_END
 	};
 
+	// 공격 종류
+	enum Attacks
+	{
+		ATK_ATTACK_01,
+		ATK_ATTACK_02,
+		ATK_ATTACK_03,
+		ATK_ATTACK_04, 
+		ATK_ATTACK_05_01, // 스킬2 추가타 中 1타 
+		ATK_ATTACK_05_02, // 스킬2 추가타 中 2타
+		ATK_ATTACK_09_01, // 차지 공격 투사체 다단 히트
+		ATK_ATTACK_09_02, // 차지 공격 투사체 폭발
+		ATK_ATTACK_PO_2, // 저스트 회피 후 공격 1타
+		ATK_ATTACK_PO_3, // 저스트 회피 후 공격 2타
+		ATK_AIRATTACK_START,
+		ATK_AIRATTACK_LOOP,
+		ATK_AIRATTACK_END,
+		ATK_SKILL_01,
+		ATK_SKILL_02,
+		ATK_SKILL_QTE,
+		ATK_BURST,
+
+
+
+	};
+
 private:
 	CP_PlayerGirl(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CP_PlayerGirl(const CP_PlayerGirl& rhs);
@@ -161,6 +186,9 @@ private:
 	_float3				m_vClimbExitPos = {};
 	_float				m_fClimbExitYGap = {};
 
+	// 공격 구조체
+	//ATTACK				m_AttackInfos[];
+
 	// 플레이어 변수
 	// 공중 점프 가능 횟수
 	_uint				m_iAirJumpCount = { 100 };
@@ -217,6 +245,7 @@ public:
 	virtual CCollider* GetAttackCollider() const override { return m_pAttackCollider; }
 	virtual CCollider* GetHitCollider() const override { return m_pHitCollider; }
 	virtual CCollider* GetMoveCollider() const override { return m_pMoveCollider; }
+	CCollider* GetDodgeCollider() const { return m_pDodgeCollider; }
 	void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest) override;
 	void CP_PlayerGirl::OnCollisionStay(CCollider * src, CCollider * dest) override;
 	void CP_PlayerGirl::OnCollisionExit(CCollider * src, CCollider * dest) override;
@@ -230,6 +259,7 @@ public:
 	CCollider* m_pHitCollider = nullptr;
 	CCollider* m_pMoveCollider = nullptr;
 
+	CCollider* m_pDodgeCollider = nullptr;
 
 	CGameObject* pStaticObject = nullptr;
 };

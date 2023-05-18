@@ -65,6 +65,8 @@ HRESULT CM_GAzizi::Initialize(void * pArg)
 	m_fAlertRange = 3.f;
 	m_fAttackRange = 12.f;
 	m_bAttackReady = true;
+
+	// 충돌 타입 처리
 	return S_OK;
 }
 

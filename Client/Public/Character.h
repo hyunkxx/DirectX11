@@ -238,7 +238,16 @@ public:
 		PS_END
 	};
 
-	// 
+	// 충돌 타입
+	enum CollisionType
+	{
+		CT_NONE,
+		CT_PLAYER,
+		CT_MONSTER,
+		CT_END
+	};
+
+	// 상태 정의 구조체, model/base/ribbon 분리된 케이스(VTF)
 	typedef struct tagMultiAnimStateInfo
 	{
 		_uint iAnimID[ANIMSET_END];
@@ -272,7 +281,8 @@ public:
 		_uint iKeyCount;
 		CStateKey** ppStateKeys;
 	}MULTISTATE;
-
+	
+	// 상태 정의 구조체, model 1개 짜리(Anim) 
 	typedef struct tagSingleAnimStateInfo
 	{
 		_uint iAnimID;
@@ -294,6 +304,7 @@ public:
 		CStateKey** ppStateKeys;
 	}SINGLESTATE;
 
+	// 물리 움직임 정의 구조체
 	typedef struct tagPhysicMove
 	{
 		_bool	bInitMovement;			// true == 운동 시작 시, InitDir/Force 적용, false == 운동 시작 시, 직전 운동 상태 유지
@@ -306,6 +317,7 @@ public:
 		_float	fVerticalMaxSpeed;		// 세로축(Y) 최대 속도 절대값
 	}PHYSICMOVE;
 	
+	// 캐릭터의 현 상태를 정의하는 구조체
 	struct StateController
 	{
 		_uint			iCurState;		// 현재 상태 ID
@@ -320,11 +332,31 @@ public:
 		_bool			bFalling;
 		_float4x4		DefaultMatrix; // 애니메이션 시작 상태 행렬
 	};
+
+	// 피격 애니메이션 강도
+	typedef enum HitIntensity
+	{
+		HIT_NONE,
+		HIT_SMALL,
+		HIT_BIG,
+		HIT_FLY,
+		HIT_END
+	}HIT;
+
+	// 공격 정보를 정의하는 구조체
+	typedef struct tagAttackInformation
+	{
+		_float	fDamageFactor;	// 대미지 계수
+		ELEMENT	eElementType;	// 공격 속성
+		HIT		eHitIntensity;	// 피격 강도
+	}ATTACK;
+
 public:
 	virtual void Check_Nearst(CCharacter* pChar, _float fDist) {}
 	virtual CCollider* GetAttackCollider() const { return nullptr; }
 	virtual CCollider* GetHitCollider() const { return nullptr; }
 	virtual CCollider* GetMoveCollider() const { return nullptr; }
+	const _uint	Get_CollType() { return m_eCollisionType; }
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration) {}
@@ -350,6 +382,7 @@ public:
 
 protected:
 	StateController m_Scon;
+	CollisionType	m_eCollisionType;
 
 public:
 	virtual void Free() override;
