@@ -838,6 +838,28 @@ HRESULT CApplication::Ready_Static_Effect()
 	}
 #pragma endregion
 
+#pragma region Monster
+
+	for (_int i = 0; 5 > i; i++)
+	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL ,
+			TEXT("../../Resource/Effect/M_GAzizi/GenkiDama_Boom.bin"),
+			"../../Resource/Effect/M_GAzizi/GenkiDama/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_GAzizi/GenkiDama_Ready.bin"),
+			"../../Resource/Effect/M_GAzizi/GenkiDama/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_GAzizi/GenkiDama_Shoot.bin"),
+			"../../Resource/Effect/M_GAzizi/GenkiDama/")))
+			return E_FAIL;
+	}
+	
+#pragma endregion
+
 
 	return S_OK;
 }
