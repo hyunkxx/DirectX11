@@ -49,8 +49,8 @@ HRESULT CM_GAzizi::Initialize(void * pArg)
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
 	// 초기위치 설정
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(13.f, 30.f, 12.f, 1.f));
-	m_pNaviCom->Set_CurrentIndex(0);
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(110.f, 30.f, 96.f, 1.f));
+	m_pNaviCom->Set_CurrentIndex(90);
 
 	// StateController 초기화
 	m_Scon.iCurState = 0;
@@ -62,8 +62,8 @@ HRESULT CM_GAzizi::Initialize(void * pArg)
 	m_pModelCom->SetUp_Animation(0, true, false);
 
 	// 고유 변수 초기화
-	m_fAlertRange = 3.f;
-	m_fAttackRange = 12.f;
+	m_fAlertRange = 10.f;
+	m_fAttackRange = 7.f;
 	m_bAttackReady = true;
 
 	// CharInfo 초기화
@@ -555,7 +555,7 @@ void CM_GAzizi::Select_State(_double TimeDelta)
 	case Client::CM_GAzizi::AI_ATTACK:
 		if (true == m_bAttackReady)
 		{
-			if (0.0 == m_StateCoolTimes[IS_ATTACK3])
+			if (0/*0.0 == m_StateCoolTimes[IS_ATTACK3]*/)
 			{
 				m_Scon.iNextState = IS_ATTACK3;
 			}
@@ -889,6 +889,7 @@ void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 				if (1/*m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority*/)
 				{
+					m_pMainTransform->Set_LookDir(XMVectorSetY(pOpponent->Get_Position() - this->Get_Position(), 0.f));
 					SetUp_State();
 					m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
 				}

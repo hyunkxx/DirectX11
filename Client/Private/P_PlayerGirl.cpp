@@ -89,8 +89,9 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	m_pModelCom->Set_TopBones(TEXT("Bip001Head"), TEXT("Bip001LHand"), TEXT("Bip001RHand"));
 
 	// 초기위치 설정
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(6.f, 30.f, 5.f, 1.f));
-	m_pNaviCom->Set_CurrentIndex(0);
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(105.f, 30.f, 92.f, 1.f));
+	//m_pMainTransform->Set_Scale(_float3(10.f, 10.f, 10.f));
+	m_pNaviCom->Set_CurrentIndex(90);
 	
 	//m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
 
@@ -778,8 +779,8 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		if (pGame->InputKey(DIK_R) == KEY_STATE::TAP)
 		{
 			// 초기위치 설정
-			m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(6.f, 30.f, 5.f, 1.f));
-			m_pNaviCom->Set_CurrentIndex(0);
+			m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(306.f, 50.f, 241.f, 1.f));
+			m_pNaviCom->Set_CurrentIndex(848);
 			m_iAirJumpCount += 10;
 			m_fSkillGauge += 50.f;
 
