@@ -412,13 +412,13 @@ void CRect_Effect_P::Setup_Matrix()
 
 		_float3 vPos;
 		_float3 vNewRight, vNewUp, vNewLook;
-		vNewUp = _float3(0.f, 1.f, 0.f);
+		_float3 vDefaultUp = _float3(0.f, 1.f, 0.f);
 
 		vPos = _float3(m_WorldMatrix._41, m_WorldMatrix._42, m_WorldMatrix._43);
-		
+
 		_float4 vCameraPos = CPipeLine::GetInstance()->Get_CamPosition();
 		XMStoreFloat3(&vNewLook, XMVector3Normalize(XMLoadFloat3(&vParentsPos) - XMLoadFloat4(&vCameraPos)));
-		XMStoreFloat3(&vNewRight, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&vNewUp), XMLoadFloat3(&vNewLook))));
+		XMStoreFloat3(&vNewRight, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&vDefaultUp), XMLoadFloat3(&vNewLook))));
 		XMStoreFloat3(&vNewUp, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&vNewLook), XMLoadFloat3(&vNewRight))));
 
 		XMStoreFloat3(&vNewRight, XMLoadFloat3(&vNewRight)*m_EffectDesc.vCurScale.x);
@@ -436,9 +436,9 @@ void CRect_Effect_P::Setup_Matrix()
 		m_ResultMatirx._31 = vNewLook.x;
 		m_ResultMatirx._32 = vNewLook.y;
 		m_ResultMatirx._33 = vNewLook.z;
-		
+
 		XMVector3TransformCoord(XMLoadFloat3(&vPos), XMLoadFloat4x4(&m_ResultMatirx));
-		
+
 		m_ResultMatirx._41 = vPos.x;
 		m_ResultMatirx._42 = vPos.y;
 		m_ResultMatirx._43 = vPos.z;
@@ -449,6 +449,27 @@ void CRect_Effect_P::Setup_Matrix()
 		m_ResultMatirx._41 += vParentsPos.x;
 		m_ResultMatirx._42 += vParentsPos.y;
 		m_ResultMatirx._43 += vParentsPos.z;
+		vParentsPos = _float3(m_ResultMatirx._41, m_ResultMatirx._42, m_ResultMatirx._43);
+
+		XMStoreFloat3(&vNewLook, XMVector3Normalize(XMLoadFloat3(&vParentsPos) - XMLoadFloat4(&vCameraPos)));
+		XMStoreFloat3(&vNewRight, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&vDefaultUp), XMLoadFloat3(&vNewLook))));
+		XMStoreFloat3(&vNewUp, XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&vNewLook), XMLoadFloat3(&vNewRight))));
+
+		XMStoreFloat3(&vNewRight, XMLoadFloat3(&vNewRight)*m_EffectDesc.vCurScale.x);
+		XMStoreFloat3(&vNewUp, XMLoadFloat3(&vNewUp)*m_EffectDesc.vCurScale.y);
+		XMStoreFloat3(&vNewLook, XMLoadFloat3(&vNewLook)*m_EffectDesc.vCurScale.z);
+
+		m_ResultMatirx._11 = vNewRight.x;
+		m_ResultMatirx._12 = vNewRight.y;
+		m_ResultMatirx._13 = vNewRight.z;
+
+		m_ResultMatirx._21 = vNewUp.x;
+		m_ResultMatirx._22 = vNewUp.y;
+		m_ResultMatirx._23 = vNewUp.z;
+
+		m_ResultMatirx._31 = vNewLook.x;
+		m_ResultMatirx._32 = vNewLook.y;
+		m_ResultMatirx._33 = vNewLook.z;
 
 	}
 	else

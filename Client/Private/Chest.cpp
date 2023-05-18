@@ -117,10 +117,10 @@ void CChest::Interaction(void * pArg)
 	{
 		CItem::ITEM_DESC item0 = CItemDB::GetInstance()->GetItemData(ITEM::TACTREITE_VOUCHER);
 		item0.iAmount = 10;
-		CItem::ITEM_DESC item2 = CItemDB::GetInstance()->GetItemData(ITEM::COMMEMORATIVE_COIN);
-		item2.iAmount = 2;
-		CItem::ITEM_DESC item3 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
-		item1.iAmount = 99000;
+		CItem::ITEM_DESC item1 = CItemDB::GetInstance()->GetItemData(ITEM::COMMEMORATIVE_COIN);
+		item1.iAmount = 2;
+		CItem::ITEM_DESC item2 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
+		item2.iAmount = 99000;
 		CGameMode::GetInstance()->EnqueueItemDesc(item0);
 		CGameMode::GetInstance()->EnqueueItemDesc(item1);
 		CGameMode::GetInstance()->EnqueueItemDesc(item2);
