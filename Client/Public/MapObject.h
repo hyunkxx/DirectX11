@@ -15,7 +15,7 @@ BEGIN(Client)
 class CMapObject : public CGameObject
 {
 public:
-	enum MAPOBJECT_TYPEID { ID_TREE, ID_ROCK, ID_END };
+	enum MAPOBJECT_TYPEID { ID_TREE, ID_ROCK, ID_FLOOR, ID_STAIRS, ID_END };
 
 	enum ROCK_DIFFUSE_KINDS { RD_1, RD_2, RD_3, RD_4, RD_END };
 
@@ -37,11 +37,15 @@ public:
 	HRESULT Render_EditionColor();
 	HRESULT Render_Rock();
 
+	HRESULT Render_Default();
+
 public:
 	HRESULT Load_Edition();
 
 	HRESULT Load_EditionColor();
 	HRESULT Load_DiffuseTexID();
+
+	HRESULT Load_EditionID();
 
 private:
 	SMAP_OBJECT_EDITION_DESC	m_EditionDesc = {};

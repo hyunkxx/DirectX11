@@ -264,10 +264,12 @@ PS_OUT PS_MAIN_NORMALMAP_EDITIONCOLOR(PS_IN_NORMALMAP In)
 
 technique11 DefaultTechnique
 {
+	// RS_CullBack RS_Default
+
 	//³ª¹µÀÙ
 	pass Instance_Model_Pass0
 	{
-		SetRasterizerState(RS_Default);
+		SetRasterizerState(RS_CullBack);
 		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -277,10 +279,10 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
-
+	
 	pass Instance_Model_NoramlMap_Pass1
 	{
-		SetRasterizerState(RS_Default);
+		SetRasterizerState(RS_CullBack);
 		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -306,7 +308,7 @@ technique11 DefaultTechnique
 	// Ä¿½ºÅÒ ÄÃ·¯ ³ë¸»¸Ê x
 	pass Instance_Model_EditionColor_Pass3
 	{
-		SetRasterizerState(RS_Default);
+		SetRasterizerState(RS_CullBack);
 		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		// RS_Default RS_Wireframe
@@ -321,7 +323,7 @@ technique11 DefaultTechnique
 	// Ä¿½ºÅÒ ÄÃ·¯ ³ë¸»¸Ê o
 	pass Instance_Model_EditionColor_NoramlMap_Pass4
 	{
-		SetRasterizerState(RS_Default);
+		SetRasterizerState(RS_CullBack);
 		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_NORMALMAP();

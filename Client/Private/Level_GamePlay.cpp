@@ -52,6 +52,12 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_MapObject_Rock(TEXT("layer_rock"))))
 		return E_FAIL;
+
+	if (FAILED(Ready_Layer_MapObject_Floor(TEXT("layer_floor"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_MapObject_Stairs(TEXT("layer_stairs"))))
+		return E_FAIL;
 	
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
@@ -614,8 +620,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 {
-	return S_OK;
-
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
@@ -1054,6 +1058,150 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
 	{
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_ROCK_52");
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Floor(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
+
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Floors/Floor_0_Edition.data");;
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Floor"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_FLOOR_0");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Floors/Floor_1_Edition.data");;
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Floor"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_FLOOR_1");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Floors/Floor_2_Edition.data");;
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Floor"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_FLOOR_2");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Floors/Floor_3_Edition.data");
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Floor"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_FLOOR_3");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Floors/Floor_4_Edition.data");;
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Floor"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_FLOOR_4");
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
+
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_0_Edition.data");
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STAIRS_0");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_1_Edition.data");
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STAIRS_1");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_2_Edition.data");
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STAIRS_2");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_3_Edition.data");
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STAIRS_3");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_4_Edition.data");
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STAIRS_4");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_5_Edition.data");
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STAIRS_5");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_6_Edition.data");
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STAIRS_6");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_7_Edition.data");
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STAIRS_7");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_8_Edition.data");
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STAIRS_8");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_9_Edition.data");
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STAIRS_9");
 		return E_FAIL;
 	}
 

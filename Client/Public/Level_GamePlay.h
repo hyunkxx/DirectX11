@@ -28,6 +28,8 @@ private:
 
 	HRESULT Ready_Layer_MapObject_Tree(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MapObject_Rock(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_MapObject_Floor(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_MapObject_Stairs(const _tchar* pLayerTag);
 	
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

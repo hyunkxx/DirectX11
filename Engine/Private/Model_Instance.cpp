@@ -208,6 +208,7 @@ HRESULT CModel_Instance::Load_InstanceData(const _tchar * pInstanceFilePath)
 			ZeroMemory(m_pInstanceMatrix, sizeof(_float4x4) * m_iNumInstance);
 
 			XMStoreFloat4x4(&m_pInstanceMatrix[0], XMMatrixIdentity());
+			m_pInstanceMatrix[0]._41 = -100.f;
 		}
 		else
 		{

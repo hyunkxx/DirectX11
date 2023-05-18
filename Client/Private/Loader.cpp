@@ -855,6 +855,102 @@ HRESULT CLoader::Load_Level_GamePlay()
 	}
 #pragma endregion ROCK
 
+#pragma region FLOOR
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_FLOOR_0, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Floors/0/SM_Alt_Flo_01AH.smdl"), TEXT("../../Data/GamePlay/MapObject/Floors/Floor_0.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_FLOOR_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_FLOOR_1, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Floors/1/SM_Alt_Flo_03AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Floors/Floor_1.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_FLOOR_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_FLOOR_2, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Floors/2/SM_Alt_Flo_04AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Floors/Floor_2.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_FLOOR_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_FLOOR_3, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Floors/3/SM_Alt_Flo_05AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Floors/Floor_3.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_FLOOR_3");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_FLOOR_4, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Floors/4/SM_Alt_Flo_06AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Floors/Floor_4.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_FLOOR_4");
+		return E_FAIL;
+	}
+#pragma endregion FLOOR
+
+#pragma region STAIRS
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STAIRS_0, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Stairs/0/SM_Alt_Sta_01AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_0.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STAIRS_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STAIRS_1, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Stairs/1/SM_Alt_Sta_01BM.smdl"), TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_1.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STAIRS_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STAIRS_2, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Stairs/2/SM_Alt_Sta_01CS.smdl"), TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_2.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STAIRS_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STAIRS_3, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Stairs/3/SM_Alt_Sta_01DM.smdl"), TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_3.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STAIRS_3");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STAIRS_4, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Stairs/4/SM_Alt_Sta_02AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_4.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STAIRS_4");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STAIRS_5, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Stairs/5/SM_Alt_Sta_02BS.smdl"), TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_5.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STAIRS_5");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STAIRS_6, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Stairs/6/SM_Alt_Sta_02CS.smdl"), TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_6.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STAIRS_6");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STAIRS_7, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Stairs/7/SM_Alt_Sta_03AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_7.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STAIRS_7");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STAIRS_8, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Stairs/8/SM_Alt_Sta_04AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_8.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STAIRS_8");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STAIRS_9, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Stairs/9/SM_Alt_Sta_05AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_9.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STAIRS_9");
+		return E_FAIL;
+	}
+#pragma endregion STAIRS
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
 		return E_FAIL;
 

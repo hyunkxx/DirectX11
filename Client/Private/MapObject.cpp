@@ -86,6 +86,14 @@ HRESULT CMapObject::Render()
 		if (FAILED(Render_Rock()))
 			return E_FAIL;
 		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_FLOOR:
+		if (FAILED(Render_Default()))
+			return E_FAIL;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_STAIRS:
+		if (FAILED(Render_Default()))
+			return E_FAIL;
+		break;
 	default:
 		break;
 	}
@@ -178,6 +186,35 @@ HRESULT CMapObject::Render_Rock()
 	return S_OK;
 }
 
+HRESULT CMapObject::Render_Default()
+{
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		// Model 중 NormalTextrue 가 없는 Model 은 m_IsDistinction_NormalTex 가 true 가 되어서 노말맵 을 적용시키지 않음.
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsDistinction_NormalTex)))
+			return E_FAIL;
+
+		if (true == m_IsDistinction_NormalTex)
+		{
+			m_iShaderPassID = 0;
+			m_IsDistinction_NormalTex = false;
+		}
+		else
+			m_iShaderPassID = 1;
+
+		m_pShaderCom->Begin(m_iShaderPassID);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
 HRESULT CMapObject::Load_Edition()
 {
 	switch (m_EditionDesc.iTypeID)
@@ -195,6 +232,15 @@ HRESULT CMapObject::Load_Edition()
 		{
 			m_EditionDesc.iDiffuseTex_ID = { 0 };
 		}
+		break;
+
+	case CMapObject::MAPOBJECT_TYPEID::ID_FLOOR:
+		if (FAILED(Load_EditionID()))
+			return E_FAIL;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_STAIRS:
+		if (FAILED(Load_EditionID()))
+			return E_FAIL;
 		break;
 	default:
 		break;
@@ -245,6 +291,27 @@ HRESULT CMapObject::Load_DiffuseTexID()
 	ReadFile(hFile, &m_EditionDesc.iTypeID, sizeof(_uint), &dwByte, nullptr);
 
 	ReadFile(hFile, &m_EditionDesc.iDiffuseTex_ID, sizeof(_uint), &dwByte, nullptr);
+
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CMapObject::Load_EditionID()
+{
+	HANDLE		hFile = CreateFile(m_EditionDesc.pEditionFilePath, GENERIC_READ, 0, 0,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Failed to Load Data in CMapObject : EditionID");
+		return S_OK;
+	}
+
+	DWORD		dwByte = 0;
+
+	ReadFile(hFile, &m_EditionDesc.iSIMD_ID, sizeof(_uint), &dwByte, nullptr);
+	ReadFile(hFile, &m_EditionDesc.iTypeID, sizeof(_uint), &dwByte, nullptr);
 
 	CloseHandle(hFile);
 
