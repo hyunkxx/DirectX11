@@ -254,6 +254,9 @@ void CAcquireUI::LateTick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	__super::LateTick(TimeDelta);
 
+	if (ComputeCameraLength() > 50.f)
+		return;
+
 	m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }
 
@@ -367,7 +370,7 @@ HRESULT CAcquireUI::Render()
 		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SIDEALPHA, m_pShader, "g_DiffuseTexture")))
 			return E_FAIL;
 
-		m_pShader->Begin(8);
+		m_pShader->Begin(9);
 		m_pVIBuffer->Render();
 
 
@@ -378,7 +381,7 @@ HRESULT CAcquireUI::Render()
 		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_GLOWGARD, m_pShader, "g_DiffuseTexture")))
 			return E_FAIL;
 
-		m_pShader->Begin(7);
+		m_pShader->Begin(8);
 		m_pVIBuffer->Render();
 
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_HighestItemIconOrtho.WorldMatrix)))

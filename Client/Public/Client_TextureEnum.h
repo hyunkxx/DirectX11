@@ -82,5 +82,9 @@ namespace TEXTURE
 		ROCK_D_2,
 		ROCK_D_3,
 		ROCK_D_4,
+
+		BOX_EMISSIVE,
+		BOX_SPECULAR,
+		BOX_SSAO
 	};
 }

@@ -32,7 +32,7 @@ public:
 
 	void SetInteractionActive(CInteractionUI::INTERACT_TYPE eType, _bool bValue);
 	void EnqueueItemDesc(CItem::ITEM_DESC ItemDesc);
-
+	void SetGageBar(_float fValue);
 public:
 	static CAcquireSystem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

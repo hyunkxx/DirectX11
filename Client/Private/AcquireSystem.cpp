@@ -86,6 +86,11 @@ void CAcquireSystem::EnqueueItemDesc(CItem::ITEM_DESC ItemDesc)
 	m_pAcquireUI->EnqueueItemDesc(ItemDesc);
 }
 
+void CAcquireSystem::SetGageBar(_float fValue)
+{
+	m_pInteractionUI->SetGagebar(fValue);
+}
+
 CAcquireSystem * CAcquireSystem::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
 	CAcquireSystem*	pInstance = new CAcquireSystem(pDevice, pContext);

@@ -7,9 +7,16 @@ texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 texture2D	g_DepthTexture;
 float4		g_vCamPosition;
-float4		g_vColor;
+float3		g_vColor;
 
 float4		g_LightPos;
+
+texture2D	g_EmissiveTexture;
+texture2D	g_SpecularTexture;
+texture2D	g_SSAOTexture;
+texture2D   g_MaskTexture;
+
+float		g_fTimeAcc;
 
 struct VS_IN
 {
@@ -130,7 +137,8 @@ struct PS_OUT_OUTLINE
 	float4 vNormal : SV_TARGET1;
 	float4 vDepth : SV_TARGET2;
 	float4 vOutNormal : SV_TARGET3;
-	float4 vGlow : SV_TARGET4;
+	float4 vSpecGlow : SV_TARGET4;
+	float4 vGlow : SV_TARGET5;
 };
 
 PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
@@ -163,7 +171,7 @@ PS_OUT_OUTLINE	PS_Outline(PS_IN In)
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
 	if (vNormalDesc.g > vNormalDesc.b)
-		Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
+		Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 1.f);
 
 	return Out;
 }
@@ -251,7 +259,9 @@ struct PS_OUT_SKY
 	float4 vNormal	: SV_TARGET1;
 	float4 vDepth	: SV_TARGET2;
 	float4 vOutNormal : SV_TARGET3;
-	float4 vGlow : SV_TARGET4;
+	float4 vSpecGlow : SV_TARGET4;
+	float4 vGlow : SV_TARGET5;
+
 };
 
 PS_OUT_SKY PS_MAIN_SKY(PS_IN_SKY In)
@@ -261,6 +271,75 @@ PS_OUT_SKY PS_MAIN_SKY(PS_IN_SKY In)
 	Out.vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 1.f);
 	Out.vDepth = float4(0.f, 0.f, 0.f, 1.f);
+
+	return Out;
+}
+
+//¸ðµ¨ ±Û·Î¿ì
+PS_OUT_OUTLINE PS_MAIN_MODEL_SPECGLOW(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector			vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector			vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+
+	float3			vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3x3		WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vDiffuse = vMtrlDiffuse;
+
+	if (Out.vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	if (vNormalDesc.g > vNormalDesc.b)
+		Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 1.f);
+
+	if (vNormalDesc.g > vNormalDesc.b)
+		Out.vGlow = vector(0.f, 0.f, 0.f, 0.f);
+
+	return Out;
+}
+
+
+PS_OUT_OUTLINE PS_MAIN_MODEL_EMISSIVE(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector			vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector			vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	vector			vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexUV);
+	vector			vSpec = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
+	vector			vSSAO = g_SSAOTexture.Sample(LinearSampler, In.vTexUV);
+
+	float3			vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3x3		WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vDiffuse = vMtrlDiffuse;
+
+	if (Out.vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	if (vNormalDesc.g > vNormalDesc.b)
+		Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 0.005f);
+
+	float2 uv = { 0.f, 0.f };
+	uv.x = g_fTimeAcc;
+	vector vTwinklMask = g_MaskTexture.Sample(LinearClampSampler, uv);
+	
+	vEmissive.rgb = vEmissive.rgb * g_vColor;
+	Out.vGlow = vEmissive * vTwinklMask;
 
 	return Out;
 }
@@ -363,5 +442,33 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MAPOBJECT_NORMALMAP_DARK();
+	}
+
+	// 7 ¸ðµ¨ ½ºÆå±Û·Î¿ì
+	pass Model_Glow_Pass7
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_MODEL_SPECGLOW();
+	}
+
+	// 7 ¸ðµ¨ ÀÌ¹Ì½Ãºê(½ºÆåÅ§·¯) : Emissive, SSAO ÅØ½ºÃÄ ÇÊ¿ä >> ChestÀü¿ë
+	pass Model_Emissive_Pass8
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_MODEL_EMISSIVE();
 	}
 }

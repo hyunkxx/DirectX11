@@ -32,6 +32,7 @@ public:
 
 public:
 	void SetInteractionActive(INTERACT_TYPE eType, _bool bValue);
+	void SetGagebar(_float fValue) { m_fGageBar = fValue; };
 
 private:
 	HRESULT addComponents();
@@ -62,6 +63,7 @@ private:
 	ORTHO_DESC m_InterIcon;
 	ORTHO_DESC m_Sprite;
 	ORTHO_DESC m_Text;
+	ORTHO_DESC m_GageBarBack;
 
 private: // Sprite
 	_float2 m_SpriteSize;
@@ -78,6 +80,9 @@ private:
 
 	_float m_fFButtonAlpha = 0.f;
 	_float m_fUIAlpha = 0.f;
+
+private:
+	_float m_fGageBar = 0.f;
 
 };
 

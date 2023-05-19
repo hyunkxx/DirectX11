@@ -2,6 +2,7 @@
 #include "..\Public\InteractionUI.h"
 
 #include "GameMode.h"
+#include "AppManager.h"
 #include "GameInstance.h"
 
 CInteractionUI::CInteractionUI(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -66,6 +67,12 @@ HRESULT CInteractionUI::Initialize(void * pArg)
 	XMStoreFloat4x4(&m_Sprite.WorldMatrix, XMMatrixScaling(m_Sprite.fWidth, m_Sprite.fHeight, 1.f) * XMMatrixTranslation(m_Sprite.fX - g_iWinSizeX * 0.5f, -m_Sprite.fY + g_iWinSizeY * 0.5f, 0.f));
 	XMStoreFloat4x4(&m_InterIcon.WorldMatrix, XMMatrixScaling(m_InterIcon.fWidth, m_InterIcon.fHeight, 1.f) * XMMatrixTranslation(m_InterIcon.fX - g_iWinSizeX * 0.5f, -m_InterIcon.fY + g_iWinSizeY * 0.5f, 0.f));
 
+	m_GageBarBack.fX = g_iWinSizeX >> 1;
+	m_GageBarBack.fY = g_iWinSizeY >> 1;
+	m_GageBarBack.fWidth = 300.f;
+	m_GageBarBack.fHeight = 50.f;
+	CAppManager::ComputeOrtho(&m_GageBarBack);
+
 	return S_OK;
 }
 
@@ -128,6 +135,9 @@ void CInteractionUI::Tick(_double TimeDelta)
 		}
 	}
 
+	if (m_fGageBar > 1.f)
+		m_fGageBar = 0.f;
+
 }
 
 void CInteractionUI::LateTick(_double TimeDelta)
@@ -135,8 +145,7 @@ void CInteractionUI::LateTick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	__super::LateTick(TimeDelta);
 
-	if(m_bUIRender || m_bFButtonRender)
-		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
+	m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }
 
 HRESULT CInteractionUI::Render()
@@ -263,6 +272,25 @@ HRESULT CInteractionUI::Render()
 		}
 
 		m_pShader->Begin(5);
+		m_pVIBuffer->Render();
+
+	}
+
+	if (m_fGageBar > 0.f)
+	{
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_GageBarBack.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fFillAmount", &m_fGageBar, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_GLOWLINE, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(2);
 		m_pVIBuffer->Render();
 
 	}

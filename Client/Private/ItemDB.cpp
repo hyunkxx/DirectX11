@@ -51,7 +51,7 @@ _float3 CItemDB::GetItemColor(CItem::ITEM_GRADE eItemGrade)
 		vColor = { 255.f / 255.f, 255.f / 255.f, 255.f / 255.f };
 		break;
 	case Client::CItem::ADVANCED:
-		vColor = { 255.f / 255.f, 255.f / 255.f, 255.f / 255.f };
+		vColor = { 50.f / 255.f, 230.f / 255.f, 80.f / 255.f };
 		break;
 	case Client::CItem::RARE:
 		vColor = { 210.f / 255.f, 110.f / 255.f, 255.f / 255.f };

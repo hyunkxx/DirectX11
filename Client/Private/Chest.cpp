@@ -43,6 +43,22 @@ HRESULT CChest::Initialize(void * pArg)
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
 	}
 
+	switch (m_eChestType)
+	{
+	case CHEST_SIMPLE:
+		m_vColor = ADVANCED_COLOR;
+		break;
+	case CHEST_STANDARD:
+		m_vColor = RARE_COLOR;
+		break;
+	case CHEST_EXPANDED:
+		m_vColor = UNIQUE_COLOR;
+		break;
+	default:
+		m_vColor = DEFAULT_COLOR;
+		break;
+	}
+
 	return S_OK;
 }
 
@@ -59,9 +75,63 @@ void CChest::Tick(_double TimeDelta)
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (m_bOverlapedPlayer && pGameInstance->InputKey(DIK_F) == KEY_STATE::TAP)
-		Interaction();
+	if (m_bOverlapedPlayer && pGameInstance->InputKey(DIK_F) == KEY_STATE::HOLD && !m_bInteractionActive)
+	{
+		m_fPushButtonAcc += (_float)TimeDelta;
+		if (m_fPushButtonAcc > 1.f)
+		{
+			m_fPushButtonAcc = 0.f;
+			m_bInteractionBegin = true;
+		}
+	}
+	else
+		m_fPushButtonAcc = 0.f;
 
+	if (m_bInteractionBegin)
+	{
+		m_bInteractionBegin = false;
+		m_bInteractionActive = true;
+
+		m_fPushButtonAcc = 0.f;
+		m_fTimeAcc = 0.f;
+		Interaction();
+	}
+
+	if (m_fPushButtonAcc >= 0.f)
+		pGameMode->SetGagebar(m_fPushButtonAcc);
+
+	if (!m_bInteractionActive)
+	{
+		m_fTimeAcc += (_float)TimeDelta * 0.25f;
+		if (m_fTimeAcc > 1.f)
+			m_fTimeAcc = 0.f;
+	}
+	else
+	{
+		m_fResetTimeAcc += (_float)TimeDelta;
+		if (m_fResetTimeAcc > 3.f)
+		{
+			m_bInteractionActive = false;
+			m_fResetTimeAcc = 0.f;
+		}
+	}
+
+	if (m_bOverlapedPlayer && !m_bInteractionActive)
+	{
+		if (!m_bInteractionUIRender)
+		{
+			m_bInteractionUIRender = true;
+			interactionUIActive(true);
+		}
+	}
+	else
+	{
+		if (m_bInteractionUIRender)
+		{
+			m_bInteractionUIRender = false;
+			interactionUIActive(false);
+		}
+	}
 }
 
 void CChest::LateTick(_double TimeDelta)
@@ -70,10 +140,45 @@ void CChest::LateTick(_double TimeDelta)
 
 	pGameInstance->AddCollider(m_pCollider);
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+
+	m_pRenderer->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
 }
 
 HRESULT CChest::Render()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(setupShaderResource()))
+		return E_FAIL;
+
+	if (FAILED(m_pEmissive->Setup_ShaderResource(m_pShader, "g_EmissiveTexture")))
+		return E_FAIL;
+	if (FAILED(m_pSpecular->Setup_ShaderResource(m_pShader, "g_SpecularTexture")))
+		return E_FAIL;
+	if (FAILED(m_pSSAO->Setup_ShaderResource(m_pShader, "g_SSAOTexture")))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::MASK_TWINKL, m_pShader, "g_MaskTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fTimeAcc, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetRawValue("g_vColor", &m_vColor, sizeof(_float3))))
+		return E_FAIL;
+
+	_uint iMeshCount = m_pModel->Get_NumMeshes();
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		if (FAILED(m_pModel->SetUp_ShaderMaterialResource(m_pShader, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
+			return E_FAIL;
+		if (FAILED(m_pModel->SetUp_ShaderMaterialResource(m_pShader, "g_NormalTexture", i, MyTextureType_NORMALS)))
+			return E_FAIL;
+
+		m_pShader->Begin(8);
+		m_pModel->Render(i);
+	}
+
 	return S_OK;
 }
 
@@ -146,6 +251,24 @@ HRESULT CChest::addComponents()
 		TEXT("Com_Transform"), (CComponent**)&m_pMainTransform, &TransformDesc)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODEL,
+		TEXT("Com_Shader"), (CComponent**)&m_pShader)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SMODEL::SMD_SIMPLE_BOX,
+		TEXT("Com_Model"), (CComponent**)&m_pModel)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::BOX_EMISSIVE,
+		TEXT("Com_Texture_Emissive"), (CComponent**)&m_pEmissive)))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::BOX_SPECULAR,
+		TEXT("Com_Texture_Specular"), (CComponent**)&m_pSpecular)))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::BOX_SSAO,
+		TEXT("Com_Texture_SSAO"), (CComponent**)&m_pSSAO)))
+		return E_FAIL;
+
 	CCollider::COLLIDER_DESC CollDesc;
 	CollDesc.owner = this;
 	CollDesc.vCenter = { 0.f, 0.5f, 0.f };
@@ -156,6 +279,28 @@ HRESULT CChest::addComponents()
 		return E_FAIL;
 
 	m_pCollider->SetSameObjectDetection(false);
+
+	return S_OK;
+}
+
+HRESULT CChest::setupShaderResource()
+{
+	if (nullptr == m_pShader)
+		return E_FAIL;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetRawValue("g_vCamPosition", &pGameInstance->Get_CamPosition(), sizeof(_float4))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -211,11 +356,22 @@ void CChest::Free()
 	Safe_Release(m_pRenderer);
 
 	Safe_Release(m_pMainTransform);
-	Safe_Release(m_pCollider);
+	Safe_Release(m_pEmissive);
+	Safe_Release(m_pSpecular);
+	Safe_Release(m_pSSAO);
 	Safe_Release(m_pShader);
+	Safe_Release(m_pModel);
+
+	Safe_Release(m_pCollider);
 }
 
 void CChest::OnCollisionEnter(CCollider * src, CCollider * dest)
+{
+	CGameMode* pGameMode = CGameMode::GetInstance();
+
+}
+
+void CChest::OnCollisionStay(CCollider * src, CCollider * dest)
 {
 	CGameMode* pGameMode = CGameMode::GetInstance();
 
@@ -223,12 +379,7 @@ void CChest::OnCollisionEnter(CCollider * src, CCollider * dest)
 	if (pPlayer)
 	{
 		m_bOverlapedPlayer = true;
-		interactionUIActive(true);
 	}
-}
-
-void CChest::OnCollisionStay(CCollider * src, CCollider * dest)
-{
 }
 
 void CChest::OnCollisionExit(CCollider * src, CCollider * dest)

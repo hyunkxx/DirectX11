@@ -3,7 +3,6 @@
 // Item Image
 namespace STATIC_IMAGE
 {
-	// 0부터 시작해도 겹치지 않음 다른 프로토타입 int와 겹치지 않음
 	enum
 	{
 		TEXT_0 = 0,
@@ -25,10 +24,13 @@ namespace STATIC_IMAGE
 		IMAGE_LISTBACK,
 		IMAGE_GLOWGARD,
 		IMAGE_SIDEALPHA,
-		
+		IMAGE_GLOWLINE,
+
 		TEXT_ACQUIRE,
 		TEXT_TACTREITE_VOUCHER,
 		TEXT_COMMEMORATIVE_COIN,
-		TEXT_TACTITE_COIN
+		TEXT_TACTITE_COIN,
+
+		MASK_TWINKL
 	};
 }

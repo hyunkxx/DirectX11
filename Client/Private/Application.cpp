@@ -586,6 +586,13 @@ HRESULT CApplication::Ready_Item_Image()
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_SIDEALPHA,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Background/SideAlphaBack.dds")))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_GLOWLINE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/UI/Bar/GlowLine.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MASK_TWINKL,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Mask/Twinkl.png")))))
+		return E_FAIL;
 
 #pragma endregion
 

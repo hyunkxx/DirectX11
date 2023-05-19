@@ -81,6 +81,7 @@ private: // Utility
 public: // UI Handler
 	void SetInteractionActive(CInteractionUI::INTERACT_TYPE eInteractType, _bool bValue);
 	void EnqueueItemDesc(CItem::ITEM_DESC ItemDesc);
+	void SetGagebar(_float fValue);
 
 private: 
 	class CAcquireSystem* m_pAcquireSystem = nullptr;

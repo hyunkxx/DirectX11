@@ -63,3 +63,8 @@ void CGameMode::EnqueueItemDesc(CItem::ITEM_DESC ItemDesc)
 {
 	m_pAcquireSystem->EnqueueItemDesc(ItemDesc);
 }
+
+void CGameMode::SetGagebar(_float fValue)
+{
+	m_pAcquireSystem->SetGageBar(fValue);
+}

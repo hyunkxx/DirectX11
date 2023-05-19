@@ -5,6 +5,10 @@
 BEGIN(Engine)
 class CRenderer;
 class CShader;
+class CTexture;
+class CModel;
+
+class CVIBuffer_Rect;
 
 END
 
@@ -37,6 +41,8 @@ public:
 
 private:
 	HRESULT addComponents();
+	HRESULT setupShaderResource();
+
 	void interactionUIActive(_bool bRender);
 
 public:
@@ -55,11 +61,26 @@ private:
 	CRenderer* m_pRenderer = nullptr;
 	CCollider* m_pCollider = nullptr;
 	CShader* m_pShader = nullptr;
+	CModel* m_pModel = nullptr;
+
+	CTexture* m_pEmissive = nullptr;
+	CTexture* m_pSpecular = nullptr;
+	CTexture* m_pSSAO = nullptr;
 
 private:
 	CHEST_TYPE m_eChestType = CHEST_SIMPLE;
 	_bool m_bOverlapedPlayer = false;
 
+	_float m_fTimeAcc = 0.f;
+
+	_bool m_bInteractionUIRender = false;
+	_bool m_bInteractionActive = false;
+	_bool m_bInteractionBegin = false;
+
+	_float m_fPushButtonAcc = 0.f;
+	_float m_fResetTimeAcc = 0.f;
+
+	_float3 m_vColor = { 1.f, 1.f, 1.f };
 };
 
 END
