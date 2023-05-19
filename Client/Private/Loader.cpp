@@ -269,7 +269,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
 	// UI
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UI,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Main/main%d.dds"), 242))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Main/main%d.dds"), 255))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UIMOUSE,
@@ -281,7 +281,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UIMAP,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Map.dds")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Map%d.dds"), 2))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UIMAPDEFAULT,

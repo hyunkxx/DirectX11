@@ -16,12 +16,25 @@ float2 g_fLU;
 float2 g_fRB;
 float2 g_UV;
 float  g_RadianAcc;
-float2  g_MonUV;
+float  g_TRadianAcc;
+float  g_ERadianAcc;
+float  g_RRadianAcc;
+float  g_QRadianAcc;
+float2  g_GraphUV;
 float  g_MonsterGauge;
+
+//Sprite Image
+float  g_CurrentCount;		//현재 인덱스
+float2 g_SpriteXY;			//가로 세로 갯수
+
 texture2D			g_MyTexture;
 texture2D			g_MyTexture2;
 texture2D			g_Mask;
 texture2D			g_Mask2;
+texture2D			g_PMask;
+texture2D			g_PMask2;
+texture2D			g_Sprite;
+
 struct VS_IN
 {
 	float3			vPosition : POSITION;
@@ -60,11 +73,56 @@ struct PS_OUT
 	float4			vColor : SV_TARGET0;
 };
 
+PS_OUT PS_Sprite(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	float2 uv = In.vTexUV;
+	float2 SpriteCount = g_SpriteXY; // 가로세로 이미지 개수 5,3
+
+	float fHeight = floor(g_CurrentCount / g_SpriteXY.x);
+	float fWidth = frac(g_CurrentCount / g_SpriteXY.x);
+
+	uv.x = In.vTexUV.x / g_SpriteXY.x + fWidth;
+	uv.y = In.vTexUV.y / g_SpriteXY.y + (fHeight * (1 / g_SpriteXY.y));
+
+	Out.vColor = g_Sprite.Sample(PointSampler, uv);
+//	Out.vColor = Out.vColor * float4(g_vColor, Out.vColor.a);
+
+
+
+   	Out.vColor.r += g_fColorR/255.f;
+	Out.vColor.g += g_fColorG/255.f;
+	Out.vColor.b += g_fColorB/255.f;
+	Out.vColor.a += g_fColorA/255.f;
+	return Out;
+}
+
+PS_OUT PS_COOLEND(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+	
+	Out.vColor = g_MyTexture.Sample(PointSampler, In.vTexUV);
+	
+	Out.vColor.a = (Out.vColor.r + Out.vColor.g + Out.vColor.b);
+	
+	if(0.9 < Out.vColor.r + Out.vColor.g + Out.vColor.b)
+	{
+		Out.vColor.a = 0.5f;  
+	}
+
+	Out.vColor.r += g_fColorR/255.f;
+	Out.vColor.g += g_fColorG/255.f;
+	Out.vColor.b += g_fColorB/255.f;
+	Out.vColor.a += g_fColorA/255.f;
+	return Out;
+}
+
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_MyTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor = g_MyTexture.Sample(PointSampler, In.vTexUV);
 	Out.vColor.r += g_fColorR/255.f;
 	Out.vColor.g += g_fColorG/255.f;
 	Out.vColor.b += g_fColorB/255.f;
@@ -175,15 +233,17 @@ PS_OUT PS_MAIN_COOLTIME(PS_IN In)
 PS_OUT PS_WAVE(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
+	vector Defuse ,Mask, Mask2;
+	Mask = g_PMask.Sample(LinearSampler,  float2(In.vTexUV.x + g_UV.x  ,In.vTexUV.y)); // 흐르는 이미지
+	Mask2 = g_PMask2.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y)); // 랜더부분 이미지
+	Defuse = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	
+	Defuse *= (Mask.a +  Mask2.a);
 
-	Out.vColor = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x + g_UV.x ,In.vTexUV.y + g_UV.y));
-	Out.vColor.a = In.vTexUV.x;
-	if(Out.vColor.r<0.1f)
-	discard;
-	if(Out.vColor.g<0.1f)
-	discard;
-	if(Out.vColor.b<0.1f)
-	discard;
+
+	Out.vColor.a = Defuse;
+	Out.vColor.a*=In.vTexUV.x;
+
 	Out.vColor.r += g_fColorR/255.f;
 	Out.vColor.g += g_fColorG/255.f;
 	Out.vColor.b += g_fColorB/255.f;
@@ -191,21 +251,26 @@ PS_OUT PS_WAVE(PS_IN In)
 
 	return Out;
 }
+
 PS_OUT PS_CUT(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 	float2 g_fUV;
 	g_fUV.x = (g_fRB.x - g_fLU.x) * In.vTexUV.x + g_fLU.x;
 	g_fUV.y = (g_fRB.y - g_fLU.y) * In.vTexUV.y + g_fLU.y;
-
-	Out.vColor = g_MyTexture.Sample(LinearSampler, g_fUV);
+	
+	float4 fcolor, fDefuse;
+	fcolor = g_MyTexture2.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	fDefuse = g_MyTexture.Sample(LinearSampler,  g_fUV);
+	Out.vColor = fDefuse * fcolor;
+	
 
 	Out.vColor.r += g_fColorR/255.f;
 	Out.vColor.g += g_fColorG/255.f;
 	Out.vColor.b += g_fColorB/255.f;
 	Out.vColor.a += g_fColorA/255.f;
 
-	if(Out.vColor.a < 0.1)
+	if(Out.vColor.a < 0.1f)
 	discard;
 
 	return Out;
@@ -230,6 +295,12 @@ PS_OUT PS_CYCLE(PS_IN In)
 
    Out.vColor = vMtrlDiffuse;
 
+
+   
+   	Out.vColor.r += g_fColorR/255.f;
+	Out.vColor.g += g_fColorG/255.f;
+	Out.vColor.b += g_fColorB/255.f;
+	Out.vColor.a += g_fColorA/255.f;
    return Out;
 
 }
@@ -250,8 +321,14 @@ PS_OUT PS_CYCLESKILL(PS_IN In)
       vMtrlDiffuse.a = max(vMtrlDiffuse.a, 0.f);
    }
 
+   	Out.vColor.r += g_fColorR/255.f;
+	Out.vColor.g += g_fColorG/255.f;
+	Out.vColor.b += g_fColorB/255.f;
+	Out.vColor.a += g_fColorA/255.f;
 
    Out.vColor = vMtrlDiffuse;
+   if(Out.vColor.a < 0.1)
+	discard;
 
    return Out;
 
@@ -263,18 +340,20 @@ PS_OUT PS_TWO(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	float4 fcolor;
-	fcolor = g_MyTexture2.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
-	Out.vColor = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	fcolor = g_MyTexture2.Sample(PointSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	Out.vColor = g_MyTexture.Sample(PointSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
 	
-	if((fcolor.r >0.5f)&&(fcolor.g >0.5f)&&(fcolor.b >0.5f))	
-	Out.vColor.a = 0.f;
-
+	if(0.5f > (fcolor.r + fcolor.g + fcolor.b))	
+	{
+		Out.vColor.a = 0.f;
+	}
 	Out.vColor.r += g_fColorR/255.f;
 	Out.vColor.g += g_fColorG/255.f;
 	Out.vColor.b += g_fColorB/255.f;
 	Out.vColor.a += g_fColorA/255.f;
 
-
+	  if(Out.vColor.a < 0.1)
+	discard;
 	return Out;
 }
 
@@ -299,7 +378,7 @@ PS_OUT PS_MASK(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 	vector Defuse ,Mask, Mask2;
-	Mask = g_Mask.Sample(LinearSampler,  float2(In.vTexUV.x - g_MonUV.x  ,In.vTexUV.y)); // 흐르는 이미지
+	Mask = g_Mask.Sample(LinearSampler,  float2(In.vTexUV.x - g_GraphUV.x  ,In.vTexUV.y)); // 흐르는 이미지
 	Mask2 = g_Mask2.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y)); // 랜더부분 이미지
 	Defuse = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
 	
@@ -307,10 +386,16 @@ PS_OUT PS_MASK(PS_IN In)
 
 
 	Out.vColor.a = Defuse;
+	
+	Out.vColor.r += g_fColorR/255.f;
+	Out.vColor.g += g_fColorG/255.f;
+	Out.vColor.b += g_fColorB/255.f;
+	Out.vColor.a += g_fColorA/255.f;
 
 	return Out;
 
 }
+
 
 technique11 DefaultTechnique
 {
@@ -394,7 +479,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_CUT();
 	}
 
-		pass UI_WAVE //6 흐르는데 왼쪽으로 갈수록 연하게
+		pass UI_WAVE //6 미니플레이어 그래프마스크 -> 나중에 왼쪽으로 갈수록 연하게 기능 추가할 것
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -445,7 +530,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_DOWN();
 	}
 
-	pass UI_MASK // 10 -> 얘 지우고 마스크 이미지
+	pass UI_MASK // 10 플레이어 메인그래프인데 몬스터도 쓰고 있음 -> 나중에 오른쪽에서 짤리는 기능 추가할것
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -496,6 +581,33 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_CYCLESKILL();
 	}
+
+		pass UI_TWO // 14
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_TWO();
+	}
+
+		pass UI_Sprite // 15
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Sprite();
+	}
+
 
 }
 

@@ -44,7 +44,7 @@ public:
 
 	void Set_CurrentIndex(_uint iIndex)
 	{
-		m_iCell_In_CheckIndex = iIndex;
+		m_NavigationDesc.iCurrentIndex = iIndex;
 	}
 	CCell* Get_CurCell()
 	{
