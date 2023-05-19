@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 class CTransform;
+class CNavigation;
 END
 
 
@@ -34,6 +35,7 @@ public:
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	//virtual HRESULT Render();
+	virtual void RenderGUI() override;
 
 	void Start_Curve(class CCameraCurve* pCurve)
 	{
@@ -61,6 +63,7 @@ public:
 private:
 	_bool		m_bFixMouse = { false };
 	CTransform* m_pPlayerTransform = { nullptr };
+	CNavigation* m_pPlayerNavigation = { nullptr };
 
 	_float3 m_vTargetPrevPos = {};
 	_float m_fMaxPosDistance = { 1.5f };
@@ -90,6 +93,14 @@ private:
 
 	const _float m_fXAngleMin = { -20.f };
 	const _float m_fXAngleMax = { 80.f };
+
+#ifdef _DEBUG
+private:
+	_bool m_bShakeToggle = false;
+	CCamera::SHAKE_DESC m_ShakeDesc;
+	_float m_fVibeRange = 5.f;
+	_float m_fVibeDuration = 0.8f;
+#endif
 
 public:
 	static CPlayerCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

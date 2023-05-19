@@ -75,17 +75,24 @@ void CChest::Tick(_double TimeDelta)
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (m_bOverlapedPlayer && pGameInstance->InputKey(DIK_F) == KEY_STATE::HOLD && !m_bInteractionActive)
+	if (m_bOverlapedPlayer)
 	{
-		m_fPushButtonAcc += (_float)TimeDelta;
-		if (m_fPushButtonAcc > 1.f)
+		if (pGameInstance->InputKey(DIK_F) == KEY_STATE::HOLD && !m_bInteractionActive)
+		{
+			m_fPushButtonAcc += (_float)TimeDelta;
+			pGameMode->SetGagebar(m_fPushButtonAcc);
+			if (m_fPushButtonAcc > 1.f)
+			{
+				m_fPushButtonAcc = 0.f;
+				m_bInteractionBegin = true;
+			}
+		}
+		else
 		{
 			m_fPushButtonAcc = 0.f;
-			m_bInteractionBegin = true;
+			pGameMode->SetGagebar(m_fPushButtonAcc);
 		}
 	}
-	else
-		m_fPushButtonAcc = 0.f;
 
 	if (m_bInteractionBegin)
 	{
@@ -96,9 +103,6 @@ void CChest::Tick(_double TimeDelta)
 		m_fTimeAcc = 0.f;
 		Interaction();
 	}
-
-	if (m_fPushButtonAcc >= 0.f)
-		pGameMode->SetGagebar(m_fPushButtonAcc);
 
 	if (!m_bInteractionActive)
 	{
@@ -271,10 +275,10 @@ HRESULT CChest::addComponents()
 
 	CCollider::COLLIDER_DESC CollDesc;
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 0.5f, 0.f };
-	CollDesc.vExtents = { 0.5f, 0.5f, 0.5f };
+	CollDesc.vCenter = { 0.f, 0.0f, 0.f };
+	CollDesc.vExtents = { 1.5f, 1.5f, 1.5f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::OBB,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_Collider"), (CComponent**)&m_pCollider, &CollDesc)))
 		return E_FAIL;
 
@@ -391,5 +395,6 @@ void CChest::OnCollisionExit(CCollider * src, CCollider * dest)
 	{
 		m_bOverlapedPlayer = false;
 		interactionUIActive(false);
+		pGameMode->SetGagebar(0.f);
 	}
 }

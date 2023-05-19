@@ -19,8 +19,8 @@ texture2D	g_EyeMaskTexture;
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 
-float4 g_RimColor = float4(1.f, 1.f, 1.f, 1.f);
-float g_RimPower = 1.f;
+float4 g_RimColor = float4(1.f, 0.7f, 0.4f, 1.f);
+float g_RimPower = 5.f;
 
 struct VS_IN
 {
@@ -358,18 +358,14 @@ PS_OUT_OUTLINE PS_RimLight(PS_IN In)
 	Out.vDiffuse = rimColor;
 
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
-	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	Out.vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
-	if (vNormalDesc.g > vNormalDesc.b)
-		Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 1.f);
-
-	Out.vGlow = float4(0.f, 0.f, 0.f, 1.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vGlow = Out.vDiffuse;
 
 	return Out;
 }
@@ -383,9 +379,9 @@ PS_OUT_OUTLINE PS_DiffuseAddRim(PS_IN In)
 	float rim = 0;
 	rim = 1 - saturate(dot(In.vNormal, -vCamDir));
 
-	rim = pow(rim, g_RimPower);
+	rim = pow(rim, 1.f);
 
-	float4 rimColor = rim * g_RimColor;
+	float4 rimColor = rim * float4(1.f, 1.f, 1.f, 1.f);
 	Out.vDiffuse = saturate(rimColor * 2.5f);
 
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);

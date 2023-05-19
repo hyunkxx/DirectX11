@@ -10,8 +10,8 @@ float4x4 g_ViewMatrixInv, g_ProjMatrixInv;
 texture2D g_DiffuseTexture, g_NormalTexture, g_DepthTexture;
 texture2D g_NoiseTexture;
 
-float g_fRadius = 0.0015f;
-float g_fFalloff = 0.000002f;
+float g_fRadius = 0.0001f;
+float g_fFalloff = 0.000001f;
 float g_fStrength = 0.0007f;
 float g_fTotStrength = 1.38f;
 float g_fInvSamples = 1.f / 16.f;
@@ -83,9 +83,9 @@ tagSSAO_Out GetSSAO(tagSSAO_In In)
 		vRandomUV = In.vUV + vReflect.xy;
 
 		vector NearDepthInfo = g_DepthTexture.Sample(LinearSampler, vRandomUV);
-		fOccNormal = NearDepthInfo.g * g_Far;// *In.fViewZ;
+		fOccNormal = NearDepthInfo.g * g_Far * In.fViewZ;
 
-		if (fOccNormal <= In.fDepth + 0.05f)
+		if (fOccNormal <= In.fDepth + 0.08f)
 			++iColor;
 	}
 	Out.vAmbient = abs((iColor / 16.f) - 1.f);
@@ -143,13 +143,11 @@ PS_OUT PS_SSAO(PS_IN In)
 		return Out;
 	}
 
-	vNormal = normalize(vNormal * 2.f - 1.f);
-
 	tagSSAO_In SSAO_In = (tagSSAO_In)0;
 	SSAO_In.vUV = In.vTexUV;
 	SSAO_In.vNormal = vNormal.rgb;
-	SSAO_In.fViewZ = vDepth.r * g_Far;
-	SSAO_In.fDepth = vDepth.g * g_Far;// *SSAO_In.fViewZ;
+	SSAO_In.fViewZ = vDepth.r;
+	SSAO_In.fDepth = vDepth.g * g_Far * SSAO_In.fViewZ;
 
 	tagSSAO_Out SSAO_Out = GetSSAO(SSAO_In);
 
@@ -157,6 +155,16 @@ PS_OUT PS_SSAO(PS_IN In)
 	return Out;
 }
 
+float3 avKernel[8] = {
+	normalize(float3(1, 1, 1)) * 0.125f,
+	normalize(float3(-1,-1,-1)) * 0.250f,
+	normalize(float3(-1,-1, 1)) * 0.375f,
+	normalize(float3(-1, 1,-1)) * 0.500f,
+	normalize(float3(-1, 1 ,1)) * 0.625f,
+	normalize(float3(1,-1,-1)) * 0.750f,
+	normalize(float3(1,-1, 1)) * 0.875f,
+	normalize(float3(1, 1,-1)) * 1.000f
+};
 
 technique11 DefaultTechnique
 {

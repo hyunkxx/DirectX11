@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\PlayerCamera.h"
 
-#include "GameInstance.h"
 #include "GameMode.h"
-
+#include "GameInstance.h"
 
 CPlayerCamera::CPlayerCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCamera(pDevice, pContext)
@@ -28,6 +27,9 @@ HRESULT CPlayerCamera::Initialize(void * pArg)
 	if (nullptr == pArg)
 		return E_FAIL;
 
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 	PLAYERCAM_DESC PlayerCamDesc = *((PLAYERCAM_DESC*)pArg);
 
 	memcpy(&m_CameraDesc, &PlayerCamDesc.CamDesc, sizeof(CAMERA_DESC));
@@ -45,11 +47,15 @@ HRESULT CPlayerCamera::Initialize(void * pArg)
 
 	m_bFixMouse = true;
 
-	//if (__super::Initialize(pArg))
-	//	return E_FAIL;
-
 	m_pMainTransform = CTransform::Create(m_pDevice, m_pContext);
 	m_pMainTransform->Set_TransformDesc(m_CameraDesc.TransformDesc);
+
+	m_ShakeDesc.fPower = 2.f;
+	m_ShakeDesc.fSpeed = 10.f;
+	m_ShakeDesc.fDuration = 2.f;
+
+	//if (__super::Initialize(pArg))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -77,6 +83,8 @@ void CPlayerCamera::Start()
 
 	m_pMainTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));
 	m_pMainTransform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
+
+	m_pPlayerNavigation = static_cast<CNavigation*>(pGameInstance->Find_GameObject(nCurrentLevel, TEXT("Player"))->Find_Component(TEXT("Com_Navigation")));
 }
 
 void CPlayerCamera::Tick(_double TimeDelta)
@@ -240,8 +248,28 @@ void CPlayerCamera::Tick(_double TimeDelta)
 
 	//여기서 월드매트릭스랑 원하는 상태를 보간
 
+#ifdef _DEBUG
+	// 카메라 쉐이크 강도 체크용
+	if (pGameInstance->InputKey(DIK_V) == KEY_STATE::HOLD)
+	{
+		if (m_bShakeToggle)
+			StartWave(m_ShakeDesc);
+		else
+			StartVibration(m_fVibeRange, m_fVibeDuration);
+	}
+#endif
+
 	__super::Tick(TimeDelta);
 
+	// 카메라 높이가 지형보다 낮을 경우 높이 재설정
+	_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+	_float fHeight = m_pPlayerNavigation->Compute_Height(vPos);
+	if (XMVectorGetY(vPos) < fHeight + 0.5f)
+	{
+		vPos = XMVectorSetY(vPos, fHeight + 0.5f);
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vPos);
+		m_pPipeLine->Set_Transform(CPipeLine::TS_VIEW, m_pMainTransform->Get_WorldMatrixInverse());
+	}
 }
 
 void CPlayerCamera::LateTick(_double TimeDelta)
@@ -255,6 +283,22 @@ void CPlayerCamera::LateTick(_double TimeDelta)
 	}
 }
 
+void CPlayerCamera::RenderGUI()
+{
+	ImGui::Begin("Camera Shake Setting");
+	ImGui::Text("CameraShake : V Key");
+	ImGui::Checkbox("Vibe/Wave Toggle", (_bool*)&m_bShakeToggle);
+	ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), " Vibration Setting");
+	ImGui::DragFloat("Vibe Range", (_float*)&m_fVibeRange, 0.1f, 0.1f, 20.f);
+	ImGui::DragFloat("Vibe Duration", (_float*)&m_fVibeDuration, 0.1f, 0.1f, 20.f);
+
+	ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), " Wave Setting ");
+	ImGui::DragFloat("Wave Power", (_float*)&m_ShakeDesc.fPower, 0.1f, 0.1f, 20.f);
+	ImGui::DragFloat("Wave Speed", (_float*)&m_ShakeDesc.fSpeed, 0.1f, 0.1f, 20.f);
+	ImGui::DragFloat("Wave Duration", (_float*)&m_ShakeDesc.fDuration, 0.1f, 0.1f, 10.f);
+
+	ImGui::End();
+}
 
 CPlayerCamera * CPlayerCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

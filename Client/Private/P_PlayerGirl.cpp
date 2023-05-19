@@ -222,24 +222,6 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 	//Effect Bones 처리
 	Update_EffectBones();
 
-	//임시 UI 처리
-
-	if (pGameInstance->InputKey(DIK_F) == KEY_STATE::TAP)
-	{
-		CItem::ITEM_DESC item0 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
-		item0.iAmount = 4424;
-
-		CItem::ITEM_DESC item1 = CItemDB::GetInstance()->GetItemData(ITEM::COMMEMORATIVE_COIN);
-		item1.iAmount = 12349;
-
-		CItem::ITEM_DESC item2 = CItemDB::GetInstance()->GetItemData(ITEM::TACTREITE_VOUCHER);
-		item2.iAmount = 1;
-
-		CGameMode::GetInstance()->EnqueueItemDesc(item0);
-		CGameMode::GetInstance()->EnqueueItemDesc(item1);
-		CGameMode::GetInstance()->EnqueueItemDesc(item2);
-	}
-
 	// 다음프레임을 위해 초기화
 	m_pNearst = nullptr;
 	m_fNearstDist = 30.f;
@@ -294,14 +276,16 @@ HRESULT CP_PlayerGirl::Render()
 			m_pShaderCom->Begin(7); // Eye
 		}
 		else
+		{
 			m_pShaderCom->Begin(iPass);
+		}
 
 		m_pModelCom->Render(i);
 
 		////Rim Light
 		//if (i != 5 && 10.f > ComputeCameraLength())
 		//{
-		//	m_pShaderCom->Begin(7);
+		//	m_pShaderCom->Begin(8);
 		//	m_pModelCom->Render(i);
 		//}
 	}
@@ -1501,6 +1485,8 @@ void CP_PlayerGirl::Tick_State(_double TimeDelta)
 
 void CP_PlayerGirl::On_Cell()
 {
+	CGameMode* pGM = CGameMode::GetInstance();
+
 	_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
 	_float fPosY = XMVectorGetY(vPos);
 	_float fCellHeight = m_pNaviCom->Compute_Height(vPos);
@@ -1596,6 +1582,7 @@ void CP_PlayerGirl::On_Cell()
 					if (IS_AIRATTACK_START == m_Scon.iCurState ||
 						IS_AIRATTACK_LOOP == m_Scon.iCurState)
 					{
+						pGM->StartWave();
 						m_Scon.iNextState = IS_AIRATTACK_END;
 					}
 					// 일반적인 경우

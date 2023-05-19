@@ -228,15 +228,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SKY, pLayerTag, L"sky")))
 		return E_FAIL;
 
-	_float3 vPos = { 9.f, 30.f, 0.f };
+	_float3 vPos = { 105.f, 5.2f, 100.f };
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_SIMPLE, pLayerTag, L"chest_simple", &vPos)))
 		return E_FAIL;
 
-	vPos = { 9.f, 30.f, 5.f };
+	vPos = { 105.f, 5.2f, 105.f };
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_STANDARD, pLayerTag, L"chest_standard", &vPos)))
 		return E_FAIL;
 
-	vPos = { 9.f, 30.f, 10.f };
+	vPos = { 105.f, 5.2f, 110.f };
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_EXPANDED, pLayerTag, L"chest_expanded", &vPos)))
 		return E_FAIL;
 

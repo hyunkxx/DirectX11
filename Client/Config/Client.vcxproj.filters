@@ -132,9 +132,6 @@
     <ClCompile Include="..\private\BackGround.cpp">
       <Filter>src\02. GameObject\02. LoadingImage</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Parts.cpp">
-      <Filter>src\02. GameObject\03. Character</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\AnimToolManager.cpp">
       <Filter>src\00. Application\Manager</Filter>
     </ClCompile>
@@ -190,10 +187,10 @@
       <Filter>src\02. GameObject\00. Environment</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Lobby_Character.cpp">
-      <Filter>src\02. GameObject\03. Character\Base</Filter>
+      <Filter>src\02. GameObject\03. Character\00. Base</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Character.cpp">
-      <Filter>src\02. GameObject\03. Character\Base</Filter>
+      <Filter>src\02. GameObject\03. Character\00. Base</Filter>
     </ClCompile>
     <ClCompile Include="..\private\FloatingStone.cpp">
       <Filter>src\02. GameObject\00. Environment</Filter>
@@ -249,14 +246,23 @@
     <ClCompile Include="..\private\ItemDB.cpp">
       <Filter>src\00. Application\Items</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Sandbag.cpp" />
     <ClCompile Include="..\private\AcquireUI.cpp">
       <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\M_GAzizi.cpp" />
-    <ClCompile Include="..\private\TestGeneric.cpp" />
     <ClCompile Include="..\private\P_PlayerGirl.cpp">
-      <Filter>src\02. GameObject\03. Character</Filter>
+      <Filter>src\02. GameObject\03. Character\00. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Parts.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\M_GAzizi.cpp">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Sandbag.cpp">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TestGeneric.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -353,9 +359,6 @@
     <ClInclude Include="..\..\Shader\SHADER_DEFINES.hpp">
       <Filter>src\99. ShaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Parts.h">
-      <Filter>src\02. GameObject\03. Character</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\AnimToolManager.h">
       <Filter>src\00. Application\Manager</Filter>
     </ClInclude>
@@ -411,10 +414,10 @@
       <Filter>src\02. GameObject\00. Environment</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Lobby_Character.h">
-      <Filter>src\02. GameObject\03. Character\Base</Filter>
+      <Filter>src\02. GameObject\03. Character\00. Base</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Character.h">
-      <Filter>src\02. GameObject\03. Character\Base</Filter>
+      <Filter>src\02. GameObject\03. Character\00. Base</Filter>
     </ClInclude>
     <ClInclude Include="..\public\FloatingStone.h">
       <Filter>src\02. GameObject\00. Environment</Filter>
@@ -482,14 +485,23 @@
     <ClInclude Include="..\public\ItemDB.h">
       <Filter>src\00. Application\Items</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Sandbag.h" />
     <ClInclude Include="..\public\AcquireUI.h">
       <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\M_GAzizi.h" />
-    <ClInclude Include="..\public\TestGeneric.h" />
     <ClInclude Include="..\public\P_PlayerGirl.h">
-      <Filter>src\02. GameObject\03. Character</Filter>
+      <Filter>src\02. GameObject\03. Character\00. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Parts.h">
+      <Filter>src\02. GameObject\03. Character\00. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\M_GAzizi.h">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Sandbag.h">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TestGeneric.h">
+      <Filter>src\02. GameObject\03. Character\00. Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -590,9 +602,6 @@
     <Filter Include="src\02. GameObject\00. Environment">
       <UniqueIdentifier>{29d26517-95d4-47ce-a258-47894a317ff5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\02. GameObject\03. Character\Base">
-      <UniqueIdentifier>{092a34af-15fc-48d5-9a09-f5da629e60c9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\02. GameObject\02. LoadingImage">
       <UniqueIdentifier>{975476c6-7409-4c8e-93ab-d8f8f4b64e95}</UniqueIdentifier>
     </Filter>
@@ -610,6 +619,15 @@
     </Filter>
     <Filter Include="src\04. MapObject\00. Object">
       <UniqueIdentifier>{b800cd01-54f2-4c93-b152-4b55258deb44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\03. Character\01. Enemy">
+      <UniqueIdentifier>{e279985c-8c8b-4e83-b2fb-a5fde2527b10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\03. Character\00. Player">
+      <UniqueIdentifier>{9faaf00c-db63-41ed-8709-5771834caf8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\03. Character\00. Base">
+      <UniqueIdentifier>{092a34af-15fc-48d5-9a09-f5da629e60c9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

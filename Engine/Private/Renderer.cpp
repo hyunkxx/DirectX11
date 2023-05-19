@@ -83,7 +83,8 @@ void CRenderer::Draw()
 	Render_AlphaBlend();
 
 #ifdef _DEBUG
-	RenderDebugBundle();
+	if (m_pRenderSetting->IsDebug())
+		RenderDebugBundle();
 	
 #endif
 	pGameInstance->CollisionRender();

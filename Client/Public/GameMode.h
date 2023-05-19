@@ -6,6 +6,7 @@
 #include "GameInstance.h"
 #include "InteractionUI.h"
 #include "AcquireUI.h"
+#include "Camera.h"
 
 #define LEVEL_ANYWHERE CGameMode::GetInstance()->GetCurrentLevel()
 
@@ -71,8 +72,15 @@ public: // Cam
 	void ResetCameraList();
 	void PushCamera(CCamera* pCamera);
 	void UseCamera(int iCameraIndex);
+	
+	// Shake
+	void StartWave();
+	void StartWave(CCamera::SHAKE_DESC tagShakeDesc);
+	void StartVibration();
+	void StartVibration(_float fRange, _float fDuration = 0.5f);
 
 	vector<CCamera*> m_pCams;
+	CCamera* m_pPlayerCam = nullptr;
 
 private: // Utility
 	_uint m_nCurrentLevel = 0;

@@ -68,7 +68,7 @@ HRESULT CInteractionUI::Initialize(void * pArg)
 	XMStoreFloat4x4(&m_InterIcon.WorldMatrix, XMMatrixScaling(m_InterIcon.fWidth, m_InterIcon.fHeight, 1.f) * XMMatrixTranslation(m_InterIcon.fX - g_iWinSizeX * 0.5f, -m_InterIcon.fY + g_iWinSizeY * 0.5f, 0.f));
 
 	m_GageBarBack.fX = g_iWinSizeX >> 1;
-	m_GageBarBack.fY = g_iWinSizeY >> 1;
+	m_GageBarBack.fY = g_iWinSizeY - 200.f;
 	m_GageBarBack.fWidth = 300.f;
 	m_GageBarBack.fHeight = 50.f;
 	CAppManager::ComputeOrtho(&m_GageBarBack);
@@ -135,7 +135,7 @@ void CInteractionUI::Tick(_double TimeDelta)
 		}
 	}
 
-	if (m_fGageBar > 1.f)
+	if (m_fGageBar >= 1.f)
 		m_fGageBar = 0.f;
 
 }

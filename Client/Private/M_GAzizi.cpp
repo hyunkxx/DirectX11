@@ -197,7 +197,7 @@ HRESULT CM_GAzizi::Render()
 		if (FAILED(m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(1);
+		m_pShaderCom->Begin(10);
 		m_pModelCom->Render(i);
 
 	}
@@ -826,6 +826,7 @@ void CM_GAzizi::Free()
 
 void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
+	CGameMode* pGM = CGameMode::GetInstance();
 	CCharacter* pOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
 
 	if (pOpponent)
@@ -838,12 +839,15 @@ void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)
 				true == dest->Compare(pOpponent->GetHitCollider()))
 			{
 				// 타격 위치를 찾아서 히트 이펙트 출력
+				pGM->StartVibration(10.f, 0.5f);
 			}
 
 			// 상대의 공격이 나에게 적중한 경우 
 			if (true == src->Compare(GetHitCollider()) &&
 				true == dest->Compare(pOpponent->GetAttackCollider()))
 			{
+				pGM->StartVibration();
+
 				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
 				TAGATTACK tAttackInfo;
 				ZeroMemory(&tAttackInfo, sizeof(tAttackInfo));
@@ -876,14 +880,20 @@ void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)
 						switch (tAttackInfo.eHitIntensity)
 						{
 						case HIT_SMALL:
+							pGM->StartVibration();
 							m_Scon.iNextState = IS_BEHIT_S;
 							break;
 						case HIT_BIG:
+							pGM->StartVibration(10.f, 0.7f);
 							m_Scon.iNextState = IS_BEHIT_B;
 							break;
 						case HIT_FLY:
+						{
+							//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
+							pGM->StartWave();
 							m_Scon.iNextState = IS_BEHIT_FLY_START;
 							break;
+						}
 						default:
 							break;
 						}
