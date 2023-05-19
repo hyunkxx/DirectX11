@@ -11,7 +11,6 @@ class CTransform;
 END
 
 BEGIN(Client)
-
 class CUI_Monster final : public CGameObject
 {
 public: enum class MONSTERTYPE
@@ -23,6 +22,12 @@ public: enum class MONSTERTYPE
 };
 
 public:
+	typedef struct tagMonsterInfo
+	{
+		MONSTERTYPE	 Type;
+		_int		 Level;
+	}MONINFO;
+
 	typedef struct tagMonster
 	{
 		//클라변수
@@ -72,6 +77,9 @@ public:
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
 
+public:
+	void Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; }
+	void Set_CharacterPos(_fvector vCharacterPos) { m_vCharacterPos = vCharacterPos; }
 private:
 	void HPBar(_double TimeDelta);
 	void HPRedBar(_double TimeDelta);
@@ -100,6 +108,8 @@ private:
 	_float2 m_MonsterUV = { 0.f, 0.f };
 	_float m_MonsterGauge = { 0.f };
 	MONSTERTYPE m_MonsterType = { MONSTERTYPE::TYPE1 };
+
+	_vector m_vCharacterPos = { 0.f };;
 
 private:
 	CRenderer*		m_pRenderer = { nullptr };

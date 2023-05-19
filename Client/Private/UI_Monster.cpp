@@ -40,8 +40,10 @@ HRESULT CUI_Monster::Initialize(void * pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
-	
-	
+	MONINFO MonInfo;
+	memcpy(&MonInfo, pArg, sizeof(MONINFO));
+	m_MonsterLevel = MonInfo.Level;
+	m_MonsterType = MonInfo.Type;
 	return S_OK;
 }
 
@@ -495,32 +497,30 @@ void CUI_Monster::CommonHP()
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	for (_uint i = 0; i < 4; ++i)
-	{
-		m_DescList[i]->bRender = true;
-		CGameObject* pPlayer = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Player"));
-		// 가져온 오브젝트들이 준비가 되면 랜더 돌릴 수 있음-> 랜더조건
-		if (nullptr != dynamic_cast<CP_PlayerGirl*>(pPlayer)) // 다이나믹캐스트 조건 검사완료했으므로 아래에서는 스테틱캐스트로 변경
-		{
-			CTransform* pComponent = static_cast<CTransform*>(static_cast<CP_PlayerGirl*>(pPlayer)->Find_Component(TEXT("Com_Transform")));	 // 가져오는건 무조건 트랜스폼->스테틱캐스트 후 애초에 트랜스폼*으로 받음
-			_float4 fPlayerPos;
-			_vector vPlayerPos;
-			vPlayerPos = pComponent->Get_State(CTransform::STATE_POSITION); // 바꾸려면 여기서 위치조정
-			XMStoreFloat4(&fPlayerPos, vPlayerPos);
-			fPlayerPos.y = fPlayerPos.y + 1.8f;
-			vPlayerPos = XMLoadFloat4(&fPlayerPos);
-			vPlayerPos = XMVector3TransformCoord(vPlayerPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_VIEW));
-			vPlayerPos = XMVector3TransformCoord(vPlayerPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_PROJ));
-			XMStoreFloat4(&fPlayerPos, vPlayerPos);
-			m_DescList[i]->fX = (fPlayerPos.x) * (0.5f * g_iWinSizeX);
-			m_DescList[i]->fY = (fPlayerPos.y) * (0.5f * g_iWinSizeY);
+			
+			_float4 fCharacterPos;
+			XMStoreFloat4(&fCharacterPos, m_vCharacterPos);
+			fCharacterPos.y = fCharacterPos.y + 1.4f;
+			m_vCharacterPos = XMLoadFloat4(&fCharacterPos);
+			m_vCharacterPos = XMVector3TransformCoord(m_vCharacterPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_VIEW));
+			m_vCharacterPos = XMVector3TransformCoord(m_vCharacterPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_PROJ));
+			XMStoreFloat4(&fCharacterPos, m_vCharacterPos);
+			m_DescList[0]->fX = (fCharacterPos.x) * (0.5f * g_iWinSizeX);
+			m_DescList[0]->fY = (fCharacterPos.y) * (0.5f * g_iWinSizeY);
+
+
+			for (_uint i = 0; i < 4; ++i)
+			{
+				m_DescList[i]->fX = m_DescList[0]->fX;
+				m_DescList[i]->fY = m_DescList[0]->fY;
 
 			XMStoreFloat4x4(&(m_DescList[i]->WorldMatrix), XMMatrixScaling((m_DescList[i])->fWidth, (m_DescList[i])->fHeight, 1.f)
 				* XMMatrixTranslation((m_DescList[i])->fX, (m_DescList[i])->fY, (m_DescList[i])->fZ));
 			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+			m_DescList[i]->bRender = true;
 		}
-	}
+	
 
 	Safe_Release(pGameInstance);
 }

@@ -13,7 +13,6 @@ class CNavigation;
 END
 
 BEGIN(Client)
-
 class CM_GAzizi
 	: public CCharacter
 {
@@ -92,6 +91,8 @@ private:
 	CShader*			m_pShaderCom = { nullptr };
 	CModel_Anim*		m_pModelCom = { nullptr };
 	CNavigation*		m_pNaviCom = { nullptr };
+	//UIÃß°¡
+	CGameObject*		m_pUIMon = { nullptr };
 
 private:
 	// State
