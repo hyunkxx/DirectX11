@@ -93,8 +93,8 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	//m_pMainTransform->Set_Scale(_float3(10.f, 10.f, 10.f));
 	//m_pNaviCom->Set_CurrentIndex(90);
 	
-	// 요거잠깐 건들였어요.
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(36.0f, 2.0f, 26.0f, 1.f));
+	// 요거 건들였어요.
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 30.776f, 1.f));
 	m_pNaviCom->Set_CurrentIndex(0);
 
 	//m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
