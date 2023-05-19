@@ -394,7 +394,7 @@ PS_OUT_SHADOW PS_Shadow(PS_IN In)
 	
 	//±íÀÌ 0.5 : ¸ðµ¨°ú ¾Ö´Ô¸ðµ¨¿¡´Â ±×¸²ÀÚ ¾È±×¸²
 	if (vPosition.z - 0.05f > (vShadowDepthInfo.g * g_Far) && vDepthInfo.b != vShadowDepthInfo.b)
-		Out.vDynamicShadow = vector(0.5f, 0.5f, 0.5f, 0.5f);
+		Out.vDynamicShadow = vector(0.2f, 0.2f, 0.2f, 0.8f);//vector(0.5f, 0.5f, 0.5f, 0.5f);
 	else
 		Out.vDynamicShadow = vector(1.f, 1.f, 1.f, 1.f);
 

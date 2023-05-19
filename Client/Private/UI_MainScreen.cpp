@@ -880,11 +880,7 @@ HRESULT CUI_MainScreen::Render()
 }
 
 void CUI_MainScreen::RenderGUI()
-{
-	//ImGui::Begin("MainScreen ID");
-	//ImGui::InputInt("ID", &m_iObjectID);
-	//ImGui::End();
-		
+{		
 }
 
 void CUI_MainScreen::SerectUI()

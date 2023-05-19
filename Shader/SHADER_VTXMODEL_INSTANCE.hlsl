@@ -65,6 +65,8 @@ struct PS_OUT
 	float4 vNormal : SV_TARGET1;
 	float4 vDepth : SV_TARGET2;
 	float4 vOutNormal : SV_TARGET3;
+	float4 vGlow : SV_TARGET4;
+	float4 vSpecGlow : SV_TARGET5;
 };
 
 struct PS_OUT_SHADOW
@@ -183,6 +185,8 @@ PS_OUT PS_MAIN_NORMALMAP(PS_IN_NORMALMAP In)
 	/* 투영 스페이스 상의 z , 뷰 스페이스 상의 z (vProjPos.w 에 저장되어 있음) -> 뷰 공간서의 최대 z 값 Far -> Far 로 나눠서 0 ~ 1 사이로 뷰 의 z값 보관 */
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -200,6 +204,8 @@ PS_OUT	PS_MAIN(PS_IN In)
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -232,6 +238,8 @@ PS_OUT	PS_MAIN_EDITIONCOLOR(PS_IN In)
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -258,6 +266,8 @@ PS_OUT PS_MAIN_NORMALMAP_EDITIONCOLOR(PS_IN_NORMALMAP In)
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
 
 	return Out;
 }

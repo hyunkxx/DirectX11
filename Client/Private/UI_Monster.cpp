@@ -200,8 +200,7 @@ void CUI_Monster::RenderGUI()
 	ImGui::InputFloat("Damage", &m_Damage);
 	if (ImGui::Button("Hit")) { m_bHit = true; }
 	ImGui::Separator();
-
-ImGui::End();
+	ImGui::End();
 		
 }
 

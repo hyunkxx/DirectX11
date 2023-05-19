@@ -143,16 +143,6 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 		pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DEFAULT, 2.f);
 	}
 
-	//static _bool bCamLock = false;
-	//if (pGameInstance->InputKey(DIK_SCROLL) == KEY_STATE::TAP)
-	//{
-	//	bCamLock = !bCamLock;
-
-	//	if (bCamLock)
-	//		pGameMode->UseCamera(CAM_DYNAMIC);
-	//	else
-	//		pGameMode->UseCamera(CAM_PLAYER);
-	//}
 }
 
 void CLevel_GamePlay::RenderLevelUI()
@@ -228,15 +218,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SKY, pLayerTag, L"sky")))
 		return E_FAIL;
 
-	_float3 vPos = { 105.f, 5.2f, 100.f };
+	_float3 vPos = { 32.f, 1.828f, 21.f };
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_SIMPLE, pLayerTag, L"chest_simple", &vPos)))
 		return E_FAIL;
 
-	vPos = { 105.f, 5.2f, 105.f };
+	vPos = { 28.f, 1.7f, 25.f };
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_STANDARD, pLayerTag, L"chest_standard", &vPos)))
 		return E_FAIL;
 
-	vPos = { 105.f, 5.2f, 110.f };
+	vPos = { 29.f, 1.83f, 31.f };
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_EXPANDED, pLayerTag, L"chest_expanded", &vPos)))
 		return E_FAIL;
 
@@ -287,10 +277,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 
 	m_pPlayerCamera = (CPlayerCamera*)pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, L"player_camera");
 
-	pGM->PushCamera(m_pDynamicCamera);
 	pGM->PushCamera(m_pPlayerCamera);
+	pGM->PushCamera(m_pDynamicCamera);
 	
-	pGM->UseCamera(CGameMode::CAM_DYNAMIC);
+	pGM->UseCamera(CGameMode::CAM_PLAYER);
 
 	return S_OK;
 }

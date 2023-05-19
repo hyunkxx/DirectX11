@@ -51,7 +51,7 @@ HRESULT CM_GAzizi::Initialize(void * pArg)
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
 	// 초기위치 설정
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(110.f, 30.f, 96.f, 1.f));
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 35.776f, 1.f));
 	m_pNaviCom->Set_CurrentIndex(90);
 
 	// StateController 초기화
@@ -157,20 +157,6 @@ void CM_GAzizi::LateTick(_double TimeDelta)
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
-
-	CGameMode* pGameMode = CGameMode::GetInstance();
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	static _bool bCamLock = false;
-	if (pGameInstance->InputKey(DIK_SCROLL) == KEY_STATE::TAP)
-	{
-		bCamLock = !bCamLock;
-
-		if (bCamLock)
-			pGameMode->UseCamera(CGameMode::CAM_DYNAMIC);
-		else
-			pGameMode->UseCamera(CGameMode::CAM_PLAYER);
-	}
-
 
 	//Effect Bones 처리
 	Update_EffectBones();

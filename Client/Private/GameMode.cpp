@@ -40,8 +40,8 @@ void CGameMode::ResetCameraList()
 
 void CGameMode::PushCamera(CCamera * pCamera)
 {
-	m_pPlayerCam = dynamic_cast<CPlayerCamera*>(pCamera);
-	if (m_pPlayerCam)
+	CCamera* pCam = dynamic_cast<CPlayerCamera*>(pCamera);
+	if (pCam)
 		m_pPlayerCam = pCamera;
 
 	m_pCams.push_back(pCamera);

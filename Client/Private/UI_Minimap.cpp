@@ -241,11 +241,6 @@ HRESULT CUI_Minimap::Render()
 
 void CUI_Minimap::RenderGUI()
 {
-	//ImGui::Begin("MainScreen ID");
-	//ImGui::InputInt("ID", &m_iObjectID);
-
-	//ImGui::End();
-
 }
 
 

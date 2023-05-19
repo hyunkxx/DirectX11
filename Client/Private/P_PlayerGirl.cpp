@@ -213,9 +213,9 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 		bCamLock = !bCamLock;
 
 		if (bCamLock)
-			pGameMode->UseCamera(CGameMode::CAM_DYNAMIC);
-		else
 			pGameMode->UseCamera(CGameMode::CAM_PLAYER);
+		else
+			pGameMode->UseCamera(CGameMode::CAM_DYNAMIC);
 	}
 
 
@@ -320,6 +320,14 @@ HRESULT CP_PlayerGirl::RenderShadow()
 
 void CP_PlayerGirl::RenderGUI()
 {
+	ImGui::Begin("Player Position");
+
+	_float3 vPos;
+	XMStoreFloat3(&vPos, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	string strPos = to_string(vPos.x) + " " + to_string(vPos.y) + " " + to_string(vPos.z);
+	ImGui::Text(strPos.c_str());
+
+	ImGui::End();
 }
 
 void CP_PlayerGirl::SetUp_Animations(_bool bContinue)
@@ -767,8 +775,8 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		if (pGame->InputKey(DIK_R) == KEY_STATE::TAP)
 		{
 			// 초기위치 설정
-			m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(306.f, 50.f, 241.f, 1.f));
-			m_pNaviCom->Set_CurrentIndex(848);
+			m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 30.776f, 1.f));
+			m_pNaviCom->Set_CurrentIndex(0);
 			m_iAirJumpCount += 10;
 			m_fSkillGauge += 50.f;
 

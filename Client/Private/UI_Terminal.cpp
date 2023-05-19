@@ -123,9 +123,6 @@ HRESULT CUI_Terminal::Render()
 
 void CUI_Terminal::RenderGUI()
 {
-	ImGui::Begin("ter ID");
-	ImGui::InputInt("ID", &m_iObjectID);
-	ImGui::End();
 }
 
 void CUI_Terminal::SerectUI()

@@ -42,6 +42,7 @@ public:
 private:
 	HRESULT addComponents();
 	HRESULT setupShaderResource();
+	HRESULT setupShadowResource();
 
 	void interactionUIActive(_bool bRender);
 

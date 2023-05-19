@@ -19,7 +19,7 @@ BEGIN(Client)
 class CGameMode final : public CBase
 {
 public:
-	enum GAMEPLAY_CAM { CAM_DYNAMIC, CAM_PLAYER };
+	enum GAMEPLAY_CAM { CAM_PLAYER, CAM_DYNAMIC };
 
 	DECLARE_SINGLETON(CGameMode)
 

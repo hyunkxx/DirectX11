@@ -146,6 +146,7 @@ void CChest::LateTick(_double TimeDelta)
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
 	m_pRenderer->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
+	m_pRenderer->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 }
 
 HRESULT CChest::Render()
@@ -188,6 +189,18 @@ HRESULT CChest::Render()
 
 HRESULT CChest::RenderShadow()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(setupShadowResource()))
+		return E_FAIL;
+
+	_uint iMeshCount = m_pModel->Get_NumMeshes();
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		m_pShader->Begin(1);
+		m_pModel->Render(i);
+	}
+
 	return S_OK;
 }
 
@@ -304,6 +317,23 @@ HRESULT CChest::setupShaderResource()
 		return E_FAIL;
 
 	if (FAILED(m_pShader->SetRawValue("g_vCamPosition", &pGameInstance->Get_CamPosition(), sizeof(_float4))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CChest::setupShadowResource()
+{
+	if (nullptr == m_pShader)
+		return E_FAIL;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_ViewMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_PROJ))))
 		return E_FAIL;
 
 	return S_OK;

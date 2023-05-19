@@ -70,12 +70,7 @@ HRESULT CUI_Mouse::Render()
 }
 
 void CUI_Mouse::RenderGUI()
-{
-	ImGui::Begin("MainScreen ID");
-	ImGui::InputInt("ID", &m_iObjectID);
-
-	ImGui::End();
-		
+{		
 }
 
 _float3	CUI_Mouse::Get_MousePos()

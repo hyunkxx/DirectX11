@@ -166,11 +166,6 @@ HRESULT CUI_TapT::Render()
 
 void CUI_TapT::RenderGUI()
 {
-	ImGui::Begin("TapT ID");
-	ImGui::InputInt("ID", &m_iObjectID);
-
-ImGui::End();
-		
 }
 
 void CUI_TapT::SerectUI()
