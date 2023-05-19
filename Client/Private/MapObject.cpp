@@ -42,7 +42,7 @@ HRESULT CMapObject::Initialize(void * pArg)
 
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, POSITION_ZERO);
 
-	m_EditionDesc.fCullingRatio = 0.0f;
+	//m_EditionDesc.fCullingRatio = 0.0f;
 
 	return S_OK;
 }

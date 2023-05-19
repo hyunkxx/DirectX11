@@ -44,6 +44,10 @@ public:
 
 	void Set_CurrentIndex(_uint iIndex)
 	{
+		// 네비 확인용 예외처리
+		if (m_Cells.size() < iIndex)
+			iIndex = 0;
+
 		m_NavigationDesc.iCurrentIndex = iIndex;
 	}
 	CCell* Get_CurCell()
