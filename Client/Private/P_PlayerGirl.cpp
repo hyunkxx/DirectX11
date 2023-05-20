@@ -94,8 +94,8 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	//m_pNaviCom->Set_CurrentIndex(90);
 	
 	// 요거 건들였어요.
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 30.776f, 1.f));
-	m_pNaviCom->Set_CurrentIndex(0);
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(137.131f, 25.745f, 196.163f, 1.f));
+	m_pNaviCom->Set_CurrentIndex(1457);
 
 	//m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
 
