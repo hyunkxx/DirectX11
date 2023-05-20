@@ -946,7 +946,7 @@ void CRenderer::Render_Blend()
 void CRenderer::Render_Glow()
 {
 	if(!m_GlowEmpty)
-		Target_Blur(L"Target_Glow", 5);
+		Target_Blur_High(L"Target_Glow", 5);
 
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Glow_Result")))
 		return;
@@ -974,7 +974,7 @@ void CRenderer::Render_Glow()
 		// Blur On
 		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_Glow", "g_GlowOriTexture")))
 			return;
-		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY", "g_GlowTexture")))
+		if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader_Blur, L"Target_BlurY_High", "g_GlowTexture")))
 			return;
 
 		if (m_pRenderSetting->IsActiveBlackWhite())

@@ -615,18 +615,18 @@ HRESULT CApplication::Ready_Static_Effect()
 	for (_int i = 0; 2 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU ,
-			TEXT("../../Resource/Effect/Player_Nvzhu/Loby_Particle_Effect_01.bin"),
-			"../../Resource/Effect/Player_Nvzhu/Loby_Particle_Effect/")))
+			TEXT("../../Resource/Effect/Player_Nvzhu/Lobby_Particle_Effect_01.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Lobby_Particle_Effect/")))
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
-			TEXT("../../Resource/Effect/Player_Nvzhu/Loby_Particle_Effect_02.bin"),
-			"../../Resource/Effect/Player_Nvzhu/Loby_Particle_Effect/")))
+			TEXT("../../Resource/Effect/Player_Nvzhu/Lobby_Particle_Effect_02.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Lobby_Particle_Effect/")))
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU ,
-			TEXT("../../Resource/Effect/Test_Loby_Effect.bin"),
-			"../../Resource/Effect/Test_Loby_Effect/")))
+			TEXT("../../Resource/Effect/Test_Lobby_Effect.bin"),
+			"../../Resource/Effect/Test_Lobby_Effect/")))
 			return E_FAIL;
 	}
 
