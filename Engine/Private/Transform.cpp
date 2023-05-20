@@ -110,7 +110,7 @@ void CTransform::MoveLeft(_double TimeDelta)
 	Set_State(STATE::STATE_POSITION, vPosition);
 }
 
-void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation * pNavigation, _float3* pTopPosition, _float4x4* pDefaultMatrix)
+void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation * pNavigation, _float3* pTopPosition, _float3* pSpinePosition)
 {
 	_vector vPos = Get_State(CTransform::STATE_POSITION);
 	_vector vRight = Get_State(CTransform::STATE_RIGHT);
@@ -131,10 +131,11 @@ void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation *
 
 	_uint iResult = UINT_MAX;
 	// 2 == Climb
-	if (nullptr != pTopPosition && 2 == iPostitionState)
+	if (nullptr != pTopPosition && nullptr != pSpinePosition && 2 == iPostitionState)
 	{
+		_vector vSpinePosition = XMVector3TransformCoord(XMVector3TransformCoord(XMLoadFloat3(pSpinePosition), XMMatrixRotationY(180.f)), XMLoadFloat4x4(&m_WorldMatrix));
 		_vector vHeadPosition = XMVector3TransformCoord(XMVector3TransformCoord(XMLoadFloat3(pTopPosition), XMMatrixRotationY(180.f)), XMLoadFloat4x4(&m_WorldMatrix));
-		iResult = pNavigation->Climb_OnNavigation(vPos, vHeadPosition, vMovement, &vSlideOut);
+		iResult = pNavigation->Climb_OnNavigation(vPos, vHeadPosition, vSpinePosition, vMovement, &vSlideOut);
 	}
 	else
 		iResult = pNavigation->Move_OnNavigation(vPos, vMovement, &vSlideOut);

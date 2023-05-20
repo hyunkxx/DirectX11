@@ -15,8 +15,6 @@ END
 
 BEGIN(Client)
 
-// AnimTool에서 플레이어 외의 모든 캐릭터들의 모델을 출력하고 편집하기 위한 클래스
-
 class CTestVTF : public CTestChar
 {
 public:

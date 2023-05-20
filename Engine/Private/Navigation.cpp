@@ -141,6 +141,8 @@ CNavigation::NAVISTATE CNavigation::Move_OnNavigation(_fvector vPosition, _fvect
 	_int		iNeighborIndex = -1;
 	_int		iOutLine = -1;
 
+	_int		iOriginIndex = m_NavigationDesc.iCurrentIndex;
+
 	_vector PredictedPosition = XMVectorSetY(vPosition + vMove, 0.f);
 
 	if (true == m_Cells[m_NavigationDesc.iCurrentIndex]->IsIn(PredictedPosition, &iNeighborIndex, false, &iOutLine))
@@ -153,6 +155,10 @@ CNavigation::NAVISTATE CNavigation::Move_OnNavigation(_fvector vPosition, _fvect
 			// 그냥 이동
 			while (true)
 			{
+				// 기존 naviCell이 이웃으로 탐색되었다면 그냥 움직여버림 (무한루프 방지용)
+				if (iOriginIndex == iNeighborIndex)
+					return NAVI_OK;
+
 				if (-1 == iNeighborIndex)
 				{
 					XMStoreFloat3(vSlideOut, XMVectorSet(0.f, 0.f, 0.f, 0.f));
@@ -218,46 +224,123 @@ CNavigation::NAVISTATE CNavigation::Move_OnNavigation(_fvector vPosition, _fvect
 	}
 }
 
-CNavigation::NAVISTATE CNavigation::Climb_OnNavigation(_fvector vPosition, _fvector vTopPosition, _fvector vMove, _float3 * vSlideOut)
+CNavigation::NAVISTATE CNavigation::Climb_OnNavigation(_fvector vPosition, _fvector vTopPosition, _fvector vSpinePosition, _gvector vMove, _float3 * vSlideOut)
 {
 	if (-1 == m_NavigationDesc.iCurrentIndex)
 		return  CNavigation::NAVI_NO;
 
+	// Spine 기준으로 현재 NaviCell을 설정
+	// Head 위치와 Root위치는 Climb 종료 여부만 체크한다.
+	_int		iSpineNeighborIndex = -1;
+	_int		iSpineOutLine = -1;
 	_int		iRootNeighborIndex = -1;
 	_int		iRootOutLine = -1;
-
 	_int		iHeadNeighborIndex = -1;
 	_int		iHeadOutLine = -1;
 
+	_vector PredictedSpinePosition = vSpinePosition + vMove;
   	_vector PredictedRootPosition = vPosition + vMove;
 	_vector PredictedHeadPosition = vTopPosition + vMove;
 
+	vector<_int> VisitedCells;
+
+	_bool bSpineCheck = m_Cells[m_NavigationDesc.iCurrentIndex]->IsIn(PredictedSpinePosition, &iSpineNeighborIndex, true, &iSpineOutLine);
 	_bool bRootCheck = m_Cells[m_NavigationDesc.iCurrentIndex]->IsIn(PredictedRootPosition, &iRootNeighborIndex, true, &iRootOutLine);
 	_bool bHeadCheck = m_Cells[m_NavigationDesc.iCurrentIndex]->IsIn(PredictedHeadPosition, &iHeadNeighborIndex, true, &iHeadOutLine);
 
-	if (bRootCheck && bHeadCheck)
+	if (bSpineCheck && bRootCheck && bHeadCheck)
 		return  CNavigation::NAVI_OK;
 	else
 	{
 		if (false == bHeadCheck)
 		{
+			VisitedCells.clear();
+			VisitedCells.push_back(m_NavigationDesc.iCurrentIndex);
 			if (-1 != iHeadNeighborIndex)
 			{
+				while (true)
+				{
+					if (-1 == iHeadNeighborIndex)
+						break;
+
+					_bool bBreak = false;
+
+					for (_int iCellID : VisitedCells)
+					{
+						if (iCellID == iHeadNeighborIndex)
+						{
+							bBreak = true;
+							break;
+						}
+					}
+
+					if (true == bBreak)
+						break;
+					else
+						VisitedCells.push_back(iHeadNeighborIndex);
+
+					if (true == m_Cells[iHeadNeighborIndex]->IsIn(PredictedHeadPosition, &iHeadNeighborIndex, true))
+						break;
+				}
+
+
 				// 이동한 이웃이 Wall이 아니라면
-				if (1 != m_Cells[iHeadNeighborIndex]->Get_State())
+				if (1 != m_Cells[iHeadNeighborIndex]->Get_State() && -1 != iHeadNeighborIndex)
 				{
 					m_NavigationDesc.iCurrentIndex = iHeadNeighborIndex;
 					m_iExitClimb = EXIT_UP;
+					return NAVI_OK;
 				}
-				else
-					m_iExitClimb = EXIT_NO;
 			}
 		}
 
 		if (false == bRootCheck)
 		{
-			// 해당 방향에 이웃이 있다면 이동
+			VisitedCells.clear();
+			VisitedCells.push_back(m_NavigationDesc.iCurrentIndex);
 			if (-1 != iRootNeighborIndex)
+			{
+				while (true)
+				{
+					if (-1 == iRootNeighborIndex)
+						break;
+
+					_bool bBreak = false;
+
+					for (_int iCellID : VisitedCells)
+					{
+						if (iCellID == iRootNeighborIndex)
+						{
+							bBreak = true;
+							break;
+						}
+					}
+
+					if (true == bBreak)
+						break;
+					else
+						VisitedCells.push_back(iRootNeighborIndex);
+
+							
+
+					if (true == m_Cells[iRootNeighborIndex]->IsIn(PredictedRootPosition, &iRootNeighborIndex, true))
+						break;
+				}
+
+				// 이동한 이웃이 Wall이 아니라면
+				if (1 != m_Cells[iRootNeighborIndex]->Get_State() && -1 != iRootNeighborIndex)
+				{
+					m_NavigationDesc.iCurrentIndex = iRootNeighborIndex;
+					m_iExitClimb = EXIT_DOWN;
+					return NAVI_OK;
+				}
+			}
+		}
+
+		if (false == bSpineCheck)
+		{
+			// 해당 방향에 이웃이 있다면 이동
+			if (-1 != iSpineNeighborIndex)
 			{
 				//// 그냥 이동
 				//while (true)
@@ -272,27 +355,16 @@ CNavigation::NAVISTATE CNavigation::Climb_OnNavigation(_fvector vPosition, _fvec
 				//		break;
 				//}
 
-				// 이동한 이웃이 Wall이 아니라면
-				if (1 != m_Cells[iRootNeighborIndex]->Get_State())
-				{
-					m_NavigationDesc.iCurrentIndex = iRootNeighborIndex;
-					m_iExitClimb = EXIT_DOWN;
-				}
-				else
-				{
-					m_NavigationDesc.iCurrentIndex = iRootNeighborIndex;
-					m_iExitClimb = EXIT_NO;
-				}
+				m_NavigationDesc.iCurrentIndex = iSpineNeighborIndex;
 				return CNavigation::NAVI_OK;
 			}
-
-			// Root에 대한 Slide
+			// SpinePos에 대한 Slide
 			else
 			{
-				if (false == m_Cells[m_NavigationDesc.iCurrentIndex]->CrossMultiEndLine(PredictedRootPosition))
+				if (false == m_Cells[m_NavigationDesc.iCurrentIndex]->CrossMultiEndLine(PredictedSpinePosition))
 				{
-					_vector vPointA = m_Cells[m_NavigationDesc.iCurrentIndex]->Get_Point((CCell::POINT)iRootOutLine);
-					_vector vPointB = m_Cells[m_NavigationDesc.iCurrentIndex]->Get_Point((CCell::POINT)((iRootOutLine + 1) % 3));
+					_vector vPointA = m_Cells[m_NavigationDesc.iCurrentIndex]->Get_Point((CCell::POINT)iSpineOutLine);
+					_vector vPointB = m_Cells[m_NavigationDesc.iCurrentIndex]->Get_Point((CCell::POINT)((iSpineOutLine + 1) % 3));
 
 					_vector vOutLine = XMVector3Normalize(vPointB - vPointA);
 					_vector vSlided = vOutLine * XMVector3Dot(vMove, vOutLine);
@@ -300,26 +372,26 @@ CNavigation::NAVISTATE CNavigation::Climb_OnNavigation(_fvector vPosition, _fvec
 
 					XMStoreFloat3(vSlideOut, vOutLine * XMVector3Dot(vMove, vOutLine));
 
-					_vector vSlidePos = vPosition + vSlided;
+					_vector vSlidePos = vSpinePosition + vSlided;
 
-					if (true == m_Cells[m_NavigationDesc.iCurrentIndex]->IsIn(vSlidePos, &iRootNeighborIndex, false, &iRootOutLine))
+					if (true == m_Cells[m_NavigationDesc.iCurrentIndex]->IsIn(vSlidePos, &iSpineNeighborIndex, false, &iSpineOutLine))
 						return  CNavigation::NAVI_SLIDE;
 					else
 					{
-						if (-1 != iRootNeighborIndex)
+						if (-1 != iSpineNeighborIndex)
 						{
 							while (true)
 							{
-								if (-1 == iRootNeighborIndex)
+								if (-1 == iSpineNeighborIndex)
 								{
 									XMStoreFloat3(vSlideOut, XMVectorSet(0.f, 0.f, 0.f, 0.f));
 									return CNavigation::NAVI_NO;
 								}
 
-								if (true == m_Cells[iRootNeighborIndex]->IsIn(vSlidePos, &iRootNeighborIndex, false))
+								if (true == m_Cells[iSpineNeighborIndex]->IsIn(vSlidePos, &iSpineNeighborIndex, false))
 									break;
 							}
-							m_NavigationDesc.iCurrentIndex = iRootNeighborIndex;
+							m_NavigationDesc.iCurrentIndex = iSpineNeighborIndex;
 							return CNavigation::NAVI_SLIDE;
 						}
 						else
@@ -338,7 +410,6 @@ CNavigation::NAVISTATE CNavigation::Climb_OnNavigation(_fvector vPosition, _fvec
 			return CNavigation::NAVI_SLIDE;
 		}
 
-		int a = 1;
 		return CNavigation::NAVI_OK;
 	}
 }

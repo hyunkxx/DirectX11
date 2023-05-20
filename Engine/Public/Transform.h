@@ -54,7 +54,7 @@ public:
 	void MoveLeft(_double TimeDelta);
 
 	// Animation 용 Navigation 타는 이동 함수
-	void Move_Anim(_float3* vMove, _uint iPostitionState = 0, class CNavigation* pNavigation = nullptr, _float3* vHeadPosition = nullptr, _float4x4* pDefaultMatrix = nullptr);
+	void Move_Anim(_float3* vMove, _uint iPostitionState = 0, class CNavigation* pNavigation = nullptr, _float3* vHeadPosition = nullptr, _float3* vSpinePosition = nullptr);
 
 	// 현재 위치에서 입력받은 방향벡터만큼 이동시키는 함수
 	void Push_Position(_fvector vPush);

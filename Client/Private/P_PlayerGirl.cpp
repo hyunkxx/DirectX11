@@ -733,7 +733,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 	_vector vCamRight = XMVector3Normalize(XMVectorSetY(matCam.r[0], 0.f));
 	_vector vInputDir = XMVectorZero();
 
-	
+
 
 	// 입력 제한 걸기
 	if (pGame->InputKey(DIK_I) == KEY_STATE::TAP)
@@ -795,7 +795,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			bInputDir[1] = true;
 			vInputDir -= vCamLook;
 		}
-			
+
 
 		if (pGame->InputKey(DIK_A) == KEY_STATE::HOLD)
 		{
@@ -808,7 +808,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			bInputDir[3] = true;
 			vInputDir += vCamRight;
 		}
-			
+
 
 		if (bInputDir[0] ||
 			bInputDir[1] ||
@@ -866,7 +866,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		else
 			m_ChargeAcc = 0.0;
 
-		
+
 
 		// Tool
 		if (pGame->InputKey(DIK_T) == KEY_STATE::TAP)
@@ -877,7 +877,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 
 	if (0.f != XMVectorGetX(XMVector3Length(vInputDir)))
 		XMVector3Normalize(vInputDir);
-	
+
 	// 임시 이펙트 재생용
 	CEffect* pEffect = nullptr;
 	_float4x4 ParentMatrix;
@@ -931,7 +931,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 						m_Scon.iNextState = SS_WALK_B;
 				else if (true == bInputDir[2])
 					m_Scon.iNextState = SS_WALK_LF;
-				else 
+				else
 					m_Scon.iNextState = SS_WALK_RF;*/
 			}
 			// RUN
@@ -996,15 +996,15 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				break;
 			case IS_ATTACK_02:
 				m_Scon.iNextState = IS_ATTACK_03;
-				break; 
+				break;
 			case IS_ATTACK_03:
-				if (m_Scon.TrackPos > 17.5 && m_Scon.TrackPos < 18.5)
+				if (m_Scon.TrackPos > 17.f && m_Scon.TrackPos < 20.f)
 					m_Scon.iNextState = IS_ATTACK_PO_2;
 				else
 					m_Scon.iNextState = IS_ATTACK_04;
 				break;
 			case IS_ATTACK_09:
-				if (m_Scon.TrackPos > 18.5 && m_Scon.TrackPos < 19.5)
+				if (m_Scon.TrackPos > 18.f && m_Scon.TrackPos < 21.f)
 					m_Scon.iNextState = IS_ATTACK_PO_2;
 				else
 					m_Scon.iNextState = IS_ATTACK_01;
@@ -1234,7 +1234,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 					}
 				}
 			}
-			
+
 			break;
 		case Client::CP_PlayerGirl::INPUT_DASH:
 			if (bInputDir[0])
@@ -1271,7 +1271,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 					break;
 				}
 			}
-			else if(bInputDir[3])
+			else if (bInputDir[3])
 			{
 				switch (m_Scon.iCurState)
 				{
@@ -1331,6 +1331,9 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		vTargetDir = XMVector3Normalize(XMVectorSetY(m_pNearst->Get_Position() - this->Get_Position(), 0.f));
 	else
 		vTargetDir = XMVectorZero();
+
+	XMStoreFloat3(&m_vTargetDir, vTargetDir);
+
 
 	// 그래서 어느 방향을 바라보는가
 	_vector vFinalDir;
@@ -1448,9 +1451,9 @@ void CP_PlayerGirl::Tick_State(_double TimeDelta)
 		// 구해진 이동값만큼 움직이고 이전 프레임 정보를 저장, + TimeDelta 대응
 		if(SS_CLIMB_ONTOP == m_Scon.iCurState || 
 			SS_CLIMB_BOOST_ONTOP == m_Scon.iCurState)
-			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, nullptr, m_pModelCom->Get_TopBoneCombinedPos());
+			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, nullptr, m_pModelCom->Get_TopBoneCombinedPos(), m_pClimbBones[CBONE_SPINE]->Get_CombinedPosition_Float3());
 		else
-			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom, m_pModelCom->Get_TopBoneCombinedPos());
+			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom, m_pModelCom->Get_TopBoneCombinedPos(), m_pClimbBones[CBONE_SPINE]->Get_CombinedPosition_Float3());
 		
 		XMStoreFloat3(&m_Scon.vPrevMovement, XMLoadFloat3(&vMovement) / (_float)TimeDelta);
 		
@@ -2053,7 +2056,7 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 				m_tCharInfo.fCurSP += m_AttackInfos[m_iCurAttackID].fSPGain;
 				if (m_tCharInfo.fCurSP > m_tCharInfo.fMaxSP)
 					m_tCharInfo.fCurSP = m_tCharInfo.fMaxSP;
-
+				
 				m_tCharInfo.fCurTP += m_AttackInfos[m_iCurAttackID].fTPGain;
 				if (m_tCharInfo.fCurTP > m_tCharInfo.fMaxTP)
 					m_tCharInfo.fCurTP = m_tCharInfo.fMaxTP;
@@ -2107,8 +2110,19 @@ void CP_PlayerGirl::OnCollisionStay(CCollider * src, CCollider * dest)
 		_float fTargetDistance = src->GetExtents().x + dest->GetExtents().x;
 		_float fPushDistance =  fTargetDistance - XMVectorGetX(XMVector3Length(pOpponent->Get_Position() - this->Get_Position()));
 		_float fPushRatio = 1 - m_fPushWeight / (pOpponent->Get_PushWeight() + m_fPushWeight);
-		_vector vPushDir = -XMVector3Normalize(XMVectorSetY(pOpponent->Get_Position() - this->Get_Position(), 0.f));
+		_vector vPushDir = XMVector3Normalize(XMVectorSetY(this->Get_Position() - pOpponent->Get_Position(), 0.f));
 
+		//_vector vTargetDir = XMLoadFloat3(&m_vTargetDir);
+
+		//// 이번 프레임에 특정 타겟을 기준으로 이동했을 경우
+		//if (!XMVector3Equal(XMVectorZero(), vTargetDir) && fTargetDistance * 0.5f < XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_Scon.vPrevMovement))))
+		//{
+		//	// 이동 전 타겟 방향과 밀어내는 방향의 끼인각이 45도 미만이라면
+		//	if (45.f > fabs(acosf(XMVectorGetX(XMVector3Dot(vPushDir, vTargetDir)))))
+		//	{
+		//		vPushDir *= -1.f;
+		//	}
+		//}
 
 		// TODO: 내비메쉬 관련 예외처리 해야 함
 		m_pMainTransform->Push_Position(vPushDir * fPushDistance * fPushRatio);

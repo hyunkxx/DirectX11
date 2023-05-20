@@ -222,6 +222,8 @@ private:
 	CCharacter*			m_pNearst = { nullptr };
 	_float				m_fNearstDist = { 0.f };
 	CCharacter*			m_pFixedTarget = { nullptr };
+	// 이동 전 타겟 방향 (몬스터를 뚫고 지나가는 상황 예외처리) 
+	_float3				m_vTargetDir = {};
 	
 	// MoveCollider 충돌 시 비교할 무게
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
