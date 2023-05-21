@@ -830,11 +830,23 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/Player_Chixia/Hit/")))
 			return E_FAIL;
 
+		//Â÷Áö ¼¦ ÀÌÆåÆ®
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Charge_Shoot.bin"),
+			"../../Resource/Effect/Player_Chixia/Charge/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Charge_Hit.bin"),
+			"../../Resource/Effect/Player_Chixia/Charge/")))
+			return E_FAIL;
+
 		// È¸ÇÇ ÀÌÆåÆ®
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
 			TEXT("../../Resource/Effect/Comon/P_Evasion_Effect_C.bin"),
 			"../../Resource/Effect/Comon/P_Evasion_Effect/")))
 			return E_FAIL;
+
 
 	}
 #pragma endregion
@@ -913,6 +925,16 @@ HRESULT CApplication::Ready_Static_Effect()
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
 			TEXT("../../Resource/Effect/M_GAzizi/GenkiDama_Shoot.bin"),
+			"../../Resource/Effect/M_GAzizi/GenkiDama/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_GAzizi/GenkiDama_Ready_02.bin"),
+			"../../Resource/Effect/M_GAzizi/GenkiDama/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_GAzizi/GenkiDama_Shoot_02.bin"),
 			"../../Resource/Effect/M_GAzizi/GenkiDama/")))
 			return E_FAIL;
 
