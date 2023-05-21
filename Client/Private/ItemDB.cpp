@@ -7,9 +7,10 @@ CItemDB::CItemDB()
 {
 	m_DataBase =
 	{
-		{ ITEM::TACTREITE_VOUCHER, { CItem::ITEM_MATERIAL, CItem::UNIQUE, STATIC_IMAGE::ITEM_TACTREITE_VOUCHER, STATIC_IMAGE::TEXT_TACTREITE_VOUCHER, 1, L"Tactreite Voucher"}},
-		{ ITEM::COMMEMORATIVE_COIN, { CItem::ITEM_MATERIAL, CItem::RARE, STATIC_IMAGE::ITEM_COMMEMORATIVE_COIN, STATIC_IMAGE::TEXT_COMMEMORATIVE_COIN, 1, L"Commemorative Coin" }},
-		{ ITEM::TACTITE_COIN, { CItem::ITEM_MATERIAL, CItem::NORMAL, STATIC_IMAGE::ITEM_TACTITE_COIN, STATIC_IMAGE::TEXT_TACTITE_COIN, 1, L"Tactite Coin" }}
+				            /*--- 아이템 종류-----아이템 등급 -----아이템 아이콘 텍스쳐(인덱스)-----아이템 이름 텍스쳐(인덱스)-----수량-----아이템 태그-----부가 정보-----사용가능 여부(단독적으로)-----*/
+		{ ITEM::TACTREITE_VOUCHER, { CItem::ITEM_COIN, CItem::UNIQUE, STATIC_IMAGE::ITEM_TACTREITE_VOUCHER, STATIC_IMAGE::TEXT_TACTREITE_VOUCHER, 10, L"Tactreite Voucher", { 0, 0 }, false }},
+		{ ITEM::COMMEMORATIVE_COIN, { CItem::ITEM_COIN, CItem::RARE, STATIC_IMAGE::ITEM_COMMEMORATIVE_COIN, STATIC_IMAGE::TEXT_COMMEMORATIVE_COIN, 10, L"Commemorative Coin", { 0, 0 }, false }},
+		{ ITEM::TACTITE_COIN, { CItem::ITEM_COIN, CItem::NORMAL, STATIC_IMAGE::ITEM_TACTITE_COIN, STATIC_IMAGE::TEXT_TACTITE_COIN, 1, L"Tactite Coin", { 0, 0 }, false }}
 	};
 }
 
@@ -48,19 +49,21 @@ _float3 CItemDB::GetItemColor(CItem::ITEM_GRADE eItemGrade)
 	switch (eItemGrade)
 	{
 	case Client::CItem::NORMAL:
-		vColor = { 255.f / 255.f, 255.f / 255.f, 255.f / 255.f };
+		vColor = { 255.f / 255.f, 255.f / 255.f, 255.f / 255.f }; //회색
 		break;
 	case Client::CItem::ADVANCED:
-		vColor = { 50.f / 255.f, 230.f / 255.f, 80.f / 255.f };
+		vColor = { 50.f / 255.f, 230.f / 255.f, 80.f / 255.f };//초록
 		break;
 	case Client::CItem::RARE:
-		vColor = { 210.f / 255.f, 110.f / 255.f, 255.f / 255.f };
+		vColor = { 50.f / 255.f, 230.f / 255.f, 80.f / 255.f };//파랑
 		break;
 	case Client::CItem::UNIQUE:
-		vColor = { 250.f / 255.f, 255.f / 255.f, 110.f / 255.f };
+		vColor = { 210.f / 255.f, 110.f / 255.f, 255.f / 255.f };//보라
 		break;
+	case Client::CItem::LEGEND:
+		vColor = { 250.f / 255.f, 255.f / 255.f, 110.f / 255.f };//노랑
 	default:
-		vColor = { 129.f / 255.f, 137.f / 255.f, 143.f / 255.f };
+		vColor = { 1.f, 1.f, 1.f };
 		break;
 	}
 

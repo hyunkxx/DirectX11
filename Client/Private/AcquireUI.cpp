@@ -170,6 +170,7 @@ void CAcquireUI::Tick(_double TimeDelta)
 			{
 				m_ItemDescs.emplace_back(m_ItemDescQueue.front());
 				m_ItemDescQueue.pop_front();
+				//sort(m_ItemDescs.begin(), m_ItemDescs.end(), CompareItemGrade());
 
 				m_iCurrentActiveCount++;
 				m_fActiveTimeAcc = 0.f;
@@ -418,6 +419,8 @@ void CAcquireUI::EnqueueItemDesc(CItem::ITEM_DESC ItemDesc)
 		m_fHighestTimeAcc = 0.f;
 	}
 
+	sort(m_ItemDescQueue.begin(), m_ItemDescQueue.end(), CompareItemGrade());
+	
 	m_ItemDescQueue.push_back(ItemDesc);
 
 }

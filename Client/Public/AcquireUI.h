@@ -36,6 +36,7 @@ private:
 	void	resetAcquire();
 	_uint	getConvertAmountToTexture(CItem::ITEM_DESC ItemDesc, _uint iDigit);
 	_uint	getConvertNumberToLength(_uint iAmount);
+
 public:
 	static CAcquireUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
@@ -55,7 +56,7 @@ private:
 	ORTHO_DESC m_ItemIconDesc[ACQUIRE_MAX];
 	ORTHO_DESC m_ItemTextDesc[ACQUIRE_MAX];
 
-	// Amount 수량은 4자리수 까지
+	// Amount 수량은 5자리수 까지
 	ORTHO_DESC m_ItemAmountBegin[ACQUIRE_MAX];  //x표시
 	ORTHO_DESC m_ItemAmountDesc[5][ACQUIRE_MAX];//수량
 private:

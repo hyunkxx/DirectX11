@@ -169,6 +169,8 @@ public:
 	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
 
+public:
+
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
 	CShader*			m_pShaderCom = { nullptr };
@@ -283,6 +285,8 @@ public:
 	CCollider* m_pDodgeCollider = nullptr;
 
 	CGameObject* pStaticObject = nullptr;
+
+	class CInventory* m_pInven = nullptr;
 };
 
 END

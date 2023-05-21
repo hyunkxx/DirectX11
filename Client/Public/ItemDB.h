@@ -35,7 +35,15 @@ namespace ITEM
 		TACTITE_COIN,
 		
 	};
-
 }
 
+struct CompareItemGrade
+{
+	bool operator()(CItem::ITEM_DESC src, CItem::ITEM_DESC dest)
+	{
+		return src.eItemGrade > dest.eItemGrade;
+	}
+};
+
 END
+

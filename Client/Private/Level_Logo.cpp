@@ -48,6 +48,9 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
 	
+	if (FAILED(Ready_StaticGameObject(TEXT("layer_static"))))
+		return E_FAIL;
+
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
 	pGameInstance->PlaySoundEx(L"Login.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
 
@@ -130,6 +133,16 @@ HRESULT CLevel_Logo::Ready_Layer_Character(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::LOBBY_CHARACTER_RIGHT, pLayerTag, L"LobbyCharacter_Right")))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_StaticGameObject(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::INVENTORY, pLayerTag, L"Inventory")))
 		return E_FAIL;
 
 	return S_OK;

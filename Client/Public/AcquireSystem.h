@@ -14,6 +14,8 @@ END
 
 BEGIN(Client)
 
+class CInventory;
+
 class CAcquireSystem final : public CGameObject
 {
 public:
@@ -41,6 +43,8 @@ public:
 private:
 	CInteractionUI* m_pInteractionUI = nullptr;
 	CAcquireUI*		m_pAcquireUI = nullptr;
+
+	CInventory* m_pInventory = nullptr;
 
 private:
 

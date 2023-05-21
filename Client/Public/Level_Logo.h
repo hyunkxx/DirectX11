@@ -22,7 +22,7 @@ private:
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Character(const _tchar* pLayerTag);
-
+	HRESULT Ready_StaticGameObject(const _tchar* pLayerTag);
 private:
 	HRESULT Load_LobbyRock(const _tchar* pLobbyRockFilePath, const _tchar * pLayerTag);
 

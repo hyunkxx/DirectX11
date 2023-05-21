@@ -4,8 +4,10 @@
 #include "GameMode.h"
 #include "GameInstance.h"
 
-#include "Item.h"
 #include "InteractionUI.h"
+#include "Inventory.h"
+#include "ItemDB.h"
+#include "P_PlayerGirl.h"
 
 CAcquireSystem::CAcquireSystem(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -42,8 +44,12 @@ HRESULT CAcquireSystem::Initialize(void * pArg)
 
 void CAcquireSystem::Start()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 	m_pInteractionUI->Start();
 	m_pAcquireUI->Start();
+
+	m_pInventory = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 }
 
 void CAcquireSystem::Tick(_double TimeDelta)
@@ -53,6 +59,14 @@ void CAcquireSystem::Tick(_double TimeDelta)
 
 	m_pInteractionUI->Tick(TimeDelta);
 	m_pAcquireUI->Tick(TimeDelta);
+
+	if (pGameInstance->InputKey(DIK_INSERT) == KEY_STATE::TAP)
+	{
+		CItemDB* pDB = CItemDB::GetInstance();
+		CItem::ITEM_DESC itemDesc = pDB->GetItemData(ITEM::TACTREITE_VOUCHER);
+		
+		m_pInventory->PushItem(itemDesc);
+	}
 }
 
 void CAcquireSystem::LateTick(_double TimeDelta)

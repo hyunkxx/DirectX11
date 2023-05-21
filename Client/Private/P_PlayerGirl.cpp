@@ -12,6 +12,7 @@
 #include "OBBKey.h"
 
 #include "Chest.h"
+#include "Inventory.h"
 
 const _int CP_PlayerGirl::iStateLimit = CP_PlayerGirl::IS_END;
 
@@ -140,6 +141,8 @@ void CP_PlayerGirl::Start()
 #ifdef _DEBUG
 	m_pRendererCom->DebugBundleRender_Control(true);
 #endif
+
+	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 
 	//pStaticObject = pGame->Find_GameObject(LEVEL_GAMEPLAY, L"StaticTest");
 }

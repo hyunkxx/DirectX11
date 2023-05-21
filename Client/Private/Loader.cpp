@@ -19,6 +19,7 @@
 #include "Sandbag.h"
 #include "M_GAzizi.h"
 
+#include "Inventory.h"
 #include "InteractionObject.h"
 #include "Chest.h"
 
@@ -229,6 +230,9 @@ HRESULT CLoader::Load_Level_Logo()
 	
 	m_szLoadingStateText = L"객체 원형을 준비중";
 	m_pApp->LoadRatio(0.8f);
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::INVENTORY, CInventory::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_CHARACTER_LEFT, CLobbyCharacter::Create(m_pDevice, m_pContext, DMODEL::DMD_PLAYERGIRL_MODEL, DMODEL::DMD_LOBBY_CHARACTER_MODEL, 0))))
 		return E_FAIL;
 
@@ -1152,7 +1156,6 @@ HRESULT CLoader::Load_Level_AnimTool()
 	m_pApp->LoadRatio(1.f);
 	//GamePlay GameObject
 #pragma region GAMEOBJECTS
-
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 

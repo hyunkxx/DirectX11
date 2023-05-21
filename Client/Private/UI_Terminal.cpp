@@ -68,7 +68,7 @@ void CUI_Terminal::Tick(_double TimeDelta)
 	}
 	for (_uint i = 0; i < 30; ++i)
 	{
-		//TimeAcc += (_float)TimeDelta;
+		TimeAcc += (_float)TimeDelta;
 		XMStoreFloat4x4(&(m_RotDescList[i]->WorldMatrix), XMMatrixScaling(m_RotDescList[i]->fWidth, m_RotDescList[i]->fHeight, 1.f)
 			*	XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_RotDescList[i]->fDegree) * TimeAcc*0.1f)
 			* XMMatrixTranslation(m_RotDescList[i]->fX, m_RotDescList[i]->fY, m_RotDescList[i]->fZ));
