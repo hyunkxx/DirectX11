@@ -43,7 +43,12 @@ void CMesh_Effect_P::Tick(_double TimeDelta)
 	m_fLifeAcc += (_float)TimeDelta;
 
 	if (m_EffectDesc.fStartDelay >= m_fLifeAcc)
+	{
+		if (m_pParentsMatrix != nullptr)
+			m_ParentsMatrix = *m_pParentsMatrix;
 		return;
+	}
+	
 
 	m_fEffectAcc += (_float)TimeDelta;
 

@@ -608,27 +608,27 @@ HRESULT CApplication::Ready_Item_Data()
 HRESULT CApplication::Ready_Static_Effect()
 {
 	CGameMode* pGameModeInst = CGameMode::GetInstance();
-	
-#pragma region Player_Nvzhu
 
 	//Lobby_Effect
 	for (_int i = 0; 2 > i; i++)
 	{
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU ,
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::LOBBY,
 			TEXT("../../Resource/Effect/Player_Nvzhu/Lobby_Particle_Effect_01.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Lobby_Particle_Effect/")))
 			return E_FAIL;
 
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::LOBBY,
 			TEXT("../../Resource/Effect/Player_Nvzhu/Lobby_Particle_Effect_02.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Lobby_Particle_Effect/")))
 			return E_FAIL;
 
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU ,
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::LOBBY,
 			TEXT("../../Resource/Effect/Test_Lobby_Effect.bin"),
 			"../../Resource/Effect/Test_Lobby_Effect/")))
 			return E_FAIL;
 	}
+
+#pragma region Player_Nvzhu
 
 	for (_int i = 0; 3 > i; i++)
 	{
@@ -743,6 +743,12 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/Player_Nvzhu/Burst/")))
 			return E_FAIL;
 
+		// 회피 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Comon/P_Evasion_Effect_N.bin"),
+			"../../Resource/Effect/Comon/P_Evasion_Effect/")))
+			return E_FAIL;
+
 		for (_int j = 0; 2 > j; j++)
 		{
 			// 공중에서 바닥에 내리찍는 공격
@@ -788,6 +794,51 @@ HRESULT CApplication::Ready_Static_Effect()
 	}
 
 #pragma endregion
+
+#pragma region Player_Chixia
+
+	for (_int i = 0; 3 > i; i++)
+	{
+		// 강공격 중공격 약공격 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Shoot_B.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Shoot_M.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Shoot_S.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+		// 강공격 히트 이펙트 , 일반 히트 이펙트 , 일반 히트 크리티컬 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Hit_Effect_B.bin"),
+			"../../Resource/Effect/Player_Chixia/Hit/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Hit_Effect_S.bin"),
+			"../../Resource/Effect/Player_Chixia/Hit/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Hit_Effect_SC.bin"),
+			"../../Resource/Effect/Player_Chixia/Hit/")))
+			return E_FAIL;
+
+		// 회피 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Comon/P_Evasion_Effect_C.bin"),
+			"../../Resource/Effect/Comon/P_Evasion_Effect/")))
+			return E_FAIL;
+
+	}
+#pragma endregion
+
 
 #pragma region Comon
 
@@ -845,10 +896,11 @@ HRESULT CApplication::Ready_Static_Effect()
 	}
 #pragma endregion
 
-#pragma region Monster
+#pragma region Tutorial_Monster
 
 	for (_int i = 0; 5 > i; i++)
 	{
+		//Monster_Gazizi
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL ,
 			TEXT("../../Resource/Effect/M_GAzizi/GenkiDama_Boom.bin"),
 			"../../Resource/Effect/M_GAzizi/GenkiDama/")))
@@ -863,6 +915,30 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/M_GAzizi/GenkiDama_Shoot.bin"),
 			"../../Resource/Effect/M_GAzizi/GenkiDama/")))
 			return E_FAIL;
+
+		//Monster_Zigzag
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Zigzag/M_Boom.bin"),
+			"../../Resource/Effect/M_Zigzag/Boom/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Zigzag/M_Rush_Ready.bin"),
+			"../../Resource/Effect/M_Zigzag/Rush/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Zigzag/M_Rush_Start.bin"),
+			"../../Resource/Effect/M_Zigzag/Rush/")))
+			return E_FAIL;
+
+		// 낫든 몬스터 등장 이팩트
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/Comon/M_Appear_Effect.bin"),
+			"../../Resource/Effect/Comon/M_Appear_Effect/")))
+			return E_FAIL;
+
 	}
 	
 #pragma endregion

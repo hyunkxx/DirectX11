@@ -54,7 +54,7 @@ void CComponent_Manager::Clear(_uint iLevelIndex)
 	for (auto& pair : m_pPrototypes[iLevelIndex])
 	{
 		Safe_Release(pair.second);
-	}`
+	}
 	m_pPrototypes[iLevelIndex].clear();
 }
 

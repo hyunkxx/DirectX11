@@ -40,8 +40,13 @@ void CRect_Effect_P::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	m_fLifeAcc += (_float)TimeDelta;
+
 	if (m_EffectDesc.fStartDelay >= m_fLifeAcc)
+	{
+		if (m_pParentsMatrix != nullptr)
+			m_ParentsMatrix = *m_pParentsMatrix;
 		return;
+	}
 
 	m_fEffectAcc += (_float)TimeDelta;
 
