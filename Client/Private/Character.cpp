@@ -17,15 +17,14 @@ CCharacter::PHYSICMOVE CCharacter::StatePhysics[SP_END]
 	// 질주+@ _F, 등속
 	{ true, true, _float3(0.f, -1.f, 0.f),	10.0f, 0.f, 0.f, 0.f, 0.f },
 	// 낙하, 직전 운동 상태 적용, xz감쇄율, y가속도 적용
-	{ false, false, _float3(0.f, 0.f, 0.f), 0.f, 0.3f, 0.1f, 15.f * 0.016f, -15.f * 0.016f },
+	{ false, false, _float3(0.f, 0.f, 0.f), 0.f, 0.3f, 0.3f, 15.f * 0.16f, -15.f * 0.16f},
 	// PLAYERGIRL_AIRATTACK, 등속
-	{ true, true, _float3(0.f, 0.f, -1.f), 70.f, 0.f, 0.f, 0.f, 0.f  }
-	/*{},
-	{},
-	{},
-	{},
-	{},
-	{}*/
+	{ true, true, _float3(0.f, 0.f, -1.f), 70.f, 0.f, 0.f, 0.f, 0.f  },
+	// BEHIT_FLY_START, 
+	{ true, false, _float3(0.f, 0.5f, 1.f), 10.f, 0.3f, 0.3f, 15.f * 0.16f, -15.f * 0.16f },
+	// BEHIT_HOVER, 
+	{ true, false, _float3(0.f, 0.5f, 1.f), 5.f, 0.3f, 0.3f, 15.f * 0.16f, -15.f * 0.16f }
+
 };
 
 
@@ -86,8 +85,9 @@ _vector CCharacter::Get_Position()
 	return m_pMainTransform->Get_State(CTransform::STATE_POSITION);
 }
 
-void CCharacter::Push_Position(_fvector PushVector)
+void CCharacter::Push_OnNavi(_fvector PushVector)
 {
-	m_pMainTransform->Push_Position(PushVector);
+	m_pMainTransform->Push_OnNavi(PushVector, static_cast<CNavigation*>(Find_Component(TEXT("Com_Navigation"))));
 }
+
 

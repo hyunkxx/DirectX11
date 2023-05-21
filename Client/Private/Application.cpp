@@ -86,7 +86,7 @@ HRESULT CApplication::Initialize()
 void CApplication::Tick(_double TimeDelta)
 {
 	iTickCount++;
-	srand((unsigned int)time(nullptr) + iTickCount);
+	//srand((unsigned int)time(nullptr) + iTickCount);
 
 	if (nullptr == m_pGameInstance)
 		return;

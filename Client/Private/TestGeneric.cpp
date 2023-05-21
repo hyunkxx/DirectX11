@@ -8,6 +8,7 @@
 #include "PartsKey.h"
 #include "PriorityKey.h"
 #include "OBBKey.h"
+#include "MissileKey.h"
 
 
 CTestGeneric::CTestGeneric(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -52,7 +53,6 @@ HRESULT CTestGeneric::Initialize(void * pArg)
 
 	if (FAILED(Init_EffectBones()))
 		return E_FAIL;
-
 
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
@@ -112,14 +112,12 @@ void CTestGeneric::Tick(_double TimeDelta)
 			m_TrackPos = 0.f;
 			m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
-
 			// StateKey 贸府
 			for (_int i = 0; i < m_tStates[m_iStateID].iKeyCount; ++i)
 			{
 				if (nullptr != m_tStates[m_iStateID].ppStateKeys[i])
 					m_tStates[m_iStateID].ppStateKeys[i]->Reset();
 			}
-
 
 			SetUp_State();
 		}
@@ -158,8 +156,8 @@ void CTestGeneric::LateTick(_double TimeDelta)
 	//	}
 	//}
 
-	////Effect Bones 贸府
-	//Update_EffectBones();
+	//Effect Bones 贸府
+	Update_EffectBones();
 }
 
 HRESULT CTestGeneric::Render()
@@ -382,7 +380,7 @@ HRESULT CTestGeneric::Init_States()
 					tSingleState.ppStateKeys[j] = COBBKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_MISSILE:
-					
+					tSingleState.ppStateKeys[j] = CMissileKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_SOUND:
 

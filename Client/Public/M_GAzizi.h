@@ -2,6 +2,7 @@
 #include "Client_Defines.h"
 #include "Character.h"
 #include "Renderer.h"
+#include "MissilePool.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -58,6 +59,23 @@ public:
 		EBONE_END
 	};
 
+	// 공격 종류
+	enum Attacks
+	{
+		ATK_NONE,		// 0은 예외처리용으로 NONE으로 넣어줘야 함
+		ATK_ATTACK_01,
+		ATK_ATTACK_03,
+		ATK_END
+	};
+
+	// 미사일 종류
+	enum Missiles
+	{
+		MISS_ATTACK_01,
+		MISS_ATTACK_03,
+		MISS_END
+	};
+
 private:
 	CM_GAzizi(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CM_GAzizi(const CM_GAzizi& rhs);
@@ -82,6 +100,7 @@ public:
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _uint iEffectTypeID, _bool bTracking);
+	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
 
 public:
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
@@ -105,6 +124,17 @@ private:
 	_float4x4			m_EffectBoneMatrices[EBONE_END] = {};
 	// 매 프레임 이펙트 본 사용중인지 체크해서 저장, 사용중인 본만 행렬 갱신해줌
 	_bool				m_bEffectBoneActive[EBONE_END] = { false, };
+
+
+	// 공격 구조체
+	TAGATTACK			m_AttackInfos[ATK_END];
+	_uint				m_iCurAttackID = { 0 };	// OBB 히트 시 사용할 공격 구조체ID
+
+	// 미사일 풀
+	CMissilePool*		m_MissilePools[MISS_END] = { nullptr, };
+	_float3				m_MissileRotAngles[MISS_END];
+
+
 
 	// 몬스터 변수
 	// 타겟 플레이어 > 생성되는 타이밍에 무조건 플레이어 박음
@@ -134,6 +164,9 @@ private:
 	void Find_Target();
 	// 
 
+	void Init_AttackInfos();
+	void Init_Missiles();
+
 	// 적용 중인 쿨타임 TimeDelta 만큼 줄여주는 함수
 	void Apply_CoolTime(_double TimeDelta);
 	// 다음 행동(상태) 결정
@@ -143,6 +176,8 @@ private:
 	void Tick_State(_double TimeDelta);
 	// 지형에 의한 예외 처리
 	void On_Cell();
+	// 
+	void On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos);
 
 	// Effect
 	HRESULT	Init_EffectBones();

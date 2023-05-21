@@ -76,6 +76,7 @@ public:
 	/* vPosition : 객체의 움직이고 난 뒤의 결과 위치 */
 
 	CNavigation::NAVISTATE Move_OnNavigation(_fvector vPosition, _fvector vMove, _float3* vSlideOut);
+	CNavigation::NAVISTATE Move_OnNavigation_NoClimb(_fvector vPosition, _fvector vMove, _float3* vSlideOut);
 	CNavigation::NAVISTATE Climb_OnNavigation(_fvector vPosition, _fvector vTopPosition, _fvector vSpinePosition, _gvector vMove, _float3* vSlideOut);
 
 public:

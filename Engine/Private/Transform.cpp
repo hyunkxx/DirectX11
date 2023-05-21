@@ -131,14 +131,20 @@ void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation *
 
 	_uint iResult = UINT_MAX;
 	// 2 == Climb
-	if (nullptr != pTopPosition && nullptr != pSpinePosition && 2 == iPostitionState)
+	if (nullptr != pTopPosition && nullptr != pSpinePosition)
 	{
-		_vector vSpinePosition = XMVector3TransformCoord(XMVector3TransformCoord(XMLoadFloat3(pSpinePosition), XMMatrixRotationY(180.f)), XMLoadFloat4x4(&m_WorldMatrix));
-		_vector vHeadPosition = XMVector3TransformCoord(XMVector3TransformCoord(XMLoadFloat3(pTopPosition), XMMatrixRotationY(180.f)), XMLoadFloat4x4(&m_WorldMatrix));
-		iResult = pNavigation->Climb_OnNavigation(vPos, vHeadPosition, vSpinePosition, vMovement, &vSlideOut);
+		if (2 == iPostitionState)
+		{
+			_vector vSpinePosition = XMVector3TransformCoord(XMVector3TransformCoord(XMLoadFloat3(pSpinePosition), XMMatrixRotationY(180.f)), XMLoadFloat4x4(&m_WorldMatrix));
+			_vector vHeadPosition = XMVector3TransformCoord(XMVector3TransformCoord(XMLoadFloat3(pTopPosition), XMMatrixRotationY(180.f)), XMLoadFloat4x4(&m_WorldMatrix));
+			iResult = pNavigation->Climb_OnNavigation(vPos, vHeadPosition, vSpinePosition, vMovement, &vSlideOut);
+		}
+		else
+			iResult = pNavigation->Move_OnNavigation(vPos, vMovement, &vSlideOut);
 	}
 	else
-		iResult = pNavigation->Move_OnNavigation(vPos, vMovement, &vSlideOut);
+		iResult = pNavigation->Move_OnNavigation_NoClimb(vPos, vMovement, &vSlideOut);
+	
 
 	if (UINT_MAX == iResult)
 		MSG_BOX("BUG!");
@@ -156,6 +162,41 @@ void CTransform::Move_Anim(_float3 * vMove, _uint iPostitionState, CNavigation *
 			vSlideXZ += vMoveY;
 		}
 			
+		Set_State(STATE_POSITION, vPos + vSlideXZ);
+	}
+	else
+	{
+		Set_State(STATE_POSITION, vPos + vMoveY);
+	}
+}
+
+void CTransform::Push_OnNavi(_fvector vMove, CNavigation * pNavigation)
+{
+	_vector vPos = Get_State(CTransform::STATE_POSITION);
+		
+	_vector vMovement = vMove;
+
+	if (nullptr == pNavigation)
+	{
+		Set_State(STATE_POSITION, vPos + vMovement);
+		return;
+	}
+
+	_float3 vSlideOut = _float3(0.f, 0.f, 0.f);
+
+	_uint iResult = UINT_MAX;
+	iResult = pNavigation->Move_OnNavigation_NoClimb(vPos, vMovement, &vSlideOut);
+
+
+	if (UINT_MAX == iResult)
+		MSG_BOX("BUG!");
+
+	if (CNavigation::NAVI_OK == iResult)
+		Set_State(STATE_POSITION, vPos + vMovement);
+	else if (CNavigation::NAVI_SLIDE == iResult)
+	{
+		_vector vSlideXZ = XMLoadFloat3(&vSlideOut);
+
 		Set_State(STATE_POSITION, vPos + vSlideXZ);
 	}
 }

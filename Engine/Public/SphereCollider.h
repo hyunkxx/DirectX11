@@ -20,6 +20,7 @@ public:
 	virtual HRESULT Render() override;
 
 	virtual _float3 GetCenter() const { return CollDesc.vCenter; }
+	virtual _float3* GetWorldCenter() const { return &_sphere->Center; }
 	virtual _float3 GetRotation() const { return CollDesc.vRotation; }
 	virtual _float3 GetExtents() const { return CollDesc.vExtents; }
 	virtual void SetExtents(_float3 vExtents);

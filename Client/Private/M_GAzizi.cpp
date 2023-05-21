@@ -8,6 +8,9 @@
 #include "EffectKey.h"
 #include "PartsKey.h"
 #include "PriorityKey.h"
+#include "Missile.h"
+#include "MissileKey.h"
+#include "Missile_Constant.h"
 
 #include "Chest.h"
 //UI추가
@@ -47,6 +50,9 @@ HRESULT CM_GAzizi::Initialize(void * pArg)
 	if (FAILED(Init_EffectBones()))
 		return E_FAIL;
 
+	Init_AttackInfos();
+	Init_Missiles();
+
 	// 루트모션용 본찾기
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
@@ -73,7 +79,7 @@ HRESULT CM_GAzizi::Initialize(void * pArg)
 	m_tCharInfo.eElement = ELMT_SPECTRA;
 	m_tCharInfo.iLevel = 1;
 	m_tCharInfo.iExp = 0;
-	m_tCharInfo.fMaxHP = 100.f;
+	m_tCharInfo.fMaxHP = 2000.f;
 	m_tCharInfo.fCurHP = m_tCharInfo.fMaxHP;
 	m_tCharInfo.fMaxSP = 100.f;
 	m_tCharInfo.fCurSP = 0.f;
@@ -153,7 +159,6 @@ void CM_GAzizi::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	// On_Hit(TimeDelta) 피격 처리
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
@@ -302,7 +307,7 @@ HRESULT CM_GAzizi::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 		DWORD dwByte = 0;
 
-		ReadFile(hFile, &m_tStates[i], sizeof(CCharacter::SINGLESTATE) - sizeof(CStateKey**) - 4, &dwByte, nullptr);
+		ReadFile(hFile, &m_tStates[i], sizeof(CCharacter::SINGLESTATE) - sizeof(CStateKey**), &dwByte, nullptr);
 
 		if (0 != m_tStates[i].iKeyCount)
 		{
@@ -332,7 +337,7 @@ HRESULT CM_GAzizi::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 					break;
 				case CStateKey::TYPE_MISSILE:
-
+					m_tStates[i].ppStateKeys[j] = CMissileKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_SOUND:
 
@@ -376,6 +381,29 @@ void CM_GAzizi::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBone
 	pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
 }
 
+void CM_GAzizi::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
+{
+	if (MISS_END <= iMissilePoolID || EBONE_END <= iEffectBoneID)
+		return;
+
+	_vector vInitPos;
+	if (0 != iEffectBoneID)
+	{
+		vInitPos = XMVector3TransformCoord(
+			XMVector3TransformCoord(m_EffectBones[iEffectBoneID]->Get_CombinedPosition(), XMMatrixRotationY(180.f)),
+			XMLoadFloat4x4(m_pMainTransform->Get_WorldMatrixPtr()));
+	}
+	else
+		vInitPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+
+
+	_matrix matRot = XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_RIGHT), m_MissileRotAngles[iMissilePoolID].x)
+		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_UP), m_MissileRotAngles[iMissilePoolID].y)
+		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_LOOK), m_MissileRotAngles[iMissilePoolID].z);
+
+	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot);
+}
+
 void CM_GAzizi::SetUp_State()
 {
 	// 키 리셋
@@ -399,27 +427,18 @@ void CM_GAzizi::SetUp_State()
 	m_Scon.bAnimFinished = false;
 
 
-	// Position State 반영
-	//if ((SS_JUMP_WALK == m_Scon.iCurState ||
-	//	SS_JUMP_RUN == m_Scon.iCurState ||
-	//	SS_FIXHOOK_END_UP == m_Scon.iCurState ||
-	//	SS_CLIMB_MOVE == m_Scon.iCurState ||
-	//	SS_FALL == m_Scon.iCurState) &&
-	//	PS_AIR != m_Scon.ePositionState)
-	//{
-	//	m_Scon.ePositionState = PS_AIR;
-	//	m_Scon.bFalling = false;
-	//}
+	 //Position State 반영
+	if ((IS_BEHIT_FLY_START == m_Scon.iCurState) &&
+		PS_AIR != m_Scon.ePositionState)
+	{
+		m_Scon.ePositionState = PS_AIR;
+		m_Scon.bFalling = false;
+	}
 
-	//if (SS_LAND_LIGHT == m_Scon.iCurState ||
-	//	SS_LAND_HEAVY == m_Scon.iCurState ||
-	//	SS_LAND_ROLL == m_Scon.iCurState ||
-	//	SS_CLIMB_ONTOP == m_Scon.iCurState ||
-	//	SS_CLIMB_BOOST_ONTOP == m_Scon.iCurState ||
-	//	IS_AIRATTACK_END == m_Scon.iCurState)
-	//{
-	//	m_Scon.ePositionState = PS_GROUND;
-	//}
+	if (IS_BEHIT_FLY_FALL == m_Scon.iCurState)
+	{
+		m_Scon.ePositionState = PS_GROUND;
+	}
 
 	//PhysicMove
 	if (false == m_tCurState.bRootMotion)
@@ -427,7 +446,10 @@ void CM_GAzizi::SetUp_State()
 		PHYSICMOVE tPhysicMove = StatePhysics[m_tCurState.iPhysicMoveID];
 
 		if (true == tPhysicMove.bInitMovement)
+		{
 			XMStoreFloat3(&m_Scon.vMovement, XMVector3Normalize(XMLoadFloat3(&tPhysicMove.vInitDir)) * tPhysicMove.fInitForce);
+			XMStoreFloat3(&m_Scon.vPrevMovement, XMVector3Normalize(XMLoadFloat3(&tPhysicMove.vInitDir)) * tPhysicMove.fInitForce);
+		}
 	}
 }
 
@@ -448,6 +470,81 @@ void CM_GAzizi::Find_Target()
 			m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true, false);
 		}
 	}
+}
+
+void CM_GAzizi::Init_AttackInfos()
+{
+	for (_uint i = 0; i < ATK_END; ++i)
+	{
+		ZeroMemory(&m_AttackInfos[i], sizeof TAGATTACK);
+	}
+
+	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_ATTACK_01].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_01].eElementType = ELMT_SPECTRA;
+	m_AttackInfos[ATK_ATTACK_01].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_01].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("GenkiDama_Boom"));
+
+	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 1.7f;
+	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_SPECTRA;
+	m_AttackInfos[ATK_ATTACK_03].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_03].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 2;
+	//lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Hit_Effect_02"));
+}
+
+void CM_GAzizi::Init_Missiles()
+{
+	// Attack01
+	CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("GenkiDama_Shoot_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iNumMissiles = 3;
+
+
+	tMissilePoolDesc.vMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 5.f;
+	tMissilePoolDesc.StopTime = 5.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_ONCOLLISIONENTER;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT("GenkiDama_Shoot"));
+	tMissilePoolDesc.tMissileDesc.iEffectLayer = 2; //Tutorial / GAzizi
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.25;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 5.0;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_01;
+	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+
+	m_MissilePools[MISS_ATTACK_01] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.2f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK_01] = _float3(0.f, 0.f, 0.f);
+
+	// Attack03
+	//ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	//tMissilePoolDesc.pMissilePoolTag = TEXT("Nvzhu_Attack_09_%d");
+	//tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	//tMissilePoolDesc.iNumMissiles = 3;
+
+	//tMissilePoolDesc.vMoveDir = _float3(0.f, 0.f, 1.f);
+	//tMissilePoolDesc.fVelocity = 10.f;
+	//tMissilePoolDesc.StopTime = 0.25;
+	//tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_ONCOLLISIONENTER;
+
+	//lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT("Nvzhu_Attack_03"));
+	//tMissilePoolDesc.tMissileDesc.iEffectLayer = 1; //PlayerGirl
+	//tMissilePoolDesc.tMissileDesc.pOwner = this;
+	//tMissilePoolDesc.tMissileDesc.HitInterval = 0.25;
+	//tMissilePoolDesc.tMissileDesc.LifeTime = 2.0;
+	//tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_09;
+	//tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+
+	//m_MissilePools[MISS_ATTACK_09] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	//m_MissileRotAngles[MISS_ATTACK_09] = _float3(XMConvertToRadians(-60.f), XMConvertToRadians(-90.f), 0.f);
 }
 
 void CM_GAzizi::Apply_CoolTime(_double TimeDelta)
@@ -644,6 +741,7 @@ void CM_GAzizi::Tick_State(_double TimeDelta)
 			}
 			else
 			{
+				
 				const PHYSICMOVE& PhysicMove = StatePhysics[m_tCurState.iPhysicMoveID];
 				if (false == PhysicMove.bConstant)
 				{
@@ -735,10 +833,107 @@ void CM_GAzizi::On_Cell()
 				// 오르막 방향으로 점프 시 예외처리
 				m_pMainTransform->Set_PosY(fCellHeight);
 			}
+			else
+			{
+				if (IS_BEHIT_FLY_START == m_Scon.iCurState ||
+					IS_BEHIT_FLY_LOOP == m_Scon.iCurState ||
+					IS_BEHIT_HOVER == m_Scon.iCurState)
+				{
+					m_Scon.iNextState = IS_BEHIT_FLY_FALL;
+					SetUp_State();
+					m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, m_tCurState.bLerp, false);
+				}
+			}
 		}
 	}
 	//UI추가
 	static_cast<CUI_Monster*>(m_pUIMon)->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+}
+
+void CM_GAzizi::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+{
+	// 피격 이펙트 출력
+	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
+	{
+		CGameInstance* pGI = CGameInstance::GetInstance();
+		_float4x4 EffectMatrix = m_pMainTransform->Get_WorldMatrix();
+		memcpy(EffectMatrix.m[3], pEffPos, sizeof(_float3));
+		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
+	}
+
+	CGameMode* pGM = CGameMode::GetInstance();
+
+	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
+	// 공격력과 방어력이 같을 때 1배 대미지
+	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tCharInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
+
+	m_tCharInfo.fCurHP -= fFinalDamage;
+
+	// TODO: 여기서 대미지 폰트 출력
+	//UI추가 몬스터 사망시 ui도 SetDestroy 추가 예정
+	static_cast<CUI_Monster*>(m_pUIMon)->Set_Damage(fFinalDamage);
+
+	// 사망 시 사망 애니메이션 실행 
+	if (0.f >= m_tCharInfo.fCurHP)
+	{
+		m_tCharInfo.fCurHP = 0.f;
+		m_Scon.iNextState = IS_DEAD;
+	}
+	// 피격 애니메이션 실행
+	else if (PS_GROUND == m_Scon.ePositionState)
+	{
+		if (IS_BEHIT_FLY_FALL != m_Scon.iCurState &&
+			IS_BEHIT_PRESS != m_Scon.iCurState)
+		{
+			switch (pAttackInfo->eHitIntensity)
+			{
+			case HIT_SMALL:
+				pGM->StartVibration();
+				m_Scon.iNextState = IS_BEHIT_S;
+				break;
+			case HIT_BIG:
+				pGM->StartVibration(10.f, 0.7f);
+				m_Scon.iNextState = IS_BEHIT_B;
+				break;
+			case HIT_FLY:
+			{
+				//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
+				pGM->StartWave();
+				m_Scon.iNextState = IS_BEHIT_FLY_START;
+				break;
+			}
+			default:
+				break;
+			}
+		}
+		else
+		{
+			switch (pAttackInfo->eHitIntensity)
+			{
+			case HIT_SMALL:
+			case HIT_BIG:
+				m_Scon.iNextState = IS_BEHIT_PRESS;
+				break;
+			case HIT_FLY:
+				m_Scon.iNextState = IS_BEHIT_FLY_START;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	else if (PS_AIR == m_Scon.ePositionState)
+		m_Scon.iNextState = IS_BEHIT_HOVER;
+
+	if (1/*m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority*/)
+	{
+		m_pMainTransform->Set_LookDir(XMVectorSetY(
+			static_cast<CTransform*>(pGameObject->Find_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION)
+			- this->Get_Position(), 0.f));
+		SetUp_State();
+		m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
+	}
+
 }
 
 
@@ -841,79 +1036,44 @@ void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 				pOpponent->Get_AttackInfo(pOpponent->Get_AttackID(), &tAttackInfo, &fAttackPoint);
 
-				// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
-				// 공격력과 방어력이 같을 때 1배 대미지
-				_float fFinalDamage = tAttackInfo.fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tCharInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
+				_vector destCenter = XMLoadFloat3(dest->GetWorldCenter());
+				_vector srcCenter = XMLoadFloat3(src->GetWorldCenter());
+				_float3 EffPos = _float3(0.f, 0.f, 0.f);
+				XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
 
-				m_tCharInfo.fCurHP -= fFinalDamage;
-
-				// TODO: 여기서 대미지 폰트 출력
-				//UI추가 몬스터 사망시 ui도 SetDestroy 추가 예정
-				static_cast<CUI_Monster*>(m_pUIMon)->Set_Damage(fFinalDamage);
-				
-				// 사망 시 사망 애니메이션 실행
-				if (0.f >= m_tCharInfo.fCurHP)
-				{
-					m_tCharInfo.fCurHP = 0.f;
-					m_Scon.iNextState = IS_DEAD;
-				}
-				// 피격 애니메이션 실행
-				else if (PS_GROUND == m_Scon.ePositionState)
-				{
-					if (IS_BEHIT_FLY_FALL != m_Scon.iCurState &&
-						IS_BEHIT_PRESS != m_Scon.iCurState)
-					{
-						switch (tAttackInfo.eHitIntensity)
-						{
-						case HIT_SMALL:
-							pGM->StartVibration();
-							m_Scon.iNextState = IS_BEHIT_S;
-							break;
-						case HIT_BIG:
-							pGM->StartVibration(10.f, 0.7f);
-							m_Scon.iNextState = IS_BEHIT_B;
-							break;
-						case HIT_FLY:
-						{
-							//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
-							pGM->StartWave();
-							m_Scon.iNextState = IS_BEHIT_FLY_START;
-							break;
-						}
-						default:
-							break;
-						}
-					}
-					else
-					{
-						switch (tAttackInfo.eHitIntensity)
-						{
-						case HIT_SMALL:
-						case HIT_BIG:
-							m_Scon.iNextState = IS_BEHIT_PRESS;
-							break;
-						case HIT_FLY:
-							m_Scon.iNextState = IS_BEHIT_FLY_START;
-							break;
-						default:
-							break;
-						}
-					}
-				}
-				else if(PS_AIR == m_Scon.ePositionState)
-					m_Scon.iNextState = IS_BEHIT_HOVER;
-
-				if (1/*m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority*/)
-				{
-					m_pMainTransform->Set_LookDir(XMVectorSetY(pOpponent->Get_Position() - this->Get_Position(), 0.f));
-					SetUp_State();
-					m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
-				}
-
+				On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
 			}
 		}
-
 	}
+
+	CMissile* pMissile = dynamic_cast<CMissile*>(dest->GetOwner());
+
+	if (pMissile)
+	{
+		CCharacter* pMissileOwner = pMissile->Get_Owner();
+		if (CT_PLAYER == pMissileOwner->Get_CollType())
+		{
+			// 상대의 투사체 공격이 나에게 적중한 경우 
+			if (true == src->Compare(GetHitCollider()))
+			{
+				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
+				TAGATTACK tAttackInfo;
+				ZeroMemory(&tAttackInfo, sizeof(tAttackInfo));
+				_float fAttackPoint = 0.f;
+
+				pMissileOwner->Get_AttackInfo(pMissile->Get_AttackID(), &tAttackInfo, &fAttackPoint);
+
+				_vector destCenter = XMLoadFloat3(dest->GetWorldCenter());
+				_vector srcCenter = XMLoadFloat3(src->GetWorldCenter());
+				_float3 EffPos = _float3(0.f, 0.f, 0.f);
+				XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
+
+				On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos);
+			}
+		}
+	}
+
+
 }
 
 void CM_GAzizi::OnCollisionStay(CCollider * src, CCollider * dest)

@@ -1,0 +1,113 @@
+#include "stdafx.h"
+#include "..\Public\MissilePool.h"
+#include "GameInstance.h"
+#include "GameMode.h"
+#include "Missile_Constant.h"
+#include "Missile_RotAround.h"
+
+CMissilePool::CMissilePool(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CGameObject(pDevice, pContext)
+{
+}
+
+CMissilePool::CMissilePool(const CMissilePool & rhs)
+	: CGameObject(rhs)
+{
+}
+
+HRESULT CMissilePool::Initialize(_fvector vLocalPos, MISSILEPOOLDESC* pMissilePoolDesc)
+{
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
+
+	XMStoreFloat3(&m_vLocalPos, vLocalPos);
+
+	CGameInstance* pGI = CGameInstance::GetInstance();
+
+	CMissile* pMissile = nullptr;
+	for (_uint i = 0; i < pMissilePoolDesc->iNumMissiles; ++i)
+	{
+		_tchar szBuffer[MAX_PATH] = TEXT("");
+		wsprintf(szBuffer, pMissilePoolDesc->pMissilePoolTag, i);
+
+		if (MISS_NOMOVE == pMissilePoolDesc->iMissileType)
+		{
+			if (FAILED(pGI->Add_GameObjectEx((CGameObject**)(&pMissile), LEVEL_ANYWHERE, OBJECT::MISSILE, TEXT("Layer_Missile"), szBuffer, &pMissilePoolDesc->tMissileDesc)))
+				return E_FAIL;
+			m_Missiles.push_back(pMissile);
+		}
+		else if (MISS_CONSTANT == pMissilePoolDesc->iMissileType)
+		{
+			CMissile_Constant::CONSTMISSILEDESC tConstDesc;
+			ZeroMemory(&tConstDesc, sizeof(CMissile_Constant::CONSTMISSILEDESC));
+
+			tConstDesc.tMissileDesc = pMissilePoolDesc->tMissileDesc;
+			tConstDesc.vMoveDir = pMissilePoolDesc->vMoveDir;
+			tConstDesc.fVelocity = pMissilePoolDesc->fVelocity;
+			tConstDesc.StopTime = pMissilePoolDesc->StopTime;
+			tConstDesc.iStopCondition = pMissilePoolDesc->iStopCondition;
+
+			if (FAILED(pGI->Add_GameObjectEx((CGameObject**)(&pMissile), LEVEL_ANYWHERE, OBJECT::MISSILE_CONSTANT, TEXT("Layer_Missile"), szBuffer, &tConstDesc)))
+				return E_FAIL;
+
+			m_Missiles.push_back(pMissile);
+		}
+		else if (MISS_ROTAROUND == pMissilePoolDesc->iMissileType)
+		{
+			CMissile_RotAround::ROTMISSILEDESC tRotDesc;
+			ZeroMemory(&tRotDesc, sizeof(CMissile_RotAround ::ROTMISSILEDESC));
+
+			tRotDesc.tMissileDesc = pMissilePoolDesc->tMissileDesc;
+			tRotDesc.pTargetTransform = pMissilePoolDesc->pTargetTransform;
+			tRotDesc.pTargetBone = pMissilePoolDesc->pTargetBone;
+			tRotDesc.vAxis = pMissilePoolDesc->vAxis;
+			tRotDesc.fInitAngle = pMissilePoolDesc->fInitAngle;
+			tRotDesc.fDistance = pMissilePoolDesc->fDistance;
+			tRotDesc.fRotSpeed = pMissilePoolDesc->fRotSpeed;
+
+			if (FAILED(pGI->Add_GameObjectEx((CGameObject**)(&pMissile), LEVEL_ANYWHERE, OBJECT::MISSILE_ROTAROUND, TEXT("Layer_Missile"), szBuffer, &tRotDesc)))
+				return E_FAIL;
+
+			m_Missiles.push_back(pMissile);
+		}
+	}
+
+	return S_OK;
+}
+
+void CMissilePool::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix)
+{
+	_bool bShot = false;
+
+	_vector vLook = XMVector3Normalize(vLookDir);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
+	_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+	_vector vFinalInitPos = vInitPos + vRight * m_vLocalPos.x + vUp * m_vLocalPos.y + vLook * m_vLocalPos.z;
+
+	for (auto& pMissile : m_Missiles)
+	{
+		if (bShot = pMissile->Shot(vFinalInitPos, vLookDir, vMissileRotMatrix))
+			break;
+	}
+
+	if (false == bShot)
+ 		MSG_BOX("Shot Failed, Missiles are all busy");
+}
+
+CMissilePool * CMissilePool::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _fvector vLocalPos, MISSILEPOOLDESC* pMissilePoolDesc)
+{
+	CMissilePool* pInstance = new CMissilePool(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize(vLocalPos, pMissilePoolDesc)))
+	{
+		MSG_BOX("Failed to Create : CMissilePool");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CMissilePool::Free()
+{
+	__super::Free();
+}

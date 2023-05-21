@@ -2,6 +2,7 @@
 #include "Client_Defines.h"
 #include "Character.h"
 #include "Renderer.h"
+#include "MissilePool.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -14,7 +15,6 @@ class CBone;
 class CVIBuffer_Rect;
 class CTexture;
 class CNavigation;
-
 END
 
 BEGIN(Client)
@@ -122,8 +122,24 @@ public:
 		ATK_SKILL_02_02, // 스킬2 2타
 		ATK_SKILL_02_03, // 스킬2 미사일
 		ATK_SKILL_QTE,	// 교체 QTE
-		ATK_BURST,		// 필살기
+		ATK_BURST_01,	// 필살기
+		ATK_BURST_02,
 		ATK_END
+	};
+
+	// 미사일 종류
+	enum Missiles
+	{
+		MISS_ATTACK_03,
+		MISS_ATTACK_09,
+		MISS_ATTACK_PO_2, 
+		MISS_ATTACK_PO_3, 
+		MISS_AIRATTACK,
+		MISS_SKILL_02, 
+		MISS_SKILL_QTE,
+		MISS_BURST_01,	// 필살기 1타
+		MISS_BURST_02,	// 필살기 2타
+		MISS_END
 	};
 
 private:
@@ -159,13 +175,14 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_PriorityKey(_uint iLeavePriority);
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID , _uint iEffectTypeID, _bool bTracking);
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID);
+	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
 
 public:
 	virtual _uint Get_AttackID() override { return m_iCurAttackID; }
-	virtual void Get_AttackInfo(_uint iAttackID, TAGATTACK* pAttackInfoOut, _float* fAttackOut) override
+	virtual void Get_AttackInfo(_uint iAttackID, TAGATTACK* pAttackInfoOut, _float* pAttackOut) override
 	{
 		memcpy(pAttackInfoOut, &m_AttackInfos[iAttackID], sizeof(TAGATTACK));
-		*fAttackOut = m_tCharInfo.fAttack;
+		*pAttackOut = m_tCharInfo.fAttack;
 	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
 
@@ -197,19 +214,22 @@ private:
 
 	// 벽타기용 본
 	CBone*				m_pClimbBones[CBONE_END] = { nullptr };
-	CBone*				m_pHeadBone = { nullptr };
 	_float3				m_vClimbExitPos = {};
 	_float				m_fClimbExitYGap = {};
 
 	// 공격 구조체
 	TAGATTACK			m_AttackInfos[ATK_END];
-	_uint				m_iCurAttackID = { 0 };
+	_uint				m_iCurAttackID = { 0 };	// OBB 히트 시 사용할 공격 구조체ID
+
+	// 미사일 풀
+	CMissilePool*		m_MissilePools[MISS_END] = { nullptr,};
+	_float3				m_MissileRotAngles[MISS_END];
 
 	// 플레이어 변수
 	// 공중 점프 가능 횟수
 	_uint				m_iAirJumpCount = { 100 };
 	// 점프 위치 기록 - 착지 조건처리
-	_float3				m_fJumpPos = {};
+	_float3				m_vJumpPos = {};
 	// 스킬 강화 여부 체크
 	_float				m_fSkillGauge = { 100.f };
 
@@ -224,17 +244,20 @@ private:
 	CCharacter*			m_pNearst = { nullptr };
 	_float				m_fNearstDist = { 0.f };
 	CCharacter*			m_pFixedTarget = { nullptr };
-	// 이동 전 타겟 방향 (몬스터를 뚫고 지나가는 상황 예외처리) 
-	_float3				m_vTargetDir = {};
+	
 	
 	// MoveCollider 충돌 시 비교할 무게
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
 	_float				m_fPushWeight = { 0.f };
+	// 이동 전 타겟 방향 (몬스터를 뚫고 지나가는 상황 예외처리) 
+	_float3				m_vTargetDir = {};
 
 private:
 	HRESULT Add_Components();
 	void Init_AnimSystem();
 	void Init_AttackInfos();
+	void Init_Missiles();
+
 	void SetUp_State();
 	// bContinue == 잔여 프레임을 사용하는 애니메이션인지?
 	void SetUp_Animations(_bool bContinue);
@@ -245,6 +268,8 @@ private:
 	void Tick_State(_double TimeDelta);
 	// 지형에 의한 예외 처리
 	void On_Cell();
+	// 피격 처리 함수 
+	void On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos);
 	
 	// Parts
 	HRESULT Init_Parts();

@@ -206,6 +206,10 @@
     <ClInclude Include="..\Public\Client_ShaderEnum.h" />
     <ClInclude Include="..\Public\Client_TextureEnum.h" />
     <ClInclude Include="..\public\Inventory.h" />
+    <ClInclude Include="..\Public\Missile.h" />
+    <ClInclude Include="..\Public\MissilePool.h" />
+    <ClInclude Include="..\Public\Missile_Constant.h" />
+    <ClInclude Include="..\Public\Missile_RotAround.h" />
     <ClInclude Include="..\public\M_GAzizi.h" />
     <ClInclude Include="..\public\Sandbag.h" />
     <ClInclude Include="..\public\DissolveKey.h" />
@@ -312,6 +316,10 @@
     <ClCompile Include="..\private\CharacterSelect_Terrain.cpp" />
     <ClCompile Include="..\private\Chest.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />
+    <ClCompile Include="..\Private\Missile.cpp" />
+    <ClCompile Include="..\Private\MissilePool.cpp" />
+    <ClCompile Include="..\Private\Missile_Constant.cpp" />
+    <ClCompile Include="..\Private\Missile_RotAround.cpp" />
     <ClCompile Include="..\private\M_GAzizi.cpp" />
     <ClCompile Include="..\private\Sandbag.cpp" />
     <ClCompile Include="..\private\DissolveKey.cpp" />

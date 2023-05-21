@@ -31,7 +31,9 @@ public:
 	_vector Get_State(STATE eState) { return XMLoadFloat4x4(&m_WorldMatrix).r[eState]; }
 	_matrix Get_WorldMatrixInverse() { return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix)); }
 	_float4x4 Get_WorldMatrix() { return m_WorldMatrix; }
+	_float4x4* Get_WorldMatrixPtr() { return &m_WorldMatrix; }
 	void Set_WorldMatrix(_float4x4 pWorldMatrix) { m_WorldMatrix = pWorldMatrix; }
+	void Set_WorldMatrix(_fmatrix WorldMatrix) { XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix); }
 	_float3 Get_Scale();
 	_float3 Get_Angle() const { return m_fAngle; };
 	void Set_Scale(_float3 fScale);
@@ -55,6 +57,7 @@ public:
 
 	// Animation 용 Navigation 타는 이동 함수
 	void Move_Anim(_float3* vMove, _uint iPostitionState = 0, class CNavigation* pNavigation = nullptr, _float3* vHeadPosition = nullptr, _float3* vSpinePosition = nullptr);
+	void Push_OnNavi(_fvector vMove, class CNavigation* pNavigation = nullptr);
 
 	// 현재 위치에서 입력받은 방향벡터만큼 이동시키는 함수
 	void Push_Position(_fvector vPush);

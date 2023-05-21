@@ -1,0 +1,66 @@
+#pragma once
+#include "Client_Defines.h"
+#include "GameObject.h"
+#include "Missile.h"
+
+BEGIN(Engine)
+class CTransform;
+class CBone;
+END
+
+BEGIN(Client)
+
+class CMissilePool : public CGameObject
+{
+public:
+	enum MissileType
+	{
+		MISS_NOMOVE,	// 움직이지 않는 공격 범위
+		MISS_CONSTANT,	// 등속 운동을 하는 투사체
+		MISS_ROTAROUND, // 특정 대상 주위를 선회하는 투사체
+		MISS_END
+	};
+
+public:
+	typedef struct tagMissilePoolDesc
+	{
+		_tchar*	pMissilePoolTag;
+		CMissile::MISSILEDESC tMissileDesc;
+		_uint iMissileType;
+		_uint iNumMissiles;
+
+		//Constant용 변수
+		_float3		vMoveDir;
+		_float		fVelocity;
+		_double		StopTime;
+		_uint		iStopCondition;
+
+		//RotAround용 변수
+		CTransform* pTargetTransform;
+		CBone*		pTargetBone;
+		_float3		vAxis;
+		_float		fInitAngle;
+		_float		fDistance;
+		_float		fRotSpeed;	// 회전 각속도
+	}MISSILEPOOLDESC;
+private:
+	CMissilePool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CMissilePool(const CMissilePool& rhs);
+	virtual ~CMissilePool() = default;
+
+public:
+	virtual HRESULT	Initialize(_fvector vLocalPos, MISSILEPOOLDESC* pMissilePoolDesc);
+
+	virtual void Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix);
+
+private:
+	_float3 m_vLocalPos;
+	vector<CMissile*> m_Missiles;
+
+public:
+	static CMissilePool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _fvector vLocalPos, MISSILEPOOLDESC* pMissilePoolDesc);
+	CGameObject* Clone(void* pArg) override { return nullptr; }
+	virtual void Free() override;
+};
+
+END

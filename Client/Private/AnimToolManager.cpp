@@ -10,6 +10,7 @@
 #include "PartsKey.h"
 #include "PriorityKey.h"
 #include "OBBKey.h"
+#include "MissileKey.h"
 
 IMPLEMENT_SINGLETON(CAnimToolManager)
 
@@ -1300,7 +1301,7 @@ void CAnimToolManager::Create_Key()
 		pStateKey = COBBKey::Create(m_pDevice, m_pContext, &m_tKeyData);
 		break;
 	case CStateKey::TYPE_MISSILE:
-
+		pStateKey = CMissileKey::Create(m_pDevice, m_pContext, &m_tKeyData);
 		break;
 	case CStateKey::TYPE_SOUND:
 
@@ -1347,6 +1348,7 @@ void CAnimToolManager::Create_Key()
 			if (nullptr == m_pSingleState->ppStateKeys[i])
 			{
 				m_pSingleState->ppStateKeys[i] = pStateKey;
+				break;
 			}
 
 			if (i == m_pSingleState->iKeyCount - 1)

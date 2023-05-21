@@ -213,6 +213,11 @@ public:
 		SP_FALL,
 		SP_PLAYERGIRL_AIRATTACK,
 
+		// 일반몹, 플레이어 강피격 날라가기
+		SP_BEHIT_FLY_START,
+		// 공중 피격, 떠있는 상태 지속
+		SP_BEHIT_HOVER,
+
 		SP_END,
 
 	};
@@ -322,7 +327,7 @@ public:
 	{
 		_uint			iCurState;		// 현재 상태 ID
 		_uint			iNextState;		// 다음 상태 ID > Setup_State 호출 시 다음 상태로 넘어가게 됨
-		_double			TrackPos;		// 현재 재생 중인 애니메이션의 트랙포지션(누적 '프레임' 값 ~~ 24fps ~~ 1 frame = 1/24 sec)
+		_double			TrackPos;		// 현재 재생 중인 애니메이션의 트랙포지션(누적 '프레임' 값 ~~ 24fps ~~ 1 frame == 1/24 sec)
 		_uint			iPrevCellState;	// 전 프레임 네비 셀 타입 저장
 		PositionState	ePositionState;
 		_bool			bAnimFinished;
@@ -358,7 +363,6 @@ public:
 		_float	fAttack;
 		_float	fDefense;
 		_float	fCriticalRate;
-		
 	}TAGCHAR;
 
 	// 공격 정보를 정의하는 구조체
@@ -369,6 +373,8 @@ public:
 		HIT		eHitIntensity;	// 피격 강도
 		_float	fSPGain;		// 스킬 게이지 회복량
 		_float	fTPGain;		// QTE 게이지 회복량
+		_tchar  szHitEffectTag[MAX_PATH]; // 히트 이펙트 태그
+		_uint	iHitEffectID;	// 히트 이펙트 레이어 ID
 	}TAGATTACK;
 
 public:
@@ -382,7 +388,8 @@ public:
 	virtual void Get_AttackInfo(_uint iAttackID, TAGATTACK* pAttackInfoOut, _float* fAttackOut) {}
 
 	virtual _vector Get_Position();
-	void Push_Position(_fvector PushVector);
+	virtual _vector Get_MainWeaponPosition() { return XMVectorZero(); }
+	void Push_OnNavi(_fvector PushVector);
 
 	virtual _float Get_PushWeight() { return 0.f; }
 
@@ -391,6 +398,7 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_PriorityKey(_uint iLeavePriority) {}
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint iEffectBoneID, _uint iTypeID, _bool bTracking) {}
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID) {}
+	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID) {}
 
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

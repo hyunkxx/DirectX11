@@ -59,6 +59,8 @@ public:
 	virtual void SetExtents(_float3 vExtents) {};
 	virtual void SetRotation(_float3 vRotation) {};
 
+	virtual _float3* GetWorldCenter() const { return nullptr; }
+
 public:
 	virtual CComponent* Clone(void* arg = nullptr) = 0;
 	virtual void Free() override;
