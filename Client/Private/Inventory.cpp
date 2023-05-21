@@ -321,4 +321,6 @@ CGameObject * CInventory::Clone(void * pArg)
 
 void CInventory::Free()
 {
+	__super::Free();
+
 }
