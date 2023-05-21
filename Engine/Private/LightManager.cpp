@@ -42,15 +42,17 @@ const LIGHT_DESC* CLightManager::GetLightDesc(_uint Index)
 	return (*iter)->GetLightDesc();
 }
 
-void CLightManager::ShadowUpdate(_float fLightHight)
+void CLightManager::ShadowUpdate(_float fLightHight, _vector vOriginPos)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	_float fRatio = fLightHight * 0.45f;
-
-	_vector vCamPos = XMLoadFloat4(&pGameInstance->Get_CamPosition());
-	_vector vLightEye = XMVectorSet(XMVectorGetX(vCamPos) - fRatio, fLightHight, XMVectorGetZ(vCamPos) - fRatio, 1.f);
-	_vector vLightAt = XMVectorSet(XMVectorGetX(vCamPos) + 10.f, 0.f, XMVectorGetZ(vCamPos) + 10.f, 1.f);
+	_float fHeight = XMVectorGetY(vOriginPos);
+	//카메라->플레이어 위치를 원점으로 하는 좌표로 변경
+	//_vector vCamPos = XMLoadFloat4(&pGameInstance->Get_CamPosition());
+	_vector vCamPos = vOriginPos;
+	_vector vLightEye = XMVectorSet(XMVectorGetX(vCamPos) - fRatio, fLightHight + fHeight, XMVectorGetZ(vCamPos) - fRatio, 1.f);
+	_vector vLightAt = XMVectorSet(XMVectorGetX(vCamPos) + fRatio, fHeight, XMVectorGetZ(vCamPos) + fRatio, 1.f);
 	_matrix vLightViewMatrix = XMMatrixLookAtLH(vLightEye, vLightAt, VECTOR_UP);
 	pGameInstance->SetLightMatrix(vLightViewMatrix, LIGHT_MATRIX::LIGHT_VIEW);
 	SetLightDirection(XMVector3Normalize(vLightAt - vLightEye));

@@ -49,10 +49,10 @@ HRESULT CChest::Initialize(void * pArg)
 		m_vColor = ADVANCED_COLOR;
 		break;
 	case CHEST_STANDARD:
-		m_vColor = RARE_COLOR;
+		m_vColor = UNIQUE_COLOR;
 		break;
 	case CHEST_EXPANDED:
-		m_vColor = UNIQUE_COLOR;
+		m_vColor = LEGEND_COLOR;
 		break;
 	default:
 		m_vColor = DEFAULT_COLOR;

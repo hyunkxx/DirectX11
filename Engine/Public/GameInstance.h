@@ -97,7 +97,7 @@ public: //LightManager
 	void SetLightDirection(_fvector vLightDir);
 	_float4 GetLightDirection() const;
 
-	void ShadowUpdate(_float fLightHight);
+	void ShadowUpdate(_float fLightHight, _vector vOriginPos);
 
 public: //TargetManager
 	HRESULT Set_ShaderRenderTargetResourceView(class CShader* pShader, const _tchar* pTargetTag, const char* pContantName);

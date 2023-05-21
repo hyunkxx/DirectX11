@@ -33,9 +33,9 @@ extern int g_iGUIID;
 #define GENERICENUM(p) p + OBJECT::TESTGENERIC_BEGIN
 
 #define DEFAULT_COLOR { 1.f, 1.f, 1.f }
-#define NORMAL_COLOR { 255.f / 255.f, 255.f / 255.f, 255.f / 255.f }
 #define ADVANCED_COLOR  { 50.f / 255.f, 230.f / 255.f, 80.f / 255.f }
-#define RARE_COLOR  { 210.f / 255.f, 110.f / 255.f, 255.f / 255.f }
-#define UNIQUE_COLOR  { 250.f / 255.f, 255.f / 255.f, 110.f / 255.f }
+#define RARE_COLOR  { 50.f / 255.f, 150.f / 255.f, 255.f / 255.f }
+#define UNIQUE_COLOR  { 210.f / 255.f, 110.f / 255.f, 255.f / 255.f }
+#define LEGEND_COLOR { 250.f / 255.f, 255.f / 255.f, 110.f / 255.f }
 
 #define FALL_THROUGH

@@ -120,12 +120,10 @@ VS_OUT_NORMALMAP VS_MAIN_NORMALMAP(VS_IN In)
 	Out.vBiNormal = normalize(cross(Out.vNormal, Out.vTangent));*/
 
 	Out.vPosition = mul(vPosition, matWVP);
-	//Out.vNormal = normalize(mul(float4(In.vNormal, 0.0f), g_WorldMatrix));
 	Out.vNormal = normalize(mul(float4(In.vNormal, 0.0f), TransformMatrix));
 	Out.vTexUV = In.vTexUV;
 	Out.vProjPos = Out.vPosition;
 
-	//Out.vTangent = normalize(mul(float4(In.vTangent.xyz, 0.0f), g_WorldMatrix)).rgb;
 	Out.vTangent = normalize(mul(float4(In.vTangent.xyz, 0.0f), TransformMatrix)).rgb;
 	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent));
 
@@ -185,7 +183,7 @@ PS_OUT PS_MAIN_NORMALMAP(PS_IN_NORMALMAP In)
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
 
 	/* 투영 스페이스 상의 z , 뷰 스페이스 상의 z (vProjPos.w 에 저장되어 있음) -> 뷰 공간서의 최대 z 값 Far -> Far 로 나눠서 0 ~ 1 사이로 뷰 의 z값 보관 */
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.6f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
@@ -204,7 +202,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 		discard;
 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.6f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
@@ -219,7 +217,7 @@ PS_OUT_SHADOW	PS_MAIN_SHADOW(VS_OUT_SHADOW In)
 	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
 	if(vDiffuse.a > 0.1f)
-		Out.vShadowDepth = vector(In.vShadowDepth.z / In.vShadowDepth.w, In.vShadowDepth.w / g_Far, 0.4f, 1.f);
+		Out.vShadowDepth = vector(In.vShadowDepth.z / In.vShadowDepth.w, In.vShadowDepth.w / g_Far, 0.6f, 1.f);
 
 	return Out;
 }
@@ -238,7 +236,7 @@ PS_OUT	PS_MAIN_EDITIONCOLOR(PS_IN In)
 		discard;
 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.6f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
@@ -266,7 +264,56 @@ PS_OUT PS_MAIN_NORMALMAP_EDITIONCOLOR(PS_IN_NORMALMAP In)
 		discard;
 
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.6f, 1.f);
+	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
+
+	return Out;
+}
+
+
+//그림자 질수있는 인스턴싱
+
+PS_OUT	PS_MAIN_S(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (Out.vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.55f, 1.f);
+	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_NORMALMAP_S(PS_IN_NORMALMAP In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector			vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector			vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+
+	float3			vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3x3		WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vDiffuse = vMtrlDiffuse;
+
+	if (Out.vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
+
+	/* 투영 스페이스 상의 z , 뷰 스페이스 상의 z (vProjPos.w 에 저장되어 있음) -> 뷰 공간서의 최대 z 값 Far -> Far 로 나눠서 0 ~ 1 사이로 뷰 의 z값 보관 */
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.55f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
@@ -343,5 +390,33 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_NORMALMAP_EDITIONCOLOR();
+	}
+
+
+	// 그림자가 덮어질수있는 오브젝트 ( EX 바닥 )
+	pass Instance_Shadowed_Model_Pass5 // 노말 X
+	{
+		SetRasterizerState(RS_CullBack);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_S();
+	}
+
+	pass Instance_Shadowed_Model_NoramlMap_Pass6 // 노말 O
+	{
+		SetRasterizerState(RS_CullBack);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_NORMALMAP();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_NORMALMAP_S();
 	}
 }

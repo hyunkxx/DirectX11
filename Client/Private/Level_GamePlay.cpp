@@ -78,9 +78,6 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	//pGameInstance->BGMSmoothOn(TimeDelta);
 
-	//카메라 기준으로 쉐도우 조명 갱신
-	pGameInstance->ShadowUpdate(120.f);
-
 	//임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것
 	static _uint iShadowLevel = 0;
 	if (pGameInstance->InputKey(DIK_0) == KEY_STATE::TAP)

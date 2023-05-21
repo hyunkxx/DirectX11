@@ -56,8 +56,8 @@ public:
 	virtual _float3 GetCenter() const { return CollDesc.vCenter; }
 	virtual _float3 GetRotation() const { return CollDesc.vRotation; }
 	virtual _float3 GetExtents() const { return CollDesc.vExtents; }
-	virtual void SetExtents(_float3 vExtents) { CollDesc.vExtents = vExtents; }
-	virtual void SetRotation(_float3 vRotation) { CollDesc.vRotation = vRotation; }
+	virtual void SetExtents(_float3 vExtents) {};
+	virtual void SetRotation(_float3 vRotation) {};
 
 public:
 	virtual CComponent* Clone(void* arg = nullptr) = 0;

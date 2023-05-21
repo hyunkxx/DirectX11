@@ -12,6 +12,7 @@ texture2D g_SSD_NormalTexture;
 
 texture2D g_ShadowDepthTexture;
 texture2D g_ShadowTexture;
+texture2D g_StaticShadowTexture;
 
 texture2D g_SSAOTexture;
 
@@ -34,7 +35,7 @@ vector	  g_vLightDiffuse;
 vector	  g_vLightAmbient;
 vector	  g_vLightSpecular;
 		  
-vector	  g_vMtrlAmbient = vector(0.6f, 0.6f, 0.6f, 1.f);
+vector	  g_vMtrlAmbient = vector(0.4f, 0.4f, 0.4f, 1.f);
 vector	  g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
 float4x4  g_ProjMatrixInv;
@@ -137,7 +138,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 
 	//Toon
 	float fDot = max(0, dot(vNormal, -g_vLightDir));
-	if (fDot < 0.2)
+	if (fDot < 0.3)
 		fDot = 0.93f;
 	else
 		fDot = 1.0f;
@@ -391,12 +392,26 @@ PS_OUT_SHADOW PS_Shadow(PS_IN In)
 	vLightUV.y = (vLightUVPos.y / vLightUVPos.w) * -0.5f + 0.5f;
 
 	vector vShadowDepthInfo = g_ShadowDepthTexture.Sample(LinearBorderSampler, vLightUV);
-	
-	//±íÀÌ 0.5 : ¸ðµ¨°ú ¾Ö´Ô¸ðµ¨¿¡´Â ±×¸²ÀÚ ¾È±×¸²
-	if (vPosition.z - 0.05f > (vShadowDepthInfo.g * g_Far) && vDepthInfo.b != vShadowDepthInfo.b)
-		Out.vDynamicShadow = vector(0.2f, 0.2f, 0.2f, 0.8f);//vector(0.5f, 0.5f, 0.5f, 0.5f);
+	vector vStaticShadowDepthInfo = g_StaticShadowTexture.Sample(LinearBorderSampler, vLightUV);
+
+	//Static Shadow
+	bool bCheck = false;
+	if (vPosition.z - 0.1f > (vStaticShadowDepthInfo.g * g_Far) && vDepthInfo.b != vStaticShadowDepthInfo.b)
+		bCheck = true;
+
+	if (bCheck)
+	{
+		Out.vDynamicShadow = g_vMtrlAmbient;
+	}
 	else
-		Out.vDynamicShadow = vector(1.f, 1.f, 1.f, 1.f);
+	{
+		//Dynamic Shadow ±íÀÌ 0.5 : ¸ðµ¨°ú ¾Ö´Ô¸ðµ¨¿¡´Â ±×¸²ÀÚ ¾È±×¸²
+		if (vPosition.z - 0.05f > (vShadowDepthInfo.g * g_Far) && vDepthInfo.b != vShadowDepthInfo.b)
+			Out.vDynamicShadow = vector(0.2f, 0.2f, 0.2f, 0.5f);
+		else
+			Out.vDynamicShadow = vector(1.f, 1.f, 1.f, 1.f);
+	}
+
 
 	return Out;
 }

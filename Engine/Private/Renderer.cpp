@@ -19,6 +19,7 @@ void CRenderer::Draw()
 	_double TimeDelta = pGameInstance->GetTimeDelta();
 
 	Render_Priority();
+	Render_StaticShadowMap();
 	Render_DynamicShadowMap();
 	Render_Static();
 
@@ -121,6 +122,7 @@ void CRenderer::Draw()
 		m_pTargetManager->Render(TEXT("MRT_EX"), m_pShader, m_pVIBuffer);
 		m_pTargetManager->Render(TEXT("MRT_SSD"), m_pShader, m_pVIBuffer);
 		m_pTargetManager->Render(TEXT("MRT_SSD_BLEND"), m_pShader, m_pVIBuffer);
+		m_pTargetManager->Render(TEXT("MRT_StaticShadow"), m_pShader, m_pVIBuffer);
 
 	}
 #endif
@@ -180,6 +182,9 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_ShadowMap", (_float)g_iShadowWidth, (_float)g_iShadowHeight,
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_StaticShadowMap", (_float)g_iShadowWidth, (_float)g_iShadowHeight,
 		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
@@ -320,6 +325,8 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Shadow", L"Target_Shadow")))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_StaticShadow", L"Target_StaticShadowMap")))
 		return E_FAIL;
 
 	// ½¦ÀÌµå, ½ºÆåÅ§·¯
@@ -496,6 +503,8 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_FinalBlend"), 1205.f, 225.f, 150.f, 150.f)))
 		return E_FAIL;
+	if (FAILED(m_pTargetManager->Ready_Debug(TEXT("Target_StaticShadowMap"), 1205.f, 375.f, 150.f, 150.f)))
+		return E_FAIL;
 
 #endif
 
@@ -528,6 +537,37 @@ void CRenderer::Render_Priority()
 	m_RenderObject[RENDER_PRIORITY].clear();
 
 	m_pTargetManager->End(m_pContext);
+}
+
+void CRenderer::Render_StaticShadowMap()
+{
+	if (nullptr == m_pTargetManager)
+		return;
+
+	if (!m_pRenderSetting->IsActiveShadow())
+	{
+		for (auto& pGameObject : m_RenderObject[RENDER_STATIC_SHADOW])
+			Safe_Release(pGameObject);
+
+		m_RenderObject[RENDER_STATIC_SHADOW].clear();
+		return;
+	}
+
+	if (FAILED(m_pTargetManager->ShadowBegin(m_pContext, L"MRT_StaticShadow")))
+		return;
+
+	for (auto& pGameObject : m_RenderObject[RENDER_STATIC_SHADOW])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->RenderShadow();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObject[RENDER_STATIC_SHADOW].clear();
+
+	if (FAILED(m_pTargetManager->End(m_pContext)))
+		return;
 }
 
 void CRenderer::Render_DynamicShadowMap()
@@ -917,6 +957,8 @@ void CRenderer::Render_Blend()
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_OutNormal"), "g_OutNormalTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Shadow"), "g_ShadowTexture")))
+		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_StaticShadowMap"), "g_StaticShadowTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Glow"), "g_GlowTexture")))
 		return;

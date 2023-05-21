@@ -64,7 +64,7 @@ void CLevel_Logo::Tick(_double TimeDelta)
 	pAppManager->SetTitle(L"LEVEL_LOGO");
 #endif
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	pGameInstance->ShadowUpdate(40.f);
+	pGameInstance->ShadowUpdate(40.f, XMLoadFloat4(&pGameInstance->Get_CamPosition()));
 
 	if(static_cast<CIntroCamera*>(m_pIntroCam)->IsLobbyOut() || KEY_STATE::TAP == pGameInstance->InputKey(DIK_TAB))
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY));

@@ -133,7 +133,7 @@ void CSphereCollider::SetExtents(_float3 vExtents)
 	translationMatrix = XMMatrixTranslation(CollDesc.vCenter.x, CollDesc.vCenter.y, CollDesc.vCenter.z);
 
 	_matrix transformMatrix = XMMatrixIdentity();
-
+	
 	transformMatrix = scaleMatrix * rotationMatrix * translationMatrix;
 	_sphere->Transform(*_sphere, transformMatrix);
 	_sphereOriginal = _sphere;

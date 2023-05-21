@@ -318,8 +318,10 @@ HRESULT CAcquireUI::Render()
 				return E_FAIL;
 			if (FAILED(pGameInstance->SetupSRV(m_ItemDescs[iCurCount].iImageTextIndex, m_pShader, "g_DiffuseTexture")))
 				return E_FAIL;
+			if (FAILED(m_pShader->SetRawValue("g_vColor", &CItemDB::GetItemColor(m_ItemDescs[iCurCount].eItemGrade), sizeof(_float3))))
+				return E_FAIL;
 
-			m_pShader->Begin(5);
+			m_pShader->Begin(7);
 			m_pVIBuffer->Render();
 			
 			// Amount : x

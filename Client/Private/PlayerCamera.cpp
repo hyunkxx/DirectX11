@@ -260,16 +260,23 @@ void CPlayerCamera::Tick(_double TimeDelta)
 #endif
 
 	__super::Tick(TimeDelta);
-
+	//m_pPlayerNavigation->Is_CurrentIn()
 	// 카메라 높이가 지형보다 낮을 경우 높이 재설정
-	_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
-	_float fHeight = m_pPlayerNavigation->Compute_Height(vPos);
-	if (XMVectorGetY(vPos) < fHeight + 0.5f)
+	if (m_pPlayerNavigation->Get_CurCellState() == CCell::NORMAL_CELL)
 	{
-		vPos = XMVectorSetY(vPos, fHeight + 0.5f);
-		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vPos);
-		m_pPipeLine->Set_Transform(CPipeLine::TS_VIEW, m_pMainTransform->Get_WorldMatrixInverse());
+		_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+		_float fHeight = m_pPlayerNavigation->Compute_Height(vPos);
+
+		if (XMVectorGetY(vPos) < fHeight + 0.5f)
+		{
+			_vector vFixedPos = XMVectorSetY(vPos, fHeight + 0.5f);
+			vFixedPos = XMVectorLerp(vPos, vFixedPos, (_float)TimeDelta);
+
+			m_pMainTransform->Set_State(CTransform::STATE_POSITION, vFixedPos);
+			m_pPipeLine->Set_Transform(CPipeLine::TS_VIEW, m_pMainTransform->Get_WorldMatrixInverse());
+		}
 	}
+
 }
 
 void CPlayerCamera::LateTick(_double TimeDelta)

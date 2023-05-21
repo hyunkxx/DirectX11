@@ -40,7 +40,7 @@ void CLevel_AnimTool::Tick(_double TimeDelta)
 	pAppManager->SetTitle(L"LEVEL_ANIMTOOL");
 #endif
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	pGameInstance->ShadowUpdate(60.f);
+	pGameInstance->ShadowUpdate(60.f, XMLoadFloat4(&pGameInstance->Get_CamPosition()));
 }
 
 void CLevel_AnimTool::RenderLevelUI()

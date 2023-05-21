@@ -65,7 +65,10 @@ void CMapObject::LateTick(_double TimeDelta)
 		m_pModelCom->Culling(m_pMainTransform->Get_WorldMatrixInverse(), m_EditionDesc.fCullingRatio);
 
 	if (nullptr != m_pRendererCom)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC_SHADOW, this);
+	}
 }
 
 HRESULT CMapObject::Render()
@@ -201,11 +204,11 @@ HRESULT CMapObject::Render_Default()
 
 		if (true == m_IsDistinction_NormalTex)
 		{
-			m_iShaderPassID = 0;
+			m_iShaderPassID = 5;
 			m_IsDistinction_NormalTex = false;
 		}
 		else
-			m_iShaderPassID = 1;
+			m_iShaderPassID = 6;
 
 		m_pShaderCom->Begin(m_iShaderPassID);
 

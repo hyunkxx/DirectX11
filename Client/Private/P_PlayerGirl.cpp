@@ -1400,6 +1400,10 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 
 void CP_PlayerGirl::Tick_State(_double TimeDelta)
 {
+	//플레이어 기준으로 쉐도우 조명 갱신
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	pGI->ShadowUpdate(200.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+
 	//
 	if (false == m_Scon.bAnimFinished)
 	{

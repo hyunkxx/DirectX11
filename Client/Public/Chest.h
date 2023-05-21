@@ -82,6 +82,7 @@ private:
 	_float m_fResetTimeAcc = 0.f;
 
 	_float3 m_vColor = { 1.f, 1.f, 1.f };
+
 };
 
 END

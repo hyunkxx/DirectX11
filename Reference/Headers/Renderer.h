@@ -10,7 +10,7 @@ class ENGINE_DLL CRenderer final : public CComponent
 public:
 	enum RENDER_GROUP {
 		RENDER_PRIORITY , RENDER_DYNAMIC , RENDER_NONLIGHT, RENDER_PARTICLE , RENDER_ALPHABLEND , RENDER_DISTORTION , RENDER_SSD , RENDER_STATIC , RENDER_GLOWSSD ,
-		RENDER_UI, RENDER_DYNAMIC_SHADOW, RENDER_END
+		RENDER_UI, RENDER_STATIC_SHADOW, RENDER_DYNAMIC_SHADOW, RENDER_END
 	};
 	enum LUT { LUT_EXPOSURE_MINUS, LUT_EXPOSURE_PLUS, LUT_FUJI, LUT_GRUNGY, LUT_SOUTH, LUT_KURO, LUT_DEFAULT };
 	enum BLUR { LOW, MIDDEL, HIGH };
@@ -26,6 +26,7 @@ public:
 
 private:
 	void Render_Priority();
+	void Render_StaticShadowMap();
 	void Render_DynamicShadowMap();
 	void Render_Static();
 	void Render_Dynamic();
