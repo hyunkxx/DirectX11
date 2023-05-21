@@ -120,11 +120,13 @@ VS_OUT_NORMALMAP VS_MAIN_NORMALMAP(VS_IN In)
 	Out.vBiNormal = normalize(cross(Out.vNormal, Out.vTangent));*/
 
 	Out.vPosition = mul(vPosition, matWVP);
-	Out.vNormal = normalize(mul(float4(In.vNormal, 0.0f), g_WorldMatrix));
+	//Out.vNormal = normalize(mul(float4(In.vNormal, 0.0f), g_WorldMatrix));
+	Out.vNormal = normalize(mul(float4(In.vNormal, 0.0f), TransformMatrix));
 	Out.vTexUV = In.vTexUV;
 	Out.vProjPos = Out.vPosition;
 
-	Out.vTangent = normalize(mul(float4(In.vTangent.xyz, 0.0f), g_WorldMatrix)).rgb;
+	//Out.vTangent = normalize(mul(float4(In.vTangent.xyz, 0.0f), g_WorldMatrix)).rgb;
+	Out.vTangent = normalize(mul(float4(In.vTangent.xyz, 0.0f), TransformMatrix)).rgb;
 	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent));
 
 	return Out;
