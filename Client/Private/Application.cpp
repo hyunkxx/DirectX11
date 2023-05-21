@@ -841,12 +841,29 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/Player_Chixia/Charge/")))
 			return E_FAIL;
 
+		//±âº» ÃÑ¾Ë
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Bullet.bin"),
+			"../../Resource/Effect/Player_Chixia/Bullet/")))
+			return E_FAIL;
+
+		// ¿¬»ç ½ºÅ³ ÃÑ¾Ë
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Skill_Bullet_S.bin"),
+			"../../Resource/Effect/Player_Chixia/Bullet/")))
+			return E_FAIL;
+
+		// °­°ø ½ºÅ³ ÃÑ¾Ë
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Skill_Bullet_B.bin"),
+			"../../Resource/Effect/Player_Chixia/Bullet/")))
+			return E_FAIL;
+
 		// È¸ÇÇ ÀÌÆåÆ®
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
 			TEXT("../../Resource/Effect/Comon/P_Evasion_Effect_C.bin"),
 			"../../Resource/Effect/Comon/P_Evasion_Effect/")))
 			return E_FAIL;
-
 
 	}
 #pragma endregion
