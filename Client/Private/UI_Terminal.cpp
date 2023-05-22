@@ -12,17 +12,6 @@ CUI_Terminal::CUI_Terminal(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CUI_Terminal::CUI_Terminal(const CUI_Terminal& rhs)
 	: CGameObject(rhs)
 {
-	for (auto& Buffer : rhs.m_BufferList)
-	{
-		m_BufferList.push_back(Buffer);
-		Safe_AddRef(Buffer);
-	}
-	for (auto& RotBuffer : rhs.m_RotBufferList)
-	{
-		m_BufferList.push_back(RotBuffer);
-		Safe_AddRef(RotBuffer);
-	}
-
 	for (auto& Desc : rhs.m_DescList)
 	{
 		m_DescList.push_back(Desc);
@@ -92,30 +81,30 @@ HRESULT CUI_Terminal::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-		_uint Bufferindex = 0;
-		for (auto& pBuffer : m_BufferList)
+		_uint Descindex = 0;
+		for (auto& Desc : m_DescList)
 		{
-			if (nullptr != pBuffer)
+			if (nullptr != Desc)
 			{
-				if (FAILED(Setup_ShaderResources(Bufferindex)))
+				if (FAILED(Setup_ShaderResources(Descindex)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
 				m_pVIBuffer->Render();
 			}
-			++Bufferindex;
+			++Descindex;
 		}
 
-		Bufferindex = 0;
-		for (auto& pBuffer : m_RotBufferList)
+		Descindex = 0;
+		for (auto& RotDesc : m_RotDescList)
 		{
-			if (nullptr != pBuffer)
+			if (nullptr != RotDesc)
 			{
-				if (FAILED(Setup_ShaderResourcesRot(Bufferindex)))
+				if (FAILED(Setup_ShaderResourcesRot(Descindex)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
 				m_pVIBuffer->Render();
 			}
-			++Bufferindex;
+			++Descindex;
 		}
 	
 	return S_OK;
@@ -205,6 +194,10 @@ HRESULT CUI_Terminal::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UI,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::VIBUFFER_RECT,
+		L"com_vibuffer", (CComponent**)&m_pVIBuffer)))
 		return E_FAIL;
 
 	return S_OK;
@@ -308,22 +301,7 @@ void CUI_Terminal::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexture);
-	m_pVIBuffer = nullptr;
 	Safe_Release(m_pVIBuffer);
-
-	
-		for (auto& Buffer : m_BufferList)
-		{
-			Safe_Release(Buffer);
-		}
-		m_BufferList.clear();
-	
-		for (auto& Buffer : m_RotBufferList)
-		{
-			Safe_Release(Buffer);
-		}
-		m_RotBufferList.clear();
-	
 
 	if (!m_bClone)
 	{
@@ -396,12 +374,6 @@ void CUI_Terminal::Load()
 		if (nullptr != Desc)
 		{
 				m_DescList.push_back(Desc);
-
-				m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
-				if (nullptr == m_pVIBuffer)
-					return;
-
-				m_BufferList.push_back(m_pVIBuffer);
 		}
 	}
 
@@ -455,12 +427,6 @@ void CUI_Terminal::Load()
 		{
 			Desc->fDegree = XMConvertToRadians(90.f);
 			m_RotDescList.push_back(Desc);
-
-			m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
-			if (nullptr == m_pVIBuffer)
-				return;
-
-			m_RotBufferList.push_back(m_pVIBuffer);
 		}
 
 

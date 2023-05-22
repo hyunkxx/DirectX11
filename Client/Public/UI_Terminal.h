@@ -114,10 +114,7 @@ private:
 	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
 	CTexture*		m_pTexture = { nullptr };
 
-	vector<CVIBuffer_Rect*> m_BufferList;
 	vector<TERMINALDESC*>	m_DescList;
-	
-	vector<CVIBuffer_Rect*> m_RotBufferList;
 	vector<TERMINALDESC*>	m_RotDescList;
 
 

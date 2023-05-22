@@ -26,6 +26,7 @@ public:
 	{
 		MONSTERTYPE	 Type;
 		_int		 Level;
+		// 몬스터 이름 추가해서 텍스처 넘버랑 연결해야함
 	}MONINFO;
 
 	typedef struct tagMonster
@@ -52,6 +53,16 @@ public:
 		_float fColorB = { 0.f };
 	}MONSTERDESC;
 
+	typedef struct tagDamage
+	{
+		_float3		Pos;
+		_float2		Size;
+		_int		TextureNum;
+		_int		HitCount;
+		_float4x4	WorldMat;
+		_float4		Color;
+	}DAMAGEDESC;
+
 protected:
 	explicit CUI_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CUI_Monster(const CUI_Monster& rhs);
@@ -71,6 +82,7 @@ private:
 	HRESULT Setup_ShaderResources(_int index);
 	HRESULT Setup_ShaderResourcesMask(_int index);
 	HRESULT Setup_ShaderResourcesBoss(_int index);
+	HRESULT Setup_ShaderResourcesDamage(DAMAGEDESC* pDamage);
 
 public:
 	static CUI_Monster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -78,14 +90,17 @@ public:
 	virtual void Free() override;
 
 public:
-	void Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; }
+	void Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage);}
 	void Set_CharacterPos(_fvector vCharacterPos) { m_vCharacterPos = vCharacterPos; }
 private:
 	void HPBar(_double TimeDelta);
 	void HPRedBar(_double TimeDelta);
 	void CommonHP();
 	void CommonLevel();
+	void DecideRender();
+	void Damage(_float Damage);
 	void Load();
+
 
 
 private:
@@ -94,22 +109,24 @@ private:
 	_bool m_bHit = { false };
 	_bool m_bRedStart = { false };
 	_float m_Damage = { 0.f }; // 공통
-	_float m_CurrentHp = { 250.f };
-	_float m_HP = { 250.f };
-	_float m_PreHp = { 250.f };
+	_float m_CurrentHp = { 100.f };
+	_float m_HP = { 100.f };
+	_float m_PreHp = { 100.f };
 	_float m_fWhiteBar = { 1.f };
-	_float m_RedDamageACC = { 250.f };
+	_float m_RedDamageACC = { 100.f };
 	_float m_fRedBar = { 1.f };
 	_int m_Index = { 0 };
-
 	_int m_MonsterLevel = { 10 };
 	_int m_MaskTextureNum = { 57 };
 	_int m_MaskTextureNum2 = { 67 };
-	_float2 m_MonsterUV = { 0.f, 0.f };
+	_float2 m_MonsterUV = { 0.f, 0.f }; // 텍스처uv흘리는애
 	_float m_MonsterGauge = { 0.f };
-	MONSTERTYPE m_MonsterType = { MONSTERTYPE::TYPE1 };
+	MONSTERTYPE m_MonsterType = { MONSTERTYPE::BOSS };
 
-	_vector m_vCharacterPos = { 0.f };;
+	_bool	m_bNameRender = { false };
+	_vector m_vCharacterPos = { 0.f, 0.f, 0.f, 1.f };
+	_int    m_HitCount = { 0 };
+	_float Acc = { 0.f };
 
 private:
 	CRenderer*		m_pRenderer = { nullptr };
@@ -118,11 +135,9 @@ private:
 	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
 	CTexture*		m_pTexture = { nullptr };
 
-	vector<CVIBuffer_Rect*> m_BufferList;
 	vector<MONSTERDESC*>	m_DescList;
 
-	
-	
+	list<DAMAGEDESC> DamageList;
 
 };
 

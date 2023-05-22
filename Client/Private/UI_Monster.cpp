@@ -13,11 +13,6 @@ CUI_Monster::CUI_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CUI_Monster::CUI_Monster(const CUI_Monster& rhs)
 	: CGameObject(rhs)
 {
-	for (auto& Buffer : rhs.m_BufferList)
-	{
-		m_BufferList.push_back(Buffer);
-		Safe_AddRef(Buffer);
-	}
 	for (auto& Desc : rhs.m_DescList)
 	{
 		m_DescList.push_back(Desc);
@@ -50,6 +45,18 @@ HRESULT CUI_Monster::Initialize(void * pArg)
 void CUI_Monster::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (pGameInstance->InputKey(DIK_MINUS) == KEY_STATE::TAP)
+	{
+		if (true == m_bNameRender)
+		{
+			m_bNameRender = false;
+		}
+		else
+		{
+			m_bNameRender = true;
+		}
+	}
 
 	CommonHP();
 	CommonLevel();
@@ -58,8 +65,8 @@ void CUI_Monster::Tick(_double TimeDelta)
 	{
 	case Client::CUI_Monster::MONSTERTYPE::TYPE0: //레벨,hp
 	{
-		m_DescList[7]->bRender = false;
 		m_DescList[8]->bRender = false;
+		m_DescList[9]->bRender = false;
 	}
 	break;
 	case Client::CUI_Monster::MONSTERTYPE::TYPE1: // 레벨, hp, 아이콘, 추가방어바
@@ -67,8 +74,8 @@ void CUI_Monster::Tick(_double TimeDelta)
 
 		m_MonsterUV.x += (_float)TimeDelta*0.3f;
 		//m_MonsterGauge += (_float)TimeDelta*0.2f;
-		m_DescList[7]->bRender = true;
 		m_DescList[8]->bRender = true;
+		m_DescList[9]->bRender = true;
 	}
 	break;
 	case Client::CUI_Monster::MONSTERTYPE::BOSS:
@@ -82,29 +89,26 @@ void CUI_Monster::Tick(_double TimeDelta)
 		if (1> LevelTen)
 		{
 			//11,12,13
-			m_DescList[12]->bRender = false;
-			m_DescList[13]->iTexNum = LevelOne + 33;
+			m_DescList[13]->bRender = false;
+			m_DescList[14]->iTexNum = LevelOne + 33;
 		}
 		//만약 두자리일때 좌측 위치
 		else
 		{
 			//6번 그대로 5번 b랜더 true
-			m_DescList[12]->bRender = true;
-			m_DescList[12]->iTexNum = LevelTen + 33;
-			m_DescList[13]->iTexNum = LevelOne + 33;
+			m_DescList[13]->bRender = true;
+			m_DescList[13]->iTexNum = LevelTen + 33;
+			m_DescList[14]->iTexNum = LevelOne + 33;
 		}
 
-
-		if (8 < m_DescList.size())
+		for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
 		{
-			for (_uint i = 9; i < (_uint)m_DescList.size(); ++i)
-			{
-				XMStoreFloat4x4(&(m_DescList[i]->WorldMatrix), XMMatrixScaling(m_DescList[i]->fWidth, m_DescList[i]->fHeight, 1.f) *
-					XMMatrixTranslation(m_DescList[i]->fX, m_DescList[i]->fY, m_DescList[i]->fZ));
-				XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-				XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-			}
+			XMStoreFloat4x4(&(m_DescList[i]->WorldMatrix), XMMatrixScaling(m_DescList[i]->fWidth, m_DescList[i]->fHeight, 1.f) *
+				XMMatrixTranslation(m_DescList[i]->fX, m_DescList[i]->fY, m_DescList[i]->fZ));
+			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 		}
+
 
 	}
 	break;
@@ -116,10 +120,73 @@ void CUI_Monster::Tick(_double TimeDelta)
 	if (true == m_bHit)
 	{
 		HPBar(TimeDelta);
+
 	}
 	if (true == m_bRedStart)
 	{
 		HPRedBar(TimeDelta);
+	}
+	DecideRender();
+	{// 데미지 폰트 출력
+	 /*
+	 사이즈 컸다가 작아짐
+	 pos는 아래에서 위로 가다가 이전꺼 사라질때까지 잠시 멈춤-> 이전게 사라지면 위로 올라가면서 알파 사라짐
+	 데미지 20이상이면 빛 효과
+	 랜더는 맞을때마다 바로바로 랜더
+	 */ // 0 = 33 1 = 34
+		if (0 < (_int)DamageList.size())
+		{
+			list<DAMAGEDESC>::iterator iter = DamageList.begin();
+			for (iter; iter != DamageList.end();)
+			{
+				if (-255.f > iter->Color.w)
+				{
+					iter = DamageList.erase(iter);
+				}
+				else
+				{
+					++iter;
+				}
+			}
+		}
+
+		for (auto& Desc : DamageList)
+		{
+			//아래에서 위로 올라감 -> 알파가 기준점 이하로 떨어지면 위로 다시 올라가면서 완전히 알파 -255
+
+			if (78 == Desc.TextureNum)
+			{
+				// 뒤에 빛효과
+				Desc.Size.x += (_float)TimeDelta * 400.f;
+				Desc.Size.y -= (_float)TimeDelta * 40.f;
+				if (0.f >= Desc.Size.y)
+				{
+					Desc.Size.y = 0.f;
+				}
+			}
+
+			Desc.Color.w -= (_float)TimeDelta * 150.f;
+			if (-30.f < Desc.Color.w)
+			{
+				Acc += (_float)TimeDelta *1000.f;
+				Desc.Pos.x += sinf(XMConvertToRadians(Acc));
+			}
+			if (-100.f < Desc.Color.w)
+			{
+
+				Desc.Pos.y += (_float)TimeDelta * 40.f;
+			}
+			if (-180.f >= Desc.Color.w)
+			{
+				Desc.Pos.y += (_float)TimeDelta * 100.f;
+			}
+
+			XMStoreFloat4x4(&(Desc.WorldMat), XMMatrixScaling(Desc.Size.x, Desc.Size.y, 0.f)
+				* XMMatrixTranslation(Desc.Pos.x, Desc.Pos.y, 0.f));
+			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+		}
+
 	}
 }
 
@@ -143,7 +210,7 @@ HRESULT CUI_Monster::Render()
 			if (FAILED(Setup_ShaderResourcesHP(i)))
 				return E_FAIL;
 			m_pShader->Begin(m_DescList[i]->iPass);
-			m_BufferList[i]->Render();
+			m_pVIBuffer->Render();
 		}
 	}
 
@@ -156,12 +223,22 @@ HRESULT CUI_Monster::Render()
 			if (FAILED(Setup_ShaderResources(i)))
 				return E_FAIL;
 			m_pShader->Begin(m_DescList[i]->iPass);
-			m_BufferList[i]->Render();
+			m_pVIBuffer->Render();
 		}
 	}
 
 
-	for (_uint i = 8; i < 9; ++i)
+	if (true == m_DescList[8]->bRender)
+	{
+		if (FAILED(__super::Render()))
+			return E_FAIL;
+		if (FAILED(Setup_ShaderResources(8)))
+			return E_FAIL;
+		m_pShader->Begin(m_DescList[8]->iPass);
+		m_pVIBuffer->Render();
+	}
+
+	for (_uint i = 9; i < 10; ++i)
 	{
 		if (true == m_DescList[i]->bRender)
 		{
@@ -170,13 +247,13 @@ HRESULT CUI_Monster::Render()
 			if (FAILED(Setup_ShaderResourcesMask(i)))
 				return E_FAIL;
 			m_pShader->Begin(m_DescList[i]->iPass);
-			m_BufferList[i]->Render();
+			m_pVIBuffer->Render();
 		}
 	}
 
 
 
-	for (_uint i = 9; i < (_uint)m_DescList.size(); ++i)
+	for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
 	{
 		if (true == m_DescList[i]->bRender)
 		{
@@ -185,8 +262,18 @@ HRESULT CUI_Monster::Render()
 			if (FAILED(Setup_ShaderResourcesBoss(i)))
 				return E_FAIL;
 			m_pShader->Begin(m_DescList[i]->iPass);
-			m_BufferList[i]->Render();
+			m_pVIBuffer->Render();
 		}
+	}
+
+	for (auto& Desc : DamageList)
+	{
+		if (FAILED(__super::Render()))
+			return E_FAIL;
+		if (FAILED(Setup_ShaderResourcesDamage(&Desc)))
+			return E_FAIL;
+		m_pShader->Begin(0);
+		m_pVIBuffer->Render();
 	}
 
 	return S_OK;
@@ -194,17 +281,198 @@ HRESULT CUI_Monster::Render()
 
 void CUI_Monster::RenderGUI()
 {
-	ImGui::Begin("Monster ID");
-	ImGui::InputInt("ID", &m_iObjectID);
-
-	ImGui::InputFloat("Damage", &m_Damage);
-	if (ImGui::Button("Hit")) { m_bHit = true; }
-	ImGui::Separator();
-	ImGui::End();
-		
 }
 
 
+void	CUI_Monster::Damage(_float Damage)
+{
+	_int iDamage = (_int)Damage;
+	_int Damage1000, Damage100, Damage10, Damage1;
+	Damage1000 = iDamage / 1000;
+	iDamage = iDamage % 1000;
+	Damage100 = iDamage / 100;
+	iDamage = iDamage % 100;
+	Damage10 = iDamage / 10;
+	Damage1 = iDamage % 10;
+	++m_HitCount;
+	if (8 == m_HitCount)
+		m_HitCount = 1;
+	srand((unsigned int)time(NULL));
+	_float pos = rand() % (100 + 1 - (-100)) + (-100); //a가 작은수
+
+	if (0 == m_HitCount % 2)
+	{
+		pos = (_float)(pos * 1.3);
+	}
+
+	if (0 != Damage1000)
+	{
+		DAMAGEDESC Desc1000;
+		Desc1000.HitCount = m_HitCount;
+		Desc1000.Pos = _float3{ m_DescList[0]->fX + pos, m_DescList[0]->fY + pos, 0.f };
+		Desc1000.Size = _float2{ 30.f, 30.f };
+		Desc1000.TextureNum = -Damage1000 + 33;
+		Desc1000.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		if (2 == m_HitCount)
+			Desc1000.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		XMStoreFloat4x4(&Desc1000.WorldMat, XMMatrixIdentity());
+		DamageList.push_back(Desc1000);
+
+		DAMAGEDESC Desc100;
+		Desc100.HitCount = m_HitCount;
+		Desc100.Pos = _float3{ Desc1000.Pos.x + (15.f) , Desc1000.Pos.y, 0.f };
+		Desc100.Size = _float2{ 30.f, 30.f };
+		Desc100.TextureNum = -Damage100 + 33;
+		Desc100.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		if (2 == m_HitCount)
+			Desc100.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		XMStoreFloat4x4(&Desc100.WorldMat, XMMatrixIdentity());
+		DamageList.push_back(Desc100);
+
+		DAMAGEDESC Desc10;
+		Desc10.HitCount = m_HitCount;
+		Desc10.Pos = _float3{ Desc1000.Pos.x + (30.f) , Desc1000.Pos.y, 0.f };
+		Desc10.Size = _float2{ 30.f, 30.f };
+		Desc10.TextureNum = -Damage10 + 33;
+		Desc10.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		if (2 == m_HitCount)
+			Desc10.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		XMStoreFloat4x4(&Desc10.WorldMat, XMMatrixIdentity());
+		DamageList.push_back(Desc10);
+
+		DAMAGEDESC Desc1;
+		Desc1.HitCount = m_HitCount;
+		Desc1.Pos = _float3{ Desc1000.Pos.x + (45.f), Desc1000.Pos.y, 0.f };
+		Desc1.Size = _float2{ 30.f, 30.f };
+		Desc1.TextureNum = -Damage1 + 33;
+		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		if (2 == m_HitCount)
+			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
+		DamageList.push_back(Desc1);
+		if (3 == m_HitCount)
+		{
+			DAMAGEDESC Desc;
+			Desc.HitCount = m_HitCount;
+			Desc.Pos = _float3{ (Desc1000.Pos.x + Desc1.Pos.x) / 2.f, Desc1000.Pos.y , 0.01f };
+			Desc.Size = _float2{ 30.f, 20.f };
+			Desc.TextureNum = 78;
+			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };
+			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
+			DamageList.push_back(Desc);
+		}
+
+	}
+	else if ((0 == Damage1000) && (0 != Damage100))
+	{
+
+		DAMAGEDESC Desc100;
+		Desc100.HitCount = m_HitCount;
+		Desc100.Pos = _float3{ m_DescList[0]->fX + pos, m_DescList[0]->fY + pos, 0.f };
+		Desc100.Size = _float2{ 30.f, 30.f };
+		Desc100.TextureNum = -Damage100 + 33;
+		Desc100.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		if (2 == m_HitCount)
+			Desc100.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		XMStoreFloat4x4(&Desc100.WorldMat, XMMatrixIdentity());
+		DamageList.push_back(Desc100);
+
+		DAMAGEDESC Desc10;
+		Desc10.HitCount = m_HitCount;
+		Desc10.Pos = _float3{ Desc100.Pos.x + (15.f) , Desc100.Pos.y ,0.f };
+		Desc10.Size = _float2{ 30.f, 30.f };
+		Desc10.TextureNum = -Damage10 + 33;
+		Desc10.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		if (2 == m_HitCount)
+			Desc10.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		XMStoreFloat4x4(&Desc10.WorldMat, XMMatrixIdentity());
+		DamageList.push_back(Desc10);
+
+		DAMAGEDESC Desc1;
+		Desc1.HitCount = m_HitCount;
+		Desc1.Pos = _float3{ Desc100.Pos.x + (30.f), Desc100.Pos.y, 0.f };
+		Desc1.Size = _float2{ 30.f, 30.f };
+		Desc1.TextureNum = -Damage1 + 33;
+		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		if (2 == m_HitCount)
+			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
+		DamageList.push_back(Desc1);
+		if (3 == m_HitCount)
+		{
+			DAMAGEDESC Desc;
+			Desc.HitCount = m_HitCount;
+			Desc.Pos = _float3{ (Desc100.Pos.x + Desc1.Pos.x) / 2.f, Desc100.Pos.y, 0.01f };
+			Desc.Size = _float2{ 30.f, 20.f };
+			Desc.TextureNum = 78;
+			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };
+			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
+			DamageList.push_back(Desc);
+		}
+
+	}
+	else if ((0 == Damage1000) && (0 == Damage100) && (0 != Damage10))
+	{
+		DAMAGEDESC Desc10;
+		Desc10.HitCount = m_HitCount;
+		Desc10.Pos = _float3{ m_DescList[0]->fX + pos, m_DescList[0]->fY + pos, 0.f };
+		Desc10.Size = _float2{ 30.f, 30.f };
+		Desc10.TextureNum = -Damage10 + 33;
+		Desc10.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		if (2 == m_HitCount)
+			Desc10.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		XMStoreFloat4x4(&Desc10.WorldMat, XMMatrixIdentity());
+		DamageList.push_back(Desc10);
+
+		DAMAGEDESC Desc1;
+		Desc1.HitCount = m_HitCount;
+		Desc1.Pos = _float3{ Desc10.Pos.x + (15.f), Desc10.Pos.y, 0.f };
+		Desc1.Size = _float2{ 30.f, 30.f };
+		Desc1.TextureNum = -Damage1 + 33;
+		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		if (2 == m_HitCount)
+			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
+		DamageList.push_back(Desc1);
+		if (3 == m_HitCount)
+		{
+			DAMAGEDESC Desc;
+			Desc.HitCount = m_HitCount;
+			Desc.Pos = _float3{ (Desc10.Pos.x + Desc1.Pos.x) / 2.f,Desc10.Pos.y,0.01f };
+			Desc.Size = _float2{ 30.f, 20.f };
+			Desc.TextureNum = 78;
+			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };
+			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
+			DamageList.push_back(Desc);
+		}
+
+	}
+	else
+	{
+		DAMAGEDESC Desc1;
+		Desc1.HitCount = m_HitCount;
+		Desc1.Pos = _float3{ m_DescList[0]->fX + pos, m_DescList[0]->fY + pos, 0.f };
+		Desc1.Size = _float2{ 30.f, 30.f };
+		Desc1.TextureNum = -Damage1 + 33;
+		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		if (2 == m_HitCount)
+			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
+		DamageList.push_back(Desc1);
+		if (3 == m_HitCount)
+		{
+			DAMAGEDESC Desc;
+			Desc.HitCount = m_HitCount;
+			Desc.Pos = _float3{ Desc1.Pos.x, Desc1.Pos.y ,0.01f };
+			Desc.Size = _float2{ 30.f, 20.f };
+			Desc.TextureNum = 78;
+			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };
+			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
+			DamageList.push_back(Desc);
+		}
+	}
+
+}
 
 HRESULT CUI_Monster::Add_Components()
 {
@@ -223,6 +491,9 @@ HRESULT CUI_Monster::Add_Components()
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::VIBUFFER_RECT,
+		L"com_vibuffer", (CComponent**)&m_pVIBuffer)))
+		return E_FAIL;
 
 	return S_OK;
 
@@ -394,6 +665,34 @@ HRESULT CUI_Monster::Setup_ShaderResourcesBoss(_int index)
 }
 
 
+HRESULT CUI_Monster::Setup_ShaderResourcesDamage(DAMAGEDESC* pDamage)
+{
+	if (nullptr == m_pShader)
+		return E_FAIL;
+
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", pDamage->TextureNum)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(pDamage->WorldMat))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(pDamage->Color.x), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(pDamage->Color.y), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(pDamage->Color.z), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(pDamage->Color.w), sizeof(_float))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 
 CUI_Monster* CUI_Monster::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -427,16 +726,7 @@ void CUI_Monster::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexture);
-	m_pVIBuffer = nullptr;
 	Safe_Release(m_pVIBuffer);
-
-	
-		for (auto& Buffer : m_BufferList)
-		{
-			Safe_Release(Buffer);
-		}
-		m_BufferList.clear();
-	
 
 		if (!m_bClone)
 		{
@@ -467,7 +757,7 @@ void CUI_Monster::HPBar(_double TimeDelta)
 		else
 		{
 			m_CurrentHp += m_Damage;
-			m_fWhiteBar = m_CurrentHp / m_HP;  // 현재체력/전체체력 
+			m_fWhiteBar = m_CurrentHp / m_HP; // 현재체력/전체체력 
 			m_PreHp = m_CurrentHp;
 			m_bHit = false;
 			m_bRedStart = true;
@@ -489,7 +779,6 @@ void CUI_Monster::HPRedBar(_double TimeDelta)
 
 	}
 }
-
 
 void CUI_Monster::CommonHP()
 {
@@ -559,6 +848,51 @@ void CUI_Monster::CommonLevel()
 	}
 }
 
+void CUI_Monster::DecideRender()
+{
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	// 플레이어 pos - 캐릭터 pos => 방향벡터 -> 노멀라이즈
+	// 플레이어 look -> 노멀라이즈
+	// 내적 
+	CPipeLine* pPipe = CPipeLine::GetInstance();
+	_matrix CamMat = pPipe->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
+	_vector CamLook = CamMat.r[2];
+	_vector CamPos = CamMat.r[3];
+	_vector vNormailzeDir = XMVector4Normalize(m_vCharacterPos - CamPos);
+	_vector vNormailzeLook = XMVector4Normalize(CamLook);
+
+	_float Get = XMVectorGetX(XMVector4Dot(vNormailzeLook, vNormailzeDir));
+
+	for (auto& Desc : m_DescList)
+	{
+		if ((0.f <= Get) && (1.f >= Get))       //1이면 같은 방향 0보다 작으면 반대방향
+		{
+			Desc->bRender = true;
+
+			if (true == m_bNameRender)
+			{
+				m_DescList[4]->bRender = false;
+				m_DescList[5]->bRender = false;
+				m_DescList[6]->bRender = false;
+				m_DescList[7]->bRender = true;
+			}
+			else
+			{
+				m_DescList[4]->bRender = true;
+				m_DescList[5]->bRender = true;
+				m_DescList[6]->bRender = true;
+				m_DescList[7]->bRender = false;
+			}
+		}
+		else
+		{
+			Desc->bRender = false;
+		}
+	}
+
+}
+
 void CUI_Monster::Load()
 {
 	_uint index = 19;
@@ -602,11 +936,6 @@ void CUI_Monster::Load()
 
 			m_DescList.push_back(Desc);
 
-			m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
-			if (nullptr == m_pVIBuffer)
-				return;
-
-			m_BufferList.push_back(m_pVIBuffer);
 		}
 	}
 

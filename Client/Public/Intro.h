@@ -110,9 +110,6 @@ private:
 	CTexture*		m_pTexture = { nullptr };
 	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
 
-	vector<CVIBuffer_Rect*> m_BufferList;
-	
-
 	vector<LOADINGDESC*>	 m_DescList;
 	LOADINGDESC*			CurrentDesc = { nullptr }; // imgui랜더용
 };

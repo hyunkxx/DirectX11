@@ -93,6 +93,7 @@ public:
 
 private:
 	void	SerectUI();
+	void	Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; }
 	void    UVWave(_double TimeDelta);
 	void	HPBar(_double TimeDelta);
 	void	HPRedBar(_double TimeDelta);
@@ -132,19 +133,24 @@ private:
 	void ChoicePlayer3();
 
 	void TCoolRender();
-	void QCoolRender();
 	void ECoolRender();
+	void QCoolRender();
 	void RCoolRender();
 
 	void TCoolRenderOff();
-	void QCoolRenderOff();
 	void ECoolRenderOff();
+	void QCoolRenderOff();
 	void RCoolRenderOff();
 
 	void T(_double TimeDelta);
-	void Q(_double TimeDelta);
 	void E(_double TimeDelta);
+	void Q(_double TimeDelta);
 	void R(_double TimeDelta);
+
+	_bool TEnd(_double TimeDelta);
+	_bool EEnd(_double TimeDelta);
+	_bool QEnd(_double TimeDelta);
+	_bool REnd(_double TimeDelta);
 
 	void	Load();
 private:
@@ -160,19 +166,21 @@ private:
 	_bool m_bHit = { false };
 	_bool m_bRedStart = { false };
 	_float m_Damage = { 0.f }; // 공통
-	_float m_CurrentHp = { 250.f };
-	_float m_PreHp = { 250.f };
+	_float m_HP = { 100.f };
+	_float m_CurrentHp = { 100.f };
+	_float m_PreHp = { 100.f };
 	_float m_fWhiteBar = { 1.f };
-	_float m_RedDamageACC = { 250.f };
+	_float m_RedDamageACC = { 100.f }; // 빨간바 차있는 부분
 	_float m_fRedBar = { 1.f };
 
 	//쿨타임
 	_bool  Coolend = { false };
 	_float Time = { 1.f };
 
+	_bool  bTEnd = { false }, bEEnd = { false }, bQEnd = { false }, bREnd = { false };
 	_bool  UsedTSkill[3] = { false,false,false }, UsedESkill[3] = { false,false,false }, UsedQSkill[3] = { false,false,false }, UsedRSkill[3] = { false,false,false };
 	_float StaticTSkillTime = { 3.f }, StaticESkillTime = { 5.f }, StaticQSkillTime = { 7.f }, StaticRSkillTime = { 9.f };
-	_float TTimeAcc[3] = { 0.f,0.f,0.f }, QTimeAcc[3] = { 0.f,0.f,0.f }, ETimeAcc[3] = { 0.f, 0.f, 0.f, }, RTimeAcc[3] = { 0.f, 0.f, 0.f, };
+	_float TTimeAcc[3] = { 0.f,0.f,0.f }, ETimeAcc[3] = { 0.f,0.f,0.f }, QTimeAcc[3] = { 0.f, 0.f, 0.f, }, RTimeAcc[3] = { 0.f, 0.f, 0.f, };
 	_float TCoolTime[3] = { 3.f,3.f ,3.f }, ECoolTime[3] = { 5.f ,5.f ,5.f }, QCoolTime[3] = { 7.f ,7.f ,7.f }, RCoolTime[3] = { 9.f ,9.f ,9.f };
 	_float TCoolRadian[3] = { 0.f ,0.f ,0.f }, ECoolRadian[3] = { 0.f,0.f ,0.f }, QCoolRadian[3] = { 0.f ,0.f ,0.f }, RCoolRadian[3] = { 0.f ,0.f,0.f };
 	_float RRRadian[3] = { 0.f ,0.f,0.f };
@@ -188,7 +196,6 @@ private:
 	_int m_Mini2MaskNum;
 	_int m_Mini2MaskNum2;
 
-	
 public:
 	static CUI_MainScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
@@ -201,9 +208,8 @@ private:
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
 	CTexture*		m_pTexFunc = { nullptr };
-	CVIBuffer_Rect* m_pVIBufferCut = { nullptr }; // 생성, list푸시백용
+	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
 
-	vector<CVIBuffer_Rect*> m_BufferCutList;
 	vector<CUTRECT*>		  m_CutDescList;
 	
 	

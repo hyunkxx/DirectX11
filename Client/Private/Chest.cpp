@@ -7,6 +7,7 @@
 #include "P_PlayerGirl.h"
 
 #include "ItemDB.h"
+#include "UI_Minimap.h"
 
 CChest::CChest(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CInteractionObject(pDevice, pContext)
@@ -64,6 +65,10 @@ HRESULT CChest::Initialize(void * pArg)
 
 void CChest::Start()
 {
+	//UI
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	m_pUIIcon = static_cast<CUI_Minimap*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
+	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 45);
 }
 
 void CChest::PreTick(_double TimeDelta)
@@ -136,6 +141,9 @@ void CChest::Tick(_double TimeDelta)
 			interactionUIActive(false);
 		}
 	}
+
+	//UIÃß°¡
+	m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 }
 
 void CChest::LateTick(_double TimeDelta)
@@ -386,6 +394,8 @@ CGameObject * CChest::Clone(void * pArg)
 void CChest::Free()
 {
 	CInteractionObject::Free();
+
+	m_pUIIcon = nullptr;
 
 	Safe_Release(m_pRenderer);
 
