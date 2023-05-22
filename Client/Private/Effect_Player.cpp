@@ -59,23 +59,7 @@ void CEffect_Player::Tick(_double TimeDelta)
 	if (m_bFinish)
 		return;
 
-	for (auto& iter : m_EffectList)
-	{
-		iter->Tick(TimeDelta);
-	}
-}
-
-void CEffect_Player::LateTick(_double TimeDelta)
-{
-	if (m_bFinish)
-		return;
-
 	m_LifeAcc += TimeDelta;
-
-	for (auto& iter : m_EffectList)
-	{
-		iter->LateTick(TimeDelta);
-	}
 
 	if (m_LifeAcc > m_LifeTime)
 	{
@@ -83,7 +67,17 @@ void CEffect_Player::LateTick(_double TimeDelta)
 		m_bEffectUpdate = false;
 	}
 
+	for (auto& iter : m_EffectList)
+		iter->Tick(TimeDelta);
+}
 
+void CEffect_Player::LateTick(_double TimeDelta)
+{
+	if (m_bFinish)
+		return;
+
+	for (auto& iter : m_EffectList)
+		iter->LateTick(TimeDelta);
 }
 
 HRESULT CEffect_Player::Render()
