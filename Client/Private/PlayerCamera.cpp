@@ -54,8 +54,7 @@ HRESULT CPlayerCamera::Initialize(void * pArg)
 	m_ShakeDesc.fPower = 2.f;
 	m_ShakeDesc.fSpeed = 10.f;
 	m_ShakeDesc.fDuration = 2.f;
-#endif // _DEBUG
-
+#endif
 
 	//if (__super::Initialize(pArg))
 	//	return E_FAIL;
@@ -263,18 +262,16 @@ void CPlayerCamera::Tick(_double TimeDelta)
 #endif
 
 	__super::Tick(TimeDelta);
-	//m_pPlayerNavigation->Is_CurrentIn()
 	// 카메라 높이가 지형보다 낮을 경우 높이 재설정
+	_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
 	if (m_pPlayerNavigation->Get_CurCellState() == CCell::NORMAL_CELL)
 	{
-		_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
 		_float fHeight = m_pPlayerNavigation->Compute_Height(vPos);
 
 		if (XMVectorGetY(vPos) < fHeight + 0.5f)
 		{
 			_vector vFixedPos = XMVectorSetY(vPos, fHeight + 0.5f);
-			vFixedPos = XMVectorLerp(vPos, vFixedPos, (_float)TimeDelta);
-
+			//vFixedPos = XMVectorLerp(vPos, vFixedPos, (_float)TimeDelta);
 			m_pMainTransform->Set_State(CTransform::STATE_POSITION, vFixedPos);
 			m_pPipeLine->Set_Transform(CPipeLine::TS_VIEW, m_pMainTransform->Get_WorldMatrixInverse());
 		}
@@ -295,6 +292,7 @@ void CPlayerCamera::LateTick(_double TimeDelta)
 
 void CPlayerCamera::RenderGUI()
 {
+#ifdef _DEBUG
 	ImGui::Begin("Camera Shake Setting");
 	ImGui::Text("CameraShake : V Key");
 
@@ -312,6 +310,7 @@ void CPlayerCamera::RenderGUI()
 
 
 	ImGui::End();
+#endif
 }
 
 CPlayerCamera * CPlayerCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

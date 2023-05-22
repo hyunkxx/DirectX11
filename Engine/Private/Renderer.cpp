@@ -32,8 +32,8 @@ void CRenderer::Draw()
 	if (m_pRenderSetting->IsActiveSSAO())
 	{
 		Ready_SSAO(L"Target_SSAO");
-		Target_Blur(L"Target_SSAO");
-		Extraction(L"Target_SSAO", L"Target_BlurY");
+		Target_Blur_Middle(L"Target_SSAO");
+		Extraction(L"Target_SSAO", L"Target_BlurY_Middle");
 	}
 
 	Render_Lights();

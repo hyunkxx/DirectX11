@@ -10,11 +10,19 @@ float4x4 g_ViewMatrixInv, g_ProjMatrixInv;
 texture2D g_DiffuseTexture, g_NormalTexture, g_DepthTexture;
 texture2D g_NoiseTexture;
 
-float g_fRadius = 0.0001f;
-float g_fFalloff = 0.000001f;
-float g_fStrength = 0.0007f;
-float g_fTotStrength = 1.38f;
-float g_fInvSamples = 1.f / 16.f;
+float g_fRadius = 0.00003f;
+
+float3 avKernel[8] =
+{
+	normalize(float3(1, 1, 1)) * 0.125f,
+	normalize(float3(-1,-1,-1)) * 0.250f,
+	normalize(float3(-1,-1, 1)) * 0.375f,
+	normalize(float3(-1, 1,-1)) * 0.500f,
+	normalize(float3(-1, 1 ,1)) * 0.625f,
+	normalize(float3(1,-1,-1)) * 0.750f,
+	normalize(float3(1,-1, 1)) * 0.875f,
+	normalize(float3(1, 1,-1)) * 1.000f
+};
 
 //노이즈 생성
 float3 g_vRandom[16] =
@@ -83,11 +91,12 @@ tagSSAO_Out GetSSAO(tagSSAO_In In)
 		vRandomUV = In.vUV + vReflect.xy;
 
 		vector NearDepthInfo = g_DepthTexture.Sample(LinearSampler, vRandomUV);
-		fOccNormal = NearDepthInfo.g * g_Far * In.fViewZ;
+		fOccNormal = NearDepthInfo.g * g_Far;
 
-		if (fOccNormal <= In.fDepth + 0.08f)
+		if (fOccNormal < In.fDepth + 0.01f)
 			++iColor;
 	}
+
 	Out.vAmbient = abs((iColor / 16.f) - 1.f);
 	return Out;
 }
@@ -134,20 +143,21 @@ PS_OUT PS_SSAO(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector vDepth = g_DepthTexture.Sample(LinearBorderSampler, In.vTexUV);
-	vector vNormal = g_NormalTexture.Sample(LinearBorderSampler, In.vTexUV);
+	vector vDepth = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);
+	vector vNormal = g_NormalTexture.Sample(LinearClampSampler, In.vTexUV);
 
-	if (vNormal.a != 0.f)
+	if (vDepth.b == 0.5f)
 	{
 		Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
 		return Out;
 	}
 
 	tagSSAO_In SSAO_In = (tagSSAO_In)0;
+	vNormal = float4(normalize(vNormal * 2.f - 1.f).xyz, vNormal.a);
 	SSAO_In.vUV = In.vTexUV;
 	SSAO_In.vNormal = vNormal.rgb;
-	SSAO_In.fViewZ = vDepth.r;
-	SSAO_In.fDepth = vDepth.g * g_Far * SSAO_In.fViewZ;
+	SSAO_In.fViewZ = 0; // vDepth.x * g_Far; no use
+	SSAO_In.fDepth = vDepth.g * g_Far;
 
 	tagSSAO_Out SSAO_Out = GetSSAO(SSAO_In);
 
@@ -155,16 +165,51 @@ PS_OUT PS_SSAO(PS_IN In)
 	return Out;
 }
 
-float3 avKernel[8] = {
-	normalize(float3(1, 1, 1)) * 0.125f,
-	normalize(float3(-1,-1,-1)) * 0.250f,
-	normalize(float3(-1,-1, 1)) * 0.375f,
-	normalize(float3(-1, 1,-1)) * 0.500f,
-	normalize(float3(-1, 1 ,1)) * 0.625f,
-	normalize(float3(1,-1,-1)) * 0.750f,
-	normalize(float3(1,-1, 1)) * 0.875f,
-	normalize(float3(1, 1,-1)) * 1.000f
-};
+//// SSAO2
+PS_OUT PS_SSAO_2(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+	vector vDepthDesc = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);
+	vector vSSAOParams = float4(1.f, 1.f, 1.f, 1.f);
+	vector vDepth = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);
+	vector vNormal = g_NormalTexture.Sample(LinearClampSampler, In.vTexUV);
+
+	if (vDepth.b == 0.5f)
+	{
+		Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
+		return Out;
+	}
+
+	float3 random = RandomNormal(In.vTexUV);
+	random = random * 2.0f - 1.0f;
+
+	float fRadius = g_fRadius;
+	float fPixelDepth = g_DepthTexture.Sample(LinearBorderSampler, In.vTexUV).g;
+	float fDepth = fPixelDepth * g_Far;
+	float3 vKernelScale = float3(fRadius / fDepth, fRadius / fDepth, fRadius / g_Far);
+
+	float fOcclusion = 0.0f;
+	for (int j = 1; j < 3; j++)
+	{
+		float3 random = RandomNormal(In.vTexUV.xy * (7.0f + (float)j)).xyz;
+		random = random * 2.0f - 1.0f;
+
+		for (int i = 0; i < 8; i++)
+		{
+			float3 vRotatedKernel = reflect(avKernel[i], random) * vKernelScale;
+			float fSampleDepth = g_DepthTexture.Sample(LinearBorderSampler, vRotatedKernel.xy + In.vTexUV.xy).r;
+			float fDelta = max(fSampleDepth - fPixelDepth + vRotatedKernel.z, 0);
+			float fRange = abs(fDelta) / (vKernelScale.z * vSSAOParams.z);
+
+			fOcclusion += lerp(fDelta * vSSAOParams.w, vSSAOParams.x, saturate(fRange));
+		}
+	}
+
+	Out.vColor = fOcclusion / (2.0f * 8.0f);
+	Out.vColor = 1.f - lerp(0.1f, 0.6, saturate(Out.vColor.x));
+
+	return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -179,5 +224,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_SSAO();
+	}
+
+	pass Pass1
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_SSAO_2();
 	}
 }

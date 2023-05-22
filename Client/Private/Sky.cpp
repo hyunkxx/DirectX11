@@ -103,7 +103,7 @@ HRESULT CSky::Add_Components()
 	ZeroMemory(&TransformDesc, sizeof TransformDesc);
 
 	TransformDesc.fMoveSpeed = 15.f;
-	TransformDesc.fRotationSpeed = XMConvertToRadians(0.1f);
+	TransformDesc.fRotationSpeed = XMConvertToRadians(0.3f);
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))

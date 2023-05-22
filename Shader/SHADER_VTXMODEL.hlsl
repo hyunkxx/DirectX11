@@ -269,6 +269,7 @@ PS_OUT_SKY PS_MAIN_SKY(PS_IN_SKY In)
 	PS_OUT_SKY	Out = (PS_OUT_SKY)0;
 
 	Out.vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+	Out.vNormal	= float4(0.f, 0.f, 0.f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 1.f);
 	Out.vDepth = float4(0.f, 0.f, 0.f, 1.f);
 
@@ -328,11 +329,11 @@ PS_OUT_OUTLINE PS_MAIN_MODEL_EMISSIVE(PS_IN In)
 		discard;
 
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
 	if (vNormalDesc.g > vNormalDesc.b)
-		Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 0.005f);
+		Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
 
 	float2 uv = { 0.f, 0.f };
 	uv.x = g_fTimeAcc;
