@@ -21,6 +21,13 @@ private:
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);
 
+
+private:
+#ifdef _DEBUG
+	HRESULT Ready_Effect_Manager();
+	class CEfffect_Manager*		m_pEffect_Manager = { nullptr };
+#endif
+
 public:
 	static CLevel_AnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

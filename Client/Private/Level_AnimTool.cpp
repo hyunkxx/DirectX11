@@ -8,6 +8,11 @@
 
 #include "AnimToolManager.h"
 
+#ifdef _DEBUG
+#include "Effect_Player.h"
+#include "Efffect_Manager.h"
+#endif // _DEBUG
+
 CLevel_AnimTool::CLevel_AnimTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
 {
@@ -30,6 +35,13 @@ HRESULT CLevel_AnimTool::Initialize()
 	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
 		return E_FAIL;
 
+
+#ifdef _DEBUG
+	if (FAILED(Ready_Effect_Manager()))
+		return E_FAIL;
+#endif // DEBUG
+
+
 	return S_OK;
 }
 
@@ -38,6 +50,9 @@ void CLevel_AnimTool::Tick(_double TimeDelta)
 #ifdef _DEBUG
 	CAppManager* pAppManager = CAppManager::GetInstance();
 	pAppManager->SetTitle(L"LEVEL_ANIMTOOL");
+
+	m_pEffect_Manager->Tick(TimeDelta);
+	m_pEffect_Manager->LateTick(TimeDelta);
 #endif
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	pGameInstance->ShadowUpdate(60.f, XMLoadFloat4(&pGameInstance->Get_CamPosition()));
@@ -46,6 +61,11 @@ void CLevel_AnimTool::Tick(_double TimeDelta)
 void CLevel_AnimTool::RenderLevelUI()
 {
 	CAnimToolManager::GetInstance()->RenderGUI();
+
+#ifdef _DEBUG
+	m_pEffect_Manager->RenderGUI();
+#endif // _DEBUG
+
 }
 
 HRESULT CLevel_AnimTool::Ready_Lights()
@@ -117,6 +137,16 @@ HRESULT CLevel_AnimTool::Ready_Layer_Player(const _tchar * pLayerTag)
 	
 	return S_OK;
 }
+#ifdef _DEBUG
+HRESULT CLevel_AnimTool::Ready_Effect_Manager()
+{
+	m_pEffect_Manager = CEfffect_Manager::GetInstance();
+	m_pEffect_Manager->Initialize(m_pDevice, m_pContext);
+	return S_OK;
+}
+
+#endif // _DEBUG
+
 
 CLevel_AnimTool* CLevel_AnimTool::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {

@@ -733,6 +733,22 @@ HRESULT CGameInstance::Load_Effect(HWND hWnd, wstring strFileName, list<EFFECT_D
 	return m_pSaveLoader->Load_Effect(hWnd , strFileName , pEffectDesc);
 }
 
+HRESULT CGameInstance::Save_File(HWND hWnd, list<EFFECT_DESC*>* pEffectDesc, const char * pTag)
+{
+	if (nullptr == m_pSaveLoader)
+		return false;
+
+	return m_pSaveLoader->Save_File(hWnd, pEffectDesc, pTag);
+}
+
+HRESULT CGameInstance::Load_File(HWND hWnd, wstring strFileName, list<EFFECT_DESC*>* pEffectDesc)
+{
+	if (nullptr == m_pSaveLoader)
+		return false;
+
+	return m_pSaveLoader->Load_File(hWnd, strFileName, pEffectDesc);
+}
+
 HRESULT CGameInstance::Push_Effect(const _tchar * pEffectTag, CEffect * pEffect, EFFECT_ID eEffectID)
 {
 	if (!m_pEffect_Manager)

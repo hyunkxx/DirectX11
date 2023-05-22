@@ -28,7 +28,7 @@ public:
 	void	Set_HangBone(class CBone* pBone);
 	CBone*	Get_HangBone() { return m_pHangBone; }
 
-
+	void	SetUp_Texture(MytextureType eType, class CTexture* pTexture);
 protected:
 	_uint					m_iNumMeshes = { 0 };
 	vector<class CMesh*>	m_Meshes;

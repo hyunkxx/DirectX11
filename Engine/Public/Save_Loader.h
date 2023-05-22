@@ -15,6 +15,9 @@ private:
 public:
 	HRESULT		Load_Effect(HWND hWnd, wstring strFileName, list<EFFECT_DESC*>* pEffectDesc);
 
+	HRESULT		Save_File(HWND hWnd, list<EFFECT_DESC*>* pEffectDesc, const char* pTag);
+	HRESULT		Load_File(HWND hWnd, wstring strFileName, list<EFFECT_DESC*>* pEffectDesc);
+
 public:
 	virtual void Free()override;
 

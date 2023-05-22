@@ -158,6 +158,9 @@ public: // RenderSetting
 public:/*For.Save_Loader*/
 	HRESULT		Load_Effect(HWND hWnd, wstring strFileName, list<EFFECT_DESC*>* pEffectDesc);
 
+	HRESULT		Save_File(HWND hWnd, list<EFFECT_DESC*>* pEffectDesc, const char* pTag);
+	HRESULT		Load_File(HWND hWnd, wstring strFileName, list<EFFECT_DESC*>* pEffectDesc);
+
 public:/*For.CEffect_Manager*/
 	HRESULT Push_Effect(const _tchar* pEffectTag, class CEffect* pEffect , EFFECT_ID eEffectID);
 	class CEffect*	Get_Effect(const _tchar* EffectTag , EFFECT_ID eEffectID);

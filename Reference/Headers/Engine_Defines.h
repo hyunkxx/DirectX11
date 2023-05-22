@@ -62,6 +62,12 @@
 
 #include <time.h>
 
+#ifdef _DEBUG
+#include <filesystem>
+using std::experimental::filesystem::recursive_directory_iterator;
+#endif // _DEBUG
+
+
 using namespace std;
 using namespace DirectX;
 

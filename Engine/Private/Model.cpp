@@ -152,6 +152,19 @@ void CModel::Set_HangBone(CBone * pBone)
 	m_pHangBone = pBone;
 }
 
+void CModel::SetUp_Texture(MytextureType eType, CTexture * pTexture)
+{
+	for (auto& iter : m_ModelMaterials)
+	{
+		if (nullptr != iter.pMaterialTexture[eType])
+			Safe_Release(iter.pMaterialTexture[eType]);
+
+		iter.pMaterialTexture[eType] = nullptr;
+		iter.pMaterialTexture[eType] = pTexture;
+		Safe_AddRef(pTexture);
+	}
+}
+
 HRESULT CModel::Render(_uint iMeshIndex)
 {
 	if (iMeshIndex >= m_iNumMeshes)
