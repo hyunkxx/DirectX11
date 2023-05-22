@@ -50,9 +50,12 @@ HRESULT CPlayerCamera::Initialize(void * pArg)
 	m_pMainTransform = CTransform::Create(m_pDevice, m_pContext);
 	m_pMainTransform->Set_TransformDesc(m_CameraDesc.TransformDesc);
 
+#ifdef _DEBUG
 	m_ShakeDesc.fPower = 2.f;
 	m_ShakeDesc.fSpeed = 10.f;
 	m_ShakeDesc.fDuration = 2.f;
+#endif // _DEBUG
+
 
 	//if (__super::Initialize(pArg))
 	//	return E_FAIL;
@@ -294,6 +297,8 @@ void CPlayerCamera::RenderGUI()
 {
 	ImGui::Begin("Camera Shake Setting");
 	ImGui::Text("CameraShake : V Key");
+
+#ifdef _DEBUG
 	ImGui::Checkbox("Vibe/Wave Toggle", (_bool*)&m_bShakeToggle);
 	ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), " Vibration Setting");
 	ImGui::DragFloat("Vibe Range", (_float*)&m_fVibeRange, 0.1f, 0.1f, 20.f);
@@ -303,6 +308,8 @@ void CPlayerCamera::RenderGUI()
 	ImGui::DragFloat("Wave Power", (_float*)&m_ShakeDesc.fPower, 0.1f, 0.1f, 20.f);
 	ImGui::DragFloat("Wave Speed", (_float*)&m_ShakeDesc.fSpeed, 0.1f, 0.1f, 20.f);
 	ImGui::DragFloat("Wave Duration", (_float*)&m_ShakeDesc.fDuration, 0.1f, 0.1f, 10.f);
+#endif // DEBUG
+
 
 	ImGui::End();
 }
