@@ -58,7 +58,7 @@ void CRenderer::Draw()
 		Extraction(L"Target_Diffuse_SSD_Blend", L"Target_LUT");
 	}
 
-	Render_GlowSSD();
+
 	Render_Particle();
 	Render_SpecularGlow();
 	Render_ModelGlow();
@@ -66,6 +66,7 @@ void CRenderer::Draw()
 
 	Render_Blend();
 
+	Render_GlowSSD();
 	Render_Glow();
 	Render_Distortion();
 	Render_Glow_Blend();
@@ -817,7 +818,7 @@ void CRenderer::Render_GlowSSD()
 	if (FAILED(m_pShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Diffuse_SSD_Blend", "g_DiffuseTexture")))
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Blend", "g_DiffuseTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Diffuse_Glow_SSD", "g_SSD_DiffuseTexture")))
 		return;
@@ -830,7 +831,7 @@ void CRenderer::Render_GlowSSD()
 
 	Target_Blur(L"Target_Diffuse_Glow_SSD", 1);
 
-	CRenderTarget* pBlendTarget = m_pTargetManager->FindTarget(L"Target_Diffuse_SSD_Blend");
+	CRenderTarget* pBlendTarget = m_pTargetManager->FindTarget(L"Target_Blend");
 	m_pTargetManager->BeginTarget(m_pContext, pBlendTarget);
 
 	if (FAILED(m_pShader_Blur->SetMatrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
