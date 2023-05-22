@@ -17,7 +17,7 @@ HRESULT CEffect::Initialize_Prototype()
 
 	for (int j = 0; BUFFER_END > j; j++)
 	{
-		for (int i = 0; 100 > i; i++)
+		for (int i = 0; 1000 > i; i++)
 		{
 			_itoa_s(i, m_FileName[j][i], 10);
 		}

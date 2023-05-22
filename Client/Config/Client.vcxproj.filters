@@ -271,18 +271,10 @@
     <ClCompile Include="..\Private\MissilePool.cpp" />
     <ClCompile Include="..\Private\Missile_Constant.cpp" />
     <ClCompile Include="..\Private\Missile_RotAround.cpp" />
-    <ClCompile Include="..\Private\Particle_Effect.cpp">
-      <Filter>src\06. Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Rect_Effect.cpp">
-      <Filter>src\06. Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Efffect_Manager.cpp">
-      <Filter>src\06. Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Mesh_Effect.cpp">
-      <Filter>src\06. Effect</Filter>
-    </ClCompile>
+    <ClCompile Include="..\Private\Efffect_Tool.cpp" />
+    <ClCompile Include="..\Private\Mesh_Effect.cpp" />
+    <ClCompile Include="..\Private\Particle_Effect.cpp" />
+    <ClCompile Include="..\Private\Rect_Effect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -529,18 +521,10 @@
     <ClInclude Include="..\Public\MissilePool.h" />
     <ClInclude Include="..\Public\Missile_Constant.h" />
     <ClInclude Include="..\Public\Missile_RotAround.h" />
-    <ClInclude Include="..\Public\Particle_Effect.h">
-      <Filter>src\06. Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Rect_Effect.h">
-      <Filter>src\06. Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Efffect_Manager.h">
-      <Filter>src\06. Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Mesh_Effect.h">
-      <Filter>src\06. Effect</Filter>
-    </ClInclude>
+    <ClInclude Include="..\Public\Efffect_Tool.h" />
+    <ClInclude Include="..\Public\Mesh_Effect.h" />
+    <ClInclude Include="..\Public\Particle_Effect.h" />
+    <ClInclude Include="..\Public\Rect_Effect.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

@@ -205,7 +205,7 @@
     <ClInclude Include="..\Public\Client_ObjectEnum.h" />
     <ClInclude Include="..\Public\Client_ShaderEnum.h" />
     <ClInclude Include="..\Public\Client_TextureEnum.h" />
-    <ClInclude Include="..\Public\Efffect_Manager.h" />
+    <ClInclude Include="..\Public\Efffect_Tool.h" />
     <ClInclude Include="..\public\Inventory.h" />
     <ClInclude Include="..\Public\Mesh_Effect.h" />
     <ClInclude Include="..\Public\Missile.h" />
@@ -320,7 +320,7 @@
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\CharacterSelect_Terrain.cpp" />
     <ClCompile Include="..\private\Chest.cpp" />
-    <ClCompile Include="..\Private\Efffect_Manager.cpp" />
+    <ClCompile Include="..\Private\Efffect_Tool.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />
     <ClCompile Include="..\Private\Mesh_Effect.cpp" />
     <ClCompile Include="..\Private\Missile.cpp" />

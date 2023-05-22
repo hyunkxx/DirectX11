@@ -528,8 +528,8 @@ HRESULT CMesh_Effect::Add_Component(const EFFECT_DESC & ParticleDesc)
 
 #pragma region Texture
 
-	/*if (FAILED(Add_Texture(L"../../Resource/Texture/Daoguang/")))
-		return E_FAIL;*/
+	if (FAILED(Add_Texture(L"../../Resource/Texture/Daoguang/")))
+		return E_FAIL;
 
 	if (FAILED(Add_Texture(L"../../Resource/Texture/Trail/")))
 		return E_FAIL;

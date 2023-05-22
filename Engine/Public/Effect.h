@@ -43,7 +43,7 @@ protected:
 	_bool	m_bEDit = { false };
 	_bool	m_bFinish = { true };
 
-	char		m_FileName[BUFFER_END][100][MAX_PATH];
+	char		m_FileName[BUFFER_END][1000][MAX_PATH];
 	_int		m_iFileCount[BUFFER_END] = { 0 , 0 };
 
 	_float4x4					m_ParentsMatrix;

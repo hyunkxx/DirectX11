@@ -55,7 +55,7 @@ HRESULT CTestGeneric::Initialize(void * pArg)
 		return E_FAIL;
 
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-	m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
+	//m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
 
 	SetUp_State();
 

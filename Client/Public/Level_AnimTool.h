@@ -25,7 +25,7 @@ private:
 private:
 #ifdef _DEBUG
 	HRESULT Ready_Effect_Manager();
-	class CEfffect_Manager*		m_pEffect_Manager = { nullptr };
+	class CEfffect_Tool*		m_pEffect_Tool = { nullptr };
 #endif
 
 public:

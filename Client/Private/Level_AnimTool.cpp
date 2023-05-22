@@ -10,7 +10,7 @@
 
 #ifdef _DEBUG
 #include "Effect_Player.h"
-#include "Efffect_Manager.h"
+#include "Efffect_Tool.h"
 #endif // _DEBUG
 
 CLevel_AnimTool::CLevel_AnimTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -51,8 +51,8 @@ void CLevel_AnimTool::Tick(_double TimeDelta)
 	CAppManager* pAppManager = CAppManager::GetInstance();
 	pAppManager->SetTitle(L"LEVEL_ANIMTOOL");
 
-	m_pEffect_Manager->Tick(TimeDelta);
-	m_pEffect_Manager->LateTick(TimeDelta);
+	m_pEffect_Tool->Tick(TimeDelta);
+	m_pEffect_Tool->LateTick(TimeDelta);
 #endif
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	pGameInstance->ShadowUpdate(60.f, XMLoadFloat4(&pGameInstance->Get_CamPosition()));
@@ -63,7 +63,7 @@ void CLevel_AnimTool::RenderLevelUI()
 	CAnimToolManager::GetInstance()->RenderGUI();
 
 #ifdef _DEBUG
-	m_pEffect_Manager->RenderGUI();
+	m_pEffect_Tool->RenderGUI();
 #endif // _DEBUG
 
 }
@@ -140,8 +140,8 @@ HRESULT CLevel_AnimTool::Ready_Layer_Player(const _tchar * pLayerTag)
 #ifdef _DEBUG
 HRESULT CLevel_AnimTool::Ready_Effect_Manager()
 {
-	m_pEffect_Manager = CEfffect_Manager::GetInstance();
-	m_pEffect_Manager->Initialize(m_pDevice, m_pContext);
+	m_pEffect_Tool = CEfffect_Tool::GetInstance();
+	m_pEffect_Tool->Initialize(m_pDevice, m_pContext);
 	return S_OK;
 }
 
@@ -165,4 +165,9 @@ CLevel_AnimTool* CLevel_AnimTool::Create(ID3D11Device * pDevice, ID3D11DeviceCon
 void CLevel_AnimTool::Free()
 {
 	__super::Free();
+
+#ifdef _DEBUG
+	m_pEffect_Tool->DestroyInstance();
+#endif // _DEBUG
+
 }

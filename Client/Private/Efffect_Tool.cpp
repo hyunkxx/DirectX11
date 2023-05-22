@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Public\Efffect_Manager.h"
+#include "..\Public\Efffect_Tool.h"
 
 #include "GameInstance.h"
 #include "Effect.h"
@@ -13,13 +13,13 @@
 #include "Mesh_Effect_P.h"
 #include "Rect_Effect_P.h"
 
-IMPLEMENT_SINGLETON(CEfffect_Manager)
+IMPLEMENT_SINGLETON(CEfffect_Tool)
 
-CEfffect_Manager::CEfffect_Manager()
+CEfffect_Tool::CEfffect_Tool()
 {
 }
 
-HRESULT CEfffect_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+HRESULT CEfffect_Tool::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_pDevice = pDevice;
 	m_pContext = pContext;
@@ -38,7 +38,7 @@ HRESULT CEfffect_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 	return S_OK;
 }
 
-void CEfffect_Manager::Tick(_double TimeDelta)
+void CEfffect_Tool::Tick(_double TimeDelta)
 {
 
 	if (CGameInstance::GetInstance()->InputKey(DIK_DELETE) == KEY_STATE::TAP)
@@ -94,7 +94,7 @@ void CEfffect_Manager::Tick(_double TimeDelta)
 
 }
 
-void CEfffect_Manager::LateTick(_double TimeDelta)
+void CEfffect_Tool::LateTick(_double TimeDelta)
 {
 	if (!m_bRender)
 		return;
@@ -131,12 +131,12 @@ void CEfffect_Manager::LateTick(_double TimeDelta)
 	}
 }
 
-HRESULT CEfffect_Manager::Render()
+HRESULT CEfffect_Tool::Render()
 {
 	return S_OK;
 }
 
-void CEfffect_Manager::RenderGUI()
+void CEfffect_Tool::RenderGUI()
 {
 	if (!m_bRender)
 		return;
@@ -165,7 +165,7 @@ void CEfffect_Manager::RenderGUI()
 	}
 }
 
-void CEfffect_Manager::Effect_List()
+void CEfffect_Tool::Effect_List()
 {
 	ImGui::Begin("Effect_List");
 
@@ -229,7 +229,7 @@ void CEfffect_Manager::Effect_List()
 	ImGui::End();
 }
 
-void CEfffect_Manager::Parts_List()
+void CEfffect_Tool::Parts_List()
 {
 	ImGui::Begin("Parts_List");
 	
@@ -385,7 +385,7 @@ void CEfffect_Manager::Parts_List()
 	ImGui::End();
 }
 
-void CEfffect_Manager::Create_Effect()
+void CEfffect_Tool::Create_Effect()
 {
 	ImGui::Begin("Crate_Effect");
 
@@ -489,7 +489,7 @@ void CEfffect_Manager::Create_Effect()
 	ImGui::End();
 }
 
-void CEfffect_Manager::Play_Effect()
+void CEfffect_Tool::Play_Effect()
 {
 	ImGui::Begin("Play_Effect");
 	
@@ -538,7 +538,7 @@ void CEfffect_Manager::Play_Effect()
 
 }
 
-void CEfffect_Manager::Copy_Effect()
+void CEfffect_Tool::Copy_Effect()
 {
 	if (nullptr == m_pEffectPlayer)
 	{
@@ -631,7 +631,7 @@ void CEfffect_Manager::Copy_Effect()
 
 #ifdef _DEBUG
 
-void CEfffect_Manager::Load_EffectList(const _tchar* pPathName)
+void CEfffect_Tool::Load_EffectList(const _tchar* pPathName)
 {
 	wstring path = pPathName;
 	_tchar ParentFolderName[MAX_PATH] = TEXT("");
@@ -656,7 +656,7 @@ void CEfffect_Manager::Load_EffectList(const _tchar* pPathName)
 
 		CGameInstance::GetInstance()->Load_File(g_hWnd, strFileTag, &pEffectDesces);
 
-		CEffect* pEffect = CEffect_Player::Create(m_pDevice, m_pContext, "../../Resource/Tool_Effect/", pEffectDesces);
+		CEffect* pEffect = CEffect_Player::Create(m_pDevice, m_pContext, "../../Resource/Tool_Resource/", pEffectDesces);
 
 		char* pChar = new char[MAX_PATH];
 		WideCharToMultiByte(CP_ACP, 0, FileName, -1, pChar, MAX_PATH, NULL, NULL);
@@ -672,7 +672,7 @@ void CEfffect_Manager::Load_EffectList(const _tchar* pPathName)
 
 #endif // _DEBUG
 
-void CEfffect_Manager::Free()
+void CEfffect_Tool::Free()
 {
 
 	if (nullptr != m_pEffects)

@@ -8,13 +8,13 @@ END
 
 BEGIN(Client)
 
-class CEfffect_Manager final : public CBase
+class CEfffect_Tool final : public CBase
 {
-	DECLARE_SINGLETON(CEfffect_Manager)
+	DECLARE_SINGLETON(CEfffect_Tool)
 
 private:
-	explicit CEfffect_Manager();
-	virtual ~CEfffect_Manager() = default;
+	explicit CEfffect_Tool();
+	virtual ~CEfffect_Tool() = default;
 
 
 public:
