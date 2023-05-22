@@ -68,6 +68,8 @@ private:
 	CTexture* m_pSpecular = nullptr;
 	CTexture* m_pSSAO = nullptr;
 
+	//UI 추가
+	class CUI_Minimap*		m_pUIIcon = { nullptr };
 private:
 	CHEST_TYPE m_eChestType = CHEST_SIMPLE;
 	_bool m_bOverlapedPlayer = false;
@@ -83,6 +85,8 @@ private:
 
 	_float3 m_vColor = { 1.f, 1.f, 1.f };
 
+	//UI 추가
+	_int	m_UIIndex = { 0 };
 };
 
 END

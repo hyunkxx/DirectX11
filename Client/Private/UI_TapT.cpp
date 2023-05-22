@@ -12,11 +12,6 @@ CUI_TapT::CUI_TapT(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CUI_TapT::CUI_TapT(const CUI_TapT& rhs)
 	: CGameObject(rhs)
 {
-	for (auto& Buffer : rhs.m_BufferList)
-	{
-		m_BufferList.push_back(Buffer);
-		Safe_AddRef(Buffer);
-	}
 	for (auto& Desc : rhs.m_DescList)
 	{
 		m_DescList.push_back(Desc);
@@ -132,26 +127,26 @@ HRESULT CUI_TapT::Render()
 		return E_FAIL;
 	if (0.5f < m_ShaderY)
 	{
-		_uint Bufferindex = 0;
-		for (auto& pBuffer : m_BufferList)
+		_uint Descindex = 0;
+		for (auto& Desc : m_DescList)
 		{
-			if (nullptr != pBuffer)
+			if (nullptr != Desc)
 			{
-				if (FAILED(Setup_ShaderResources(Bufferindex)))
+				if (FAILED(Setup_ShaderResources(Descindex)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
 
-				if ((9 < Bufferindex) && (Bufferindex < 16))
+				if ((9 < Descindex) && (Descindex < 16))
 				{
-					if (true == m_DescList[Bufferindex]->OnRect)
+					if (true == m_DescList[Descindex]->OnRect)
 					{
-						pBuffer->Render();
+						m_pVIBuffer->Render();
 					}
 				}
 				else
-					pBuffer->Render();
+					m_pVIBuffer->Render();
 			}
-			++Bufferindex;
+			++Descindex;
 		}
 	}
 	else
@@ -159,7 +154,7 @@ HRESULT CUI_TapT::Render()
 		if (FAILED(Setup_ShaderResources(3)))
 			return E_FAIL;
 		m_pShader->Begin(m_iPass);
-		m_BufferList[3]->Render();
+		m_pVIBuffer->Render();
 	}
 	return S_OK;
 }
@@ -235,6 +230,9 @@ HRESULT CUI_TapT::Add_Components()
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::VIBUFFER_RECT,
+		L"com_vibuffer", (CComponent**)&m_pVIBuffer)))
+		return E_FAIL;
 	return S_OK;
 
 }
@@ -317,14 +315,7 @@ void CUI_TapT::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexture);
-	m_pVIBuffer = nullptr;
 	Safe_Release(m_pVIBuffer);
-	
-		for (auto& Buffer : m_BufferList)
-		{
-			Safe_Release(Buffer);
-		}
-		m_BufferList.clear();
 	
 if (!m_bClone)
 {
@@ -375,12 +366,6 @@ void CUI_TapT::Load()
 		if (nullptr != Desc)
 		{
 			m_DescList.push_back(Desc);
-
-			m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
-			if (nullptr == m_pVIBuffer)
-				return;
-
-			m_BufferList.push_back(m_pVIBuffer);
 		}
 	}
 }

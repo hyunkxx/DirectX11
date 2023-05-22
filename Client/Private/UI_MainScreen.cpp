@@ -28,11 +28,6 @@ CUI_MainScreen::CUI_MainScreen(const CUI_MainScreen& rhs)
 	, m_Mini2MaskNum2(rhs.m_Mini2MaskNum2)
 
 {
-	for (auto& Buffer : rhs.m_BufferCutList)
-	{
-		m_BufferCutList.push_back(Buffer);
-		Safe_AddRef(Buffer);
-	}
 	for (auto& Desc : rhs.m_CutDescList)
 	{
 		m_CutDescList.push_back(Desc);
@@ -55,12 +50,6 @@ HRESULT CUI_MainScreen::Initialize(void * pArg)
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
-		return E_FAIL;
-
-	
-	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-
- 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UIMINIMAP, TEXT("layer_UI"), TEXT("UI_Minimap"))))
 		return E_FAIL;
 
 	Add_PlayerNum();
@@ -137,603 +126,677 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	Q(TimeDelta);
 	E(TimeDelta);
 	R(TimeDelta);
-	switch (m_iCurrentPlayer)
-	{
-	case Client::CUI_MainScreen::eKeyType::YANGYANG:
-	{
 
-		m_CutDescList[74]->Cool = TCoolRadian[0];
-		m_CutDescList[33]->Cool = ECoolRadian[0];
-		m_CutDescList[34]->Cool = QCoolRadian[0];
-		m_CutDescList[35]->Cool = RCoolRadian[0];
-		m_CutDescList[36]->Cool = RRRadian[0];
-		m_CutDescList[8]->Cool = IconRadian[0];
-
-		if (false == UsedTSkill[0])
+	if (0 != (_int)m_CutDescList.size())
+	{
+		switch (m_iCurrentPlayer)
 		{
-			if ((true == UsedTSkill[1]) || (true == UsedTSkill[2]))
+		case Client::CUI_MainScreen::eKeyType::YANGYANG:
+		{
+
+			m_CutDescList[74]->Cool = TCoolRadian[0];
+			m_CutDescList[33]->Cool = ECoolRadian[0];
+			m_CutDescList[34]->Cool = QCoolRadian[0];
+			m_CutDescList[35]->Cool = RCoolRadian[0];
+			m_CutDescList[36]->Cool = RRRadian[0];
+			m_CutDescList[8]->Cool = m_CutDescList[54]->Cool = IconRadian[0];
+
+			if (false == UsedTSkill[0])
+			{
+				if ((true == UsedTSkill[1]) || (true == UsedTSkill[2]))
+				{
+					TCoolRenderOff();
+				}
+			}
+
+			if ((pGameInstance->InputKey(DIK_T) == KEY_STATE::TAP) && (UsedTSkill[0] == false))
+			{
+				TCoolRender();
+				UsedTSkill[0] = true;
+				m_CutDescList[71]->iTexNum = 195;
+				m_CutDescList[72]->iTexNum = 190;
+			}
+			if (0.f > TCoolTime[0]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
 			{
 				TCoolRenderOff();
+				UsedTSkill[0] = false;
+				TCoolRadian[0] = 0.f;
+				TTimeAcc[0] = 0.f;
+				TCoolTime[0] = StaticTSkillTime;
+				bTEnd = true;//엔드모션
 			}
-		}
 
-		if ((pGameInstance->InputKey(DIK_T) == KEY_STATE::TAP) && (UsedTSkill[0] == false))
-		{
-			TCoolRender();
-			UsedTSkill[0] = true;
-			m_CutDescList[71]->iTexNum = 195;
-			m_CutDescList[72]->iTexNum = 190;
-		}
-		if (0.f > TCoolTime[0]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		{
-			TCoolRenderOff();
-			UsedTSkill[0] = false;
-			TCoolRadian[0] = 0.f;
-			TTimeAcc[0] = 0.f;
-			TCoolTime[0] = StaticTSkillTime;
-		}
-
-		if (UsedTSkill[0] == true)
-		{
-			if (m_CutDescList[71]->iTexNum == 189)
+			if (UsedTSkill[0] == true)
 			{
-				m_CutDescList[71]->iTexNum = 190;
+				if (m_CutDescList[71]->iTexNum == 189)
+				{
+					m_CutDescList[71]->iTexNum = 190;
+				}
+				if ((m_CutDescList[72]->iTexNum == 189) && (0.f < TCoolTime[0]))
+				{
+					m_CutDescList[72]->iTexNum = 199;
+				}
+				if (TCoolTime[0] > StaticTSkillTime - TTimeAcc[0])
+				{
+					TCoolTime[0] -= 0.1f;
+					m_CutDescList[72]->iTexNum -= 1;
+					m_CutDescList[71]->iTexNum = 190 + (_int)TCoolTime[0];
+				}
 			}
-			if ((m_CutDescList[72]->iTexNum == 189) && (0.f < TCoolTime[0]))
-			{
-				m_CutDescList[72]->iTexNum = 199;
-			}
-			if (TCoolTime[0] > StaticTSkillTime - TTimeAcc[0])
-			{
-				TCoolTime[0] -= 0.1f;
-				m_CutDescList[72]->iTexNum -= 1;
-				m_CutDescList[71]->iTexNum = 190 + (_int)TCoolTime[0];
-			}
-		}
 
-		// E
-		if (false == UsedESkill[0])
-		{
-			if ((true == UsedESkill[1]) || (true == UsedESkill[2]))
+			if (true == bTEnd)
 			{
-				ECoolRenderOff();
+				TEnd(TimeDelta); // bool값 반환 
 			}
-		}
 
-		if ((pGameInstance->InputKey(DIK_E) == KEY_STATE::TAP) && (UsedESkill[0] == false))
-		{
-			ECoolRender();
-			UsedESkill[0] = true;
-			m_CutDescList[39]->iTexNum = 195;
-			m_CutDescList[40]->iTexNum = 190;
-		}
-		if (0.f > ECoolTime[0]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		{
-			ECoolRenderOff();
-			UsedESkill[0] = false;
-			ECoolRadian[0] = 0.f;
-			ETimeAcc[0] = 0.f;
-			ECoolTime[0] = StaticESkillTime;
-		}
-
-		if (UsedESkill[0] == true)
-		{
-			if (m_CutDescList[39]->iTexNum == 189)
+			// E
+			if (false == UsedESkill[0])
 			{
+				if ((true == UsedESkill[1]) || (true == UsedESkill[2]))
+				{
+					ECoolRenderOff();
+				}
+			}
+
+			if ((pGameInstance->InputKey(DIK_E) == KEY_STATE::TAP) && (UsedESkill[0] == false))
+			{
+				ECoolRender();
+				UsedESkill[0] = true;
+				m_CutDescList[39]->iTexNum = 195;
 				m_CutDescList[40]->iTexNum = 190;
 			}
-			if ((m_CutDescList[40]->iTexNum == 189) && (0.f < ECoolTime[0]))
+			if (0.f > ECoolTime[0]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
 			{
-				m_CutDescList[40]->iTexNum = 199;
+				ECoolRenderOff();
+				UsedESkill[0] = false;
+				ECoolRadian[0] = 0.f;
+				ETimeAcc[0] = 0.f;
+				ECoolTime[0] = StaticESkillTime;
+				bEEnd = true;
 			}
-			if (ECoolTime[0] > StaticESkillTime - ETimeAcc[0])
-			{
-				ECoolTime[0] -= 0.1f;
-				m_CutDescList[40]->iTexNum -= 1;
-				m_CutDescList[39]->iTexNum = 190 + (_int)ECoolTime[0];
-			}
-		}
 
-		//Q
-		if (false == UsedQSkill[0])
-		{
-			if ((true == UsedQSkill[1]) || (true == UsedQSkill[2]))
+			if (UsedESkill[0] == true)
+			{
+				if (m_CutDescList[39]->iTexNum == 189)
+				{
+					m_CutDescList[40]->iTexNum = 190;
+				}
+				if ((m_CutDescList[40]->iTexNum == 189) && (0.f < ECoolTime[0]))
+				{
+					m_CutDescList[40]->iTexNum = 199;
+				}
+				if (ECoolTime[0] > StaticESkillTime - ETimeAcc[0])
+				{
+					ECoolTime[0] -= 0.1f;
+					m_CutDescList[40]->iTexNum -= 1;
+					m_CutDescList[39]->iTexNum = 190 + (_int)ECoolTime[0];
+				}
+			}
+			if (true == bEEnd)
+			{
+				EEnd(TimeDelta); // bool값 반환 
+			}
+
+			//Q
+			if (false == UsedQSkill[0])
+			{
+				if ((true == UsedQSkill[1]) || (true == UsedQSkill[2]))
+				{
+					QCoolRenderOff();
+				}
+			}
+
+			if ((pGameInstance->InputKey(DIK_Q) == KEY_STATE::TAP) && (UsedQSkill[0] == false))
+			{
+				QCoolRender();
+				UsedQSkill[0] = true;
+				m_CutDescList[41]->iTexNum = 195;
+				m_CutDescList[42]->iTexNum = 190;
+			}
+			if (0.f > QCoolTime[0]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
 			{
 				QCoolRenderOff();
+				UsedQSkill[0] = false;
+				QCoolRadian[0] = 0.f;
+				QTimeAcc[0] = 0.f;
+				QCoolTime[0] = StaticQSkillTime;
+				bQEnd = true;
 			}
-		}
 
-		if ((pGameInstance->InputKey(DIK_Q) == KEY_STATE::TAP) && (UsedQSkill[0] == false))
-		{
-			QCoolRender();
-			UsedQSkill[0] = true;
-			m_CutDescList[41]->iTexNum = 195;
-			m_CutDescList[42]->iTexNum = 190;
-		}
-		if (0.f > QCoolTime[0]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		{
-			QCoolRenderOff();
-			UsedQSkill[0] = false;
-			QCoolRadian[0] = 0.f;
-			QTimeAcc[0] = 0.f;
-			QCoolTime[0] = StaticQSkillTime;
-		}
+			if (UsedQSkill[0] == true)
+			{
+				if (m_CutDescList[41]->iTexNum == 189)
+				{
+					m_CutDescList[41]->iTexNum = 190;
+				}
+				if ((m_CutDescList[42]->iTexNum == 189) && (0.f < QCoolTime[0]))
+				{
+					m_CutDescList[42]->iTexNum = 199;
+				}
+				if (QCoolTime[0] > StaticQSkillTime - QTimeAcc[0])
+				{
+					QCoolTime[0] -= 0.1f;
+					m_CutDescList[42]->iTexNum -= 1;
+					m_CutDescList[41]->iTexNum = 190 + (_int)QCoolTime[0];
+				}
+			}
+			if (true == bQEnd)
+			{
+				QEnd(TimeDelta); // bool값 반환 
+			}
 
-		if (UsedQSkill[0] == true)
-		{
-			if (m_CutDescList[41]->iTexNum == 189)
+			//
+			if (false == UsedRSkill[0])
 			{
-				m_CutDescList[41]->iTexNum = 190;
+				if ((true == UsedRSkill[1]) || (true == UsedRSkill[2]))
+				{
+					RCoolRenderOff();
+				}
 			}
-			if ((m_CutDescList[42]->iTexNum == 189) && (0.f < QCoolTime[0]))
-			{
-				m_CutDescList[42]->iTexNum = 199;
-			}
-			if (QCoolTime[0] > StaticQSkillTime - QTimeAcc[0])
-			{
-				QCoolTime[0] -= 0.1f;
-				m_CutDescList[42]->iTexNum -= 1;
-				m_CutDescList[41]->iTexNum = 190 + (_int)QCoolTime[0];
-			}
-		}
 
-		//
-		if (false == UsedRSkill[0])
-		{
-			if ((true == UsedRSkill[1]) || (true == UsedRSkill[2]))
+			if ((pGameInstance->InputKey(DIK_R) == KEY_STATE::TAP) && (UsedRSkill[0] == false) && (1.f == RRRadian[0]))
+			{
+				RCoolRender();
+				UsedRSkill[0] = true;
+				m_CutDescList[43]->iTexNum = 195;
+				m_CutDescList[44]->iTexNum = 190;
+				RRRadian[0] = 0.f;
+			}
+			if (0.f > RCoolTime[0]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
 			{
 				RCoolRenderOff();
+				UsedRSkill[0] = false;
+				RCoolRadian[0] = 0.f;
+				RTimeAcc[0] = 0.f;
+				RCoolTime[0] = StaticRSkillTime;
+				bREnd = true;
 			}
-		}
 
-		if ((pGameInstance->InputKey(DIK_R) == KEY_STATE::TAP) && (UsedRSkill[0] == false) && (1.f == RRRadian[0]))
-		{
-			RCoolRender();
-			UsedRSkill[0] = true;
-			m_CutDescList[43]->iTexNum = 195;
-			m_CutDescList[44]->iTexNum = 190;
-			RRRadian[0] = 0.f;
-		}
-		if (0.f > RCoolTime[0]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		{
-			RCoolRenderOff();
-			UsedRSkill[0] = false;
-			RCoolRadian[0] = 0.f;
-			RTimeAcc[0] = 0.f;
-			RCoolTime[0] = StaticRSkillTime;
-		}
-
-		if (UsedRSkill[0] == true)
-		{
-			if (m_CutDescList[43]->iTexNum == 189)
+			if (UsedRSkill[0] == true)
 			{
-				m_CutDescList[43]->iTexNum = 190;
+				if (m_CutDescList[43]->iTexNum == 189)
+				{
+					m_CutDescList[43]->iTexNum = 190;
+				}
+				if ((m_CutDescList[44]->iTexNum == 189) && (0.f < RCoolTime[0]))
+				{
+					m_CutDescList[44]->iTexNum = 199;
+				}
+				if (RCoolTime[0] > StaticRSkillTime - RTimeAcc[0])
+				{
+					RCoolTime[0] -= 0.1f;
+					m_CutDescList[44]->iTexNum -= 1;
+					m_CutDescList[43]->iTexNum = 190 + (_int)RCoolTime[0];
+				}
 			}
-			if ((m_CutDescList[44]->iTexNum == 189) && (0.f < RCoolTime[0]))
+
+			if (true == bREnd)
 			{
-				m_CutDescList[44]->iTexNum = 199;
+				REnd(TimeDelta); // bool값 반환 
 			}
-			if (RCoolTime[0] > StaticRSkillTime - RTimeAcc[0])
+
+
+			if ((pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP) && (UsedRSkill[0] == false))
 			{
-				RCoolTime[0] -= 0.1f;
-				m_CutDescList[44]->iTexNum -= 1;
-				m_CutDescList[43]->iTexNum = 190 + (_int)RCoolTime[0];
+				RRRadian[0] += (_float)TimeDelta *0.5f;
+				if (1.f <= RRRadian[0])
+					RRRadian[0] = 1.f;
+
+				IconRadian[0] += (_float)TimeDelta *0.3f;
+				if (1.f <= IconRadian[0])
+					IconRadian[0] = 1.f;
 			}
+
+
+
 		}
+		break;
 
-		if ((pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP) && (UsedRSkill[0] == false))
+		case Client::CUI_MainScreen::eKeyType::DANSUN:
 		{
-			RRRadian[0] += (_float)TimeDelta;
-			if (1.f <= RRRadian[0])
-				RRRadian[0] = 1.f;
+			m_CutDescList[74]->Cool = TCoolRadian[1];
+			m_CutDescList[33]->Cool = ECoolRadian[1];
+			m_CutDescList[34]->Cool = QCoolRadian[1];
+			m_CutDescList[35]->Cool = RCoolRadian[1];
+			m_CutDescList[36]->Cool = RRRadian[1];
+			m_CutDescList[8]->Cool = m_CutDescList[55]->Cool = IconRadian[1];
+			if (false == UsedTSkill[1])
+			{
+				if ((true == UsedTSkill[0]) || (true == UsedTSkill[2]))
+				{
+					TCoolRenderOff();
+				}
+			}
 
-			IconRadian[0] += (_float)TimeDelta * 1.2f;
-			if (1.f <= IconRadian[0])
-				IconRadian[0] = 1.f;
-		}
 
-
-
-	}
-	break;
-
-	case Client::CUI_MainScreen::eKeyType::DANSUN:
-	{
-		m_CutDescList[74]->Cool = TCoolRadian[1];
-		m_CutDescList[33]->Cool = ECoolRadian[1];
-		m_CutDescList[34]->Cool = QCoolRadian[1];
-		m_CutDescList[35]->Cool = RCoolRadian[1];
-		m_CutDescList[36]->Cool = RRRadian[1];
-		m_CutDescList[8]->Cool = IconRadian[1];
-		if (false == UsedTSkill[1])
-		{
-			if ((true == UsedTSkill[0]) || (true == UsedTSkill[2]))
+			if ((pGameInstance->InputKey(DIK_T) == KEY_STATE::TAP) && (UsedTSkill[1] == false))
+			{
+				TCoolRender();
+				UsedTSkill[1] = true;
+				m_CutDescList[71]->iTexNum = 195;
+				m_CutDescList[72]->iTexNum = 190;
+			}
+			if (0.f > TCoolTime[1]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
 			{
 				TCoolRenderOff();
+				UsedTSkill[1] = false;
+				TCoolRadian[1] = 0.f;
+				TTimeAcc[1] = 0.f;
+				TCoolTime[1] = StaticTSkillTime;
+				bTEnd = true;//엔드모션
 			}
-		}
 
-
-		if ((pGameInstance->InputKey(DIK_T) == KEY_STATE::TAP) && (UsedTSkill[1] == false))
-		{
-			TCoolRender();
-			UsedTSkill[1] = true;
-			m_CutDescList[71]->iTexNum = 195;
-			m_CutDescList[72]->iTexNum = 190;
-		}
-		if (0.f > TCoolTime[1]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		{
-			TCoolRenderOff();
-			UsedTSkill[1] = false;
-			TCoolRadian[1] = 0.f;
-			TTimeAcc[1] = 0.f;
-			TCoolTime[1] = StaticTSkillTime;
-		}
-
-		if (UsedTSkill[1] == true)
-		{
-			if (m_CutDescList[71]->iTexNum == 189)
+			if (UsedTSkill[1] == true)
 			{
-				m_CutDescList[71]->iTexNum = 190;
+				if (m_CutDescList[71]->iTexNum == 189)
+				{
+					m_CutDescList[71]->iTexNum = 190;
+				}
+				if ((m_CutDescList[72]->iTexNum == 189) && (0.f < TCoolTime[1]))
+				{
+					m_CutDescList[72]->iTexNum = 199;
+				}
+				if (TCoolTime[1] > StaticTSkillTime - TTimeAcc[1])
+				{
+					TCoolTime[1] -= 0.1f;
+					m_CutDescList[72]->iTexNum -= 1;
+					m_CutDescList[71]->iTexNum = 190 + (_int)TCoolTime[1];
+				}
 			}
-			if ((m_CutDescList[72]->iTexNum == 189) && (0.f < TCoolTime[1]))
-			{
-				m_CutDescList[72]->iTexNum = 199;
-			}
-			if (TCoolTime[1] > StaticTSkillTime - TTimeAcc[1])
-			{
-				TCoolTime[1] -= 0.1f;
-				m_CutDescList[72]->iTexNum -= 1;
-				m_CutDescList[71]->iTexNum = 190 + (_int)TCoolTime[1];
-			}
-		}
 
-		//E
-		if (false == UsedESkill[1])
-		{
-			if ((true == UsedESkill[0]) || (true == UsedESkill[2]))
+			if (true == bTEnd)
 			{
-				ECoolRenderOff();
+				TEnd(TimeDelta); // bool값 반환 
 			}
-		}
 
-		if ((pGameInstance->InputKey(DIK_E) == KEY_STATE::TAP) && (UsedESkill[1] == false))
-		{
-			ECoolRender();
-			UsedESkill[1] = true;
-			m_CutDescList[39]->iTexNum = 195;
-			m_CutDescList[40]->iTexNum = 190;
-		}
-		if (0.f > ECoolTime[1]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		{
-			ECoolRenderOff();
-			UsedESkill[1] = false;
-			ECoolRadian[1] = 0.f;
-			ETimeAcc[1] = 0.f;
-			ECoolTime[1] = StaticESkillTime;
-		}
-
-		if (UsedESkill[1] == true)
-		{
-			if (m_CutDescList[39]->iTexNum == 189)
+			//E
+			if (false == UsedESkill[1])
 			{
+				if ((true == UsedESkill[0]) || (true == UsedESkill[2]))
+				{
+					ECoolRenderOff();
+				}
+			}
+
+			if ((pGameInstance->InputKey(DIK_E) == KEY_STATE::TAP) && (UsedESkill[1] == false))
+			{
+				ECoolRender();
+				UsedESkill[1] = true;
+				m_CutDescList[39]->iTexNum = 195;
 				m_CutDescList[40]->iTexNum = 190;
 			}
-			if ((m_CutDescList[40]->iTexNum == 189) && (0.f < ECoolTime[1]))
+			if (0.f > ECoolTime[1]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
 			{
-				m_CutDescList[40]->iTexNum = 199;
+				ECoolRenderOff();
+				UsedESkill[1] = false;
+				ECoolRadian[1] = 0.f;
+				ETimeAcc[1] = 0.f;
+				ECoolTime[1] = StaticESkillTime;
+				bEEnd = true;
 			}
-			if (ECoolTime[1] > StaticESkillTime - ETimeAcc[1])
-			{
-				ECoolTime[1] -= 0.1f;
-				m_CutDescList[40]->iTexNum -= 1;
-				m_CutDescList[39]->iTexNum = 190 + (_int)ECoolTime[1];
-			}
-		}
 
-		//Q
-		if (false == UsedQSkill[1])
-		{
-			if ((true == UsedQSkill[0]) || (true == UsedQSkill[2]))
+			if (UsedESkill[1] == true)
+			{
+				if (m_CutDescList[39]->iTexNum == 189)
+				{
+					m_CutDescList[40]->iTexNum = 190;
+				}
+				if ((m_CutDescList[40]->iTexNum == 189) && (0.f < ECoolTime[1]))
+				{
+					m_CutDescList[40]->iTexNum = 199;
+				}
+				if (ECoolTime[1] > StaticESkillTime - ETimeAcc[1])
+				{
+					ECoolTime[1] -= 0.1f;
+					m_CutDescList[40]->iTexNum -= 1;
+					m_CutDescList[39]->iTexNum = 190 + (_int)ECoolTime[1];
+				}
+			}
+
+			if (true == bEEnd)
+			{
+				EEnd(TimeDelta); // bool값 반환 
+			}
+
+			//Q
+			if (false == UsedQSkill[1])
+			{
+				if ((true == UsedQSkill[0]) || (true == UsedQSkill[2]))
+				{
+					QCoolRenderOff();
+				}
+			}
+
+			if ((pGameInstance->InputKey(DIK_Q) == KEY_STATE::TAP) && (UsedQSkill[1] == false))
+			{
+				QCoolRender();
+				UsedQSkill[1] = true;
+				m_CutDescList[41]->iTexNum = 195;
+				m_CutDescList[42]->iTexNum = 190;
+			}
+			if (0.f > QCoolTime[1]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
 			{
 				QCoolRenderOff();
+				UsedQSkill[1] = false;
+				QCoolRadian[1] = 0.f;
+				QTimeAcc[1] = 0.f;
+				QCoolTime[1] = StaticQSkillTime;
+				bQEnd = true;
 			}
-		}
 
-		if ((pGameInstance->InputKey(DIK_Q) == KEY_STATE::TAP) && (UsedQSkill[1] == false))
-		{
-			QCoolRender();
-			UsedQSkill[1] = true;
-			m_CutDescList[41]->iTexNum = 195;
-			m_CutDescList[42]->iTexNum = 190;
-		}
-		if (0.f > QCoolTime[1]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		{
-			QCoolRenderOff();
-			UsedQSkill[1] = false;
-			QCoolRadian[1] = 0.f;
-			QTimeAcc[1] = 0.f;
-			QCoolTime[1] = StaticQSkillTime;
-		}
+			if (UsedQSkill[1] == true)
+			{
+				if (m_CutDescList[41]->iTexNum == 189)
+				{
+					m_CutDescList[41]->iTexNum = 190;
+				}
+				if ((m_CutDescList[42]->iTexNum == 189) && (0.f < QCoolTime[1]))
+				{
+					m_CutDescList[42]->iTexNum = 199;
+				}
+				if (QCoolTime[1] > StaticQSkillTime - QTimeAcc[1])
+				{
+					QCoolTime[1] -= 0.1f;
+					m_CutDescList[42]->iTexNum -= 1;
+					m_CutDescList[41]->iTexNum = 190 + (_int)QCoolTime[1];
+				}
+			}
+			if (true == bQEnd)
+			{
+				QEnd(TimeDelta); // bool값 반환 
+			}
 
-		if (UsedQSkill[1] == true)
-		{
-			if (m_CutDescList[41]->iTexNum == 189)
-			{
-				m_CutDescList[41]->iTexNum = 190;
-			}
-			if ((m_CutDescList[42]->iTexNum == 189) && (0.f < QCoolTime[1]))
-			{
-				m_CutDescList[42]->iTexNum = 199;
-			}
-			if (QCoolTime[1] > StaticQSkillTime - QTimeAcc[1])
-			{
-				QCoolTime[1] -= 0.1f;
-				m_CutDescList[42]->iTexNum -= 1;
-				m_CutDescList[41]->iTexNum = 190 + (_int)QCoolTime[1];
-			}
-		}
 
-		//
-		if (false == UsedRSkill[1])
-		{
-			if ((true == UsedRSkill[0]) || (true == UsedRSkill[2]))
+			//
+			if (false == UsedRSkill[1])
+			{
+				if ((true == UsedRSkill[0]) || (true == UsedRSkill[2]))
+				{
+					RCoolRenderOff();
+				}
+			}
+
+			if ((pGameInstance->InputKey(DIK_R) == KEY_STATE::TAP) && (UsedRSkill[1] == false) && (1.f == RRRadian[1]))
+			{
+				RCoolRender();
+				UsedRSkill[1] = true;
+				m_CutDescList[43]->iTexNum = 195;
+				m_CutDescList[44]->iTexNum = 190;
+				RRRadian[1] = 0.f;
+			}
+			if (0.f > RCoolTime[1]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
 			{
 				RCoolRenderOff();
+				UsedRSkill[1] = false;
+				RCoolRadian[1] = 0.f;
+				RTimeAcc[1] = 0.f;
+				RCoolTime[1] = StaticRSkillTime;
+				bREnd = true;
 			}
-		}
 
-		if ((pGameInstance->InputKey(DIK_R) == KEY_STATE::TAP) && (UsedRSkill[1] == false) && (1.f == RRRadian[1]))
-		{
-			RCoolRender();
-			UsedRSkill[1] = true;
-			m_CutDescList[43]->iTexNum = 195;
-			m_CutDescList[44]->iTexNum = 190;
-		}
-		if (0.f > RCoolTime[1]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		{
-			RCoolRenderOff();
-			UsedRSkill[1] = false;
-			RCoolRadian[1] = 0.f;
-			RTimeAcc[1] = 0.f;
-			RCoolTime[1] = StaticRSkillTime;
-			RRRadian[1] = 0.f;
-		}
-
-		if (UsedRSkill[1] == true)
-		{
-			if (m_CutDescList[43]->iTexNum == 189)
+			if (UsedRSkill[1] == true)
 			{
-				m_CutDescList[43]->iTexNum = 190;
+				if (m_CutDescList[43]->iTexNum == 189)
+				{
+					m_CutDescList[43]->iTexNum = 190;
+				}
+				if ((m_CutDescList[44]->iTexNum == 189) && (0.f < RCoolTime[1]))
+				{
+					m_CutDescList[44]->iTexNum = 199;
+				}
+				if (RCoolTime[1] > StaticRSkillTime - RTimeAcc[1])
+				{
+					RCoolTime[1] -= 0.1f;
+					m_CutDescList[44]->iTexNum -= 1;
+					m_CutDescList[43]->iTexNum = 190 + (_int)RCoolTime[1];
+				}
 			}
-			if ((m_CutDescList[44]->iTexNum == 189) && (0.f < RCoolTime[1]))
+
+			if (true == bREnd)
 			{
-				m_CutDescList[44]->iTexNum = 199;
+				REnd(TimeDelta); // bool값 반환 
 			}
-			if (RCoolTime[1] > StaticRSkillTime - RTimeAcc[1])
+
+			if ((pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP) && (UsedRSkill[1] == false))
 			{
-				RCoolTime[1] -= 0.1f;
-				m_CutDescList[44]->iTexNum -= 1;
-				m_CutDescList[43]->iTexNum = 190 + (_int)RCoolTime[1];
+				RRRadian[1] += (_float)TimeDelta *0.5f;
+				if (1.f <= RRRadian[1])
+					RRRadian[1] = 1.f;
+
+				IconRadian[1] += (_float)TimeDelta *0.3f;
+				if (1.f <= IconRadian[1])
+					IconRadian[1] = 1.f;
 			}
+
 		}
+		break;
 
-		if ((pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP) && (UsedRSkill[1] == false))
+		case Client::CUI_MainScreen::eKeyType::RED:
 		{
-			RRRadian[1] += (_float)TimeDelta;
-			if (1.f <= RRRadian[1])
-				RRRadian[1] = 1.f;
+			m_CutDescList[74]->Cool = TCoolRadian[2];
+			m_CutDescList[33]->Cool = ECoolRadian[2];
+			m_CutDescList[34]->Cool = QCoolRadian[2];
+			m_CutDescList[35]->Cool = RCoolRadian[2];
+			m_CutDescList[36]->Cool = RRRadian[2];
+			m_CutDescList[8]->Cool = m_CutDescList[56]->Cool = IconRadian[1];
 
-			IconRadian[1] += (_float)TimeDelta *1.2f;
-			if (1.f <= IconRadian[1])
-				IconRadian[1] = 1.f;
-		}
+			if (false == UsedTSkill[2])
+			{
 
-	}
-	break;
+				if ((true == UsedTSkill[0]) || (true == UsedTSkill[1]))
+				{
+					TCoolRenderOff();
+				}
+			}
 
-	case Client::CUI_MainScreen::eKeyType::RED:
-	{
-		m_CutDescList[74]->Cool = TCoolRadian[2];
-		m_CutDescList[33]->Cool = ECoolRadian[2];
-		m_CutDescList[34]->Cool = QCoolRadian[2];
-		m_CutDescList[35]->Cool = RCoolRadian[2];
-		m_CutDescList[36]->Cool = RRRadian[2];
-		m_CutDescList[8]->Cool = IconRadian[1];
 
-		if (false == UsedTSkill[2])
-		{
-
-			if ((true == UsedTSkill[0]) || (true == UsedTSkill[1]))
+			if ((pGameInstance->InputKey(DIK_T) == KEY_STATE::TAP) && (UsedTSkill[2] == false))
+			{
+				TCoolRender();
+				UsedTSkill[2] = true;
+				m_CutDescList[71]->iTexNum = 195;
+				m_CutDescList[72]->iTexNum = 190;
+			}
+			if (0.f > TCoolTime[2]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
 			{
 				TCoolRenderOff();
+				UsedTSkill[2] = false;
+				TCoolRadian[2] = 0.f;
+				TTimeAcc[2] = 0.f;
+				TCoolTime[2] = StaticTSkillTime;
+				bTEnd = true;
 			}
-		}
 
-
-		if ((pGameInstance->InputKey(DIK_T) == KEY_STATE::TAP) && (UsedTSkill[2] == false))
-		{
-			TCoolRender();
-			UsedTSkill[2] = true;
-			m_CutDescList[71]->iTexNum = 195;
-			m_CutDescList[72]->iTexNum = 190;
-		}
-		if (0.f > TCoolTime[2]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		{
-			TCoolRenderOff();
-			UsedTSkill[2] = false;
-			TCoolRadian[2] = 0.f;
-			TTimeAcc[2] = 0.f;
-			TCoolTime[2] = StaticTSkillTime;
-		}
-
-		if (UsedTSkill[2] == true)
-		{
-			if (m_CutDescList[71]->iTexNum == 189)
+			if (UsedTSkill[2] == true)
 			{
-				m_CutDescList[71]->iTexNum = 190;
+				if (m_CutDescList[71]->iTexNum == 189)
+				{
+					m_CutDescList[71]->iTexNum = 190;
+				}
+				if ((m_CutDescList[72]->iTexNum == 189) && (0.f < TCoolTime[2]))
+				{
+					m_CutDescList[72]->iTexNum = 199;
+				}
+				if (TCoolTime[2] > StaticTSkillTime - TTimeAcc[2])
+				{
+					TCoolTime[2] -= 0.1f;
+					m_CutDescList[72]->iTexNum -= 1;
+					m_CutDescList[71]->iTexNum = 190 + (_int)TCoolTime[2];
+				}
 			}
-			if ((m_CutDescList[72]->iTexNum == 189) && (0.f < TCoolTime[2]))
-			{
-				m_CutDescList[72]->iTexNum = 199;
-			}
-			if (TCoolTime[2] > StaticTSkillTime - TTimeAcc[2])
-			{
-				TCoolTime[2] -= 0.1f;
-				m_CutDescList[72]->iTexNum -= 1;
-				m_CutDescList[71]->iTexNum = 190 + (_int)TCoolTime[2];
-			}
-		}
 
-		//E
-		if (false == UsedESkill[2])
-		{
-			if ((true == UsedESkill[0]) || (true == UsedESkill[1]))
+			if (true == bTEnd)
 			{
-				ECoolRenderOff();
+				TEnd(TimeDelta); // bool값 반환 
 			}
-		}
 
-		if ((pGameInstance->InputKey(DIK_E) == KEY_STATE::TAP) && (UsedESkill[2] == false))
-		{
-			ECoolRender();
-			UsedESkill[2] = true;
-			m_CutDescList[39]->iTexNum = 195;
-			m_CutDescList[40]->iTexNum = 190;
-		}
-		if (0.f > ECoolTime[2]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		{
-			ECoolRenderOff();
-			UsedESkill[2] = false;
-			ECoolRadian[2] = 0.f;
-			ETimeAcc[2] = 0.f;
-			ECoolTime[2] = StaticESkillTime;
-		}
-
-		if (UsedESkill[2] == true)
-		{
-			if (m_CutDescList[39]->iTexNum == 189)
+			//E
+			if (false == UsedESkill[2])
 			{
+				if ((true == UsedESkill[0]) || (true == UsedESkill[1]))
+				{
+					ECoolRenderOff();
+				}
+			}
+
+			if ((pGameInstance->InputKey(DIK_E) == KEY_STATE::TAP) && (UsedESkill[2] == false))
+			{
+				ECoolRender();
+				UsedESkill[2] = true;
+				m_CutDescList[39]->iTexNum = 195;
 				m_CutDescList[40]->iTexNum = 190;
 			}
-			if ((m_CutDescList[40]->iTexNum == 189) && (0.f < ECoolTime[2]))
+			if (0.f > ECoolTime[2]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
 			{
-				m_CutDescList[40]->iTexNum = 199;
+				ECoolRenderOff();
+				UsedESkill[2] = false;
+				ECoolRadian[2] = 0.f;
+				ETimeAcc[2] = 0.f;
+				ECoolTime[2] = StaticESkillTime;
+				bEEnd = true;
 			}
-			if (ECoolTime[2] > StaticESkillTime - ETimeAcc[2])
+
+			if (UsedESkill[2] == true)
 			{
-				ECoolTime[2] -= 0.1f;
-				m_CutDescList[40]->iTexNum -= 1;
-				m_CutDescList[39]->iTexNum = 190 + (_int)ECoolTime[2];
+				if (m_CutDescList[39]->iTexNum == 189)
+				{
+					m_CutDescList[40]->iTexNum = 190;
+				}
+				if ((m_CutDescList[40]->iTexNum == 189) && (0.f < ECoolTime[2]))
+				{
+					m_CutDescList[40]->iTexNum = 199;
+				}
+				if (ECoolTime[2] > StaticESkillTime - ETimeAcc[2])
+				{
+					ECoolTime[2] -= 0.1f;
+					m_CutDescList[40]->iTexNum -= 1;
+					m_CutDescList[39]->iTexNum = 190 + (_int)ECoolTime[2];
+				}
 			}
-		}
 
+			if (true == bEEnd)
+			{
+				EEnd(TimeDelta); // bool값 반환 
+			}
 
-		//
-		if (false == UsedQSkill[2])
-		{
-			if ((true == UsedQSkill[0]) || (true == UsedQSkill[1]))
+			//
+			if (false == UsedQSkill[2])
+			{
+				if ((true == UsedQSkill[0]) || (true == UsedQSkill[1]))
+				{
+					QCoolRenderOff();
+				}
+			}
+
+			if ((pGameInstance->InputKey(DIK_Q) == KEY_STATE::TAP) && (UsedQSkill[2] == false))
+			{
+				QCoolRender();
+				UsedQSkill[2] = true;
+				m_CutDescList[41]->iTexNum = 195;
+				m_CutDescList[42]->iTexNum = 190;
+			}
+			if (0.f > QCoolTime[2]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
 			{
 				QCoolRenderOff();
+				UsedQSkill[2] = false;
+				QCoolRadian[2] = 0.f;
+				QTimeAcc[2] = 0.f;
+				QCoolTime[2] = StaticQSkillTime;
+				bQEnd = true;
 			}
-		}
 
-		if ((pGameInstance->InputKey(DIK_Q) == KEY_STATE::TAP) && (UsedQSkill[2] == false))
-		{
-			QCoolRender();
-			UsedQSkill[2] = true;
-			m_CutDescList[41]->iTexNum = 195;
-			m_CutDescList[42]->iTexNum = 190;
-		}
-		if (0.f > QCoolTime[2]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		{
-			QCoolRenderOff();
-			UsedQSkill[2] = false;
-			QCoolRadian[2] = 0.f;
-			QTimeAcc[2] = 0.f;
-			QCoolTime[2] = StaticQSkillTime;
-		}
+			if (UsedQSkill[2] == true)
+			{
+				if (m_CutDescList[41]->iTexNum == 189)
+				{
+					m_CutDescList[41]->iTexNum = 190;
+				}
+				if ((m_CutDescList[42]->iTexNum == 189) && (0.f < QCoolTime[2]))
+				{
+					m_CutDescList[42]->iTexNum = 199;
+				}
+				if (QCoolTime[2] > StaticQSkillTime - QTimeAcc[2])
+				{
+					QCoolTime[2] -= 0.1f;
+					m_CutDescList[42]->iTexNum -= 1;
+					m_CutDescList[41]->iTexNum = 190 + (_int)QCoolTime[2];
+				}
+			}
+			if (true == bQEnd)
+			{
+				QEnd(TimeDelta); // bool값 반환 
+			}
 
-		if (UsedQSkill[2] == true)
-		{
-			if (m_CutDescList[41]->iTexNum == 189)
-			{
-				m_CutDescList[41]->iTexNum = 190;
-			}
-			if ((m_CutDescList[42]->iTexNum == 189) && (0.f < QCoolTime[2]))
-			{
-				m_CutDescList[42]->iTexNum = 199;
-			}
-			if (QCoolTime[2] > StaticQSkillTime - QTimeAcc[2])
-			{
-				QCoolTime[2] -= 0.1f;
-				m_CutDescList[42]->iTexNum -= 1;
-				m_CutDescList[41]->iTexNum = 190 + (_int)QCoolTime[2];
-			}
-		}
 
-		//
-		if (false == UsedRSkill[2])
-		{
-			if ((true == UsedRSkill[0]) || (true == UsedRSkill[1]))
+			//
+			if (false == UsedRSkill[2])
+			{
+				if ((true == UsedRSkill[0]) || (true == UsedRSkill[1]))
+				{
+					RCoolRenderOff();
+				}
+			}
+
+			if ((pGameInstance->InputKey(DIK_R) == KEY_STATE::TAP) && (UsedRSkill[2] == false) && (1.f == RRRadian[2]))
+			{
+				RCoolRender();
+				UsedRSkill[2] = true;
+				m_CutDescList[43]->iTexNum = 195;
+				m_CutDescList[44]->iTexNum = 190;
+				RRRadian[2] = 0.f;
+			}
+			if (0.f > RCoolTime[2]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
 			{
 				RCoolRenderOff();
+				UsedRSkill[2] = false;
+				RCoolRadian[2] = 0.f;
+				RTimeAcc[2] = 0.f;
+				RCoolTime[2] = StaticRSkillTime;
+				bREnd = true;
 			}
-		}
 
-		if ((pGameInstance->InputKey(DIK_R) == KEY_STATE::TAP) && (UsedRSkill[2] == false) && (1.f == RRRadian[2]))
-		{
-			RCoolRender();
-			UsedRSkill[2] = true;
-			m_CutDescList[43]->iTexNum = 195;
-			m_CutDescList[44]->iTexNum = 190;
-		}
-		if (0.f > RCoolTime[2]) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		{
-			RCoolRenderOff();
-			UsedRSkill[2] = false;
-			RCoolRadian[2] = 0.f;
-			RTimeAcc[2] = 0.f;
-			RCoolTime[2] = StaticRSkillTime;
-		}
-
-		if (UsedRSkill[2] == true)
-		{
-			if (m_CutDescList[43]->iTexNum == 189)
+			if (UsedRSkill[2] == true)
 			{
-				m_CutDescList[43]->iTexNum = 190;
+				if (m_CutDescList[43]->iTexNum == 189)
+				{
+					m_CutDescList[43]->iTexNum = 190;
+				}
+				if ((m_CutDescList[44]->iTexNum == 189) && (0.f < RCoolTime[2]))
+				{
+					m_CutDescList[44]->iTexNum = 199;
+				}
+				if (RCoolTime[2] > StaticRSkillTime - RTimeAcc[2])
+				{
+					RCoolTime[2] -= 0.1f;
+					m_CutDescList[44]->iTexNum -= 1;
+					m_CutDescList[43]->iTexNum = 190 + (_int)RCoolTime[2];
+				}
 			}
-			if ((m_CutDescList[44]->iTexNum == 189) && (0.f < RCoolTime[2]))
+
+			if (true == bREnd)
 			{
-				m_CutDescList[44]->iTexNum = 199;
+				REnd(TimeDelta); // bool값 반환 
 			}
-			if (RCoolTime[2] > StaticRSkillTime - RTimeAcc[2])
+
+			if ((pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP) && (UsedRSkill[2] == false))
 			{
-				RCoolTime[2] -= 0.1f;
-				m_CutDescList[44]->iTexNum -= 1;
-				m_CutDescList[43]->iTexNum = 190 + (_int)RCoolTime[2];
+				RRRadian[2] += (_float)TimeDelta *0.5f;
+				if (1.f <= RRRadian[2])
+					RRRadian[2] = 1.f;
+
+				IconRadian[2] += (_float)TimeDelta *0.3f;
+				if (1.f <= IconRadian[2])
+					IconRadian[2] = 1.f;
 			}
+
+
 		}
+		break;
 
-		if ((pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP) && (UsedRSkill[2] == false))
-		{
-			RRRadian[2] += (_float)TimeDelta;
-			if (1.f <= RRRadian[2])
-				RRRadian[2] = 1.f;
-
-			IconRadian[2] += (_float)TimeDelta *1.2f;
-			if (1.f <= IconRadian[2])
-				IconRadian[2] = 1.f;
 		}
-
-
-	}
-	break;
-
 	}
 
 }
-
 
 void CUI_MainScreen::LateTick(_double TimeDelta)
 {
@@ -759,7 +822,7 @@ HRESULT CUI_MainScreen::Render()
 				if (FAILED(Setup_ShaderResourcesT(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 			else if (eKeyType::Q == (eKeyType)m_CutDescList[i]->eKeyType)
 			{
@@ -767,7 +830,7 @@ HRESULT CUI_MainScreen::Render()
 				if (FAILED(Setup_ShaderResourcesQ(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 			else if (eKeyType::E == (eKeyType)m_CutDescList[i]->eKeyType)
 			{
@@ -775,7 +838,7 @@ HRESULT CUI_MainScreen::Render()
 				if (FAILED(Setup_ShaderResourcesE(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 			else if (eKeyType::R == (eKeyType)m_CutDescList[i]->eKeyType)
 			{
@@ -783,7 +846,7 @@ HRESULT CUI_MainScreen::Render()
 				if (FAILED(Setup_ShaderResourcesR(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 			else if (eKeyType::I0 == (eKeyType)m_CutDescList[i]->eKeyType)
 			{
@@ -791,7 +854,7 @@ HRESULT CUI_MainScreen::Render()
 				if (FAILED(Setup_ShaderResourcesI0(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 			else if (eKeyType::I1 == (eKeyType)m_CutDescList[i]->eKeyType)
 			{
@@ -799,7 +862,7 @@ HRESULT CUI_MainScreen::Render()
 				if (FAILED(Setup_ShaderResourcesI1(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 			else if (eKeyType::I2 == (eKeyType)m_CutDescList[i]->eKeyType)
 			{
@@ -807,7 +870,7 @@ HRESULT CUI_MainScreen::Render()
 				if (FAILED(Setup_ShaderResourcesI2(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 
 			else if (eKeyType::RR == (eKeyType)m_CutDescList[i]->eKeyType)
@@ -816,42 +879,42 @@ HRESULT CUI_MainScreen::Render()
 				if (FAILED(Setup_ShaderResourcesRR(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 			else if (eKeyType::GRAPH0 == (eKeyType)m_CutDescList[i]->eKeyType)
 			{
 				if (FAILED(Setup_ShaderResourcesGraphs0(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 			else if (eKeyType::GRAPH1 == (eKeyType)m_CutDescList[i]->eKeyType)
 			{
 				if (FAILED(Setup_ShaderResourcesGraphs1(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 			else if (eKeyType::GRAPH2 == (eKeyType)m_CutDescList[i]->eKeyType)
 			{
 				if (FAILED(Setup_ShaderResourcesGraphs2(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 			else if ((true == m_CutDescList[13]->bCoolTime) || (true == m_CutDescList[14]->bCoolTime) || (true == m_CutDescList[15]->bCoolTime))
 			{
 				if (FAILED(Setup_ShaderResourcesPlayer(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 			else
 			{
 				if (FAILED(Setup_ShaderResourcesCut(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
-				m_BufferCutList[i]->Render();
+				m_pVIBuffer->Render();
 			}
 		}
 
@@ -935,6 +998,10 @@ HRESULT CUI_MainScreen::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UI,
 		TEXT("com_texFunc"), (CComponent**)&m_pTexFunc)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::VIBUFFER_RECT,
+		L"com_vibuffer", (CComponent**)&m_pVIBuffer)))
 		return E_FAIL;
 
 	return S_OK;
@@ -1476,6 +1543,132 @@ void CUI_MainScreen::R(_double TimeDelta)
 
 }
 
+_bool CUI_MainScreen::TEnd(_double TimeDelta)
+{
+
+	m_CutDescList[4]->TimeAcc += (_float)TimeDelta;
+
+	if (m_CutDescList[4]->TimeAcc < (m_CutDescList[4]->Duration) / 2.f)
+	{
+		_float fWidth = m_CutDescList[4]->fWidthCut + m_CutDescList[4]->fSpeedWidth * (_float)TimeDelta;
+		m_CutDescList[4]->fWidthCut = m_CutDescList[4]->WorldMatrixCut._11 = fWidth;
+
+		_float fHeight = m_CutDescList[4]->fHeightCut + m_CutDescList[4]->fSpeedHeight * (_float)TimeDelta;
+		m_CutDescList[4]->fHeightCut = m_CutDescList[4]->WorldMatrixCut._22 = fHeight;
+	}
+	else if ((m_CutDescList[4]->TimeAcc < m_CutDescList[4]->Duration) && (m_CutDescList[4]->TimeAcc >(m_CutDescList[4]->Duration) / 2.f))
+	{
+		_float fWidth = m_CutDescList[4]->fWidthCut - m_CutDescList[4]->fSpeedWidth * (_float)TimeDelta;
+		m_CutDescList[4]->fWidthCut = m_CutDescList[4]->WorldMatrixCut._11 = fWidth;
+
+		_float fHeight = m_CutDescList[4]->fHeightCut - m_CutDescList[4]->fSpeedHeight * (_float)TimeDelta;
+		m_CutDescList[4]->fHeightCut = m_CutDescList[4]->WorldMatrixCut._22 = fHeight;
+	}
+	else
+	{
+		m_CutDescList[4]->fWidthCut = 56.f;
+		m_CutDescList[4]->fHeightCut = 56.f;
+		m_CutDescList[4]->TimeAcc = 0.f;
+		bTEnd = false;
+		return true;
+	}
+	return false;
+}
+
+_bool CUI_MainScreen::EEnd(_double TimeDelta)
+{
+
+	m_CutDescList[5]->TimeAcc += (_float)TimeDelta;
+
+	if (m_CutDescList[5]->TimeAcc < (m_CutDescList[5]->Duration) / 2.f)
+	{
+		_float fWidth = m_CutDescList[5]->fWidthCut + m_CutDescList[5]->fSpeedWidth * (_float)TimeDelta;
+		m_CutDescList[5]->fWidthCut = m_CutDescList[5]->WorldMatrixCut._11 = fWidth;
+
+		_float fHeight = m_CutDescList[5]->fHeightCut + m_CutDescList[5]->fSpeedHeight * (_float)TimeDelta;
+		m_CutDescList[5]->fHeightCut = m_CutDescList[5]->WorldMatrixCut._22 = fHeight;
+	}
+	else if ((m_CutDescList[5]->TimeAcc < m_CutDescList[5]->Duration) && (m_CutDescList[5]->TimeAcc >(m_CutDescList[5]->Duration) / 2.f))
+	{
+		_float fWidth = m_CutDescList[5]->fWidthCut - m_CutDescList[5]->fSpeedWidth * (_float)TimeDelta;
+		m_CutDescList[5]->fWidthCut = m_CutDescList[5]->WorldMatrixCut._11 = fWidth;
+
+		_float fHeight = m_CutDescList[5]->fHeightCut - m_CutDescList[5]->fSpeedHeight * (_float)TimeDelta;
+		m_CutDescList[5]->fHeightCut = m_CutDescList[5]->WorldMatrixCut._22 = fHeight;
+	}
+	else
+	{
+		m_CutDescList[5]->fWidthCut = 56.f;
+		m_CutDescList[5]->fHeightCut = 56.f;
+		m_CutDescList[5]->TimeAcc = 0.f;
+		bEEnd = false;
+		return true;
+	}
+	return false;
+}
+
+_bool CUI_MainScreen::QEnd(_double TimeDelta)
+{
+	m_CutDescList[6]->TimeAcc += (_float)TimeDelta;
+
+	if (m_CutDescList[6]->TimeAcc < (m_CutDescList[6]->Duration) / 2.f)
+	{
+		_float fWidth = m_CutDescList[6]->fWidthCut + m_CutDescList[6]->fSpeedWidth * (_float)TimeDelta;
+		m_CutDescList[6]->fWidthCut = m_CutDescList[6]->WorldMatrixCut._11 = fWidth;
+
+		_float fHeight = m_CutDescList[6]->fHeightCut + m_CutDescList[6]->fSpeedHeight * (_float)TimeDelta;
+		m_CutDescList[6]->fHeightCut = m_CutDescList[6]->WorldMatrixCut._22 = fHeight;
+	}
+	else if ((m_CutDescList[6]->TimeAcc < m_CutDescList[6]->Duration) && (m_CutDescList[6]->TimeAcc >(m_CutDescList[6]->Duration) / 2.f))
+	{
+		_float fWidth = m_CutDescList[6]->fWidthCut - m_CutDescList[6]->fSpeedWidth * (_float)TimeDelta;
+		m_CutDescList[6]->fWidthCut = m_CutDescList[6]->WorldMatrixCut._11 = fWidth;
+
+		_float fHeight = m_CutDescList[6]->fHeightCut - m_CutDescList[6]->fSpeedHeight * (_float)TimeDelta;
+		m_CutDescList[6]->fHeightCut = m_CutDescList[6]->WorldMatrixCut._22 = fHeight;
+	}
+	else
+	{
+		m_CutDescList[6]->fWidthCut = 56.f;
+		m_CutDescList[6]->fHeightCut = 56.f;
+		m_CutDescList[6]->TimeAcc = 0.f;
+		bQEnd = false;
+		return true;
+	}
+	return false;
+}
+
+_bool CUI_MainScreen::REnd(_double TimeDelta)
+{
+	m_CutDescList[7]->TimeAcc += (_float)TimeDelta;
+
+	if (m_CutDescList[7]->TimeAcc < (m_CutDescList[7]->Duration) / 2.f)
+	{
+		_float fWidth = m_CutDescList[7]->fWidthCut + m_CutDescList[7]->fSpeedWidth * (_float)TimeDelta;
+		m_CutDescList[7]->fWidthCut = m_CutDescList[7]->WorldMatrixCut._11 = fWidth;
+
+		_float fHeight = m_CutDescList[7]->fHeightCut + m_CutDescList[7]->fSpeedHeight * (_float)TimeDelta;
+		m_CutDescList[7]->fHeightCut = m_CutDescList[7]->WorldMatrixCut._22 = fHeight;
+	}
+	else if ((m_CutDescList[7]->TimeAcc < m_CutDescList[7]->Duration) && (m_CutDescList[7]->TimeAcc >(m_CutDescList[7]->Duration) / 2.f))
+	{
+		_float fWidth = m_CutDescList[7]->fWidthCut - m_CutDescList[7]->fSpeedWidth * (_float)TimeDelta;
+		m_CutDescList[7]->fWidthCut = m_CutDescList[7]->WorldMatrixCut._11 = fWidth;
+
+		_float fHeight = m_CutDescList[7]->fHeightCut - m_CutDescList[7]->fSpeedHeight * (_float)TimeDelta;
+		m_CutDescList[7]->fHeightCut = m_CutDescList[7]->WorldMatrixCut._22 = fHeight;
+	}
+	else
+	{
+		m_CutDescList[7]->fWidthCut = 56.f;
+		m_CutDescList[7]->fHeightCut = 56.f;
+		m_CutDescList[7]->TimeAcc = 0.f;
+		bREnd = false;
+		return true;
+	}
+	return false;
+}
+
 void	CUI_MainScreen::RenderCurrentPlayer1()
 {
 	/*
@@ -1498,11 +1691,10 @@ void	CUI_MainScreen::RenderCurrentPlayer1()
 	m_CutDescList[46]->bRender = false;
 	m_CutDescList[66]->bRender = false;
 
-
 	//스킬
-	m_CutDescList[5]->iTexNum = 170;
-	m_CutDescList[6]->iTexNum = 114;
-	m_CutDescList[7]->iTexNum = 115;
+	m_CutDescList[5]->iTexNum = 124;
+	m_CutDescList[6]->iTexNum = 158;
+	m_CutDescList[7]->iTexNum = 125;
 
 }
 
@@ -1769,11 +1961,6 @@ void CUI_MainScreen::Load()
 		{
 			m_CutDescList.push_back(Desc);
 
-			m_pVIBufferCut = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
-			if (nullptr == m_pVIBufferCut)
-				return;
-
-			m_BufferCutList.push_back(m_pVIBufferCut);
 		}
 	}
 
@@ -1809,7 +1996,7 @@ void CUI_MainScreen::UVWave(_double TimeDelta)
 
 void CUI_MainScreen::HPBar(_double TimeDelta)
 { //83->빨 82->흰
-	//흰색 줄어듬
+  //흰색 줄어듬
 	if (0.f < m_fWhiteBar)
 	{
 		if (0 < m_Damage) // 힐
@@ -1820,24 +2007,30 @@ void CUI_MainScreen::HPBar(_double TimeDelta)
 				m_PreHp = m_RedDamageACC = m_CurrentHp;
 			}
 			m_CurrentHp += m_Damage * (_float)TimeDelta;
-			m_fWhiteBar = m_CurrentHp / m_CutDescList[31]->fWidthCut;
+			m_fWhiteBar = m_CurrentHp / m_HP;
 		}
 		else
 		{
 			m_CurrentHp += m_Damage;
-			m_fWhiteBar = m_CurrentHp / m_CutDescList[31]->fWidthCut;
+			_float Test = m_CurrentHp / m_HP;
+			m_fWhiteBar = Test;
 			m_PreHp = m_CurrentHp;
 			m_bHit = false;
 			m_bRedStart = true;
 		}
 	}
+
+
 }
 void CUI_MainScreen::HPRedBar(_double TimeDelta)
 {
 	if (m_CurrentHp < m_RedDamageACC)
 	{
+
 		m_RedDamageACC += (m_CurrentHp - m_RedDamageACC) * (_float)TimeDelta;
-		m_fRedBar = m_RedDamageACC / m_CutDescList[32]->fWidthCut;
+		m_fRedBar = m_RedDamageACC / m_HP;
+
+
 	}
 	else
 	{
@@ -2578,15 +2771,7 @@ void CUI_MainScreen::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexFunc);
-	m_pVIBufferCut = nullptr;
-	Safe_Release(m_pVIBufferCut);
-
-
-	for (auto& Buffer : m_BufferCutList)
-	{
-		Safe_Release(Buffer);
-	}
-	m_BufferCutList.clear();
+	Safe_Release(m_pVIBuffer);
 
 	if (!m_bClone)
 	{

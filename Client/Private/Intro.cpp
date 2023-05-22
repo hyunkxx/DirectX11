@@ -11,11 +11,9 @@ CIntro::CIntro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CIntro::CIntro(const CIntro& rhs)
 	: CGameObject(rhs)
 {
-	for (_uint i = 0; i <(_uint)rhs.m_BufferList.size(); ++i)
+	for (auto& Desc : rhs.m_DescList)
 	{
-		m_BufferList.push_back(rhs.m_BufferList[i]);
-		Safe_AddRef(rhs.m_BufferList[i]);
-		m_DescList.push_back(rhs.m_DescList[i]);
+		m_DescList.push_back(Desc);
 	}
 }
 
@@ -140,27 +138,27 @@ HRESULT CIntro::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	_uint Bufferindex = 0;
-	for (auto& pBuffer : m_BufferList)
+	_uint Descindex = 0;
+	for (auto& Desc : m_DescList)
 	{
-		if (nullptr != pBuffer)
+		if (nullptr != Desc)
 		{
-			if (FAILED(Setup_ShaderResources(Bufferindex)))
+			if (FAILED(Setup_ShaderResources(Descindex)))
 				return E_FAIL;
 			m_pShader->Begin(m_iPass);
 
 
-			if ((2 == Bufferindex) || (3 == Bufferindex))
+			if ((2 == Descindex) || (3 == Descindex))
 			{
 				if (false == m_bLoadingEnd)
 				{
-					pBuffer->Render();
+					m_pVIBuffer->Render();
 				}
 			}
 			else
-				pBuffer->Render();
+				m_pVIBuffer->Render();
 
-			++Bufferindex;
+			++Descindex;
 		}
 	}
 	return S_OK;
@@ -351,6 +349,10 @@ HRESULT CIntro::Add_Components()
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::VIBUFFER_RECT,
+		L"com_vibuffer", (CComponent**)&m_pVIBuffer)))
+
+		return E_FAIL;
 	return S_OK;
 
 }
@@ -422,18 +424,8 @@ void CIntro::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexture);
-	m_pVIBuffer = nullptr; // 먼저 null 만들어야 리스트에서 해제할때안터짐
 	Safe_Release(m_pVIBuffer);
-	
-	
-		for (_uint i = 0; i < m_BufferList.size(); ++i)
-		{
-			if (nullptr != m_BufferList[i])
-			{
-				Safe_Release(m_BufferList[i]);
-			}
-		}
-		m_BufferList.clear();
+
 		
 	if (!m_bClone)
 	{
@@ -500,11 +492,6 @@ void CIntro::Load()
 		{
 			m_DescList.push_back(Desc);
 			
-			m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
-			if (nullptr == m_pVIBuffer)
-				return;
-
-			m_BufferList.push_back(m_pVIBuffer);
 		}
 	}
 

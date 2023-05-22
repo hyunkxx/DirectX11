@@ -15,6 +15,7 @@
 #include "Chest.h"
 //UI추가
 #include "UI_Monster.h"
+#include "UI_Minimap.h"
 
 CCharacter::SINGLESTATE CM_GAzizi::m_tStates[IS_END];
 
@@ -113,6 +114,9 @@ void CM_GAzizi::Start()
 
 
 	//UI추가
+	// 몬스터 사망,삭제시 m_pUIIcon = nullptr;
+	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
+	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 44);
 	CUI_Monster::MONINFO MonInfo;
 	MonInfo.Level = 0;
 	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
@@ -153,6 +157,9 @@ void CM_GAzizi::Tick(_double TimeDelta)
 	pGameInstance->AddCollider(m_pMoveCollider, COLL_MOVE);
 	m_pMoveCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
+	//UI추가
+	static_cast<CUI_Monster*>(m_pUIMon)->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 }
 
 void CM_GAzizi::LateTick(_double TimeDelta)
@@ -852,8 +859,6 @@ void CM_GAzizi::On_Cell()
 			}
 		}
 	}
-	//UI추가
-	static_cast<CUI_Monster*>(m_pUIMon)->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 }
 
 void CM_GAzizi::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
@@ -997,6 +1002,9 @@ void CM_GAzizi::Free()
 {
 	__super::Free();
 
+	//UI
+	m_pUIIcon = nullptr;
+
 	for (_uint i = 0; i < MISS_END; ++i)
 	{
 		Safe_Release(m_MissilePools[i]);
@@ -1013,8 +1021,6 @@ void CM_GAzizi::Free()
 	Safe_Release(m_pHitCollider);
 	Safe_Release(m_pMoveCollider);
 	
-	//UI추가
-	Safe_Release(m_pUIMon);
 }
 
 void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)

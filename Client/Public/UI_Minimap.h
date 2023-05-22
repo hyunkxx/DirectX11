@@ -39,6 +39,18 @@ public:
 		_float4     ColorIcon;
 	}MAPDESC;
 
+public:
+	enum ICONNUM { ARROW, MISSION, MONSTER, BOX, ICONEND };
+
+	typedef struct tagIconDesc
+	{
+		_vector		vObjectPos;
+		_int		TextureNum;
+		_float4x4	IconWorldMatrix;
+		_int		Index;
+		_bool		bRender;
+	}ICONDESC;
+
 protected:
 	explicit CUI_Minimap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CUI_Minimap(const CUI_Minimap& rhs);
@@ -58,6 +70,7 @@ private:
 	HRESULT Setup_ShaderResourcesFrame();
 	HRESULT Setup_ShaderResourcesDefaultIcon(_uint Bufferindex);
 	HRESULT Setup_ShaderResourcesIcon(_uint Bufferindex);
+	HRESULT Setup_ShaderResourcesIcons(ICONDESC* pDesc);
 
 public:
 	
@@ -66,7 +79,11 @@ public:
 	virtual void Free() override;
 
 
-
+public:
+	void Set_ObjectPos(_int Index, _fvector vObjectPos);
+	_int Add_Icon(_fvector vObjectPos, _int	TextureNum);
+private:
+	void DecideRender();
 
 
 
@@ -142,6 +159,15 @@ private:
 	_float4 fPlayerPos;
 	_float4 fPrePlayerPos = { 0.f , 0.f, 0.f, 1.f };
 
+private:
+	ICONNUM IconTextureNum = { MISSION };
+	_vector		m_vObjectPos = { 6.f, 30.f, 5.f, 1.f };
+	_float4x4	m_IconWorldMatrix;
+	_float2		IconSize = { 50.f, 50.f };
+	_bool		m_bRender = { true };
+
+	vector<ICONDESC>	m_DescList;
+	_int  Index = 0;
 
 private:
 	CRenderer*		m_pRenderer = { nullptr };
@@ -150,17 +176,9 @@ private:
 	CTexture*		m_pTexIcon = { nullptr };
 	CTexture*		m_pTexMiniMap = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferMiniMap = { nullptr };
-	CVIBuffer_Rect* m_pVIBufferFrame = { nullptr };
 
 	CTexture*		m_pTexDefaultIcon = { nullptr };
-	CVIBuffer_Rect*	 m_pVIBufferIcon = { nullptr };
-
-	CVIBuffer_Rect* m_pVIBufferDefaultIcon[2] = { nullptr ,nullptr };
-
-	
-	vector<CVIBuffer_Rect*> m_BufferList;
-	vector<MAPDESC*>		  m_IconDescList;
-	CVIBuffer_Rect*			 m_BufferIcon = { nullptr };
+	vector<MAPDESC>		  m_IconDescList;
 };
 
 END
