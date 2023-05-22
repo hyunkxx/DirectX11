@@ -25,12 +25,22 @@ public:
 
 	list<EFFECT_DESC*>*			Get_Effects();
 
-	_float						Get_LifeTime();
+	_float						Get_LifeTime() { return m_LifeTime; }
+
+	void						Shut_Down()
+	{
+		m_bFinish = true;
+		m_bEffectUpdate = false;
+	}
+
 public:
 	void	Add_Effect(CEffect* pEffect);
 
 private:
 	vector<CEffect*>			m_EffectList;
+
+	_float						m_LifeTime = { 0.f };
+	_float						m_LifeAcc = { 0.f };
 
 public:
 	static CEffect_Player*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext , const char* FilePath  ,const list<EFFECT_DESC*>& pEffectDescList);

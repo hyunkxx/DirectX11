@@ -93,6 +93,10 @@ CEffect * CEffect_Manager::Get_Effect(const _tchar * pEffectTag, EFFECT_ID eEffe
 	if (nullptr != Find_EffectList(pEffectTag , eEffectID))
 	{
 		list<CEffect*>* pEfectlist = Find_EffectList(pEffectTag , eEffectID);
+		
+		if (pEfectlist->empty() || 0 == pEfectlist->size())
+			return nullptr;
+
 		auto& iter = ((*pEfectlist).begin());
 		CEffect*  pEffect = (*iter);
 		(*pEfectlist).erase(iter);

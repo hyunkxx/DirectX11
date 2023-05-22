@@ -39,6 +39,9 @@ HRESULT CEffect_Player::Initialize_Prototype(const char* FilePath , const list<E
 		}
 		if (nullptr != pEffect)
 		{
+			if (m_LifeTime < pEffect->Get_Effect_Desc().fLifeTime)
+				m_LifeTime = pEffect->Get_Effect_Desc().fLifeTime;
+
 			m_EffectList.push_back(pEffect);
 		}
 	}
@@ -67,19 +70,20 @@ void CEffect_Player::LateTick(_double TimeDelta)
 	if (m_bFinish)
 		return;
 
-	_bool bFinish = true;
+	m_LifeAcc += TimeDelta;
+
 	for (auto& iter : m_EffectList)
 	{
 		iter->LateTick(TimeDelta);
-		if (!iter->Get_Finish())
-			bFinish = false;
 	}
 
-	if (bFinish)
+	if (m_LifeAcc > m_LifeTime)
 	{
 		m_bFinish = true;
 		m_bEffectUpdate = false;
 	}
+
+
 }
 
 HRESULT CEffect_Player::Render()
@@ -97,6 +101,7 @@ void CEffect_Player::Play_Effect(_float4x4* pWorldMatrix, _bool bTracking)
 	m_EffectDesc.bTracking = bTracking;
 	m_bFinish = false;
 	m_pParentsMatrix = nullptr;
+	m_LifeAcc = 0.f;
 
 	if(m_EffectDesc.bTracking)
 	{
@@ -131,22 +136,6 @@ list<EFFECT_DESC*>* CEffect_Player::Get_Effects()
 
 	return pEffects;
 }
-
-_float CEffect_Player::Get_LifeTime()
-{
-	_float fLifeTime = 0.f;
-
-	for (auto& iter : m_EffectList)
-	{
-		if (fLifeTime < iter->Get_Effect_Desc().fLifeTime)
-		{
-			fLifeTime = iter->Get_Effect_Desc().fLifeTime;
-		}
-	}
-
-	return fLifeTime;
-}
-
 
 void CEffect_Player::Add_Effect(CEffect * pEffect)
 {

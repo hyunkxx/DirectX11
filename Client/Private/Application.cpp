@@ -760,7 +760,7 @@ HRESULT CApplication::Ready_Static_Effect()
 	}
 
 	//Nvzhu 기본 공격에 따른 히트 이펙트
-	for (_int i = 0; 5 > i; i++)
+	for (_int i = 0; 30 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
 			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_01.bin"),
@@ -772,6 +772,7 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/Player_Nvzhu/Hit_Effect/")))
 			return E_FAIL;
 
+		// Nvzhu 투사체들 공용 피격 이펙트
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU, 
 			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_03.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Hit_Effect/")))
@@ -789,6 +790,12 @@ HRESULT CApplication::Ready_Static_Effect()
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
 			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_05_02.bin"),
+			"../../Resource/Effect/Player_Nvzhu/Hit_Effect/")))
+			return E_FAIL;
+
+		// Skill_01 , SKill_02  공용 피격 이펙트 
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_R.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Hit_Effect/")))
 			return E_FAIL;
 	}
@@ -871,7 +878,7 @@ HRESULT CApplication::Ready_Static_Effect()
 
 #pragma region Comon
 
-	for (_int i = 0; 5 > i; i++)
+	for (_int i = 0; 10 > i; i++)
 	{
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
 			TEXT("../../Resource/Effect/Comon/Flare_Effect.bin"),
