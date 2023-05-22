@@ -64,7 +64,7 @@ void CMissile_RotAround::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 }
 
-_bool CMissile_RotAround::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix)
+_bool CMissile_RotAround::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix, _fvector vMoveDir)
 {
 	if (ACTIVE == m_eState)
 		return false;
@@ -76,7 +76,7 @@ _bool CMissile_RotAround::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vM
 	_vector vRotInitPos = XMVector3TransformCoord(XMVector3TransformCoord(m_pTargetBone->Get_CombinedPosition(), XMMatrixRotationY(180.f)), XMLoadFloat4x4(&m_pTargetTransform->Get_WorldMatrix()))
 		+ XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&m_vShotLookDir), XMMatrixRotationAxis(XMLoadFloat3(&m_vAxis), m_fInitAngle))) * m_fDistance;
 
-	__super::Shot(vRotInitPos, vLookDir, vMissileRotMatrix);
+	__super::Shot(vRotInitPos, vLookDir, vMissileRotMatrix, vMoveDir);
 
 	return true;
 }

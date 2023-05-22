@@ -401,7 +401,9 @@ void CM_GAzizi::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_UP), m_MissileRotAngles[iMissilePoolID].y)
 		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_LOOK), m_MissileRotAngles[iMissilePoolID].z);
 
-	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot);
+	_vector vTargetPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot, vTargetPos);
 }
 
 void CM_GAzizi::SetUp_State()
@@ -425,7 +427,6 @@ void CM_GAzizi::SetUp_State()
 
 	m_Scon.TrackPos = 0.0;
 	m_Scon.bAnimFinished = false;
-
 
 	 //Position State ¹Ý¿µ
 	if ((IS_BEHIT_FLY_START == m_Scon.iCurState) &&
@@ -451,6 +452,9 @@ void CM_GAzizi::SetUp_State()
 			XMStoreFloat3(&m_Scon.vPrevMovement, XMVector3Normalize(XMLoadFloat3(&tPhysicMove.vInitDir)) * tPhysicMove.fInitForce);
 		}
 	}
+
+	if (true == m_tCurState.bApplyCoolTime)
+		m_StateCoolTimes[m_Scon.iCurState] = m_tCurState.CoolTime;
 }
 
 void CM_GAzizi::Find_Target()
@@ -493,7 +497,7 @@ void CM_GAzizi::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_03].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_03].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 2;
-	//lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Hit_Effect_02"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("GenkiDama_Boom"));
 }
 
 void CM_GAzizi::Init_Missiles()
@@ -506,45 +510,46 @@ void CM_GAzizi::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 3;
 
-
-	tMissilePoolDesc.vMoveDir = _float3(0.f, 0.f, 1.f);
-	tMissilePoolDesc.fVelocity = 5.f;
-	tMissilePoolDesc.StopTime = 5.0;
-	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_ONCOLLISIONENTER;
-
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT("GenkiDama_Shoot"));
-	tMissilePoolDesc.tMissileDesc.iEffectLayer = 2; //Tutorial / GAzizi
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("GenkiDama_Shoot"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial / GAzizi
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
-	tMissilePoolDesc.tMissileDesc.HitInterval = 0.25;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 5.0;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_01;
 	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+
+	tMissilePoolDesc.bTargetDir = false;
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 18.f;
+	tMissilePoolDesc.StopTime = 3.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
 
 	m_MissilePools[MISS_ATTACK_01] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.2f, 0.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_ATTACK_01] = _float3(0.f, 0.f, 0.f);
 
 	// Attack03
-	//ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	//tMissilePoolDesc.pMissilePoolTag = TEXT("Nvzhu_Attack_09_%d");
-	//tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-	//tMissilePoolDesc.iNumMissiles = 3;
+	tMissilePoolDesc.pMissilePoolTag = TEXT("GenkiDama_Shoot2_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iNumMissiles = 3;
 
-	//tMissilePoolDesc.vMoveDir = _float3(0.f, 0.f, 1.f);
-	//tMissilePoolDesc.fVelocity = 10.f;
-	//tMissilePoolDesc.StopTime = 0.25;
-	//tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_ONCOLLISIONENTER;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("GenkiDama_Shoot_02"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial / GAzizi
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_03;
+	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
 
-	//lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT("Nvzhu_Attack_03"));
-	//tMissilePoolDesc.tMissileDesc.iEffectLayer = 1; //PlayerGirl
-	//tMissilePoolDesc.tMissileDesc.pOwner = this;
-	//tMissilePoolDesc.tMissileDesc.HitInterval = 0.25;
-	//tMissilePoolDesc.tMissileDesc.LifeTime = 2.0;
-	//tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_09;
-	//tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+	tMissilePoolDesc.bTargetDir = true;
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 18.f;
+	tMissilePoolDesc.StopTime = 3.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
 
-	//m_MissilePools[MISS_ATTACK_09] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
-	//m_MissileRotAngles[MISS_ATTACK_09] = _float3(XMConvertToRadians(-60.f), XMConvertToRadians(-90.f), 0.f);
+	m_MissilePools[MISS_ATTACK_03] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.2f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK_03] = _float3(0.f, 0.f, 0.f);
 }
 
 void CM_GAzizi::Apply_CoolTime(_double TimeDelta)
@@ -649,7 +654,7 @@ void CM_GAzizi::Select_State(_double TimeDelta)
 	case Client::CM_GAzizi::AI_ATTACK:
 		if (true == m_bAttackReady)
 		{
-			if (0/*0.0 == m_StateCoolTimes[IS_ATTACK3]*/)
+			if (0.0 == m_StateCoolTimes[IS_ATTACK3])
 			{
 				m_Scon.iNextState = IS_ATTACK3;
 			}
@@ -822,7 +827,8 @@ void CM_GAzizi::On_Cell()
 
 	if (PS_GROUND == m_Scon.ePositionState)
 	{
-		m_pMainTransform->Set_PosY(fCellHeight);
+		if(IS_ATTACK3 != m_Scon.iCurState)
+			m_pMainTransform->Set_PosY(fCellHeight);
 	}
 	else if (PS_AIR == m_Scon.ePositionState)
 	{
@@ -990,6 +996,12 @@ CGameObject * CM_GAzizi::Clone(void * pArg)
 void CM_GAzizi::Free()
 {
 	__super::Free();
+
+	for (_uint i = 0; i < MISS_END; ++i)
+	{
+		Safe_Release(m_MissilePools[i]);
+	}
+	
 
 	Safe_Release(m_pNaviCom);
 	Safe_Release(m_pModelCom);

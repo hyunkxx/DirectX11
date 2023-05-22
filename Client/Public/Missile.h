@@ -20,8 +20,8 @@ class CMissile
 public:
 	
 	typedef struct tagMissileDesc {
-		_tchar				szEffectTag[MAX_PATH];
-		_uint				iEffectLayer;
+		_tchar				szLoopEffectTag[MAX_PATH];
+		_uint				iLoopEffectLayer;
 		class CCharacter*	pOwner;			// 미사일의 소유자
 		_double				HitInterval;	// 충돌이 유지 중일 때 다단히트하는 간격
 		_double				LifeTime;		// 최대 유지 시간
@@ -42,7 +42,8 @@ public:
 	virtual HRESULT Render();
 	virtual HRESULT RenderShadow();
 
-	virtual _bool Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix);
+	virtual _bool Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix, _fvector vMoveDir);
+	virtual void End();
 
 	virtual CCharacter* Get_Owner()
 	{
@@ -55,6 +56,11 @@ public:
 	}
 
 	virtual _vector Get_Position();
+
+	virtual _bool Get_TargetDir()
+	{
+		return false;
+	}
 
 	// 의도한 충돌 대상과 충돌했을 경우 처리
 	virtual void OnCollisionOnTarget(CCollider * src, CCollider * dest);

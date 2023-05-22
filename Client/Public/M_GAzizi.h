@@ -62,7 +62,6 @@ public:
 	// 공격 종류
 	enum Attacks
 	{
-		ATK_NONE,		// 0은 예외처리용으로 NONE으로 넣어줘야 함
 		ATK_ATTACK_01,
 		ATK_ATTACK_03,
 		ATK_END
@@ -103,6 +102,12 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
 
 public:
+	virtual _uint Get_AttackID() override { return m_iCurAttackID; }
+	virtual void Get_AttackInfo(_uint iAttackID, TAGATTACK* pAttackInfoOut, _float* pAttackOut) override
+	{
+		memcpy(pAttackInfoOut, &m_AttackInfos[iAttackID], sizeof(TAGATTACK));
+		*pAttackOut = m_tCharInfo.fAttack;
+	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
 
 private:

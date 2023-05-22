@@ -32,7 +32,7 @@ HRESULT CMissile_Constant::Initialize(void * pArg)
 		if (FAILED(__super::Initialize(&tConstMissileDesc.tMissileDesc)))
 			return E_FAIL;
 
-		XMStoreFloat3(&m_vLocalMoveDir, XMVector3Normalize(XMLoadFloat3(&tConstMissileDesc.vMoveDir)));
+		XMStoreFloat3(&m_vLocalMoveDir, XMVector3Normalize(XMLoadFloat3(&tConstMissileDesc.vFixMoveDir)));
 
 		m_fVelocity = tConstMissileDesc.fVelocity;
 		m_bMove = true;
@@ -40,6 +40,8 @@ HRESULT CMissile_Constant::Initialize(void * pArg)
 		m_StopTime = tConstMissileDesc.StopTime;
 
 		m_iStopCondition = tConstMissileDesc.iStopCondition;
+
+		m_bTargetDir = tConstMissileDesc.bTargetDir;
 	}
 
 	return S_OK;
@@ -64,20 +66,29 @@ void CMissile_Constant::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 }
 
-_bool CMissile_Constant::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix)
+_bool CMissile_Constant::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix, _fvector vMoveDir)
 {
-	_bool bShot = __super::Shot(vInitPos, vLookDir, vMissileRotMatrix);
+	_bool bShot = __super::Shot(vInitPos, vLookDir, vMissileRotMatrix, vMoveDir);
+	
 	if (false == bShot)
 		return false;
 	
 	m_StopTimer = m_StopTime;
 	m_bMove = true;
 
-	// 이동 방향
-	_vector vLook = XMVector3Normalize(vLookDir);
-	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
-	_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
-	XMStoreFloat3(&m_vWorldMoveDir, XMVector3Normalize(vRight * m_vLocalMoveDir.x + vUp * m_vLocalMoveDir.y + vLook * m_vLocalMoveDir.z));
+	if (false == m_bTargetDir)
+	{
+		// 이동 방향
+		_vector vLook = XMVector3Normalize(vLookDir);
+		_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
+		_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+		XMStoreFloat3(&m_vWorldMoveDir, XMVector3Normalize(vRight * m_vLocalMoveDir.x + vUp * m_vLocalMoveDir.y + vLook * m_vLocalMoveDir.z));
+	}
+	else
+	{
+		XMStoreFloat3(&m_vWorldMoveDir, vMoveDir);
+		m_pMainTransform->Set_LookDir(vMoveDir);
+	}
 	
 	return true;
 }

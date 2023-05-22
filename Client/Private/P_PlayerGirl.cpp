@@ -214,7 +214,6 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	// On_Hit(TimeDelta) 피격 처리
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
@@ -1752,8 +1751,14 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 
 	m_tCharInfo.fCurHP -= fFinalDamage;
 
+	// TODO: 대미지 폰트 UI 출력
+	// pEffPos : 두 콜라이더의 중간점, 이펙트 출력 기준위치
+	// fFinalDamage : 최종 대미지
+	// pAttackInfo->eElementType : 공격 판정의 속성
+	
+
 	// 사망 시 사망 애니메이션 실행 
-	if (0.f >= m_tCharInfo.fCurHP)
+	if (false/*0.f >= m_tCharInfo.fCurHP*/)
 	{
 		m_tCharInfo.fCurHP = 0.f;
 		m_Scon.iNextState = SS_DEATH;
@@ -1806,8 +1811,6 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 			SetUp_Animations(false);
 		}
 	}
-
-
 }
 
 void CP_PlayerGirl::Init_AnimSystem()
@@ -2096,13 +2099,13 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.iNumMissiles = 3;
 	
 
-	tMissilePoolDesc.vMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
 	tMissilePoolDesc.fVelocity = 10.f;
 	tMissilePoolDesc.StopTime = 0.20;
 	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_ONCOLLISIONENTER;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT("Nvzhu_Attack_03"));
-	tMissilePoolDesc.tMissileDesc.iEffectLayer = 1; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Nvzhu_Attack_03"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 1; //PlayerGirl
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.25;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 2.0;
@@ -2119,13 +2122,13 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 3;
 
-	tMissilePoolDesc.vMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
 	tMissilePoolDesc.fVelocity = 10.f;
 	tMissilePoolDesc.StopTime = 0.25;
 	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_ONCOLLISIONENTER;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT("Nvzhu_Attack_03"));
-	tMissilePoolDesc.tMissileDesc.iEffectLayer = 1; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Nvzhu_Attack_03"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 1; //PlayerGirl
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.25;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 2.0;
@@ -2142,8 +2145,8 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 3;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iEffectLayer = 0; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; //PlayerGirl
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
@@ -2160,8 +2163,8 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 3;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iEffectLayer = 0; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; //PlayerGirl
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
@@ -2178,8 +2181,8 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 3;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iEffectLayer = 0; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; //PlayerGirl
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
@@ -2203,8 +2206,8 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.fInitAngle = 0.f;
 	tMissilePoolDesc.fRotSpeed = XMConvertToRadians(450.f);
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT("Nvzhu_Skill_02_Circle"));
-	tMissilePoolDesc.tMissileDesc.iEffectLayer = 1; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Nvzhu_Skill_02_Circle"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 1; //PlayerGirl
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.25;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 1.5;
@@ -2221,8 +2224,8 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 3;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iEffectLayer = 0; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; //PlayerGirl
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
@@ -2239,8 +2242,8 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 3;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT("Burst_03"));
-	tMissilePoolDesc.tMissileDesc.iEffectLayer = 1; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Burst_03"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 1; //PlayerGirl
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
@@ -2257,8 +2260,8 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 3;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szEffectTag, TEXT("Burst_04"));
-	tMissilePoolDesc.tMissileDesc.iEffectLayer = 1; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Burst_04"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 1; //PlayerGirl
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;

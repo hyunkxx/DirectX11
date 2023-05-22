@@ -35,7 +35,7 @@ public:
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 
-	virtual _bool Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix);
+	virtual _bool Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix, _fvector vMoveDir);
 
 private:
 	CTransform* m_pTargetTransform = { nullptr };

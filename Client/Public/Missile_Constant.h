@@ -22,7 +22,8 @@ public:
 public:
 	typedef struct tagConstantMissileDesc {
 		MISSILEDESC tMissileDesc;
-		_float3		vMoveDir;
+		_bool		bTargetDir;
+		_float3		vFixMoveDir;
 		_float		fVelocity;
 		_double		StopTime;
 		_uint		iStopCondition;
@@ -39,9 +40,16 @@ public:
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 
-	virtual _bool Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix);
+	virtual _bool Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix, _fvector vMoveDir);
 	// 의도한 충돌 대상과 충돌했을 경우 처리
 	virtual void OnCollisionOnTarget(CCollider * src, CCollider * dest);
+
+	virtual _bool Get_TargetDir()
+	{
+		return m_bTargetDir;
+	}
+
+	
 
 private:
 	// 고정값
@@ -49,12 +57,12 @@ private:
 	_double m_StopTime = { 0.0 };
 	_float m_fVelocity = { 0.f };
 	_uint m_iStopCondition = { 0 };
+	_bool m_bTargetDir = { false };
 
 	// 가변값
 	_float3 m_vWorldMoveDir = {};
 	_double m_StopTimer = { 0.0 };
 	_bool m_bMove = { false };
-
 
 public:
 	static CMissile_Constant* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

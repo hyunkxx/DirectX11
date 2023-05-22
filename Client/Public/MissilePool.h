@@ -30,7 +30,8 @@ public:
 		_uint iNumMissiles;
 
 		//Constant¿ë º¯¼ö
-		_float3		vMoveDir;
+		_bool		bTargetDir;
+		_float3		vFixMoveDir;
 		_float		fVelocity;
 		_double		StopTime;
 		_uint		iStopCondition;
@@ -50,8 +51,12 @@ private:
 
 public:
 	virtual HRESULT	Initialize(_fvector vLocalPos, MISSILEPOOLDESC* pMissilePoolDesc);
+	virtual void Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix, _fvector vTargetPos = XMVectorZero());
 
-	virtual void Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix);
+	_bool Get_TargetDir()
+	{
+		m_Missiles.front()->Get_TargetDir();
+	}
 
 private:
 	_float3 m_vLocalPos;

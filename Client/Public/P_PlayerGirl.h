@@ -106,7 +106,7 @@ public:
 	// 공격 종류
 	enum Attacks
 	{
-		ATK_NONE,		// 0은 예외처리용으로 NONE으로 넣어줘야 함
+		ATK_NONE,		// 0은 OBB 예외처리용으로 NONE으로 넣어줘야 함
 		ATK_ATTACK_01,
 		ATK_ATTACK_02,
 		ATK_ATTACK_03,

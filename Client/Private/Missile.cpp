@@ -51,10 +51,8 @@ void CMissile::Tick(_double TimeDelta)
 
 	if (0.0 > m_LifeTimeTimer)
 	{
-		m_pCollider->SetActive(false);
-		SetState(DISABLE);
+		End();
 	}
-	
 
 	if (0.0 != m_tMissileDesc.HitInterval)
 	{
@@ -101,7 +99,7 @@ HRESULT CMissile::RenderShadow()
 	return S_OK;
 }
 
-_bool CMissile::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix)
+_bool CMissile::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix, _fvector vMoveDir)
 {
 	if (ACTIVE == m_eState)
 		return false;
@@ -113,14 +111,20 @@ _bool CMissile::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotM
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vInitPos);
 	m_pMainTransform->Set_LookDir(XMVector3TransformNormal(vLookDir, vMissileRotMatrix));
 
-	if(lstrcmp(m_tMissileDesc.szEffectTag, TEXT("")))
-		CGameInstance::GetInstance()->Get_Effect(m_tMissileDesc.szEffectTag, (Engine::EFFECT_ID)m_tMissileDesc.iEffectLayer)->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
+	if(lstrcmp(m_tMissileDesc.szLoopEffectTag, TEXT("")))
+		CGameInstance::GetInstance()->Get_Effect(m_tMissileDesc.szLoopEffectTag, (Engine::EFFECT_ID)m_tMissileDesc.iLoopEffectLayer)->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
 
 	m_pCollider->SetActive(true);
 
 	m_pCollider->Update(XMLoadFloat4x4(m_pMainTransform->Get_WorldMatrixPtr()));
 	
 	return true; 
+}
+
+void CMissile::End()
+{
+	m_pCollider->SetActive(false);
+	SetState(DISABLE);
 }
 
 _vector CMissile::Get_Position()
@@ -130,10 +134,6 @@ _vector CMissile::Get_Position()
 
 void CMissile::OnCollisionOnTarget(CCollider * src, CCollider * dest)
 {
-	// 콜라이더 사이 중점 찾아서 히트 이펙트 출력
-
-	// 카메라 쉐이크 처리 등
-
 	// HitInterval 처리
 	if (0.0 != m_tMissileDesc.HitInterval)
 	{

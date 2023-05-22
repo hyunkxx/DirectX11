@@ -42,7 +42,8 @@ HRESULT CMissilePool::Initialize(_fvector vLocalPos, MISSILEPOOLDESC* pMissilePo
 			ZeroMemory(&tConstDesc, sizeof(CMissile_Constant::CONSTMISSILEDESC));
 
 			tConstDesc.tMissileDesc = pMissilePoolDesc->tMissileDesc;
-			tConstDesc.vMoveDir = pMissilePoolDesc->vMoveDir;
+			tConstDesc.bTargetDir = pMissilePoolDesc->bTargetDir;
+			tConstDesc.vFixMoveDir = pMissilePoolDesc->vFixMoveDir;
 			tConstDesc.fVelocity = pMissilePoolDesc->fVelocity;
 			tConstDesc.StopTime = pMissilePoolDesc->StopTime;
 			tConstDesc.iStopCondition = pMissilePoolDesc->iStopCondition;
@@ -75,7 +76,7 @@ HRESULT CMissilePool::Initialize(_fvector vLocalPos, MISSILEPOOLDESC* pMissilePo
 	return S_OK;
 }
 
-void CMissilePool::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix)
+void CMissilePool::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotMatrix, _fvector vTargetPos)
 {
 	_bool bShot = false;
 
@@ -84,9 +85,13 @@ void CMissilePool::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileR
 	_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
 	_vector vFinalInitPos = vInitPos + vRight * m_vLocalPos.x + vUp * m_vLocalPos.y + vLook * m_vLocalPos.z;
 
+	_vector vMoveDir = XMVectorZero();
+	if (!XMVector3Equal(vTargetPos, XMVectorZero()))
+		vMoveDir = XMVector3Normalize(vTargetPos - vFinalInitPos);
+
 	for (auto& pMissile : m_Missiles)
 	{
-		if (bShot = pMissile->Shot(vFinalInitPos, vLookDir, vMissileRotMatrix))
+		if (bShot = pMissile->Shot(vFinalInitPos, vLookDir, vMissileRotMatrix, vMoveDir))
 			break;
 	}
 
