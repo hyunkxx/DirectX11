@@ -267,6 +267,22 @@
     <ClCompile Include="..\private\Inventory.cpp">
       <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Missile.cpp" />
+    <ClCompile Include="..\Private\MissilePool.cpp" />
+    <ClCompile Include="..\Private\Missile_Constant.cpp" />
+    <ClCompile Include="..\Private\Missile_RotAround.cpp" />
+    <ClCompile Include="..\Private\Particle_Effect.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rect_Effect.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Efffect_Manager.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh_Effect.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -508,6 +524,22 @@
     </ClInclude>
     <ClInclude Include="..\public\Inventory.h">
       <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Missile.h" />
+    <ClInclude Include="..\Public\MissilePool.h" />
+    <ClInclude Include="..\Public\Missile_Constant.h" />
+    <ClInclude Include="..\Public\Missile_RotAround.h" />
+    <ClInclude Include="..\Public\Particle_Effect.h">
+      <Filter>src\06. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rect_Effect.h">
+      <Filter>src\06. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Efffect_Manager.h">
+      <Filter>src\06. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh_Effect.h">
+      <Filter>src\06. Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
