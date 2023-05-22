@@ -883,6 +883,9 @@ void CM_GAzizi::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _floa
 	// TODO: 여기서 대미지 폰트 출력
 	//UI추가 몬스터 사망시 ui도 SetDestroy 추가 예정
 	static_cast<CUI_Monster*>(m_pUIMon)->Set_Damage(fFinalDamage);
+	//_float3 EffPosPos;
+	//memcpy(&EffPosPos, pEffPos, sizeof(_float3));
+	//static_cast<CUI_Monster*>(m_pUIMon)->Set_FontPos(EffPosPos);
 
 	// 사망 시 사망 애니메이션 실행 
 	if (0.f >= m_tCharInfo.fCurHP)

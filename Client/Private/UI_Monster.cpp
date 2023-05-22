@@ -157,8 +157,8 @@ void CUI_Monster::Tick(_double TimeDelta)
 			if (78 == Desc.TextureNum)
 			{
 				// 뒤에 빛효과
-				Desc.Size.x += (_float)TimeDelta * 400.f;
-				Desc.Size.y -= (_float)TimeDelta * 40.f;
+				Desc.Size.x += (_float)TimeDelta * 500.f;
+				Desc.Size.y -= (_float)TimeDelta * 30.f;
 				if (0.f >= Desc.Size.y)
 				{
 					Desc.Size.y = 0.f;
@@ -169,7 +169,8 @@ void CUI_Monster::Tick(_double TimeDelta)
 			if (-30.f < Desc.Color.w)
 			{
 				Acc += (_float)TimeDelta *1000.f;
-				Desc.Pos.x += sinf(XMConvertToRadians(Acc));
+				Desc.Pos.x += sinf(XMConvertToRadians(Acc) + 2.f);
+				Desc.Pos.y += sinf(XMConvertToRadians(Acc));
 			}
 			if (-100.f < Desc.Color.w)
 			{
@@ -295,7 +296,7 @@ void	CUI_Monster::Damage(_float Damage)
 	Damage10 = iDamage / 10;
 	Damage1 = iDamage % 10;
 	++m_HitCount;
-	if (8 == m_HitCount)
+	if (10 == m_HitCount)
 		m_HitCount = 1;
 	srand((unsigned int)time(NULL));
 	_float pos = rand() % (100 + 1 - (-100)) + (-100); //a가 작은수
@@ -313,7 +314,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc1000.Size = _float2{ 30.f, 30.f };
 		Desc1000.TextureNum = -Damage1000 + 33;
 		Desc1000.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (2 == m_HitCount)
+		if (0 == m_HitCount / 2)
 			Desc1000.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc1000.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc1000);
@@ -324,7 +325,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc100.Size = _float2{ 30.f, 30.f };
 		Desc100.TextureNum = -Damage100 + 33;
 		Desc100.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (2 == m_HitCount)
+		if (0 == m_HitCount / 2)
 			Desc100.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc100.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc100);
@@ -335,7 +336,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc10.Size = _float2{ 30.f, 30.f };
 		Desc10.TextureNum = -Damage10 + 33;
 		Desc10.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (2 == m_HitCount)
+		if (0 == m_HitCount / 2)
 			Desc10.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc10.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc10);
@@ -346,11 +347,11 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
 		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (2 == m_HitCount)
+		if (0 == m_HitCount / 2)
 			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc1);
-		if (3 == m_HitCount)
+		if (0 == m_HitCount / 3)
 		{
 			DAMAGEDESC Desc;
 			Desc.HitCount = m_HitCount;
@@ -372,7 +373,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc100.Size = _float2{ 30.f, 30.f };
 		Desc100.TextureNum = -Damage100 + 33;
 		Desc100.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (2 == m_HitCount)
+		if (0 == m_HitCount / 3)
 			Desc100.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc100.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc100);
@@ -383,7 +384,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc10.Size = _float2{ 30.f, 30.f };
 		Desc10.TextureNum = -Damage10 + 33;
 		Desc10.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (2 == m_HitCount)
+		if (0 == m_HitCount / 3)
 			Desc10.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc10.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc10);
@@ -394,11 +395,11 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
 		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (2 == m_HitCount)
+		if (0 == m_HitCount / 3)
 			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc1);
-		if (3 == m_HitCount)
+		if (0 == m_HitCount / 3)
 		{
 			DAMAGEDESC Desc;
 			Desc.HitCount = m_HitCount;
@@ -419,7 +420,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc10.Size = _float2{ 30.f, 30.f };
 		Desc10.TextureNum = -Damage10 + 33;
 		Desc10.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (2 == m_HitCount)
+		if (0 == m_HitCount / 3)
 			Desc10.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc10.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc10);
@@ -430,11 +431,11 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
 		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (2 == m_HitCount)
+		if (0 == m_HitCount / 3)
 			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc1);
-		if (3 == m_HitCount)
+		if (0 == m_HitCount / 3)
 		{
 			DAMAGEDESC Desc;
 			Desc.HitCount = m_HitCount;
@@ -455,11 +456,11 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
 		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (2 == m_HitCount)
+		if (0 == m_HitCount / 2)
 			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc1);
-		if (3 == m_HitCount)
+		if (0 == m_HitCount / 3)
 		{
 			DAMAGEDESC Desc;
 			Desc.HitCount = m_HitCount;

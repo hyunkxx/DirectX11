@@ -106,8 +106,15 @@ void CUI_TapT::Tick(_double TimeDelta)
 	
 
 	CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("UI_Mouse"));
-	dynamic_cast<CUI_Mouse*>(pMouse)->Set_Texchange(false);
-
+	static_cast<CUI_Mouse*>(pMouse)->Set_Texchange(false);
+	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::TAP)
+	{
+		static_cast<CUI_Mouse*>(pMouse)->Set_RenderMouse(true);
+	}
+	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::AWAY)
+	{
+		static_cast<CUI_Mouse*>(pMouse)->Set_RenderMouse(false);
+	}
 
 	Safe_Release(pGameInstance);
 }

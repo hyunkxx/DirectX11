@@ -33,6 +33,7 @@ public:
 public:
 	_float3 Get_MousePos();
 	void Set_Texchange(_bool change);
+	void Set_RenderMouse(_bool change) { m_bRender = change; }
 private:
 	HRESULT Add_Components();
 	HRESULT Setup_ShaderResources();
@@ -50,7 +51,7 @@ private:
 	_float m_fColorB = { 0.f };
 	_float m_fColorA = { -30.f };
 	
-
+	_bool m_bRender = { false };
 
 
 public:

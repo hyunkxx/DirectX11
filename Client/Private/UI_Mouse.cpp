@@ -56,16 +56,17 @@ void CUI_Mouse::LateTick(_double TimeDelta)
 
 HRESULT CUI_Mouse::Render()
 {
-	
-	if (FAILED(__super::Render()))
-		return E_FAIL;
+	if (true == m_bRender)
+	{
+		if (FAILED(__super::Render()))
+			return E_FAIL;
 
-	if (FAILED(Setup_ShaderResources()))
-		return E_FAIL;
+		if (FAILED(Setup_ShaderResources()))
+			return E_FAIL;
 
-	m_pShader->Begin(0);
-	m_pVIBuffer->Render();
-	
+		m_pShader->Begin(0);
+		m_pVIBuffer->Render();
+	}
 	return S_OK;
 }
 
@@ -185,7 +186,7 @@ CGameObject* CUI_Mouse::Clone(void* pArg)
 	return pInstance;
 }
 
-void CUI_Mouse::Free()
+void CUI_Mouse::Free ()
 {
 	__super::Free();
 

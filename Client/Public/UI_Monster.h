@@ -61,6 +61,7 @@ public:
 		_int		HitCount;
 		_float4x4	WorldMat;
 		_float4		Color;
+		ELEMENT		ElementType;
 	}DAMAGEDESC;
 
 protected:
@@ -92,6 +93,8 @@ public:
 public:
 	void Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage);}
 	void Set_CharacterPos(_fvector vCharacterPos) { m_vCharacterPos = vCharacterPos; }
+	void Set_FontPos(_float3 vFontPos) { FontPos = vFontPos; }
+	void Set_ElementType(ELEMENT ElementType) { ElementType = ElementType; }
 private:
 	void HPBar(_double TimeDelta);
 	void HPRedBar(_double TimeDelta);
@@ -127,6 +130,8 @@ private:
 	_vector m_vCharacterPos = { 0.f, 0.f, 0.f, 1.f };
 	_int    m_HitCount = { 0 };
 	_float Acc = { 0.f };
+	_float3 FontPos = { 0.f, 0.f, 0.f };
+	ELEMENT		ElementType;
 
 private:
 	CRenderer*		m_pRenderer = { nullptr };
