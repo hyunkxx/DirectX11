@@ -147,6 +147,21 @@ PS_OUT PS_MAIN2(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_LinearDiscard(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_MyTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor.r += g_fColorR/255.f;
+	Out.vColor.g += g_fColorG/255.f;
+	Out.vColor.b += g_fColorB/255.f;
+	Out.vColor.a += g_fColorA/255.f;
+
+	if(Out.vColor.a < 0.1)
+	discard;
+	return Out;
+}
+
 PS_OUT PS_MAIN_LOADING(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
@@ -396,6 +411,29 @@ PS_OUT PS_MASK(PS_IN In)
 
 }
 
+PS_OUT PS_COOLEFFECT(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+	vector Defuse;
+	Defuse = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	float fColor = Defuse.r + Defuse.g + Defuse.b;
+	if(0.1f >fColor)
+	{ 
+	Defuse.a *= fColor;	
+	}
+
+	Defuse.r += g_fColorR/255.f;
+	Defuse.g += g_fColorG/255.f;
+	Defuse.b += g_fColorB/255.f;
+	Defuse.a += g_fColorA/255.f;
+	 
+	 Out.vColor = Defuse;
+
+	return Out;
+
+}
+
+
 
 technique11 DefaultTechnique
 {
@@ -595,7 +633,20 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_TWO();
 	}
 
-		pass UI_Sprite // 15
+		pass UI_COOLENDEFFECT // 15
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_COOLEFFECT();
+	}
+
+			pass UI_Sprite // 16
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -607,8 +658,19 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Sprite();
 	}
+	
+			pass UI_LinearDiscard // 17
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
-
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_LinearDiscard();
+	}
 }
 
 	
