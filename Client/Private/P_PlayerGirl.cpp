@@ -138,6 +138,9 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	m_eCollisionType = CT_PLAYER;
 	m_fPushWeight = 50.f;
 
+	// 초기 상태 꺼놓음
+	m_pAttackCollider->SetActive(false);
+
 	return S_OK;
 }
 
@@ -435,8 +438,8 @@ HRESULT CP_PlayerGirl::Add_Components()
 		return E_FAIL;
 
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 1.5f, 0.f };
-	CollDesc.vExtents = { 1.5f, 1.5f, 1.5f };
+	CollDesc.vCenter = { 0.f, 0.75f, 0.f };
+	CollDesc.vExtents = { 0.75f, 0.75f, 0.75f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_HitCollider"), (CComponent**)&m_pHitCollider, &CollDesc)))
@@ -651,6 +654,9 @@ void CP_PlayerGirl::SetUp_State()
 
 	m_Scon.TrackPos = 0.0;
 	m_Scon.bAnimFinished = false;
+
+	// 애니메이션이 강제로 끊긴 경우 대비 애니메이션 갱신 시 OBB 콜라이더 무조건 끄기
+	m_pAttackCollider->SetActive(false);
 	
 	// PositionState 처리
 	if ((SS_JUMP_WALK == m_Scon.iCurState ||
@@ -1805,7 +1811,8 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 				break;
 			}
 		}
-		if (m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
+
+		if (1/*m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority*/)
 		{
 			m_pMainTransform->Set_LookDir(XMVectorSetY(
 				static_cast<CTransform*>(pGameObject->Find_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION)

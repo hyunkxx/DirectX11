@@ -46,7 +46,7 @@ HRESULT CApplication::Initialize()
 	GraphicDesc.iWinSizeY = g_iWinSizeY;
 	GraphicDesc.hWnd = g_hWnd;
 	GraphicDesc.hInstance = g_hInst;
-	
+
 	if (FAILED(m_pGameInstance->Engine_Initialize(GraphicDesc, LEVEL_END, COLL_END, &m_pDevice, &m_pContext)))
 		return E_FAIL;
 
@@ -75,7 +75,7 @@ HRESULT CApplication::Initialize()
 	//UI에 필요한 텍스쳐 원본 생성
 
 	//콜라이더 보이기/숨기기
-	m_pGameInstance->SetCollisionDebugRender(false);
+	m_pGameInstance->SetCollisionDebugRender(true);
 #ifdef _DEBUG
 	m_pRenderer->DebugBundleRender_Control(false);
 #endif

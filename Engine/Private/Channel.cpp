@@ -70,7 +70,7 @@ void CChannel::Invalidate_Transform(_uint ChannelID, CAnimController::ANIMSTATE&
 
 				vScale = XMVectorLerp(vDestScale, vScale, (_float)DestRatio);
 				vRotation = XMQuaternionSlerp(vDestRotation, vRotation, (_float)DestRatio);
-				vPosition = XMVectorLerp(vDestPosition, vPosition, (_float)DestRatio);
+				//vPosition = XMVectorLerp(vDestPosition, vPosition, (_float)DestRatio);
 			}
 			else
 				tState.IsInterpolate = false;
