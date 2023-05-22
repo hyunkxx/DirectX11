@@ -146,11 +146,15 @@ const char CTestChar::szSharedStateTag[SS_END][MAX_PATH] =
 	"SS_CONTROL_U",
 	"SS_BEHIT_S",
 	"SS_BEHIT_B",
-	"SS_BEHIT_FLY",
+	"SS_BEHIT_FLY_START",
+	"SS_BEHIT_FLY_LOOP",
+	"SS_BEHIT_FLY_FALL",
 	"SS_BEHIT_PRESS",
 	"SS_DEATH_IN_WATER",
 	"SS_DEATH",
 };
+
+
 
 const char CTestChar::szRotationTag[ROT_END][MAX_PATH] =
 {

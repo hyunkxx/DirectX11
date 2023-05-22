@@ -657,6 +657,7 @@ void CP_PlayerGirl::SetUp_State()
 		SS_JUMP_RUN == m_Scon.iCurState || 
 		SS_FIXHOOK_END_UP == m_Scon.iCurState ||
 		SS_CLIMB_MOVE == m_Scon.iCurState ||
+		SS_BEHIT_FLY_START == m_Scon.iCurState ||
 		SS_FALL == m_Scon.iCurState) &&
 		PS_AIR != m_Scon.ePositionState)
 	{
@@ -670,6 +671,7 @@ void CP_PlayerGirl::SetUp_State()
 		SS_LAND_ROLL == m_Scon.iCurState ||
 		SS_CLIMB_ONTOP == m_Scon.iCurState ||
 		SS_CLIMB_BOOST_ONTOP == m_Scon.iCurState ||
+		SS_BEHIT_FLY_FALL == m_Scon.iCurState ||
 		IS_AIRATTACK_END == m_Scon.iCurState)
 	{
 		m_Scon.ePositionState = PS_GROUND;
@@ -1649,6 +1651,12 @@ void CP_PlayerGirl::On_Cell()
 						pGM->StartWave();
 						m_Scon.iNextState = IS_AIRATTACK_END;
 					}
+					else if (SS_BEHIT_FLY_START == m_Scon.iCurState ||
+						SS_BEHIT_FLY_LOOP == m_Scon.iCurState)
+					{
+						pGM->StartWave();
+						m_Scon.iNextState = SS_BEHIT_FLY_FALL;
+					}
 					// 일반적인 경우
 					else
 					{
@@ -1698,7 +1706,6 @@ void CP_PlayerGirl::On_Cell()
 			XMStoreFloat3(&m_vClimbExitPos, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 
 			m_fClimbExitYGap =  m_pModelCom->Get_TopBoneCombinedPos()->y;
-			
 
 			if (SS_CLIMB_BOOST_U == m_Scon.iCurState ||
 				SS_CLIMB_BOOST_U_START == m_Scon.iCurState ||
@@ -1791,10 +1798,6 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 		{
 			switch (pAttackInfo->eHitIntensity)
 			{
-			case HIT_SMALL:
-			case HIT_BIG:
-				m_Scon.iNextState = SS_BEHIT_PRESS;
-				break;
 			case HIT_FLY:
 				m_Scon.iNextState = SS_BEHIT_FLY_START;
 				break;

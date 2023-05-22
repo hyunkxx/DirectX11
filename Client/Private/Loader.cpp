@@ -1155,6 +1155,12 @@ HRESULT CLoader::Load_Level_AnimTool()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_GAZIZI, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/GAzizi/GAzizi.dmdl")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Anjin/Anjin.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_AWUKAKA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/AWukaka/AWukaka.dmdl")))))
+		return E_FAIL;
+
 	m_pApp->LoadRatio(0.6f);
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
@@ -1197,6 +1203,22 @@ HRESULT CLoader::Load_Level_AnimTool()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_GAZIZI, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
 		return E_FAIL;
 	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_GAZIZI), TEXT("GAzizi"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_ANJIN;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Anjin/Anjin_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_ANJIN, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_ANJIN), TEXT("Anjin"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_AWUKAKA;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_AWukaka/AWukaka_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_AWUKAKA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_AWUKAKA), TEXT("AWukaka"));
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SWORD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SWORD))))
 		return E_FAIL;
