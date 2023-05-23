@@ -67,8 +67,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_MapObject_Grass(TEXT("layer_grass"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_MapObject_Vin(TEXT("layer_vin"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_MapObject_Vin(TEXT("layer_vin"))))
+		//return E_FAIL;
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);

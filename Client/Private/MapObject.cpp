@@ -251,147 +251,71 @@ HRESULT CMapObject::Render_Default()
 
 HRESULT CMapObject::Load_Edition()
 {
+	HANDLE		hFile = CreateFile(m_EditionDesc.pEditionFilePath, GENERIC_READ, 0, 0,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Failed to Load Data in CMapObject : EditionData");
+		return E_FAIL;
+	}
+
+	DWORD		dwByte = 0;
+
+	Load_EditionID(hFile, dwByte);
+
 	switch (m_EditionDesc.iTypeID)
 	{
 	case CMapObject::MAPOBJECT_TYPEID::ID_TREE:
-		if (FAILED(Load_EditionColor()))
-		{
-			m_EditionDesc.UseEditionColor = { false };
-			m_EditionDesc.iEditionColor_MeshNum = { 0 };
-			m_EditionDesc.vEditionColor = { _float3(1.0f, 1.0f, 1.0f) };
-		}
+		Load_EditionColor(hFile, dwByte);
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_ROCK:
-		if (FAILED(Load_DiffuseTexID()))
-		{
-			m_EditionDesc.iDiffuseTex_ID = { 0 };
-		}
+		Load_DiffuseTexID(hFile, dwByte);
 		break;
-
 	case CMapObject::MAPOBJECT_TYPEID::ID_FLOOR:
-		if (FAILED(Load_EditionID()))
-			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_STAIRS:
-		if (FAILED(Load_EditionID()))
-			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS:
-		if (FAILED(Load_EditionID()))
-			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK:
-		if (FAILED(Load_SubEditionColor_Mask()))
-			return E_FAIL;
+		Load_SubEditionColor_Mask(hFile, dwByte);
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_VIN:
-		if (FAILED(Load_EditionColor()))
-		{
-			m_EditionDesc.UseEditionColor = { false };
-			m_EditionDesc.iEditionColor_MeshNum = { 0 };
-			m_EditionDesc.vEditionColor = { _float3(1.0f, 1.0f, 1.0f) };
-		}
+		Load_EditionColor(hFile, dwByte);
 		break;
 	default:
 		break;
 	}
 
-	return S_OK;
-}
-
-HRESULT CMapObject::Load_EditionColor()
-{
-	HANDLE		hFile = CreateFile(m_EditionDesc.pEditionFilePath, GENERIC_READ, 0, 0,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-
-	if (INVALID_HANDLE_VALUE == hFile)
-	{
-		MSG_BOX("Failed to Load Data in CMapObject : EditionColor");
-		return E_FAIL;
-	}
-
-	DWORD		dwByte = 0;
-
-	ReadFile(hFile, &m_EditionDesc.iSIMD_ID, sizeof(_uint), &dwByte, nullptr);
-	ReadFile(hFile, &m_EditionDesc.iTypeID, sizeof(_uint), &dwByte, nullptr);
-
-	ReadFile(hFile, &m_EditionDesc.UseEditionColor, sizeof(_bool), &dwByte, nullptr);
-	ReadFile(hFile, &m_EditionDesc.iEditionColor_MeshNum, sizeof(_uint), &dwByte, nullptr);
-	ReadFile(hFile, &m_EditionDesc.vEditionColor, sizeof(_float3), &dwByte, nullptr);
-
 	CloseHandle(hFile);
 
 	return S_OK;
 }
 
-HRESULT CMapObject::Load_DiffuseTexID()
+void CMapObject::Load_EditionID(HANDLE& _hFile, DWORD& _dwByte)
 {
-	HANDLE		hFile = CreateFile(m_EditionDesc.pEditionFilePath, GENERIC_READ, 0, 0,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-
-	if (INVALID_HANDLE_VALUE == hFile)
-	{
-		MSG_BOX("Failed to Load Data in CMapObject : DiffuseTexID");
-		return E_FAIL;
-	}
-
-	DWORD		dwByte = 0;
-
-	ReadFile(hFile, &m_EditionDesc.iSIMD_ID, sizeof(_uint), &dwByte, nullptr);
-	ReadFile(hFile, &m_EditionDesc.iTypeID, sizeof(_uint), &dwByte, nullptr);
-
-	ReadFile(hFile, &m_EditionDesc.iDiffuseTex_ID, sizeof(_uint), &dwByte, nullptr);
-
-	CloseHandle(hFile);
-
-	return S_OK;
+	ReadFile(_hFile, &m_EditionDesc.iSIMD_ID, sizeof(_uint), &_dwByte, nullptr);
+	ReadFile(_hFile, &m_EditionDesc.iTypeID, sizeof(_uint), &_dwByte, nullptr);
 }
 
-HRESULT CMapObject::Load_EditionID()
+void CMapObject::Load_EditionColor(HANDLE& _hFile, DWORD& _dwByte)
 {
-	HANDLE		hFile = CreateFile(m_EditionDesc.pEditionFilePath, GENERIC_READ, 0, 0,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-
-	if (INVALID_HANDLE_VALUE == hFile)
-	{
-		MSG_BOX("Failed to Load Data in CMapObject : EditionID");
-		return S_OK;
-	}
-
-	DWORD		dwByte = 0;
-
-	ReadFile(hFile, &m_EditionDesc.iSIMD_ID, sizeof(_uint), &dwByte, nullptr);
-	ReadFile(hFile, &m_EditionDesc.iTypeID, sizeof(_uint), &dwByte, nullptr);
-
-	CloseHandle(hFile);
-
-	return S_OK;
+	ReadFile(_hFile, &m_EditionDesc.UseEditionColor, sizeof(_bool), &_dwByte, nullptr);
+	ReadFile(_hFile, &m_EditionDesc.iEditionColor_MeshNum, sizeof(_uint), &_dwByte, nullptr);
+	ReadFile(_hFile, &m_EditionDesc.vEditionColor, sizeof(_float3), &_dwByte, nullptr);
 }
 
-HRESULT CMapObject::Load_SubEditionColor_Mask()
+void CMapObject::Load_DiffuseTexID(HANDLE& _hFile, DWORD& _dwByte)
 {
-	HANDLE		hFile = CreateFile(m_EditionDesc.pEditionFilePath, GENERIC_READ, 0, 0,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	ReadFile(_hFile, &m_EditionDesc.iDiffuseTex_ID, sizeof(_uint), &_dwByte, nullptr);
+}
 
-	if (INVALID_HANDLE_VALUE == hFile)
-	{
-		MSG_BOX("Failed to Load Data in CMapObject : SubEditionColorMask");
-		return S_OK;
-	}
-
-	DWORD		dwByte = 0;
-
-	ReadFile(hFile, &m_EditionDesc.iSIMD_ID, sizeof(_uint), &dwByte, nullptr);
-	ReadFile(hFile, &m_EditionDesc.iTypeID, sizeof(_uint), &dwByte, nullptr);
-
-	ReadFile(hFile, &m_EditionDesc.vEditionColor, sizeof(_float3), &dwByte, nullptr);
-
-	ReadFile(hFile, &m_EditionDesc.iMaskTex_ID, sizeof(_float3), &dwByte, nullptr);
-	ReadFile(hFile, &m_EditionDesc.vSubEditionColor, sizeof(_float3), &dwByte, nullptr);
-
-	CloseHandle(hFile);
-
-	return S_OK;
+void CMapObject::Load_SubEditionColor_Mask(HANDLE& _hFile, DWORD& _dwByte)
+{
+	ReadFile(_hFile, &m_EditionDesc.vEditionColor, sizeof(_float3), &_dwByte, nullptr);
+	ReadFile(_hFile, &m_EditionDesc.iMaskTex_ID, sizeof(_float3), &_dwByte, nullptr);
+	ReadFile(_hFile, &m_EditionDesc.vSubEditionColor, sizeof(_float3), &_dwByte, nullptr);
 }
 
 HRESULT CMapObject::Add_Components()

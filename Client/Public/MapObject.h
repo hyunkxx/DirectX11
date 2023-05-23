@@ -46,12 +46,11 @@ public:
 public:
 	HRESULT Load_Edition();
 
-	HRESULT Load_EditionColor();
-	HRESULT Load_DiffuseTexID();
+	void Load_EditionID(HANDLE& _hFile, DWORD& _dwByte);
 
-	HRESULT Load_EditionID();
-
-	HRESULT Load_SubEditionColor_Mask();
+	void Load_EditionColor(HANDLE& _hFile, DWORD& _dwByte);
+	void Load_DiffuseTexID(HANDLE& _hFile, DWORD& _dwByte);
+	void Load_SubEditionColor_Mask(HANDLE& _hFile, DWORD& _dwByte);
 
 private:
 	SMAP_OBJECT_EDITION_DESC	m_EditionDesc = {};
