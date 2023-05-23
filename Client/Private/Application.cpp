@@ -78,7 +78,7 @@ HRESULT CApplication::Initialize()
 	//UI에 필요한 텍스쳐 원본 생성
 
 	//콜라이더 보이기/숨기기
-	m_pGameInstance->SetCollisionDebugRender(true);
+	m_pGameInstance->SetCollisionDebugRender(false);
 #ifdef _DEBUG
 	m_pRenderer->DebugBundleRender_Control(false);
 #endif
@@ -132,13 +132,13 @@ HRESULT CApplication::Render()
 		m_iNumRender = 0;
 	}
 
-	m_pGameInstance->Render_Font(
-		TEXT("DefaultFont"),
-		m_szFPS,
-		_float2(0.f, 0.f),
-		XMVectorSet(1.f, 1.f, 1.f, 1.f),
-		_float2(0.5f, 0.5f)
-	);
+	//m_pGameInstance->Render_Font(
+	//	TEXT("DefaultFont"),
+	//	m_szFPS,
+	//	_float2(0.f, 0.f),
+	//	XMVectorSet(1.f, 1.f, 1.f, 1.f),
+	//	_float2(0.5f, 0.5f)
+	//);
 #ifdef _DEBUG 
 	m_pGUIManager->RenderDrawData();
 #endif

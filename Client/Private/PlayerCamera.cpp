@@ -122,7 +122,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 			// 플레이어 기준 x축 회전
 			if (MouseMove = pGameInstance->InputMouseMove(Engine::MOUSE_MOVESTATE::DIMM_Y))
 			{
-				m_fXTargetAngle += (_float)TimeDelta * MouseMove * 4.f;
+				m_fXTargetAngle += (_float)TimeDelta * MouseMove * 4.f * 2.f;
 
 				// x축 회전각 제한
 				if (m_fXTargetAngle > m_fXAngleMax)
@@ -144,7 +144,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 
 			// 플레이어 기준 Y축 회전
 			if (MouseMove = pGameInstance->InputMouseMove(Engine::MOUSE_MOVESTATE::DIMM_X))
-				m_fYTargetAngle += (_float)TimeDelta * MouseMove * 4.f;
+				m_fYTargetAngle += (_float)TimeDelta * MouseMove * 4.f * 2.f;
 			// 현재 각도, 목표 각도 값 보간
 			if (m_fYCurAngle != m_fYTargetAngle)
 			{

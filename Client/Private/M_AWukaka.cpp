@@ -13,6 +13,7 @@
 #include "Missile_Constant.h"
 #include "OBBKey.h"
 
+#include "CameraMovement.h"
 #include "Chest.h"
 //UI추가
 #include "UI_Monster.h"
@@ -110,7 +111,7 @@ void CM_AWukaka::Start()
 	m_pRendererCom->DebugBundleRender_Control(true);
 #endif
 
-	//pStaticObject = pGame->Find_GameObject(LEVEL_GAMEPLAY, L"StaticTest");
+	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 
 	// Find ActivePlayer
 	m_pTarget = static_cast<CCharacter*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
@@ -914,17 +915,17 @@ void CM_AWukaka::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _flo
 			switch (pAttackInfo->eHitIntensity)
 			{
 			case HIT_SMALL:
-				pGM->StartVibration();
+				m_pCamMovement->StartVibration();
 				m_Scon.iNextState = IS_BEHIT_S;
 				break;
 			case HIT_BIG:
-				pGM->StartVibration(10.f, 0.7f);
+				m_pCamMovement->StartVibration(10.f, 0.7f);
 				m_Scon.iNextState = IS_BEHIT_B;
 				break;
 			case HIT_FLY:
 			{
 				//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
-				pGM->StartWave();
+				m_pCamMovement->StartWave();
 				m_Scon.iNextState = IS_BEHIT_FLY_START;
 				break;
 			}
@@ -1050,14 +1051,14 @@ void CM_AWukaka::OnCollisionEnter(CCollider * src, CCollider * dest)
 				true == dest->Compare(pOpponent->GetHitCollider()))
 			{
 				// 타격 위치를 찾아서 히트 이펙트 출력
-				pGM->StartVibration(10.f, 0.5f);
+				m_pCamMovement->StartVibration(10.f, 0.5f);
 			}
 
 			// 상대의 공격이 나에게 적중한 경우 
 			if (true == src->Compare(GetHitCollider()) &&
 				true == dest->Compare(pOpponent->GetAttackCollider()))
 			{
-				pGM->StartVibration();
+				m_pCamMovement->StartVibration();
 
 				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
 				TAGATTACK tAttackInfo;

@@ -222,7 +222,7 @@ public:
 	CCollider* m_pAttackCollider = nullptr;
 	CCollider* m_pHitCollider = nullptr;
 	CCollider* m_pMoveCollider = nullptr;
-
+	class CCameraMovement* m_pCamMovement = nullptr;
 };
 
 END

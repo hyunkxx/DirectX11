@@ -696,6 +696,9 @@ void CP_PlayerGirl::SetUp_State()
 	// 애니메이션이 강제로 끊긴 경우 대비 애니메이션 갱신 시 OBB 콜라이더 무조건 끄기
 	m_pAttackCollider->SetActive(false);
 	
+	if(IS_BURST == m_Scon.iCurState)
+		m_pCamMovement->UseCamera(CCameraMovement::CAM_BANGSUN);
+
 	// PositionState 처리
 	if ((SS_JUMP_WALK == m_Scon.iCurState ||
 		SS_JUMP_RUN == m_Scon.iCurState || 
@@ -953,7 +956,6 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		if (pGame->InputKey(DIK_R) == KEY_STATE::TAP)
 		{
 			eCurFrameInput = INPUT_BURST;
-			m_pCamMovement->UseCamera(CCameraMovement::CAM_BANGSUN);
 		}
 
 		// Jump

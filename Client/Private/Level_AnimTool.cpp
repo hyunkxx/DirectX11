@@ -65,7 +65,7 @@ void CLevel_AnimTool::RenderLevelUI()
 
 #ifdef _DEBUG
 	m_pEffect_Tool->RenderGUI();
-	m_pEffect_Manager->RenderGUI();
+	m_pEffect_Tool->RenderGUI();
 
 	// 카메라 위치 체크용
 	CGameInstance* pGame = CGameInstance::GetInstance();
