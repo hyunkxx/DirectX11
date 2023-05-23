@@ -249,6 +249,7 @@ void CAnimToolManager::RenderGUI()
 			PUSHID;
 			if (ImGui::Button("Delete Model"))
 			{
+				DeleteModel();
 				/*CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 				if (MODEL_VTF == m_iModelType)
@@ -1112,6 +1113,22 @@ void CAnimToolManager::LoadGenericModel()
 		m_pTargetGeneric = static_cast<CTestGeneric*>(pGameInstance->Find_GameObject(LEVEL_ANIMTOOL, TEXT("TestGeneric0")));
 
 		Update_Information();
+	}
+}
+
+void CAnimToolManager::DeleteModel()
+{
+	if (nullptr != m_pTargetVTF)
+	{
+		m_pTargetVTF->SetState(CGameObject::DESTROY);
+		m_pTargetVTF = nullptr;
+		m_pMultiState = nullptr;
+	}
+	else if (nullptr != m_pTargetGeneric)
+	{
+		m_pTargetGeneric->SetState(CGameObject::DESTROY);
+		m_pTargetGeneric = nullptr;
+		m_pSingleState = nullptr;
 	}
 }
 

@@ -38,6 +38,9 @@ public:
 	// Char
 	void LoadGenericModel();
 
+	//
+	void DeleteModel();
+
 	// 모델 로드, 삭제, 애니메이션 변경 등 시점에 호출
 	void Update_Information();
 

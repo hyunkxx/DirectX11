@@ -62,8 +62,9 @@ HRESULT CM_AWukaka::Initialize(void * pArg)
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
 	// 초기위치 설정
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f + 10.f, 2.290f, 35.776f + 5.f, 1.f));
-	m_pNaviCom->Set_CurrentIndex(90);
+	
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(137.260f, 29.646f, 244.185f, 1.f));
+	m_pNaviCom->Set_CurrentIndex(1902);
 
 	// StateController 초기화
 	m_Scon.iCurState = 0;
@@ -707,7 +708,7 @@ void CM_AWukaka::Select_State(_double TimeDelta)
 
 
 	// 지금 상태를 끊고 다음 상태로 갱신 할지 여부
-	if (AI_NONE != iCurFrameAI)
+	if (AI_NONE != iCurFrameAI && AI_IDLE != iCurFrameAI)
 	{
 		SetUp_State();
 		m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true);
@@ -812,9 +813,12 @@ void CM_AWukaka::Tick_State(_double TimeDelta)
 
 	if (true == m_Scon.bAnimFinished)
 	{
-		if (IS_DEAD == m_Scon.iCurState)
+		if (IS_ATTACK03== m_Scon.iCurState ||
+			IS_DEAD == m_Scon.iCurState)
+		{
 			SetState(DISABLE);
-		
+		}
+			
 
 		// 공격 행동 시
 		if (IS_ATTACK01 == m_Scon.iCurState ||

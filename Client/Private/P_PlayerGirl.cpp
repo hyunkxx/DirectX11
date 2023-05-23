@@ -103,10 +103,15 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	//m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(105.f, 30.f, 92.f, 1.f));
 	//m_pMainTransform->Set_Scale(_float3(10.f, 10.f, 10.f));
 	//m_pNaviCom->Set_CurrentIndex(90);
+
+
+	
 	
 	// 요거 건들였어요.
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(137.131f, 25.745f, 196.163f, 1.f));
-	m_pNaviCom->Set_CurrentIndex(1457);
+	//m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(137.131f, 25.745f, 196.163f, 1.f));
+	//m_pNaviCom->Set_CurrentIndex(1457);
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 30.776f, 1.f));
+	m_pNaviCom->Set_CurrentIndex(0);
 
 	//m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
 
@@ -987,6 +992,11 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		else
 			m_ChargeAcc = 0.0;
 
+		if (pGame->InputMouse(DIMK_RB) == KEY_STATE::TAP)
+		{
+			eCurFrameInput = INPUT_EVADE;
+		}
+
 
 
 		// Tool
@@ -1096,6 +1106,12 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				m_Scon.iNextState = SS_MOVE_B;
 			else
 				m_Scon.iNextState = SS_MOVE_F;*/
+			break;
+		case Client::CP_PlayerGirl::INPUT_EVADE:
+			if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
+				m_Scon.iNextState = SS_MOVE_B;
+			else
+				m_Scon.iNextState = SS_MOVE_F;
 			break;
 
 		case Client::CP_PlayerGirl::INPUT_SPACE:
@@ -1878,7 +1894,7 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 			}
 		}
 
-		if (1/*m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority*/)
+		if (m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
 		{
 			m_pMainTransform->Set_LookDir(XMVectorSetY(
 				static_cast<CTransform*>(pGameObject->Find_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION)

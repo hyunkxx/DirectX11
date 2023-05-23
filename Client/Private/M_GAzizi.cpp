@@ -59,9 +59,11 @@ HRESULT CM_GAzizi::Initialize(void * pArg)
 	// 루트모션용 본찾기
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
+	m_pModelCom->Get_Animation(IS_DEAD)->Set_Duration(90);
+
 	// 초기위치 설정
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 35.776f, 1.f));
-	m_pNaviCom->Set_CurrentIndex(90);
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.974f, 25.767f, 183.063f, 1.f));
+	m_pNaviCom->Set_CurrentIndex(1340);
 
 	// StateController 초기화
 	m_Scon.iCurState = 0;
@@ -701,7 +703,7 @@ void CM_GAzizi::Select_State(_double TimeDelta)
 	
 
 	// 지금 상태를 끊고 다음 상태로 갱신 할지 여부
-	if (AI_NONE != iCurFrameAI)
+	if (AI_NONE != iCurFrameAI && AI_IDLE != iCurFrameAI)
 	{
 		SetUp_State();
 		m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true);

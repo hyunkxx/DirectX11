@@ -62,8 +62,8 @@ HRESULT CM_Anjin::Initialize(void * pArg)
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
 	// 초기위치 설정
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f + 5.f, 2.290f, 35.776f + 5.f, 1.f));
-	m_pNaviCom->Set_CurrentIndex(90);
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(186.066f, 32.837f, 242.489f, 1.f));
+	m_pNaviCom->Set_CurrentIndex(2200);
 
 	// StateController 초기화
 	m_Scon.iCurState = 0;
@@ -766,7 +766,7 @@ void CM_Anjin::Select_State(_double TimeDelta)
 
 
 	// 지금 상태를 끊고 다음 상태로 갱신 할지 여부
-	if (AI_NONE != iCurFrameAI)
+	if (AI_NONE != iCurFrameAI && AI_IDLE != iCurFrameAI)
 	{
 		SetUp_State();
 		m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true);
