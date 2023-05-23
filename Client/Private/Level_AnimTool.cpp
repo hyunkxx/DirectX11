@@ -137,6 +137,7 @@ HRESULT CLevel_AnimTool::Ready_Layer_Player(const _tchar * pLayerTag)
 	
 	return S_OK;
 }
+
 #ifdef _DEBUG
 HRESULT CLevel_AnimTool::Ready_Effect_Manager()
 {
@@ -151,7 +152,7 @@ HRESULT CLevel_AnimTool::Ready_Effect_Manager()
 CLevel_AnimTool* CLevel_AnimTool::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
 	CLevel_AnimTool* pInstance = new CLevel_AnimTool(pDevice, pContext);
-
+	 
 	if (FAILED(pInstance->Initialize()))
 	{
 		wstring message = L"Failed to Create : CLevel_AnimTool";

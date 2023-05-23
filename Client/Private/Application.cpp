@@ -985,6 +985,41 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/Comon/M_Appear_Effect/")))
 			return E_FAIL;
 
+		// 낫든애 공격 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Anjin/Anjin_Attack_01.bin"),
+			"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Anjin/Anjin_Attack_02_1.bin"),
+			"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Anjin/Anjin_Attack_02_2.bin"),
+			"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Anjin/Anjin_Attack_02_3.bin"),
+			"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Anjin/Anjin_Attack_03.bin"),
+			"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
+			return E_FAIL;
+		//Mark 는 공격전  빛나면서 플레이어에게 공격 타이밍 알려주는 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Anjin/Attack_Mark.bin"),
+			"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
+			return E_FAIL;
+		//Hit 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Anjin/Anjin_Hit.bin"),
+			"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
+			return E_FAIL;
 	}
 	
 #pragma endregion
