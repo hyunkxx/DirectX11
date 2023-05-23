@@ -115,14 +115,6 @@ void CM_Anjin::Start()
 	// Find ActivePlayer
 	m_pTarget = static_cast<CCharacter*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
 	m_pTargetTransform = static_cast<CTransform*>(m_pTarget->Find_Component(TEXT("Com_Transform")));
-
-
-	//UI추가
-	CUI_Monster::MONINFO MonInfo;
-	MonInfo.Level = 0;
-	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
-	if (pGame->Add_GameObjectEx(&m_pUIMon, LEVEL_GAMEPLAY, OBJECT::UIMONSTER, TEXT("layer_UI"), TEXT("UI_Monster"), &MonInfo))
-		return;
 }
 
 void CM_Anjin::PreTick(_double TimeDelta)
@@ -171,7 +163,6 @@ void CM_Anjin::Tick(_double TimeDelta)
 
 	pGameInstance->AddCollider(m_pMoveCollider, COLL_MOVE);
 	m_pMoveCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
-
 }
 
 void CM_Anjin::LateTick(_double TimeDelta)
@@ -940,8 +931,7 @@ void CM_Anjin::On_Cell()
 			}
 		}
 	}
-	//UI추가
-	static_cast<CUI_Monster*>(m_pUIMon)->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+
 }
 
 void CM_Anjin::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
@@ -964,8 +954,6 @@ void CM_Anjin::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float
 	m_tCharInfo.fCurHP -= fFinalDamage;
 
 	// TODO: 여기서 대미지 폰트 출력
-	//UI추가 몬스터 사망시 ui도 SetDestroy 추가 예정
-	static_cast<CUI_Monster*>(m_pUIMon)->Set_Damage(fFinalDamage);
 
 	// 사망 시 사망 애니메이션 실행 
 	if (0.f >= m_tCharInfo.fCurHP)
@@ -1087,7 +1075,6 @@ void CM_Anjin::Free()
 	__super::Free();
 
 
-
 	Safe_Release(m_pNaviCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pMainTransform);
@@ -1099,8 +1086,6 @@ void CM_Anjin::Free()
 	Safe_Release(m_pHitCollider);
 	Safe_Release(m_pMoveCollider);
 
-	//UI추가
-	Safe_Release(m_pUIMon);
 }
 
 void CM_Anjin::OnCollisionEnter(CCollider * src, CCollider * dest)

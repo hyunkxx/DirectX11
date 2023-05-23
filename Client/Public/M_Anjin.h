@@ -130,8 +130,6 @@ private:
 	CShader*			m_pShaderCom = { nullptr };
 	CModel_Anim*		m_pModelCom = { nullptr };
 	CNavigation*		m_pNaviCom = { nullptr };
-	//UIÃß°¡
-	CGameObject*		m_pUIMon = { nullptr };
 
 private:
 	// State
@@ -224,6 +222,7 @@ public:
 	CCollider* m_pAttackCollider = nullptr;
 	CCollider* m_pHitCollider = nullptr;
 	CCollider* m_pMoveCollider = nullptr;
+
 };
 
 END

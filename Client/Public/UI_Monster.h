@@ -112,11 +112,11 @@ private:
 	_bool m_bHit = { false };
 	_bool m_bRedStart = { false };
 	_float m_Damage = { 0.f }; // °øÅë
-	_float m_CurrentHp = { 100.f };
-	_float m_HP = { 100.f };
-	_float m_PreHp = { 100.f };
+	_float m_CurrentHp = { 500.f };
+	_float m_HP = { 500.f };
+	_float m_PreHp = { 500.f };
 	_float m_fWhiteBar = { 1.f };
-	_float m_RedDamageACC = { 100.f };
+	_float m_RedDamageACC = { 500.f };
 	_float m_fRedBar = { 1.f };
 	_int m_Index = { 0 };
 	_int m_MonsterLevel = { 10 };

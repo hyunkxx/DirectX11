@@ -201,7 +201,16 @@ void CUI_Monster::LateTick(_double TimeDelta)
 
 HRESULT CUI_Monster::Render()
 {
-	
+	for (auto& Desc : DamageList)
+	{
+		if (FAILED(__super::Render()))
+			return E_FAIL;
+		if (FAILED(Setup_ShaderResourcesDamage(&Desc)))
+			return E_FAIL;
+		m_pShader->Begin(0);
+		m_pVIBuffer->Render();
+	}
+
 	for (_uint i = 0; i < 4; ++i)
 	{
 		if (true == m_DescList[i]->bRender)
@@ -265,16 +274,6 @@ HRESULT CUI_Monster::Render()
 			m_pShader->Begin(m_DescList[i]->iPass);
 			m_pVIBuffer->Render();
 		}
-	}
-
-	for (auto& Desc : DamageList)
-	{
-		if (FAILED(__super::Render()))
-			return E_FAIL;
-		if (FAILED(Setup_ShaderResourcesDamage(&Desc)))
-			return E_FAIL;
-		m_pShader->Begin(0);
-		m_pVIBuffer->Render();
 	}
 
 	return S_OK;

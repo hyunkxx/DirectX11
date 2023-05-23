@@ -118,7 +118,7 @@ void CM_GAzizi::Start()
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 44);
 	CUI_Monster::MONINFO MonInfo;
-	MonInfo.Level = 0;
+	MonInfo.Level = 3;
 	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
 	if (pGame->Add_GameObjectEx(&m_pUIMon, LEVEL_GAMEPLAY, OBJECT::UIMONSTER, TEXT("layer_UI"), TEXT("UI_Monster"), &MonInfo))
 		return;
@@ -797,7 +797,11 @@ void CM_GAzizi::Tick_State(_double TimeDelta)
 	if (true == m_Scon.bAnimFinished)
 	{
 		if (IS_DEAD == m_Scon.iCurState)
+		{
 			SetState(DISABLE);
+			m_pUIMon->SetState(DISABLE);
+			m_pUIMon = nullptr;
+		}
 
 		// 공격 행동 시
 		if (IS_ATTACK1 == m_Scon.iCurState ||
@@ -1011,7 +1015,7 @@ void CM_GAzizi::Free()
 
 	//UI
 	m_pUIIcon = nullptr;
-
+	
 	for (_uint i = 0; i < MISS_END; ++i)
 	{
 		Safe_Release(m_MissilePools[i]);

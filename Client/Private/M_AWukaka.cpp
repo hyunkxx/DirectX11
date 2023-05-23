@@ -116,13 +116,6 @@ void CM_AWukaka::Start()
 	m_pTarget = static_cast<CCharacter*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
 	m_pTargetTransform = static_cast<CTransform*>(m_pTarget->Find_Component(TEXT("Com_Transform")));
 
-
-	//UI추가
-	CUI_Monster::MONINFO MonInfo;
-	MonInfo.Level = 0;
-	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
-	if (pGame->Add_GameObjectEx(&m_pUIMon, LEVEL_GAMEPLAY, OBJECT::UIMONSTER, TEXT("layer_UI"), TEXT("UI_Monster"), &MonInfo))
-		return;
 }
 
 void CM_AWukaka::PreTick(_double TimeDelta)
@@ -820,6 +813,7 @@ void CM_AWukaka::Tick_State(_double TimeDelta)
 	{
 		if (IS_DEAD == m_Scon.iCurState)
 			SetState(DISABLE);
+		
 
 		// 공격 행동 시
 		if (IS_ATTACK01 == m_Scon.iCurState ||
@@ -882,8 +876,6 @@ void CM_AWukaka::On_Cell()
 			}
 		}
 	}
-	//UI추가
-	static_cast<CUI_Monster*>(m_pUIMon)->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 }
 
 void CM_AWukaka::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
@@ -906,8 +898,6 @@ void CM_AWukaka::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _flo
 	m_tCharInfo.fCurHP -= fFinalDamage;
 
 	// TODO: 여기서 대미지 폰트 출력
-	//UI추가 몬스터 사망시 ui도 SetDestroy 추가 예정
-	static_cast<CUI_Monster*>(m_pUIMon)->Set_Damage(fFinalDamage);
 
 	// 사망 시 사망 애니메이션 실행 
 	if (0.f >= m_tCharInfo.fCurHP)
@@ -1043,8 +1033,6 @@ void CM_AWukaka::Free()
 	Safe_Release(m_pHitCollider);
 	Safe_Release(m_pMoveCollider);
 
-	//UI추가
-	Safe_Release(m_pUIMon);
 }
 
 void CM_AWukaka::OnCollisionEnter(CCollider * src, CCollider * dest)
