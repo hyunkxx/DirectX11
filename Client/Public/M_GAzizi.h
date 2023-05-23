@@ -14,6 +14,8 @@ class CNavigation;
 END
 
 BEGIN(Client)
+class CUI_Monster;
+
 class CM_GAzizi
 	: public CCharacter
 {
@@ -120,7 +122,7 @@ private:
 	CModel_Anim*		m_pModelCom = { nullptr };
 	CNavigation*		m_pNaviCom = { nullptr };
 	//UIÃß°¡
-	CGameObject*		m_pUIMon = { nullptr };
+	CUI_Monster*		m_pUIMon = { nullptr };
 	class CUI_Minimap*		m_pUIIcon = { nullptr };
 private:
 	// State

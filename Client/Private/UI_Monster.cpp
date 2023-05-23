@@ -201,81 +201,83 @@ void CUI_Monster::LateTick(_double TimeDelta)
 
 HRESULT CUI_Monster::Render()
 {
-	for (auto& Desc : DamageList)
+	if (true == m_bRender)
 	{
-		if (FAILED(__super::Render()))
-			return E_FAIL;
-		if (FAILED(Setup_ShaderResourcesDamage(&Desc)))
-			return E_FAIL;
-		m_pShader->Begin(0);
-		m_pVIBuffer->Render();
-	}
-
-	for (_uint i = 0; i < 4; ++i)
-	{
-		if (true == m_DescList[i]->bRender)
+		for (auto& Desc : DamageList)
 		{
 			if (FAILED(__super::Render()))
 				return E_FAIL;
-			if (FAILED(Setup_ShaderResourcesHP(i)))
+			if (FAILED(Setup_ShaderResourcesDamage(&Desc)))
 				return E_FAIL;
-			m_pShader->Begin(m_DescList[i]->iPass);
+			m_pShader->Begin(0);
 			m_pVIBuffer->Render();
 		}
-	}
 
-	for (_uint i = 4; i < 8; ++i)
-	{
-		if (true == m_DescList[i]->bRender)
+		for (_uint i = 0; i < 4; ++i)
+		{
+			if (true == m_DescList[i]->bRender)
+			{
+				if (FAILED(__super::Render()))
+					return E_FAIL;
+				if (FAILED(Setup_ShaderResourcesHP(i)))
+					return E_FAIL;
+				m_pShader->Begin(m_DescList[i]->iPass);
+				m_pVIBuffer->Render();
+			}
+		}
+
+		for (_uint i = 4; i < 8; ++i)
+		{
+			if (true == m_DescList[i]->bRender)
+			{
+				if (FAILED(__super::Render()))
+					return E_FAIL;
+				if (FAILED(Setup_ShaderResources(i)))
+					return E_FAIL;
+				m_pShader->Begin(m_DescList[i]->iPass);
+				m_pVIBuffer->Render();
+			}
+		}
+
+
+		if (true == m_DescList[8]->bRender)
 		{
 			if (FAILED(__super::Render()))
 				return E_FAIL;
-			if (FAILED(Setup_ShaderResources(i)))
+			if (FAILED(Setup_ShaderResources(8)))
 				return E_FAIL;
-			m_pShader->Begin(m_DescList[i]->iPass);
+			m_pShader->Begin(m_DescList[8]->iPass);
 			m_pVIBuffer->Render();
 		}
-	}
 
-
-	if (true == m_DescList[8]->bRender)
-	{
-		if (FAILED(__super::Render()))
-			return E_FAIL;
-		if (FAILED(Setup_ShaderResources(8)))
-			return E_FAIL;
-		m_pShader->Begin(m_DescList[8]->iPass);
-		m_pVIBuffer->Render();
-	}
-
-	for (_uint i = 9; i < 10; ++i)
-	{
-		if (true == m_DescList[i]->bRender)
+		for (_uint i = 9; i < 10; ++i)
 		{
-			if (FAILED(__super::Render()))
-				return E_FAIL;
-			if (FAILED(Setup_ShaderResourcesMask(i)))
-				return E_FAIL;
-			m_pShader->Begin(m_DescList[i]->iPass);
-			m_pVIBuffer->Render();
+			if (true == m_DescList[i]->bRender)
+			{
+				if (FAILED(__super::Render()))
+					return E_FAIL;
+				if (FAILED(Setup_ShaderResourcesMask(i)))
+					return E_FAIL;
+				m_pShader->Begin(m_DescList[i]->iPass);
+				m_pVIBuffer->Render();
+			}
 		}
-	}
 
 
 
-	for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
-	{
-		if (true == m_DescList[i]->bRender)
+		for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
 		{
-			if (FAILED(__super::Render()))
-				return E_FAIL;
-			if (FAILED(Setup_ShaderResourcesBoss(i)))
-				return E_FAIL;
-			m_pShader->Begin(m_DescList[i]->iPass);
-			m_pVIBuffer->Render();
+			if (true == m_DescList[i]->bRender)
+			{
+				if (FAILED(__super::Render()))
+					return E_FAIL;
+				if (FAILED(Setup_ShaderResourcesBoss(i)))
+					return E_FAIL;
+				m_pShader->Begin(m_DescList[i]->iPass);
+				m_pVIBuffer->Render();
+			}
 		}
 	}
-
 	return S_OK;
 }
 

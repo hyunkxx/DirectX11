@@ -120,8 +120,10 @@ void CM_GAzizi::Start()
 	CUI_Monster::MONINFO MonInfo;
 	MonInfo.Level = 3;
 	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
-	if (pGame->Add_GameObjectEx(&m_pUIMon, LEVEL_GAMEPLAY, OBJECT::UIMONSTER, TEXT("layer_UI"), TEXT("UI_Monster"), &MonInfo))
+	CGameObject * pMon = { nullptr };
+	if (pGame->Add_GameObjectEx(&pMon, LEVEL_GAMEPLAY, OBJECT::UIMONSTER, TEXT("layer_UI"), TEXT("UI_Monster"), &MonInfo))
 		return;
+	 m_pUIMon = static_cast<CUI_Monster*>(pMon);
 }
 
 void CM_GAzizi::PreTick(_double TimeDelta)
@@ -799,8 +801,7 @@ void CM_GAzizi::Tick_State(_double TimeDelta)
 		if (IS_DEAD == m_Scon.iCurState)
 		{
 			SetState(DISABLE);
-			m_pUIMon->SetState(DISABLE);
-			m_pUIMon = nullptr;
+			m_pUIMon->Set_Render(false);
 		}
 
 		// 공격 행동 시

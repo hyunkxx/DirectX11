@@ -95,6 +95,7 @@ public:
 	void Set_CharacterPos(_fvector vCharacterPos) { m_vCharacterPos = vCharacterPos; }
 	void Set_FontPos(_float3 vFontPos) { FontPos = vFontPos; }
 	void Set_ElementType(ELEMENT ElementType) { ElementType = ElementType; }
+	void Set_Render(_bool brender) { m_bRender = brender; }
 private:
 	void HPBar(_double TimeDelta);
 	void HPRedBar(_double TimeDelta);
@@ -126,6 +127,7 @@ private:
 	_float m_MonsterGauge = { 0.f };
 	MONSTERTYPE m_MonsterType = { MONSTERTYPE::BOSS };
 
+	_bool  m_bRender = { true };
 	_bool	m_bNameRender = { false };
 	_vector m_vCharacterPos = { 0.f, 0.f, 0.f, 1.f };
 	_int    m_HitCount = { 0 };
