@@ -978,6 +978,17 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/M_Zigzag/Rush/")))
 			return E_FAIL;
 
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Zigzag/Awukaka_Jump.bin"),
+			"../../Resource/Effect/M_Zigzag/Rush/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Zigzag/Awukaka_Attack_02.bin"),
+			"../../Resource/Effect/M_Zigzag/Rush/")))
+			return E_FAIL;
+
+
 		// ³´µç ¸ó½ºÅÍ µîÀå ÀÌÆÑÆ®
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
@@ -1020,6 +1031,9 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/M_Anjin/Anjin_Hit.bin"),
 			"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
 			return E_FAIL;
+
+
+
 	}
 	
 #pragma endregion
