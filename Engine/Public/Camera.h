@@ -53,6 +53,10 @@ public:
 	void StartVibration();
 	void StartVibration(_float fRange, _float fDuration = 0.5f);
 
+	class CTransform* GetCamTransform() const { return m_pMainTransform; }
+	void SetCamMatrix(_fmatrix CamMatrix) { m_pMainTransform->Set_WorldMatrix(CamMatrix); }
+	void SetCamPosition(_fvector vEye);
+
 private:
 	void shakeWave(_double TimeDelta);
 	void shakeVibration(_double TimeDelta);

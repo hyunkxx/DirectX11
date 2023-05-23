@@ -2,6 +2,10 @@
 
 #include "Level.h"
 
+BEGIN(Engine)
+class CGameObject;
+END
+
 BEGIN(Client)
 
 class CLevel_AnimTool final : public CLevel
@@ -31,10 +35,6 @@ private:
 public:
 	static CLevel_AnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
-
-
-	std::thread thread1;
-	int m_iThreadTest = 0;
 };
 
 END

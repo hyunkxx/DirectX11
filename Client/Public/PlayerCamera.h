@@ -1,7 +1,8 @@
 #pragma once
-#include "Client_Defines.h"
+
 #include "Camera.h"
 #include "CameraCurve.h"
+#include "ActionCam.h"
 
 BEGIN(Engine)
 class CTransform;
@@ -11,7 +12,9 @@ END
 
 BEGIN(Client)
 
-class CPlayerCamera final : public CCamera
+class CPlayerCamera final 
+	: public CCamera
+	, public IAttachTargetTransform
 {
 public:
 	typedef struct tagPlayerCameraDesc
@@ -36,6 +39,7 @@ public:
 	virtual void LateTick(_double TimeDelta);
 	//virtual HRESULT Render();
 	virtual void RenderGUI() override;
+	virtual void AttachTargetTransform(CTransform * pTransform) override;
 
 	void Start_Curve(class CCameraCurve* pCurve)
 	{

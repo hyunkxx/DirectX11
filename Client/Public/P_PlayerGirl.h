@@ -19,6 +19,8 @@ END
 
 BEGIN(Client)
 
+class CCameraMovement;
+
 class CP_PlayerGirl 
 	: public CCharacter	
 {
@@ -341,6 +343,7 @@ public:
 	CGameObject* pStaticObject = nullptr;
 
 	class CInventory* m_pInven = nullptr;
+	class CCameraMovement* m_pCamMovement = nullptr;
 };
 
 END

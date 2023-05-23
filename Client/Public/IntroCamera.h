@@ -33,6 +33,10 @@ public:
 	virtual HRESULT Render() override;
 	virtual void RenderGUI() override;
 
+public:
+	_bool IsLobbyOut() const { return m_bLobbyOut; }
+	_float GetCameraSpeed();
+
 private:
 	HRESULT Add_Components();
 
@@ -43,16 +47,9 @@ private:
 	void renderApplyTexture();
 	void renderChooseRoverTexture();
 
-public:
-	_bool IsLobbyOut() const { return m_bLobbyOut; }
-
-private:
 	void StateCheck(_double TimeDelta);
 	void CameraMovement(_double TimeDelta);
 	void ZoomIn(_double TimeDelta);
-
-public:
-	_float GetCameraSpeed();
 
 public:
 	static CIntroCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

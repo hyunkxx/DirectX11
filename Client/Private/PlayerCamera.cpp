@@ -4,6 +4,8 @@
 #include "GameMode.h"
 #include "GameInstance.h"
 
+#include "CameraMovement.h"
+
 CPlayerCamera::CPlayerCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCamera(pDevice, pContext)
 {
@@ -55,6 +57,13 @@ HRESULT CPlayerCamera::Initialize(void * pArg)
 	m_ShakeDesc.fSpeed = 10.f;
 	m_ShakeDesc.fDuration = 2.f;
 #endif
+
+	CCameraMovement* pCamMovement = nullptr;
+	pCamMovement = static_cast<CCameraMovement*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
+	if (!pCamMovement)
+		return E_FAIL;
+
+	pCamMovement->AddCamera(CCameraMovement::CAM_MAINPLAYER, this);
 
 	//if (__super::Initialize(pArg))
 	//	return E_FAIL;
@@ -306,8 +315,8 @@ void CPlayerCamera::RenderGUI()
 	ImGui::DragFloat("Wave Power", (_float*)&m_ShakeDesc.fPower, 0.1f, 0.1f, 20.f);
 	ImGui::DragFloat("Wave Speed", (_float*)&m_ShakeDesc.fSpeed, 0.1f, 0.1f, 20.f);
 	ImGui::DragFloat("Wave Duration", (_float*)&m_ShakeDesc.fDuration, 0.1f, 0.1f, 10.f);
-#endif // DEBUG
 
+#endif // DEBUG
 
 	ImGui::End();
 #endif
@@ -347,4 +356,12 @@ void CPlayerCamera::Free()
 	{
 		Safe_Release(m_pPlayerTransform);
 	}
+}
+
+void CPlayerCamera::AttachTargetTransform(CTransform * pTransform)
+{
+	if (!pTransform)
+		return;
+
+	m_pPlayerTransform = pTransform;
 }

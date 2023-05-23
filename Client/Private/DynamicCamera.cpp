@@ -35,6 +35,9 @@ void CDynamicCamera::Start()
 
 void CDynamicCamera::Tick(_double TimeDelta)
 {
+	if (false == m_bUse)
+		return;
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	m_CameraDesc;
 	if (pGameInstance->InputKey(DIK_W) == KEY_STATE::HOLD)
@@ -72,7 +75,7 @@ void CDynamicCamera::Tick(_double TimeDelta)
 		pGameInstance->InputKey(DIK_PGDN) == KEY_STATE::TAP)
 	{
 		_float fSpeed = floor(m_pMainTransform->Get_Speed() * 0.5f);
-		if (fSpeed >= 5.f)
+		if (fSpeed >= 1.f)
 			m_pMainTransform->Set_Speed(fSpeed);
 	}
 	

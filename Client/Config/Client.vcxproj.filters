@@ -275,6 +275,36 @@
     <ClCompile Include="..\Private\Mesh_Effect.cpp" />
     <ClCompile Include="..\Private\Particle_Effect.cpp" />
     <ClCompile Include="..\Private\Rect_Effect.cpp" />
+    <ClCompile Include="..\Private\Particle_Effect.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rect_Effect.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Efffect_Manager.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh_Effect.cpp">
+      <Filter>src\06. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Missile.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Missile_Constant.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Missile_RotAround.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MissilePool.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraMovement.cpp">
+      <Filter>src\02. GameObject\01. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ActionCam.cpp">
+      <Filter>src\02. GameObject\01. Camera\ActionCam</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -525,6 +555,36 @@
     <ClInclude Include="..\Public\Mesh_Effect.h" />
     <ClInclude Include="..\Public\Particle_Effect.h" />
     <ClInclude Include="..\Public\Rect_Effect.h" />
+    <ClInclude Include="..\Public\Particle_Effect.h">
+      <Filter>src\06. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rect_Effect.h">
+      <Filter>src\06. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Efffect_Manager.h">
+      <Filter>src\06. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh_Effect.h">
+      <Filter>src\06. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Missile.h">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Missile_Constant.h">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Missile_RotAround.h">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MissilePool.h">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CameraMovement.h">
+      <Filter>src\02. GameObject\01. Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ActionCam.h">
+      <Filter>src\02. GameObject\01. Camera\ActionCam</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -650,6 +710,12 @@
     </Filter>
     <Filter Include="src\02. GameObject\03. Character\00. Base">
       <UniqueIdentifier>{092a34af-15fc-48d5-9a09-f5da629e60c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\03. Character\00. Base\Missile">
+      <UniqueIdentifier>{4ba31802-4607-4d4b-98dc-2450b8668deb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\01. Camera\ActionCam">
+      <UniqueIdentifier>{0011a32c-a418-4530-923f-486dddad1d87}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

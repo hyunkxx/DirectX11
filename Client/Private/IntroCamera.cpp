@@ -48,7 +48,7 @@ HRESULT CIntroCamera::Initialize(void* pArg)
 
 
 	m_fWidth = g_iWinSizeX * 0.55f;
-	m_fHeight = 67.f;
+	m_fHeight = 60.f; 
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = g_iWinSizeY - 100.f;
 

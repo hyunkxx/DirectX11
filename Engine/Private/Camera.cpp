@@ -65,7 +65,6 @@ void CCamera::Tick(_double TimeDelta)
 	
 	m_pPipeLine->Set_Transform(CPipeLine::TS_VIEW, m_pMainTransform->Get_WorldMatrixInverse());
 	m_pPipeLine->Set_Transform(CPipeLine::TS_PROJ, XMMatrixPerspectiveFovLH(m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar));
-
 }
 
 void CCamera::LateTick(_double TimeDelta)
@@ -117,8 +116,8 @@ void CCamera::StartVibration()
 
 	m_fCurShakeAcc = 0.f;
 	m_fCurTimeAcc = 0.f;
-	m_fVibeRange = 5.f;
-	m_fVibeDuration = 0.5f;
+	m_fVibeRange = 10.f;
+	m_fVibeDuration = 0.2f;
 }
 
 void CCamera::StartVibration(_float fRange, _float fDuration)
@@ -133,6 +132,11 @@ void CCamera::StartVibration(_float fRange, _float fDuration)
 	m_fCurTimeAcc = 0.f;
 	m_fVibeRange = fRange;
 	m_fVibeDuration = fDuration;
+}
+
+void CCamera::SetCamPosition(_fvector vEye)
+{
+	XMStoreFloat3(&m_CameraDesc.vEye, vEye);
 }
 
 void CCamera::shakeWave(_double TimeDelta)

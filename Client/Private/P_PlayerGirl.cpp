@@ -19,6 +19,9 @@
 #include "Chest.h"
 #include "Inventory.h"
 
+//CamMovement
+#include "CameraMovement.h"
+
 const _int CP_PlayerGirl::iStateLimit = CP_PlayerGirl::IS_END;
 
 const char CP_PlayerGirl::szIndividualStateTag[CP_PlayerGirl::IS_END - CP_PlayerGirl::IS_START][MAX_PATH] =
@@ -153,6 +156,10 @@ void CP_PlayerGirl::Start()
 #endif
 
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
+	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
+	m_pCamMovement->BindTransform(m_pMainTransform);
+	m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
+	m_pCamMovement->SetupBone(CCameraMovement::CAM_BANGSUN, m_pModelCom->Get_BonePtr(L"Bip001RFinger21"));
 
 	//pStaticObject = pGame->Find_GameObject(LEVEL_GAMEPLAY, L"StaticTest");
 }
@@ -241,9 +248,9 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 		bCamLock = !bCamLock;
 
 		if (bCamLock)
-			pGameMode->UseCamera(CGameMode::CAM_PLAYER);
+			m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
 		else
-			pGameMode->UseCamera(CGameMode::CAM_DYNAMIC);
+			m_pCamMovement->UseCamera(CCameraMovement::CAM_BANGSUN);
 	}
 
 
@@ -348,12 +355,28 @@ HRESULT CP_PlayerGirl::RenderShadow()
 
 void CP_PlayerGirl::RenderGUI()
 {
-	ImGui::Begin("Player Position");
+	ImGui::Begin("Position Helper");
 
+	// 지형 위치 체크용
 	_float3 vPos;
 	XMStoreFloat3(&vPos, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 	string strPos = to_string(vPos.x) + " " + to_string(vPos.y) + " " + to_string(vPos.z);
 	ImGui::Text(strPos.c_str());
+
+	// 카메라 위치 체크용
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	_float4x4 vCamMatrix = pGame->Get_Transform_float4x4_Inverse(CPipeLine::TS_VIEW);
+
+	_float3 vCamPosFromTransform;
+
+	_vector vTransPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vCamPos = XMLoadFloat4(&pGame->Get_CamPosition()) - vTransPos;
+
+	XMStoreFloat3(&vCamPosFromTransform, vCamPos);
+	ImGui::DragFloat3("Cam from transform", (_float*)&vCamPosFromTransform, 0.1f, 50.f);
+	ImGui::DragFloat3("Cam Right", (_float*)&vCamMatrix._11, 0.1f, 50.f);
+	ImGui::DragFloat3("Cam Up", (_float*)&vCamMatrix._21, 0.1f, 50.f);
+	ImGui::DragFloat3("Cam Look", (_float*)&vCamMatrix._31, 0.1f, 50.f);
 
 	ImGui::End();
 }
@@ -616,6 +639,19 @@ void CP_PlayerGirl::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 {
 	if (MISS_END <= iMissilePoolID || EBONE_END <= iEffectBoneID)
 		return; 
+
+	if (iMissilePoolID == MISS_BURST_02)
+	{
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+		pGameInstance->StartBlackWhite(0.25f);
+
+		CRenderSetting::RGB_SPLIT_DESC Split;
+		Split.m_fDistortion = 7.2f;
+		Split.m_fStrength = 1.f;
+		Split.m_fSeparation = 0.1f;
+		pGameInstance->SetSplitDesc(Split);
+		pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DIR::SPLIT_DEFAULT, 1.f);
+	}
 
 	_vector vInitPos;
 	if (0 != iEffectBoneID)
@@ -917,6 +953,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		if (pGame->InputKey(DIK_R) == KEY_STATE::TAP)
 		{
 			eCurFrameInput = INPUT_BURST;
+			m_pCamMovement->UseCamera(CCameraMovement::CAM_BANGSUN);
 		}
 
 		// Jump
@@ -1681,13 +1718,13 @@ void CP_PlayerGirl::On_Cell()
 					if (IS_AIRATTACK_START == m_Scon.iCurState ||
 						IS_AIRATTACK_LOOP == m_Scon.iCurState)
 					{
-						pGM->StartWave();
+						m_pCamMovement->StartWave();
 						m_Scon.iNextState = IS_AIRATTACK_END;
 					}
 					else if (SS_BEHIT_FLY_START == m_Scon.iCurState ||
 						SS_BEHIT_FLY_LOOP == m_Scon.iCurState)
 					{
-						pGM->StartWave();
+						m_pCamMovement->StartWave();
 						m_Scon.iNextState = SS_BEHIT_FLY_FALL;
 					}
 					// 일반적인 경우

@@ -13,6 +13,8 @@
 #include "Missile_Constant.h"
 
 #include "Chest.h"
+#include "CameraMovement.h"
+
 //UI추가
 #include "UI_Monster.h"
 #include "UI_Minimap.h"
@@ -95,6 +97,7 @@ HRESULT CM_GAzizi::Initialize(void * pArg)
 
 	//
 	m_fPushWeight = 25.f;
+
 	return S_OK;
 }
 
@@ -111,7 +114,7 @@ void CM_GAzizi::Start()
 	// Find ActivePlayer
 	m_pTarget =  static_cast<CCharacter*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
 	m_pTargetTransform = static_cast<CTransform*>(m_pTarget->Find_Component(TEXT("Com_Transform")));
-
+	pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 
 	//UI추가
 	// 몬스터 사망,삭제시 m_pUIIcon = nullptr;
@@ -910,17 +913,17 @@ void CM_GAzizi::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _floa
 			switch (pAttackInfo->eHitIntensity)
 			{
 			case HIT_SMALL:
-				pGM->StartVibration();
+				pCamMovement->StartVibration();
 				m_Scon.iNextState = IS_BEHIT_S;
 				break;
 			case HIT_BIG:
-				pGM->StartVibration(10.f, 0.7f);
+				pCamMovement->StartVibration(15.f, 0.5f);
 				m_Scon.iNextState = IS_BEHIT_B;
 				break;
 			case HIT_FLY:
 			{
 				//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
-				pGM->StartWave();
+				pCamMovement->StartWave();
 				m_Scon.iNextState = IS_BEHIT_FLY_START;
 				break;
 			}
@@ -1050,14 +1053,14 @@ void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)
 				true == dest->Compare(pOpponent->GetHitCollider()))
 			{
 				// 타격 위치를 찾아서 히트 이펙트 출력
-				pGM->StartVibration(10.f, 0.5f);
+				pCamMovement->StartVibration(10.f, 0.5f);
 			}
 
 			// 상대의 공격이 나에게 적중한 경우 
 			if (true == src->Compare(GetHitCollider()) &&
 				true == dest->Compare(pOpponent->GetAttackCollider()))
 			{
-				pGM->StartVibration();
+				pCamMovement->StartVibration();
 
 				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
 				TAGATTACK tAttackInfo;

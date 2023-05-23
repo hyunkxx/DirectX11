@@ -19,8 +19,6 @@ BEGIN(Client)
 class CGameMode final : public CBase
 {
 public:
-	enum GAMEPLAY_CAM { CAM_PLAYER, CAM_DYNAMIC };
-
 	DECLARE_SINGLETON(CGameMode)
 
 public:
@@ -67,20 +65,6 @@ public:
 	
 	//Effect
 	HRESULT Add_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext , HWND _hWnd, EFFECT_ID eEffectID , const _tchar* EffectTag, const char* TextureTag);
-
-public: // Cam
-	void ResetCameraList();
-	void PushCamera(CCamera* pCamera);
-	void UseCamera(int iCameraIndex);
-	
-	// Shake
-	void StartWave();
-	void StartWave(CCamera::SHAKE_DESC tagShakeDesc);
-	void StartVibration();
-	void StartVibration(_float fRange, _float fDuration = 0.5f);
-
-	vector<CCamera*> m_pCams;
-	CCamera* m_pPlayerCam = nullptr;
 
 private: // Utility
 	_uint m_nCurrentLevel = 0;

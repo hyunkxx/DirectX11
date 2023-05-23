@@ -9,6 +9,8 @@
 
 #include "IntroCamera.h"
 #include "DynamicCamera.h"
+#include "CameraMovement.h"
+
 #include "Lobby_Character.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -119,7 +121,39 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);
 	pGameInstance->SetLightMatrix(vLightProjMatrix, LIGHT_MATRIX::LIGHT_PROJ);
 
+	// Camera Settings
+	CGameObject* pCamera = nullptr;
+	CGameObject* pCamMovement = nullptr;
+
 	if (FAILED(pGameInstance->Add_GameObjectEx(&m_pIntroCam, LEVEL_LOGO, OBJECT::INTRO_CAMERA, pLayerTag, L"IntroCamera", &CameraDesc)))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pCamMovement, LEVEL_STATIC, OBJECT::STATIC_CAM_MOVEMENT, pLayerTag, L"CameraMovement")))
+		return E_FAIL;
+
+	//Camera Setting
+	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERA_DESC));
+
+	CameraDesc.TransformDesc.fMoveSpeed = 5.f;
+	CameraDesc.TransformDesc.fRotationSpeed = XMConvertToRadians(45.f);
+
+	CameraDesc.vEye = _float3(0.f, 10.f, -10.f);
+	CameraDesc.vAt = _float3(10.f, 3.f, 10.f);
+	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
+
+	CameraDesc.fFovy = XMConvertToRadians(45.f);
+	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CameraDesc.fNear = 0.1f;
+	CameraDesc.fFar = 1000.f;
+
+	// Dynamic Ä· »ý¼º µî·Ï
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pCamera, LEVEL_STATIC, OBJECT::DYNAMIC_CAMERA, pLayerTag, L"DynamicCamera", &CameraDesc)))
+		return E_FAIL;
+	if (FAILED(static_cast<CCameraMovement*>(pCamMovement)->AddCamera(CCameraMovement::CAM_DYNAMIC, static_cast<CCamera*>(pCamera))))
+		return E_FAIL;
+	
+	// Action Ä· »ý¼º : Action Cam ÀÚµ¿À¸·Î µî·ÏµÊ
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ACTION_CAM_BANGSUN, pLayerTag, L"ActionCam", &CameraDesc)))
 		return E_FAIL;
 
 	return S_OK;

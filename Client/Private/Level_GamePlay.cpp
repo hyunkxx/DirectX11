@@ -161,10 +161,7 @@ void CLevel_GamePlay::RenderLevelUI()
 	ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Frame Rate");
 	ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-	string strCamSpeed = to_string(int(m_pDynamicCamera->GetCameraSpeed()));
 	ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "DynamicCamera");
-	ImGui::Text("Current CamSpeed : x"); ImGui::SameLine();
-	ImGui::Text(strCamSpeed.c_str());
 	ImGui::Text("Ctrl+PageUp    : Speed Up");
 	ImGui::Text("Ctrl+PageDown  : Speed Down");
 
@@ -265,11 +262,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);
 	pGameInstance->SetLightMatrix(vLightProjMatrix, LIGHT_MATRIX::LIGHT_PROJ);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::DYNAMIC_CAMERA, pLayerTag, L"dynamic_camera", &CameraDesc)))
-		return E_FAIL;
-
-	m_pDynamicCamera = (CDynamicCamera*)pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, L"dynamic_camera");
-
 	//PlayerCamera Setting
 	CPlayerCamera::PLAYERCAM_DESC PCamDesc;
 	ZeroMemory(&PCamDesc, sizeof CPlayerCamera::PLAYERCAM_DESC);
@@ -278,16 +270,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	// PCamDesc.vDir Start에서 채움
 	PCamDesc.fDistance = 4.f;
 	PCamDesc.fXAngle = 20.f;
-	
+
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYER_CAMERA, pLayerTag, L"player_camera", &PCamDesc)))
 		return E_FAIL;
-
-	m_pPlayerCamera = (CPlayerCamera*)pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, L"player_camera");
-
-	pGM->PushCamera(m_pPlayerCamera);
-	pGM->PushCamera(m_pDynamicCamera);
-	
-	pGM->UseCamera(CGameMode::CAM_PLAYER);
 
 	return S_OK;
 }

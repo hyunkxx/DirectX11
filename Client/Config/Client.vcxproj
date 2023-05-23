@@ -194,7 +194,9 @@
     <ClInclude Include="..\public\Application.h" />
     <ClInclude Include="..\public\AppManager.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\public\ActionCam.h" />
     <ClInclude Include="..\Public\CameraCurve.h" />
+    <ClInclude Include="..\public\CameraMovement.h" />
     <ClInclude Include="..\public\Character.h" />
     <ClInclude Include="..\public\CharacterSelect_Terrain.h" />
     <ClInclude Include="..\public\Chest.h" />
@@ -317,7 +319,9 @@
     <ClCompile Include="..\private\Application.cpp" />
     <ClCompile Include="..\private\AppManager.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\private\ActionCam.cpp" />
     <ClCompile Include="..\Private\CameraCurve.cpp" />
+    <ClCompile Include="..\private\CameraMovement.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\CharacterSelect_Terrain.cpp" />
     <ClCompile Include="..\private\Chest.cpp" />

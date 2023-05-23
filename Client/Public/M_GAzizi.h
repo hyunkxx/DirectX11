@@ -15,6 +15,7 @@ END
 
 BEGIN(Client)
 class CUI_Monster;
+class CCameraMovement;
 
 class CM_GAzizi
 	: public CCharacter
@@ -214,6 +215,8 @@ public:
 
 	CCollider* m_pHitCollider = nullptr;
 	CCollider* m_pMoveCollider = nullptr;
+
+	CCameraMovement* pCamMovement = nullptr;
 };
 
 END

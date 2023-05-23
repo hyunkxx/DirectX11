@@ -7,6 +7,7 @@
 #include "Character.h"
 
 #include "AnimToolManager.h"
+#include "Camera.h"
 
 #ifdef _DEBUG
 #include "Effect_Player.h"
@@ -64,6 +65,21 @@ void CLevel_AnimTool::RenderLevelUI()
 
 #ifdef _DEBUG
 	m_pEffect_Tool->RenderGUI();
+	m_pEffect_Manager->RenderGUI();
+
+	// 카메라 위치 체크용
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	_float4x4 vCamMatrix = pGame->Get_Transform_float4x4_Inverse(CPipeLine::TS_VIEW);
+
+	_float3 vCamPosFromTransform;
+	_vector vCamPos = XMLoadFloat4(&pGame->Get_CamPosition());
+
+	XMStoreFloat3(&vCamPosFromTransform, vCamPos);
+	ImGui::DragFloat3("Cam from transform", (_float*)&vCamPosFromTransform, 0.1f, 50.f);
+	ImGui::DragFloat3("Cam Right", (_float*)&vCamMatrix._11, 0.1f, 50.f);
+	ImGui::DragFloat3("Cam Up", (_float*)&vCamMatrix._21, 0.1f, 50.f);
+	ImGui::DragFloat3("Cam Look", (_float*)&vCamMatrix._31, 0.1f, 50.f);
+	
 #endif // _DEBUG
 
 }

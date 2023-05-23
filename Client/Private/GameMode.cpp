@@ -33,56 +33,6 @@ HRESULT CGameMode::Add_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 	return S_OK;
 }
 
-void CGameMode::ResetCameraList()
-{
-	m_pCams.clear();
-}
-
-void CGameMode::PushCamera(CCamera * pCamera)
-{
-	CCamera* pCam = dynamic_cast<CPlayerCamera*>(pCamera);
-	if (pCam)
-		m_pPlayerCam = pCamera;
-
-	m_pCams.push_back(pCamera);
-}
-
-void CGameMode::UseCamera(int iCameraIndex)
-{
-	int iCameraSize = (int)m_pCams.size();
-	for (int i = 0; i < iCameraSize; ++i)
-	{
-		if (iCameraIndex == i)
-		{
-			m_pCams[i]->Set_Use(true);
-		}
-		else
-		{
-			m_pCams[i]->Set_Use(false);
-		}
-	}
-}
-
-void CGameMode::StartWave()
-{
-	m_pPlayerCam->StartWave();
-}
-
-void CGameMode::StartWave(CCamera::SHAKE_DESC tagShakeDesc)
-{
-	m_pPlayerCam->StartWave(tagShakeDesc);
-}
-
-void CGameMode::StartVibration()
-{
-	m_pPlayerCam->StartVibration();
-}
-
-void CGameMode::StartVibration(_float fRange, _float fDuration)
-{
-	m_pPlayerCam->StartVibration(fRange, fDuration);
-}
-
 void CGameMode::SetInteractionActive(CInteractionUI::INTERACT_TYPE eInteractType, _bool bValue)
 {
 	m_pAcquireSystem->SetInteractionActive(eInteractType, bValue);
