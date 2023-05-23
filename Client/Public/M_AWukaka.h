@@ -25,7 +25,6 @@ public:
 		AI_CHASE,
 		AI_STAY,
 		AI_ATTACK,
-		AI_COMBO,
 		AI_END
 	};
 
@@ -54,11 +53,10 @@ public:
 	};
 	
 	// 이펙트용 본 월드 행렬 배열 인덱스 
-	// 각 본마다 현재 Tracking Effect가 실행중인지 파악하고 사용 중인 이펙트에게 전달할 행렬을 갱신함
 	enum EffectBone
 	{
 		EBONE_NONE,
-		EBONE_RHAND,
+		//EBONE_RHAND,
 		EBONE_END
 	};
 
@@ -66,9 +64,7 @@ public:
 	enum Attacks
 	{
 		ATK_ATTACK_01,
-		ATK_ATTACK_02_1,
-		ATK_ATTACK_02_2,
-		ATK_ATTACK_02_3,
+		ATK_ATTACK_02,
 		ATK_ATTACK_03,
 		ATK_END
 	};
@@ -76,7 +72,6 @@ public:
 	// 미사일 종류
 	enum Missiles
 	{
-		MISS_ATTACK_01,
 		MISS_ATTACK_03,
 		MISS_END
 	};

@@ -61,7 +61,7 @@ HRESULT CM_AWukaka::Initialize(void * pArg)
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
 	// 초기위치 설정
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f + 5.f, 2.290f, 35.776f + 5.f, 1.f));
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f + 10.f, 2.290f, 35.776f + 5.f, 1.f));
 	m_pNaviCom->Set_CurrentIndex(90);
 
 	// StateController 초기화
@@ -79,7 +79,7 @@ HRESULT CM_AWukaka::Initialize(void * pArg)
 	m_bAttackReady = true;
 
 	// CharInfo 초기화
-	lstrcpy(m_tCharInfo.szName, TEXT("nat dn human"));
+	lstrcpy(m_tCharInfo.szName, TEXT("AWukaka"));
 	m_tCharInfo.eElement = ELMT_SPECTRA;
 	m_tCharInfo.iLevel = 1;
 	m_tCharInfo.iExp = 0;
@@ -95,7 +95,7 @@ HRESULT CM_AWukaka::Initialize(void * pArg)
 
 	// 충돌 타입 처리
 	m_eCollisionType = CT_MONSTER;
-	m_fPushWeight = 75.f;
+	m_fPushWeight = 50.f;
 
 	//m_pAttackCollider->SetActive(false);
 
@@ -164,7 +164,7 @@ void CM_AWukaka::Tick(_double TimeDelta)
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
 	pGameInstance->AddCollider(m_pAttackCollider, COLL_MONSTERATTACK);
-	m_pAttackCollider->Update(XMLoadFloat4x4(&m_EffectBoneMatrices[EBONE_RHAND]));
+	m_pAttackCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
 	pGameInstance->AddCollider(m_pHitCollider, COLL_PLAYERATTACK);
 	m_pHitCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
@@ -266,7 +266,7 @@ HRESULT CM_AWukaka::Add_Components()
 		TEXT("Com_Shader_ModelAnim"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_MONSTER_ANJIN,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_MONSTER_AWUKAKA,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
@@ -290,10 +290,10 @@ HRESULT CM_AWukaka::Add_Components()
 
 	// attack Hit / Move
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.5f, 0.f, -0.5f };
-	CollDesc.vExtents = { 0.5f, 0.1f, 1.f };
+	CollDesc.vCenter = { 0.f, 0.4f, 0.f };
+	CollDesc.vExtents = { 0.f, 0.4f, 0.f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::OBB,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 
 		TEXT("Com_AttackCollider"), (CComponent**)&m_pAttackCollider, &CollDesc)))
 		return E_FAIL;
@@ -327,7 +327,7 @@ HRESULT CM_AWukaka::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pCon
 	for (_int i = 0; i < IS_END; ++i)
 	{
 		_tchar szBuffer[MAX_PATH];
-		wsprintf(szBuffer, TEXT("../../Data/CharState/M_Anjin/Anjin_%d.state"), i);
+		wsprintf(szBuffer, TEXT("../../Data/CharState/M_AWukaka/AWukaka_%d.state"), i);
 		HANDLE hFile = CreateFile(szBuffer, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
 		if (INVALID_HANDLE_VALUE == hFile)
@@ -536,29 +536,13 @@ void CM_AWukaka::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_02_1].fDamageFactor = 2.f;
-	m_AttackInfos[ATK_ATTACK_02_1].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_ATTACK_02_1].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_02_1].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_1].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_1].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02_1].szHitEffectTag, TEXT("Anjin_Hit"));
-
-	m_AttackInfos[ATK_ATTACK_02_2].fDamageFactor = 2.5f;
-	m_AttackInfos[ATK_ATTACK_02_2].eHitIntensity = HIT_BIG;
-	m_AttackInfos[ATK_ATTACK_02_2].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_02_2].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_2].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_2].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02_2].szHitEffectTag, TEXT("Anjin_Hit"));
-
-	m_AttackInfos[ATK_ATTACK_02_3].fDamageFactor = 3.f;
-	m_AttackInfos[ATK_ATTACK_02_3].eHitIntensity = HIT_FLY;
-	m_AttackInfos[ATK_ATTACK_02_3].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_02_3].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_3].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_3].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02_3].szHitEffectTag, TEXT("GenkiDama_Boom"));
+	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK_02].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_02].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Anjin_Hit"));
 
 	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 3.5f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_FLY;
@@ -571,54 +555,24 @@ void CM_AWukaka::Init_AttackInfos()
 
 void CM_AWukaka::Init_Missiles()
 {
-	// Attack01
-	//CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
-	//ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+	//Attack01
+	CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	//tMissilePoolDesc.pMissilePoolTag = TEXT("GenkiDama_Shoot_%d");
-	//tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-	//tMissilePoolDesc.iNumMissiles = 3;
+	tMissilePoolDesc.pMissilePoolTag = TEXT("GenkiDama_Shoot_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 1;
 
-	//lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("GenkiDama_Shoot"));
-	//tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial / GAzizi
-	//tMissilePoolDesc.tMissileDesc.pOwner = this;
-	//tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-	//tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
-	//tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_01;
-	//tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("GenkiDama_Boom"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_03;
+	tMissilePoolDesc.tMissileDesc.fExtents = 3.f;
 
-	//tMissilePoolDesc.bTargetDir = false;
-	//tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-	//tMissilePoolDesc.fVelocity = 18.f;
-	//tMissilePoolDesc.StopTime = 3.0;
-	//tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
-
-	//m_MissilePools[MISS_ATTACK_01] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.2f, 0.f, 0.f), &tMissilePoolDesc);
-	//m_MissileRotAngles[MISS_ATTACK_01] = _float3(0.f, 0.f, 0.f);
-
-	//// Attack03
-	//ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
-
-	//tMissilePoolDesc.pMissilePoolTag = TEXT("GenkiDama_Shoot2_%d");
-	//tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-	//tMissilePoolDesc.iNumMissiles = 3;
-
-	//lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("GenkiDama_Shoot_02"));
-	//tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial / GAzizi
-	//tMissilePoolDesc.tMissileDesc.pOwner = this;
-	//tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-	//tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
-	//tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_03;
-	//tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
-
-	//tMissilePoolDesc.bTargetDir = true;
-	//tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-	//tMissilePoolDesc.fVelocity = 18.f;
-	//tMissilePoolDesc.StopTime = 3.0;
-	//tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
-
-	//m_MissilePools[MISS_ATTACK_03] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.2f, 0.f, 0.f), &tMissilePoolDesc);
-	//m_MissileRotAngles[MISS_ATTACK_03] = _float3(0.f, 0.f, 0.f);
+	m_MissilePools[MISS_ATTACK_03] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK_03] = _float3(0.f, 0.f, 0.f);
 }
 
 void CM_AWukaka::Apply_CoolTime(_double TimeDelta)
@@ -689,20 +643,6 @@ void CM_AWukaka::Select_State(_double TimeDelta)
 	}
 	else
 	{
-		// iEnterPriority가 1 == 콤보 공격이 가능한 애니메이션임
-		// iLeavePriority가 0 == 다음 애니메이션으로 넘어갈 프레임이 되었음
-		if (1 == m_tCurState.iEnterPriority && 0 == m_tCurState.iLeavePriority)
-		{
-			// 일정 확률로 콤보 실행 or 그냥 마무리 동작으로
-			if (2 >= rand() % 5)
-				iCurFrameAI = AI_COMBO;
-			else
-			{
-				m_tCurState.iLeavePriority = 1;
-				m_tCurState.iNextState = IS_IDLE;
-			}
-		}
-
 		if (IS_RUN == m_Scon.iCurState)
 		{
 			if (m_fTargetDistance < m_fAttackRange * 0.8f)
@@ -737,6 +677,7 @@ void CM_AWukaka::Select_State(_double TimeDelta)
 	case Client::CM_AWukaka::AI_ATTACK:
 		if (0.2f > m_tCharInfo.fCurHP / m_tCharInfo.fMaxHP)
 			m_Scon.iNextState = IS_ATTACK03;
+		else
 		{
 			if (0.0 == m_StateCoolTimes[IS_ATTACK02])
 				m_Scon.iNextState = IS_ATTACK02;
@@ -763,10 +704,6 @@ void CM_AWukaka::Select_State(_double TimeDelta)
 		}
 		else
 			m_Scon.iNextState = IS_WALK_B;
-		break;
-	case Client::CM_AWukaka::AI_COMBO:
-		// 콤보 판단이 뜬 경우 다음 콤보 즉시 이행
-		m_Scon.iNextState = m_tCurState.iNextState;
 		break;
 	default:
 		break;
@@ -855,6 +792,11 @@ void CM_AWukaka::Tick_State(_double TimeDelta)
 					XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vMovement) * (_float)TimeDelta);
 			}
 		}
+
+		if (IS_ATTACK01 == m_Scon.iCurState)
+			XMStoreFloat3(&vMovement, XMLoadFloat3(&vMovement) * 2.f);
+			
+
 		// 구해진 이동값만큼 움직이고 이전 프레임 정보를 저장, + TimeDelta 대응
 		m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom);
 
@@ -876,6 +818,9 @@ void CM_AWukaka::Tick_State(_double TimeDelta)
 
 	if (true == m_Scon.bAnimFinished)
 	{
+		if (IS_DEAD == m_Scon.iCurState)
+			SetState(DISABLE);
+
 		// 공격 행동 시
 		if (IS_ATTACK01 == m_Scon.iCurState ||
 			IS_ATTACK02 == m_Scon.iCurState)
@@ -912,7 +857,8 @@ void CM_AWukaka::On_Cell()
 
 	if (PS_GROUND == m_Scon.ePositionState)
 	{
-		m_pMainTransform->Set_PosY(fCellHeight);
+		if (IS_ATTACK02 != m_Scon.iCurState )
+			m_pMainTransform->Set_PosY(fCellHeight);
 	}
 	else if (PS_AIR == m_Scon.ePositionState)
 	{
@@ -1034,7 +980,7 @@ HRESULT CM_AWukaka::Init_EffectBones()
 	m_EffectBones[EBONE_WEAPON01] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp01"));
 	m_EffectBones[EBONE_WEAPON02] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp02"));
 	m_EffectBones[EBONE_LHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001LHand"));*/
-	m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
+	//m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
 
 	return S_OK;
 }
@@ -1081,6 +1027,8 @@ void CM_AWukaka::Free()
 {
 	__super::Free();
 
+	for (_uint i = 0; i < MISS_END; ++i)
+		Safe_Release(m_MissilePools[i]);
 
 
 	Safe_Release(m_pNaviCom);

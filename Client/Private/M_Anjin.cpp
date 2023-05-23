@@ -874,6 +874,9 @@ void CM_Anjin::Tick_State(_double TimeDelta)
 
 	if (true == m_Scon.bAnimFinished)
 	{
+		if (IS_DEAD == m_Scon.iCurState)
+			SetState(DISABLE);
+
 		// 공격 행동 시
 		if (IS_ATTACK01 == m_Scon.iCurState ||
 			IS_ATTACK02_1 == m_Scon.iCurState ||

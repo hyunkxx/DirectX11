@@ -19,6 +19,7 @@
 #include "Sandbag.h"
 #include "M_GAzizi.h"
 #include "M_Anjin.h"
+#include "M_AWukaka.h"
 
 #include "Inventory.h"
 #include "InteractionObject.h"
@@ -1069,6 +1070,9 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_ANJIN, CM_Anjin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_AWUKAKA, CM_AWukaka::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SWORD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SWORD))))
