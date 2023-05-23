@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Public\M_Anjin.h"
+#include "..\Public\M_AWukaka.h"
 
 #include "GameMode.h"
 #include "GameInstance.h"
@@ -17,19 +17,19 @@
 //UI추가
 #include "UI_Monster.h"
 
-CCharacter::SINGLESTATE CM_Anjin::m_tStates[IS_END];
+CCharacter::SINGLESTATE CM_AWukaka::m_tStates[IS_END];
 
-CM_Anjin::CM_Anjin(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CM_AWukaka::CM_AWukaka(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCharacter(pDevice, pContext)
 {
 }
 
-CM_Anjin::CM_Anjin(const CM_Anjin & rhs)
+CM_AWukaka::CM_AWukaka(const CM_AWukaka & rhs)
 	: CCharacter(rhs)
 {
 }
 
-HRESULT CM_Anjin::Initialize_Prototype()
+HRESULT CM_AWukaka::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -37,7 +37,7 @@ HRESULT CM_Anjin::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CM_Anjin::Initialize(void * pArg)
+HRESULT CM_AWukaka::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -102,7 +102,7 @@ HRESULT CM_Anjin::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CM_Anjin::Start()
+void CM_AWukaka::Start()
 {
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
@@ -125,7 +125,7 @@ void CM_Anjin::Start()
 		return;
 }
 
-void CM_Anjin::PreTick(_double TimeDelta)
+void CM_AWukaka::PreTick(_double TimeDelta)
 {
 	// 플레이어 교체시 현재 선택된 캐릭터로 타겟을 변경하는 함수
 	//if(false == m_pTarget->IsActive())
@@ -135,7 +135,7 @@ void CM_Anjin::PreTick(_double TimeDelta)
 	Find_Target();
 }
 
-void CM_Anjin::Tick(_double TimeDelta)
+void CM_AWukaka::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
@@ -174,7 +174,7 @@ void CM_Anjin::Tick(_double TimeDelta)
 
 }
 
-void CM_Anjin::LateTick(_double TimeDelta)
+void CM_AWukaka::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
@@ -186,7 +186,7 @@ void CM_Anjin::LateTick(_double TimeDelta)
 	Update_EffectBones();
 }
 
-HRESULT CM_Anjin::Render()
+HRESULT CM_AWukaka::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -215,7 +215,7 @@ HRESULT CM_Anjin::Render()
 	return S_OK;
 }
 
-HRESULT CM_Anjin::RenderShadow()
+HRESULT CM_AWukaka::RenderShadow()
 {
 	if (FAILED(__super::RenderShadow()))
 		return E_FAIL;
@@ -236,11 +236,11 @@ HRESULT CM_Anjin::RenderShadow()
 	return S_OK;
 }
 
-void CM_Anjin::RenderGUI()
+void CM_AWukaka::RenderGUI()
 {
 }
 
-HRESULT CM_Anjin::Add_Components()
+HRESULT CM_AWukaka::Add_Components()
 {
 	/* For.Com_Renderer*/
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
@@ -319,7 +319,7 @@ HRESULT CM_Anjin::Add_Components()
 	return S_OK;
 }
 
-HRESULT CM_Anjin::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+HRESULT CM_AWukaka::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	ZeroMemory(m_tStates, sizeof(SINGLESTATE) * IS_END);
 
@@ -386,7 +386,7 @@ HRESULT CM_Anjin::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 	return S_OK;
 }
 
-void CM_Anjin::Release_States()
+void CM_AWukaka::Release_States()
 {
 	for (_int i = 0; i < IS_END; ++i)
 	{
@@ -401,7 +401,7 @@ void CM_Anjin::Release_States()
 	}
 }
 
-void CM_Anjin::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _uint iEffectTypeID, _bool bTracking/*iInt1*/)
+void CM_AWukaka::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _uint iEffectTypeID, _bool bTracking/*iInt1*/)
 {
 	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag, Engine::EFFECT_ID(iEffectTypeID));
 	if (nullptr == pEffect || EBONE_END <= EffectBoneID)
@@ -410,7 +410,7 @@ void CM_Anjin::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneI
 	pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
 }
 
-void CM_Anjin::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
+void CM_AWukaka::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 {
 	if (MISS_END <= iMissilePoolID || EBONE_END <= iEffectBoneID)
 		return;
@@ -435,19 +435,19 @@ void CM_Anjin::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot, vTargetPos);
 }
 
-void CM_Anjin::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
+void CM_AWukaka::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
 {
 	m_pAttackCollider->SetActive(bOBB);
 	m_iCurAttackID = iAttackInfoID;
 }
 
 
-void CM_Anjin::Shot_PriorityKey(_uint iLeavePriority)
+void CM_AWukaka::Shot_PriorityKey(_uint iLeavePriority)
 {
 	m_tCurState.iLeavePriority = iLeavePriority;
 }
 
-void CM_Anjin::SetUp_State()
+void CM_AWukaka::SetUp_State()
 {
 	// 키 리셋
 	for (_uint i = 0; i < m_tCurState.iKeyCount; ++i)
@@ -497,12 +497,11 @@ void CM_Anjin::SetUp_State()
 		}
 	}
 
-	// 쿨타임 적용
 	if (true == m_tCurState.bApplyCoolTime)
 		m_StateCoolTimes[m_Scon.iCurState] = m_tCurState.CoolTime;
 }
 
-void CM_Anjin::Find_Target()
+void CM_AWukaka::Find_Target()
 {
 	// 매프레임 타겟까지의 거리를 계산해놓는다.
 	m_fTargetDistance = XMVectorGetX(XMVector3Length(m_pTargetTransform->Get_State(CTransform::STATE_POSITION) - m_pMainTransform->Get_State(CTransform::STATE_POSITION)));
@@ -522,7 +521,7 @@ void CM_Anjin::Find_Target()
 	}
 }
 
-void CM_Anjin::Init_AttackInfos()
+void CM_AWukaka::Init_AttackInfos()
 {
 	for (_uint i = 0; i < ATK_END; ++i)
 	{
@@ -570,7 +569,7 @@ void CM_Anjin::Init_AttackInfos()
 	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Anjin_Hit"));
 }
 
-void CM_Anjin::Init_Missiles()
+void CM_AWukaka::Init_Missiles()
 {
 	// Attack01
 	//CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
@@ -622,7 +621,7 @@ void CM_Anjin::Init_Missiles()
 	//m_MissileRotAngles[MISS_ATTACK_03] = _float3(0.f, 0.f, 0.f);
 }
 
-void CM_Anjin::Apply_CoolTime(_double TimeDelta)
+void CM_AWukaka::Apply_CoolTime(_double TimeDelta)
 {
 	if (0.0 < m_GlobalCoolTime)
 	{
@@ -645,7 +644,7 @@ void CM_Anjin::Apply_CoolTime(_double TimeDelta)
 	}
 }
 
-HRESULT CM_Anjin::SetUp_ShaderResources()
+HRESULT CM_AWukaka::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -664,7 +663,7 @@ HRESULT CM_Anjin::SetUp_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CM_Anjin::Setup_ShadowShaderResource()
+HRESULT CM_AWukaka::Setup_ShadowShaderResource()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -680,7 +679,7 @@ HRESULT CM_Anjin::Setup_ShadowShaderResource()
 	return S_OK;
 }
 
-void CM_Anjin::Select_State(_double TimeDelta)
+void CM_AWukaka::Select_State(_double TimeDelta)
 {
 	AI_STATE iCurFrameAI = AI_NONE;
 
@@ -692,8 +691,8 @@ void CM_Anjin::Select_State(_double TimeDelta)
 	{
 		// iEnterPriority가 1 == 콤보 공격이 가능한 애니메이션임
 		// iLeavePriority가 0 == 다음 애니메이션으로 넘어갈 프레임이 되었음
-		if(1 == m_tCurState.iEnterPriority && 0 == m_tCurState.iLeavePriority)
-		{ 
+		if (1 == m_tCurState.iEnterPriority && 0 == m_tCurState.iLeavePriority)
+		{
 			// 일정 확률로 콤보 실행 or 그냥 마무리 동작으로
 			if (2 >= rand() % 5)
 				iCurFrameAI = AI_COMBO;
@@ -732,21 +731,24 @@ void CM_Anjin::Select_State(_double TimeDelta)
 
 	switch (iCurFrameAI)
 	{
-	case Client::CM_Anjin::AI_IDLE:
+	case Client::CM_AWukaka::AI_IDLE:
 		m_Scon.iNextState = AI_IDLE;
 		break;
-	case Client::CM_Anjin::AI_ATTACK:
-		if (0.0 == m_StateCoolTimes[IS_ATTACK03_READY])
-			m_Scon.iNextState = IS_ATTACK03_READY;
-		else if (0.0 == m_StateCoolTimes[IS_ATTACK02_1])
-			m_Scon.iNextState = IS_ATTACK02_1;
-		else
-			m_Scon.iNextState = IS_ATTACK01;
+	case Client::CM_AWukaka::AI_ATTACK:
+		if (0.2f > m_tCharInfo.fCurHP / m_tCharInfo.fMaxHP)
+			m_Scon.iNextState = IS_ATTACK03;
+		{
+			if (0.0 == m_StateCoolTimes[IS_ATTACK02])
+				m_Scon.iNextState = IS_ATTACK02;
+			else
+				m_Scon.iNextState = IS_ATTACK01;
+		}
+		
 		break;
-	case Client::CM_Anjin::AI_CHASE:
+	case Client::CM_AWukaka::AI_CHASE:
 		m_Scon.iNextState = IS_RUN;
 		break;
-	case Client::CM_Anjin::AI_STAY:
+	case Client::CM_AWukaka::AI_STAY:
 		if (m_fAttackRange * 0.7f < m_fTargetDistance)
 		{
 			m_Scon.iNextState = IS_WALK_F;
@@ -762,7 +764,7 @@ void CM_Anjin::Select_State(_double TimeDelta)
 		else
 			m_Scon.iNextState = IS_WALK_B;
 		break;
-	case Client::CM_Anjin::AI_COMBO:
+	case Client::CM_AWukaka::AI_COMBO:
 		// 콤보 판단이 뜬 경우 다음 콤보 즉시 이행
 		m_Scon.iNextState = m_tCurState.iNextState;
 		break;
@@ -805,7 +807,7 @@ void CM_Anjin::Select_State(_double TimeDelta)
 	}
 }
 
-void CM_Anjin::Tick_State(_double TimeDelta)
+void CM_AWukaka::Tick_State(_double TimeDelta)
 {
 	//
 	if (false == m_Scon.bAnimFinished)
@@ -876,10 +878,7 @@ void CM_Anjin::Tick_State(_double TimeDelta)
 	{
 		// 공격 행동 시
 		if (IS_ATTACK01 == m_Scon.iCurState ||
-			IS_ATTACK02_1 == m_Scon.iCurState ||
-			IS_ATTACK02_2 == m_Scon.iCurState ||
-			IS_ATTACK02_3 == m_Scon.iCurState ||
-			IS_ATTACK03 == m_Scon.iCurState)
+			IS_ATTACK02 == m_Scon.iCurState)
 		{
 			m_bAttackReady = false;
 			m_GlobalCoolTime += 3.f;
@@ -905,7 +904,7 @@ void CM_Anjin::Tick_State(_double TimeDelta)
 	}
 }
 
-void CM_Anjin::On_Cell()
+void CM_AWukaka::On_Cell()
 {
 	_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
 	_float fPosY = XMVectorGetY(vPos);
@@ -941,7 +940,7 @@ void CM_Anjin::On_Cell()
 	static_cast<CUI_Monster*>(m_pUIMon)->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 }
 
-void CM_Anjin::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+void CM_AWukaka::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
 {
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
@@ -1028,7 +1027,7 @@ void CM_Anjin::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float
 }
 
 
-HRESULT CM_Anjin::Init_EffectBones()
+HRESULT CM_AWukaka::Init_EffectBones()
 {
 	//NONE은 걍 월드 매트릭스를 저장해놨다가 던짐
 	/*m_EffectBones[EBONE_SPINE2] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine2"));
@@ -1040,7 +1039,7 @@ HRESULT CM_Anjin::Init_EffectBones()
 	return S_OK;
 }
 
-void CM_Anjin::Update_EffectBones()
+void CM_AWukaka::Update_EffectBones()
 {
 	memcpy(&m_EffectBoneMatrices[EBONE_NONE], &m_pMainTransform->Get_WorldMatrix(), sizeof(_float4x4));
 
@@ -1052,33 +1051,33 @@ void CM_Anjin::Update_EffectBones()
 	}
 }
 
-CM_Anjin * CM_Anjin::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CM_AWukaka * CM_AWukaka::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CM_Anjin* pInstance = new CM_Anjin(pDevice, pContext);
+	CM_AWukaka* pInstance = new CM_AWukaka(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Create : CM_Anjin");
+		MSG_BOX("Failed to Create : CM_AWukaka");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CM_Anjin::Clone(void * pArg)
+CGameObject * CM_AWukaka::Clone(void * pArg)
 {
-	CM_Anjin* pInstance = new CM_Anjin(*this);
+	CM_AWukaka* pInstance = new CM_AWukaka(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Clone : CM_Anjin");
+		MSG_BOX("Failed to Clone : CM_AWukaka");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CM_Anjin::Free()
+void CM_AWukaka::Free()
 {
 	__super::Free();
 
@@ -1099,7 +1098,7 @@ void CM_Anjin::Free()
 	Safe_Release(m_pUIMon);
 }
 
-void CM_Anjin::OnCollisionEnter(CCollider * src, CCollider * dest)
+void CM_AWukaka::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
 	CGameMode* pGM = CGameMode::GetInstance();
 	CCharacter* pOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
@@ -1170,10 +1169,10 @@ void CM_Anjin::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 }
 
-void CM_Anjin::OnCollisionStay(CCollider * src, CCollider * dest)
+void CM_AWukaka::OnCollisionStay(CCollider * src, CCollider * dest)
 {
 }
 
-void CM_Anjin::OnCollisionExit(CCollider * src, CCollider * dest)
+void CM_AWukaka::OnCollisionExit(CCollider * src, CCollider * dest)
 {
 }

@@ -187,6 +187,8 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 		m_MissilePools[MISS_BURST_01]->Shot(InitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot);
 	}
 
+	Apply_CoolTime(TimeDelta);
+
 	Key_Input(TimeDelta * TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
 
 	Tick_State(TimeDelta * TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
@@ -712,6 +714,16 @@ void CP_PlayerGirl::SetUp_State()
 	else
 		Set_WeaponUse(true);
 
+	// 쿨타임 적용
+	if (true == m_tCurState.bApplyCoolTime)
+	{
+		if (IS_SKILL_02 == m_Scon.iCurState)
+			m_StateCoolTimes[IS_SKILL_01] = m_tCurState.CoolTime;
+		else
+			m_StateCoolTimes[m_Scon.iCurState] = m_tCurState.CoolTime;
+	}
+	
+
 	//PhysicMove
 	if (false == m_tCurState.bRootMotion)
 	{
@@ -774,6 +786,19 @@ void CP_PlayerGirl::Set_WeaponUse(_bool bBool)
 	}
 }
 
+void CP_PlayerGirl::Apply_CoolTime(_double TimeDelta)
+{
+	for (_uint i = 0; i < IS_END; ++i)
+	{
+		if (0.0 < m_StateCoolTimes[i])
+		{
+			m_StateCoolTimes[i] -= TimeDelta;
+			if (0.0 > m_StateCoolTimes[i])
+				m_StateCoolTimes[i] = 0.0;
+		}
+	}
+}
+
 void CP_PlayerGirl::Key_Input(_double TimeDelta)
 {
 	m_WorldMatrix = m_pMainTransform->Get_WorldMatrix();
@@ -829,7 +854,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			SetUp_State();
 		}
 
-		if (pGame->InputKey(DIK_R) == KEY_STATE::TAP)
+		if (pGame->InputKey(DIK_0) == KEY_STATE::TAP)
 		{
 			// 초기위치 설정
 			m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 30.776f, 1.f));
@@ -889,7 +914,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 
 
 		// Burst
-		if (pGame->InputKey(DIK_Q) == KEY_STATE::TAP)
+		if (pGame->InputKey(DIK_R) == KEY_STATE::TAP)
 		{
 			eCurFrameInput = INPUT_BURST;
 		}
@@ -929,6 +954,12 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		if (pGame->InputKey(DIK_T) == KEY_STATE::TAP)
 		{
 			eCurFrameInput = INPUT_TOOL;
+		}
+
+		// Echo Summon
+		if (pGame->InputKey(DIK_Q) == KEY_STATE::TAP)
+		{
+			eCurFrameInput = INPUT_SUMMON;
 		}
 	}
 
@@ -1029,21 +1060,11 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_PlayerGirl::INPUT_SPACE:
-			switch (m_Scon.iCurState)
-			{
-			case SS_STAND1:
-			case SS_STAND1_ACTION01:
-			case SS_STAND2:
-			case SS_STANDCHANGE:
-			case SS_STANDUP:
+			if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
 				m_Scon.iNextState = SS_JUMP_WALK;
-				break;
-			default:
+			else
 				m_Scon.iNextState = SS_JUMP_RUN;
-				break;
-			}
 			break;
-
 
 		case Client::CP_PlayerGirl::INPUT_ATTACK:
 			switch (m_Scon.iCurState)
@@ -1083,21 +1104,26 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_PlayerGirl::INPUT_SKILL:
-			if (m_fSkillGauge >= 50.f)
+			if (0.0 == m_StateCoolTimes[IS_SKILL_01])
 			{
-				m_fSkillGauge -= 50.f;
-				m_Scon.iNextState = IS_SKILL_02;
+				if (m_fSkillGauge >= 50.f)
+				{
+					m_fSkillGauge -= 50.f;
+					m_Scon.iNextState = IS_SKILL_02;
+				}
+				else
+					m_Scon.iNextState = IS_SKILL_01;
 			}
-			else
-				m_Scon.iNextState = IS_SKILL_01;
 			break;
 
 		case Client::CP_PlayerGirl::INPUT_BURST:
-			m_Scon.iNextState = IS_BURST;
+			if(0.0 == m_StateCoolTimes[IS_BURST])
+				m_Scon.iNextState = IS_BURST;
 			break;
 
 		case Client::CP_PlayerGirl::INPUT_TOOL:
-			m_Scon.iNextState = SS_FIXHOOK_END_UP;
+			if (0.0 == m_StateCoolTimes[SS_FIXHOOK_END_UP])
+				m_Scon.iNextState = SS_FIXHOOK_END_UP;
 			break;
 		default:
 			break;
@@ -1120,7 +1146,8 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			m_Scon.iNextState = IS_AIRATTACK_START;
 			break;
 		case Client::CP_PlayerGirl::INPUT_TOOL:
-			m_Scon.iNextState = SS_FIXHOOK_END_UP;
+			if (0.0 == m_StateCoolTimes[SS_FIXHOOK_END_UP])
+				m_Scon.iNextState = SS_FIXHOOK_END_UP;
 			break;
 		default:
 			break;

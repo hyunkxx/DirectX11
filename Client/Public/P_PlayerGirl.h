@@ -28,12 +28,13 @@ public:
 		INPUT_MOVE,
 		INPUT_DASH,
 		INPUT_SPACE,
-		INPUT_TOOL,
 		INPUT_ATTACK,
 		INPUT_ATTACK_CHARGE,
 		INPUT_ATTACK_RELEASE,
-		INPUT_SKILL,
-		INPUT_BURST,
+		INPUT_SKILL,	// E : 캐릭터 스킬
+		INPUT_BURST,	// R : 캐릭터 필살기
+		INPUT_SUMMON,	// Q : 에코 소환
+		INPUT_TOOL,		// T : 도구 사용
 		INPUT_END
 	}INPUT;
 
@@ -166,6 +167,32 @@ public:
 	// 
 	virtual void Check_Nearst(CCharacter* pChar, _float fDist) override;
 
+
+	// 0 = E, 1 = R, 2 = Q, 3 = T
+	virtual _float Get_CoolTime(_uint iType) 
+	{ 
+		_float fOut = 0.f;
+		switch (iType)
+		{
+		case 0:
+			fOut = (_float)m_StateCoolTimes[IS_SKILL_01];
+			break;
+		case 1:
+			fOut = (_float)m_StateCoolTimes[IS_BURST];
+			break;
+		case 2:
+			// fOut = (_float)m_StateCoolTimes[SS_SUMMON];
+			break;
+		case 3:
+			fOut = (_float)m_StateCoolTimes[SS_FIXHOOK_END_UP];
+			break;
+		default:
+			break;
+		}
+
+		return fOut;
+	}
+
 	// 주변 몬스터 리스트
 	// 몬스터 쪽에서 플레이어랑의 거리가 일정값 이하일 때? 플레이어를 발견했을 때 부터
 	// 
@@ -262,6 +289,8 @@ private:
 	// bContinue == 잔여 프레임을 사용하는 애니메이션인지?
 	void SetUp_Animations(_bool bContinue);
 
+	// 적용 중인 쿨타임 TimeDelta 만큼 줄여주는 함수
+	void Apply_CoolTime(_double TimeDelta);
 	// 다음 행동(상태) 결정
 	void Key_Input(_double TimeDelta);
 	// 상태에 따른 행동 수행
