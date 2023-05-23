@@ -97,6 +97,19 @@ HRESULT CMapObject::Render()
 		if (FAILED(Render_Default()))
 			return E_FAIL;
 		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS:
+		if (FAILED(Render_Default()))
+			return E_FAIL;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK:
+		if (FAILED(Render_SubEditionColor_Mask()))
+			return E_FAIL;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_VIN:
+		if (FAILED(Render_EditionColor()))
+			return E_FAIL;
+		break;
+		
 	default:
 		break;
 	}
@@ -189,6 +202,24 @@ HRESULT CMapObject::Render_Rock()
 	return S_OK;
 }
 
+HRESULT CMapObject::Render_SubEditionColor_Mask()
+{
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pGrassMaskTexture[m_EditionDesc.iMaskTex_ID]->Setup_ShaderResource(m_pShaderCom, "g_MaskTexture");
+
+		m_iShaderPassID = 7;
+
+		m_pShaderCom->Begin(m_iShaderPassID);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
 HRESULT CMapObject::Render_Default()
 {
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
@@ -244,6 +275,22 @@ HRESULT CMapObject::Load_Edition()
 	case CMapObject::MAPOBJECT_TYPEID::ID_STAIRS:
 		if (FAILED(Load_EditionID()))
 			return E_FAIL;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS:
+		if (FAILED(Load_EditionID()))
+			return E_FAIL;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK:
+		if (FAILED(Load_SubEditionColor_Mask()))
+			return E_FAIL;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_VIN:
+		if (FAILED(Load_EditionColor()))
+		{
+			m_EditionDesc.UseEditionColor = { false };
+			m_EditionDesc.iEditionColor_MeshNum = { 0 };
+			m_EditionDesc.vEditionColor = { _float3(1.0f, 1.0f, 1.0f) };
+		}
 		break;
 	default:
 		break;
@@ -321,6 +368,32 @@ HRESULT CMapObject::Load_EditionID()
 	return S_OK;
 }
 
+HRESULT CMapObject::Load_SubEditionColor_Mask()
+{
+	HANDLE		hFile = CreateFile(m_EditionDesc.pEditionFilePath, GENERIC_READ, 0, 0,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Failed to Load Data in CMapObject : SubEditionColorMask");
+		return S_OK;
+	}
+
+	DWORD		dwByte = 0;
+
+	ReadFile(hFile, &m_EditionDesc.iSIMD_ID, sizeof(_uint), &dwByte, nullptr);
+	ReadFile(hFile, &m_EditionDesc.iTypeID, sizeof(_uint), &dwByte, nullptr);
+
+	ReadFile(hFile, &m_EditionDesc.vEditionColor, sizeof(_float3), &dwByte, nullptr);
+
+	ReadFile(hFile, &m_EditionDesc.iMaskTex_ID, sizeof(_float3), &dwByte, nullptr);
+	ReadFile(hFile, &m_EditionDesc.vSubEditionColor, sizeof(_float3), &dwByte, nullptr);
+
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
 HRESULT CMapObject::Add_Components()
 {
 	/* For.Com_Renderer*/
@@ -363,6 +436,25 @@ HRESULT CMapObject::Add_Components()
 		TEXT("com_texture_d_4"), (CComponent**)&m_pDiffuseTexture[ROCK_DIFFUSE_KINDS::RD_4])))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_1,
+		TEXT("com_texture_gm_1"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_1])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_2,
+		TEXT("com_texture_gm_2"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_2])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_3,
+		TEXT("com_texture_gm_3"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_3])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_4,
+		TEXT("com_texture_gm_4"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_4])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_5,
+		TEXT("com_texture_gm_5"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_5])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_6,
+		TEXT("com_texture_gm_6"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_6])))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -383,6 +475,9 @@ HRESULT CMapObject::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->SetRawValue("g_vEditionColor", &m_EditionDesc.vEditionColor, sizeof(_float3))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetRawValue("g_vSubEditionColor", &m_EditionDesc.vSubEditionColor, sizeof(_float3))))
 		return E_FAIL;
 
 	return S_OK;
@@ -436,6 +531,9 @@ void CMapObject::Free()
 
 	for (_uint i = 0; i < ROCK_DIFFUSE_KINDS::RD_END; i++)
 		Safe_Release(m_pDiffuseTexture[i]);
+
+	for (_uint i = 0; i < GRASS_MASK_KINDS::GM_END; i++)
+		Safe_Release(m_pGrassMaskTexture[i]);
 
 	Safe_Release(m_pMainTransform);
 	Safe_Release(m_pModelCom);

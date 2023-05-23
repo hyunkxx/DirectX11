@@ -15,9 +15,11 @@ BEGIN(Client)
 class CMapObject : public CGameObject
 {
 public:
-	enum MAPOBJECT_TYPEID { ID_TREE, ID_ROCK, ID_FLOOR, ID_STAIRS, ID_END };
+	enum MAPOBJECT_TYPEID { ID_TREE, ID_ROCK, ID_FLOOR, ID_STAIRS, ID_GRASS, ID_GRASS_MASK, ID_VIN, ID_END };
 
 	enum ROCK_DIFFUSE_KINDS { RD_1, RD_2, RD_3, RD_4, RD_END };
+
+	enum GRASS_MASK_KINDS { GM_1, GM_2, GM_3, GM_4, GM_5, GM_6, GM_END };
 
 private:
 	CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -37,6 +39,8 @@ public:
 	HRESULT Render_EditionColor();
 	HRESULT Render_Rock();
 
+	HRESULT Render_SubEditionColor_Mask();
+
 	HRESULT Render_Default();
 
 public:
@@ -46,6 +50,8 @@ public:
 	HRESULT Load_DiffuseTexID();
 
 	HRESULT Load_EditionID();
+
+	HRESULT Load_SubEditionColor_Mask();
 
 private:
 	SMAP_OBJECT_EDITION_DESC	m_EditionDesc = {};
@@ -58,6 +64,8 @@ private:
 	CModel_Instance*			m_pModelCom = { nullptr };
 
 	CTexture*					m_pDiffuseTexture[ROCK_DIFFUSE_KINDS::RD_END] = { nullptr };
+
+	CTexture*					m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_END] = { nullptr };
 
 private:
 	HRESULT Add_Components();

@@ -329,6 +329,27 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		return E_FAIL;
 #pragma endregion ROCK_DIFFUSE
 
+#pragma region GRASS_MASK
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::GRASS_MASK_1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/GrassMask/T_Mask_001.png")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::GRASS_MASK_2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/GrassMask/T_Mask_20006.png")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::GRASS_MASK_3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/GrassMask/T_Mask_20022.png")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::GRASS_MASK_4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/GrassMask/T_Mask_30093_2.png")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::GRASS_MASK_5,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/GrassMask/T_RingDissolve_30001.png")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::GRASS_MASK_6,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/GrassMask/T_Waterfall_Directional_Noise.png")))))
+		return E_FAIL;
+#pragma endregion GRASS_MASK
+
 	CVIBuffer_Terrain::TERRAIN_SIZE tSize;
 	tSize.mX = 300;
 	tSize.mZ = 300;

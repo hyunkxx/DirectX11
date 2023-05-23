@@ -11,6 +11,9 @@ texture2D	g_NormalTexture;
 
 float3		g_vEditionColor;
 
+texture2D	g_MaskTexture;
+float3		g_vSubEditionColor;
+
 struct VS_IN
 {
 	float3 vPosition : POSITION;
@@ -321,6 +324,26 @@ PS_OUT PS_MAIN_NORMALMAP_S(PS_IN_NORMALMAP In)
 	return Out;
 }
 
+PS_OUT	PS_MAIN_SUB_EDITIONCOLOR_MASK(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;;
+
+	vector vMaskTexture = g_MaskTexture.Sample(LinearSampler, In.vTexUV);
+
+	Out.vDiffuse = vMaskTexture.r * float4(g_vEditionColor, 1.0f) + (1.0f - vMaskTexture.r) * float4(g_vSubEditionColor, 1.0f);
+
+	if (Out.vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	// RS_CullBack RS_Default
@@ -418,5 +441,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_NORMALMAP_S();
+	}
+
+	// 디퓨즈없는 풀.
+	pass Instance_Model_Sub_EditionColor_Mask_Pass7
+	{
+		SetRasterizerState(RS_CullBack);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SUB_EDITIONCOLOR_MASK();
 	}
 }
