@@ -10,6 +10,7 @@
 #include "P_PlayerGirl.h"
 #include "M_GAzizi.h"
 #include "M_Anjin.h"
+#include "M_AWukaka.h"
 #include "AcquireSystem.h"
 
 #include "MapObject.h"
@@ -34,6 +35,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
 	CM_GAzizi::Init_States(m_pDevice, m_pContext);
 	CM_Anjin::Init_States(m_pDevice, m_pContext);
+	CM_AWukaka::Init_States(m_pDevice, m_pContext);
 
 	if(FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
@@ -315,6 +317,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MONSTER_ANJIN, pLayerTag, TEXT("Anjin"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MONSTER_AWUKAKA, pLayerTag, TEXT("AWukaka"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -1224,5 +1229,5 @@ void CLevel_GamePlay::Free()
 	CP_PlayerGirl::Release_States();
 	CM_GAzizi::Release_States();
 	CM_Anjin::Release_States();
-	
+	CM_AWukaka::Release_States();
 }
