@@ -970,9 +970,12 @@ void CM_GAzizi::Update_EffectBones()
 
 	for (_uint i = 1; i < EBONE_END; ++i)
 	{
-		XMStoreFloat4x4(&m_EffectBoneMatrices[i], XMLoadFloat4x4(&m_EffectBones[i]->Get_CombinedTransfromationMatrix())
-			* XMMatrixRotationY(XMConvertToRadians(180.f))
-			* XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+		if (nullptr != m_EffectBones[i])
+		{
+			XMStoreFloat4x4(&m_EffectBoneMatrices[i], XMLoadFloat4x4(&m_EffectBones[i]->Get_CombinedTransfromationMatrix())
+				* XMMatrixRotationY(XMConvertToRadians(180.f))
+				* XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+		}
 	}
 }
 

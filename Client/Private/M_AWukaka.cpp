@@ -290,8 +290,8 @@ HRESULT CM_AWukaka::Add_Components()
 
 	// attack Hit / Move
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 0.4f, 0.f };
-	CollDesc.vExtents = { 0.f, 0.4f, 0.f };
+	CollDesc.vCenter = { 0.f, 0.7f, 0.f };
+	CollDesc.vExtents = { 0.7f, 0.7f, 0.7f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 
@@ -300,8 +300,8 @@ HRESULT CM_AWukaka::Add_Components()
 
 
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 1.f, 0.f };
-	CollDesc.vExtents = { 1.f, 1.f, 1.f };
+	CollDesc.vCenter = { 0.f, 0.7f, 0.f };
+	CollDesc.vExtents = { 0.5f, 0.5f, 0.5f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_HitCollider"), (CComponent**)&m_pHitCollider, &CollDesc)))
@@ -989,9 +989,12 @@ void CM_AWukaka::Update_EffectBones()
 
 	for (_uint i = 1; i < EBONE_END; ++i)
 	{
-		XMStoreFloat4x4(&m_EffectBoneMatrices[i], XMLoadFloat4x4(&m_EffectBones[i]->Get_CombinedTransfromationMatrix())
-			* XMMatrixRotationY(XMConvertToRadians(180.f))
-			* XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+		if (nullptr != m_EffectBones[i])
+		{
+			XMStoreFloat4x4(&m_EffectBoneMatrices[i], XMLoadFloat4x4(&m_EffectBones[i]->Get_CombinedTransfromationMatrix())
+				* XMMatrixRotationY(XMConvertToRadians(180.f))
+				* XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+		}
 	}
 }
 
