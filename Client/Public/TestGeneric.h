@@ -45,11 +45,10 @@ public:
 	enum EffectBone
 	{
 		EBONE_NONE,
-		//EBONE_SPINE2,	// 명치
-		//EBONE_WEAPON01,	// 왼손 무기뼈 
-		//EBONE_WEAPON02,	// 오른손 무기뼈
-		//EBONE_LHAND,	// 왼손뼈 
-		//EBONE_RHAND,	// 오른손뼈
+		EBONE_SPINE,
+		EBONE_LHAND,
+		EBONE_RHAND,
+		// 여기까지 몬스터 공통으로 고정
 		EBONE_END
 	};
 

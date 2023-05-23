@@ -641,11 +641,18 @@ HRESULT CTestGeneric::Init_Parts()
 HRESULT CTestGeneric::Init_EffectBones()
 {
 	//NONEÀº °Á ¿ùµå ¸ÅÆ®¸¯½º ´øÁü
-	//m_EffectBones[EBONE_SPINE2] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine2"));
-	//m_EffectBones[EBONE_WEAPON01] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp01"));
-	//m_EffectBones[EBONE_WEAPON02] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp02"));
-	//m_EffectBones[EBONE_LHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001LHand"));
-	//m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
+	CBone* pBone = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine"));
+	if (nullptr != pBone)
+		m_EffectBones[EBONE_SPINE] = pBone;
+
+	pBone = m_pModelCom->Get_BonePtr(TEXT("Bip001LHand"));
+	if (nullptr != pBone)
+		m_EffectBones[EBONE_LHAND] = pBone;
+
+	pBone = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
+	if (nullptr != pBone)
+		m_EffectBones[EBONE_RHAND] = pBone;
+
 	return S_OK;
 }
 
@@ -656,9 +663,12 @@ void CTestGeneric::Update_EffectBones()
 
 	for (_uint i = 1; i < EBONE_END; ++i)
 	{
-		XMStoreFloat4x4(&m_EffectBoneMatrices[i], XMLoadFloat4x4(&m_EffectBones[i]->Get_CombinedTransfromationMatrix())
-			* XMMatrixRotationY(XMConvertToRadians(180.f))
-			* XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+		if (nullptr != m_EffectBones[i])
+		{
+			XMStoreFloat4x4(&m_EffectBoneMatrices[i], XMLoadFloat4x4(&m_EffectBones[i]->Get_CombinedTransfromationMatrix())
+				* XMMatrixRotationY(XMConvertToRadians(180.f))
+				* XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+		}
 	}
 }
 

@@ -1034,10 +1034,8 @@ void CM_Anjin::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float
 HRESULT CM_Anjin::Init_EffectBones()
 {
 	//NONE은 걍 월드 매트릭스를 저장해놨다가 던짐
-	/*m_EffectBones[EBONE_SPINE2] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine2"));
-	m_EffectBones[EBONE_WEAPON01] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp01"));
-	m_EffectBones[EBONE_WEAPON02] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp02"));
-	m_EffectBones[EBONE_LHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001LHand"));*/
+	m_EffectBones[EBONE_SPINE] = nullptr;
+	m_EffectBones[EBONE_LHAND] = nullptr;
 	m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
 
 	return S_OK;

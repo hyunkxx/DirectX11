@@ -976,11 +976,9 @@ void CM_AWukaka::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _flo
 HRESULT CM_AWukaka::Init_EffectBones()
 {
 	//NONE은 걍 월드 매트릭스를 저장해놨다가 던짐
-	/*m_EffectBones[EBONE_SPINE2] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine2"));
-	m_EffectBones[EBONE_WEAPON01] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp01"));
-	m_EffectBones[EBONE_WEAPON02] = m_pModelCom->Get_BonePtr(TEXT("WeaponProp02"));
-	m_EffectBones[EBONE_LHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001LHand"));*/
-	//m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
+	m_EffectBones[EBONE_SPINE] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine"));
+	m_EffectBones[EBONE_LHAND] = nullptr;
+	m_EffectBones[EBONE_RHAND] = nullptr;
 
 	return S_OK;
 }

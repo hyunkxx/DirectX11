@@ -62,7 +62,10 @@ public:
 	enum EffectBone
 	{
 		EBONE_NONE,
+		EBONE_SPINE,
+		EBONE_LHAND,
 		EBONE_RHAND,
+		// 여기까지 몬스터 공통으로 고정
 		EBONE_END
 	};
 
