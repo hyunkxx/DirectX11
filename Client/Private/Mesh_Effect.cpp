@@ -553,14 +553,14 @@ HRESULT CMesh_Effect::Add_Component(const EFFECT_DESC & ParticleDesc)
 		return E_FAIL;
 
 #pragma endregion
-
+	
 #pragma region Mesh
 
-	/*if (FAILED(Load_Effect(L"../../Resource/Model/Static/Yangyang/")))
-		return E_FAIL;*/
+	if (FAILED(Load_Effect(L"../../Resource/Model/Static/Yangyang/")))
+		return E_FAIL;
 
-		/*if (FAILED(Load_Effect(L"../../Resource/Model/Static/Nvzhu/")))
-			return E_FAIL;*/
+	/*if (FAILED(Load_Effect(L"../../Resource/Model/Static/Nvzhu/")))
+	return E_FAIL;*/
 
 	if (FAILED(Load_Effect(L"../../Resource/Model/Static/Daoguang/")))
 		return E_FAIL;
