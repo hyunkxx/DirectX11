@@ -813,7 +813,7 @@ void CM_AWukaka::Tick_State(_double TimeDelta)
 
 	if (true == m_Scon.bAnimFinished)
 	{
-		if (IS_ATTACK03== m_Scon.iCurState ||
+		if (IS_ATTACK03 == m_Scon.iCurState ||
 			IS_DEAD == m_Scon.iCurState)
 		{
 			SetState(DISABLE);

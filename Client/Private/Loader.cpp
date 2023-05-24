@@ -355,16 +355,16 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_MONSTER_CROWNLESS, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless.dmdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_MONSTER_CROWNLESS, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P3.dmdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_MONSTER_GAZIZI, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/GAzizi/GAzizi.dmdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_MONSTER_GAZIZI, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/GAzizi.dmdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Anjin/Anjin.dmdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin.dmdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_MONSTER_AWUKAKA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/AWukaka/AWukaka.dmdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_MONSTER_AWUKAKA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/AWukaka.dmdl")))))
 		return E_FAIL;
 
 #pragma region TREE
