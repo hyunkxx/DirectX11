@@ -72,7 +72,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
+	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성
@@ -132,13 +132,13 @@ HRESULT CApplication::Render()
 		m_iNumRender = 0;
 	}
 
-	//m_pGameInstance->Render_Font(
-	//	TEXT("DefaultFont"),
-	//	m_szFPS,
-	//	_float2(0.f, 0.f),
-	//	XMVectorSet(1.f, 1.f, 1.f, 1.f),
-	//	_float2(0.5f, 0.5f)
-	//);
+	m_pGameInstance->Render_Font(
+		TEXT("DefaultFont"),
+		m_szFPS,
+		_float2(0.f, 0.f),
+		XMVectorSet(1.f, 1.f, 1.f, 1.f),
+		_float2(0.5f, 0.5f)
+	);
 #ifdef _DEBUG 
 	m_pGUIManager->RenderDrawData();
 #endif

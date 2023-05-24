@@ -219,8 +219,8 @@ PS_OUT_SHADOW	PS_MAIN_SHADOW(VS_OUT_SHADOW In)
 
 	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
-	if(vDiffuse.a > 0.1f)
-		Out.vShadowDepth = vector(In.vShadowDepth.z / In.vShadowDepth.w, In.vShadowDepth.w / g_Far, 0.6f, 1.f);
+	//if(vDiffuse.a > 0.1f)
+	Out.vShadowDepth = vector(In.vShadowDepth.z / In.vShadowDepth.w, In.vShadowDepth.w / g_Far, 0.6f, 1.f);
 
 	return Out;
 }

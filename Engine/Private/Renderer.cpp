@@ -87,7 +87,7 @@ void CRenderer::Draw()
 #ifdef _DEBUG
 	if (m_pRenderSetting->IsDebug())
 		RenderDebugBundle();
-	
+
 #endif
 	pGameInstance->CollisionRender();
 
@@ -739,7 +739,7 @@ void CRenderer::Render_Lights()
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Outline", "g_OutlineTexture")))
 		return;
 	/*if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Outline_Result", "g_OutlineTexture")))
-		return;*/
+	return;*/
 
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, L"Target_Specular", "g_SpecularTexture")))
 		return;
@@ -988,7 +988,7 @@ void CRenderer::Render_Blend()
 
 void CRenderer::Render_Glow()
 {
-	if(!m_GlowEmpty)
+	if (!m_GlowEmpty)
 		Target_Blur_High(L"Target_Glow", 5);
 
 	if (FAILED(m_pTargetManager->Begin(m_pContext, L"MRT_Glow_Result")))
@@ -1136,7 +1136,7 @@ void CRenderer::Render_ModelGlow()
 		m_pShader_Blur->Begin(4);
 	else
 		m_pShader_Blur->Begin(3);
-	
+
 	m_pVIBuffer->Render();
 	m_pTargetManager->End(m_pContext);
 
@@ -1196,14 +1196,14 @@ void CRenderer::Render_PostEffect()
 
 	if (pSourTarget)
 		pSourTarget->Set_ShaderResourceView(m_pShader_PostEffect, "g_FinalTexture");
-	
-	if(FadeDesc.m_eFadeState == CRenderSetting::FADE_IN)
+
+	if (FadeDesc.m_eFadeState == CRenderSetting::FADE_IN)
 		m_pShader_PostEffect->Begin(0);
-	else if(FadeDesc.m_eFadeState == CRenderSetting::FADE_OUT)
+	else if (FadeDesc.m_eFadeState == CRenderSetting::FADE_OUT)
 		m_pShader_PostEffect->Begin(1);
 
 	m_pVIBuffer->Render();
-	
+
 	if (FAILED(m_pTargetManager->End(m_pContext)))
 		return;
 
@@ -1298,7 +1298,7 @@ void CRenderer::RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag)
 	if (pSourTarget)
 		pSourTarget->Set_ShaderResourceView(m_pShader_RGBSplit, "g_SourTexture");
 
-	if(m_pRenderSetting->GetSplitDir() == CRenderSetting::SPLIT_DEFAULT)
+	if (m_pRenderSetting->GetSplitDir() == CRenderSetting::SPLIT_DEFAULT)
 		m_pShader_RGBSplit->Begin(0);
 	else
 		m_pShader_RGBSplit->Begin(1);

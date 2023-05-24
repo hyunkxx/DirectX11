@@ -27,6 +27,10 @@ public:
 
 	//AlphaSort
 	_float ComputeCameraLength();
+	class CTransform* GetTransform()
+	{
+		return m_pMainTransform != nullptr ? m_pMainTransform : nullptr;
+	}
 
 	class CComponent* Find_Component(const _tchar* pComponentTag);
 	unordered_map<_tchar*, class CComponent*> m_Components;

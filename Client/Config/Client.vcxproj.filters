@@ -267,21 +267,10 @@
     <ClCompile Include="..\private\Inventory.cpp">
       <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Missile.cpp" />
-    <ClCompile Include="..\Private\MissilePool.cpp" />
-    <ClCompile Include="..\Private\Missile_Constant.cpp" />
-    <ClCompile Include="..\Private\Missile_RotAround.cpp" />
-    <ClCompile Include="..\Private\Efffect_Tool.cpp" />
-    <ClCompile Include="..\Private\Mesh_Effect.cpp" />
-    <ClCompile Include="..\Private\Particle_Effect.cpp" />
-    <ClCompile Include="..\Private\Rect_Effect.cpp" />
     <ClCompile Include="..\Private\Particle_Effect.cpp">
       <Filter>src\06. Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Rect_Effect.cpp">
-      <Filter>src\06. Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Efffect_Manager.cpp">
       <Filter>src\06. Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Mesh_Effect.cpp">
@@ -304,6 +293,36 @@
     </ClCompile>
     <ClCompile Include="..\private\ActionCam.cpp">
       <Filter>src\02. GameObject\01. Camera\ActionCam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Missile_Constant.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Missile_RotAround.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MissilePool.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Missile.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rect_Effect.cpp">
+      <Filter>src\06. Effect\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Particle_Effect.cpp">
+      <Filter>src\06. Effect\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh_Effect.cpp">
+      <Filter>src\06. Effect\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Efffect_Tool.cpp">
+      <Filter>src\06. Effect\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\M_Anjin.cpp">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\M_AWukaka.cpp">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -547,21 +566,10 @@
     <ClInclude Include="..\public\Inventory.h">
       <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Missile.h" />
-    <ClInclude Include="..\Public\MissilePool.h" />
-    <ClInclude Include="..\Public\Missile_Constant.h" />
-    <ClInclude Include="..\Public\Missile_RotAround.h" />
-    <ClInclude Include="..\Public\Efffect_Tool.h" />
-    <ClInclude Include="..\Public\Mesh_Effect.h" />
-    <ClInclude Include="..\Public\Particle_Effect.h" />
-    <ClInclude Include="..\Public\Rect_Effect.h" />
     <ClInclude Include="..\Public\Particle_Effect.h">
       <Filter>src\06. Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Rect_Effect.h">
-      <Filter>src\06. Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Efffect_Manager.h">
       <Filter>src\06. Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Mesh_Effect.h">
@@ -584,6 +592,36 @@
     </ClInclude>
     <ClInclude Include="..\public\ActionCam.h">
       <Filter>src\02. GameObject\01. Camera\ActionCam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MissilePool.h">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Missile.h">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Missile_Constant.h">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Missile_RotAround.h">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rect_Effect.h">
+      <Filter>src\06. Effect\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Particle_Effect.h">
+      <Filter>src\06. Effect\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh_Effect.h">
+      <Filter>src\06. Effect\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Efffect_Tool.h">
+      <Filter>src\06. Effect\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\M_Anjin.h">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\M_AWukaka.h">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -716,6 +754,9 @@
     </Filter>
     <Filter Include="src\02. GameObject\01. Camera\ActionCam">
       <UniqueIdentifier>{0011a32c-a418-4530-923f-486dddad1d87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\06. Effect\Tool">
+      <UniqueIdentifier>{9f8c510e-829c-479d-8eb9-7633e0206887}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

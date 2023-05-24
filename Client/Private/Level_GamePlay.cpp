@@ -26,11 +26,6 @@ HRESULT CLevel_GamePlay::Initialize()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	//Off
-	pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)SHADOW_LEVEL::SHADOW_HIGH);
-	pGameInstance->OutlineToggle();
-	pGameInstance->SSAOToggle();
-
 	// 몬스터들 상태 초기화 해놓기
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
 	CM_GAzizi::Init_States(m_pDevice, m_pContext);
@@ -104,15 +99,6 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 		pGameInstance->DebugTargetToggle();
 	}
 
-	if (pGameInstance->InputKey(DIK_0) == KEY_STATE::TAP)
-	{
-		iShadowLevel++;
-		if (iShadowLevel > 2)
-			iShadowLevel = 0;
-
-		pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)iShadowLevel);
-	}
-
 	if (pGameInstance->InputKey(DIK_9) == KEY_STATE::TAP)
 		pGameInstance->OutlineToggle();
 
@@ -128,7 +114,6 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 
 		pGameInstance->SetLUT((CRenderer::LUT)iIndexLUT);
 	}
-
 
 	if (pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
 		pGameInstance->InputKey(DIK_6) == KEY_STATE::TAP)

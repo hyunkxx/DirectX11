@@ -33,13 +33,12 @@ HRESULT CActionCam::Initialize(void * pArg)
 	if (FAILED(CCamera::Initialize(pArg)))
 		return E_FAIL;
 
-	CCameraMovement* pCamMovement = nullptr;
-	pCamMovement = static_cast<CCameraMovement*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
-	if (!pCamMovement)
+	m_pCamMovement = static_cast<CCameraMovement*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
+	if (!m_pCamMovement)
 		return E_FAIL;
 
 	//생성시 자동 등록
-	pCamMovement->AddCamera(m_eCamType, this);
+	m_pCamMovement->AddCamera(m_eCamType, this);
 	m_bUse = false;
 
 	return S_OK;
@@ -47,8 +46,9 @@ HRESULT CActionCam::Initialize(void * pArg)
 
 void CActionCam::Start()
 {
-	ActionInit();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+	ActionInit();
 }
 
 void CActionCam::Tick(_double TimeDelta)
@@ -95,30 +95,31 @@ void CActionCam::Tick(_double TimeDelta)
 	case 0:
 		vCurPos = XMVectorLerp(vCurPos, vBonePos + XMVector3Normalize(vLook + vTargetRight), (_float)TimeDelta * 0.5f);
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
+
 		break;
 	case 1:
 		vCurPos = XMVectorLerp(vCurPos, vBonePos + XMVector3Normalize(vTargetLook + -vTargetRight) * 1.f, (_float)TimeDelta * 0.5f);
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
+
 		break;
 	case 2:
-		vCurPos = XMVectorLerp(vCurPos, vTargetPos - vTargetLook * 6.f, (_float)TimeDelta * 2.f);
+		vCurPos = XMVectorLerp(vCurPos, vTargetPos - vTargetLook * 8.f, (_float)TimeDelta * 2.f);
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
 
-		if (XMVectorGetX(XMVector3Length(vCurPos - (vTargetPos - vTargetLook * 6.f))) < 0.1f)
-		{
-			CGameInstance* pGameInstance = CGameInstance::GetInstance();
-			
-			CCameraMovement* pCamMovement;
-			pCamMovement = static_cast<CCameraMovement*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
-			pCamMovement->SetCamPosition(CCameraMovement::CAM_MAINPLAYER, vCurPos);
+		if (XMVectorGetX(XMVector3Length(vCurPos - (vTargetPos - vTargetLook * 8.f))) < 0.1f)
+			m_iAction++;
 
-			pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
-		}
-
+		break;
+	case 3:
+		RevertPrevCam(TimeDelta);
 		break;
 	}
 
-	m_pMainTransform->LookAt(vBonePos);
+	if (m_iAction < 3)
+	{
+		XMStoreFloat3(&m_CameraDesc.vAt, vBonePos);
+		m_pMainTransform->LookAt(vBonePos);
+	}
 
 	__super::Tick(TimeDelta);
 }
@@ -183,12 +184,33 @@ void CActionCam::ActionInit()
 	}
 }
 
+void CActionCam::RevertPrevCam(_double TimeDelta)
+{
+	//메인 플레이어 캠으로 되돌림
+	_vector vCurPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+	CCamera* pMainCam = m_pCamMovement->GetCamera(CCameraMovement::CAM_MAINPLAYER);
+	CAMERA_DESC& PrevCamDesc = pMainCam->GetCamDesc();
+	CAMERA_DESC& CurCamDesc = GetCamDesc();
+
+	vCurPos = XMVectorLerp(vCurPos, pMainCam->GetTransform()->Get_State(CTransform::STATE_POSITION), (_float)TimeDelta * 8.f);
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
+
+	_vector vCurLookAt = XMLoadFloat3(&CurCamDesc.vAt);
+	vCurLookAt = XMVectorLerp(vCurLookAt, XMLoadFloat3(&PrevCamDesc.vAt), (_float)TimeDelta * 8.f);
+
+	XMStoreFloat3(&m_CameraDesc.vAt, vCurLookAt);
+	m_pMainTransform->LookAt(vCurLookAt);
+
+	if (XMVectorGetX(XMVector3Length(vCurPos - pMainCam->GetTransform()->Get_State(CTransform::STATE_POSITION))) <= 0.05f)
+		m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
+}
+
 void CActionCam::actionInit_Bangsun()
 {
 	//방순이 무브먼트 셋업
-	StartVibration(8.f, 0.15f);
+	StartVibration(5.f, 0.1f);
+	_vector vPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION) + m_pTargetTransform->Get_State(CTransform::STATE_LOOK) * 1.3f;
 
-	_vector vPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION) + m_pTargetTransform->Get_State(CTransform::STATE_LOOK);
 	vPos = XMVectorSetY(vPos, XMVectorGetY(vPos) + 1.35f);
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vPos);
 

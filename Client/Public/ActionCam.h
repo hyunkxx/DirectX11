@@ -38,6 +38,7 @@ public:
 	void SetupBone(CBone* pBone) { m_pTargetBone = pBone; };
 	
 private:
+	void RevertPrevCam(_double TimeDelta);
 	void actionInit_Bangsun();
 
 public:
@@ -55,6 +56,9 @@ private:
 private: // 방순이 세팅
 	_float m_fTimeAcc	= 0.f;
 	_uint m_iAction = 0;
+
+private:
+	CCameraMovement* m_pCamMovement = nullptr;
 };
 
 END

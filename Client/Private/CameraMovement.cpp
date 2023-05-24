@@ -34,6 +34,9 @@ HRESULT CCameraMovement::Initialize(void * pArg)
 	if (FAILED(addComponents()))
 		return E_FAIL;
 	
+	for (int i = 0; i < CAM_END; ++i)
+		m_pCams[i] = nullptr;
+
 	return S_OK;
 }
 

@@ -173,7 +173,7 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	_double TimeDelay = 1.0;
-	pGameInstance->ShadowUpdate(160.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	pGameInstance->ShadowUpdate(210.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 
 	__super::Tick(TimeDelta);
 
@@ -1537,10 +1537,8 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 
 void CP_PlayerGirl::Tick_State(_double TimeDelta)
 {
-	//플레이어 기준으로 쉐도우 조명 갱신
 	CGameInstance* pGI = CGameInstance::GetInstance();
 
-	//
 	if (false == m_Scon.bAnimFinished)
 	{
 		_float4 vRotation = _float4(0.f, 0.f, 0.f, 1.f);

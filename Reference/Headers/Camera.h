@@ -57,6 +57,8 @@ public:
 	void SetCamMatrix(_fmatrix CamMatrix) { m_pMainTransform->Set_WorldMatrix(CamMatrix); }
 	void SetCamPosition(_fvector vEye);
 
+	CAMERA_DESC& GetCamDesc() { return m_CameraDesc; }
+
 private:
 	void shakeWave(_double TimeDelta);
 	void shakeVibration(_double TimeDelta);
