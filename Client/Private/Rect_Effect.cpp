@@ -48,7 +48,7 @@ void CRect_Effect::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	m_fLifeAcc += TimeDelta;
+	m_fLifeAcc += (_float)TimeDelta;
 
 	if (m_fLifeAcc >= m_EffectDesc.fLifeTime)
 	{
@@ -66,13 +66,13 @@ void CRect_Effect::Tick(_double TimeDelta)
 	}
 		
 
-	m_fEffectAcc += TimeDelta;
+	m_fEffectAcc += (_float)TimeDelta;
 
 	if (m_fEffectAcc > m_EffectDesc.fEffectTime)
 	{
 		if (m_EffectDesc.bLoop)
 		{
-			m_fDelayAcc += TimeDelta;
+			m_fDelayAcc += (_float)TimeDelta;
 
 			if (m_fDelayAcc > m_EffectDesc.fDelayTime)
 			{
@@ -89,14 +89,14 @@ void CRect_Effect::Tick(_double TimeDelta)
 
 	if (m_fEffectAcc >= START_DISTIME && m_fEffectAcc <= END_DISTIME)
 	{
-		DISTORTION_POWER += DISTORTION_SPEED * TimeDelta;
+		DISTORTION_POWER += DISTORTION_SPEED * (_float)TimeDelta;
 		if (MAX_DISTORTION_POWER < DISTORTION_POWER)
 			DISTORTION_POWER = MAX_DISTORTION_POWER;
 	}
 
 	if (m_fEffectAcc > END_DISTIME)
 	{
-		DISTORTION_POWER -= DISTORTION_SPEED * TimeDelta;
+		DISTORTION_POWER -= DISTORTION_SPEED * (_float)TimeDelta;
 		if (0.f >= DISTORTION_POWER)
 		{
 			DISTORTION_POWER = 0.f;
@@ -124,7 +124,7 @@ void CRect_Effect::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	SetUp_Linear();
-	XMStoreFloat2(&m_EffectDesc.vUV, XMLoadFloat2(&m_EffectDesc.vUV) + XMLoadFloat2(&m_EffectDesc.fUVSpeed) * TimeDelta);
+	XMStoreFloat2(&m_EffectDesc.vUV, XMLoadFloat2(&m_EffectDesc.vUV) + XMLoadFloat2(&m_EffectDesc.fUVSpeed) * (_float)TimeDelta);
 
 	if (true == BILLBOARD)
 	{

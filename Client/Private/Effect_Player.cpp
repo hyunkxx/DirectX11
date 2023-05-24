@@ -59,7 +59,7 @@ void CEffect_Player::Tick(_double TimeDelta)
 	if (m_bFinish)
 		return;
 
-	m_LifeAcc += TimeDelta;
+	m_LifeAcc += (_float)TimeDelta;
 
 	if (m_LifeAcc > m_LifeTime)
 	{

@@ -50,7 +50,7 @@ void CMesh_Effect::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	m_fLifeAcc	 += TimeDelta;
+	m_fLifeAcc	 += (_float)TimeDelta;
 
 	if (m_EffectDesc.fStartDelay >= m_fLifeAcc)
 	{
@@ -64,7 +64,7 @@ void CMesh_Effect::Tick(_double TimeDelta)
 
 	if (m_fEffectAcc >= START_DISTIME && m_fEffectAcc <= END_DISTIME)
 	{
-		DISTORTION_POWER += DISTORTION_SPEED * TimeDelta;
+		DISTORTION_POWER += DISTORTION_SPEED * (_float)TimeDelta;
 		if (MAX_DISTORTION_POWER < DISTORTION_POWER)
 			DISTORTION_POWER = MAX_DISTORTION_POWER;
 
@@ -85,7 +85,7 @@ void CMesh_Effect::Tick(_double TimeDelta)
 	{
 		if(m_EffectDesc.bLoop)
 		{
-			m_fDelayAcc += TimeDelta;
+			m_fDelayAcc += (_float)TimeDelta;
 
 			if (m_fDelayAcc > m_EffectDesc.fDelayTime)
 			{
@@ -118,7 +118,7 @@ void CMesh_Effect::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	SetUp_Linear();
-	XMStoreFloat2(&m_EffectDesc.vUV, XMLoadFloat2(&m_EffectDesc.vUV) + XMLoadFloat2(&m_EffectDesc.fUVSpeed) * TimeDelta);
+	XMStoreFloat2(&m_EffectDesc.vUV, XMLoadFloat2(&m_EffectDesc.vUV) + XMLoadFloat2(&m_EffectDesc.fUVSpeed) * (_float)TimeDelta);
 
 	m_pMainTransform->SetRotationXYZ(m_EffectDesc.vCurAngle);
 	m_WorldMatrix = m_pMainTransform->Get_WorldMatrix();

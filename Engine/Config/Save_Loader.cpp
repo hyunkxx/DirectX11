@@ -184,7 +184,7 @@ HRESULT CSave_Loader::Save_File(HWND hWnd, list<EFFECT_DESC*>* pEffectDesc, cons
 	char			szExt[MAX_PATH] = "";
 	_splitpath_s(pTag, nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
 
-	MultiByteToWideChar(CP_ACP, 0, szFileName, strlen(szFileName),
+	MultiByteToWideChar(CP_ACP, 0, szFileName, (_int)strlen(szFileName),
 		lpstrFile2, MAX_PATH);
 
 	memset(&OFN, 0, sizeof(OPENFILENAME));
@@ -210,7 +210,7 @@ HRESULT CSave_Loader::Save_File(HWND hWnd, list<EFFECT_DESC*>* pEffectDesc, cons
 		MSG_BOX("failed hObject open");
 		return E_FAIL;
 	}
-	_int iFileSize = pEffectDesc->size();
+	_int iFileSize = (_int)pEffectDesc->size();
 	WriteFile(hFile, &iFileSize, sizeof(_int), &dwRead, NULL);
 
 	for (auto& iter : *pEffectDesc)
@@ -303,7 +303,7 @@ HRESULT CSave_Loader::Save_File(HWND hWnd, list<EFFECT_DESC*>* pEffectDesc, cons
 
 		WriteFile(hFile, &iter->fStartDelay, sizeof(_float), &dwRead, NULL);
 
-		_int iSize = strnlen_s(iter->MeshName, sizeof(char)*MAX_PATH);
+		_int iSize = (_int)strnlen_s(iter->MeshName, sizeof(char)*MAX_PATH);
 		WriteFile(hFile, &iSize, sizeof(_int), &dwRead, NULL);
 		WriteFile(hFile, iter->MeshName, sizeof(char) * iSize, &dwRead, NULL);
 
@@ -311,15 +311,15 @@ HRESULT CSave_Loader::Save_File(HWND hWnd, list<EFFECT_DESC*>* pEffectDesc, cons
 		WriteFile(hFile, &iter->bNoiseTexure, sizeof(_bool), &dwRead, NULL);
 		WriteFile(hFile, &iter->bDissolveTexure, sizeof(_bool), &dwRead, NULL);
 
-		iSize = strnlen_s(iter->TexName, sizeof(char)*MAX_PATH);
+		iSize = (_int)strnlen_s(iter->TexName, sizeof(char)*MAX_PATH);
 		WriteFile(hFile, &iSize, sizeof(_int), &dwRead, NULL);
 		WriteFile(hFile, iter->TexName, sizeof(char) * iSize, &dwRead, NULL);
 
-		iSize = strnlen_s(iter->NoiseTexName, sizeof(char)*MAX_PATH);
+		iSize = (_int)strnlen_s(iter->NoiseTexName, sizeof(char)*MAX_PATH);
 		WriteFile(hFile, &iSize, sizeof(_int), &dwRead, NULL);
 		WriteFile(hFile, iter->NoiseTexName, sizeof(char) * iSize, &dwRead, NULL);
 
-		iSize = strnlen_s(iter->DissolveTexName, sizeof(char)*MAX_PATH);
+		iSize = (_int)strnlen_s(iter->DissolveTexName, sizeof(char)*MAX_PATH);
 		WriteFile(hFile, &iSize, sizeof(_int), &dwRead, NULL);
 		WriteFile(hFile, iter->DissolveTexName, sizeof(char) * iSize, &dwRead, NULL);
 	}

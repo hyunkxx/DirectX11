@@ -59,7 +59,7 @@ void CEfffect_Tool::Tick(_double TimeDelta)
 		if (!m_bPlay)
 			TimeDelta = 0.f;
 
-		m_fTimeAcc += TimeDelta;
+		m_fTimeAcc += (_float)TimeDelta;
 
 		if (nullptr != m_pEffects)
 		{
@@ -75,7 +75,7 @@ void CEfffect_Tool::Tick(_double TimeDelta)
 		if (!m_bPlay)
 			TimeDelta = 0.f;
 
-		m_fTimeAcc += TimeDelta;
+		m_fTimeAcc += (_float)TimeDelta;
 
 		if (nullptr != m_pEffectPlayer)
 		{
