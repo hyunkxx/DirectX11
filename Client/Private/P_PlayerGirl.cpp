@@ -173,6 +173,7 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	_double TimeDelay = 1.0;
+	pGameInstance->ShadowUpdate(160.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 
 	__super::Tick(TimeDelta);
 
@@ -1538,7 +1539,6 @@ void CP_PlayerGirl::Tick_State(_double TimeDelta)
 {
 	//플레이어 기준으로 쉐도우 조명 갱신
 	CGameInstance* pGI = CGameInstance::GetInstance();
-	pGI->ShadowUpdate(200.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 
 	//
 	if (false == m_Scon.bAnimFinished)

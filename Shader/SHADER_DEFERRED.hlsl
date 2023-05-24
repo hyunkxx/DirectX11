@@ -299,7 +299,7 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 	vector vGlowColor = g_GlowTexture.Sample(LinearSampler, In.vTexUV);
 
 	//1.6~1.75น่
-	float4 vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.5f));
+	float4 vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
 	if (vOutNormal.a == 1.f)
 	{
 		float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
@@ -332,7 +332,7 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 	vector vGlowColor = g_GlowTexture.Sample(LinearBorderSampler, In.vTexUV);
 
 	//1.6~1.75น่
-	float4 vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.5f));
+	float4 vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
 	if (vGlowColor.a != 0.f)
 	{
 		if (vOutNormal.a == 1.f)

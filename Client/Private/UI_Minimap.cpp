@@ -92,41 +92,41 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			m_DefaultIconRB[i].y = m_TerrainRB.y;
 		}
 
-		for (auto& pDesc : m_IconDescList)
-		{
-			_vector vWorldPos, vObjectPos;
-			_float4 fObjectPos;
-			_float2 IconPos;
-			vWorldPos = XMVectorSet(pDesc.fX, pDesc.fY, pDesc.fZ, 1.f);
-			vObjectPos = XMVector3TransformCoord(vWorldPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_VIEW));
-			vObjectPos = XMVector3TransformCoord(vObjectPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_PROJ));
-			XMStoreFloat4(&fObjectPos, vObjectPos);
-			IconPos.x = (fObjectPos.x) * (0.5f * g_iWinSizeX);
-			IconPos.y = (fObjectPos.y) * (0.5f * g_iWinSizeY);
+		//for (auto& pDesc : m_IconDescList)
+		//{
+		//	_vector vWorldPos, vObjectPos;
+		//	_float4 fObjectPos;
+		//	_float2 IconPos;
+		//	vWorldPos = XMVectorSet(pDesc.fX, pDesc.fY, pDesc.fZ, 1.f);
+		//	vObjectPos = XMVector3TransformCoord(vWorldPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_VIEW));
+		//	vObjectPos = XMVector3TransformCoord(vObjectPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_PROJ));
+		//	XMStoreFloat4(&fObjectPos, vObjectPos);
+		//	IconPos.x = (fObjectPos.x) * (0.5f * g_iWinSizeX);
+		//	IconPos.y = (fObjectPos.y) * (0.5f * g_iWinSizeY);
 
-			IconPos.x = IconPos.x * 0.2f * (m_fWidthMiniMap / g_iWinSizeX);
-			IconPos.y = IconPos.y * 0.2f * (m_fHeightMiniMap / g_iWinSizeY);
+		//	IconPos.x = IconPos.x * 0.2f * (m_fWidthMiniMap / g_iWinSizeX);
+		//	IconPos.y = IconPos.y * 0.2f * (m_fHeightMiniMap / g_iWinSizeY);
 
-			_vector vec1 = XMVectorSet(m_fXMiniMap, m_fYMiniMap, 0.f , 1.f);
-			_vector vec2 = XMVectorSet(IconPos.x + m_fXMiniMap, IconPos.y + m_fYMiniMap, 0.f, 1.f);
-			_float Dist = XMVectorGetX(XMVector4Length(vec2 - vec1));
+		//	_vector vec1 = XMVectorSet(m_fXMiniMap, m_fYMiniMap, 0.f , 1.f);
+		//	_vector vec2 = XMVectorSet(IconPos.x + m_fXMiniMap, IconPos.y + m_fYMiniMap, 0.f, 1.f);
+		//	_float Dist = XMVectorGetX(XMVector4Length(vec2 - vec1));
 
-			if (m_fWidthMiniMap / 2.f < Dist)
-			{
-				pDesc.bRender = true;
-			}
-			else
-			{
-				pDesc.bRender = true;
-			}
+		//	if (m_fWidthMiniMap / 2.f < Dist)
+		//	{
+		//		pDesc.bRender = true;
+		//	}
+		//	else
+		//	{
+		//		pDesc.bRender = true;
+		//	}
 
 
 
-			XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)
-				* XMMatrixTranslation(IconPos.x + m_fXMiniMap, IconPos.y + m_fYMiniMap, 0.f));
-			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-		}
+		//	XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)
+		//		* XMMatrixTranslation(IconPos.x + m_fXMiniMap, IconPos.y + m_fYMiniMap, 0.f));
+		//	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+		//	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+		//}
 	
 
 
@@ -251,7 +251,8 @@ void CUI_Minimap::Tick(_double TimeDelta)
 		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	}
 
-	DecideRender();
+	if(ComputeCameraLength() > 10.f)
+		DecideRender();
 
 
 
@@ -420,25 +421,14 @@ _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 
 void CUI_Minimap::DecideRender()
 {
-
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	CPipeLine* pPipe = CPipeLine::GetInstance();
 	_matrix CamMat = pPipe->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
 	_vector CamPos = CamMat.r[3];
-	for (auto& Desc : m_DescList)
-	{
-		_float Length = XMVectorGetX(XMVector4Length(Desc.vObjectPos - CamPos));
 
-		if (40.f <= Length)
-		{
-			Desc.bRender = true;
-		}
-		else
-		{
-			Desc.bRender = false;
-		}
-	}
+	for (auto& Desc : m_DescList)
+		Desc.bRender = true;
 
 }
 
