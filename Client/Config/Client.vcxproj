@@ -218,6 +218,7 @@
     <ClInclude Include="..\public\M_AWukaka.h" />
     <ClInclude Include="..\public\M_GAzizi.h" />
     <ClInclude Include="..\Public\Particle_Effect.h" />
+    <ClInclude Include="..\public\CharacterState.h" />
     <ClInclude Include="..\Public\Rect_Effect.h" />
     <ClInclude Include="..\public\Sandbag.h" />
     <ClInclude Include="..\public\DissolveKey.h" />
@@ -336,6 +337,7 @@
     <ClCompile Include="..\private\M_AWukaka.cpp" />
     <ClCompile Include="..\private\M_GAzizi.cpp" />
     <ClCompile Include="..\Private\Particle_Effect.cpp" />
+    <ClCompile Include="..\private\CharacterState.cpp" />
     <ClCompile Include="..\Private\Rect_Effect.cpp" />
     <ClCompile Include="..\private\Sandbag.cpp" />
     <ClCompile Include="..\private\DissolveKey.cpp" />

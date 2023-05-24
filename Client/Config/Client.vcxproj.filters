@@ -324,6 +324,9 @@
     <ClCompile Include="..\private\M_AWukaka.cpp">
       <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\CharacterState.cpp">
+      <Filter>src\02. GameObject\00. StaticClasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -623,6 +626,9 @@
     <ClInclude Include="..\public\M_AWukaka.h">
       <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CharacterState.h">
+      <Filter>src\02. GameObject\00. StaticClasses</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -757,6 +763,9 @@
     </Filter>
     <Filter Include="src\06. Effect\Tool">
       <UniqueIdentifier>{9f8c510e-829c-479d-8eb9-7633e0206887}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\00. StaticClasses">
+      <UniqueIdentifier>{25d5bc91-aab3-4f1a-9d59-2a1abee43830}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,7 @@
 
 #include "Level_Loading.h"
 
+#include "CharacterState.h"
 #include "IntroCamera.h"
 #include "DynamicCamera.h"
 #include "CameraMovement.h"
@@ -68,7 +69,7 @@ void CLevel_Logo::Tick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	pGameInstance->ShadowUpdate(40.f, XMLoadFloat4(&pGameInstance->Get_CamPosition()));
 
-	if(static_cast<CIntroCamera*>(m_pIntroCam)->IsLobbyOut() || KEY_STATE::TAP == pGameInstance->InputKey(DIK_TAB))
+	if (static_cast<CIntroCamera*>(m_pIntroCam)->IsLobbyOut() || KEY_STATE::TAP == pGameInstance->InputKey(DIK_TAB))
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY));
 
 }
@@ -162,6 +163,9 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 HRESULT CLevel_Logo::Ready_Layer_Character(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::STATIC_CHARACTER_STATE, L"StaticObject", TEXT("CharacterState"))))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::LOBBY_CHARACTER_LEFT, pLayerTag, L"LobbyCharacter_Left")))
 		return E_FAIL;

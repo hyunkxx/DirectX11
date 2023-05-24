@@ -343,6 +343,7 @@ public:
 
 	CGameObject* pStaticObject = nullptr;
 
+	class CCharacterState* m_pState;
 	class CInventory* m_pInven = nullptr;
 	class CCameraMovement* m_pCamMovement = nullptr;
 };

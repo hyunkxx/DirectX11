@@ -21,6 +21,7 @@
 #include "M_Anjin.h"
 #include "M_AWukaka.h"
 
+#include "CharacterState.h"
 #include "Inventory.h"
 #include "InteractionObject.h"
 #include "Chest.h"

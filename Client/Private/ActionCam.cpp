@@ -56,6 +56,7 @@ void CActionCam::Tick(_double TimeDelta)
 	if (false == m_bUse)
 		return;
 	
+	// 방순이 전용으로 추후에 수정해야함
 	if (m_iAction < 2)
 	{
 		m_fTimeAcc += (_float)TimeDelta;
@@ -98,9 +99,9 @@ void CActionCam::Tick(_double TimeDelta)
 
 		break;
 	case 1:
-		vCurPos = XMVectorLerp(vCurPos, vBonePos + XMVector3Normalize(vTargetLook + -vTargetRight) * 1.f, (_float)TimeDelta * 0.5f);
+		vCurPos = XMVectorLerp(vCurPos, vBonePos + XMVector3Normalize(vTargetLook + -(vTargetRight * 1.5f)), (_float)TimeDelta * 0.75f);
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
-
+		
 		break;
 	case 2:
 		vCurPos = XMVectorLerp(vCurPos, vTargetPos - vTargetLook * 8.f, (_float)TimeDelta * 2.f);

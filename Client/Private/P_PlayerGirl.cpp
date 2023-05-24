@@ -6,6 +6,10 @@
 #include "GameInstance.h"
 #include "Parts.h"
 #include "Effect.h"
+
+//State
+#include "CharacterState.h"
+
 //StateKeys
 #include "EffectKey.h"
 #include "PartsKey.h"
@@ -159,6 +163,7 @@ void CP_PlayerGirl::Start()
 #ifdef _DEBUG
 	m_pRendererCom->DebugBundleRender_Control(true);
 #endif
+	m_pState = static_cast<CCharacterState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
@@ -2303,7 +2308,7 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.LifeTime = 1.5;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_SKILL_02_03;
 	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
-
+	
 	m_MissilePools[MISS_SKILL_02] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_SKILL_02] = _float3(0.f, 0.f, 0.f);
 

@@ -13,6 +13,7 @@
 #include "Intro.h"
 #include "BackGround.h"
 
+#include "CharacterState.h"
 #include "CameraMovement.h"
 #include "DynamicCamera.h"
 #include "IntroCamera.h"
@@ -441,6 +442,10 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ACTION_CAM_BANGSUN,
 		CActionCam::Create(m_pDevice, m_pContext, CCameraMovement::CAM_BANGSUN))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::STATIC_CHARACTER_STATE,
+		CCharacterState::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Static_Effect()))
