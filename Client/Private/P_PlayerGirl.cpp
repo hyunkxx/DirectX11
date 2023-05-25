@@ -261,7 +261,7 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 		if (bCamLock)
 			m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
 		else
-			m_pCamMovement->UseCamera(CCameraMovement::CAM_BANGSUN);
+			m_pCamMovement->UseCamera(CCameraMovement::CAM_DYNAMIC);
 	}
 
 

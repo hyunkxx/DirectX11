@@ -33,6 +33,9 @@ private:
 	
 	HRESULT Ready_Layer_MapObject_Grass(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MapObject_Vin(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_MapObject_Veg(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_MapObject_Shr(const _tchar* pLayerTag);
+
 
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

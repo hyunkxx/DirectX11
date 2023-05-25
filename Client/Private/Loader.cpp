@@ -1162,6 +1162,273 @@ HRESULT CLoader::Load_Level_GamePlay()
 	}
 #pragma endregion VIN
 
+#pragma region VEG
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_0, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/0/SM_Com_Veg_01AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_0.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_1, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/1/SM_Com_Veg_02AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_1.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_2, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/2/SM_Com_Veg_03AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_2.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_3, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/3/SM_Com_Veg_04AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_3.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_3");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_4, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/4/SM_Com_Veg_05AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_4.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_4");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_5, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/5/SM_Com_Veg_09AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_5.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_5");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_6, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/6/SM_Com_Veg_10AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_6.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_6");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_7, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/7/SM_Com_Veg_11AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_7.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_7");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_8, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/8/SM_Com_Veg_12AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_8.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_8");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_9, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/9/SM_Com_Veg_13AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_9.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_9");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_10, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/10/SM_Com_Veg_16AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_10.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_10");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_11, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/11/SM_Com_Veg_18AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_11.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_11");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_12, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/12/SM_Com_Veg_18BS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_12.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_12");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_13, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/13/SM_Com_Veg_19AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_13.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_13");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_14, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/14/SM_Com_Veg_20AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_14.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_14");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_15, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/15/SM_Com_Veg_21BS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_15.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_15");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_16, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/16/SM_Com_Veg_22AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_16.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_16");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_17, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/17/SM_Com_Veg_23AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_17.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_17");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_18, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/18/SM_Com_Veg_24AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_18.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_18");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_19, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/19/SM_Com_Veg_25AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_19.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_19");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_20, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/20/SM_Com_Veg_26AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_20.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_20");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_21, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/21/SM_Com_Veg_27AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_21.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_21");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_22, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/22/SM_Com_Veg_28AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_22.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_22");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_23, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/23/SM_Com_Veg_29AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_23.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_23");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_24, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/24/SM_Com_Veg_30AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_24.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_24");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_25, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/25/SM_Com_Veg_31BS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_25.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_25");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_26, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/26/SM_Com_Veg_32AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_26.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_26");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_27, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/27/SM_Com_Veg_33AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_27.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_27");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_28, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/28/SM_Com_Veg_34AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_28.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_28");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_29, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/29/SM_Com_Veg_37AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_29.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_29");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_30, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/30/SM_Com_Veg_38AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_30.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_30");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_31, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/31/SM_Com_Veg_42AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_31.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_31");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_VEG_32, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Veg/32/SM_Com_Veg_44AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Veg/Veg_32.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_VEG_32");
+		return E_FAIL;
+	}
+#pragma endregion VEG
+
+#pragma region SHR
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_SHR_0, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Shr/0/SM_Com_Shr_01AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Shr/Shr_0.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_SHR_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_SHR_1, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Shr/1/SM_Com_Shr_02AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Shr/Shr_1.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_SHR_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_SHR_2, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Shr/2/SM_Com_Shr_03AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Shr/Shr_2.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_SHR_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_SHR_3, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Shr/3/SM_Com_Shr_04AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Shr/Shr_3.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_SHR_3");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_SHR_4, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Shr/4/SM_Com_Shr_05AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Shr/Shr_4.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_SHR_4");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_SHR_5, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Shr/5/SM_Com_Shr_05FS.smdl"), TEXT("../../Data/GamePlay/MapObject/Shr/Shr_5.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_SHR_5");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_SHR_6, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Shr/6/SM_Com_Shr_06AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Shr/Shr_6.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_SHR_6");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_SHR_7, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Shr/7/SM_Com_Shr_07AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Shr/Shr_7.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_SHR_7");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_SHR_8, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Shr/8/SM_Com_Shr_08AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Shr/Shr_8.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_SHR_8");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_SHR_9, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Shr/9/SM_Com_Shr_09AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Shr/Shr_9.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_SHR_9");
+		return E_FAIL;
+	}
+#pragma endregion SHR
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
 		return E_FAIL;
 

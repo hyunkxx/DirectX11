@@ -47,8 +47,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_tree"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_tree"))))
+		//return E_FAIL;
 
 	if (FAILED(Ready_Layer_MapObject_Rock(TEXT("layer_rock"))))
 		return E_FAIL;
@@ -62,8 +62,14 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_MapObject_Grass(TEXT("layer_grass"))))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Layer_MapObject_Vin(TEXT("layer_vin"))))
-		//return E_FAIL;
+	if (FAILED(Ready_Layer_MapObject_Vin(TEXT("layer_vin"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_MapObject_Veg(TEXT("layer_veg"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_MapObject_Shr(TEXT("layer_shr"))))
+		return E_FAIL;
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
@@ -357,7 +363,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_TREE_1");
 		return E_FAIL;
 	}
-	/*
+	
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_2_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
@@ -594,7 +600,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_TREE_30");
 		return E_FAIL;
 	}
-	*/
 
 	return S_OK;
 }
@@ -1501,6 +1506,378 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VIN_11");
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
+
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_0_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_0");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_1_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_1");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_2_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_2");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_3_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_3");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_4_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_4");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_5_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_5");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_6_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_6");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_7_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_7");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_8_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_8");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_9_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_9");
+		return E_FAIL;
+	}
+
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_10_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_10");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_11_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_11");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_12_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_12");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_13_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_13");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_14_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_14");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_15_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_15");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_16_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_16");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_17_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_17");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_18_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_18");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_19_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_19");
+		return E_FAIL;
+	}
+
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_20_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_20");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_21_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_21");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_22_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_22");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_23_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_23");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_24_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_24");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_25_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_25");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_26_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_26");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_27_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_27");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_28_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_28");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_29_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_29");
+		return E_FAIL;
+	}
+
+
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_30_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_30");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_31_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_31");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_32_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_32");
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
+
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_0_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_SHR_0");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_1_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_SHR_1");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_2_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_SHR_2");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_3_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_SHR_3");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_4_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_SHR_4");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_5_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_SHR_5");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_6_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_SHR_6");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_7_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_SHR_7");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_8_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_SHR_8");
+		return E_FAIL;
+	}
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_9_Edition.data");
+	EditionDesc.fCullingRatio = 20.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_SHR_9");
 		return E_FAIL;
 	}
 

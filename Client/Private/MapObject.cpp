@@ -107,7 +107,15 @@ HRESULT CMapObject::Render()
 		if (FAILED(Render_EditionColor()))
 			return E_FAIL;
 		break;
-		
+	case CMapObject::MAPOBJECT_TYPEID::ID_VEG:
+		if (FAILED(Render_EditionColor()))
+			return E_FAIL;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_SHR:
+		if (FAILED(Render_EditionColor()))
+			return E_FAIL;
+		break;
+
 	default:
 		break;
 	}
@@ -299,6 +307,13 @@ HRESULT CMapObject::Load_Edition()
 	case CMapObject::MAPOBJECT_TYPEID::ID_VIN:
 		Load_EditionColor(hFile, dwByte);
 		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_VEG:
+		Load_EditionColor(hFile, dwByte);
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_SHR:
+		Load_EditionColor(hFile, dwByte);
+		break;
+
 	default:
 		break;
 	}
