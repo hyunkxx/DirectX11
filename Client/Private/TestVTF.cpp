@@ -167,11 +167,28 @@ HRESULT CTestVTF::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	int iPass = 4;
-	if (10.f <= ComputeCameraLength())
-		iPass = 3;
 
-	for (_uint i = 0; i < 6; ++i)
+	int iPass;
+	if (10.f <= ComputeCameraLength())
+	{
+		iPass = 3;
+		for (_uint i = 0; i < PARTS_END; ++i)
+		{
+			if (nullptr != m_Parts[i])
+				m_Parts[i]->Set_Outline(false);
+		}
+	}
+	else
+	{
+		iPass = 4;
+		for (_uint i = 0; i < PARTS_END; ++i)
+		{
+			if (nullptr != m_Parts[i])
+				m_Parts[i]->Set_Outline(true);
+		}
+	}
+
+	for (_uint i = 0; i < 7; ++i)
 	{
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
 			return E_FAIL;
@@ -182,10 +199,19 @@ HRESULT CTestVTF::Render()
 		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
 			return E_FAIL;
 
-		if (i == 5)
-			m_pShaderCom->Begin(6); // Eye
+		if (i == 6)
+		{
+			/*if (FAILED(m_pEyeBurstTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeBurstTexture")))
+				return E_FAIL;
+			if (FAILED(m_pEyeMaskTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeMaskTexture")))
+				return E_FAIL;*/
+
+			m_pShaderCom->Begin(7); // Eye
+		}
 		else
+		{
 			m_pShaderCom->Begin(iPass);
+		}
 
 		m_pModelCom->Render(i);
 	}
