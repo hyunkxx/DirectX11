@@ -17,13 +17,13 @@ CCharacter::PHYSICMOVE CCharacter::StatePhysics[SP_END]
 	// 질주+@ _F, 등속
 	{ true, true, _float3(0.f, -1.f, 0.f),	10.0f, 0.f, 0.f, 0.f, 0.f },
 	// 낙하, 직전 운동 상태 적용, xz감쇄율, y가속도 적용
-	{ false, false, _float3(0.f, 0.f, 0.f), 0.f, 0.3f, 0.3f, 15.f * 0.16f, -15.f * 0.16f},
+	{ false, false, _float3(0.f, 0.f, 0.f), 0.f, 0.15f, 0.15f, 15.f, -15.f},
 	// PLAYERGIRL_AIRATTACK, 등속
 	{ true, true, _float3(0.f, 0.f, -1.f), 70.f, 0.f, 0.f, 0.f, 0.f  },
 	// BEHIT_FLY_START, 
-	{ true, false, _float3(0.f, 0.5f, 1.f), 10.f, 0.3f, 0.3f, 15.f * 0.16f, -15.f * 0.16f },
+	{ true, false, _float3(0.f, 0.5f, 1.f), 10.f, 0.15f, 0.15f, 15.f, -15.f},
 	// BEHIT_HOVER, 
-	{ true, false, _float3(0.f, 0.5f, 1.f), 5.f, 0.3f, 0.3f, 15.f * 0.16f, -15.f * 0.16f }
+	{ true, false, _float3(0.f, 0.5f, 1.f), 5.f, 0.15f, 0.15f, 15.f, -15.f}
 
 };
 

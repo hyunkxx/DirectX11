@@ -283,7 +283,7 @@ HRESULT CP_PlayerGirl::Render()
 
 	int iPass;
 	if (10.f <= ComputeCameraLength())
-	{
+	{	
 		iPass = 3;
 		for (_uint i = 0; i < PARTS_END; ++i)
 		{

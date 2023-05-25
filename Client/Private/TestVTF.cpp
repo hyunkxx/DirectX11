@@ -188,7 +188,9 @@ HRESULT CTestVTF::Render()
 		}
 	}
 
-	for (_uint i = 0; i < 7; ++i)
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes() - 2;
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
 			return E_FAIL;
@@ -199,14 +201,18 @@ HRESULT CTestVTF::Render()
 		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
 			return E_FAIL;
 
-		if (i == 6)
+		if (i == iNumMeshes - 1)
 		{
 			/*if (FAILED(m_pEyeBurstTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeBurstTexture")))
 				return E_FAIL;
 			if (FAILED(m_pEyeMaskTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeMaskTexture")))
 				return E_FAIL;*/
 
-			m_pShaderCom->Begin(7); // Eye
+
+			if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i + 1, MyTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(6); // Eye
 		}
 		else
 		{
@@ -227,7 +233,7 @@ HRESULT CTestVTF::RenderShadow()
 	if (FAILED(Setup_ShadowShaderResource()))
 		return E_FAIL;
 
-	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes() - 2;
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))

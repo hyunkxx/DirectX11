@@ -350,6 +350,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
 		return E_FAIL;
 	m_pApp->LoadRatio(0.6f);
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
 		return E_FAIL;
 
@@ -1348,43 +1349,43 @@ HRESULT CLoader::Load_Level_AnimTool()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Base.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Base.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Ribbon.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Ribbon.dmdl")))))
+		return E_FAIL;
 
-	//// yangyang == ¾ç¾ç
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
-	//	return E_FAIL;
+	// yangyang == ¾ç¾ç
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Base.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Base.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Ribbon.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Ribbon.dmdl")))))
+		return E_FAIL;
 
-	//// chixia == ½Ö±ÇÃÑ³à // AimAttack, AirAttack, HoldShot ´õ ÀÖÀ½
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia.dmdl")))))
-	//	return E_FAIL;
+	// chixia == ½Ö±ÇÃÑ³à // AimAttack, AirAttack, HoldShot ´õ ÀÖÀ½
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Base.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Base.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Ribbon.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Ribbon.dmdl")))))
+		return E_FAIL;
 
 
 	// 4¼Ó¼º Á¤·É ÄÁ¼Á ¸ó½ºÅÍµé
@@ -1411,8 +1412,8 @@ HRESULT CLoader::Load_Level_AnimTool()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_HUOJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Huojin.dmdl")))))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Binglie.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Binglie.dmdl")))))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_FENGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Fenglie.dmdl")))))
 		return E_FAIL;
@@ -1436,8 +1437,6 @@ HRESULT CLoader::Load_Level_AnimTool()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINLANG_ELITE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Wolf/BinlangElite.dmdl")))))
 		return E_FAIL;
-
-
 
 	m_pApp->LoadRatio(0.6f);
 	m_szLoadingStateText = L"¼ÎÀÌ´õ¸¦ ·ÎµùÁßÀÔ´Ï´Ù.";
@@ -1591,6 +1590,15 @@ HRESULT CLoader::Load_Level_AnimTool()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_HUOJIN, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
 		return E_FAIL;
 	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_HUOJIN), TEXT("Huojin"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_BINGLIE;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Binglie/Binglie_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_BINGLIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_BINGLIE), TEXT("Binglie"));
+
 
 	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
 	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_FENGLIE;
