@@ -301,26 +301,26 @@ void CTransform::Rotate(_fvector vAxis, _double TimeDelta)
 	Set_State(STATE::STATE_LOOK, vLook);
 }
 
-void CTransform::LocalRotate(_fvector vAxis, _float fRadian)
-{
-	_vector vRight, vUp, vLook;
-	_float3 vScale = Get_Scale();
-
-	vRight = Get_State(STATE::STATE_RIGHT);
-	vUp = Get_State(STATE::STATE_UP);
-	vLook = Get_State(STATE::STATE_LOOK);
-
-	_matrix RotationMatrix;
-	RotationMatrix = XMMatrixRotationAxis(vAxis, m_TransformDesc.fRotationSpeed * (_float)TimeDelta);
-
-	vRight = XMVector3TransformNormal(vRight, RotationMatrix);
-	vUp = XMVector3TransformNormal(vUp, RotationMatrix);
-	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
-
-	Set_State(STATE::STATE_RIGHT, vRight);
-	Set_State(STATE::STATE_UP, vUp);
-	Set_State(STATE::STATE_LOOK, vLook);
-}
+//void CTransform::LocalRotate(_fvector vAxis, _float fRadian)
+//{
+//	_vector vRight, vUp, vLook;
+//	_float3 vScale = Get_Scale();
+//
+//	vRight = Get_State(STATE::STATE_RIGHT);
+//	vUp = Get_State(STATE::STATE_UP);
+//	vLook = Get_State(STATE::STATE_LOOK);
+//
+//	_matrix RotationMatrix;
+//	RotationMatrix = XMMatrixRotationAxis(vAxis, m_TransformDesc.fRotationSpeed * (_float)TimeDelta);
+//
+//	vRight = XMVector3TransformNormal(vRight, RotationMatrix);
+//	vUp = XMVector3TransformNormal(vUp, RotationMatrix);
+//	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
+//
+//	Set_State(STATE::STATE_RIGHT, vRight);
+//	Set_State(STATE::STATE_UP, vUp);
+//	Set_State(STATE::STATE_LOOK, vLook);
+//}
 
 
 void CTransform::Rotate_Quaternion(_fvector vQuat)
