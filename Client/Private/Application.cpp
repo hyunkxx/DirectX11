@@ -349,7 +349,287 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::GRASS_MASK_6,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/GrassMask/T_Waterfall_Directional_Noise.png")))))
 		return E_FAIL;
+
 #pragma endregion GRASS_MASK
+
+#pragma region ROCK_MASK
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_SUB_D,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockDiffuse/T4_Gra_01_D.dds")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_SUB_D");
+		return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_5,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_05A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_5");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_6,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_06A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_6");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_7,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_07A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_7");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_8,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_08A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_8");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_9,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_09A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_9");
+		return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_10,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_10A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_10");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_11,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_11A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_11");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_12,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_12A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_12");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_14,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_14A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_14");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_15,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_15A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_15");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_16,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_16A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_16");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_17,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_17A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_17");
+		return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_22,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_22A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_22");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_23,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_23A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_23");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_24,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_24A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_24");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_25,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_25A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_25");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_26,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_26A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_26");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_27,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_27A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_27");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_28,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_28A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_28");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_29,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_29A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_29");
+		return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_32,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_32A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_32");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_35,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_35A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_35");
+		return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_41,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_41A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_41_A");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_41_B,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_41B_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_41_B");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_42,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_42A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_42");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_43,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_43A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_43");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_44,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_44A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_44");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_45,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_45A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_45");
+		return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_50,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_50A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_50");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_52,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_52A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_52");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_55,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_55A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_55");
+		return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_66,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_66A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_66");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_67,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_67A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_67");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_68,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_68A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_68");
+		return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_70,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_70A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_70");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_71,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_71A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_71");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_72,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_72A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_72");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_76,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_76A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_76");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_77,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_77A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_77");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_78,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_78A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_78");
+		return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_80,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_80A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_80");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_82,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_82A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_82");
+		return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_MASK_83,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/RockMask/T_Com_Roc_83A_M.png")))))
+	{
+		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_83");
+		return E_FAIL;
+	}
+	
+#pragma endregion ROCK_MASK
+	
+
 
 	CVIBuffer_Terrain::TERRAIN_SIZE tSize;
 	tSize.mX = 300;

@@ -30,9 +30,7 @@ HRESULT CMapObject::Initialize(void * pArg)
 		return E_FAIL;
 
 	if (nullptr != pArg)
-	{
 		memcpy(&m_EditionDesc, pArg, sizeof(SMAP_OBJECT_EDITION_DESC));
-	}
 
 	if (FAILED(Load_Edition()))
 		return E_FAIL;
@@ -176,6 +174,10 @@ HRESULT CMapObject::Render_EditionColor()
 
 HRESULT CMapObject::Render_Rock()
 {
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
@@ -192,7 +194,20 @@ HRESULT CMapObject::Render_Rock()
 			m_IsDistinction_NormalTex = false;
 		}
 		else
-			m_iShaderPassID = 1;
+		{
+			if (STATIC_IMAGE::ROCK_MASK_NONE == m_EditionDesc.iMaskTex_ID)
+				m_iShaderPassID = 1;
+			else
+			{
+				if (FAILED(pGameInstance->SetupSRV(m_EditionDesc.iMaskTex_ID, m_pShaderCom, "g_MaskTexture")))
+					return E_FAIL;
+
+				if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ROCK_SUB_D, m_pShaderCom, "g_SubDiffuseTexture")))
+					return E_FAIL;
+
+				m_iShaderPassID = 8;
+			}
+		}
 
 		m_pShaderCom->Begin(m_iShaderPassID);
 

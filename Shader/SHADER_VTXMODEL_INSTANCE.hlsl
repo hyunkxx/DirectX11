@@ -13,6 +13,7 @@ float3		g_vEditionColor;
 
 texture2D	g_MaskTexture;
 float3		g_vSubEditionColor;
+texture2D	g_SubDiffuseTexture;
 
 struct VS_IN
 {
@@ -344,6 +345,37 @@ PS_OUT	PS_MAIN_SUB_EDITIONCOLOR_MASK(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_NORMALMAP_SUBDIFFUSE_MASK(PS_IN_NORMALMAP In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector			vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector			vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+
+	vector			vMaskTexture = g_MaskTexture.Sample(LinearSampler, In.vTexUV);
+	vector			vSubDiffuse = g_SubDiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	float3			vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3x3		WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vDiffuse = (vMaskTexture.a * vSubDiffuse) + ((1.0f - vMaskTexture.a) * vMtrlDiffuse);
+
+	if (Out.vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
+
+	/* 투영 스페이스 상의 z , 뷰 스페이스 상의 z (vProjPos.w 에 저장되어 있음) -> 뷰 공간서의 최대 z 값 Far -> Far 로 나눠서 0 ~ 1 사이로 뷰 의 z값 보관 */
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+
+	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	// RS_CullBack RS_Default
@@ -454,5 +486,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_SUB_EDITIONCOLOR_MASK();
+	}
+
+	// 이끼 낀 돌.
+	pass Instance_Model_Sub_Diffuse_Mask_NormalMap_Pass8
+	{
+		SetRasterizerState(RS_CullBack);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN_NORMALMAP();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_NORMALMAP_SUBDIFFUSE_MASK();
 	}
 }
