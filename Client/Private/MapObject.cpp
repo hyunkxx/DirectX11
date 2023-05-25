@@ -362,37 +362,43 @@ HRESULT CMapObject::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::ROCK_D_1,
-		TEXT("com_texture_d_1"), (CComponent**)&m_pDiffuseTexture[ROCK_DIFFUSE_KINDS::RD_1])))
-		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::ROCK_D_2,
-		TEXT("com_texture_d_2"), (CComponent**)&m_pDiffuseTexture[ROCK_DIFFUSE_KINDS::RD_2])))
-		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::ROCK_D_3,
-		TEXT("com_texture_d_3"), (CComponent**)&m_pDiffuseTexture[ROCK_DIFFUSE_KINDS::RD_3])))
-		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::ROCK_D_4,
-		TEXT("com_texture_d_4"), (CComponent**)&m_pDiffuseTexture[ROCK_DIFFUSE_KINDS::RD_4])))
-		return E_FAIL;
+	if (CMapObject::MAPOBJECT_TYPEID::ID_ROCK == m_EditionDesc.iTypeID)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::ROCK_D_1,
+			TEXT("com_texture_d_1"), (CComponent**)&m_pDiffuseTexture[ROCK_DIFFUSE_KINDS::RD_1])))
+			return E_FAIL;
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::ROCK_D_2,
+			TEXT("com_texture_d_2"), (CComponent**)&m_pDiffuseTexture[ROCK_DIFFUSE_KINDS::RD_2])))
+			return E_FAIL;
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::ROCK_D_3,
+			TEXT("com_texture_d_3"), (CComponent**)&m_pDiffuseTexture[ROCK_DIFFUSE_KINDS::RD_3])))
+			return E_FAIL;
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::ROCK_D_4,
+			TEXT("com_texture_d_4"), (CComponent**)&m_pDiffuseTexture[ROCK_DIFFUSE_KINDS::RD_4])))
+			return E_FAIL;
+	}
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_1,
-		TEXT("com_texture_gm_1"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_1])))
-		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_2,
-		TEXT("com_texture_gm_2"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_2])))
-		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_3,
-		TEXT("com_texture_gm_3"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_3])))
-		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_4,
-		TEXT("com_texture_gm_4"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_4])))
-		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_5,
-		TEXT("com_texture_gm_5"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_5])))
-		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_6,
-		TEXT("com_texture_gm_6"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_6])))
-		return E_FAIL;
+	if (CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK == m_EditionDesc.iTypeID)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_1,
+			TEXT("com_texture_gm_1"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_1])))
+			return E_FAIL;
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_2,
+			TEXT("com_texture_gm_2"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_2])))
+			return E_FAIL;
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_3,
+			TEXT("com_texture_gm_3"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_3])))
+			return E_FAIL;
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_4,
+			TEXT("com_texture_gm_4"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_4])))
+			return E_FAIL;
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_5,
+			TEXT("com_texture_gm_5"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_5])))
+			return E_FAIL;
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::GRASS_MASK_6,
+			TEXT("com_texture_gm_6"), (CComponent**)&m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_6])))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -468,11 +474,17 @@ void CMapObject::Free()
 {
 	__super::Free();
 
-	for (_uint i = 0; i < ROCK_DIFFUSE_KINDS::RD_END; i++)
-		Safe_Release(m_pDiffuseTexture[i]);
+	if (CMapObject::MAPOBJECT_TYPEID::ID_ROCK == m_EditionDesc.iTypeID)
+	{
+		for (_uint i = 0; i < ROCK_DIFFUSE_KINDS::RD_END; i++)
+			Safe_Release(m_pDiffuseTexture[i]);
+	}
 
-	for (_uint i = 0; i < GRASS_MASK_KINDS::GM_END; i++)
-		Safe_Release(m_pGrassMaskTexture[i]);
+	if (CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK == m_EditionDesc.iTypeID)
+	{
+		for (_uint i = 0; i < GRASS_MASK_KINDS::GM_END; i++)
+			Safe_Release(m_pGrassMaskTexture[i]);
+	}
 
 	Safe_Release(m_pMainTransform);
 	Safe_Release(m_pModelCom);
