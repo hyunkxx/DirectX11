@@ -92,7 +92,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
 
 	Out.vPosition = mul(vPosition, matWVP);
-	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
+	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), TransformMatrix));
 	Out.vTexUV = In.vTexUV;
 	Out.vProjPos = Out.vPosition;
 
