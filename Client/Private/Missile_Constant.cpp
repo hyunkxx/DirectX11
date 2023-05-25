@@ -95,10 +95,12 @@ _bool CMissile_Constant::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMi
 
 void CMissile_Constant::OnCollisionOnTarget(CCollider * src, CCollider * dest)
 {
+	if (STOP_ONCOLLISIONENTER == m_iStopCondition && true == m_bFirstColl)
+	{
+		m_StopTimer *= 0.75;
+	}
+		
 	__super::OnCollisionOnTarget(src, dest);
-
-	//if (STOP_ONCOLLISIONENTER == m_iStopCondition)
-	//	m_bMove = false;
 }
 
 CMissile_Constant * CMissile_Constant::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

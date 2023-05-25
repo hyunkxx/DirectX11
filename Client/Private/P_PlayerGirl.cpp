@@ -904,11 +904,11 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			SetUp_State();
 		}
 
-		if (pGame->InputKey(DIK_0) == KEY_STATE::TAP)
+		if (pGame->InputKey(DIK_P) == KEY_STATE::TAP)
 		{
 			// 초기위치 설정
-			m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 30.776f, 1.f));
-			m_pNaviCom->Set_CurrentIndex(0);
+			m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.974f, 25.767f, 183.063f, 1.f));
+			m_pNaviCom->Set_CurrentIndex(1340);
 			m_iAirJumpCount += 10;
 			m_fSkillGauge += 50.f;
 
@@ -1576,23 +1576,24 @@ void CP_PlayerGirl::Tick_State(_double TimeDelta)
 				const PHYSICMOVE& PhysicMove = StatePhysics[m_tCurState.iPhysicMoveID];
 				if (false == PhysicMove.bConstant)
 				{
-					_vector vMove = XMLoadFloat3(&m_Scon.vPrevMovement) * (_float)TimeDelta;
+					_vector vMove = XMLoadFloat3(&m_Scon.vPrevMovement);
 
 					_float fXZSpeed = XMVectorGetX(XMVector2Length(vMove)) * (1.f - (_float)TimeDelta * PhysicMove.fHorizontalAtten);
 					if (fabs(fXZSpeed) < 0.01f)
 						fXZSpeed = 0.f;
-					_float fYSpeed = XMVectorGetZ(vMove) - PhysicMove.fVerticalAccel * (_float)TimeDelta;
+					_float fYSpeed = (XMVectorGetZ(vMove) - PhysicMove.fVerticalAccel * (_float)TimeDelta);
 
 					fXZSpeed = min(fXZSpeed, PhysicMove.fHorizontalMaxSpeed);
 					fYSpeed = max(fYSpeed, PhysicMove.fVerticalMaxSpeed);
 
-					_vector vFinalMove = XMVectorSetZ(XMVector2Normalize(vMove) * fXZSpeed, fYSpeed);
+					_vector vFinalMove = XMVectorSetZ(XMVector2Normalize(vMove) * fXZSpeed, fYSpeed) * (_float)TimeDelta;
 
 					XMStoreFloat3(&vMovement, vFinalMove);
 				}
 				else
 					XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vMovement) * (_float)TimeDelta);
 			}
+
 		}
 		// 구해진 이동값만큼 움직이고 이전 프레임 정보를 저장, + TimeDelta 대응
 		if(SS_CLIMB_ONTOP == m_Scon.iCurState || 
@@ -2205,7 +2206,7 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.25;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 2.0;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_03;
-	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+	tMissilePoolDesc.tMissileDesc.fExtents = 0.6f;
 
 	m_MissilePools[MISS_ATTACK_03] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_ATTACK_03] = _float3(XMConvertToRadians(-45.f), XMConvertToRadians(90.f), 0.f);
@@ -2228,7 +2229,7 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.25;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 2.0;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_09;
-	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+	tMissilePoolDesc.tMissileDesc.fExtents = 0.6f;
 
 	m_MissilePools[MISS_ATTACK_09] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_ATTACK_09] = _float3(XMConvertToRadians(-60.f), XMConvertToRadians(-90.f), 0.f);
@@ -2281,7 +2282,7 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_PO_3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIRATTACK;
 	tMissilePoolDesc.tMissileDesc.fExtents = 3.f;
 
 	m_MissilePools[MISS_AIRATTACK] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
@@ -2299,7 +2300,7 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.vAxis = _float3(0.f, 1.f, 0.f);
 	tMissilePoolDesc.fDistance = 2.f;
 	tMissilePoolDesc.fInitAngle = 0.f;
-	tMissilePoolDesc.fRotSpeed = XMConvertToRadians(450.f);
+	tMissilePoolDesc.fRotSpeed = XMConvertToRadians(720.f);
 
 	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Nvzhu_Skill_02_Circle"));
 	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 1; //PlayerGirl

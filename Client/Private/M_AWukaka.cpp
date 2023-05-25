@@ -769,17 +769,17 @@ void CM_AWukaka::Tick_State(_double TimeDelta)
 				const PHYSICMOVE& PhysicMove = StatePhysics[m_tCurState.iPhysicMoveID];
 				if (false == PhysicMove.bConstant)
 				{
-					_vector vMove = XMLoadFloat3(&m_Scon.vPrevMovement) * (_float)TimeDelta;
+					_vector vMove = XMLoadFloat3(&m_Scon.vPrevMovement);
 
 					_float fXZSpeed = XMVectorGetX(XMVector2Length(vMove)) * (1.f - (_float)TimeDelta * PhysicMove.fHorizontalAtten);
 					if (fabs(fXZSpeed) < 0.01f)
 						fXZSpeed = 0.f;
-					_float fYSpeed = XMVectorGetZ(vMove) - PhysicMove.fVerticalAccel * (_float)TimeDelta;
+					_float fYSpeed = (XMVectorGetZ(vMove) - PhysicMove.fVerticalAccel * (_float)TimeDelta);
 
 					fXZSpeed = min(fXZSpeed, PhysicMove.fHorizontalMaxSpeed);
 					fYSpeed = max(fYSpeed, PhysicMove.fVerticalMaxSpeed);
 
-					_vector vFinalMove = XMVectorSetZ(XMVector2Normalize(vMove) * fXZSpeed, fYSpeed);
+					_vector vFinalMove = XMVectorSetZ(XMVector2Normalize(vMove) * fXZSpeed, fYSpeed) * (_float)TimeDelta;
 
 					XMStoreFloat3(&vMovement, vFinalMove);
 				}

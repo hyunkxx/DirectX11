@@ -110,6 +110,7 @@ _bool CMissile::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotM
 
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vInitPos);
 	m_pMainTransform->Set_LookDir(XMVector3TransformNormal(vLookDir, vMissileRotMatrix));
+	m_bFirstColl = true;
 
 	if(lstrcmp(m_tMissileDesc.szLoopEffectTag, TEXT("")))
 		CGameInstance::GetInstance()->Get_Effect(m_tMissileDesc.szLoopEffectTag, (Engine::EFFECT_ID)m_tMissileDesc.iLoopEffectLayer)->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
@@ -139,6 +140,11 @@ void CMissile::OnCollisionOnTarget(CCollider * src, CCollider * dest)
 	{
 		m_pCollider->SetActive(false);
 		m_HitIntervalTimer = m_tMissileDesc.HitInterval;
+	}
+
+	if (true == m_bFirstColl)
+	{
+		m_bFirstColl = false;
 	}
 }
 

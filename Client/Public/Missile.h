@@ -73,6 +73,7 @@ protected:
 	MISSILEDESC m_tMissileDesc;
 	_double		m_LifeTimeTimer = { 0.0 };
 	_double		m_HitIntervalTimer = { 0.0 };
+	_bool		m_bFirstColl = true;
 
 protected:
 	HRESULT Add_Components();
