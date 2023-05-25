@@ -12,6 +12,7 @@ private:
 public:
 	enum CHARACTER_SLOT { CHARACTOR_MAIN, CHARACTOR_TWO, CHARACTOR_TRD, CHARACTER_END };
 
+	// 캐릭터 기본 스텟
 	typedef struct tagCharacterState
 	{
 		_uint  iLevel;
@@ -28,6 +29,7 @@ public:
 		_float fDefenseEx;	//추가 방어력
 
 		_float fCriticalRate;
+		_float fCriticalDamage;
 	}CHARACTER_STATE;
 
 private:

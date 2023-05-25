@@ -30,6 +30,7 @@ HRESULT CCharacterState::Initialize_Prototype()
 		m_CharacterState[i].fDefense = 80.f;
 
 		m_CharacterState[i].fCriticalRate = 5.f;
+		m_CharacterState[i].fCriticalDamage = 150.f;
 	}
 	
 	return S_OK;

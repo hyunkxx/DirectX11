@@ -101,15 +101,19 @@ HRESULT CGameInstance::Engine_Tick(_double TimeDelta)
 	m_pInput_Device->Update();
 
 	
-	m_pLevel_Manager->Tick_Level(TimeDelta);
-	m_pObject_Manager->PreTick(TimeDelta);
-	m_pObject_Manager->Tick(TimeDelta);
-	m_pEffect_Manager->Tick(TimeDelta);
+	if (m_pTimer_Manager->IsScaleUpdate())
+		m_pTimer_Manager->TimeScaleDown(TimeDelta);
+
+	_double fFixTimeScale = GetTimeScale();
+	m_pLevel_Manager->Tick_Level(TimeDelta * fFixTimeScale);
+	m_pObject_Manager->PreTick(TimeDelta * fFixTimeScale);
+	m_pObject_Manager->Tick(TimeDelta * fFixTimeScale);
+	m_pEffect_Manager->Tick(TimeDelta * fFixTimeScale);
 	m_pPipeLine->Tick();
 	
 	m_pFrustum->Tick();
-	m_pObject_Manager->LateTick(TimeDelta);
-	m_pEffect_Manager->Late_Tick(TimeDelta);
+	m_pObject_Manager->LateTick(TimeDelta * fFixTimeScale);
+	m_pEffect_Manager->Late_Tick(TimeDelta * fFixTimeScale);
 
 	m_pCollision_Manager->PhysicsUpdate();
 	
@@ -403,6 +407,26 @@ void CGameInstance::SetTimer(const _tchar* pTimerTag)
 		return;
 
 	m_pTimer_Manager->SetTimer(pTimerTag);
+}
+
+_double CGameInstance::GetTimeScale() const
+{
+	if (nullptr == m_pTimer_Manager)
+		return 0.0;
+
+	return m_pTimer_Manager->GetTimeScale();
+}
+
+void CGameInstance::TimeSlowDown(_float fDuration, _float fTargetTime)
+{
+	if (nullptr == m_pTimer_Manager)
+		return;
+
+	if (!m_pTimer_Manager->IsScaleUpdate())
+	{
+		m_pTimer_Manager->ScaleUpdate(true);
+		m_pTimer_Manager->SetTimeScaleDesc(fDuration, fTargetTime);
+	}
 }
 
 HRESULT CGameInstance::AddLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHT_DESC& LightDesc)

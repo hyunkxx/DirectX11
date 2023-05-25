@@ -90,16 +90,13 @@ HRESULT CApplication::Initialize()
 void CApplication::Tick(_double TimeDelta)
 {
 	iTickCount++;
+	m_TimeAcc += TimeDelta;
 	//srand((unsigned int)time(nullptr) + iTickCount);
 
 	if (nullptr == m_pGameInstance)
 		return;
 
 	m_pGameInstance->Engine_Tick(TimeDelta);
-
-	m_TimeAcc += TimeDelta;
-#ifdef _DEBUG
-#endif // _DEBUG
 
 }
 

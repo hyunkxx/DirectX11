@@ -82,6 +82,8 @@ public: //Timer_Manager
 	HRESULT	CreateTimer(const _tchar* pTimerTag);
 	_float	GetTimer(const _tchar* pTimerTag);
 	void	SetTimer(const _tchar* pTimerTag);
+	_double GetTimeScale() const;
+	void	TimeSlowDown(_float fDuration, _float fTargetTime);
 
 public: //LightManager
 	HRESULT AddLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHT_DESC& LightDesc);

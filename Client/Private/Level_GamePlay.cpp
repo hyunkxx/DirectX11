@@ -135,6 +135,12 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 		pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DEFAULT, 2.f);
 	}
 
+	if (pGameInstance->InputKey(DIK_L) == KEY_STATE::TAP)
+		pGameInstance->TimeSlowDown(1.f, 0.1f);
+
+	if (pGameInstance->InputKey(DIK_K) == KEY_STATE::TAP)
+		pGameInstance->TimeSlowDown(0.5f, 0.1f);
+
 }
 
 void CLevel_GamePlay::RenderLevelUI()
