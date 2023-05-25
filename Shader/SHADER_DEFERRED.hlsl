@@ -186,10 +186,10 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 {
 	PS_OUT_LIGHT Out = (PS_OUT_LIGHT)0;
 
-	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	vector vNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
 	vector vPrevGlow = g_PrevGlowTexture.Sample(LinearSampler, In.vTexUV);
-	vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+	vNormal.xyz = vNormal.xyz * 2.f - 1.f;
 
 	//Toon
 	float fDot = max(0, dot(vNormal, -g_vLightDir));

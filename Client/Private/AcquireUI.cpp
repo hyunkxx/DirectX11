@@ -376,7 +376,6 @@ HRESULT CAcquireUI::Render()
 		m_pShader->Begin(9);
 		m_pVIBuffer->Render();
 
-
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_HighestItemSlotOrtho.WorldMatrix)))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetRawValue("g_vColor", &CItemDB::GetItemColor(m_HighestItem.eItemGrade), sizeof(_float3))))

@@ -130,7 +130,7 @@
       <Filter>src\02. GameObject\01. Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BackGround.cpp">
-      <Filter>src\02. GameObject\02. LoadingImage</Filter>
+      <Filter>src\02. GameObject\99. UI\02. LoadingImage</Filter>
     </ClCompile>
     <ClCompile Include="..\private\AnimToolManager.cpp">
       <Filter>src\00. Application\Manager</Filter>
@@ -411,7 +411,7 @@
       <Filter>src\02. GameObject\01. Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BackGround.h">
-      <Filter>src\02. GameObject\02. LoadingImage</Filter>
+      <Filter>src\02. GameObject\99. UI\02. LoadingImage</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>config\res</Filter>
@@ -728,9 +728,6 @@
     <Filter Include="src\02. GameObject\00. Environment">
       <UniqueIdentifier>{29d26517-95d4-47ce-a258-47894a317ff5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\02. GameObject\02. LoadingImage">
-      <UniqueIdentifier>{975476c6-7409-4c8e-93ab-d8f8f4b64e95}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\00. Application\Items">
       <UniqueIdentifier>{9c618cb5-4af8-41bb-a406-6346157d71d1}</UniqueIdentifier>
     </Filter>
@@ -766,6 +763,9 @@
     </Filter>
     <Filter Include="src\02. GameObject\00. StaticClasses">
       <UniqueIdentifier>{25d5bc91-aab3-4f1a-9d59-2a1abee43830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\99. UI\02. LoadingImage">
+      <UniqueIdentifier>{975476c6-7409-4c8e-93ab-d8f8f4b64e95}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -49,7 +49,7 @@ void CTimer_Manager::TimeScaleDown(_double TimeDelta)
 
 	if (m_bSlowDown)
 	{
-		vCurTime = XMVectorLerp(vCurTime, vSlowTime, (_float)TimeDelta * 5.f);
+		vCurTime = XMVectorLerp(vCurTime, vSlowTime, (_float)TimeDelta * m_fLerpTime);
 		m_fTimeScale = XMVectorGetX(vCurTime);
 
 		if (abs(m_fTimeScale - XMVectorGetX(vSlowTime)) <= 0.01f)
@@ -57,7 +57,7 @@ void CTimer_Manager::TimeScaleDown(_double TimeDelta)
 	}
 	else
 	{
-		vCurTime = XMVectorLerp(vCurTime, XMVectorSet(1.f, 1.f, 1.f, 1.f), (_float)TimeDelta * 5.f);
+		vCurTime = XMVectorLerp(vCurTime, XMVectorSet(1.f, 1.f, 1.f, 1.f), (_float)TimeDelta * m_fLerpTime);
 		m_fTimeScale = XMVectorGetX(vCurTime);
 		if (m_fTimeScale >= 0.99f)
 		{

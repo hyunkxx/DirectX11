@@ -391,7 +391,7 @@ PS_OUT_OUTLINE PS_DiffuseAddRim(PS_IN In)
 	Out.vNormal	= float4(vNormalDesc.xyz * 2.f - 1.f, 1.f);
 
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
-	if (vNormalDesc.g > vNormalDesc.b)
+	if ((vNormalDesc.r + vNormalDesc.g) / 2 > vNormalDesc.b)
 		Out.vSpecGlow = float4(vDiffuse.xyz, 1.f);
 
 	Out.vGlow = float4(0.f, 0.f, 0.f, 1.f);
@@ -419,8 +419,7 @@ PS_OUT_OUTLINE PS_GlowModel(PS_IN In)
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
-
-	if (vNormalDesc.g > vNormalDesc.b)
+	if ((vNormalDesc.r + vNormalDesc.g) / 2 > vNormalDesc.b)
 		Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
 
 	return Out;
@@ -446,8 +445,7 @@ PS_OUT_OUTLINE PS_GlowModel_VTF(PS_IN In)
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
-
-	if (vNormalDesc.g > vNormalDesc.b)
+	if ((vNormalDesc.r + vNormalDesc.g) / 2 > vNormalDesc.b)
 		Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
 
 	return Out;

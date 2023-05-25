@@ -83,7 +83,7 @@ public: //Timer_Manager
 	_float	GetTimer(const _tchar* pTimerTag);
 	void	SetTimer(const _tchar* pTimerTag);
 	_double GetTimeScale() const;
-	void	TimeSlowDown(_float fDuration, _float fTargetTime);
+	void	TimeSlowDown(_float fDuration, _float fTargetTime, _float fLerpSpeed = 5.f);
 
 public: //LightManager
 	HRESULT AddLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHT_DESC& LightDesc);

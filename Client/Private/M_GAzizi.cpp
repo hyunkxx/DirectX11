@@ -1043,6 +1043,7 @@ void CM_GAzizi::Free()
 void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
 	CGameMode* pGM = CGameMode::GetInstance();
+	CGameInstance* pGI = CGameInstance::GetInstance();
 	CCharacter* pOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
 
 	if (pOpponent)
@@ -1063,6 +1064,7 @@ void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)
 				true == dest->Compare(pOpponent->GetAttackCollider()))
 			{
 				pCamMovement->StartVibration();
+				//pGI->TimeSlowDown(0.01f, 0.1f, 10.f); 히트렉
 
 				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
 				TAGATTACK tAttackInfo;

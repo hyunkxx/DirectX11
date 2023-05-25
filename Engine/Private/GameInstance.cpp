@@ -417,7 +417,7 @@ _double CGameInstance::GetTimeScale() const
 	return m_pTimer_Manager->GetTimeScale();
 }
 
-void CGameInstance::TimeSlowDown(_float fDuration, _float fTargetTime)
+void CGameInstance::TimeSlowDown(_float fDuration, _float fTargetTime, _float fLerpSpeed)
 {
 	if (nullptr == m_pTimer_Manager)
 		return;
@@ -425,7 +425,7 @@ void CGameInstance::TimeSlowDown(_float fDuration, _float fTargetTime)
 	if (!m_pTimer_Manager->IsScaleUpdate())
 	{
 		m_pTimer_Manager->ScaleUpdate(true);
-		m_pTimer_Manager->SetTimeScaleDesc(fDuration, fTargetTime);
+		m_pTimer_Manager->SetTimeScaleDesc(fDuration, fTargetTime, fLerpSpeed);
 	}
 }
 

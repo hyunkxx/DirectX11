@@ -18,9 +18,10 @@ public:
 	void ScaleUpdate(_bool bValue) { m_bScaleUpdate = bValue; }
 	_bool IsScaleUpdate() const { return m_bScaleUpdate; }
 	_double GetTimeScale() const { return m_fTimeScale; }
-	void SetTimeScaleDesc(_float fDuration, _float fTargetTime) {
+	void SetTimeScaleDesc(_float fDuration, _float fTargetTime, _float fLerpTime) {
 		m_bSlowDown = true;
 		m_fDuration = fDuration;
+		m_fLerpTime = fLerpTime;
 		m_fTargetTimeScale = fTargetTime;
 	}
 	void TimeScaleDown(_double TimeDelta);
@@ -42,6 +43,7 @@ private:
 	_bool m_bSlowDown = false;
 	_float m_fTimeAcc = 0.f;
 	_float m_fTimeScale = 1.f;
+	_float m_fLerpTime = 5.f;
 	_float m_fTargetTimeScale = 1.f;
 	_float m_fDuration = 1.f;
 };

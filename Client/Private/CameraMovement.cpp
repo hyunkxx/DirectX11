@@ -120,6 +120,9 @@ void CCameraMovement::UseCamera(CAM_TYPE eCameraType)
 
 void CCameraMovement::SetupBone(CAM_TYPE eCameraType, CBone * pBone)
 {
+	if (!pBone)
+		return;
+
 	if (eCameraType <= CAM_MAINPLAYER || eCameraType >= CAM_END)
 		return;
 

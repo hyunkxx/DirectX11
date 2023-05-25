@@ -100,9 +100,6 @@ void CPlayerCamera::Start()
 
 void CPlayerCamera::Tick(_double TimeDelta)
 {
-	if (false == m_bUse)
-		return;
-
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	// CameraCurve
@@ -269,6 +266,9 @@ void CPlayerCamera::Tick(_double TimeDelta)
 			StartVibration(m_fVibeRange, m_fVibeDuration);
 	}
 #endif
+
+	if (false == m_bUse)
+		return;
 
 	__super::Tick(TimeDelta);
 	// 카메라 높이가 지형보다 낮을 경우 높이 재설정

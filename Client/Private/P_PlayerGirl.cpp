@@ -264,9 +264,42 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 			m_pCamMovement->UseCamera(CCameraMovement::CAM_DYNAMIC);
 	}
 
-
 	//Effect Bones 처리
 	Update_EffectBones();
+
+	// 돌진기 스킬 예외처리 // 거리비교해서
+	if (m_pNearst && m_fNearstDist <= 3.f)
+	{
+		static _bool bOverlapedCheck = false;
+
+		if (IS_ATTACK_PO_2 == m_Scon.iCurState)
+		{
+			static _vector vTargetPos;
+
+			CTransform* pTargetTransform = m_pNearst->GetTransform();
+			_float fExtents = m_pNearst->GetMoveCollider()->GetExtents().x;
+
+			if (!bOverlapedCheck)
+			{
+				bOverlapedCheck = true;
+				vTargetPos = pTargetTransform->Get_State(CTransform::STATE_POSITION);
+			}
+
+			_vector vCurPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+			_vector vOffSetPos = vTargetPos + XMVector3Normalize(vCurPos - vTargetPos) * fExtents;
+
+			vCurPos = XMVectorLerp(vCurPos, vOffSetPos, (_float)TimeDelta * 10.f);
+
+			m_tCurState.bRootMotion = false;
+			m_Scon.vMovement = _float3(0.f, 0.f, 0.f);
+
+			m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
+		}
+		else
+		{
+			bOverlapedCheck = false;
+		}
+	}
 
 	// 다음프레임을 위해 초기화
 	m_pNearst = nullptr;
@@ -707,9 +740,6 @@ void CP_PlayerGirl::SetUp_State()
 	// 애니메이션이 강제로 끊긴 경우 대비 애니메이션 갱신 시 OBB 콜라이더 무조건 끄기
 	m_pAttackCollider->SetActive(false);
 	
-	if(IS_BURST == m_Scon.iCurState)
-		m_pCamMovement->UseCamera(CCameraMovement::CAM_BANGSUN);
-
 	// PositionState 처리
 	if ((SS_JUMP_WALK == m_Scon.iCurState ||
 		SS_JUMP_RUN == m_Scon.iCurState || 
@@ -773,7 +803,6 @@ void CP_PlayerGirl::SetUp_State()
 			m_StateCoolTimes[m_Scon.iCurState] = m_tCurState.CoolTime;
 	}
 	
-
 	//PhysicMove
 	if (false == m_tCurState.bRootMotion)
 	{
@@ -1001,9 +1030,8 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		if (pGame->InputMouse(DIMK_RB) == KEY_STATE::TAP)
 		{
 			eCurFrameInput = INPUT_EVADE;
+			pGame->TimeSlowDown(0.5f, 0.1f);
 		}
-
-
 
 		// Tool
 		if (pGame->InputKey(DIK_T) == KEY_STATE::TAP)
@@ -1512,6 +1540,11 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				if (!XMVector3Equal(vFinalDir, XMVectorZero()))
 					m_pMainTransform->Set_LookDir(vFinalDir);
 			}
+
+			//궁극기 카메라 모션 실행
+			if (IS_BURST == m_Scon.iCurState)
+				m_pCamMovement->UseCamera(CCameraMovement::CAM_BANGSUN);
+
 		}
 	}
 

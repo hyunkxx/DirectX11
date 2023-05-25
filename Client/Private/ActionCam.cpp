@@ -55,7 +55,10 @@ void CActionCam::Tick(_double TimeDelta)
 {
 	if (false == m_bUse)
 		return;
-	
+
+	static _bool bSlowMotion = false;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 	// 방순이 전용으로 추후에 수정해야함
 	if (m_iAction < 2)
 	{
@@ -63,6 +66,12 @@ void CActionCam::Tick(_double TimeDelta)
 
 		if (m_iAction == 1)
 		{
+			if (!bSlowMotion && m_fTimeAcc > 0.4f)
+			{
+				bSlowMotion = true;
+				pGameInstance->TimeSlowDown(0.125f, 0.1f, 10.f);
+			}
+
 			if (m_fTimeAcc > 0.8f)
 			{
 				m_fTimeAcc = 0.f;
@@ -112,6 +121,7 @@ void CActionCam::Tick(_double TimeDelta)
 
 		break;
 	case 3:
+		bSlowMotion = false;
 		RevertPrevCam(TimeDelta);
 		break;
 	}
