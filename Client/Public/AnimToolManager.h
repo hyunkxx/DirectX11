@@ -67,8 +67,8 @@ private:
 	int m_iListBoxIDArray[MODEL_END] = { 0, };
 
 	/// ListBoxItems
-	// 리스트박스 MLB_END개, 프로토타입 10개 이름까지 저장, 문자열 길이 제한 MAX_PATH
-	char	m_szListBoxItemsArray[MODEL_END][10][MAX_PATH] = { "", };
+	// 리스트박스 MLB_END개, 프로토타입 30개 이름까지 저장, 문자열 길이 제한 MAX_PATH
+	char	m_szListBoxItemsArray[MODEL_END][30][MAX_PATH] = { "", };
 
 	// 'Animation' Treenode
 	// Infos

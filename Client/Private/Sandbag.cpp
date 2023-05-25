@@ -142,7 +142,7 @@ HRESULT CSandbag::Add_Components()
 		TEXT("Com_Shader_ModelAnim"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, DMODEL::DMD_MONSTER_CROWNLESS,
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, DMODEL::DMD_MONSTER_CROWNLESS_P1,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
