@@ -73,7 +73,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성
@@ -718,7 +718,7 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ACTION_CAM_BANGSUN,
-		CActionCam::Create(m_pDevice, m_pContext, CCameraMovement::CAM_BANGSUN))))
+		CActionCam::Create(m_pDevice, m_pContext, CCameraMovement::CAM_BANGSUN))))	
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::STATIC_CHARACTER_STATE,
