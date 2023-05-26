@@ -383,7 +383,7 @@ technique11 DefaultTechnique
 	//³ª¹µÀÙ
 	pass Instance_Model_Pass0
 	{
-		SetRasterizerState(RS_CullBack);
+		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -422,7 +422,7 @@ technique11 DefaultTechnique
 	// Ä¿½ºÅÒ ÄÃ·¯ ³ë¸»¸Ê x
 	pass Instance_Model_EditionColor_Pass3
 	{
-		SetRasterizerState(RS_CullBack);
+		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		// RS_Default RS_Wireframe
