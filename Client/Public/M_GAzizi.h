@@ -39,13 +39,13 @@ public:
 		IS_WALK_F,
 		IS_WALK_L,
 		IS_WALK_R,
-		IS_RUN, 
+		IS_RUN,
 		IS_ATTACK1,
 		IS_ATTACK3,
 		IS_STANDUP,
 		IS_BEHIT_S, // Small
 		IS_BEHIT_B, // Big
-		IS_BEHIT_FLY_START , // or PUSH  ~~ 둘이 비슷함
+		IS_BEHIT_FLY_START, // or PUSH  ~~ 둘이 비슷함
 		IS_BEHIT_FLY_LOOP, // or PUSH  ~~ 둘이 비슷함
 		IS_BEHIT_FLY_FALL, // or PUSH  ~~ 둘이 비슷함
 		IS_BEHIT_HOVER, // 뜬 채로 맞음
@@ -122,9 +122,7 @@ private:
 	CShader*			m_pShaderCom = { nullptr };
 	CModel_Anim*		m_pModelCom = { nullptr };
 	CNavigation*		m_pNaviCom = { nullptr };
-	//UI추가
-	CUI_Monster*		m_pUIMon = { nullptr };
-	class CUI_Minimap*		m_pUIIcon = { nullptr };
+
 private:
 	// State
 	static SINGLESTATE	m_tStates[IS_END];
@@ -142,7 +140,7 @@ private:
 	TAGATTACK			m_AttackInfos[ATK_END];
 	_uint				m_iCurAttackID = { 0 };	// OBB 히트 시 사용할 공격 구조체ID
 
-	// 미사일 풀
+												// 미사일 풀
 	CMissilePool*		m_MissilePools[MISS_END] = { nullptr, };
 	_float3				m_MissileRotAngles[MISS_END];
 
@@ -160,7 +158,7 @@ private:
 	_float				m_fAttackRange = { 0.f };
 	// 몬스터와 플레이어 간의 거리
 	_float				m_fTargetDistance = { 0.f };
-	
+
 	// 공격 행동에 대한 글로벌 쿨타임 변수
 	_double				m_GlobalCoolTime = { 0.0 };
 	_bool				m_bAttackReady = { false };
@@ -168,8 +166,11 @@ private:
 	// MoveCollider 충돌 시 비교할 무게
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
 	_float				m_fPushWeight = {};
+
 	//UI추가
-	_int				m_UIIndex = { 0 };
+	class CUI_Minimap*		m_pUIIcon = { nullptr };
+	_int					m_UIIndex = { 0 };
+	CUI_Monster*			m_pUIMon = { nullptr };
 private:
 	HRESULT Add_Components();
 	void SetUp_State();

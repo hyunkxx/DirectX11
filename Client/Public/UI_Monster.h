@@ -11,6 +11,8 @@ class CTransform;
 END
 
 BEGIN(Client)
+class CCharacter;
+
 class CUI_Monster final : public CGameObject
 {
 public: enum class MONSTERTYPE
@@ -44,7 +46,7 @@ public:
 		_float		fDegree = { 0.f };
 		_float2		PosSet = { 0.f,0.f }; // 플레이어 위치에서 추가로 이동할 거리
 
-		//툴변수 저장은 안하지만 제로메모리로 불러서 각 버퍼마다 쓰는 변수
+										  //툴변수 저장은 안하지만 제로메모리로 불러서 각 버퍼마다 쓰는 변수
 		_bool		bRender = { true };
 		_float4x4	WorldMatrix;
 		_float4 Color;
@@ -91,7 +93,7 @@ public:
 	virtual void Free() override;
 
 public:
-	void Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage);}
+	void Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage); }
 	void Set_CharacterPos(_fvector vCharacterPos) { m_vCharacterPos = vCharacterPos; }
 	void Set_FontPos(_float3 vFontPos) { FontPos = vFontPos; }
 	void Set_ElementType(ELEMENT ElementType) { ElementType = ElementType; }
@@ -142,10 +144,10 @@ private:
 	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
 	CTexture*		m_pTexture = { nullptr };
 
-	vector<MONSTERDESC*>	m_DescList;
+	vector<MONSTERDESC>	m_DescList;
 
 	list<DAMAGEDESC> DamageList;
 
 };
 
-END 
+END

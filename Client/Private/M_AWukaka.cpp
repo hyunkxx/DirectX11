@@ -17,9 +17,9 @@
 #include "Chest.h"
 //UI추가
 #include "UI_Monster.h"
+#include "UI_Minimap.h"
 
 CCharacter::SINGLESTATE CM_AWukaka::m_tStates[IS_END];
-
 CM_AWukaka::CM_AWukaka(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCharacter(pDevice, pContext)
 {
@@ -62,7 +62,7 @@ HRESULT CM_AWukaka::Initialize(void * pArg)
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
 	// 초기위치 설정
-	
+
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(137.260f, 29.646f, 244.185f, 1.f));
 	m_pNaviCom->Set_CurrentIndex(1902);
 
@@ -101,6 +101,18 @@ HRESULT CM_AWukaka::Initialize(void * pArg)
 
 	//m_pAttackCollider->SetActive(false);
 
+	//UI추가
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	_tchar szIndex[MAX_PATH];
+	wsprintf(szIndex, TEXT("UI_Monster%d"), Monindex);
+	CUI_Monster::MONINFO MonInfo;
+	MonInfo.Level = 3;
+	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
+	CGameObject * pUIMon = nullptr;
+	if (pGame->Add_GameObjectEx(&pUIMon, LEVEL_ANYWHERE, OBJECT::UIMONSTER, TEXT("layer_UI"), szIndex, &MonInfo))
+		return E_FAIL;
+	m_pUIMon = static_cast<CUI_Monster*>(pUIMon);
+	++Monindex;
 	return S_OK;
 }
 
@@ -118,6 +130,9 @@ void CM_AWukaka::Start()
 	m_pTarget = static_cast<CCharacter*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
 	m_pTargetTransform = static_cast<CTransform*>(m_pTarget->Find_Component(TEXT("Com_Transform")));
 
+	//UI추가
+	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
+	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 44);
 }
 
 void CM_AWukaka::PreTick(_double TimeDelta)
@@ -167,6 +182,12 @@ void CM_AWukaka::Tick(_double TimeDelta)
 	pGameInstance->AddCollider(m_pMoveCollider, COLL_MOVE);
 	m_pMoveCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
+	//UI추가
+	if (false == this->IsDisable())
+	{
+		m_pUIMon->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	}
 }
 
 void CM_AWukaka::LateTick(_double TimeDelta)
@@ -679,7 +700,7 @@ void CM_AWukaka::Select_State(_double TimeDelta)
 			else
 				m_Scon.iNextState = IS_ATTACK01;
 		}
-		
+
 		break;
 	case Client::CM_AWukaka::AI_CHASE:
 		m_Scon.iNextState = IS_RUN;
@@ -790,7 +811,7 @@ void CM_AWukaka::Tick_State(_double TimeDelta)
 
 		if (IS_ATTACK01 == m_Scon.iCurState)
 			XMStoreFloat3(&vMovement, XMLoadFloat3(&vMovement) * 2.f);
-			
+
 
 		// 구해진 이동값만큼 움직이고 이전 프레임 정보를 저장, + TimeDelta 대응
 		m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom);
@@ -817,8 +838,11 @@ void CM_AWukaka::Tick_State(_double TimeDelta)
 			IS_DEAD == m_Scon.iCurState)
 		{
 			SetState(DISABLE);
+			m_pUIMon->SetState(DISABLE);
+			m_pUIMon = nullptr;
+			m_pUIIcon = nullptr;
 		}
-			
+
 
 		// 공격 행동 시
 		if (IS_ATTACK01 == m_Scon.iCurState ||
@@ -856,7 +880,7 @@ void CM_AWukaka::On_Cell()
 
 	if (PS_GROUND == m_Scon.ePositionState)
 	{
-		if (IS_ATTACK02 != m_Scon.iCurState )
+		if (IS_ATTACK02 != m_Scon.iCurState)
 			m_pMainTransform->Set_PosY(fCellHeight);
 	}
 	else if (PS_AIR == m_Scon.ePositionState)
@@ -903,6 +927,10 @@ void CM_AWukaka::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _flo
 	m_tCharInfo.fCurHP -= fFinalDamage;
 
 	// TODO: 여기서 대미지 폰트 출력
+	if (false == m_pUIMon->IsDisable())
+	{
+		m_pUIMon->Set_Damage(fFinalDamage);
+	}
 
 	// 사망 시 사망 애니메이션 실행 
 	if (0.f >= m_tCharInfo.fCurHP)

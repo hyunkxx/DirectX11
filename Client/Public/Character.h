@@ -419,7 +419,8 @@ public:
 	virtual void RenderGUI();
 
 	static PHYSICMOVE StatePhysics[SP_END];
-
+	//UI
+	static _int Monindex;
 protected:
 	TAGCHAR			m_tCharInfo;
 	StateController m_Scon;

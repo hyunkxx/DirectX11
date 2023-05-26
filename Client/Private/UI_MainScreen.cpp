@@ -46,7 +46,7 @@ HRESULT CUI_MainScreen::Initialize_Prototype()
 
 HRESULT CUI_MainScreen::Initialize(void * pArg)
 {
- 	if (FAILED(__super::Initialize(pArg)))
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -81,7 +81,7 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	{
 		Add_PlayerNum();
 	}
-	
+
 
 	//마우스커서
 	SerectUI();
@@ -801,7 +801,7 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 void CUI_MainScreen::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
-	
+
 	if (nullptr != m_pRenderer)
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }
@@ -943,7 +943,7 @@ HRESULT CUI_MainScreen::Render()
 }
 
 void CUI_MainScreen::RenderGUI()
-{		
+{
 }
 
 void CUI_MainScreen::SerectUI()
@@ -986,12 +986,12 @@ void CUI_MainScreen::SerectUI()
 
 HRESULT CUI_MainScreen::Add_Components()
 {
- 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
 		TEXT("com_renderer"), (CComponent**)&m_pRenderer)))
 		return E_FAIL;
 
 	/*버퍼 하나당  세이브파일 한개 , 로드할때 파일  하나당 할당 하나. 리스트 원소개수로*/
-		
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI,
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;

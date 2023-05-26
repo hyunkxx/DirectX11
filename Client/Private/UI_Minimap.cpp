@@ -53,9 +53,9 @@ void CUI_Minimap::Tick(_double TimeDelta)
 	_float3 fTerrainScale;
 	CGameObject* pPlayer = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Player"));
 	// 가져온 오브젝트들이 준비가 되면 랜더 돌릴 수 있음-> 랜더조건
-	if(nullptr != pPlayer)
+	if (nullptr != pPlayer)
 	{
- 		m_bNull = false;
+		m_bNull = false;
 		CTransform* pComponent = static_cast<CTransform*>(dynamic_cast<CP_PlayerGirl*>(pPlayer)->Find_Component(TEXT("Com_Transform")));
 		XMStoreFloat4(&fPlayerPos, pComponent->Get_State(CTransform::STATE_POSITION));
 
@@ -127,36 +127,36 @@ void CUI_Minimap::Tick(_double TimeDelta)
 		//	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 		//	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 		//}
-	
+
 
 
 		// 플레이어 아이콘 돌리는 기능
 		{
 			_float4x4 PlayerWorldMat = dynamic_cast<CTransform*>(pComponent)->Get_WorldMatrix();
 			_vector vPlayerLook = XMLoadFloat4x4(&PlayerWorldMat).r[2];
-			XMVectorSetY(vPlayerLook,0.f);
+			XMVectorSetY(vPlayerLook, 0.f);
 			vPlayerLook = XMVector3Normalize(vPlayerLook); //플레이어 룩 노멀라이즈
-			 _float Get =  XMVectorGetX(XMVector3Dot(XMVectorSet(0.f, 0.f, 1.f, 0.f), vPlayerLook)); // 회전각도
+			_float Get = XMVectorGetX(XMVector3Dot(XMVectorSet(0.f, 0.f, 1.f, 0.f), vPlayerLook)); // 회전각도
 
-			 _float fRadian = acosf(Get);
-			 _float Angle = (fRadian*180.f) / 3.141592f;
-			 if (0.f < XMVectorGetX(vPlayerLook))
-			 {
-				 fRadian *= -1.f;
-			 }
+			_float fRadian = acosf(Get);
+			_float Angle = (fRadian*180.f) / 3.141592f;
+			if (0.f < XMVectorGetX(vPlayerLook))
+			{
+				fRadian *= -1.f;
+			}
 
-			 if (0.98 > Get)
-			 {
-				
-				 _matrix ScaleMat = XMMatrixScaling(m_fWidthDefaultIcon[0], m_fHeightDefaultIcon[0], 1.f);
+			if (0.98 > Get)
+			{
 
-				 _matrix RotaMat = XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), fRadian);
+				_matrix ScaleMat = XMMatrixScaling(m_fWidthDefaultIcon[0], m_fHeightDefaultIcon[0], 1.f);
 
-				 _matrix TransMat= XMMatrixTranslation(m_fXDefaultIcon[0], m_fYDefaultIcon[0], m_fZDefaultIcon[0]);
+				_matrix RotaMat = XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), fRadian);
+
+				_matrix TransMat = XMMatrixTranslation(m_fXDefaultIcon[0], m_fYDefaultIcon[0], m_fZDefaultIcon[0]);
 
 
-				 XMStoreFloat4x4(&m_WorldMatrixDefaultIcon[0], ScaleMat * RotaMat * TransMat);
-			 }
+				XMStoreFloat4x4(&m_WorldMatrixDefaultIcon[0], ScaleMat * RotaMat * TransMat);
+			}
 		}
 
 		// 시야범위 돌리는 기능
@@ -203,31 +203,32 @@ void CUI_Minimap::Tick(_double TimeDelta)
 		IconPos.x = (fObjectPos.x) * (0.5f * g_iWinSizeX);
 		IconPos.y = (fObjectPos.y) * (0.5f * g_iWinSizeY);
 
-		if (-400.f > IconPos.x)
+		if (-620.f > IconPos.x)
 		{
-			_float Dist = -400.f - IconPos.x;
+			_float Dist = -620.f - IconPos.x;
 			IconPos.x = IconPos.x + Dist;
 		}
-		if (400.f <= IconPos.x)
+		if (620.f <= IconPos.x)
 		{
-			_float Dist = 400.f - IconPos.x;
+			_float Dist = 620.f - IconPos.x;
 			IconPos.x = IconPos.x + Dist;
 		}
 
-		if (-180.f >= IconPos.y)
+		if (-230.f >= IconPos.y)
 		{
-			_float Dist = -180.f - IconPos.y;
+			_float Dist = -230.f - IconPos.y;
 			IconPos.y = IconPos.y + Dist;
 		}
-		if (270.f <= IconPos.y)
+		if (320.f <= IconPos.y)
 		{
-			_float Dist = 270.f - IconPos.y;
+			_float Dist = 320.f - IconPos.y;
 			IconPos.y = IconPos.y + Dist;
 		}
 		CPipeLine* pPipe = CPipeLine::GetInstance();
 		_matrix CamMat = pPipe->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
 		_vector CamLook = CamMat.r[2];
 		_vector CamPos = CamMat.r[3];
+		_float Dist = XMVectorGetX(XMVector4Length(Desc.vObjectPos - CamPos));
 		_vector vNormailzeDir = XMVector4Normalize(Desc.vObjectPos - CamPos);
 		XMVectorSetY(CamLook, 0.f);
 		_vector vNormailzeLook = XMVector4Normalize(CamLook);
@@ -241,24 +242,22 @@ void CUI_Minimap::Tick(_double TimeDelta)
 		if ((90.f <= Angle) && (270.f >= Angle))       //1이면 같은 방향 0보다 작으면 반대방향
 		{
 			IconPos.x *= -1.f;
-			IconPos.y = -180.f;
+			IconPos.y = -210.f;
 		}
 
-
+		if ((Dist > 50.f) && (Dist<150.f))
+		{
+			Desc.bRender = true;
+		}
+		else
+		{
+			Desc.bRender = false;
+		}
 		XMStoreFloat4x4(&(Desc.IconWorldMatrix), XMMatrixScaling(IconSize.x, IconSize.y, 1.f)
 			* XMMatrixTranslation(IconPos.x, IconPos.y, 0.f));
 		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	}
-
-	if(ComputeCameraLength() > 10.f)
-		DecideRender();
-
-
-
-
-
-
 
 	Safe_Release(pGameInstance);
 }
@@ -388,7 +387,7 @@ _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 	_float4x4 fWorldMat;
 
 	MAPDESC MiniMapDesc;
-	ZeroMemory(&MiniMapDesc,sizeof(MAPDESC));
+	ZeroMemory(&MiniMapDesc, sizeof(MAPDESC));
 
 	MiniMapDesc.fX = XMVectorGetX(vObjectPos);
 	MiniMapDesc.fY = XMVectorGetY(vObjectPos);
@@ -405,7 +404,7 @@ _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 	}
 	XMStoreFloat4x4(&MiniMapDesc.WorldMatrix, WorldMat);
 	m_IconDescList.push_back(MiniMapDesc);
-	
+
 	XMStoreFloat4x4(&fWorldMat, WorldMat);
 	ICONDESC Desc;
 	Desc.vObjectPos = vObjectPos;
@@ -421,12 +420,6 @@ _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 
 void CUI_Minimap::DecideRender()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	CPipeLine* pPipe = CPipeLine::GetInstance();
-	_matrix CamMat = pPipe->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
-	_vector CamPos = CamMat.r[3];
-
 	for (auto& Desc : m_DescList)
 		Desc.bRender = true;
 
@@ -534,28 +527,28 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesDefaultIcon(_uint Bufferindex)
 			return E_FAIL;
 	}
 
-		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &m_WorldMatrixDefaultIcon[Bufferindex])))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fColorA", &m_fColorADefaultIcon[Bufferindex], sizeof(_float))))
-			return E_FAIL;
-	
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &m_WorldMatrixDefaultIcon[Bufferindex])))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &m_fColorADefaultIcon[Bufferindex], sizeof(_float))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 
 HRESULT CUI_Minimap::Setup_ShaderResourcesIcon(_uint Bufferindex)
 {
-	
+
 	if (nullptr != m_pTexIcon)
 	{
 		if (FAILED(m_pTexIcon->Setup_ShaderResource(m_pShader, "g_MyTexture", m_IconDescList[Bufferindex].iTexNum)))
 			return E_FAIL;
 	}
-	
+
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_IconDescList[Bufferindex].WorldMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -603,7 +596,7 @@ void CUI_Minimap::Free()
 	Safe_Release(m_pTexMiniMap);
 	Safe_Release(m_pTexDefaultIcon);
 	Safe_Release(m_pVIBufferMiniMap);
-	
+
 
 }
 

@@ -73,7 +73,7 @@ private:
 	HRESULT Setup_ShaderResourcesIcons(ICONDESC* pDesc);
 
 public:
-	
+
 	static CUI_Minimap* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
@@ -152,10 +152,10 @@ private:
 
 
 	//아이콘 추가용
-	
+
 
 	// 아이콘 배치용 임시변수
-	_float4  OriPos = {60.f , 0.f, 20.f, 1.f};
+	_float4  OriPos = { 60.f , 0.f, 20.f, 1.f };
 	_float4 fPlayerPos;
 	_float4 fPrePlayerPos = { 0.f , 0.f, 0.f, 1.f };
 
@@ -163,7 +163,7 @@ private:
 	ICONNUM IconTextureNum = { MISSION };
 	_vector		m_vObjectPos = { 6.f, 30.f, 5.f, 1.f };
 	_float4x4	m_IconWorldMatrix;
-	_float2		IconSize = { 50.f, 50.f };
+	_float2		IconSize = { 30.f, 30.f };
 	_bool		m_bRender = { true };
 
 	vector<ICONDESC>	m_DescList;

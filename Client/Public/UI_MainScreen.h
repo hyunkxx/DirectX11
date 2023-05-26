@@ -202,7 +202,7 @@ public:
 	virtual void Free() override;
 
 
-	
+
 
 private:
 	CRenderer*		m_pRenderer = { nullptr };
@@ -211,12 +211,12 @@ private:
 	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
 
 	vector<CUTRECT*>		  m_CutDescList;
-	
-	
+
+
 
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pContext;
-	
+
 
 };
 

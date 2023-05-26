@@ -143,7 +143,10 @@ void CChest::Tick(_double TimeDelta)
 	}
 
 	//UIÃß°¡
-	m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	if (false == this->IsDisable)
+	{
+		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	}
 }
 
 void CChest::LateTick(_double TimeDelta)
@@ -394,9 +397,7 @@ CGameObject * CChest::Clone(void * pArg)
 void CChest::Free()
 {
 	CInteractionObject::Free();
-
 	m_pUIIcon = nullptr;
-
 	Safe_Release(m_pRenderer);
 
 	Safe_Release(m_pMainTransform);

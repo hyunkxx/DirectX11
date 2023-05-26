@@ -20,7 +20,6 @@
 #include "UI_Minimap.h"
 
 CCharacter::SINGLESTATE CM_GAzizi::m_tStates[IS_END];
-
 CM_GAzizi::CM_GAzizi(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCharacter(pDevice, pContext)
 {
@@ -100,6 +99,18 @@ HRESULT CM_GAzizi::Initialize(void * pArg)
 	//
 	m_fPushWeight = 25.f;
 
+	//UI추가
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	_tchar szIndex[MAX_PATH];
+	wsprintf(szIndex, TEXT("UI_Monster%d"), Monindex);
+	CUI_Monster::MONINFO MonInfo;
+	MonInfo.Level = 3;
+	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
+	CGameObject * pUIMon = nullptr;
+	if (pGame->Add_GameObjectEx(&pUIMon, LEVEL_ANYWHERE, OBJECT::UIMONSTER, TEXT("layer_UI"), szIndex, &MonInfo))
+		return E_FAIL;
+	m_pUIMon = static_cast<CUI_Monster*>(pUIMon);
+	++Monindex;
 	return S_OK;
 }
 
@@ -114,21 +125,14 @@ void CM_GAzizi::Start()
 	//pStaticObject = pGame->Find_GameObject(LEVEL_GAMEPLAY, L"StaticTest");
 
 	// Find ActivePlayer
-	m_pTarget =  static_cast<CCharacter*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
+	m_pTarget = static_cast<CCharacter*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
 	m_pTargetTransform = static_cast<CTransform*>(m_pTarget->Find_Component(TEXT("Com_Transform")));
 	pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 
 	//UI추가
-	// 몬스터 사망,삭제시 m_pUIIcon = nullptr;
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 44);
-	CUI_Monster::MONINFO MonInfo;
-	MonInfo.Level = 3;
-	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
-	CGameObject * pMon = { nullptr };
-	if (pGame->Add_GameObjectEx(&pMon, LEVEL_GAMEPLAY, OBJECT::UIMONSTER, TEXT("layer_UI"), TEXT("UI_Monster"), &MonInfo))
-		return;
-	 m_pUIMon = static_cast<CUI_Monster*>(pMon);
+
 }
 
 void CM_GAzizi::PreTick(_double TimeDelta)
@@ -144,12 +148,12 @@ void CM_GAzizi::PreTick(_double TimeDelta)
 void CM_GAzizi::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	
+
 	__super::Tick(TimeDelta);
 
 	Apply_CoolTime(TimeDelta); // 쿨타임 갱신
 
- 	Select_State(TimeDelta); // 상태 확인
+	Select_State(TimeDelta); // 상태 확인
 
 	Tick_State(TimeDelta); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 
@@ -164,9 +168,11 @@ void CM_GAzizi::Tick(_double TimeDelta)
 	pGameInstance->AddCollider(m_pMoveCollider, COLL_MOVE);
 	m_pMoveCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
-	//UI추가
-	static_cast<CUI_Monster*>(m_pUIMon)->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
-	m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	if (false == this->IsDisable())
+	{
+		m_pUIMon->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	}
 }
 
 void CM_GAzizi::LateTick(_double TimeDelta)
@@ -442,7 +448,7 @@ void CM_GAzizi::SetUp_State()
 	m_Scon.TrackPos = 0.0;
 	m_Scon.bAnimFinished = false;
 
-	 //Position State 반영
+	//Position State 반영
 	if ((IS_BEHIT_FLY_START == m_Scon.iCurState) &&
 		PS_AIR != m_Scon.ePositionState)
 	{
@@ -627,7 +633,7 @@ HRESULT CM_GAzizi::Setup_ShadowShaderResource()
 void CM_GAzizi::Select_State(_double TimeDelta)
 {
 	AI_STATE iCurFrameAI = AI_NONE;
-	
+
 	if (false == m_bAlert)
 	{
 		iCurFrameAI = AI_IDLE;
@@ -700,7 +706,7 @@ void CM_GAzizi::Select_State(_double TimeDelta)
 	}
 
 	_vector vTargetDir = XMVector3Normalize(XMVectorSetY(m_pTargetTransform->Get_State(CTransform::STATE_POSITION) - m_pMainTransform->Get_State(CTransform::STATE_POSITION), 0.f));
-	
+
 
 	// 지금 상태를 끊고 다음 상태로 갱신 할지 여부
 	if (AI_NONE != iCurFrameAI && AI_IDLE != iCurFrameAI)
@@ -760,7 +766,7 @@ void CM_GAzizi::Tick_State(_double TimeDelta)
 			}
 			else
 			{
-				
+
 				const PHYSICMOVE& PhysicMove = StatePhysics[m_tCurState.iPhysicMoveID];
 				if (false == PhysicMove.bConstant)
 				{
@@ -806,7 +812,9 @@ void CM_GAzizi::Tick_State(_double TimeDelta)
 		if (IS_DEAD == m_Scon.iCurState)
 		{
 			SetState(DISABLE);
-			m_pUIMon->Set_Render(false);
+			m_pUIMon->SetState(DISABLE);
+			m_pUIMon = nullptr;
+			m_pUIIcon = nullptr;
 		}
 
 		// 공격 행동 시
@@ -847,7 +855,7 @@ void CM_GAzizi::On_Cell()
 
 	if (PS_GROUND == m_Scon.ePositionState)
 	{
-		if(IS_ATTACK3 != m_Scon.iCurState)
+		if (IS_ATTACK3 != m_Scon.iCurState)
 			m_pMainTransform->Set_PosY(fCellHeight);
 	}
 	else if (PS_AIR == m_Scon.ePositionState)
@@ -894,12 +902,10 @@ void CM_GAzizi::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _floa
 	m_tCharInfo.fCurHP -= fFinalDamage;
 
 	// TODO: 여기서 대미지 폰트 출력
-	//UI추가 몬스터 사망시 ui도 SetDestroy 추가 예정
-	static_cast<CUI_Monster*>(m_pUIMon)->Set_Damage(fFinalDamage);
-	//_float3 EffPosPos;
-	//memcpy(&EffPosPos, pEffPos, sizeof(_float3));
-	//static_cast<CUI_Monster*>(m_pUIMon)->Set_FontPos(EffPosPos);
-
+	if (false == m_pUIMon->IsDisable())
+	{
+		m_pUIMon->Set_Damage(fFinalDamage);
+	}
 	// 사망 시 사망 애니메이션 실행 
 	if (0.f >= m_tCharInfo.fCurHP)
 	{
@@ -1019,14 +1025,11 @@ void CM_GAzizi::Free()
 {
 	__super::Free();
 
-	//UI
-	m_pUIIcon = nullptr;
-	
 	for (_uint i = 0; i < MISS_END; ++i)
 	{
 		Safe_Release(m_MissilePools[i]);
 	}
-	
+
 
 	Safe_Release(m_pNaviCom);
 	Safe_Release(m_pModelCom);
@@ -1037,7 +1040,7 @@ void CM_GAzizi::Free()
 	Safe_Release(m_pCollider);
 	Safe_Release(m_pHitCollider);
 	Safe_Release(m_pMoveCollider);
-	
+
 }
 
 void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)

@@ -3,6 +3,7 @@
 
 #include "GameMode.h"
 
+_int CCharacter::Monindex = 0;
 CCharacter::PHYSICMOVE CCharacter::StatePhysics[SP_END]
 {
 	// (x, -z, y) 
