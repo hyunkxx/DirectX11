@@ -44,6 +44,14 @@ struct VS_OUT_SHADOW
 	float4 vShadowDepth : TEXCOORD0;
 };
 
+//Dessolve
+texture2D g_DissolveTexture;
+float  g_fDissolveAmount = 1.f;
+float3 g_vDessolveColor = { 1.f, 0.7f, 0.4f }; // 디폴트 색상
+
+float g_fGlowRange = 0.05f;
+float g_fGlowFalloff = 0.05f;
+
 VS_OUT VS_MAIN(VS_IN In)
 {
 	VS_OUT Out = (VS_OUT)0;
@@ -139,6 +147,8 @@ struct PS_OUT_OUTLINE
 	float4 vOutNormal : SV_TARGET3;
 	float4 vSpecGlow : SV_TARGET4;
 	float4 vGlow : SV_TARGET5;
+	float4 vShaderInfo : SV_TARGET6;
+	
 };
 
 PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
@@ -261,6 +271,7 @@ struct PS_OUT_SKY
 	float4 vOutNormal : SV_TARGET3;
 	float4 vSpecGlow : SV_TARGET4;
 	float4 vGlow : SV_TARGET5;
+	float4 vShaderInfo : SV_TARGET6;
 
 };
 
@@ -272,6 +283,7 @@ PS_OUT_SKY PS_MAIN_SKY(PS_IN_SKY In)
 	Out.vNormal	= float4(0.f, 0.f, 0.f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 1.f);
 	Out.vDepth = float4(0.f, 0.f, 0.f, 1.f);
+	Out.vShaderInfo = float4(1.f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -303,6 +315,8 @@ PS_OUT_OUTLINE PS_MAIN_MODEL_SPECGLOW(PS_IN In)
 
 	if (vNormalDesc.g > vNormalDesc.b)
 		Out.vGlow = vector(0.f, 0.f, 0.f, 0.f);
+
+	Out.vShaderInfo = float4(0.9f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -341,6 +355,38 @@ PS_OUT_OUTLINE PS_MAIN_MODEL_EMISSIVE(PS_IN In)
 	
 	vEmissive.rgb = vEmissive.rgb * g_vColor;
 	Out.vGlow = vEmissive * vTwinklMask;
+	Out.vShaderInfo = float4(0.9f, 0.f, 0.f, 0.f);
+
+	return Out;
+}
+
+PS_OUT_OUTLINE PS_Dessolve(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vNormal = In.vNormal;
+
+	float dissolve = g_DissolveTexture.Sample(LinearSampler, In.vTexUV).r;
+	dissolve = dissolve * 0.999f;
+	float isVisible = dissolve - g_fDissolveAmount;
+	clip(isVisible);
+
+	float isGlowing = smoothstep(g_fGlowRange + g_fGlowFalloff, g_fGlowRange, isVisible);
+	float3 vDessolveColor = isGlowing * g_vDessolveColor;
+
+	Out.vDiffuse = vMtrlDiffuse;
+	vMtrlDiffuse.a = 1.f;
+
+	Out.vNormal = float4(vNormal.xyz, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+
+	Out.vOutNormal = vector(vNormal.xyz, 1.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+
+	Out.vDiffuse += float4(vDessolveColor.xyz, 1.f);
+	Out.vGlow = float4(vDessolveColor.xyz, 1.f);
+	Out.vShaderInfo = float4(0.9f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -471,5 +517,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MODEL_EMISSIVE();
+	}
+
+	// Static Model 전용 디졸브
+	pass Dessolve_SModel_Pass9
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Dessolve();
 	}
 }

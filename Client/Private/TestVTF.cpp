@@ -208,7 +208,6 @@ HRESULT CTestVTF::Render()
 			if (FAILED(m_pEyeMaskTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeMaskTexture")))
 				return E_FAIL;*/
 
-
 			if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i + 1, MyTextureType_DIFFUSE)))
 				return E_FAIL;
 

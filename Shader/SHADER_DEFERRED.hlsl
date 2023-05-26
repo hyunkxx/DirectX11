@@ -6,6 +6,7 @@ texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 texture2D g_DepthTexture;
 texture2D g_PrevGlowTexture;
+texture2D g_ShaderInfo;
 
 texture2D g_SSD_DiffuseTexture;
 texture2D g_SSD_NormalTexture;
@@ -132,6 +133,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
 	vector vPrevGlow = g_PrevGlowTexture.Sample(LinearSampler, In.vTexUV);
 	vector vSSAO = g_SSAOTexture.Sample(LinearSampler, In.vTexUV);
+	vector vShaderInfo = g_ShaderInfo.Sample(LinearSampler, In.vTexUV);
 
 	vector vNormal = vNormalDesc;
 	vNormal.xyz = vNormalDesc.xyz * 2.f - 1.f;
@@ -178,6 +180,8 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 		Out.vSpecular = vPrevGlow * (g_vLightSpecular * g_vMtrlSpecular) * fSpecular;
 	}
 
+
+
 	return Out;
 }
 
@@ -189,6 +193,8 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 	vector vNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
 	vector vPrevGlow = g_PrevGlowTexture.Sample(LinearSampler, In.vTexUV);
+	vector vShaderInfo = g_ShaderInfo.Sample(LinearSampler, In.vTexUV);
+
 	vNormal.xyz = vNormal.xyz * 2.f - 1.f;
 
 	//Toon
@@ -243,6 +249,7 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
 	vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 	vector vPrevGlow = g_PrevGlowTexture.Sample(LinearSampler, In.vTexUV);
+	vector vShaderInfo = g_ShaderInfo.Sample(LinearSampler, In.vTexUV);
 
 	vector vWorldPos;
 
@@ -297,11 +304,14 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
 	vector vOutNormal = g_OutNormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vGlowColor = g_GlowTexture.Sample(LinearSampler, In.vTexUV);
+	vector vShaderInfo = g_ShaderInfo.Sample(LinearSampler, In.vTexUV);
 
 	//1.6~1.75น่
-	float4 vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
-	if (vOutNormal.a == 1.f)
+
+	float4 vFinalColor;
+	if (vShaderInfo.r == 0.9f)
 	{
+		vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
 		float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
 		float4 vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z);
 		Out.vColor.rgb = vColor.rgb * (1.f - vGlowColor.a) + vGlowColor.rgb * vGlowColor.a;
@@ -309,6 +319,11 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 	}
 	else
 	{
+		if (vShaderInfo.r == 1.f)
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.6f));
+		else
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
+
 		Out.vColor.rgb = vFinalColor.rgb * (1.f - vGlowColor.a) + +vGlowColor.rgb * vGlowColor.a;
 		Out.vColor.a = (vFinalColor).a;
 
@@ -330,13 +345,15 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 	vector vOutNormal = g_OutNormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vShadow = g_ShadowTexture.Sample(LinearBorderSampler, In.vTexUV);
 	vector vGlowColor = g_GlowTexture.Sample(LinearBorderSampler, In.vTexUV);
+	vector vShaderInfo = g_ShaderInfo.Sample(LinearSampler, In.vTexUV);
 
 	//1.6~1.75น่
-	float4 vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
+	float4 vFinalColor;
 	if (vGlowColor.a != 0.f)
 	{
-		if (vOutNormal.a == 1.f)
+		if (vShaderInfo.r == 0.9f)
 		{
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
 			float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
 			float4 vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r;
 			Out.vColor.rgb = vColor.rgb * (1.f - vGlowColor.a) + vGlowColor.rgb * vGlowColor.a;
@@ -344,19 +361,30 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 		}
 		else
 		{
+			if (vShaderInfo.r == 1.f)
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.6f));
+			else
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
+			
 			Out.vColor.rgb = vFinalColor.rgb * vShadow.r  * (1.f - vGlowColor.a) + +vGlowColor.rgb * vGlowColor.a;
 			Out.vColor.a = (vFinalColor * vShadow.r).a;
 		}
 	}
 	else
 	{
-		if (vOutNormal.a == 1.f)
+		if (vShaderInfo.r == 0.9f)
 		{
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
 			float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
 			Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r + float4(vGlowColor.rgb, 0.f);
 		}
-		else
+		else 
 		{
+			if(vShaderInfo.r == 1.f)
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.6f));
+			else
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
+
 			Out.vColor = vFinalColor * vShadow.r + float4(vGlowColor.rgb, 0.f);
 		}
 	}
@@ -391,12 +419,12 @@ PS_OUT_SHADOW PS_Shadow(PS_IN In)
 	vLightUV.x = (vLightUVPos.x / vLightUVPos.w) * 0.5f + 0.5f;
 	vLightUV.y = (vLightUVPos.y / vLightUVPos.w) * -0.5f + 0.5f;
 
-	vector vShadowDepthInfo = g_ShadowDepthTexture.Sample(LinearBorderSampler, vLightUV);
-	vector vStaticShadowDepthInfo = g_StaticShadowTexture.Sample(LinearBorderSampler, vLightUV);
+	vector vShadowDepthInfo = g_ShadowDepthTexture.Sample(PointSampler, vLightUV);
+	vector vStaticShadowDepthInfo = g_StaticShadowTexture.Sample(PointSampler, vLightUV);
 
 	//Static Shadow
 	bool bCheck = false;
-	if (vPosition.z - 0.1f > (vStaticShadowDepthInfo.g * g_Far) && vDepthInfo.b != vStaticShadowDepthInfo.b)
+	if (vPosition.z - 0.15f > (vStaticShadowDepthInfo.g * g_Far) && vDepthInfo.b != vStaticShadowDepthInfo.b)
 		bCheck = true;
 
 	if (bCheck)

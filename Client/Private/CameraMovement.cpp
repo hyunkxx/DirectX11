@@ -97,6 +97,9 @@ HRESULT CCameraMovement::AddCamera(CAM_TYPE eCameraType, CCamera * pCamera)
 
 void CCameraMovement::UseCamera(CAM_TYPE eCameraType)
 {
+	if (eCameraType != CAM_MAINPLAYER)
+		m_pCams[CAM_MAINPLAYER]->StopShake();
+
 	for (size_t i = 0; i < CAM_END; ++i)
 	{
 		if (m_pCams[i] == nullptr)
@@ -131,21 +134,33 @@ void CCameraMovement::SetupBone(CAM_TYPE eCameraType, CBone * pBone)
 
 void CCameraMovement::StartWave()
 {
+	if (m_eCurCamType != CAM_MAINPLAYER)
+		return;
+
 	m_pCams[CAM_MAINPLAYER]->StartWave();
 }
 
 void CCameraMovement::StartWave(CCamera::SHAKE_DESC tagShakeDesc)
 {
+	if (m_eCurCamType != CAM_MAINPLAYER)
+		return;
+
 	m_pCams[CAM_MAINPLAYER]->StartWave(tagShakeDesc);
 }
 
 void CCameraMovement::StartVibration()
 {
+	if (m_eCurCamType != CAM_MAINPLAYER)
+		return;
+
 	m_pCams[CAM_MAINPLAYER]->StartVibration();
 }
 
 void CCameraMovement::StartVibration(_float fRange, _float fDuration)
 {
+	if (m_eCurCamType != CAM_MAINPLAYER)
+		return;
+
 	m_pCams[CAM_MAINPLAYER]->StartVibration(fRange, fDuration);
 }
 

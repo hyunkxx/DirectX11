@@ -66,7 +66,7 @@ private:
 	CTexture*					m_pDiffuseTexture[ROCK_DIFFUSE_KINDS::RD_END] = { nullptr };
 
 	CTexture*					m_pGrassMaskTexture[GRASS_MASK_KINDS::GM_END] = { nullptr };
-
+	
 private:
 	HRESULT Add_Components();
 	HRESULT	SetUp_ShaderResources();

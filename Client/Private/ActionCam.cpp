@@ -88,7 +88,7 @@ void CActionCam::Tick(_double TimeDelta)
 		}
 
 	}
-
+	
 	_vector vBonePos = XMVector3TransformCoord(XMVector3TransformCoord(m_pTargetBone->Get_CombinedPosition()
 		, XMMatrixRotationY(180.f)), XMLoadFloat4x4(m_pTargetTransform->Get_WorldMatrixPtr()));
 
@@ -219,7 +219,6 @@ void CActionCam::RevertPrevCam(_double TimeDelta)
 void CActionCam::actionInit_Bangsun()
 {
 	//방순이 무브먼트 셋업
-	StartVibration(5.f, 0.1f);
 	_vector vPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION) + m_pTargetTransform->Get_State(CTransform::STATE_LOOK) * 1.3f;
 
 	vPos = XMVectorSetY(vPos, XMVectorGetY(vPos) + 1.35f);

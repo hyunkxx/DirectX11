@@ -282,6 +282,11 @@ private:
 	// 이동 전 타겟 방향 (몬스터를 뚫고 지나가는 상황 예외처리) 
 	_float3				m_vTargetDir = {};
 
+	// 임시 디졸브 벨류
+	_float m_fDissolveAmount = 0.f;
+	_float m_fDissolveTimeAcc = 0.f;
+	_bool m_bDissolve = false;
+	_bool m_bDissolveType = false;
 private:
 	HRESULT Add_Components();
 	void Init_AnimSystem();

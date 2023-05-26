@@ -201,6 +201,9 @@ public:
 
 	CCollider* m_pCollider = nullptr;
 	CGameObject* pStaticObject = nullptr;
+
+	_float m_fTime = 0.f;
+	_int m_iMesh = 0;
 };
 
 END

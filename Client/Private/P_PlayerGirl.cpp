@@ -178,7 +178,7 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	_double TimeDelay = 1.0;
-	pGameInstance->ShadowUpdate(210.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	pGameInstance->ShadowUpdate(250.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 
 	__super::Tick(TimeDelta);
 
@@ -304,10 +304,39 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 	// 다음프레임을 위해 초기화
 	m_pNearst = nullptr;
 	m_fNearstDist = 30.f;
+
+	// 디졸브 테스트 코드
+	if (pGameInstance->InputKey(DIK_G) == KEY_STATE::TAP)
+	{
+		m_bDissolve = true;
+		m_fDissolveTimeAcc = 0.f;
+	}
+	if (pGameInstance->InputKey(DIK_F) == KEY_STATE::TAP)
+	{
+		m_bDissolveType = !m_bDissolveType;
+	}
+
+	if (m_bDissolve)
+	{
+		m_fDissolveTimeAcc += (_float)TimeDelta * 0.7f;
+		if (2.f <= m_fDissolveTimeAcc)
+		{
+			m_bDissolve = false;
+			m_fDissolveTimeAcc = 0.f;
+		}
+
+		if(m_bDissolveType)
+			m_fDissolveAmount = 1.f - m_fDissolveTimeAcc;
+		else
+			m_fDissolveAmount = m_fDissolveTimeAcc;
+	}
+
 }
 
 HRESULT CP_PlayerGirl::Render()
 {
+	CGameInstance* pGame = CGameInstance::GetInstance();
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
@@ -345,6 +374,12 @@ HRESULT CP_PlayerGirl::Render()
 		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
 			return E_FAIL;
 
+		if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
+			return E_FAIL;
+
 		if (i == 5)
 		{
 			if (FAILED(m_pEyeBurstTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeBurstTexture")))
@@ -352,11 +387,18 @@ HRESULT CP_PlayerGirl::Render()
 			if (FAILED(m_pEyeMaskTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeMaskTexture")))
 				return E_FAIL;
 
-			m_pShaderCom->Begin(7); // Eye
+			// Eye
+			if(m_bDissolve)
+				m_pShaderCom->Begin(13);
+			else
+				m_pShaderCom->Begin(7);		//Burst
 		}
 		else
 		{
-			m_pShaderCom->Begin(iPass);
+			if(m_bDissolve)
+				m_pShaderCom->Begin(13);
+			else
+				m_pShaderCom->Begin(iPass);
 		}
 
 		m_pModelCom->Render(i);

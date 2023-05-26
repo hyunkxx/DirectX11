@@ -48,6 +48,7 @@ public:
 
 	void Set_Use(_bool bUse) { m_bUse = bUse; }
 
+	void StopShake();
 	void StartWave();
 	void StartWave(SHAKE_DESC tagShakeDesc);
 	void StartVibration();

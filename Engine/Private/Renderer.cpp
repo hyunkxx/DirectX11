@@ -300,6 +300,10 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	if (FAILED(m_pTargetManager->AddRenderTarget(m_pDevice, m_pContext, L"Target_ShaderInfo", ViewPortDesc.Width, ViewPortDesc.Height,
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	m_pBindTargets[(_uint)TARGET::BLUR_X] = m_pTargetManager->FindTarget(L"Target_BlurX");
 	m_pBindTargets[(_uint)TARGET::BLUR_Y] = m_pTargetManager->FindTarget(L"Target_BlurY");
 	m_pBindTargets[(_uint)TARGET::BLUR_MIDDEL_X] = m_pTargetManager->FindTarget(L"Target_BlurX_Middle");
@@ -319,6 +323,8 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_SpecGlow")))
 		return E_FAIL;
 	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_ModelLight")))
+		return E_FAIL;
+	if (FAILED(m_pTargetManager->AddMRT(L"MRT_Deferred", L"Target_ShaderInfo")))
 		return E_FAIL;
 
 	// ±×¸²ÀÚ ±íÀÌ
@@ -963,6 +969,8 @@ void CRenderer::Render_Blend()
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Glow"), "g_GlowTexture")))
 		return;
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_ShaderInfo"), "g_ShaderInfo")))
+		return;
 
 	_uint iBlendPass;
 
@@ -1469,7 +1477,11 @@ void CRenderer::FinalExtraction()
 	if (pDepthTarget)
 		pDepthTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_DepthTexture");
 
-	m_pShader_Extraction->Begin(5);
+	if(m_pRenderSetting->IsActiveBlackWhite())
+		m_pShader_Extraction->Begin(1);
+	else
+		m_pShader_Extraction->Begin(5);
+
 	m_pVIBuffer->Render();
 }
 

@@ -85,6 +85,9 @@ struct PS_OUT
 	float4			vNormal : SV_TARGET1;
 	float4			vDepth : SV_TARGET2;
 	float4			vOutNormal : SV_TARGET3;
+	float4			vGlow : SV_TARGET4;
+	float4			vSpecGlow : SV_TARGET5;
+	float4			vShaderInfo : SV_TARGET6; // r : 색상 조명 벨류 아직 사용하지않음 각종 쉐이더 속성정보 저장할 예정
 };
 
 /*
@@ -158,6 +161,9 @@ PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vShaderInfo = float4(0.f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -222,8 +228,11 @@ PS_OUT PS_MAIN_PHONG_NORMALMAP(PS_IN_PHONG In)
 	/* Out.vNormal.xyz => 0 ~ 1 */
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
-
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vShaderInfo = float4(0.f, 0.f, 0.f, 0.f);
+
 
 	return Out;
 }
@@ -289,8 +298,10 @@ PS_OUT PS_MAIN_PHONG_NORMALMAP_DARK(PS_IN_PHONG In)
 	/* Out.vNormal.xyz => 0 ~ 1 */
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
-
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vShaderInfo = float4(0.f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -305,7 +316,10 @@ PS_OUT PS_MAIN_FLOOR(PS_IN_PHONG In)
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.0f);
-
+	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vShaderInfo = float4(0.f, 0.f, 0.f, 0.f);
+	
 	return Out;
 }
 

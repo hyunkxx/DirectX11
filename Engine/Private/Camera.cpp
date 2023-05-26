@@ -76,6 +76,14 @@ HRESULT CCamera::Render()
 	return S_OK;
 }
 
+void CCamera::StopShake()
+{
+	m_bShakeActive = false;
+	m_fCurShakeAcc = 0.f;
+	m_fCurTimeAcc = 0.f;
+	m_fVibeTimeAcc = 0.f;
+}
+
 void CCamera::StartWave()
 {
 	if (m_bShakeActive)
@@ -116,8 +124,8 @@ void CCamera::StartVibration()
 
 	m_fCurShakeAcc = 0.f;
 	m_fCurTimeAcc = 0.f;
-	m_fVibeRange = 10.f;
-	m_fVibeDuration = 0.2f;
+	m_fVibeRange = 30.f;
+	m_fVibeDuration = 0.5f;
 }
 
 void CCamera::StartVibration(_float fRange, _float fDuration)

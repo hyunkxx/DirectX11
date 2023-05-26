@@ -921,11 +921,11 @@ void CM_GAzizi::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _floa
 			switch (pAttackInfo->eHitIntensity)
 			{
 			case HIT_SMALL:
-				pCamMovement->StartVibration();
+				pCamMovement->StartVibration(30.f, 0.5f);
 				m_Scon.iNextState = IS_BEHIT_S;
 				break;
 			case HIT_BIG:
-				pCamMovement->StartVibration(15.f, 0.5f);
+				pCamMovement->StartVibration(30.f, 0.5f);
 				m_Scon.iNextState = IS_BEHIT_B;
 				break;
 			case HIT_FLY:
@@ -1059,14 +1059,14 @@ void CM_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)
 				true == dest->Compare(pOpponent->GetHitCollider()))
 			{
 				// 타격 위치를 찾아서 히트 이펙트 출력
-				pCamMovement->StartVibration(10.f, 0.5f);
+				pCamMovement->StartVibration(20.f, 0.5f);
 			}
 
 			// 상대의 공격이 나에게 적중한 경우 
 			if (true == src->Compare(GetHitCollider()) &&
 				true == dest->Compare(pOpponent->GetAttackCollider()))
 			{
-				pCamMovement->StartVibration();
+				pCamMovement->StartVibration(30.f, 0.5f);
 				//pGI->TimeSlowDown(0.01f, 0.1f, 10.f); 히트렉
 
 				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행

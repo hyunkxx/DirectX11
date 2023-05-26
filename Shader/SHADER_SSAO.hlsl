@@ -161,7 +161,7 @@ PS_OUT PS_SSAO(PS_IN In)
 
 	tagSSAO_Out SSAO_Out = GetSSAO(SSAO_In);
 
-	Out.vColor = 1.f - SSAO_Out.vAmbient;
+	Out.vColor = (1.f - SSAO_Out.vAmbient);
 	return Out;
 }
 

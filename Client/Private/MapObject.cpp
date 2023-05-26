@@ -65,7 +65,9 @@ void CMapObject::LateTick(_double TimeDelta)
 	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC_SHADOW, this);
+
+		if(m_EditionDesc.iTypeID != CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC_SHADOW, this);
 	}
 }
 
