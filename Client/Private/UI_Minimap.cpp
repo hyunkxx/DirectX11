@@ -203,31 +203,32 @@ void CUI_Minimap::Tick(_double TimeDelta)
 		IconPos.x = (fObjectPos.x) * (0.5f * g_iWinSizeX);
 		IconPos.y = (fObjectPos.y) * (0.5f * g_iWinSizeY);
 
-		if (-400.f > IconPos.x)
+		if (-620.f > IconPos.x)
 		{
-			_float Dist = -400.f - IconPos.x;
+			_float Dist = -620.f - IconPos.x;
 			IconPos.x = IconPos.x + Dist;
 		}
-		if (400.f <= IconPos.x)
+		if (620.f <= IconPos.x)
 		{
-			_float Dist = 400.f - IconPos.x;
+			_float Dist = 620.f - IconPos.x;
 			IconPos.x = IconPos.x + Dist;
 		}
 
-		if (-180.f >= IconPos.y)
+		if (-230.f >= IconPos.y)
 		{
-			_float Dist = -180.f - IconPos.y;
+			_float Dist = -230.f - IconPos.y;
 			IconPos.y = IconPos.y + Dist;
 		}
-		if (270.f <= IconPos.y)
+		if (320.f <= IconPos.y)
 		{
-			_float Dist = 270.f - IconPos.y;
+			_float Dist = 320.f - IconPos.y;
 			IconPos.y = IconPos.y + Dist;
 		}
 		CPipeLine* pPipe = CPipeLine::GetInstance();
 		_matrix CamMat = pPipe->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
 		_vector CamLook = CamMat.r[2];
 		_vector CamPos = CamMat.r[3];
+		_float Dist = XMVectorGetX(XMVector4Length(Desc.vObjectPos - CamPos));
 		_vector vNormailzeDir = XMVector4Normalize(Desc.vObjectPos - CamPos);
 		XMVectorSetY(CamLook, 0.f);
 		_vector vNormailzeLook = XMVector4Normalize(CamLook);
@@ -241,24 +242,22 @@ void CUI_Minimap::Tick(_double TimeDelta)
 		if ((90.f <= Angle) && (270.f >= Angle))       //1이면 같은 방향 0보다 작으면 반대방향
 		{
 			IconPos.x *= -1.f;
-			IconPos.y = -180.f;
+			IconPos.y = -210.f;
 		}
 
-
+		if ((Dist > 50.f)&&(Dist<150.f))
+		{
+			Desc.bRender = true;
+		}
+		else
+		{
+			Desc.bRender = false;
+		}
 		XMStoreFloat4x4(&(Desc.IconWorldMatrix), XMMatrixScaling(IconSize.x, IconSize.y, 1.f)
 			* XMMatrixTranslation(IconPos.x, IconPos.y, 0.f));
 		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	}
-
-	if(ComputeCameraLength() > 10.f)
-		DecideRender();
-
-
-
-
-
-
 
 	Safe_Release(pGameInstance);
 }
@@ -421,12 +420,6 @@ _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 
 void CUI_Minimap::DecideRender()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	CPipeLine* pPipe = CPipeLine::GetInstance();
-	_matrix CamMat = pPipe->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
-	_vector CamPos = CamMat.r[3];
-
 	for (auto& Desc : m_DescList)
 		Desc.bRender = true;
 

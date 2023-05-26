@@ -122,9 +122,7 @@ private:
 	CShader*			m_pShaderCom = { nullptr };
 	CModel_Anim*		m_pModelCom = { nullptr };
 	CNavigation*		m_pNaviCom = { nullptr };
-	//UI추가
-	CUI_Monster*		m_pUIMon = { nullptr };
-	class CUI_Minimap*		m_pUIIcon = { nullptr };
+	
 private:
 	// State
 	static SINGLESTATE	m_tStates[IS_END];
@@ -168,8 +166,11 @@ private:
 	// MoveCollider 충돌 시 비교할 무게
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
 	_float				m_fPushWeight = {};
+
 	//UI추가
-	_int				m_UIIndex = { 0 };
+	class CUI_Minimap*		m_pUIIcon = { nullptr };
+	_int					m_UIIndex = { 0 };
+	CUI_Monster*			m_pUIMon = { nullptr };
 private:
 	HRESULT Add_Components();
 	void SetUp_State();

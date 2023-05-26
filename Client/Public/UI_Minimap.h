@@ -163,7 +163,7 @@ private:
 	ICONNUM IconTextureNum = { MISSION };
 	_vector		m_vObjectPos = { 6.f, 30.f, 5.f, 1.f };
 	_float4x4	m_IconWorldMatrix;
-	_float2		IconSize = { 50.f, 50.f };
+	_float2		IconSize = { 30.f, 30.f };
 	_bool		m_bRender = { true };
 
 	vector<ICONDESC>	m_DescList;

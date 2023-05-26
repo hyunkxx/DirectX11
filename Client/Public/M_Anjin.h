@@ -14,6 +14,7 @@ class CNavigation;
 END
 
 BEGIN(Client)
+class CUI_Monster;
 class CM_Anjin
 	: public CCharacter
 {
@@ -175,6 +176,10 @@ private:
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
 	_float				m_fPushWeight = {};
 
+	//UI추가
+	class CUI_Minimap*		m_pUIIcon = { nullptr };
+	_int					m_UIIndex = { 0 };
+	CUI_Monster*			m_pUIMon = { nullptr };
 private:
 	HRESULT Add_Components();
 	void SetUp_State();

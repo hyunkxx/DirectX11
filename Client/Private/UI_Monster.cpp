@@ -13,18 +13,12 @@ CUI_Monster::CUI_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CUI_Monster::CUI_Monster(const CUI_Monster& rhs)
 	: CGameObject(rhs)
 {
-	for (auto& Desc : rhs.m_DescList)
-	{
-		m_DescList.push_back(Desc);
-	}
 }
 
 HRESULT CUI_Monster::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
-
-	Load();
 	return S_OK;
 }
 
@@ -35,6 +29,7 @@ HRESULT CUI_Monster::Initialize(void * pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+	Load();
 	MONINFO MonInfo;
 	memcpy(&MonInfo, pArg, sizeof(MONINFO));
 	m_MonsterLevel = MonInfo.Level;
@@ -65,8 +60,8 @@ void CUI_Monster::Tick(_double TimeDelta)
 	{
 	case Client::CUI_Monster::MONSTERTYPE::TYPE0: //레벨,hp
 	{
-		m_DescList[8]->bRender = false;
-		m_DescList[9]->bRender = false;
+		m_DescList[8].bRender = false;
+		m_DescList[9].bRender = false;
 	}
 	break;
 	case Client::CUI_Monster::MONSTERTYPE::TYPE1: // 레벨, hp, 아이콘, 추가방어바
@@ -74,8 +69,8 @@ void CUI_Monster::Tick(_double TimeDelta)
 
 		m_MonsterUV.x += (_float)TimeDelta*0.3f;
 		//m_MonsterGauge += (_float)TimeDelta*0.2f;
-		m_DescList[8]->bRender = true;
-		m_DescList[9]->bRender = true;
+		m_DescList[8].bRender = true;
+		m_DescList[9].bRender = true;
 	}
 	break;
 	case Client::CUI_Monster::MONSTERTYPE::BOSS:
@@ -89,22 +84,22 @@ void CUI_Monster::Tick(_double TimeDelta)
 		if (1> LevelTen)
 		{
 			//11,12,13
-			m_DescList[13]->bRender = false;
-			m_DescList[14]->iTexNum = LevelOne + 33;
+			m_DescList[13].bRender = false;
+			m_DescList[14].iTexNum = LevelOne + 33;
 		}
 		//만약 두자리일때 좌측 위치
 		else
 		{
 			//6번 그대로 5번 b랜더 true
-			m_DescList[13]->bRender = true;
-			m_DescList[13]->iTexNum = LevelTen + 33;
-			m_DescList[14]->iTexNum = LevelOne + 33;
+			m_DescList[13].bRender = true;
+			m_DescList[13].iTexNum = LevelTen + 33;
+			m_DescList[14].iTexNum = LevelOne + 33;
 		}
 
 		for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
 		{
-			XMStoreFloat4x4(&(m_DescList[i]->WorldMatrix), XMMatrixScaling(m_DescList[i]->fWidth, m_DescList[i]->fHeight, 1.f) *
-				XMMatrixTranslation(m_DescList[i]->fX, m_DescList[i]->fY, m_DescList[i]->fZ));
+			XMStoreFloat4x4(&(m_DescList[i].WorldMatrix), XMMatrixScaling(m_DescList[i].fWidth, m_DescList[i].fHeight, 1.f) *
+				XMMatrixTranslation(m_DescList[i].fX, m_DescList[i].fY, m_DescList[i].fZ));
 			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 		}
@@ -215,50 +210,50 @@ HRESULT CUI_Monster::Render()
 
 		for (_uint i = 0; i < 4; ++i)
 		{
-			if (true == m_DescList[i]->bRender)
+			if (true == m_DescList[i].bRender)
 			{
 				if (FAILED(__super::Render()))
 					return E_FAIL;
 				if (FAILED(Setup_ShaderResourcesHP(i)))
 					return E_FAIL;
-				m_pShader->Begin(m_DescList[i]->iPass);
+				m_pShader->Begin(m_DescList[i].iPass);
 				m_pVIBuffer->Render();
 			}
 		}
 
 		for (_uint i = 4; i < 8; ++i)
 		{
-			if (true == m_DescList[i]->bRender)
+			if (true == m_DescList[i].bRender)
 			{
 				if (FAILED(__super::Render()))
 					return E_FAIL;
 				if (FAILED(Setup_ShaderResources(i)))
 					return E_FAIL;
-				m_pShader->Begin(m_DescList[i]->iPass);
+				m_pShader->Begin(m_DescList[i].iPass);
 				m_pVIBuffer->Render();
 			}
 		}
 
 
-		if (true == m_DescList[8]->bRender)
+		if (true == m_DescList[8].bRender)
 		{
 			if (FAILED(__super::Render()))
 				return E_FAIL;
 			if (FAILED(Setup_ShaderResources(8)))
 				return E_FAIL;
-			m_pShader->Begin(m_DescList[8]->iPass);
+			m_pShader->Begin(m_DescList[8].iPass);
 			m_pVIBuffer->Render();
 		}
 
 		for (_uint i = 9; i < 10; ++i)
 		{
-			if (true == m_DescList[i]->bRender)
+			if (true == m_DescList[i].bRender)
 			{
 				if (FAILED(__super::Render()))
 					return E_FAIL;
 				if (FAILED(Setup_ShaderResourcesMask(i)))
 					return E_FAIL;
-				m_pShader->Begin(m_DescList[i]->iPass);
+				m_pShader->Begin(m_DescList[i].iPass);
 				m_pVIBuffer->Render();
 			}
 		}
@@ -267,13 +262,13 @@ HRESULT CUI_Monster::Render()
 
 		for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
 		{
-			if (true == m_DescList[i]->bRender)
+			if (true == m_DescList[i].bRender)
 			{
 				if (FAILED(__super::Render()))
 					return E_FAIL;
 				if (FAILED(Setup_ShaderResourcesBoss(i)))
 					return E_FAIL;
-				m_pShader->Begin(m_DescList[i]->iPass);
+				m_pShader->Begin(m_DescList[i].iPass);
 				m_pVIBuffer->Render();
 			}
 		}
@@ -311,7 +306,7 @@ void	CUI_Monster::Damage(_float Damage)
 	{
 		DAMAGEDESC Desc1000;
 		Desc1000.HitCount = m_HitCount;
-		Desc1000.Pos = _float3{ m_DescList[0]->fX + pos, m_DescList[0]->fY + pos, 0.f };
+		Desc1000.Pos = _float3{ m_DescList[0].fX + pos, m_DescList[0].fY + pos, 0.f };
 		Desc1000.Size = _float2{ 30.f, 30.f };
 		Desc1000.TextureNum = -Damage1000 + 33;
 		Desc1000.Color = _float4{ 0.f, 0.f,0.f,0.f };
@@ -370,7 +365,7 @@ void	CUI_Monster::Damage(_float Damage)
 
 		DAMAGEDESC Desc100;
 		Desc100.HitCount = m_HitCount;
-		Desc100.Pos = _float3{ m_DescList[0]->fX + pos, m_DescList[0]->fY + pos, 0.f };
+		Desc100.Pos = _float3{ m_DescList[0].fX + pos, m_DescList[0].fY + pos, 0.f };
 		Desc100.Size = _float2{ 30.f, 30.f };
 		Desc100.TextureNum = -Damage100 + 33;
 		Desc100.Color = _float4{ 0.f, 0.f,0.f,0.f };
@@ -417,7 +412,7 @@ void	CUI_Monster::Damage(_float Damage)
 	{
 		DAMAGEDESC Desc10;
 		Desc10.HitCount = m_HitCount;
-		Desc10.Pos = _float3{ m_DescList[0]->fX + pos, m_DescList[0]->fY + pos, 0.f };
+		Desc10.Pos = _float3{ m_DescList[0].fX + pos, m_DescList[0].fY + pos, 0.f };
 		Desc10.Size = _float2{ 30.f, 30.f };
 		Desc10.TextureNum = -Damage10 + 33;
 		Desc10.Color = _float4{ 0.f, 0.f,0.f,0.f };
@@ -453,7 +448,7 @@ void	CUI_Monster::Damage(_float Damage)
 	{
 		DAMAGEDESC Desc1;
 		Desc1.HitCount = m_HitCount;
-		Desc1.Pos = _float3{ m_DescList[0]->fX + pos, m_DescList[0]->fY + pos, 0.f };
+		Desc1.Pos = _float3{ m_DescList[0].fX + pos, m_DescList[0].fY + pos, 0.f };
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
 		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
@@ -497,6 +492,17 @@ HRESULT CUI_Monster::Add_Components()
 		L"com_vibuffer", (CComponent**)&m_pVIBuffer)))
 		return E_FAIL;
 
+	/* For.Com_Transform */
+	CTransform::TRANSFORM_DESC	TransformDesc;
+	ZeroMemory(&TransformDesc, sizeof TransformDesc);
+
+	TransformDesc.fMoveSpeed = 0.f;
+	TransformDesc.fRotationSpeed = XMConvertToRadians(0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
+		TEXT("Com_Transform"), (CComponent**)&m_pMainTransform, &TransformDesc)))
+		return E_FAIL;
+
 	return S_OK;
 
 }
@@ -507,14 +513,10 @@ HRESULT CUI_Monster::Setup_ShaderResourcesHP(_int index)
 	if (nullptr == m_pShader)
 		return E_FAIL;
 
-	if (nullptr != m_pTexture)
-	{
-
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index]->iTexNum)))
-			return E_FAIL;
-	}
-
-	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index]->WorldMatrix))))
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index].iTexNum)))
+		return E_FAIL;
+	
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index].WorldMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -522,13 +524,13 @@ HRESULT CUI_Monster::Setup_ShaderResourcesHP(_int index)
 	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index]->fColorR), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index].fColorR), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index]->fColorG), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index].fColorG), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_DescList[index]->fColorB), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_DescList[index].fColorB), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index]->fColorA), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 
 	if (true == m_bRedStart)
@@ -547,14 +549,10 @@ HRESULT CUI_Monster::Setup_ShaderResources(_int index)
 	if (nullptr == m_pShader)
 		return E_FAIL;
 
-	if (nullptr != m_pTexture)
-	{
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index].iTexNum)))
+		return E_FAIL;
 
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index]->iTexNum)))
-			return E_FAIL;
-	}
-
-	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index]->WorldMatrix))))
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index].WorldMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -562,13 +560,13 @@ HRESULT CUI_Monster::Setup_ShaderResources(_int index)
 	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index]->fColorR), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index].fColorR), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index]->fColorG), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index].fColorG), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_DescList[index]->fColorB), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_DescList[index].fColorB), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index]->fColorA), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;
@@ -579,18 +577,14 @@ HRESULT CUI_Monster::Setup_ShaderResourcesMask(_int index)
 	if (nullptr == m_pShader)
 		return E_FAIL;
 
-	if (nullptr != m_pTexture)
-	{
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index].iTexNum)))
+		return E_FAIL;
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Mask", m_MaskTextureNum)))
+		return E_FAIL;
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Mask2", m_MaskTextureNum2)))
+		return E_FAIL;
 
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index]->iTexNum)))
-			return E_FAIL;
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Mask", m_MaskTextureNum)))
-			return E_FAIL;
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Mask2", m_MaskTextureNum2)))
-			return E_FAIL;
-	}
-
-	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index]->WorldMatrix))))
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index].WorldMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -598,13 +592,13 @@ HRESULT CUI_Monster::Setup_ShaderResourcesMask(_int index)
 	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index]->fColorR), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index].fColorR), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index]->fColorG), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index].fColorG), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_DescList[index]->fColorB), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_DescList[index].fColorB), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index]->fColorA), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->SetRawValue("g_MonUV", &(m_MonsterUV), sizeof(_float2))))
@@ -625,7 +619,7 @@ HRESULT CUI_Monster::Setup_ShaderResourcesBoss(_int index)
 	if (nullptr != m_pTexture)
 	{
 
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index]->iTexNum)))
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index].iTexNum)))
 			return E_FAIL;
 		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Mask", m_MaskTextureNum)))
 			return E_FAIL;
@@ -633,7 +627,7 @@ HRESULT CUI_Monster::Setup_ShaderResourcesBoss(_int index)
 			return E_FAIL;
 	}
 
-	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index]->WorldMatrix))))
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index].WorldMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -641,13 +635,13 @@ HRESULT CUI_Monster::Setup_ShaderResourcesBoss(_int index)
 	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index]->fColorR), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index].fColorR), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index]->fColorG), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index].fColorG), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_DescList[index]->fColorB), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_DescList[index].fColorB), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index]->fColorA), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->SetRawValue("g_MonUV", &(m_MonsterUV), sizeof(_float2))))
@@ -729,16 +723,7 @@ void CUI_Monster::Free()
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexture);
 	Safe_Release(m_pVIBuffer);
-
-		if (!m_bClone)
-		{
-			for (auto& Desc : m_DescList)
-			{
-				delete Desc;
-				Desc = nullptr;
-			}
-			m_DescList.clear();
-		}
+	Safe_Release(m_pMainTransform);
 
 }
 
@@ -787,28 +772,28 @@ void CUI_Monster::CommonHP()
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-			
 			_float4 fCharacterPos;
 			XMStoreFloat4(&fCharacterPos, m_vCharacterPos);
 			fCharacterPos.y = fCharacterPos.y + 1.4f;
 			m_vCharacterPos = XMLoadFloat4(&fCharacterPos);
-			m_vCharacterPos = XMVector3TransformCoord(m_vCharacterPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_VIEW));
-			m_vCharacterPos = XMVector3TransformCoord(m_vCharacterPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_PROJ));
-			XMStoreFloat4(&fCharacterPos, m_vCharacterPos);
-			m_DescList[0]->fX = (fCharacterPos.x) * (0.5f * g_iWinSizeX);
-			m_DescList[0]->fY = (fCharacterPos.y) * (0.5f * g_iWinSizeY);
+			_vector View, ViewProj;
+			View = XMVector3TransformCoord(m_vCharacterPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_VIEW));
+			ViewProj = XMVector3TransformCoord(View, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_PROJ));
+			XMStoreFloat4(&fCharacterPos, ViewProj);
+			m_DescList[0].fX = (fCharacterPos.x) * (0.5f * g_iWinSizeX);
+			m_DescList[0].fY = (fCharacterPos.y) * (0.5f * g_iWinSizeY);
 
 
 			for (_uint i = 0; i < 4; ++i)
 			{
-				m_DescList[i]->fX = m_DescList[0]->fX;
-				m_DescList[i]->fY = m_DescList[0]->fY;
+				m_DescList[i].fX = m_DescList[0].fX;
+				m_DescList[i].fY = m_DescList[0].fY;
 
-			XMStoreFloat4x4(&(m_DescList[i]->WorldMatrix), XMMatrixScaling((m_DescList[i])->fWidth, (m_DescList[i])->fHeight, 1.f)
-				* XMMatrixTranslation((m_DescList[i])->fX, (m_DescList[i])->fY, (m_DescList[i])->fZ));
+			XMStoreFloat4x4(&(m_DescList[i].WorldMatrix), XMMatrixScaling((m_DescList[i]).fWidth, (m_DescList[i]).fHeight, 1.f)
+				* XMMatrixTranslation((m_DescList[i]).fX, (m_DescList[i]).fY, (m_DescList[i]).fZ));
 			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-			m_DescList[i]->bRender = true;
+			m_DescList[i].bRender = true;
 		}
 	
 
@@ -823,27 +808,27 @@ void CUI_Monster::CommonLevel()
 	if (1> LevelTen)
 	{
 		//6번 그대로 5번 b랜더false 
-		m_DescList[5]->bRender = false;
-		m_DescList[6]->iTexNum = LevelOne + 33;
+		m_DescList[5].bRender = false;
+		m_DescList[6].iTexNum = LevelOne + 33;
 	}
 	//만약 두자리일때 좌측 위치
 	else
 	{
 		//6번 그대로 5번 b랜더 true
-		m_DescList[5]->bRender = true;
-		m_DescList[5]->iTexNum = LevelTen + 33;
-		m_DescList[6]->iTexNum = LevelOne + 33;
+		m_DescList[5].bRender = true;
+		m_DescList[5].iTexNum = LevelTen + 33;
+		m_DescList[6].iTexNum = LevelOne + 33;
 	}
 
 	if (3 < (_uint)m_DescList.size())
 	{
 		for (_uint i = 4; i < 9; ++i)
 		{
-			m_DescList[i]->fX = m_DescList[0]->fX + m_DescList[i]->PosSet.x;
-			m_DescList[i]->fY = m_DescList[0]->fY + m_DescList[i]->PosSet.y;
+			m_DescList[i].fX = m_DescList[0].fX + m_DescList[i].PosSet.x;
+			m_DescList[i].fY = m_DescList[0].fY + m_DescList[i].PosSet.y;
 
-			XMStoreFloat4x4(&(m_DescList[i]->WorldMatrix), XMMatrixScaling((m_DescList[i])->fWidth, (m_DescList[i])->fHeight, 1.f)
-				* XMMatrixTranslation((m_DescList[i])->fX, (m_DescList[i])->fY, (m_DescList[i])->fZ));
+			XMStoreFloat4x4(&(m_DescList[i].WorldMatrix), XMMatrixScaling((m_DescList[i]).fWidth, (m_DescList[i]).fHeight, 1.f)
+				* XMMatrixTranslation((m_DescList[i]).fX, (m_DescList[i]).fY, (m_DescList[i]).fZ));
 			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 		}
@@ -861,35 +846,46 @@ void CUI_Monster::DecideRender()
 	_matrix CamMat = pPipe->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
 	_vector CamLook = CamMat.r[2];
 	_vector CamPos = CamMat.r[3];
+	XMVectorSetY(CamLook, 0.f);
+	XMVectorSetY(CamPos, 0.f);
 	_vector vNormailzeDir = XMVector4Normalize(m_vCharacterPos - CamPos);
 	_vector vNormailzeLook = XMVector4Normalize(CamLook);
 
 	_float Get = XMVectorGetX(XMVector4Dot(vNormailzeLook, vNormailzeDir));
-
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, m_vCharacterPos);
 	for (auto& Desc : m_DescList)
 	{
-		if ((0.f <= Get) && (1.f >= Get))       //1이면 같은 방향 0보다 작으면 반대방향
+	_float Dsit = m_pMainTransform->Compute_Distance(CamPos);
+	if (Dsit > 30.f)
+	{
+		Desc.bRender = false;
+	}
+	else
+	{
+		if (-0.2f > Get)       //1이면 같은 방향 0보다 작으면 반대방향
 		{
-			Desc->bRender = true;
+			Desc.bRender = false;
 
-			if (true == m_bNameRender)
-			{
-				m_DescList[4]->bRender = false;
-				m_DescList[5]->bRender = false;
-				m_DescList[6]->bRender = false;
-				m_DescList[7]->bRender = true;
-			}
-			else
-			{
-				m_DescList[4]->bRender = true;
-				m_DescList[5]->bRender = true;
-				m_DescList[6]->bRender = true;
-				m_DescList[7]->bRender = false;
-			}
 		}
 		else
 		{
-			Desc->bRender = false;
+				Desc.bRender = true;
+				if (true == m_bNameRender)
+				{
+				m_DescList[4].bRender = false;
+				m_DescList[5].bRender = false;
+				m_DescList[6].bRender = false;
+				m_DescList[7].bRender = true;
+				}
+				else
+				{
+				m_DescList[4].bRender = true;
+				m_DescList[5].bRender = true;
+				m_DescList[6].bRender = true;
+				m_DescList[7].bRender = false;
+				}
+
+			}
 		}
 	}
 
@@ -905,40 +901,36 @@ void CUI_Monster::Load()
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		MONSTERDESC*  Desc = new MONSTERDESC;
-		ZeroMemory(Desc, sizeof(MONSTERDESC));
-		XMStoreFloat4x4(&Desc->WorldMatrix, XMMatrixIdentity());
+		MONSTERDESC  Desc;
+		ZeroMemory(&Desc, sizeof(MONSTERDESC));
+		XMStoreFloat4x4(&Desc.WorldMatrix, XMMatrixIdentity());
 
 		_ulong dwByte = 0;
 		while (true)
 		{
-			ReadFile(hFile, &(Desc->fX), sizeof(_float), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->fY), sizeof(_float), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->fZ), sizeof(_float), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->fWidth), sizeof(_float), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->fHeight), sizeof(_float), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->fColorA), sizeof(_float), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->fColorR), sizeof(_float), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->fColorG), sizeof(_float), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->fColorB), sizeof(_float), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->iTexNum), sizeof(_int), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->iPass), sizeof(_int), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->bRot), sizeof(_bool), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->fDegree), sizeof(_float), &dwByte, nullptr);
-			ReadFile(hFile, &(Desc->PosSet), sizeof(_float2), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fX), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fY), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fZ), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fWidth), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fHeight), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorA), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorR), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorG), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorB), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.iTexNum), sizeof(_int), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.iPass), sizeof(_int), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.bRot), sizeof(_bool), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fDegree), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.PosSet), sizeof(_float2), &dwByte, nullptr);
 			if (0 == dwByte)
 				break;
 		}
 
 		CloseHandle(hFile);
 
-		if (nullptr != Desc)
-		{
-			Desc->bRender = true;
-
+			Desc.bRender = true;
 			m_DescList.push_back(Desc);
 
-		}
 	}
 
 }
