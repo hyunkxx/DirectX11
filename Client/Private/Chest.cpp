@@ -143,7 +143,7 @@ void CChest::Tick(_double TimeDelta)
 	}
 
 	//UIÃß°¡
-	if (false == this->IsDisable)
+	if (false == this->IsDisable())
 	{
 		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 	}

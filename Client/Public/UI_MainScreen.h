@@ -17,7 +17,7 @@ class CUI_MainScreen final : public CGameObject
 {
 public: enum class eKeyType
 {
-	YANGYANG, DANSUN, RED, T, Q, E, R, I0, I1, I2, RR, GRAPH0, GRAPH1, GRAPH2, PLAYEREND
+	DANSUN, YANGYANG, RED, T, Q, E, R, I0, I1, I2, RR, GRAPH0, GRAPH1, GRAPH2, PLAYEREND
 };
 public:
 	typedef struct tagCutRect
@@ -157,8 +157,8 @@ private:
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint   m_iPass = { 1 };
 
-	eKeyType m_iCurrentPlayer = { eKeyType::YANGYANG };
-	eKeyType m_iPrePlayer = { eKeyType::YANGYANG };
+	eKeyType m_iCurrentPlayer = { eKeyType::DANSUN };
+	eKeyType m_iPrePlayer = { eKeyType::DANSUN };
 	_uint	m_HavePlayerNum = { 0 };
 	_uint	m_HadPlayerNum = { 0 };
 
