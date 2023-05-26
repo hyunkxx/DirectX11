@@ -237,6 +237,7 @@ PS_OUT PS_MAIN_DISSOLVE(PS_IN In)
 	float2 vUV = clamp(In.vTexUV + g_vUV, 0.f, 1.f);
 
 	vector	vColor = g_DiffuseTexture.Sample(LinearSampler, vUV);
+	vColor.rgb *= g_vColor;
 
 	if (0.1f > vColor.a)
 	{

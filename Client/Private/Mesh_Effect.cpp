@@ -592,6 +592,10 @@ HRESULT CMesh_Effect::Add_Component(const EFFECT_DESC & ParticleDesc)
 	if (FAILED(Load_Effect(L"../../Resource/Model/Static/Comon/")))
 		return E_FAIL;
 
+	if (FAILED(Load_Effect(L"../../Resource/Model/Static/Weapon/")))
+		return E_FAIL;
+	
+
 #pragma endregion
 
 #endif // _DEBUG

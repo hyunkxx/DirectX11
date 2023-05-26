@@ -1350,6 +1350,7 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/M_Anjin/Anjin_Attack_03.bin"),
 			"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
 			return E_FAIL;
+
 		//Mark 는 공격전  빛나면서 플레이어에게 공격 타이밍 알려주는 이펙트
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
 			TEXT("../../Resource/Effect/M_Anjin/Attack_Mark.bin"),
@@ -1361,7 +1362,84 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
 			return E_FAIL;
 
+		//활쏘는 몬스터 Leilie
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Leilie/M_Leilie_Arrow.bin"),
+			"../../Resource/Effect/M_Leilie/Arrow/")))
+			return E_FAIL;
 
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Leilie/M_Leilie_Arrow_Charge.bin"),
+			"../../Resource/Effect/M_Leilie/Arrow/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Leilie/M_Leilie_Arrow_Shoot.bin"),
+			"../../Resource/Effect/M_Leilie/Arrow/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Leilie/M_Leilie_Enforce_Arrow.bin"),
+			"../../Resource/Effect/M_Leilie/Arrow/")))
+			return E_FAIL;
+
+		//총쏘는 정령 초록이 FHuxiuxiu
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_FHuxiuxiu/FHuxiuxiu_Attack_01.bin"),
+			"../../Resource/Effect/M_FHuxiuxiu/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_FHuxiuxiu/FHUxiuxiu_Attack_02.bin"),
+			"../../Resource/Effect/M_FHuxiuxiu/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_FHuxiuxiu/FHUxiuxiu_Attack_Auror.bin"),
+			"../../Resource/Effect/M_FHuxiuxiu/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_FHuxiuxiu/FHUxiuxiu_Bullet_01.bin"),
+			"../../Resource/Effect/M_FHuxiuxiu/Attack/")))
+			return E_FAIL;
+
+		// 신사 질럿 M_Huojin
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Huojin/Huojin_Attack_01_1.bin"),
+			"../../Resource/Effect/M_Huojin/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Huojin/Huojin_Attack_01_3.bin"),
+			"../../Resource/Effect/M_Huojin/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Huojin/Huojin_Attack_02.bin"),
+			"../../Resource/Effect/M_Huojin/Attack/")))
+			return E_FAIL;
+
+		// 팽그리 (부메랑)
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Fenglie/M_Fenglie_Weapon.bin"),
+			"../../Resource/Effect/M_Fenglie/Weapon/")))
+			return E_FAIL;
+
+		// 빙그리 (얼음창)
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Binglie/M_Binglie_Weapon.bin"),
+			"../../Resource/Effect/M_Binglie/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Binglie/M_Binglie_Shoot_Ready.bin"),
+			"../../Resource/Effect/M_Binglie/Attack/")))
+			return E_FAIL;
 
 	}
 	
