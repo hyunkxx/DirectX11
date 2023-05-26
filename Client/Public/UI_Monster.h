@@ -11,8 +11,6 @@ class CTransform;
 END
 
 BEGIN(Client)
-class CCharacter;
-
 class CUI_Monster final : public CGameObject
 {
 public: enum class MONSTERTYPE
@@ -144,7 +142,7 @@ private:
 	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
 	CTexture*		m_pTexture = { nullptr };
 
-	vector<MONSTERDESC>	m_DescList;
+	vector<MONSTERDESC*>	m_DescList;
 
 	list<DAMAGEDESC> DamageList;
 

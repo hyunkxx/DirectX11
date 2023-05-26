@@ -420,8 +420,6 @@ public:
 
 	static PHYSICMOVE StatePhysics[SP_END];
 
-	//
-	static _int Monindex;
 protected:
 	TAGCHAR			m_tCharInfo;
 	StateController m_Scon;

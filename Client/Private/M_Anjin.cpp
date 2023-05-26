@@ -17,7 +17,6 @@
 #include "Chest.h"
 //UI추가
 #include "UI_Monster.h"
-#include "UI_Minimap.h"
 
 CCharacter::SINGLESTATE CM_Anjin::m_tStates[IS_END];
 
@@ -101,18 +100,6 @@ HRESULT CM_Anjin::Initialize(void * pArg)
 
 	//m_pAttackCollider->SetActive(false);
 
-	//UI추가
-	CGameInstance* pGame = CGameInstance::GetInstance();
-	_tchar szIndex[MAX_PATH];
-	wsprintf(szIndex, TEXT("UI_Monster%d"), Monindex);
-	CUI_Monster::MONINFO MonInfo;
-	MonInfo.Level = 3;
-	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
-	CGameObject * pUIMon = nullptr;
-	if (pGame->Add_GameObjectEx(&pUIMon, LEVEL_ANYWHERE, OBJECT::UIMONSTER, TEXT("layer_UI"), szIndex, &MonInfo))
-		return E_FAIL;
-	m_pUIMon = static_cast<CUI_Monster*>(pUIMon);
-	++Monindex;
 	return S_OK;
 }
 
@@ -129,10 +116,6 @@ void CM_Anjin::Start()
 	// Find ActivePlayer
 	m_pTarget = static_cast<CCharacter*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
 	m_pTargetTransform = static_cast<CTransform*>(m_pTarget->Find_Component(TEXT("Com_Transform")));
-
-	//UI추가
-	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
-	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 44);
 }
 
 void CM_Anjin::PreTick(_double TimeDelta)
@@ -181,12 +164,6 @@ void CM_Anjin::Tick(_double TimeDelta)
 
 	pGameInstance->AddCollider(m_pMoveCollider, COLL_MOVE);
 	m_pMoveCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
-
-	if (false == this->IsDisable())
-	{
-		m_pUIMon->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
-		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
-	}
 }
 
 void CM_Anjin::LateTick(_double TimeDelta)
@@ -890,12 +867,8 @@ void CM_Anjin::Tick_State(_double TimeDelta)
 	if (true == m_Scon.bAnimFinished)
 	{
 		if (IS_DEAD == m_Scon.iCurState)
-		{
 			SetState(DISABLE);
-			m_pUIMon->SetState(DISABLE);
-			m_pUIMon = nullptr;
-			m_pUIIcon = nullptr;
-		}
+
 		// 공격 행동 시
 		if (IS_ATTACK01 == m_Scon.iCurState ||
 			IS_ATTACK02_1 == m_Scon.iCurState ||
@@ -982,10 +955,6 @@ void CM_Anjin::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float
 	m_tCharInfo.fCurHP -= fFinalDamage;
 
 	// TODO: 여기서 대미지 폰트 출력
-	if (false == m_pUIMon->IsDisable())
-	{
-		m_pUIMon->Set_Damage(fFinalDamage);
-	}
 
 	// 사망 시 사망 애니메이션 실행 
 	if (0.f >= m_tCharInfo.fCurHP)
