@@ -7,7 +7,7 @@
 
 #include "Level_Loading.h"
 
-#include "CharacterState.h"
+#include "PlayerState.h"
 #include "IntroCamera.h"
 #include "DynamicCamera.h"
 #include "CameraMovement.h"

@@ -8,7 +8,7 @@
 #include "Effect.h"
 
 //State
-#include "CharacterState.h"
+#include "PlayerState.h"
 
 //StateKeys
 #include "EffectKey.h"
@@ -163,7 +163,7 @@ void CP_PlayerGirl::Start()
 #ifdef _DEBUG
 	m_pRendererCom->DebugBundleRender_Control(true);
 #endif
-	m_pState = static_cast<CCharacterState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pState = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));

@@ -180,10 +180,10 @@ void CPlayerCamera::Tick(_double TimeDelta)
 			SetCursorPos(Center.x, Center.y);
 		}
 #pragma endregion
-		// 타겟을 락온했을 경우
-		/*if (false == m_bLockOn)
+		//타겟을 락온했을 경우
+		/*if (false == *m_pLockOn)
 		{
-
+			
 		}*/
 
 		// At 높이

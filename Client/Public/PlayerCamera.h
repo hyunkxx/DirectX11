@@ -21,6 +21,7 @@ public:
 	{
 		CCamera::CAMERA_DESC CamDesc;
 		CTransform* pPlayerTransform;
+		_bool*	pLockOn;
 		_float  fXAngle;
 		_float	fDistance;
 		_float3 vDir;
@@ -90,7 +91,7 @@ private:
 
 	// 상태 분기용 변수
 	_bool m_bApplyCurve = { false };
-	_bool m_bLockOn = { false };
+	_bool* m_pLockOn = { nullptr };
 
 	const _float m_fDistanceMin = { 1.f };
 	const _float m_fDistanceMax = { 7.f };

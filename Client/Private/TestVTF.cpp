@@ -776,7 +776,7 @@ HRESULT CTestVTF::Init_Parts()
 	m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON7);
 	m_Parts[PARTS_WEAPON_SUB] = static_cast<CParts*>(pGame->Clone_GameObject(m_tDesc.iPartsID[PARTS_WEAPON_SUB], &PartsDesc));
 	m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON7);
-	m_Parts[PARTS_HULU] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_HULU_0, &PartsDesc));
+	m_Parts[PARTS_HULU] = static_cast<CParts*>(pGame->Clone_GameObject(m_tDesc.iPartsID[PARTS_HULU], &PartsDesc));
 	m_Parts[PARTS_HULU]->Set_Parent(PBONE_HULU);
 
 

@@ -274,6 +274,7 @@ private:
 	CCharacter*			m_pNearst = { nullptr };
 	_float				m_fNearstDist = { 0.f };
 	CCharacter*			m_pFixedTarget = { nullptr };
+	_bool				m_bFixTarget = { false };
 	
 	
 	// MoveCollider 충돌 시 비교할 무게
@@ -348,7 +349,7 @@ public:
 
 	CGameObject* pStaticObject = nullptr;
 
-	class CCharacterState* m_pState;
+	class CPlayerState* m_pState;
 	class CInventory* m_pInven = nullptr;
 	class CCameraMovement* m_pCamMovement = nullptr;
 };

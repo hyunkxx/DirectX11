@@ -21,7 +21,7 @@
 #include "M_Anjin.h"
 #include "M_AWukaka.h"
 
-#include "CharacterState.h"
+#include "PlayerState.h"
 #include "Inventory.h"
 #include "InteractionObject.h"
 #include "Chest.h"
@@ -173,6 +173,7 @@ HRESULT CLoader::Load_Level_Logo()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_LOBBY_MALE_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/LobbyMale/Male_Model.dmdl")))))
 		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_LOBBY_MALE_ANIMSET, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/LobbyMale/Male_Anim.dmdl")))))
 		return E_FAIL;
 
@@ -1598,10 +1599,16 @@ HRESULT CLoader::Load_Level_AnimTool()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_0_SCABBARD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Scabbard.smdl")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_GUN_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun01/Gun01.smdl")))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
 		return E_FAIL;
 
 	// DModel
@@ -1705,6 +1712,19 @@ HRESULT CLoader::Load_Level_AnimTool()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINLANG_ELITE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Wolf/BinlangElite.dmdl")))))
 		return E_FAIL;
 
+	// 보스들
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_CROWNLESS_P1, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P1.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_CROWNLESS_P2, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P2.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_CROWNLESS_P3, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P3.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_INFERNORIDER, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/InfernoRider/InfernoRider.dmdl")))))
+		return E_FAIL;
+
 	m_pApp->LoadRatio(0.6f);
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
@@ -1736,6 +1756,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON;
 	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
 	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_2;
 	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_PlayerGirl/PlayerGirl_%d.state"));
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_PLAYERGIRL, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
@@ -1749,6 +1770,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_PLAYERGIRL_UI_RIBBON;
 	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
 	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_2;
 	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_PlayerGirl_UI/PlayerGirl_UI_%d.state"));
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_PLAYERGIRL_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
@@ -1762,6 +1784,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_ANIMSET_RIBBON;
 	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
 	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_0;
 	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang/YangYang_%d.state"));
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
@@ -1775,6 +1798,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_UI_RIBBON;
 	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
 	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_0;
 	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang_UI/YangYang_UI_%d.state"));
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
@@ -1786,8 +1810,9 @@ HRESULT CLoader::Load_Level_AnimTool()
 	tDesc.iModelID = DMODEL::DMD_CHIXIA_MODEL;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_CHIXIA_ANIMSET_BASE;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_CHIXIA_ANIMSET_RIBBON;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_GUN_0;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_GUN_0;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_1;
 	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_ChiXia/ChiXia_%d.state"));
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_CHIXIA, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
@@ -1799,8 +1824,9 @@ HRESULT CLoader::Load_Level_AnimTool()
 	tDesc.iModelID = DMODEL::DMD_CHIXIA_MODEL;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_CHIXIA_UI_BASE;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_CHIXIA_UI_RIBBON;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_GUN_0;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_GUN_0;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_1;
 	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_ChiXia_UI/ChiXia_UI_%d.state"));
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_CHIXIA_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
@@ -1923,6 +1949,37 @@ HRESULT CLoader::Load_Level_AnimTool()
 		return E_FAIL;
 	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_BINLANG_ELITE), TEXT("BinlangElite"));
 
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_CROWNLESS_P1;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Crownless_P1/M_Crownless_P1_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_CROWNLESS_P1, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_CROWNLESS_P1), TEXT("Crownless_P1"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_CROWNLESS_P2;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Crownless_P2/M_Crownless_P2_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_CROWNLESS_P2, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_CROWNLESS_P2), TEXT("Crownless_P2"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_CROWNLESS_P3;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Crownless_P3/M_Crownless_P3_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_CROWNLESS_P3, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_CROWNLESS_P3), TEXT("Crownless_P3"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_INFERNORIDER;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_InfernoRider/M_InfernoRider_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_INFERNORIDER, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_INFERNORIDER), TEXT("InfernoRider"));
 
 
 
@@ -1935,10 +1992,16 @@ HRESULT CLoader::Load_Level_AnimTool()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SCABBARD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SCABBARD))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_0, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_0))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_0, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_0))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_2))))
 		return E_FAIL;
 
 	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::FLOOR, CFloor::Create(m_pDevice, m_pContext))))
