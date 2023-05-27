@@ -186,6 +186,7 @@ void CM_Anjin::Tick(_double TimeDelta)
 	{
 		m_pUIMon->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+		m_pUIIcon->SetRender(m_UIIndex, true);
 	}
 }
 
@@ -893,7 +894,8 @@ void CM_Anjin::Tick_State(_double TimeDelta)
 		{
 			SetState(DISABLE);
 			m_pUIMon->SetState(DISABLE);
-			m_pUIMon = nullptr;
+			m_pUIMon = nullptr;	
+			m_pUIIcon->SetRender(m_UIIndex, false);
 			m_pUIIcon = nullptr;
 		}
 		// 공격 행동 시

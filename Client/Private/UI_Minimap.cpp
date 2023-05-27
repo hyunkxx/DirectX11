@@ -62,13 +62,13 @@ void CUI_Minimap::Tick(_double TimeDelta)
 	{
 		m_bNull = false;
 		CTransform* pComponent = static_cast<CTransform*>(m_pPlayer->Find_Component(TEXT("Com_Transform")));
-		
+		XMStoreFloat4(&fPlayerPos, pComponent->Get_State(CTransform::STATE_POSITION));
 		//미니맵에 출력될 텍스처 uv의 전체 지형에서의 pos X,Z값
 		// 플레이어 pos 기준으로 정해줌
-		m_fPointLU.x = fPlayerPos.x - 20.f;
-		m_fPointLU.y = fPlayerPos.z + 20.f;
-		m_fPointRB.x = fPlayerPos.x + 20.f;
-		m_fPointRB.y = fPlayerPos.z - 20.f;
+		m_fPointLU.x = fPlayerPos.x - 200.f;
+		m_fPointLU.y = fPlayerPos.z + 200.f;
+		m_fPointRB.x = fPlayerPos.x + 200.f;
+		m_fPointRB.y = fPlayerPos.z - 200.f;
 
 		// 스크린좌표상의 uv구하기, 자른 사진과 지형이 1:1이라는 상황
 		// dx 좌표계와 uv 좌표계의 y+ 방향이 반대라서 y값은 -곱해줌
@@ -96,6 +96,7 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			m_DefaultIconRB[i].y = m_TerrainRB.y;
 		}
 
+		//
 		for (auto& pDesc : m_IconDescList)
 		{
 			_vector vPlayerPos, vWorldPos;
@@ -103,10 +104,15 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			vPlayerPos = XMLoadFloat4(&fPlayerPos);
 			_float X = XMVectorGetX(vPlayerPos - vWorldPos);
 			_float Y = XMVectorGetZ(vPlayerPos - vWorldPos);
+			_float Dist = XMVectorGetX(XMVector4Length(vPlayerPos - vWorldPos));
 			
+			if (200.f <= Dist)
+			{
+				pDesc.bRender = false;
+			}
 			XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)  
-				* XMMatrixTranslation(-540.f + (XMVectorGetX(vPlayerPos) + X) * m_fWidthMiniMap/g_iWinSizeX 
-					, 260.f - (XMVectorGetZ(vPlayerPos) - Y ) * m_fHeightMiniMap/g_iWinSizeY , 0.f));
+				* XMMatrixTranslation(-540.f - X * m_fWidthMiniMap/g_iWinSizeX 
+					, 260.f - Y  * m_fHeightMiniMap/g_iWinSizeY , 0.f));
 			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 
@@ -129,7 +135,7 @@ void CUI_Minimap::Tick(_double TimeDelta)
 				fRadian *= -1.f;
 			}
 
-			if (0.98 > Get)
+			if (0.99 > Get)
 			{
 
 				_matrix ScaleMat = XMMatrixScaling(m_fWidthDefaultIcon[0], m_fHeightDefaultIcon[0], 1.f);
@@ -426,15 +432,10 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesIcons(ICONDESC* pDesc)
 
 HRESULT CUI_Minimap::Setup_ShaderResourcesMiniMap()
 {
-	if (nullptr != m_pTexMiniMap)
-	{
-		if (FAILED(m_pTexMiniMap->Setup_ShaderResource(m_pShader, "g_MyTexture")))
-			return E_FAIL;
-		if (FAILED(m_pTexMiniMap->Setup_ShaderResource(m_pShader, "g_MyTexture2", 1)))
-			return E_FAIL;
-	}
-
-
+	if (FAILED(m_pTexMiniMap->Setup_ShaderResource(m_pShader, "g_MyTexture")))
+		return E_FAIL;
+	if (FAILED(m_pTexMiniMap->Setup_ShaderResource(m_pShader, "g_MyTexture2", 1)))
+		return E_FAIL;
 	if (nullptr != m_pVIBufferMiniMap)
 	{
 
@@ -464,13 +465,8 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesMiniMap()
 
 HRESULT CUI_Minimap::Setup_ShaderResourcesFrame()
 {
-	if (nullptr != m_pTexMiniMap)
-	{
-		if (FAILED(m_pTexMiniMap->Setup_ShaderResource(m_pShader, "g_MyTexture", 1)))
-			return E_FAIL;
-	}
-
-
+	if (FAILED(m_pTexMiniMap->Setup_ShaderResource(m_pShader, "g_MyTexture", 1)))
+		return E_FAIL;
 	if (nullptr != m_pVIBufferMiniMap)
 	{
 
@@ -480,7 +476,6 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesFrame()
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 			return E_FAIL;
-
 		if (FAILED(m_pShader->SetRawValue("g_fLU", &m_TerrainLU, sizeof(_float2))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetRawValue("g_fRB", &m_TerrainRB, sizeof(_float2))))
@@ -502,12 +497,8 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesFrame()
 
 HRESULT CUI_Minimap::Setup_ShaderResourcesDefaultIcon(_uint Bufferindex)
 {
-	if (nullptr != m_pTexDefaultIcon)
-	{
-		if (FAILED(m_pTexDefaultIcon->Setup_ShaderResource(m_pShader, "g_MyTexture", Bufferindex)))
-			return E_FAIL;
-	}
-
+	if (FAILED(m_pTexDefaultIcon->Setup_ShaderResource(m_pShader, "g_MyTexture", Bufferindex)))
+		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &m_WorldMatrixDefaultIcon[Bufferindex])))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -524,12 +515,8 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesDefaultIcon(_uint Bufferindex)
 HRESULT CUI_Minimap::Setup_ShaderResourcesIcon(_uint Bufferindex)
 {
 
-	if (nullptr != m_pTexIcon)
-	{
-		if (FAILED(m_pTexIcon->Setup_ShaderResource(m_pShader, "g_MyTexture", m_IconDescList[Bufferindex].iTexNum)))
-			return E_FAIL;
-	}
-
+	if (FAILED(m_pTexIcon->Setup_ShaderResource(m_pShader, "g_MyTexture", m_IconDescList[Bufferindex].iTexNum)))
+		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_IconDescList[Bufferindex].WorldMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))

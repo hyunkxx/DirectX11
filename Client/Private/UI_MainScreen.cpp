@@ -6,7 +6,6 @@
 #include "P_PlayerGirl.h"
 #include "Terrain.h"
 #include "UI_Terminal.h"
-#include "CharacterState.h"
 
 CUI_MainScreen::CUI_MainScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)

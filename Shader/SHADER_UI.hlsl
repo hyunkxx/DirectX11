@@ -1,4 +1,5 @@
 
+  
 #include "Shader_Defines.hpp"
 
 matrix				g_MyWorldMatrix, g_MyViewMatrix, g_MyProjMatrix;
@@ -274,11 +275,11 @@ PS_OUT PS_CUT(PS_IN In)
 	g_fUV.x = (g_fRB.x - g_fLU.x) * In.vTexUV.x + g_fLU.x;
 	g_fUV.y = (g_fRB.y - g_fLU.y) * In.vTexUV.y + g_fLU.y;
 	
-	float4 fcolor, fDefuse;
-	fcolor = g_MyTexture2.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
-	fDefuse = g_MyTexture.Sample(LinearSampler,  g_fUV);
-	Out.vColor = fDefuse * fcolor;
-	
+	//float4 fcolor, fDefuse;
+	//fcolor = g_MyTexture2.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	//fDefuse = g_MyTexture.Sample(LinearSampler,  g_fUV);
+	//Out.vColor = fDefuse * fcolor;
+	Out.vColor =g_MyTexture2.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
 
 	Out.vColor.r += g_fColorR/255.f;
 	Out.vColor.g += g_fColorG/255.f;
