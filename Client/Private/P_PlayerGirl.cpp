@@ -107,9 +107,6 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	//m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(105.f, 30.f, 92.f, 1.f));
 	//m_pMainTransform->Set_Scale(_float3(10.f, 10.f, 10.f));
 	//m_pNaviCom->Set_CurrentIndex(90);
-
-
-	
 	
 	// 요거 건들였어요.
 	//m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(137.131f, 25.745f, 196.163f, 1.f));
@@ -130,8 +127,8 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	SetUp_State();
 	SetUp_Animations(false);
 
-	// CharInfo 초기화
-	lstrcpy(m_tCharInfo.szName, TEXT("Rover"));
+	// CharInfo 초기화 >> 플레이어는 CharInfo 안씀
+	/*lstrcpy(m_tCharInfo.szName, TEXT("Rover"));
 	m_tCharInfo.eElement = ELMT_SPECTRA;
 	m_tCharInfo.iLevel = 10;
 	m_tCharInfo.iExp = 0;
@@ -143,9 +140,8 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	m_tCharInfo.fCurTP = 0.f;
 	m_tCharInfo.fAttack = 50.f;
 	m_tCharInfo.fDefense = 50.f;
-	m_tCharInfo.fCriticalRate = 0.1f; 
+	m_tCharInfo.fCriticalRate = 0.1f; */
 	
-
 	// 충돌 타입 처리
 	m_eCollisionType = CT_PLAYER;
 	m_fPushWeight = 50.f;
@@ -163,7 +159,16 @@ void CP_PlayerGirl::Start()
 #ifdef _DEBUG
 	m_pRendererCom->DebugBundleRender_Control(true);
 #endif
-	m_pState = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pPlayerStateClass = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pCharacterState = m_pPlayerStateClass->Get_CharState_byChar(CPlayerState::CHARACTER_ROVER);
+
+	m_pCharacterState->fMaxCooltime[CPlayerState::SKILL_E] = (_float)m_tStates[IS_SKILL_01].CoolTime;
+	m_pCharacterState->fMaxGauge[CPlayerState::SKILL_Q] = 100.f;
+	m_pCharacterState->fMaxCooltime[CPlayerState::SKILL_R] = (_float)m_tStates[IS_BURST].CoolTime;
+	
+
+	// TODO: 에코 쿨타임, 에코 착용 시 변경하도록 바꿔야 함
+	m_pCharacterState->fMaxCooltime[CPlayerState::SKILL_Q] = 5.f;
 
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
@@ -204,8 +209,6 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 			* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_LOOK), m_MissileRotAngles[MISS_BURST_01].z);
 		m_MissilePools[MISS_BURST_01]->Shot(InitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot);
 	}
-
-	Apply_CoolTime(TimeDelta);
 
 	Key_Input(TimeDelta * TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
 
@@ -839,10 +842,17 @@ void CP_PlayerGirl::SetUp_State()
 	// 쿨타임 적용
 	if (true == m_tCurState.bApplyCoolTime)
 	{
-		if (IS_SKILL_02 == m_Scon.iCurState)
-			m_StateCoolTimes[IS_SKILL_01] = m_tCurState.CoolTime;
-		else
-			m_StateCoolTimes[m_Scon.iCurState] = m_tCurState.CoolTime;
+		if (IS_SKILL_02 == m_Scon.iCurState ||
+			IS_SKILL_02 == m_Scon.iCurState)
+			m_pCharacterState[CPlayerState::CHARACTER_ROVER].fCurCooltime[CPlayerState::SKILL_E] = m_pCharacterState[CPlayerState::CHARACTER_ROVER].fMaxCooltime[CPlayerState::SKILL_E];
+		else if (IS_BURST == m_Scon.iCurState)
+			m_pCharacterState[CPlayerState::CHARACTER_ROVER].fCurCooltime[CPlayerState::SKILL_R] = m_pCharacterState[CPlayerState::CHARACTER_ROVER].fMaxCooltime[CPlayerState::SKILL_R];
+		else if (SS_SUMMON == m_Scon.iCurState)
+			m_pCharacterState[CPlayerState::CHARACTER_ROVER].fCurCooltime[CPlayerState::SKILL_Q] = m_pCharacterState[CPlayerState::CHARACTER_ROVER].fMaxCooltime[CPlayerState::SKILL_Q];
+		else if (SS_FIXHOOK_END_UP == m_Scon.iCurState)
+			m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_FIXHOOK);
+		else if (SS_THROW_F == m_Scon.iCurState)
+			m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_LAVITATION);
 	}
 	
 	//PhysicMove
@@ -1235,26 +1245,33 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_PlayerGirl::INPUT_SKILL:
-			if (0.0 == m_StateCoolTimes[IS_SKILL_01])
+			if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::SKILL_E])
 			{
-				if (m_fSkillGauge >= 50.f)
-				{
-					m_fSkillGauge -= 50.f;
+				if (m_pCharacterState->fCurGauge[CPlayerState::SKILL_E] >= 50.f)
 					m_Scon.iNextState = IS_SKILL_02;
-				}
 				else
 					m_Scon.iNextState = IS_SKILL_01;
 			}
 			break;
 
 		case Client::CP_PlayerGirl::INPUT_BURST:
-			if(0.0 == m_StateCoolTimes[IS_BURST])
+			if(0.0 == m_pCharacterState->fCurCooltime[CPlayerState::SKILL_R] &&
+				m_pCharacterState->fMaxGauge[CPlayerState::SKILL_R] == m_pCharacterState->fCurGauge[CPlayerState::SKILL_R])
 				m_Scon.iNextState = IS_BURST;
 			break;
 
 		case Client::CP_PlayerGirl::INPUT_TOOL:
-			if (0.0 == m_StateCoolTimes[SS_FIXHOOK_END_UP])
-				m_Scon.iNextState = SS_FIXHOOK_END_UP;
+			if (0.0 == m_pPlayerStateClass->Get_CurToolCoolTime())
+			{
+				if (CPlayerState::TOOL_FIXHOOK == m_pPlayerStateClass->Get_CurToolID())
+					m_Scon.iNextState = SS_FIXHOOK_END_UP;
+				else if (CPlayerState::TOOL_LAVITATION == m_pPlayerStateClass->Get_CurToolID())
+					m_Scon.iNextState = SS_CONTROL_F;
+				else if (CPlayerState::TOOL_SCANNER== m_pPlayerStateClass->Get_CurToolID())
+					int a = 1; // 즉발 후 쿨타임 세팅을 할 수도 있음 
+
+			}
+				
 			break;
 		default:
 			break;
@@ -1277,8 +1294,14 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			m_Scon.iNextState = IS_AIRATTACK_START;
 			break;
 		case Client::CP_PlayerGirl::INPUT_TOOL:
-			if (0.0 == m_StateCoolTimes[SS_FIXHOOK_END_UP])
-				m_Scon.iNextState = SS_FIXHOOK_END_UP;
+			if (0.0 == m_pPlayerStateClass->Get_CurToolCoolTime())
+			{
+				if (CPlayerState::TOOL_FIXHOOK == m_pPlayerStateClass->Get_CurToolID())
+					m_Scon.iNextState = SS_FIXHOOK_END_UP;
+					else if (CPlayerState::TOOL_SCANNER == m_pPlayerStateClass->Get_CurToolID())
+					int a = 1; // 즉발 후 쿨타임 세팅을 할 수도 있음 
+
+			}
 			break;
 		default:
 			break;

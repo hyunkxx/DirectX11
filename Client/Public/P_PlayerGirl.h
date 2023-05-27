@@ -3,6 +3,7 @@
 #include "Character.h"
 #include "Renderer.h"
 #include "MissilePool.h"
+#include "PlayerState.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -170,32 +171,6 @@ public:
 	// 
 	virtual void Check_Nearst(CCharacter* pChar, _float fDist) override;
 
-
-	// 0 = E, 1 = R, 2 = Q, 3 = T
-	virtual _float Get_CoolTime(_uint iType) 
-	{ 
-		_float fOut = 0.f;
-		switch (iType)
-		{
-		case 0:
-			fOut = (_float)m_StateCoolTimes[IS_SKILL_01];
-			break;
-		case 1:
-			fOut = (_float)m_StateCoolTimes[IS_BURST];
-			break;
-		case 2:
-			// fOut = (_float)m_StateCoolTimes[SS_SUMMON];
-			break;
-		case 3:
-			fOut = (_float)m_StateCoolTimes[SS_FIXHOOK_END_UP];
-			break;
-		default:
-			break;
-		}
-
-		return fOut;
-	}
-
 	// 주변 몬스터 리스트
 	// 몬스터 쪽에서 플레이어랑의 거리가 일정값 이하일 때? 플레이어를 발견했을 때 부터
 	// 
@@ -211,8 +186,10 @@ public:
 	virtual _uint Get_AttackID() override { return m_iCurAttackID; }
 	virtual void Get_AttackInfo(_uint iAttackID, TAGATTACK* pAttackInfoOut, _float* pAttackOut) override
 	{
+		// 모션 계수
 		memcpy(pAttackInfoOut, &m_AttackInfos[iAttackID], sizeof(TAGATTACK));
-		*pAttackOut = m_tCharInfo.fAttack;
+		// 최종 공격력
+		*pAttackOut = m_pCharacterState[CPlayerState::CHARACTER_ROVER].fAttack[CPlayerState::STAT_TOTAL];
 	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
 
@@ -349,7 +326,8 @@ public:
 
 	CGameObject* pStaticObject = nullptr;
 
-	class CPlayerState* m_pState;
+	CPlayerState* m_pPlayerStateClass;
+	CPlayerState::CHARACTER_STATE* m_pCharacterState;
 	class CInventory* m_pInven = nullptr;
 	class CCameraMovement* m_pCamMovement = nullptr;
 };
