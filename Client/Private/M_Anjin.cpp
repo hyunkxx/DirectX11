@@ -76,7 +76,7 @@ HRESULT CM_Anjin::Initialize(void * pArg)
 	m_pModelCom->SetUp_Animation(0, true, false);
 
 	// 고유 변수 초기화
-	m_fAlertRange = 15.f;
+	m_fAlertRange = 0.f;
 	m_fAttackRange = 4.f;
 	m_bAttackReady = true;
 

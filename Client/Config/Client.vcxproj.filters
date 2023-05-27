@@ -324,9 +324,8 @@
     <ClCompile Include="..\private\M_AWukaka.cpp">
       <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\CharacterState.cpp">
-      <Filter>src\02. GameObject\00. StaticClasses</Filter>
-    </ClCompile>
+    <ClCompile Include="..\private\PlayerState.cpp" />
+    <ClCompile Include="..\private\Level_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -626,9 +625,8 @@
     <ClInclude Include="..\public\M_AWukaka.h">
       <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\CharacterState.h">
-      <Filter>src\02. GameObject\00. StaticClasses</Filter>
-    </ClInclude>
+    <ClInclude Include="..\public\PlayerState.h" />
+    <ClInclude Include="..\public\Level_Test.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

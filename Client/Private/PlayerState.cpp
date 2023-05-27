@@ -9,7 +9,9 @@ CPlayerState::CPlayerState(ID3D11Device * pDevice, ID3D11DeviceContext * pContex
 CPlayerState::CPlayerState(const CPlayerState & rhs)
 	: CGameObject(rhs)
 {
+	memcpy(&m_PlayerState, &rhs.m_PlayerState, sizeof(PLAYER_STATE));
 	memcpy(m_CharacterState, rhs.m_CharacterState, sizeof(CHARACTER_STATE) * CHARACTER_END);
+	memcpy(m_CharSlot, rhs.m_CharSlot, sizeof(CHARACTERS) * SLOT_END);
 }
 
 HRESULT CPlayerState::Initialize_Prototype()
