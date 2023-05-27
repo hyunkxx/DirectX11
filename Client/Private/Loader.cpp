@@ -70,6 +70,9 @@ unsigned int APIENTRY ThreadEntry(void* pArg)
 	case LEVEL_GAMEPLAY:
 		pLoader->Load_Level_GamePlay();
 		break;
+	case LEVEL_TEST:
+		pLoader->Load_Level_Test();
+		break;
 	case LEVEL_ANIMTOOL:
 		pLoader->Load_Level_AnimTool();
 		break;
@@ -327,6 +330,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	m_pApp->LoadRatio(0.1f);
 	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::NAVIGATION,
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Navigation/Navigation.data")))))
+		return E_FAIL;
+
 
 	m_pApp->LoadRatio(0.2f);
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
@@ -2004,13 +2012,199 @@ HRESULT CLoader::Load_Level_AnimTool()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_2))))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::FLOOR, CFloor::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
 #pragma endregion
 
 	m_szLoadingStateText = L"Load Completed";
 	m_isFinish = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Load_Level_Test()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	//GamePlay Component
+#pragma region COMPONENTS
+	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
+	// UI
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Main/main%d.dds"), 255))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMOUSE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Mouse/CursorPre%d.dds"), 2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UITERMINAL,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/Terminal%d.dds"), 8))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMAP,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Map%d.dds"), 2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMAPDEFAULT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/DefaultIcon%d.dds"), 2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMAPICON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Icon%d.dds"), 47))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIFIGHT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Fight/Fight%d.dds"), 79))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::EYE_BURST,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::EYE_MASK,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeMask.dds"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::BOX_EMISSIVE,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Static/Prop/Interaction/SimpleBox/box_emissive.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::BOX_SPECULAR,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Static/Prop/Interaction/SimpleBox/box_spec.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::BOX_SSAO,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Static/Prop/Interaction/SimpleBox/box_ssao.dds"))))
+		return E_FAIL;
+
+	m_pApp->LoadRatio(0.1f);
+	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, COMPONENT::NAVIGATION,
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Test/Navigation.data")))))
+		return E_FAIL;
+
+	m_pApp->LoadRatio(0.2f);
+	m_szLoadingStateText = L"모델를 로딩중입니다.";
+
+	// SMODEL
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sword.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SWORD_0_SCABBARD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Scabbard.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
+		return E_FAIL;
+
+	// DMODEL
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+	m_pApp->LoadRatio(0.6f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+		return E_FAIL;
+
+	m_pApp->LoadRatio(0.9f);
+	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	m_pApp->LoadRatio(1.f);
+	//GamePlay GameObject
+#pragma region GAMEOBJECTS
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CAMERA, CPlayerCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_PLAYERGIRL, CP_PlayerGirl::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE, CMissile::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_CONSTANT, CMissile_Constant::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_ROTAROUND, CMissile_RotAround::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SANDBAG, CSandbag::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SWORD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SWORD))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SCABBARD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SCABBARD))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_0, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_0))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MAP_OBJECT, CMapObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_SIMPLE, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_SIMPLE))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_STANDARD, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_STANDARD))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_EXPANDED, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_EXPANDED))))
+		return E_FAIL;
+
+	//UIUI
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UI, CUI_MainScreen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MOUSE, CUI_Mouse::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMINIMAP, CUI_Minimap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITAPT, CUI_TapT::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMONSTER, CUI_Monster::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITERMINAL, CUI_Terminal::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion
+
+	m_Start = (_uint)time(nullptr);
+
+	while (true)
+	{
+		m_Wait = (_uint)time(nullptr);
+
+		if (m_Wait - m_Start >= 3)
+			break;
+	}
+
+	m_szLoadingStateText = L"Load Completed";
+	m_isFinish = true;
+
 	return S_OK;
 }
 

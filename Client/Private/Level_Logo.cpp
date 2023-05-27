@@ -71,6 +71,8 @@ void CLevel_Logo::Tick(_double TimeDelta)
 
 	if (static_cast<CIntroCamera*>(m_pIntroCam)->IsLobbyOut() || KEY_STATE::TAP == pGameInstance->InputKey(DIK_TAB))
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY));
+	else if (static_cast<CIntroCamera*>(m_pIntroCam)->IsLobbyOut() || KEY_STATE::TAP == pGameInstance->InputKey(DIK_F9))
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TEST));
 
 }
 

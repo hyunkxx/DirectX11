@@ -675,10 +675,12 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::CARCULATOR,
 		CCalculator::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	// 각 레벨마다 네비게이션 생성해서 사용하도록 수정
 	// TEXT("../../Data/GamePlay/Navigation/Navigation.data")
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::NAVIGATION,
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Navigation/Navigation.data")))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::NAVIGATION,
+	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Navigation/Navigation.data")))))
+	//	return E_FAIL;
 
 	Safe_AddRef(m_pRenderer);
 
@@ -727,8 +729,6 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 
 	if (FAILED(Ready_Static_Effect()))
 		return E_FAIL;
-	
-
 
 	return S_OK;
 }

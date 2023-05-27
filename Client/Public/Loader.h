@@ -15,6 +15,7 @@ public:
 	HRESULT Load_Level_Logo();
 	HRESULT Load_Level_GamePlay();
 	HRESULT Load_Level_AnimTool();
+	HRESULT Load_Level_Test();
 
 public:
 	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL_ID eNextLevel);

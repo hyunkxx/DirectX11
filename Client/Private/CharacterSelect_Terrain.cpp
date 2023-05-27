@@ -60,11 +60,11 @@ void CCharacterSelect_Terrain::LateTick(_double TimeDelta)
 
 #ifdef _DEBUG
 	// 디버그 모드 랜더링 안할 시 릭 나옴
-	if (nullptr != m_pRenderer && nullptr != m_pNavigation)
-	{
-		m_pNavigation->Set_IntervalY(0.01f);
-		m_pRenderer->AddDebugBundle(m_pNavigation);
-	}
+	//if (nullptr != m_pRenderer && nullptr != m_pNavigation)
+	//{
+	//	m_pNavigation->Set_IntervalY(0.01f);
+	//	m_pRenderer->AddDebugBundle(m_pNavigation);
+	//}
 #endif // _DEBUG
 }
 
@@ -110,9 +110,9 @@ HRESULT CCharacterSelect_Terrain::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::NAVIGATION,
+	/*if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::NAVIGATION,
 		TEXT("com_navigation"), (CComponent**)&m_pNavigation)))
-		return E_FAIL;
+		return E_FAIL;*/
 
 #pragma region TERRAIN_TEX
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::TERRAIN_D_5,
@@ -235,7 +235,7 @@ void CCharacterSelect_Terrain::Free()
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pRenderer);
-	Safe_Release(m_pNavigation);
+	//Safe_Release(m_pNavigation);
 
 	for (_uint i = 0; i < CCharacterSelect_Terrain::T_END; ++i)
 	{

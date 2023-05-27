@@ -2,6 +2,7 @@
 #include "Floor.h"
 
 #include "GameInstance.h"
+#include "GameMode.h"
 
 CFloor::CFloor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -101,9 +102,8 @@ HRESULT CFloor::Add_Components()
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::NAVIGATION,
-		TEXT("com_navigation"), (CComponent**)&m_pNavigation)))
-		return E_FAIL;
+
+	
 
 	return S_OK;
 }
@@ -166,5 +166,4 @@ void CFloor::Free()
 	Safe_Release(m_pShader);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pTexture);
-	Safe_Release(m_pNavigation);
 }

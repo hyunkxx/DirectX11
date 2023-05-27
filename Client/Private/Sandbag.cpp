@@ -16,8 +16,8 @@
 #include "CameraMovement.h"
 #include "Chest.h"
 //UI추가
-#include "UI_Monster.h"
-#include "UI_Minimap.h"
+//#include "UI_Monster.h"
+//#include "UI_Minimap.h"
 
 CCharacter::SINGLESTATE CSandbag::m_tStates[IS_END];
 
@@ -63,7 +63,7 @@ HRESULT CSandbag::Initialize(void * pArg)
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
 	// 초기위치 설정
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 30.f, 1.f));
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.f, 0.f, 45.f, 1.f));
 	m_pNaviCom->Set_CurrentIndex(0);
 
 	// StateController 초기화
@@ -102,7 +102,7 @@ HRESULT CSandbag::Initialize(void * pArg)
 	//m_pAttackCollider->SetActive(false);
 
 	//UI추가
-	CGameInstance* pGame = CGameInstance::GetInstance();
+	/*CGameInstance* pGame = CGameInstance::GetInstance();
 	_tchar szIndex[MAX_PATH];
 	wsprintf(szIndex, TEXT("UI_Monster%d"), Monindex);
 	CUI_Monster::MONINFO MonInfo;
@@ -112,7 +112,7 @@ HRESULT CSandbag::Initialize(void * pArg)
 	if (pGame->Add_GameObjectEx(&pUIMon, LEVEL_ANYWHERE, OBJECT::UIMONSTER, TEXT("layer_UI"), szIndex, &MonInfo))
 		return E_FAIL;
 	m_pUIMon = static_cast<CUI_Monster*>(pUIMon);
-	++Monindex;
+	++Monindex;*/
 	return S_OK;
 }
 
@@ -131,8 +131,8 @@ void CSandbag::Start()
 	m_pTargetTransform = static_cast<CTransform*>(m_pTarget->Find_Component(TEXT("Com_Transform")));
 
 	//UI추가
-	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
-	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 44);
+	/*m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
+	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 44);*/
 }
 
 void CSandbag::PreTick(_double TimeDelta)
@@ -182,11 +182,11 @@ void CSandbag::Tick(_double TimeDelta)
 	pGameInstance->AddCollider(m_pMoveCollider, COLL_MOVE);
 	m_pMoveCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
-	if (false == this->IsDisable())
+	/*if (false == this->IsDisable())
 	{
 		m_pUIMon->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
-	}
+	}*/
 }
 
 void CSandbag::LateTick(_double TimeDelta)
@@ -290,7 +290,7 @@ HRESULT CSandbag::Add_Components()
 	NavigationDesc.iCurrentIndex = 0;
 
 	/* Navigation */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::NAVIGATION,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, COMPONENT::NAVIGATION,
 		TEXT("Com_Navigation"), (CComponent**)&m_pNaviCom, &NavigationDesc)))
 		return E_FAIL;
 
@@ -892,7 +892,7 @@ void CSandbag::Tick_State(_double TimeDelta)
 		if (IS_DEAD == m_Scon.iCurState)
 		{
 			SetState(DISABLE);
-			m_pUIMon->SetState(DISABLE);
+			//m_pUIMon->SetState(DISABLE);
 			m_pUIMon = nullptr;
 			m_pUIIcon = nullptr;
 		}
@@ -982,10 +982,10 @@ void CSandbag::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float
 	m_tCharInfo.fCurHP -= fFinalDamage;
 
 	// TODO: 여기서 대미지 폰트 출력
-	if (false == m_pUIMon->IsDisable())
+	/*if (false == m_pUIMon->IsDisable())
 	{
 		m_pUIMon->Set_Damage(fFinalDamage);
-	}
+	}*/
 
 	// 사망 시 사망 애니메이션 실행 
 	if (0.f >= m_tCharInfo.fCurHP)

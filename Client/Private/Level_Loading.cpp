@@ -8,6 +8,7 @@
 #include "Loader.h"
 #include "Level_Logo.h"
 #include "Level_GamePlay.h"
+#include "Level_Test.h"
 #include "Level_AnimTool.h"
 #include "BackGround.h"
 
@@ -77,6 +78,9 @@ void CLevel_Loading::Tick(_double TimeDelta)
 			break;
 		case LEVEL_GAMEPLAY:
 			pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_TEST:
+			pLevel = CLevel_Test::Create(m_pDevice, m_pContext);
 			break;
 		case LEVEL_ANIMTOOL:
 			pLevel = CLevel_AnimTool::Create(m_pDevice, m_pContext);

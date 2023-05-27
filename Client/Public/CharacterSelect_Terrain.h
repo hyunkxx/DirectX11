@@ -51,7 +51,9 @@ private:
 	CShader*			m_pShader = { nullptr };
 	CRenderer*			m_pRenderer = { nullptr };
 	CVIBuffer_Terrain*	m_pVIBuffer = { nullptr };
-	CNavigation*		m_pNavigation = { nullptr };
+
+	// 안쓰는 것 같아 주석 처리
+	//CNavigation*		m_pNavigation = { nullptr };
 
 	CTexture*			m_pDiffuseTexture[TERRAIN_KINDS::T_END] = { nullptr };
 	CTexture*			m_pNormalTexture[TERRAIN_KINDS::T_END] = { nullptr };

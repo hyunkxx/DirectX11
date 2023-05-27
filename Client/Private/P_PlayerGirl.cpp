@@ -522,7 +522,7 @@ HRESULT CP_PlayerGirl::Add_Components()
 	NavigationDesc.iCurrentIndex = 0;
 
 	/* Navigation */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::NAVIGATION,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, COMPONENT::NAVIGATION,
 		TEXT("Com_Navigation"), (CComponent**)&m_pNaviCom, &NavigationDesc)))
 		return E_FAIL;
 	

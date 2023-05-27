@@ -28,9 +28,7 @@ HRESULT CLevel_Test::Initialize()
 
 	// 몬스터들 상태 초기화 해놓기
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
-	CM_GAzizi::Init_States(m_pDevice, m_pContext);
 	CM_Anjin::Init_States(m_pDevice, m_pContext);
-	CM_AWukaka::Init_States(m_pDevice, m_pContext);
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
@@ -44,15 +42,15 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Layer_Monster(TEXT("layer_monster"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
+	//	return E_FAIL;
 
 	//if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_tree"))))
 	//return E_FAIL;
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
-	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
+	//pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
 
 	return S_OK;
 }
@@ -61,7 +59,7 @@ void CLevel_Test::Tick(_double TimeDelta)
 {
 #ifdef _DEBUG
 	CAppManager* pAppManager = CAppManager::GetInstance();
-	pAppManager->SetTitle(L"LEVEL_GAMEPLAY");
+	pAppManager->SetTitle(L"LEVEL_TEST");
 #endif
 
 	CGameMode* pGameMode = CGameMode::GetInstance();
@@ -191,26 +189,26 @@ HRESULT CLevel_Test::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	//SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 	//ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	//EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data");
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TERRAIN, pLayerTag, L"terrain", &EditionDesc)))
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::TERRAIN, pLayerTag, L"terrain", &EditionDesc)))
 	//	return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANIMTOOL, OBJECT::FLOOR, pLayerTag, L"floor")))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SKY, pLayerTag, L"sky")))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SKY, pLayerTag, L"sky")))
 		return E_FAIL;
 
-	_float3 vPos = { 32.f, 1.828f, 21.f };
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_SIMPLE, pLayerTag, L"chest_simple", &vPos)))
-		return E_FAIL;
+	//_float3 vPos = { 32.f, 1.828f, 21.f };
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::CHEST_SIMPLE, pLayerTag, L"chest_simple", &vPos)))
+	//	return E_FAIL;
 
-	vPos = { 28.f, 1.7f, 25.f };
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_STANDARD, pLayerTag, L"chest_standard", &vPos)))
-		return E_FAIL;
+	//vPos = { 28.f, 1.7f, 25.f };
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::CHEST_STANDARD, pLayerTag, L"chest_standard", &vPos)))
+	//	return E_FAIL;
 
-	vPos = { 29.f, 1.83f, 31.f };
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_EXPANDED, pLayerTag, L"chest_expanded", &vPos)))
-		return E_FAIL;
+	//vPos = { 29.f, 1.83f, 31.f };
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::CHEST_EXPANDED, pLayerTag, L"chest_expanded", &vPos)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -249,7 +247,7 @@ HRESULT CLevel_Test::Ready_Layer_Camera(const _tchar* pLayerTag)
 	PCamDesc.fDistance = 4.f;
 	PCamDesc.fXAngle = 20.f;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYER_CAMERA, pLayerTag, L"player_camera", &PCamDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_CAMERA, pLayerTag, L"player_camera", &PCamDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -259,16 +257,7 @@ HRESULT CLevel_Test::Ready_Layer_Player(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	/*int j = 0;
-	_tchar szTag[MAX_TAG];
-	wsprintf(szTag, L"Texture%d", j);
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHARACTER, pLayerTag, szTag, &j)))
-	return E_FAIL;*/
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -278,17 +267,9 @@ HRESULT CLevel_Test::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MONSTER_GAZIZI, pLayerTag, TEXT("GAzizi"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MONSTER_ANJIN, pLayerTag, TEXT("Anjin"))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MONSTER_AWUKAKA, pLayerTag, TEXT("AWukaka"))))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -299,20 +280,20 @@ HRESULT CLevel_Test::Ready_Layer_UI(const _tchar * pLayerTag)
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UI, pLayerTag, TEXT("UI_MainScreen"))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::UI, pLayerTag, TEXT("UI_MainScreen"))))
+	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MOUSE, pLayerTag, TEXT("UI_Mouse"))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UITAPT, pLayerTag, TEXT("UI_TapT"))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UIMINIMAP, pLayerTag, TEXT("UI_Minimap"))))
-		return E_FAIL;
-	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UIMONSTER, pLayerTag, TEXT("UI_Monster"))))
-	return E_FAIL;*/
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MOUSE, pLayerTag, TEXT("UI_Mouse"))))
+	//	return E_FAIL;
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::UITAPT, pLayerTag, TEXT("UI_TapT"))))
+	//	return E_FAIL;
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::UIMINIMAP, pLayerTag, TEXT("UI_Minimap"))))
+	//	return E_FAIL;
+	///*if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::UIMONSTER, pLayerTag, TEXT("UI_Monster"))))
+	//return E_FAIL;*/
 
-	if (FAILED(pGameInstance->Add_GameObjectEx(&m_pAcquireSystem, LEVEL_GAMEPLAY, OBJECT::ACQUIRE_SYSTEM, pLayerTag, TEXT("AcquireSystem"))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_GameObjectEx(&m_pAcquireSystem, LEVEL_TEST, OBJECT::ACQUIRE_SYSTEM, pLayerTag, TEXT("AcquireSystem"))))
+	//	return E_FAIL;
 
 	pGameMode->SetupAcquireSystem(static_cast<CAcquireSystem*>(m_pAcquireSystem));
 
@@ -339,7 +320,5 @@ void CLevel_Test::Free()
 	__super::Free();
 
 	CP_PlayerGirl::Release_States();
-	CM_GAzizi::Release_States();
 	CM_Anjin::Release_States();
-	CM_AWukaka::Release_States();
 }
