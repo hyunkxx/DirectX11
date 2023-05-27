@@ -595,6 +595,11 @@ HRESULT CMesh_Effect::Add_Component(const EFFECT_DESC & ParticleDesc)
 	if (FAILED(Load_Effect(L"../../Resource/Model/Static/Weapon/")))
 		return E_FAIL;
 	
+	if (FAILED(Load_Effect(L"../../Resource/Model/Static/Lighting/")))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(L"../../Resource/Model/Static/Ice/")))
+		return E_FAIL;
 
 #pragma endregion
 
