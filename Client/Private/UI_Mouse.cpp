@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\UI_Mouse.h"
-
+#include "GameMode.h"
 #include "GameInstance.h"
 
 CUI_Mouse::CUI_Mouse(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -122,7 +122,7 @@ HRESULT CUI_Mouse::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UIMOUSE,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UIMOUSE,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 

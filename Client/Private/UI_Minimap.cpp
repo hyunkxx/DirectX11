@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\UI_Minimap.h"
+#include "GameMode.h"
 #include "GameInstance.h"
 #include "UI_Mouse.h"
 #include "P_PlayerGirl.h"
@@ -20,7 +21,6 @@ HRESULT CUI_Minimap::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	//Load();
 	return S_OK;
 }
 
@@ -41,30 +41,34 @@ HRESULT CUI_Minimap::Initialize(void * pArg)
 	return S_OK;
 }
 
+void CUI_Minimap::Start()
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	m_pPlayer = static_cast<CP_PlayerGirl*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
+}
+
 void CUI_Minimap::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
 
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
 
 	// 미니맵 
 	_float3 fTerrainScale;
-	CGameObject* pPlayer = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Player"));
+	
 	// 가져온 오브젝트들이 준비가 되면 랜더 돌릴 수 있음-> 랜더조건
-	if (nullptr != pPlayer)
+	if (nullptr != m_pPlayer)
 	{
 		m_bNull = false;
-		CTransform* pComponent = static_cast<CTransform*>(dynamic_cast<CP_PlayerGirl*>(pPlayer)->Find_Component(TEXT("Com_Transform")));
-		XMStoreFloat4(&fPlayerPos, pComponent->Get_State(CTransform::STATE_POSITION));
-
+		CTransform* pComponent = static_cast<CTransform*>(m_pPlayer->Find_Component(TEXT("Com_Transform")));
+		
 		//미니맵에 출력될 텍스처 uv의 전체 지형에서의 pos X,Z값
 		// 플레이어 pos 기준으로 정해줌
-		m_fPointLU.x = fPlayerPos.x - 200.f;
-		m_fPointLU.y = fPlayerPos.z + 200.f;
-		m_fPointRB.x = fPlayerPos.x + 200.f;
-		m_fPointRB.y = fPlayerPos.z - 200.f;
+		m_fPointLU.x = fPlayerPos.x - 20.f;
+		m_fPointLU.y = fPlayerPos.z + 20.f;
+		m_fPointRB.x = fPlayerPos.x + 20.f;
+		m_fPointRB.y = fPlayerPos.z - 20.f;
 
 		// 스크린좌표상의 uv구하기, 자른 사진과 지형이 1:1이라는 상황
 		// dx 좌표계와 uv 좌표계의 y+ 방향이 반대라서 y값은 -곱해줌
@@ -92,47 +96,27 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			m_DefaultIconRB[i].y = m_TerrainRB.y;
 		}
 
-		//for (auto& pDesc : m_IconDescList)
-		//{
-		//	_vector vWorldPos, vObjectPos;
-		//	_float4 fObjectPos;
-		//	_float2 IconPos;
-		//	vWorldPos = XMVectorSet(pDesc.fX, pDesc.fY, pDesc.fZ, 1.f);
-		//	vObjectPos = XMVector3TransformCoord(vWorldPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_VIEW));
-		//	vObjectPos = XMVector3TransformCoord(vObjectPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_PROJ));
-		//	XMStoreFloat4(&fObjectPos, vObjectPos);
-		//	IconPos.x = (fObjectPos.x) * (0.5f * g_iWinSizeX);
-		//	IconPos.y = (fObjectPos.y) * (0.5f * g_iWinSizeY);
+		for (auto& pDesc : m_IconDescList)
+		{
+			_vector vPlayerPos, vWorldPos;
+			vWorldPos = XMVectorSet(pDesc.fX, pDesc.fY, pDesc.fZ, 1.f);
+			vPlayerPos = XMLoadFloat4(&fPlayerPos);
+			_float X = XMVectorGetX(vPlayerPos - vWorldPos);
+			_float Y = XMVectorGetZ(vPlayerPos - vWorldPos);
+			
+			XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)  
+				* XMMatrixTranslation(-540.f + (XMVectorGetX(vPlayerPos) + X) * m_fWidthMiniMap/g_iWinSizeX 
+					, 260.f - (XMVectorGetZ(vPlayerPos) - Y ) * m_fHeightMiniMap/g_iWinSizeY , 0.f));
+			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 
-		//	IconPos.x = IconPos.x * 0.2f * (m_fWidthMiniMap / g_iWinSizeX);
-		//	IconPos.y = IconPos.y * 0.2f * (m_fHeightMiniMap / g_iWinSizeY);
-
-		//	_vector vec1 = XMVectorSet(m_fXMiniMap, m_fYMiniMap, 0.f , 1.f);
-		//	_vector vec2 = XMVectorSet(IconPos.x + m_fXMiniMap, IconPos.y + m_fYMiniMap, 0.f, 1.f);
-		//	_float Dist = XMVectorGetX(XMVector4Length(vec2 - vec1));
-
-		//	if (m_fWidthMiniMap / 2.f < Dist)
-		//	{
-		//		pDesc.bRender = true;
-		//	}
-		//	else
-		//	{
-		//		pDesc.bRender = true;
-		//	}
-
-
-
-		//	XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)
-		//		* XMMatrixTranslation(IconPos.x + m_fXMiniMap, IconPos.y + m_fYMiniMap, 0.f));
-		//	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		//	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-		//}
+		}
 
 
 
 		// 플레이어 아이콘 돌리는 기능
 		{
-			_float4x4 PlayerWorldMat = dynamic_cast<CTransform*>(pComponent)->Get_WorldMatrix();
+			_float4x4 PlayerWorldMat =pComponent->Get_WorldMatrix();
 			_vector vPlayerLook = XMLoadFloat4x4(&PlayerWorldMat).r[2];
 			XMVectorSetY(vPlayerLook, 0.f);
 			vPlayerLook = XMVector3Normalize(vPlayerLook); //플레이어 룩 노멀라이즈
@@ -161,7 +145,6 @@ void CUI_Minimap::Tick(_double TimeDelta)
 
 		// 시야범위 돌리는 기능
 		{
-			CGameInstance* pGameInstance = CGameInstance::GetInstance();
 			_float4x4 CamMat = pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::TS_VIEW);
 			_vector vCamLook = XMLoadFloat4x4(&CamMat).r[2];
 			XMVectorSetY(vCamLook, 0.f);
@@ -189,8 +172,7 @@ void CUI_Minimap::Tick(_double TimeDelta)
 	}
 
 
-	// 메인화면시야아이콘
-
+	// 메인화면아이콘
 
 	for (auto& Desc : m_DescList)
 	{
@@ -214,9 +196,9 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			IconPos.x = IconPos.x + Dist;
 		}
 
-		if (-230.f >= IconPos.y)
+		if (-260.f >= IconPos.y)
 		{
-			_float Dist = -230.f - IconPos.y;
+			_float Dist = -260.f - IconPos.y;
 			IconPos.y = IconPos.y + Dist;
 		}
 		if (320.f <= IconPos.y)
@@ -224,12 +206,11 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			_float Dist = 320.f - IconPos.y;
 			IconPos.y = IconPos.y + Dist;
 		}
-		CPipeLine* pPipe = CPipeLine::GetInstance();
-		_matrix CamMat = pPipe->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
+		_matrix CamMat = pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
 		_vector CamLook = CamMat.r[2];
 		_vector CamPos = CamMat.r[3];
 		_float Dist = XMVectorGetX(XMVector4Length(Desc.vObjectPos - CamPos));
-		_vector vNormailzeDir = XMVector4Normalize(Desc.vObjectPos - CamPos);
+		_vector vNormailzeDir = XMVector4Normalize(XMVectorSetY(Desc.vObjectPos - CamPos, 0.f));
 		XMVectorSetY(CamLook, 0.f);
 		_vector vNormailzeLook = XMVector4Normalize(CamLook);
 
@@ -245,7 +226,7 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			IconPos.y = -210.f;
 		}
 
-		if ((Dist > 50.f) && (Dist<150.f))
+		if ((Dist > 50.f) && (Dist < 150.f))
 		{
 			Desc.bRender = true;
 		}
@@ -253,13 +234,12 @@ void CUI_Minimap::Tick(_double TimeDelta)
 		{
 			Desc.bRender = false;
 		}
-		XMStoreFloat4x4(&(Desc.IconWorldMatrix), XMMatrixScaling(IconSize.x, IconSize.y, 1.f)
+		XMStoreFloat4x4(&(Desc.IconWorldMatrix), XMMatrixScaling(30.f, 30.f, 1.f)
 			* XMMatrixTranslation(IconPos.x, IconPos.y, 0.f));
 		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f)); 
 	}
 
-	Safe_Release(pGameInstance);
 }
 
 void CUI_Minimap::LateTick(_double TimeDelta)
@@ -348,7 +328,7 @@ HRESULT CUI_Minimap::Add_Components()
 		return E_FAIL;
 
 	//미니맵
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UIMAP,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UIMAP,
 		TEXT("com_texMap"), (CComponent**)&m_pTexMiniMap)))
 		return E_FAIL;
 
@@ -357,11 +337,11 @@ HRESULT CUI_Minimap::Add_Components()
 		return E_FAIL;
 
 	//디폴트아이콘
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UIMAPDEFAULT,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UIMAPDEFAULT,
 		TEXT("com_texDefaultIcon"), (CComponent**)&m_pTexDefaultIcon)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UIMAPICON,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UIMAPICON,
 		TEXT("com_texIcon"), (CComponent**)&m_pTexIcon)))
 		return E_FAIL;
 
@@ -404,6 +384,7 @@ _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 	}
 	XMStoreFloat4x4(&MiniMapDesc.WorldMatrix, WorldMat);
 	m_IconDescList.push_back(MiniMapDesc);
+
 
 	XMStoreFloat4x4(&fWorldMat, WorldMat);
 	ICONDESC Desc;

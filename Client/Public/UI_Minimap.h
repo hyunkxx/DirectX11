@@ -11,7 +11,7 @@ class CTransform;
 END
 
 BEGIN(Client)
-
+class CP_PlayerGirl;
 class CUI_Minimap final : public CGameObject
 {
 public:
@@ -59,6 +59,7 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Start();
 	virtual void Tick(_double TimeDelta) override;
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
@@ -80,7 +81,9 @@ public:
 
 
 public:
+	void Oddnumber();
 	void Set_ObjectPos(_int Index, _fvector vObjectPos);
+	void SetRender(_int index, _bool bRender) { m_IconDescList[index].bRender = bRender; }
 	_int Add_Icon(_fvector vObjectPos, _int	TextureNum);
 private:
 	void DecideRender();
@@ -145,31 +148,16 @@ private:
 	_float			m_fHeightDefaultIcon[2] = { 30.f,120.f };
 	_float4x4		m_WorldMatrixDefaultIcon[2];
 
-	_float4 ColorDefaultIcon[2];
 	_float m_fColorADefaultIcon[2] = { 0.f,0.f };
-	_float  m_MouseMoveAcc = { 0.f };
-	_float  m_DegreeAcc = { 0.f };
 
-
-	//아이콘 추가용
-
-
-	// 아이콘 배치용 임시변수
-	_float4  OriPos = { 60.f , 0.f, 20.f, 1.f };
+	// 아이콘 배치용 변수
 	_float4 fPlayerPos;
-	_float4 fPrePlayerPos = { 0.f , 0.f, 0.f, 1.f };
-
-private:
-	ICONNUM IconTextureNum = { MISSION };
-	_vector		m_vObjectPos = { 6.f, 30.f, 5.f, 1.f };
-	_float4x4	m_IconWorldMatrix;
 	_float2		IconSize = { 30.f, 30.f };
-	_bool		m_bRender = { true };
-
 	vector<ICONDESC>	m_DescList;
 	_int  Index = 0;
 
 private:
+	CP_PlayerGirl*	m_pPlayer = { nullptr };
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
 

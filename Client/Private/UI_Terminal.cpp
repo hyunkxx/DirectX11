@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\UI_Terminal.h"
+#include "GameMode.h"
 #include "GameInstance.h"
 #include "UI_MainScreen.h"
 #include "UI_Mouse.h"
@@ -157,7 +158,7 @@ void CUI_Terminal::SerectUI()
 					pCutDesc->OnRect = true;
 					CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 					Safe_AddRef(pGameInstance);
-					CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("UI_Mouse"));
+					CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Mouse"));
 					dynamic_cast<CUI_Mouse*>(pMouse)->Set_Texchange(true);
 					Safe_Release(pGameInstance);
 				}
@@ -192,7 +193,7 @@ HRESULT CUI_Terminal::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UI,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UI,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 

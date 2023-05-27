@@ -90,6 +90,9 @@ void CChest::Tick(_double TimeDelta)
 			{
 				m_fPushButtonAcc = 0.f;
 				m_bInteractionBegin = true;
+				//UI추가
+				m_pUIIcon->SetRender(m_UIIndex, false);
+				m_pUIIcon = nullptr;
 			}
 		}
 		else
@@ -143,9 +146,10 @@ void CChest::Tick(_double TimeDelta)
 	}
 
 	//UI추가
-	if (false == this->IsDisable())
+	if ((nullptr != m_pUIIcon)&&(false == this->IsDisable()))
 	{
 		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+		m_pUIIcon->SetRender(m_UIIndex, true);
 	}
 }
 
@@ -397,7 +401,6 @@ CGameObject * CChest::Clone(void * pArg)
 void CChest::Free()
 {
 	CInteractionObject::Free();
-	m_pUIIcon = nullptr;
 	Safe_Release(m_pRenderer);
 
 	Safe_Release(m_pMainTransform);

@@ -12,7 +12,7 @@ END
 
 BEGIN(Client)
 class CTerminal;
-
+class CP_PlayerGirl;
 class CUI_MainScreen final : public CGameObject
 {
 public: enum class eKeyType
@@ -65,6 +65,7 @@ public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 
+	virtual void Start();
 	virtual void Tick(_double TimeDelta) override;
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
@@ -205,6 +206,7 @@ public:
 
 
 private:
+	CP_PlayerGirl*  m_pPlayer = { nullptr };
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
 	CTexture*		m_pTexFunc = { nullptr };

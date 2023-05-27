@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\UI_Monster.h"
+#include "GameMode.h"
 #include "GameInstance.h"
 #include "UI_MainScreen.h"
 #include "UI_Mouse.h"
@@ -484,7 +485,7 @@ HRESULT CUI_Monster::Add_Components()
 		return E_FAIL;
 
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UIFIGHT,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UIFIGHT,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 

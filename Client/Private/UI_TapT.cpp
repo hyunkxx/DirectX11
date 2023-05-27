@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\UI_TapT.h"
+#include "GameMode.h"
 #include "GameInstance.h"
 #include "UI_MainScreen.h"
 #include "UI_Mouse.h"
@@ -80,7 +81,7 @@ void CUI_TapT::Tick(_double TimeDelta)
 				{
 					m_bHolding = false;
 					_int Texindex = m_DescList[1]->iTexNum;
-					CGameObject* pMain = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("UI_MainScreen"));
+					CGameObject* pMain = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_MainScreen"));
 					dynamic_cast<CUI_MainScreen*>(pMain)->Set_Texchange(Texindex);
 					m_DescList[i + 6]->OnRect = true;
 					break;
@@ -105,7 +106,7 @@ void CUI_TapT::Tick(_double TimeDelta)
 	}
 	
 
-	CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("UI_Mouse"));
+	CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Mouse"));
 	static_cast<CUI_Mouse*>(pMouse)->Set_Texchange(false);
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::TAP)
 	{
@@ -174,7 +175,7 @@ void CUI_TapT::SerectUI()
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
-	CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("layer_UI"), TEXT("UI_Mouse"));
+	CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("layer_UI"), TEXT("UI_Mouse"));
 	if (nullptr != pMouse)
 	{
 		_float3	fMousePos = dynamic_cast<CUI_Mouse*>(pMouse)->Get_MousePos();
@@ -197,7 +198,7 @@ void CUI_TapT::SerectUI()
 					if ((XMVectorGetY(P0) > XMVectorGetY(vMousePos)) && (XMVectorGetY(P2) < XMVectorGetY(vMousePos)))
 					{
 						pCutDesc->OnRect = true;
-						CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("UI_Mouse"));
+						CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Mouse"));
 						dynamic_cast<CUI_Mouse*>(pMouse)->Set_Texchange(true);
 					}
 					else
@@ -233,7 +234,7 @@ HRESULT CUI_TapT::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UI,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UI,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
