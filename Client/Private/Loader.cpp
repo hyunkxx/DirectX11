@@ -1438,6 +1438,75 @@ HRESULT CLoader::Load_Level_GamePlay()
 	}
 #pragma endregion SHR
 
+#pragma region STRUCTURE
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STRUCTURE_0, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Structure/0/SM_Val_Box_01AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Structure/Structure_0.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STRUCTURE_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STRUCTURE_1, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Structure/1/SM_Val_Box_01BM.smdl"), TEXT("../../Data/GamePlay/MapObject/Structure/Structure_1.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STRUCTURE_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STRUCTURE_2, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Structure/2/SM_Val_Box_02AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Structure/Structure_2.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STRUCTURE_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STRUCTURE_3, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Structure/3/SM_Zan_Sta_01AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Structure/Structure_3.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STRUCTURE_3");
+		return E_FAIL;
+	}
+#pragma endregion STRUCTURE
+
+#pragma region PIL
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_PIL_0, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Pil/0/SM_Val_Pil_01AM.smdl"), TEXT("../../Data/GamePlay/MapObject/Pil/Pil_0.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_PIL_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_PIL_1, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Pil/1/SM_Val_Pil_02AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Pil/Pil_1_data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_PIL_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_PIL_2, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Pil/2/SM_Val_Pil_03AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Pil/Pil_2.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_PIL_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_PIL_3, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Pil/3/SM_Noi_Pil_02BH.smdl"), TEXT("../../Data/GamePlay/MapObject/Pil/Pil_3.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_PIL_3");
+		return E_FAIL;
+	}
+#pragma endregion PIL
+
+#pragma region STATUE
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STATUE_0, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Statue/0/SM_Val_Sta_02AH.smdl"), TEXT("../../Data/GamePlay/MapObject/Statue/Statue_0.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STATUE_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_STATUE_1, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Statue/1/SM_Val_Sta_02BL.smdl"), TEXT("../../Data/GamePlay/MapObject/Statue/Statue_1.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_STATUE_1");
+		return E_FAIL;
+	}
+#pragma endregion STATUE
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
 		return E_FAIL;
 
