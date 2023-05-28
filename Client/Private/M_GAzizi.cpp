@@ -132,7 +132,6 @@ void CM_GAzizi::Start()
 	//UIÃß°¡
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 44);
-
 }
 
 void CM_GAzizi::PreTick(_double TimeDelta)

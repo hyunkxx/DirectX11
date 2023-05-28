@@ -35,9 +35,9 @@
 #include "UI_MainScreen.h"
 #include "UI_Mouse.h"
 #include "UI_Minimap.h"
-#include "UI_Terminal.h"
 #include "UI_TapT.h"
 #include "UI_Monster.h"
+#include "UI_Tip.h"
 
 #include "Missile.h"
 #include "Missile_Constant.h"
@@ -291,10 +291,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Mouse/CursorPre%d.dds"), 2))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UITERMINAL,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/Terminal%d.dds"), 8))))
-		return E_FAIL;
-
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UIMAP,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Map%d.dds"), 2))))
 		return E_FAIL;
@@ -309,6 +305,10 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UIFIGHT,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Fight/Fight%d.dds"), 79))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UITIP,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 8))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::EYE_BURST, 
@@ -1633,7 +1633,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMONSTER, CUI_Monster::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITERMINAL, CUI_Terminal::Create(m_pDevice, m_pContext))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITIP, CUI_Tip::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion
@@ -2104,10 +2104,6 @@ HRESULT CLoader::Load_Level_Test()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Mouse/CursorPre%d.dds"), 2))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UITERMINAL,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/Terminal%d.dds"), 8))))
-		return E_FAIL;
-
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMAP,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Map%d.dds"), 2))))
 		return E_FAIL;
@@ -2255,8 +2251,6 @@ HRESULT CLoader::Load_Level_Test()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITAPT, CUI_TapT::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMONSTER, CUI_Monster::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITERMINAL, CUI_Terminal::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion

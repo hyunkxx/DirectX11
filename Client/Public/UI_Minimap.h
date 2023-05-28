@@ -49,6 +49,7 @@ public:
 		_float4x4	IconWorldMatrix;
 		_int		Index;
 		_bool		bRender;
+		_float      Dist;
 	}ICONDESC;
 
 protected:
@@ -82,7 +83,7 @@ public:
 
 public:
 	void Set_ObjectPos(_int Index, _fvector vObjectPos);
-	void SetRender(_int index, _bool bRender) { m_IconDescList[index].bRender = bRender; }
+	void SetRender(_int index, _bool bRender);
 	_int Add_Icon(_fvector vObjectPos, _int	TextureNum);
 private:
 	void DecideRender();
@@ -93,6 +94,7 @@ private:
 	_int m_Num = { 0 };
 	//미니맵 기능
 	_bool m_bNull = { true };
+	_bool	m_bRender = { true }; // 전체 랜더onoff
 	// 전체맵에서 내가 출력하려고 지정한 uv좌표
 	_float2			m_TerrainLU = { 0.f,0.f };
 	_float2			m_TerrainRB = { 0.f,0.f };
@@ -152,7 +154,7 @@ private:
 	// 아이콘 배치용 변수
 	_float4 fPlayerPos;
 	_float2		IconSize = { 30.f, 30.f };
-	vector<ICONDESC>	m_DescList;
+	vector<ICONDESC>	m_DescList; //메인아이콘
 	_int  Index = 0;
 
 private:

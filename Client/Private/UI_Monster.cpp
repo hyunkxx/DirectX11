@@ -123,13 +123,8 @@ void CUI_Monster::Tick(_double TimeDelta)
 		HPRedBar(TimeDelta);
 	}
 	DecideRender();
+
 	{// 데미지 폰트 출력
-	 /*
-	 사이즈 컸다가 작아짐
-	 pos는 아래에서 위로 가다가 이전꺼 사라질때까지 잠시 멈춤-> 이전게 사라지면 위로 올라가면서 알파 사라짐
-	 데미지 20이상이면 빛 효과
-	 랜더는 맞을때마다 바로바로 랜더
-	 */ // 0 = 33 1 = 34
 		if (0 < (_int)DamageList.size())
 		{
 			list<DAMAGEDESC>::iterator iter = DamageList.begin();

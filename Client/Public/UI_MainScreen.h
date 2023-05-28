@@ -11,7 +11,6 @@ class CTransform;
 END
 
 BEGIN(Client)
-class CTerminal;
 class CP_PlayerGirl;
 class CUI_MainScreen final : public CGameObject
 {
@@ -157,7 +156,7 @@ private:
 private:
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint   m_iPass = { 1 };
-
+	_bool	m_bRender = { true }; // 전체 랜더onoff
 	eKeyType m_iCurrentPlayer = { eKeyType::DANSUN };
 	eKeyType m_iPrePlayer = { eKeyType::DANSUN };
 	_uint	m_HavePlayerNum = { 0 };

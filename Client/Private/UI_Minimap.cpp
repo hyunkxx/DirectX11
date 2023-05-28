@@ -50,9 +50,16 @@ void CUI_Minimap::Start()
 void CUI_Minimap::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-
-
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+
+	if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP)
+	{
+		if (m_bRender)
+			m_bRender = !m_bRender;
+		else
+			m_bRender = !m_bRender;
+	}
+
 
 	// 미니맵 
 	_float3 fTerrainScale;
@@ -231,15 +238,7 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			IconPos.x *= -1.f;
 			IconPos.y = -210.f;
 		}
-
-		if ((Dist > 50.f) && (Dist < 150.f))
-		{
-			Desc.bRender = true;
-		}
-		else
-		{
-			Desc.bRender = false;
-		}
+		Desc.Dist = Dist;
 		XMStoreFloat4x4(&(Desc.IconWorldMatrix), XMMatrixScaling(30.f, 30.f, 1.f)
 			* XMMatrixTranslation(IconPos.x, IconPos.y, 0.f));
 		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
@@ -259,62 +258,64 @@ void CUI_Minimap::LateTick(_double TimeDelta)
 HRESULT CUI_Minimap::Render()
 {
 
-	if (FAILED(__super::Render()))
-		return E_FAIL;
-
-	// 미니맵
-	if ((false == m_bNull) && (nullptr != m_pVIBufferMiniMap))
+	if (true == m_bRender)
 	{
-		if (FAILED(Setup_ShaderResourcesMiniMap()))
+		if (FAILED(__super::Render()))
 			return E_FAIL;
-		m_pShader->Begin(5);
-		m_pVIBufferMiniMap->Render();
 
-		if (FAILED(Setup_ShaderResourcesFrame()))
-			return E_FAIL;
-		m_pShader->Begin(m_FramePass);
-		m_pVIBufferMiniMap->Render();
-
-	}
-
-	//디폴트아이콘
-	for (_uint i = 0; i < 2; ++i)
-	{
-		if (false == m_bNull)
+		// 미니맵
+		if ((false == m_bNull) && (nullptr != m_pVIBufferMiniMap))
 		{
-			if (FAILED(Setup_ShaderResourcesDefaultIcon(i)))
+			if (FAILED(Setup_ShaderResourcesMiniMap()))
 				return E_FAIL;
-			m_pShader->Begin(1);
+			m_pShader->Begin(5);
 			m_pVIBufferMiniMap->Render();
+
+			if (FAILED(Setup_ShaderResourcesFrame()))
+				return E_FAIL;
+			m_pShader->Begin(m_FramePass);
+			m_pVIBufferMiniMap->Render();
+
+		}
+
+		//디폴트아이콘
+		for (_uint i = 0; i < 2; ++i)
+		{
+			if (false == m_bNull)
+			{
+				if (FAILED(Setup_ShaderResourcesDefaultIcon(i)))
+					return E_FAIL;
+				m_pShader->Begin(1);
+				m_pVIBufferMiniMap->Render();
+			}
+		}
+
+		//미니맵아이콘
+		_uint Descindex = 0;
+		for (auto& Desc : m_IconDescList)
+		{
+			if (true == Desc.bRender)
+			{
+				if (FAILED(Setup_ShaderResourcesIcon(Descindex)))
+					return E_FAIL;
+				m_pShader->Begin(1);
+				m_pVIBufferMiniMap->Render();
+			}
+			++Descindex;
+		}
+
+		//메인화면아이콘
+		for (auto& Desc : m_DescList)
+		{
+			if ((true == Desc.bRender)&&(Desc.Dist > 50.f) && (Desc.Dist < 250.f))
+			{
+				if (FAILED(Setup_ShaderResourcesIcons(&Desc)))
+					return E_FAIL;
+				m_pShader->Begin(1);
+				m_pVIBufferMiniMap->Render();
+			}
 		}
 	}
-
-	//미니맵아이콘
-	_uint Descindex = 0;
-	for (auto& Desc : m_IconDescList)
-	{
-		if (true == Desc.bRender)
-		{
-			if (FAILED(Setup_ShaderResourcesIcon(Descindex)))
-				return E_FAIL;
-			m_pShader->Begin(1);
-			m_pVIBufferMiniMap->Render();
-		}
-		++Descindex;
-	}
-
-	//메인화면아이콘
-	for (auto& Desc : m_DescList)
-	{
-		if (true == Desc.bRender)
-		{
-			if (FAILED(Setup_ShaderResourcesIcons(&Desc)))
-				return E_FAIL;
-			m_pShader->Begin(1);
-			m_pVIBufferMiniMap->Render();
-		}
-	}
-
 	return S_OK;
 }
 
@@ -367,6 +368,12 @@ void CUI_Minimap::Set_ObjectPos(_int Index, _fvector vObjectPos)
 	}
 }
 
+void CUI_Minimap::SetRender(_int index, _bool bRender)
+{
+	 m_IconDescList[index].bRender = bRender; 
+	 m_DescList[index].bRender = bRender; 
+}
+
 _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 {
 	_matrix WorldMat = XMMatrixIdentity();
@@ -374,7 +381,7 @@ _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 
 	MAPDESC MiniMapDesc;
 	ZeroMemory(&MiniMapDesc, sizeof(MAPDESC));
-
+	//미니아이콘
 	MiniMapDesc.fX = XMVectorGetX(vObjectPos);
 	MiniMapDesc.fY = XMVectorGetY(vObjectPos);
 	MiniMapDesc.fZ = XMVectorGetZ(vObjectPos);
@@ -392,6 +399,7 @@ _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 	m_IconDescList.push_back(MiniMapDesc);
 
 
+	//메인아이콘ㅋ
 	XMStoreFloat4x4(&fWorldMat, WorldMat);
 	ICONDESC Desc;
 	Desc.vObjectPos = vObjectPos;

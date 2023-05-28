@@ -1,11 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\UI_MainScreen.h"
 #include "GameInstance.h"
-#include "RenderTarget.h"
 #include "UI_Mouse.h"
 #include "P_PlayerGirl.h"
-#include "Terrain.h"
-#include "UI_Terminal.h"
 
 CUI_MainScreen::CUI_MainScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -86,6 +83,13 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	if (pGameInstance->InputKey(DIK_4) == KEY_STATE::TAP)
 	{
 		Add_PlayerNum();
+	}
+	if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP)
+	{
+		if (m_bRender)
+			m_bRender = !m_bRender;
+		else
+			m_bRender = !m_bRender;
 	}
 
 
@@ -761,118 +765,120 @@ void CUI_MainScreen::LateTick(_double TimeDelta)
 
 HRESULT CUI_MainScreen::Render()
 {
-	if (FAILED(__super::Render()))
-		return E_FAIL;
-
-	for (_uint i = 0; i<(_uint)m_CutDescList.size(); ++i)
+	if (true == m_bRender)
 	{
-		if (true == m_CutDescList[i]->bRender)
+		if (FAILED(__super::Render()))
+			return E_FAIL;
+
+		for (_uint i = 0; i < (_uint)m_CutDescList.size(); ++i)
 		{
-			if (eKeyType::T == (eKeyType)m_CutDescList[i]->eKeyType)
+			if (true == m_CutDescList[i]->bRender)
 			{
+				if (eKeyType::T == (eKeyType)m_CutDescList[i]->eKeyType)
+				{
 
-				if (FAILED(Setup_ShaderResourcesT(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-			else if (eKeyType::Q == (eKeyType)m_CutDescList[i]->eKeyType)
-			{
+					if (FAILED(Setup_ShaderResourcesT(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
+				else if (eKeyType::Q == (eKeyType)m_CutDescList[i]->eKeyType)
+				{
 
-				if (FAILED(Setup_ShaderResourcesQ(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-			else if (eKeyType::E == (eKeyType)m_CutDescList[i]->eKeyType)
-			{
+					if (FAILED(Setup_ShaderResourcesQ(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
+				else if (eKeyType::E == (eKeyType)m_CutDescList[i]->eKeyType)
+				{
 
-				if (FAILED(Setup_ShaderResourcesE(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-			else if (eKeyType::R == (eKeyType)m_CutDescList[i]->eKeyType)
-			{
+					if (FAILED(Setup_ShaderResourcesE(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
+				else if (eKeyType::R == (eKeyType)m_CutDescList[i]->eKeyType)
+				{
 
-				if (FAILED(Setup_ShaderResourcesR(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-			else if (eKeyType::I0 == (eKeyType)m_CutDescList[i]->eKeyType)
-			{
+					if (FAILED(Setup_ShaderResourcesR(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
+				else if (eKeyType::I0 == (eKeyType)m_CutDescList[i]->eKeyType)
+				{
 
-				if (FAILED(Setup_ShaderResourcesI0(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-			else if (eKeyType::I1 == (eKeyType)m_CutDescList[i]->eKeyType)
-			{
+					if (FAILED(Setup_ShaderResourcesI0(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
+				else if (eKeyType::I1 == (eKeyType)m_CutDescList[i]->eKeyType)
+				{
 
-				if (FAILED(Setup_ShaderResourcesI1(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-			else if (eKeyType::I2 == (eKeyType)m_CutDescList[i]->eKeyType)
-			{
+					if (FAILED(Setup_ShaderResourcesI1(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
+				else if (eKeyType::I2 == (eKeyType)m_CutDescList[i]->eKeyType)
+				{
 
-				if (FAILED(Setup_ShaderResourcesI2(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
+					if (FAILED(Setup_ShaderResourcesI2(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
+
+				else if (eKeyType::RR == (eKeyType)m_CutDescList[i]->eKeyType)
+				{
+
+					if (FAILED(Setup_ShaderResourcesRR(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
+				else if (eKeyType::GRAPH0 == (eKeyType)m_CutDescList[i]->eKeyType)
+				{
+					if (FAILED(Setup_ShaderResourcesGraphs0(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
+				else if (eKeyType::GRAPH1 == (eKeyType)m_CutDescList[i]->eKeyType)
+				{
+					if (FAILED(Setup_ShaderResourcesGraphs1(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
+				else if (eKeyType::GRAPH2 == (eKeyType)m_CutDescList[i]->eKeyType)
+				{
+					if (FAILED(Setup_ShaderResourcesGraphs2(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
+				else if ((true == m_CutDescList[13]->bCoolTime) || (true == m_CutDescList[14]->bCoolTime) || (true == m_CutDescList[15]->bCoolTime))
+				{
+					if (FAILED(Setup_ShaderResourcesPlayer(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
+				else
+				{
+					if (FAILED(Setup_ShaderResourcesCut(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_iPass);
+					m_pVIBuffer->Render();
+				}
 			}
 
-			else if (eKeyType::RR == (eKeyType)m_CutDescList[i]->eKeyType)
-			{
 
-				if (FAILED(Setup_ShaderResourcesRR(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-			else if (eKeyType::GRAPH0 == (eKeyType)m_CutDescList[i]->eKeyType)
-			{
-				if (FAILED(Setup_ShaderResourcesGraphs0(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-			else if (eKeyType::GRAPH1 == (eKeyType)m_CutDescList[i]->eKeyType)
-			{
-				if (FAILED(Setup_ShaderResourcesGraphs1(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-			else if (eKeyType::GRAPH2 == (eKeyType)m_CutDescList[i]->eKeyType)
-			{
-				if (FAILED(Setup_ShaderResourcesGraphs2(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-			else if ((true == m_CutDescList[13]->bCoolTime) || (true == m_CutDescList[14]->bCoolTime) || (true == m_CutDescList[15]->bCoolTime))
-			{
-				if (FAILED(Setup_ShaderResourcesPlayer(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-			else
-			{
-				if (FAILED(Setup_ShaderResourcesCut(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
 		}
-
-
 	}
-
 	/*
 	if (true == m_bUIRender)
 	{
