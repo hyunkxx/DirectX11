@@ -63,7 +63,8 @@ HRESULT CSandbag::Initialize(void * pArg)
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
 	// 초기위치 설정
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.f, 0.f, 45.f, 1.f));
+	_float fRand = _float(rand() % 10);
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.f + fRand, 0.f, 45.f - fRand, 1.f));
 	m_pNaviCom->Set_CurrentIndex(0);
 
 	// StateController 초기화

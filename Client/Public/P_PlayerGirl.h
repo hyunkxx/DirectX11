@@ -30,7 +30,8 @@ public:
 		INPUT_NONE,
 		INPUT_MOVE,
 		INPUT_DASH,
-		INPUT_EVADE,
+		INPUT_FRONTSTEP,
+		INPUT_BACKSTEP,
 		INPUT_SPACE,
 		INPUT_ATTACK,
 		INPUT_ATTACK_CHARGE,
@@ -156,6 +157,7 @@ public:
 	virtual HRESULT	Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Start();
+	virtual void PreTick(_double TimeDelta);
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render() override;
@@ -247,18 +249,20 @@ private:
 
 	_bool				m_bInputLock = { false };
 
-	//
+	// 타겟 관련 변수들, 캐릭터 교체 시 값 변경에 주의
 	CCharacter*			m_pNearst = { nullptr };
 	_float				m_fNearstDist = { 0.f };
 	CCharacter*			m_pFixedTarget = { nullptr };
-	_bool				m_bFixTarget = { false };
+	_float				m_fTargetDist = { 0.f };
+	_double				m_ReleaseTargetTimeAcc = { 0.0 };
+
+	_bool				m_bInputDirMove = { false };
+	_float3				m_vInputDir = { };
 	
 	
 	// MoveCollider 충돌 시 비교할 무게
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
 	_float				m_fPushWeight = { 0.f };
-	// 이동 전 타겟 방향 (몬스터를 뚫고 지나가는 상황 예외처리) 
-	_float3				m_vTargetDir = {};
 
 	// 임시 디졸브 벨류
 	_float m_fDissolveAmount = 0.f;

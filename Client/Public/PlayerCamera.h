@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "CameraCurve.h"
 #include "ActionCam.h"
+#include "PlayerState.h"
 
 BEGIN(Engine)
 class CTransform;
@@ -84,6 +85,10 @@ private:
 
 	_float3 m_vDir = {};
 
+	// 전 프레임에 타겟 카메라 였는지
+	_bool	m_bPreLockOn = { false };
+	_double	m_SoftLerpDuration = { 0.0 };
+
 	// 카메라 커브용 변수
 	class CCameraCurve* m_pCamCurve = { nullptr };
 	_uint m_iCurKey = { 0 };
@@ -91,13 +96,14 @@ private:
 
 	// 상태 분기용 변수
 	_bool m_bApplyCurve = { false };
-	_bool* m_pLockOn = { nullptr };
 
 	const _float m_fDistanceMin = { 1.f };
 	const _float m_fDistanceMax = { 7.f };
 
 	const _float m_fXAngleMin = { -20.f };
 	const _float m_fXAngleMax = { 80.f };
+
+	CPlayerState* m_pPlayerStateClass;
 
 #ifdef _DEBUG
 private:

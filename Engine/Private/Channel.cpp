@@ -63,14 +63,28 @@ void CChannel::Invalidate_Transform(_uint ChannelID, CAnimController::ANIMSTATE&
 		{
 			if (tState.FrameAcc < 4.0)
 			{
-				_vector vDestScale, vDestRotation, vDestPosition;
-				_double DestRatio = tState.FrameAcc / 4.0;
+				if (nullptr == pModel->Get_RootBone())
+				{
+					_vector vDestScale, vDestRotation, vDestPosition;
+					_double DestRatio = tState.FrameAcc / 4.0;
 
-				XMMatrixDecompose(&vDestScale, &vDestRotation, &vDestPosition, XMLoadFloat4x4(&tState.vecLastFrameState[m_iTargetBoneID]));
+					XMMatrixDecompose(&vDestScale, &vDestRotation, &vDestPosition, XMLoadFloat4x4(&tState.vecLastFrameState[m_iTargetBoneID]));
 
-				vScale = XMVectorLerp(vDestScale, vScale, (_float)DestRatio);
-				vRotation = XMQuaternionSlerp(vDestRotation, vRotation, (_float)DestRatio);
-				//vPosition = XMVectorLerp(vDestPosition, vPosition, (_float)DestRatio);
+					vScale = XMVectorLerp(vDestScale, vScale, (_float)DestRatio);
+					vRotation = XMQuaternionSlerp(vDestRotation, vRotation, (_float)DestRatio);
+					vPosition = XMVectorLerp(vDestPosition, vPosition, (_float)DestRatio);
+				}
+				else if (!(tState.isFirstFrame && !lstrcmp(this->Get_Name(), pModel->Get_RootBone()->Get_Name())))
+				{
+					_vector vDestScale, vDestRotation, vDestPosition;
+					_double DestRatio = tState.FrameAcc / 4.0;
+
+					XMMatrixDecompose(&vDestScale, &vDestRotation, &vDestPosition, XMLoadFloat4x4(&tState.vecLastFrameState[m_iTargetBoneID]));
+
+					vScale = XMVectorLerp(vDestScale, vScale, (_float)DestRatio);
+					vRotation = XMQuaternionSlerp(vDestRotation, vRotation, (_float)DestRatio);
+					vPosition = XMVectorLerp(vDestPosition, vPosition, (_float)DestRatio);
+				}
 			}
 			else
 				tState.IsInterpolate = false;

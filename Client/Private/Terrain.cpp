@@ -135,7 +135,7 @@ HRESULT CTerrain::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::NAVIGATION,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, COMPONENT::NAVIGATION,
 		TEXT("com_navigation"), (CComponent**)&m_pNavigation)))
 		return E_FAIL;
 

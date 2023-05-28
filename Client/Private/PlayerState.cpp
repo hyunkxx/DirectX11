@@ -30,7 +30,7 @@ HRESULT CPlayerState::Initialize_Prototype()
 		m_PlayerState.fCurToolCooltime[i] = 0.f;
 	}
 
-	m_PlayerState.bCamLockOn = false;
+	m_PlayerState.bLockOn = false;
 
 	// Default Character State
 	for (int i = 0; i < CHARACTER_END; ++i)

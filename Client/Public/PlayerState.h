@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "Client_Defines.h"
+#include "Character.h"
 
 BEGIN(Client)
 
@@ -46,11 +47,12 @@ public:
 		_float		fFoodDuration;
 
 		// 캠 락온 여부
-		_bool		bCamLockOn;
-		
-		//// QTE 발동 시 공격 대상
-		//class CCharacter*	pQTETarget;
+		_bool		bLockOn;
+		CCharacter* pLockOnTarget;
 
+
+		//QTE 사용 대상(타겟 락온 안했을 경우)
+		//CCharacter* pQTETarget;
 		//// 캐릭터 교대 시 월드 행렬
 		//_float4x4	WorldMatrix;
 	}PLAYER_STATE;
@@ -122,12 +124,30 @@ public: // Get
 	{
 		return m_PlayerState.fCurToolCooltime[m_PlayerState.iCurToolID];
 	}
+
+	_bool Get_LockOn()
+	{
+		return m_PlayerState.bLockOn;
+	}
+
+	CCharacter* Get_LockOnTarget()
+	{
+		return m_PlayerState.pLockOnTarget;
+	}
+	
+
+public: // Set
 	void Set_ToolUsed(_uint iToolID)
 	{
 		m_PlayerState.fCurToolCooltime[iToolID] = m_PlayerState.fMaxToolCooltime[iToolID];
 	}
 
-public: // Set
+	void Set_LockOn(_bool bLockOn, CCharacter* pTarget)
+	{
+		m_PlayerState.bLockOn = bLockOn;
+		m_PlayerState.pLockOnTarget = pTarget;
+	}
+
 
 public:
 	void AddExp(CHARACTERS eCharater, _float fExp);

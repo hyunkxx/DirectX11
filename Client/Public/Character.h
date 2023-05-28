@@ -393,7 +393,6 @@ public:
 
 	virtual _float Get_PushWeight() { return 0.f; }
 
-	// 0 = E, 1 = R, 2 = Q, 3 = T
 	virtual _float Get_CoolTime(_uint iType) { return 0.f; }
 
 public: // StateKey 대응 함수 모음

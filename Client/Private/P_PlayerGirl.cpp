@@ -169,14 +169,27 @@ void CP_PlayerGirl::Start()
 
 	// TODO: 에코 쿨타임, 에코 착용 시 변경하도록 바꿔야 함
 	m_pCharacterState->fMaxCooltime[CPlayerState::SKILL_Q] = 5.f;
+	//
 
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 	m_pCamMovement->BindTransform(m_pMainTransform);
 	m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
 	m_pCamMovement->SetupBone(CCameraMovement::CAM_BANGSUN, m_pModelCom->Get_BonePtr(L"Bip001RFinger21"));
+}
 
-	//pStaticObject = pGame->Find_GameObject(LEVEL_GAMEPLAY, L"StaticTest");
+void CP_PlayerGirl::PreTick(_double TimeDelta)
+{
+	// 타겟이 잡혀있다면 사용할 수 있는지, 거리가 너무 멀어지지는 않았는지 체크 및 타겟 해제
+	if (nullptr != m_pFixedTarget)
+	{
+		if (false == m_pFixedTarget->IsActive() ||
+			25.f <  XMVectorGetX(XMVector3Length(m_pFixedTarget->Get_Position() - Get_Position())))
+		{
+			m_pFixedTarget = nullptr;
+			m_pPlayerStateClass->Set_LockOn(false, nullptr);
+		}
+	}
 }
 
 void CP_PlayerGirl::Tick(_double TimeDelta)
@@ -196,20 +209,34 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 		TimeDelay = 1.0;
 	}
 
-	if (pGameInstance->InputKey(DIK_NUMPAD1) == KEY_STATE::TAP)
+	if (pGameInstance->InputMouse(DIMK_WHEEL) == KEY_STATE::AWAY)
 	{
+		if (m_ReleaseTargetTimeAcc < 0.3)
+		{
+			if (nullptr != m_pNearst)
+				m_pFixedTarget = m_pNearst;
 
-		_vector InitPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
-			/*XMVector3TransformCoord(
-			XMVector3TransformCoord(m_EffectBones[0]->Get_CombinedPosition(), XMMatrixRotationY(180.f)),
-			XMLoadFloat4x4(m_pMainTransform->Get_WorldMatrixPtr()));*/
-
-		_matrix matRot = XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_RIGHT), m_MissileRotAngles[MISS_BURST_01].x)
-			* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_UP), m_MissileRotAngles[MISS_BURST_01].y)
-			* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_LOOK), m_MissileRotAngles[MISS_BURST_01].z);
-		m_MissilePools[MISS_BURST_01]->Shot(InitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot);
+			if (nullptr != m_pFixedTarget)
+			{
+				m_pPlayerStateClass->Set_LockOn(true, m_pFixedTarget);
+			}
+		}
+		else if (nullptr != m_pFixedTarget && 2.0 < m_ReleaseTargetTimeAcc)
+		{
+			m_pFixedTarget = nullptr;
+			m_pPlayerStateClass->Set_LockOn(false, nullptr);
+		}
 	}
 
+	if (pGameInstance->InputMouse(DIMK_WHEEL) == KEY_STATE::HOLD)
+	{
+		m_ReleaseTargetTimeAcc += TimeDelta;
+	}
+	else
+		m_ReleaseTargetTimeAcc = 0.0;
+
+
+		
 	Key_Input(TimeDelta * TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
 
 	Tick_State(TimeDelta * TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
@@ -271,38 +298,77 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 	Update_EffectBones();
 
 	// 돌진기 스킬 예외처리 // 거리비교해서
-	if (m_pNearst && m_fNearstDist <= 3.f)
+	if (nullptr == m_pFixedTarget)
 	{
-		static _bool bOverlapedCheck = false;
-
-		if (IS_ATTACK_PO_2 == m_Scon.iCurState)
+		if (m_pNearst && m_fNearstDist <= 3.f)
 		{
-			static _vector vTargetPos;
+			static _bool bOverlapedCheck = false;
 
-			CTransform* pTargetTransform = m_pNearst->GetTransform();
-			_float fExtents = m_pNearst->GetMoveCollider()->GetExtents().x;
-
-			if (!bOverlapedCheck)
+			if (IS_ATTACK_PO_2 == m_Scon.iCurState)
 			{
-				bOverlapedCheck = true;
-				vTargetPos = pTargetTransform->Get_State(CTransform::STATE_POSITION);
+				static _vector vTargetPos;
+
+				CTransform* pTargetTransform = m_pNearst->GetTransform();
+				_float fExtents = m_pNearst->GetMoveCollider()->GetExtents().x;
+
+				if (!bOverlapedCheck)
+				{
+					bOverlapedCheck = true;
+					vTargetPos = pTargetTransform->Get_State(CTransform::STATE_POSITION);
+				}
+
+				_vector vCurPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+				_vector vOffSetPos = vTargetPos + XMVector3Normalize(vCurPos - vTargetPos) * fExtents;
+
+				vCurPos = XMVectorLerp(vCurPos, vOffSetPos, (_float)TimeDelta * 10.f);
+
+				m_tCurState.bRootMotion = false;
+				m_Scon.vMovement = _float3(0.f, 0.f, 0.f);
+
+				m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
 			}
-
-			_vector vCurPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
-			_vector vOffSetPos = vTargetPos + XMVector3Normalize(vCurPos - vTargetPos) * fExtents;
-
-			vCurPos = XMVectorLerp(vCurPos, vOffSetPos, (_float)TimeDelta * 10.f);
-
-			m_tCurState.bRootMotion = false;
-			m_Scon.vMovement = _float3(0.f, 0.f, 0.f);
-
-			m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
-		}
-		else
-		{
-			bOverlapedCheck = false;
+			else
+			{
+				bOverlapedCheck = false;
+			}
 		}
 	}
+	else
+	{
+		if (m_pFixedTarget && m_fTargetDist <= 3.f)
+		{
+			static _bool bOverlapedCheck = false;
+
+			if (IS_ATTACK_PO_2 == m_Scon.iCurState)
+			{
+				static _vector vTargetPos;
+
+				CTransform* pTargetTransform = m_pFixedTarget->GetTransform();
+				_float fExtents = m_pFixedTarget->GetMoveCollider()->GetExtents().x;
+
+				if (!bOverlapedCheck)
+				{
+					bOverlapedCheck = true;
+					vTargetPos = pTargetTransform->Get_State(CTransform::STATE_POSITION);
+				}
+
+				_vector vCurPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+				_vector vOffSetPos = vTargetPos + XMVector3Normalize(vCurPos - vTargetPos) * fExtents;
+
+				vCurPos = XMVectorLerp(vCurPos, vOffSetPos, (_float)TimeDelta * 10.f);
+
+				m_tCurState.bRootMotion = false;
+				m_Scon.vMovement = _float3(0.f, 0.f, 0.f);
+
+				m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
+			}
+			else
+			{
+				bOverlapedCheck = false;
+			}
+		}
+	}
+	
 
 	// 다음프레임을 위해 초기화
 	m_pNearst = nullptr;
@@ -654,10 +720,20 @@ void CP_PlayerGirl::Release_States()
 
 void CP_PlayerGirl::Check_Nearst(CCharacter * pChar, _float fDist)
 {
+
 	if (fDist < m_fNearstDist)
 	{
-		m_pNearst = pChar;
-		m_fNearstDist = fDist;
+		if (pChar != m_pFixedTarget)
+		{
+			m_pNearst = pChar;
+			m_fNearstDist = fDist;
+		}
+		else
+		{
+			m_pFixedTarget = pChar;
+			m_fTargetDist = fDist;
+		}
+		
 	}
 }
 
@@ -842,7 +918,7 @@ void CP_PlayerGirl::SetUp_State()
 	// 쿨타임 적용
 	if (true == m_tCurState.bApplyCoolTime)
 	{
-		if (IS_SKILL_02 == m_Scon.iCurState ||
+		if (IS_SKILL_01 == m_Scon.iCurState ||
 			IS_SKILL_02 == m_Scon.iCurState)
 			m_pCharacterState[CPlayerState::CHARACTER_ROVER].fCurCooltime[CPlayerState::SKILL_E] = m_pCharacterState[CPlayerState::CHARACTER_ROVER].fMaxCooltime[CPlayerState::SKILL_E];
 		else if (IS_BURST == m_Scon.iCurState)
@@ -939,6 +1015,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 	//
 	INPUT eCurFrameInput = INPUT_NONE;
 	_bool bInputDir[4] = { false, false, false, false };
+	m_bInputDirMove = false;
 
 	// 이동 기능 구현용 임시 코드
 	_matrix matCam = pGame->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
@@ -1032,6 +1109,14 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			eCurFrameInput = INPUT_NONE;
 
 		// Shift 입력 시 회피
+		if (pGame->InputKey(DIK_LSHIFT) == KEY_STATE::TAP)
+		{
+			if (INPUT_NONE == eCurFrameInput)
+				eCurFrameInput = INPUT_BACKSTEP;
+			else if (INPUT_MOVE == eCurFrameInput)
+				eCurFrameInput = INPUT_FRONTSTEP;
+		}
+
 		if (pGame->InputKey(DIK_LSHIFT) == KEY_STATE::HOLD && INPUT_MOVE == eCurFrameInput)
 		{
 			eCurFrameInput = INPUT_DASH;
@@ -1081,7 +1166,6 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 
 		if (pGame->InputMouse(DIMK_RB) == KEY_STATE::TAP)
 		{
-			eCurFrameInput = INPUT_EVADE;
 			pGame->TimeSlowDown(0.5f, 0.1f);
 		}
 
@@ -1098,12 +1182,25 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		}
 	}
 
+
+
+	// 타겟 방향
+	_vector vTargetDir;
+	if (nullptr != m_pFixedTarget)
+		vTargetDir = XMVector3Normalize(XMVectorSetY(m_pFixedTarget->Get_Position() - this->Get_Position(), 0.f));
+	else if (nullptr != m_pNearst)
+		vTargetDir = XMVector3Normalize(XMVectorSetY(m_pNearst->Get_Position() - this->Get_Position(), 0.f));
+	else
+		vTargetDir = XMVectorZero();
+
+	// 입력 방향
 	if (0.f != XMVectorGetX(XMVector3Length(vInputDir)))
 		XMVector3Normalize(vInputDir);
 
 	// 임시 이펙트 재생용
 	CEffect* pEffect = nullptr;
 	_float4x4 ParentMatrix;
+
 
 
 	// 입력에 따라 대응하는 다음 상태 찾기
@@ -1117,9 +1214,21 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			case SS_WALK_F:
 				m_Scon.iNextState = SS_WALK_STOP_L;
 				break;
-
 			case SS_RUN_F:
 				m_Scon.iNextState = SS_RUN_STOP_L;
+				break;
+			case SS_WALK_B:
+			case SS_WALK_LF:
+			case SS_WALK_LB:
+			case SS_WALK_RF:
+			case SS_WALK_RB:
+			case SS_RUN_B:
+			case SS_RUN_LF:
+			case SS_RUN_LB:
+			case SS_RUN_RF:
+			case SS_RUN_RB:
+				// 강제 정지용 애니메이션, 진입 우선순위 빼고는 Idle이랑 같음
+				m_Scon.iNextState = SS_STAND1_ACTION02;
 				break;
 
 			case SS_SPRINT:
@@ -1134,72 +1243,103 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_PlayerGirl::INPUT_MOVE:
-			// WALK
-			if (m_Scon.bWalk)
+
+			if (nullptr != m_pFixedTarget)
 			{
-				m_Scon.iNextState = SS_WALK_F;
-				/*if (true == bInputDir[0])
-					if (true == bInputDir[2])
-						m_Scon.iNextState = SS_WALK_LF;
-					else if (true == bInputDir[3])
-						m_Scon.iNextState = SS_WALK_RF;
-					else
+				if (m_Scon.bWalk)
+				{
+					_bool	bLeft = (0.f > XMVectorGetY(XMVector3Cross(vTargetDir, vInputDir)));
+					_float fScalar = XMVectorGetX(XMVector3Dot(vTargetDir, vInputDir));
+					if (fScalar > 0.9f)
 						m_Scon.iNextState = SS_WALK_F;
-				else if (true == bInputDir[1])
-					if (true == bInputDir[2])
-						m_Scon.iNextState = SS_WALK_LB;
-					else if (true == bInputDir[3])
-						m_Scon.iNextState = SS_WALK_RB;
-					else
+					else if (fScalar < -0.9f)
 						m_Scon.iNextState = SS_WALK_B;
-				else if (true == bInputDir[2])
-					m_Scon.iNextState = SS_WALK_LF;
+					else if (bLeft == true)
+					{
+						if (fScalar >= 0.f)
+							m_Scon.iNextState = SS_WALK_LF;
+						else
+							m_Scon.iNextState = SS_WALK_LB;
+					}
+					else if (bLeft == false)
+					{
+						if (fScalar >= 0.f)
+							m_Scon.iNextState = SS_WALK_RF;
+						else
+							m_Scon.iNextState = SS_WALK_RB;
+					}
+				}
 				else
-					m_Scon.iNextState = SS_WALK_RF;*/
+				{
+					_bool	bLeft = (0.f > XMVectorGetY(XMVector3Cross(vTargetDir, vInputDir)));
+					_float fScalar = XMVectorGetX(XMVector3Dot(vTargetDir, vInputDir));
+					if (fScalar > 0.667f)
+						m_Scon.iNextState = SS_RUN_F;
+					else if (fScalar < -0.667f)
+						m_Scon.iNextState = SS_RUN_B;
+					else if (bLeft == true)
+					{
+						if (fScalar >= 0.f)
+							m_Scon.iNextState = SS_RUN_LF;
+						else
+							m_Scon.iNextState = SS_RUN_LB;
+					}
+					else if (bLeft == false)
+					{
+						if (fScalar >= 0.f)
+							m_Scon.iNextState = SS_RUN_RF;
+						else
+							m_Scon.iNextState = SS_RUN_RB;
+					}
+				}
+				if (m_tCurState.iLeavePriority == 0)
+				{
+					m_bInputDirMove = true;
+					XMStoreFloat3(&m_vInputDir, vInputDir);
+				}
 			}
-			// RUN
 			else
 			{
-				m_Scon.iNextState = SS_RUN_F;
-				/*if (true == bInputDir[0])
-					if (true == bInputDir[2])
-						m_Scon.iNextState = SS_RUN_LF;
-					else if (true == bInputDir[3])
-						m_Scon.iNextState = SS_RUN_RF;
-					else
-						m_Scon.iNextState = SS_RUN_F;
-				else if (true == bInputDir[1])
-					if (true == bInputDir[2])
-						m_Scon.iNextState = SS_RUN_LB;
-					else if (true == bInputDir[3])
-						m_Scon.iNextState = SS_RUN_RB;
-					else
-						m_Scon.iNextState = SS_RUN_B;
-				else if (true == bInputDir[2])
-					m_Scon.iNextState = SS_RUN_LF;
+				if (m_Scon.bWalk)
+					m_Scon.iNextState = SS_WALK_F;
 				else
-					m_Scon.iNextState = SS_RUN_RF;*/
+					m_Scon.iNextState = SS_RUN_F;
 			}
+		
+			
+
 			break;
 
 		case Client::CP_PlayerGirl::INPUT_DASH:
-			if (SS_SPRINT != m_Scon.iCurState &&
-				SS_SPRINT_IMPULSE_F != m_Scon.iCurState)
-				m_Scon.iNextState = SS_SPRINT_IMPULSE_F;
-			else if (SS_CLIMB_BOOST_ONTOPTOSTOP == m_Scon.iCurState)
+			if (SS_CLIMB_BOOST_ONTOPTOSTOP == m_Scon.iCurState)
 				m_Scon.iNextState = SS_CLIMB_BOOST_ONTOPTOSPRINT;
-			/*if(!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
-				m_Scon.iNextState = SS_MOVE_B;
 			else
-				m_Scon.iNextState = SS_MOVE_F;*/
+			{
+				if (nullptr == m_pFixedTarget)
+				{
+					if (SS_SPRINT != m_Scon.iCurState)
+						m_Scon.iNextState = SS_SPRINT_IMPULSE_F;
+					else
+						m_Scon.iNextState = SS_SPRINT;
+				}
+				else
+				{
+					if ((m_Scon.iCurState == SS_MOVE_B && m_Scon.TrackPos >= 15.0) ||
+						(m_Scon.iCurState == SS_MOVE_F && m_Scon.TrackPos >= 15.0) ||
+						m_Scon.iCurState == SS_SPRINT)
+						m_Scon.iNextState = SS_SPRINT;
+				}
+			}
 			break;
-		case Client::CP_PlayerGirl::INPUT_EVADE:
-			if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
-				m_Scon.iNextState = SS_MOVE_B;
-			else
+		case Client::CP_PlayerGirl::INPUT_FRONTSTEP:
+			if (m_Scon.iCurState != SS_MOVE_B)
 				m_Scon.iNextState = SS_MOVE_F;
 			break;
 
+		case Client::CP_PlayerGirl::INPUT_BACKSTEP:
+			if(m_Scon.iCurState != SS_MOVE_F)
+				m_Scon.iNextState = SS_MOVE_B;
+			break;
 		case Client::CP_PlayerGirl::INPUT_SPACE:
 			if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
 				m_Scon.iNextState = SS_JUMP_WALK;
@@ -1561,16 +1701,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		}
 	}
 
-	// TargetDir
-	_vector vTargetDir;
-	if (nullptr != m_pFixedTarget)
-		vTargetDir = XMVector3Normalize(XMVectorSetY(m_pFixedTarget->Get_Position() - this->Get_Position(), 0.f));
-	else if (nullptr != m_pNearst)
-		vTargetDir = XMVector3Normalize(XMVectorSetY(m_pNearst->Get_Position() - this->Get_Position(), 0.f));
-	else
-		vTargetDir = XMVectorZero();
 
-	XMStoreFloat3(&m_vTargetDir, vTargetDir);
 
 
 	// 그래서 어느 방향을 바라보는가
@@ -1587,9 +1718,10 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		else
 			vFinalDir = vInputDir;
 	}
+	else if(m_bInputDirMove)
+		vFinalDir = vTargetDir;
 	else
 		vFinalDir = vInputDir;
-
 
 	// 지금 상태를 끊고 다음 상태로 갱신 할지 여부
 	if (m_Scon.iCurState != m_Scon.iNextState)
@@ -1652,6 +1784,7 @@ void CP_PlayerGirl::Tick_State(_double TimeDelta)
 		m_pAnimSetCom[ANIMSET_RIBBON]->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, nullptr);
 
 		m_pAnimSetCom[ANIMSET_BASE]->Update_TargetBones();
+		
 		m_pAnimSetCom[ANIMSET_RIBBON]->Ribbon_TargetBones();
 		// 여기까지 Playanimation
 
@@ -1689,7 +1822,15 @@ void CP_PlayerGirl::Tick_State(_double TimeDelta)
 					XMStoreFloat3(&vMovement, vFinalMove);
 				}
 				else
-					XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vMovement) * (_float)TimeDelta);
+				{
+					if (true == m_bInputDirMove)
+					{
+						XMStoreFloat3(&vMovement, XMLoadFloat3(&m_vInputDir) * PhysicMove.fInitForce * (_float)TimeDelta);
+					}
+					else
+						XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vMovement) * (_float)TimeDelta);
+				}
+					
 			}
 
 		}
@@ -1698,7 +1839,13 @@ void CP_PlayerGirl::Tick_State(_double TimeDelta)
 			SS_CLIMB_BOOST_ONTOP == m_Scon.iCurState)
 			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, nullptr, m_pModelCom->Get_TopBoneCombinedPos(), m_pClimbBones[CBONE_SPINE]->Get_CombinedPosition_Float3());
 		else
-			m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom, m_pModelCom->Get_TopBoneCombinedPos(), m_pClimbBones[CBONE_SPINE]->Get_CombinedPosition_Float3());
+		{
+			if (true == m_bInputDirMove)
+				m_pMainTransform->Push_OnNavi(XMLoadFloat3(&vMovement), m_pNaviCom);
+			else 
+				m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom, m_pModelCom->Get_TopBoneCombinedPos(), m_pClimbBones[CBONE_SPINE]->Get_CombinedPosition_Float3());
+		}
+			
 		
 		XMStoreFloat3(&m_Scon.vPrevMovement, XMLoadFloat3(&vMovement) / (_float)TimeDelta);
 		
@@ -1724,7 +1871,7 @@ void CP_PlayerGirl::Tick_State(_double TimeDelta)
 			m_Scon.iNextState = m_Scon.iCurState;
 			SetUp_State();
 			m_tCurState.bLerp = false;
-			SetUp_Animations(false);
+			SetUp_Animations(true);
 			
 		}
 		else
@@ -1733,7 +1880,7 @@ void CP_PlayerGirl::Tick_State(_double TimeDelta)
 			{
 				m_Scon.iNextState = m_tCurState.iNextState;
 				SetUp_State();
-				SetUp_Animations(false);
+				SetUp_Animations(true);
 			}
 		}
 	}
@@ -2041,6 +2188,9 @@ void CP_PlayerGirl::Init_AnimSystem()
 
 		if (!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_OnTop")))
 			pAnim->Set_Duration(48.0);
+
+		//if (!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Move_F")))
+		//	pAnim->Set_Duration(12.0);
 
 
 		for (auto& pChannel : pAnim->Get_Channels())
