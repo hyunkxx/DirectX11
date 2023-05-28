@@ -5,6 +5,7 @@
 #include "GameInstance.h"
 
 #include "CameraMovement.h"
+#include "TerminalUI.h"
 
 CPlayerCamera::CPlayerCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCamera(pDevice, pContext)
@@ -58,13 +59,6 @@ HRESULT CPlayerCamera::Initialize(void * pArg)
 	m_ShakeDesc.fDuration = 2.f;
 #endif
 
-	CCameraMovement* pCamMovement = nullptr;
-	pCamMovement = static_cast<CCameraMovement*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
-	if (!pCamMovement)
-		return E_FAIL;
-
-	pCamMovement->AddCamera(CCameraMovement::CAM_MAINPLAYER, this);
-
 	//if (__super::Initialize(pArg))
 	//	return E_FAIL;
 
@@ -98,6 +92,14 @@ void CPlayerCamera::Start()
 	m_pPlayerNavigation = static_cast<CNavigation*>(pGameInstance->Find_GameObject(nCurrentLevel, TEXT("Player"))->Find_Component(TEXT("Com_Navigation")));
 
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	CCameraMovement* pCamMovement = nullptr;
+	pCamMovement = static_cast<CCameraMovement*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
+	pCamMovement->AddCamera(CCameraMovement::CAM_MAINPLAYER, this);
+	pCamMovement->BindCamera(CCameraMovement::CAM_MAINPLAYER, this);
+	pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
+	ShowCursor(false);
+
+	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
 }
 
 void CPlayerCamera::Tick(_double TimeDelta)
@@ -114,10 +116,9 @@ void CPlayerCamera::Tick(_double TimeDelta)
 	// CameraCurve
 	if (false == m_bApplyCurve)
 	{
-		if (pGameInstance->InputKey(DIK_Z) == KEY_STATE::TAP)
-		{
-			m_bFixMouse = !m_bFixMouse;
-		}
+#pragma region Input
+
+		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
 
 		if (pGameInstance->InputKey(DIK_LALT) == KEY_STATE::HOLD)
 		{

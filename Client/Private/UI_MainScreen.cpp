@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "UI_Mouse.h"
 #include "P_PlayerGirl.h"
+#include "Character.h"
+#include "Terrain.h"
 
 CUI_MainScreen::CUI_MainScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)

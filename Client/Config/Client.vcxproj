@@ -256,6 +256,7 @@
     <ClInclude Include="..\public\SlowKey.h" />
     <ClInclude Include="..\public\SoundKey.h" />
     <ClInclude Include="..\public\StateKey.h" />
+    <ClInclude Include="..\public\TerminalUI.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\P_PlayerGirl.h" />
     <ClInclude Include="..\Public\TestChar.h" />
@@ -377,6 +378,7 @@
     <ClCompile Include="..\private\SlowKey.cpp" />
     <ClCompile Include="..\private\SoundKey.cpp" />
     <ClCompile Include="..\private\StateKey.cpp" />
+    <ClCompile Include="..\private\TerminalUI.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\P_PlayerGirl.cpp" />
     <ClCompile Include="..\Private\TestChar.cpp" />

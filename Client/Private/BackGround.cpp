@@ -84,6 +84,10 @@ HRESULT CBackGround::Render()
 	if (FAILED(Setup_BackgroundResources()))
 		return E_FAIL;
 
+	_float fAlpha = 1.f;
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(float))))
+		return E_FAIL;
+
 	m_pShader->Begin(0);
 	m_pVIBuffer->Render();
 

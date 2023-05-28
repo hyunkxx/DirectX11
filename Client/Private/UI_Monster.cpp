@@ -291,7 +291,7 @@ void	CUI_Monster::Damage(_float Damage)
 	if (10 == m_HitCount)
 		m_HitCount = 1;
 	srand((unsigned int)time(NULL));
-	_float pos = rand() % (100 + 1 - (-100)) + (-100); //a가 작은수
+	_float pos = _float(rand() % (100 + 1 - (-100)) + (-100)); //a가 작은수
 
 	if (0 == m_HitCount % 2)
 	{

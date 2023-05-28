@@ -59,6 +59,9 @@ public:
 		m_pAcquireSystem = pAcquireSystem;
 	}
 
+	void SetActiveUI(_bool bValue) { m_bActiveUI = bValue; }
+	_bool IsActiveUI() const { return m_bActiveUI; }
+
 public:
 	void SetCurrentLevel(_uint nCurrentLevel) { m_nCurrentLevel = nCurrentLevel; }
 	_uint GetCurrentLevel() const { return m_nCurrentLevel; };
@@ -69,6 +72,8 @@ public:
 private: // Utility
 	_uint m_nCurrentLevel = 0;
 	POINT m_MousePosition;
+
+	_bool m_bActiveUI = false;
 
 public: // UI Handler
 	void SetInteractionActive(CInteractionUI::INTERACT_TYPE eInteractType, _bool bValue);

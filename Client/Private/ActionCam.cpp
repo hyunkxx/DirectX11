@@ -203,17 +203,32 @@ void CActionCam::RevertPrevCam(_double TimeDelta)
 	CAMERA_DESC& PrevCamDesc = pMainCam->GetCamDesc();
 	CAMERA_DESC& CurCamDesc = GetCamDesc();
 
-	vCurPos = XMVectorLerp(vCurPos, pMainCam->GetTransform()->Get_State(CTransform::STATE_POSITION), (_float)TimeDelta * 8.f);
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
+	static _vector vEye, vAt;
+	static _bool bCheck = false;
+	if (!bCheck)
+	{
+		bCheck = true;
+		vEye = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+		vAt = XMLoadFloat3(&CurCamDesc.vAt);
+	}
 
-	_vector vCurLookAt = XMLoadFloat3(&CurCamDesc.vAt);
-	vCurLookAt = XMVectorLerp(vCurLookAt, XMLoadFloat3(&PrevCamDesc.vAt), (_float)TimeDelta * 8.f);
+	m_fRevertAcc += (_float)TimeDelta;
+	static const _double dDuration = 0.5f;
+	_double dRatio = m_fRevertAcc / dDuration;
 
-	XMStoreFloat3(&m_CameraDesc.vAt, vCurLookAt);
-	m_pMainTransform->LookAt(vCurLookAt);
+	_vector vDestEye, vDestAt;
+	vDestEye = XMVectorLerp(vEye, pMainCam->GetTransform()->Get_State(CTransform::STATE_POSITION), (_float)dRatio);
+	vDestAt = XMVectorLerp(vAt, XMLoadFloat3(&PrevCamDesc.vAt), (_float)dRatio);
 
-	if (XMVectorGetX(XMVector3Length(vCurPos - pMainCam->GetTransform()->Get_State(CTransform::STATE_POSITION))) <= 0.05f)
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vDestEye);
+	m_pMainTransform->LookAt(vDestAt);
+
+	if (m_fRevertAcc > dDuration)
+	{
+		bCheck = false;
+		m_fRevertAcc = 0.f;
 		m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
+	}
 }
 
 void CActionCam::actionInit_Bangsun()

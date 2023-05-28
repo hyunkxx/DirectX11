@@ -117,6 +117,10 @@ public:
 	static CPlayerCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject * Clone(void * pArg = nullptr) override;
 	virtual void Free() override;
+
+private:
+	class CTerminalUI* m_pTerminalUI = nullptr;
+
 };
 
 END

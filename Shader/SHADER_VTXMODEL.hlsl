@@ -283,7 +283,7 @@ PS_OUT_SKY PS_MAIN_SKY(PS_IN_SKY In)
 	Out.vNormal	= float4(0.f, 0.f, 0.f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 1.f);
 	Out.vDepth = float4(0.f, 0.f, 0.f, 1.f);
-	Out.vShaderInfo = float4(1.f, 0.f, 0.f, 0.f);
+	Out.vShaderInfo = float4(0.1f, 0.f, 0.f, 0.f);
 
 	return Out;
 }

@@ -53,9 +53,13 @@ private:
 private:
 	CCameraMovement::CAM_TYPE m_eCamType;
 
-private: // 방순이 세팅
-	_float m_fTimeAcc	= 0.f;
+private:
+	// 엑션캠 상태
 	_uint m_iAction = 0;
+	_float m_fTimeAcc = 0.f;
+
+	// Revert
+	_float m_fRevertAcc = 0.f;
 
 private:
 	CCameraMovement* m_pCamMovement = nullptr;

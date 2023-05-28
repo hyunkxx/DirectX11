@@ -77,7 +77,7 @@ void CUI_Mouse::RenderGUI()
 _float3	CUI_Mouse::Get_MousePos()
 {
 	POINT		MousePos{};
-	ShowCursor(true); // 일단은 트루 겜돌릴때false
+	
 	GetCursorPos(&MousePos);
 	ScreenToClient(g_hWnd, &MousePos);
 

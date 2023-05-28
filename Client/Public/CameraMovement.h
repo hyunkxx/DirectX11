@@ -31,6 +31,7 @@ public:
 	virtual void RenderGUI() override;
 
 public:
+	HRESULT BindCamera(CAM_TYPE eCamType, CCamera* pCamera);
 	HRESULT BindTransform(CTransform* pTransform);
 
 	HRESULT AddCamera(CAM_TYPE eCameraType, CCamera* pCamera);
@@ -42,6 +43,8 @@ public:
 	void StartWave(CCamera::SHAKE_DESC tagShakeDesc);
 	void StartVibration();
 	void StartVibration(_float fRange, _float fDuration = 0.5f);
+
+	CAM_TYPE GetCurrentCamType() const { return m_eCurCamType; }
 
 	CCamera* GetCamera(CAM_TYPE eCameraType) {
 		if (!m_pCams[eCameraType])

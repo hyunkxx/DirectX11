@@ -151,6 +151,12 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	// 초기 상태 꺼놓음
 	m_pAttackCollider->SetActive(false);
 
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	_uint iLevel = pGameMode->GetCurrentLevel();
+
+	if(iLevel == LEVEL_GAMEPLAY)
+		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(55.f));
+
 	return S_OK;
 }
 
@@ -1035,6 +1041,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 	m_WorldMatrix = m_pMainTransform->Get_WorldMatrix();
 
 	CGameInstance* pGame = CGameInstance::GetInstance();
+	CGameMode* pGM = CGameMode::GetInstance();
 
 	//
 	INPUT eCurFrameInput = INPUT_NONE;
@@ -1047,13 +1054,8 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 	_vector vCamRight = XMVector3Normalize(XMVectorSetY(matCam.r[0], 0.f));
 	_vector vInputDir = XMVectorZero();
 
-
-
 	// 입력 제한 걸기
-	if (pGame->InputKey(DIK_I) == KEY_STATE::TAP)
-	{
-		m_bInputLock = !m_bInputLock;
-	}
+	m_bInputLock = pGM->IsActiveUI() ? false : true;
 
 	if (m_bInputLock)
 	{

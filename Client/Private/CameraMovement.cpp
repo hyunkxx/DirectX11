@@ -56,6 +56,16 @@ void CCameraMovement::RenderGUI()
 {
 }
 
+HRESULT CCameraMovement::BindCamera(CAM_TYPE eCamType, CCamera * pCamera)
+{
+	m_pCams[eCamType] = pCamera;
+
+	if (!m_pCams[eCamType])
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CCameraMovement::BindTransform(CTransform * pTransform)
 {
 	assert(pTransform);

@@ -326,6 +326,9 @@
     <ClCompile Include="..\Private\UI_Tip.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\TerminalUI.cpp">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI\Terminal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -627,6 +630,9 @@
     <ClInclude Include="..\Public\UI_Tip.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\TerminalUI.h">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI\Terminal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -764,6 +770,9 @@
     </Filter>
     <Filter Include="src\02. GameObject\99. UI\02. LoadingImage">
       <UniqueIdentifier>{975476c6-7409-4c8e-93ab-d8f8f4b64e95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\99. UI\02. IngameUI\Terminal">
+      <UniqueIdentifier>{eb53fe2f-d602-4499-b0d0-a1d7e14fde52}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

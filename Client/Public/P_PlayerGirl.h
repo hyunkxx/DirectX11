@@ -249,7 +249,7 @@ private:
 	// 이펙트 재생용 임시
 	_float4x4			m_WorldMatrix;
 
-	_bool				m_bInputLock = { false };
+	_bool				m_bInputLock = { true };
 
 	// 타겟 관련 변수들, 캐릭터 교체 시 값 변경에 주의
 	CCharacter*			m_pNearst = { nullptr };

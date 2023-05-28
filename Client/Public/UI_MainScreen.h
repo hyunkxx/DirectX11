@@ -12,6 +12,7 @@ END
 
 BEGIN(Client)
 class CP_PlayerGirl;
+
 class CUI_MainScreen final : public CGameObject
 {
 public: enum class eKeyType

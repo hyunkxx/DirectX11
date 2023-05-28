@@ -64,8 +64,7 @@ void CLevel_Loading::Tick(_double TimeDelta)
 		static_cast<CBackGround*>(m_pLoading)->SetLoadRatio(fLoadingRatio);
 	}
 
-	if (true == m_pLoader->IsFinished() &&
-		pGameInstance->InputKey(DIK_RETURN) == KEY_STATE::TAP)
+	if (true == m_pLoader->IsFinished())
 	{
 		CLevel*	pLevel = { nullptr };
 

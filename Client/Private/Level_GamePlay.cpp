@@ -12,6 +12,7 @@
 #include "M_Anjin.h"
 #include "M_AWukaka.h"
 #include "AcquireSystem.h"
+#include "TerminalUI.h"
 
 #include "MapObject.h"
 
@@ -277,7 +278,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	PCamDesc.fDistance = 4.f;
 	PCamDesc.fXAngle = 20.f;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYER_CAMERA, pLayerTag, L"player_camera", &PCamDesc)))
+	CGameObject* pObject = nullptr;
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pObject, LEVEL_GAMEPLAY, OBJECT::PLAYER_CAMERA, pLayerTag, L"player_camera", &PCamDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -343,7 +345,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	pGameMode->SetupAcquireSystem(static_cast<CAcquireSystem*>(m_pAcquireSystem));
-
+	
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::UI_TERMINAL, pLayerTag, TEXT("Terminal"))))
+		return E_FAIL;
 
 	return S_OK;
 }

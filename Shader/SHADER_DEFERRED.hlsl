@@ -154,8 +154,16 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 	}
 	else
 	{
-		Out.vShade = g_vLightDiffuse * fDot * (saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient)) * vSSAO.r);
-		Out.vShade.a = 1.f;
+		if (vShaderInfo.r == 1.f)
+		{
+			Out.vShade = g_vLightDiffuse * fDot * (saturate(vShade + (float4(0.8f, 0.8f, 0.8f, 0.8f)) * vSSAO.r));
+			Out.vShade.a = 1.f;
+		}
+		else
+		{
+			Out.vShade = g_vLightDiffuse * fDot * (saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient)) * vSSAO.r);
+			Out.vShade.a = 1.f;
+		}
 	}
 
 	vector			vWorldPos;
@@ -213,8 +221,16 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 	}
 	else
 	{
-		Out.vShade = g_vLightDiffuse * fDot * (saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient)));
-		Out.vShade.a = 1.f;
+		if (vShaderInfo.r == 1.f)
+		{
+			Out.vShade = g_vLightDiffuse * fDot * (saturate(vShade + (float4(0.8f, 0.8f, 0.8f, 0.8f))));
+			Out.vShade.a = 1.f;
+		}
+		else
+		{
+			Out.vShade = g_vLightDiffuse * fDot * (saturate(vShade + (g_vLightAmbient * g_vMtrlAmbient)));
+			Out.vShade.a = 1.f;
+		}
 	}
 
 	vector	vWorldPos;
@@ -320,7 +336,9 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 	else
 	{
 		if (vShaderInfo.r == 1.f)
-			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.6f));
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.0f));
+		else if (vShaderInfo.r == 0.1f)//스카이박스
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
 		else
 			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
 
@@ -361,8 +379,10 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 		}
 		else
 		{
-			if (vShaderInfo.r == 1.f)
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.6f));
+			if (vShaderInfo.r == 1.f)//식생
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.0f));
+			else if(vShaderInfo.r == 0.1f)//스카이박스
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
 			else
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
 			
@@ -381,7 +401,9 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 		else 
 		{
 			if(vShaderInfo.r == 1.f)
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.6f));
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.0f));
+			else if (vShaderInfo.r == 0.1f)//스카이박스
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
 			else
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
 
