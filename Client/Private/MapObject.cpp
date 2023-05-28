@@ -40,7 +40,7 @@ HRESULT CMapObject::Initialize(void * pArg)
 
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, POSITION_ZERO);
 
-	//m_EditionDesc.fCullingRatio = 0.0f;
+	m_EditionDesc.fCullingRatio = 0.0f;
 
 	return S_OK;
 }
@@ -115,6 +115,19 @@ HRESULT CMapObject::Render()
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_SHR:
 		if (FAILED(Render_EditionColor()))
+			return E_FAIL;
+		break;
+
+	case CMapObject::MAPOBJECT_TYPEID::ID_STRUCTURE:
+		if (FAILED(Render_Default()))
+			return E_FAIL;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_PIL:
+		if (FAILED(Render_Default()))
+			return E_FAIL;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_STATUE:
+		if (FAILED(Render_Default()))
 			return E_FAIL;
 		break;
 
@@ -314,6 +327,13 @@ HRESULT CMapObject::Load_Edition()
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_SHR:
 		Load_EditionColor(hFile, dwByte);
+		break;
+
+	case CMapObject::MAPOBJECT_TYPEID::ID_STRUCTURE:
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_PIL:
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_STATUE:
 		break;
 
 	default:
