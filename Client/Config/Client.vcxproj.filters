@@ -222,9 +222,6 @@
     <ClCompile Include="..\Private\UI_TapT.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Terminal.cpp">
-      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\AcquireSystem.cpp">
       <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
     </ClCompile>
@@ -326,6 +323,9 @@
     </ClCompile>
     <ClCompile Include="..\private\PlayerState.cpp" />
     <ClCompile Include="..\private\Level_Test.cpp" />
+    <ClCompile Include="..\Private\UI_Tip.cpp">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -511,9 +511,6 @@
     <ClInclude Include="..\Public\UI_TapT.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Terminal.h">
-      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\AcquireSystem.h">
       <Filter>src\02. GameObject\99. UI\03. AcquireSystem</Filter>
     </ClInclude>
@@ -627,6 +624,9 @@
     </ClInclude>
     <ClInclude Include="..\public\PlayerState.h" />
     <ClInclude Include="..\public\Level_Test.h" />
+    <ClInclude Include="..\Public\UI_Tip.h">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

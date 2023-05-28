@@ -275,9 +275,7 @@
     <ClInclude Include="..\Public\UI_TapT.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Terminal.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="..\Public\UI_Tip.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_StaticTextureEnum.h" />
     <ClInclude Include="Client_Struct.h" />
@@ -397,9 +395,7 @@
     <ClCompile Include="..\Private\UI_TapT.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Terminal.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\Private\UI_Tip.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="stdafx.cpp">
