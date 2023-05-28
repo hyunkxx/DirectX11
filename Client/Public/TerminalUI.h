@@ -64,7 +64,7 @@ private:
 	CRenderer* m_pRenderer = nullptr;
 	CVIBuffer_Rect* m_pVIBuffer = nullptr;
 
-	class CCharacterState* m_pCharacterState = nullptr;
+	class CPlayerState* m_pCharacterState = nullptr;
 	class CCameraMovement* m_pCamMovement = nullptr;
 private: //Ortho Desc
 	_float4x4 m_ViewMatrix, m_ProjMatrix;	

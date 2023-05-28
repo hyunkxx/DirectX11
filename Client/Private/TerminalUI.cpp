@@ -6,7 +6,7 @@
 #include "GameInstance.h"
 
 #include "CameraMovement.h"
-#include "CharacterState.h"
+#include "PlayerState.h"
 
 CTerminalUI::CTerminalUI(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -234,7 +234,7 @@ HRESULT CTerminalUI::Initialize(void * pArg)
 
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
-	m_pCharacterState = static_cast<CCharacterState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pCharacterState = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 
 	return S_OK;

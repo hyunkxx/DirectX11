@@ -1473,7 +1473,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_PIL_1, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Pil/1/SM_Val_Pil_02AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Pil/Pil_1_data")))))
+		TEXT("../../Resource/Model/Static/Map/Object/Pil/1/SM_Val_Pil_02AS.smdl"), TEXT("../../Data/GamePlay/MapObject/Pil/Pil_1.data")))))
 	{
 		MSG_BOX("Failed to Prototype In Loader : SIMD_PIL_1");
 		return E_FAIL;
