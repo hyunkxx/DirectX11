@@ -183,6 +183,8 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID , _uint iEffectTypeID, _bool bTracking);
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID);
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
+	virtual void Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed);
+	virtual void Shot_SlowKey(_float fTargetTime, _float fLerpSpeed);
 
 public:
 	virtual _uint Get_AttackID() override { return m_iCurAttackID; }
@@ -269,6 +271,8 @@ private:
 	_float m_fDissolveTimeAcc = 0.f;
 	_bool m_bDissolve = false;
 	_bool m_bDissolveType = false;
+	_float m_fDissolveSpeed = 1.f;
+
 private:
 	HRESULT Add_Components();
 	void Init_AnimSystem();
@@ -289,6 +293,8 @@ private:
 	void On_Cell();
 	// 피격 처리 함수 
 	void On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos);
+
+	void On_Dodge();
 	
 	// Parts
 	HRESULT Init_Parts();
@@ -312,7 +318,6 @@ public:
 	virtual CCollider* GetAttackCollider() const override { return m_pAttackCollider; }
 	virtual CCollider* GetHitCollider() const override { return m_pHitCollider; }
 	virtual CCollider* GetMoveCollider() const override { return m_pMoveCollider; }
-	CCollider* GetDodgeCollider() const { return m_pDodgeCollider; }
 	void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest) override;
 	void CP_PlayerGirl::OnCollisionStay(CCollider * src, CCollider * dest) override;
 	void CP_PlayerGirl::OnCollisionExit(CCollider * src, CCollider * dest) override;
@@ -325,8 +330,6 @@ public:
 	CCollider* m_pAttackCollider = nullptr;
 	CCollider* m_pHitCollider = nullptr;
 	CCollider* m_pMoveCollider = nullptr;
-
-	CCollider* m_pDodgeCollider = nullptr;
 
 	CGameObject* pStaticObject = nullptr;
 

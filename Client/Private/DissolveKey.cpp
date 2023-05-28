@@ -13,15 +13,19 @@ HRESULT CDissolveKey::Initialize(BaseData* pData)
 {
 	__super::Initialize(pData);
 
-	/*m_eDissolveType = eType;
-	m_DissolveDuration = DissolveDuration;*/
+	if (pData->iInt0 != 0)
+		m_bDissolveType = true;
+	else
+		m_bDissolveType = false;
+
+	m_fDissolveSpeed = pData->fFloat0;
 
 	return S_OK;
 }
 
-void CDissolveKey::Shot(CCharacter * pMyCharacter)
+void CDissolveKey::Shot(CCharacter * pCharacter)
 {
-	//pMyCharacter->Set_Dissolve(m_eDissolveType, m_DissolveDuration);
+	pCharacter->Shot_DissolveKey(m_bDissolveType, m_fDissolveSpeed);
 }
 
 CDissolveKey * CDissolveKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, BaseData* pData)

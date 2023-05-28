@@ -77,7 +77,7 @@ HRESULT CSandbag::Initialize(void * pArg)
 	m_pModelCom->SetUp_Animation(0, true, false);
 
 	// 고유 변수 초기화
-	m_fAlertRange = 0.f;
+	m_fAlertRange = 15.f;
 	m_fAttackRange = 4.f;
 	m_bAttackReady = true;
 
@@ -150,24 +150,22 @@ void CSandbag::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	_double TimeDelay = 1.0;
 
-	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::HOLD)
+	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::TAP)
 	{
-		TimeDelay = 0.0;
+		if (m_TimeDelay == 1.0)
+			m_TimeDelay = 0.0;
+		else
+			m_TimeDelay = 1.0;
 	}
-	else
-	{
-		TimeDelay = 1.0;
-	}
-
+	
 	__super::Tick(TimeDelta);
 
-	Apply_CoolTime(TimeDelta * TimeDelay); // 쿨타임 갱신
+	Apply_CoolTime(TimeDelta * m_TimeDelay); // 쿨타임 갱신
 
-	Select_State(TimeDelta * TimeDelay); // 상태 확인
+	Select_State(TimeDelta * m_TimeDelay); // 상태 확인
 
-	Tick_State(TimeDelta * TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
+	Tick_State(TimeDelta * m_TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 
 	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
 

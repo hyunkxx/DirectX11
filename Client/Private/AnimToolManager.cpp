@@ -11,6 +11,8 @@
 #include "PriorityKey.h"
 #include "OBBKey.h"
 #include "MissileKey.h"
+#include "DissolveKey.h"
+#include "SlowKey.h"
 
 IMPLEMENT_SINGLETON(CAnimToolManager)
 
@@ -813,12 +815,12 @@ void CAnimToolManager::RenderGUI()
 						POPID;
 
 						PUSHID;
-						ImGui::Text("fFloat : ");
+						ImGui::Text("fFloat0 : ");
 						POPID;
 						SAMELINE;
 						ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.3f);
 						PUSHID;
-						ImGui::InputFloat("", &m_tKeyData.fFloat, 0.f, 0.f, "%.1f");
+						ImGui::InputFloat("", &m_tKeyData.fFloat0, 0.f, 0.f, "%.1f");
 						POPID;
 
 						ImGui::TreePop();
@@ -983,12 +985,12 @@ void CAnimToolManager::RenderGUI()
 						POPID;
 
 						PUSHID;
-						ImGui::Text("fFloat : ");
+						ImGui::Text("fFloat0 : ");
 						POPID;
 						SAMELINE;
 						ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.3f);
 						PUSHID;
-						ImGui::InputFloat("", &m_tKeyData.fFloat, 0.f, 0.f, "%.1f");
+						ImGui::InputFloat("", &m_tKeyData.fFloat0, 0.f, 0.f, "%.1f");
 						POPID;
 
 						ImGui::TreePop();
@@ -1312,13 +1314,16 @@ void CAnimToolManager::Create_Key()
 		pStateKey = CPriorityKey::Create(m_pDevice, m_pContext, &m_tKeyData);
 		break;
 	case CStateKey::TYPE_DISSOLVE:
-		//pStateKey = CDissolveKey::Create(m_pDevice, m_pContext, m_tKeyData.ShotFrame, (CDissolveKey::TYPE)m_tKeyData.iInt, (_double)m_tKeyData.fFloat);
+		pStateKey = CDissolveKey::Create(m_pDevice, m_pContext, &m_tKeyData);
 		break;
 	case CStateKey::TYPE_OBB:
 		pStateKey = COBBKey::Create(m_pDevice, m_pContext, &m_tKeyData);
 		break;
 	case CStateKey::TYPE_MISSILE:
 		pStateKey = CMissileKey::Create(m_pDevice, m_pContext, &m_tKeyData);
+		break;
+	case CStateKey::TYPE_SLOW:
+		pStateKey = CSlowKey::Create(m_pDevice, m_pContext, &m_tKeyData);
 		break;
 	case CStateKey::TYPE_SOUND:
 

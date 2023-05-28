@@ -253,6 +253,7 @@
     <ClInclude Include="..\public\PriorityKey.h" />
     <ClInclude Include="..\Public\Rect_Effect_P.h" />
     <ClInclude Include="..\Public\Sky.h" />
+    <ClInclude Include="..\public\SlowKey.h" />
     <ClInclude Include="..\public\SoundKey.h" />
     <ClInclude Include="..\public\StateKey.h" />
     <ClInclude Include="..\public\Terrain.h" />
@@ -373,6 +374,7 @@
     <ClCompile Include="..\private\PriorityKey.cpp" />
     <ClCompile Include="..\Private\Rect_Effect_P.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
+    <ClCompile Include="..\private\SlowKey.cpp" />
     <ClCompile Include="..\private\SoundKey.cpp" />
     <ClCompile Include="..\private\StateKey.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />

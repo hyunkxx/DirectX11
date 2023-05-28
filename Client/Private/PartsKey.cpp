@@ -16,7 +16,7 @@ HRESULT CPartsKey::Initialize(BaseData * pData)
 	m_iPartsID = pData->iInt0;
 	m_iPartsState = pData->iInt1;
 	m_iDissolveType = pData->iInt2;
-	m_DissolveDuration = (_double)pData->fFloat;
+	m_DissolveDuration = (_double)pData->fFloat0;
 
 	return S_OK;
 }

@@ -12,6 +12,7 @@
 #include "M_Anjin.h"
 #include "M_AWukaka.h"
 #include "AcquireSystem.h"
+#include "Sandbag.h"
 
 #include "MapObject.h"
 
@@ -28,7 +29,7 @@ HRESULT CLevel_Test::Initialize()
 
 	// 몬스터들 상태 초기화 해놓기
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
-	CM_Anjin::Init_States(m_pDevice, m_pContext);
+	CSandbag::Init_States(m_pDevice, m_pContext);
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
@@ -270,14 +271,14 @@ HRESULT CLevel_Test::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag1"))))
+	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag1"))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag2"))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag3"))))
-		return E_FAIL;
+		return E_FAIL;*/
 
 
 	return S_OK;
@@ -329,5 +330,5 @@ void CLevel_Test::Free()
 	__super::Free();
 
 	CP_PlayerGirl::Release_States();
-	CM_Anjin::Release_States();
+	CSandbag::Release_States();
 }

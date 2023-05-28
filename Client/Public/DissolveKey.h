@@ -7,14 +7,6 @@ BEGIN(Client)
 
 class CDissolveKey final : public CStateKey
 {
-public:
-	typedef enum DissolveType
-	{
-		TYPE_DISSOLVE_IN,
-		TYPE_DISSOLVE_OUT,
-		TYPE_END
-	}TYPE;
-
 private:
 	CDissolveKey(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CDissolveKey() = default;
@@ -24,8 +16,8 @@ public:
 	virtual void Shot(class CCharacter* pMyCharacter) override;
 
 private:
-	TYPE m_eDissolveType = { TYPE_END };
-	_double m_DissolveDuration = { 0.0 };
+	_bool m_bDissolveType = { false }; // iInt0 : true == dissoveIn
+	_float m_fDissolveSpeed = { 0.f };	// fFloat0
 
 public:
 	static CDissolveKey* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, BaseData* pData);

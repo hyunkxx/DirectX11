@@ -112,6 +112,8 @@ public:
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _uint iEffectID, _bool bTracking);
+	virtual void Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed);
+	virtual void Shot_SlowKey(_float fTargetTime, _float fLerpSpeed);
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -139,6 +141,12 @@ private:
 
 	_bool m_bInputLock = { false };
 
+	// 디졸브 변수
+	_float m_fDissolveAmount = 0.f;
+	_float m_fDissolveTimeAcc = 0.f;
+	_bool m_bDissolve = false;
+	_bool m_bDissolveType = false;
+	_float m_fDissolveSpeed = 1.f;
 
 
 private:

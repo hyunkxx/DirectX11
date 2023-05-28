@@ -16,6 +16,8 @@
 #include "PriorityKey.h"
 #include "OBBKey.h"
 #include "MissileKey.h"
+#include "DissolveKey.h"
+#include "SlowKey.h"
 
 #include "Missile_Constant.h"
 #include "Missile_RotAround.h"
@@ -184,7 +186,7 @@ void CP_PlayerGirl::PreTick(_double TimeDelta)
 	if (nullptr != m_pFixedTarget)
 	{
 		if (false == m_pFixedTarget->IsActive() ||
-			25.f <  XMVectorGetX(XMVector3Length(m_pFixedTarget->Get_Position() - Get_Position())))
+			15.f <  XMVectorGetX(XMVector3Length(m_pFixedTarget->Get_Position() - Get_Position())))
 		{
 			m_pFixedTarget = nullptr;
 			m_pPlayerStateClass->Set_LockOn(false, nullptr);
@@ -387,7 +389,7 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 
 	if (m_bDissolve)
 	{
-		m_fDissolveTimeAcc += (_float)TimeDelta * 0.7f;
+		m_fDissolveTimeAcc += (_float)TimeDelta * m_fDissolveSpeed;
 		if (2.f <= m_fDissolveTimeAcc)
 		{
 			m_bDissolve = false;
@@ -443,6 +445,8 @@ HRESULT CP_PlayerGirl::Render()
 		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
 			return E_FAIL;
 
+
+		// Dissolve 변수
 		if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
 			return E_FAIL;
 
@@ -677,13 +681,16 @@ HRESULT CP_PlayerGirl::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* p
 					m_tStates[i].ppStateKeys[j] = CPriorityKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_DISSOLVE:
-					
+					m_tStates[i].ppStateKeys[j] = CDissolveKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_OBB:
 					m_tStates[i].ppStateKeys[j] = COBBKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_MISSILE:
 					m_tStates[i].ppStateKeys[j] = CMissileKey::Create(pDevice, pContext, &tBaseData);
+					break;
+				case CStateKey::TYPE_SLOW:
+					m_tStates[i].ppStateKeys[j] = CSlowKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_SOUND:
 
@@ -828,12 +835,29 @@ void CP_PlayerGirl::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	else
 		vInitPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
 	
-
+	
 	_matrix matRot = XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_RIGHT), m_MissileRotAngles[iMissilePoolID].x)
 		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_UP), m_MissileRotAngles[iMissilePoolID].y)
 		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_LOOK), m_MissileRotAngles[iMissilePoolID].z);
 
 	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot);
+}
+
+void CP_PlayerGirl::Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed)
+{
+	m_bDissolve = true;
+	m_fDissolveTimeAcc = 0.f;
+
+	m_bDissolveType = bDissolveType;
+
+	m_fDissolveSpeed = fDissolveSpeed;
+}
+
+void CP_PlayerGirl::Shot_SlowKey(_float fTargetTime, _float fLerpSpeed)
+{
+	CGameInstance* pGame = CGameInstance::GetInstance();
+
+	pGame->TimeSlowDown(fTargetTime, fLerpSpeed);
 }
 
 void CP_PlayerGirl::SetUp_State()
@@ -1250,9 +1274,9 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				{
 					_bool	bLeft = (0.f > XMVectorGetY(XMVector3Cross(vTargetDir, vInputDir)));
 					_float fScalar = XMVectorGetX(XMVector3Dot(vTargetDir, vInputDir));
-					if (fScalar > 0.9f)
+					if (fScalar > 0.85f)
 						m_Scon.iNextState = SS_WALK_F;
-					else if (fScalar < -0.9f)
+					else if (fScalar < -0.85f)
 						m_Scon.iNextState = SS_WALK_B;
 					else if (bLeft == true)
 					{
@@ -1273,9 +1297,9 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				{
 					_bool	bLeft = (0.f > XMVectorGetY(XMVector3Cross(vTargetDir, vInputDir)));
 					_float fScalar = XMVectorGetX(XMVector3Dot(vTargetDir, vInputDir));
-					if (fScalar > 0.667f)
+					if (fScalar > 0.85f)
 						m_Scon.iNextState = SS_RUN_F;
-					else if (fScalar < -0.667f)
+					else if (fScalar < -0.85f)
 						m_Scon.iNextState = SS_RUN_B;
 					else if (bLeft == true)
 					{
@@ -1324,8 +1348,8 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				}
 				else
 				{
-					if ((m_Scon.iCurState == SS_MOVE_B && m_Scon.TrackPos >= 15.0) ||
-						(m_Scon.iCurState == SS_MOVE_F && m_Scon.TrackPos >= 15.0) ||
+					if ((m_Scon.iCurState == SS_MOVE_B && m_Scon.TrackPos >= 12.0) ||
+						(m_Scon.iCurState == SS_MOVE_F && m_Scon.TrackPos >= 12.0) ||
 						m_Scon.iCurState == SS_SPRINT)
 						m_Scon.iNextState = SS_SPRINT;
 				}
@@ -1371,6 +1395,12 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			case IS_SKILL_02:
 				m_Scon.iNextState = IS_ATTACK_05;
 				break;
+
+			case SS_MOVE_LIMIT_B:
+			case SS_MOVE_LIMIT_F:
+				m_Scon.iNextState = IS_ATTACK_PO_2;
+				break;
+
 			case IS_ATTACK_PO_2:
 				m_Scon.iNextState = IS_ATTACK_PO_3;
 				break;
@@ -1720,7 +1750,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 	}
 	else if(m_bInputDirMove)
 		vFinalDir = vTargetDir;
-	else
+	else 
 		vFinalDir = vInputDir;
 
 	// 지금 상태를 끊고 다음 상태로 갱신 할지 여부
@@ -2080,6 +2110,23 @@ void CP_PlayerGirl::On_Cell()
 
 void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos)
 {
+	// 저스트 회피 성공
+	if ((SS_MOVE_B == m_Scon.iCurState ||
+		SS_MOVE_F == m_Scon.iCurState) &&
+		12.0 > m_Scon.TrackPos)
+	{
+		On_Dodge();
+		return;
+	}
+	// 무적 상태
+	else if (SS_MOVE_LIMIT_B == m_Scon.iCurState ||
+		SS_MOVE_LIMIT_F == m_Scon.iCurState)
+	{
+		return;
+	}
+
+
+	// 그 외 피격 처리
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
 	{
@@ -2152,6 +2199,16 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 			SetUp_Animations(false);
 		}
 	}
+}
+
+void CP_PlayerGirl::On_Dodge()
+{
+	// Move > Move_Limit로 // 방향에 따라 Index가 2씩 차이남
+	m_Scon.iNextState = m_Scon.iCurState + 2;
+	
+	SetUp_State();
+	SetUp_Animations(false);
+
 }
 
 void CP_PlayerGirl::Init_AnimSystem()
@@ -2760,15 +2817,6 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 				m_tCharInfo.fCurTP += m_AttackInfos[m_iCurAttackID].fTPGain;
 				if (m_tCharInfo.fCurTP > m_tCharInfo.fMaxTP)
 					m_tCharInfo.fCurTP = m_tCharInfo.fMaxTP;
-
-			}
-
-			// 회피 상태일 때 상대의 공격이 나에게 적중한 경우 (저스트 회피)  
-			if (true == src->Compare(GetHitCollider()) &&
-				true == dest->Compare(pOpponent->GetAttackCollider()))
-			{
-				// 슬로우 모션, 회피 이펙트 / 블러, 저스트 회피 애니메이션 이행
-				
 
 			}
 

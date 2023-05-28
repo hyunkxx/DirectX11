@@ -9,6 +9,7 @@ const char* CStateKey::szStateKeyTag[TYPE_END] =
 	"DissolveKey",
 	"OBBKey",
 	"MissileKey",
+	"SlowKey",
 	"SoundKey",
 };
 

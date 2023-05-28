@@ -9,6 +9,8 @@
 #include "PriorityKey.h"
 #include "OBBKey.h"
 #include "MissileKey.h"
+#include "DissolveKey.h"
+#include "SlowKey.h"
 
 
 CTestGeneric::CTestGeneric(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -158,10 +160,28 @@ void CTestGeneric::LateTick(_double TimeDelta)
 
 	//Effect Bones 처리
 	Update_EffectBones();
+
+	// 디졸브 처리
+	if (m_bDissolve)
+	{
+		m_fDissolveTimeAcc += (_float)TimeDelta * m_fDissolveSpeed;
+		if (2.f <= m_fDissolveTimeAcc)
+		{
+			m_bDissolve = false;
+			m_fDissolveTimeAcc = 0.f;
+		}
+
+		if (m_bDissolveType)
+			m_fDissolveAmount = 1.f - m_fDissolveTimeAcc;
+		else
+			m_fDissolveAmount = m_fDissolveTimeAcc;
+	}
 }
 
 HRESULT CTestGeneric::Render()
 {
+	CGameInstance* pGame = CGameInstance::GetInstance();
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
@@ -181,7 +201,18 @@ HRESULT CTestGeneric::Render()
 		if (FAILED(m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(1);
+		// Dissolve 변수
+		if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
+			return E_FAIL;
+
+		if (m_bDissolve)
+			m_pShaderCom->Begin(12);
+		else
+			m_pShaderCom->Begin(1);
+
 		m_pModelCom->Render(i);
 
 	}
@@ -270,6 +301,21 @@ void CTestGeneric::Shot_EffectKey(_tchar * szEffectTag, _uint EffectBoneID, _uin
 		return;
 
 	pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
+}
+
+void CTestGeneric::Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed)
+{
+	m_bDissolve = true;
+	m_fDissolveTimeAcc = 0.f;
+	m_bDissolveType = bDissolveType;
+	m_fDissolveSpeed = fDissolveSpeed;
+}
+
+void CTestGeneric::Shot_SlowKey(_float fTargetTime, _float fLerpSpeed)
+{
+	CGameInstance* pGame = CGameInstance::GetInstance();
+
+	pGame->TimeSlowDown(fTargetTime, fLerpSpeed);
 }
 
 void CTestGeneric::Safe_AnimID()
@@ -374,13 +420,16 @@ HRESULT CTestGeneric::Init_States()
 					tSingleState.ppStateKeys[j] = CPriorityKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_DISSOLVE:
-
+					tSingleState.ppStateKeys[j] = CDissolveKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_OBB:
 					tSingleState.ppStateKeys[j] = COBBKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_MISSILE:
 					tSingleState.ppStateKeys[j] = CMissileKey::Create(m_pDevice, m_pContext, &tBaseData);
+					break;
+				case CStateKey::TYPE_SLOW:
+					tSingleState.ppStateKeys[j] = CSlowKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_SOUND:
 

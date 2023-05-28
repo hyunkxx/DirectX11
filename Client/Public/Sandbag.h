@@ -171,6 +171,9 @@ private:
 	// 공격 행동에 대한 글로벌 쿨타임 변수
 	_double				m_GlobalCoolTime = { 0.0 };
 	_bool				m_bAttackReady = { false };
+	
+	//
+	_double				m_TimeDelay = { 1.0 };
 
 	// MoveCollider 충돌 시 비교할 무게
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))

@@ -16,6 +16,7 @@ public:
 		TYPE_DISSOLVE,
 		TYPE_OBB,
 		TYPE_MISSILE,
+		TYPE_SLOW,
 		TYPE_SOUND,
 		TYPE_END
 	}TYPE;
@@ -29,7 +30,7 @@ public:
 		_int	iInt0;
 		_int	iInt1;
 		_int	iInt2;
-		_float fFloat;
+		_float	fFloat0;
 		char szTag[MAX_PATH];
 	};
 protected:
