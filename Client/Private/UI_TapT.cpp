@@ -40,15 +40,19 @@ HRESULT CUI_TapT::Initialize(void * pArg)
 	return S_OK;
 }
 
+void CUI_TapT::Start()
+{
+	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
+	m_pUIMain = static_cast<CUI_MainScreen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));
+	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
+}
+
 void CUI_TapT::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
+	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
 	
-	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::HOLD)
 	{
 		Add_ShaderY(TimeDelta);
@@ -81,8 +85,8 @@ void CUI_TapT::Tick(_double TimeDelta)
 				{
 					m_bHolding = false;
 					_int Texindex = m_DescList[1]->iTexNum;
-					CGameObject* pMain = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_MainScreen"));
-					dynamic_cast<CUI_MainScreen*>(pMain)->Set_Texchange(Texindex);
+					// 포인터 저장해놓고 쓰기
+					m_pUIMain->Set_Texchange(Texindex);
 					m_DescList[i + 6]->OnRect = true;
 					break;
 				}
@@ -106,18 +110,15 @@ void CUI_TapT::Tick(_double TimeDelta)
 	}
 	
 
-	CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Mouse"));
-	static_cast<CUI_Mouse*>(pMouse)->Set_Texchange(false);
+	m_pUIMouse->Set_Texchange(false);
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::TAP)
 	{
-		static_cast<CUI_Mouse*>(pMouse)->Set_RenderMouse(true);
+		m_pUIMouse->Set_RenderMouse(true);
 	}
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::AWAY)
 	{
-		static_cast<CUI_Mouse*>(pMouse)->Set_RenderMouse(false);
+		m_pUIMouse->Set_RenderMouse(false);
 	}
-
-	Safe_Release(pGameInstance);
 }
 
 void CUI_TapT::LateTick(_double TimeDelta)
@@ -174,11 +175,9 @@ void CUI_TapT::RenderGUI()
 void CUI_TapT::SerectUI()
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-	CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("layer_UI"), TEXT("UI_Mouse"));
-	if (nullptr != pMouse)
+	if (nullptr != m_pUIMouse)
 	{
-		_float3	fMousePos = dynamic_cast<CUI_Mouse*>(pMouse)->Get_MousePos();
+		_float3	fMousePos = m_pUIMouse->Get_MousePos();
 		vMousePos = XMLoadFloat3(&fMousePos);
 
 		if (0 != m_DescList.size())
@@ -198,8 +197,7 @@ void CUI_TapT::SerectUI()
 					if ((XMVectorGetY(P0) > XMVectorGetY(vMousePos)) && (XMVectorGetY(P2) < XMVectorGetY(vMousePos)))
 					{
 						pCutDesc->OnRect = true;
-						CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Mouse"));
-						dynamic_cast<CUI_Mouse*>(pMouse)->Set_Texchange(true);
+						m_pUIMouse->Set_Texchange(true);
 					}
 					else
 					{
@@ -215,7 +213,6 @@ void CUI_TapT::SerectUI()
 			}
 		}
 	}
-	Safe_Release(pGameInstance);
 }
 
 
@@ -320,6 +317,8 @@ CGameObject* CUI_TapT::Clone(void* pArg)
 void CUI_TapT::Free()
 {
 	__super::Free();
+	m_pUIMouse = nullptr;
+	m_pUIMain = nullptr;
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexture);

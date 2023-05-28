@@ -151,7 +151,10 @@ public: // Set
 
 public:
 	void AddExp(CHARACTERS eCharater, _float fExp);
-
+	CHARACTER_STATE* Get_MainCharacterState() { return &(m_CharacterState[m_CharSlot[SLOT_MAIN]]); }
+	CHARACTER_STATE* Get_SecondCharacterState() { return &(m_CharacterState[m_CharSlot[SLOT_SUB1]]); }
+	CHARACTER_STATE* Get_ThirdCharacterState() { return &(m_CharacterState[m_CharSlot[SLOT_SUB2]]); }
+	PLAYER_STATE* Get_PlayerState() { return &(m_PlayerState); }
 private:
 	void levelUp(CHARACTERS eCharater);
 

@@ -21,6 +21,7 @@ float  g_TRadianAcc;
 float  g_ERadianAcc;
 float  g_RRadianAcc;
 float  g_QRadianAcc;
+float  g_SkillRadian;
 float2  g_GraphUV;
 float  g_MonsterGauge;
 
@@ -30,8 +31,8 @@ float2 g_SpriteXY;			//가로 세로 갯수
 
 texture2D			g_MyTexture;
 texture2D			g_MyTexture2;
-texture2D			g_Mask;
-texture2D			g_Mask2;
+texture2D			g_GMask;
+texture2D			g_GMask2;
 texture2D			g_PMask;
 texture2D			g_PMask2;
 texture2D			g_Sprite;
@@ -394,8 +395,8 @@ PS_OUT PS_MASK(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 	vector Defuse ,Mask, Mask2;
-	Mask = g_Mask.Sample(LinearSampler,  float2(In.vTexUV.x - g_GraphUV.x  ,In.vTexUV.y)); // 흐르는 이미지
-	Mask2 = g_Mask2.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y)); // 랜더부분 이미지
+	Mask = g_GMask.Sample(LinearSampler,  float2(In.vTexUV.x - g_GraphUV.x  ,In.vTexUV.y)); // 흐르는 이미지
+	Mask2 = g_GMask2.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y)); // 랜더부분 이미지
 	Defuse = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
 	
 	Defuse *= (Mask.a +  Mask2.a);
@@ -407,6 +408,9 @@ PS_OUT PS_MASK(PS_IN In)
 	Out.vColor.g += g_fColorG/255.f;
 	Out.vColor.b += g_fColorB/255.f;
 	Out.vColor.a += g_fColorA/255.f;
+
+	if(In.vTexUV.x > g_SkillRadian)
+	   discard;
 
 	return Out;
 

@@ -575,10 +575,16 @@ HRESULT CUI_Monster::Setup_ShaderResourcesMask(_int index)
 
 	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index].iTexNum)))
 		return E_FAIL;
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Mask", m_MaskTextureNum)))
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask", m_MaskTextureNum)))
 		return E_FAIL;
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Mask2", m_MaskTextureNum2)))
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask2", m_MaskTextureNum2)))
 		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_MonUV", &(m_MonsterUV), sizeof(_float2))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_SkillRadian", &m_MonsterGauge, sizeof(_float)))) // 70번 스킬강화게이지 오른쪽으로 어디까지 찼는지때문에추가 ->나중에몬스터꺼로바꾸기
+		return E_FAIL;
+	//if (FAILED(m_pShader->SetRawValue("g_MonsterGauge", &(m_MonsterGauge), sizeof(_float)))) 
+	//	return E_FAIL;
 
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index].WorldMatrix))))
 		return E_FAIL;
@@ -596,12 +602,6 @@ HRESULT CUI_Monster::Setup_ShaderResourcesMask(_int index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
-
-	if (FAILED(m_pShader->SetRawValue("g_MonUV", &(m_MonsterUV), sizeof(_float2))))
-		return E_FAIL;
-	//if (FAILED(m_pShader->SetRawValue("g_MonsterGauge", &(m_MonsterGauge), sizeof(_float)))) 
-	//	return E_FAIL;
-
 
 	return S_OK;
 }
@@ -614,14 +614,21 @@ HRESULT CUI_Monster::Setup_ShaderResourcesBoss(_int index)
 
 	if (nullptr != m_pTexture)
 	{
+		if (FAILED(m_pShader->SetRawValue("g_MonUV", &(m_MonsterUV), sizeof(_float2))))
+			return E_FAIL;
 
 		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index].iTexNum)))
 			return E_FAIL;
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Mask", m_MaskTextureNum)))
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask", m_MaskTextureNum)))
 			return E_FAIL;
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Mask2", m_MaskTextureNum2)))
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask2", m_MaskTextureNum2)))
 			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_SkillRadian", &m_MonsterGauge, sizeof(_float)))) // 70번 스킬강화게이지 오른쪽으로 어디까지 찼는지때문에추가 ->나중에몬스터꺼로바꾸기
+			return E_FAIL;
+		//if (FAILED(m_pShader->SetRawValue("g_MonsterGauge", &(m_MonsterGauge), sizeof(_float)))) 
+		//	return E_FAIL;
 	}
+	
 
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index].WorldMatrix))))
 		return E_FAIL;
@@ -639,11 +646,6 @@ HRESULT CUI_Monster::Setup_ShaderResourcesBoss(_int index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
-
-	if (FAILED(m_pShader->SetRawValue("g_MonUV", &(m_MonsterUV), sizeof(_float2))))
-		return E_FAIL;
-	//if (FAILED(m_pShader->SetRawValue("g_MonsterGauge", &(m_MonsterGauge), sizeof(_float)))) 
-	//	return E_FAIL;
 
 	if (true == m_bRedStart)
 	{

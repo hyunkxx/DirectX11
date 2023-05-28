@@ -11,6 +11,8 @@ class CTransform;
 END
 
 BEGIN(Client)
+class CUI_MainScreen;
+class CUI_Mouse;
 
 class CUI_TapT final : public CGameObject
 {
@@ -48,6 +50,7 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Start() override;
 	virtual void Tick(_double TimeDelta) override;
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
@@ -88,6 +91,8 @@ private:
 	void	Load();
 
 private:
+	CUI_MainScreen* m_pUIMain = { nullptr };
+	CUI_Mouse*		m_pUIMouse = { nullptr };
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
 

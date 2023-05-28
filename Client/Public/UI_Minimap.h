@@ -130,9 +130,9 @@ private:
 
 	_float4 ColorFrame;
 	_float m_fColorAFrame = { 0.f };
-	_float m_fColorRFrame = { 0.f };// { 244.f };
-	_float m_fColorGFrame = { 0.f };// { 244.f };
-	_float m_fColorBFrame = { 0.f };// { 234.f };
+	_float m_fColorRFrame = { 244.f };
+	_float m_fColorGFrame = { 244.f };
+	_float m_fColorBFrame = { 234.f };
 
 	//디폴트 아이콘(플레이어표시,시야) 
 	_float2			m_DefaultIconLU[2] = { { 0.f,0.f } };

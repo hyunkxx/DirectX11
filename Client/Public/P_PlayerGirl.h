@@ -21,7 +21,7 @@ END
 BEGIN(Client)
 
 class CCameraMovement;
-
+class CUI_MainScreen;
 class CP_PlayerGirl 
 	: public CCharacter	
 {
@@ -337,6 +337,7 @@ public:
 	CPlayerState::CHARACTER_STATE* m_pCharacterState;
 	class CInventory* m_pInven = nullptr;
 	class CCameraMovement* m_pCamMovement = nullptr;
+	class CUI_MainScreen* m_pUIMain = { nullptr };
 };
 
 END

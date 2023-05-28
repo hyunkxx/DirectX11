@@ -24,6 +24,7 @@
 
 #include "Chest.h"
 #include "Inventory.h"
+#include "UI_MainScreen.h"
 
 //CamMovement
 #include "CameraMovement.h"
@@ -184,6 +185,7 @@ void CP_PlayerGirl::Start()
 	m_pCamMovement->BindTransform(m_pMainTransform);
 	m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
 	m_pCamMovement->SetupBone(CCameraMovement::CAM_BANGSUN, m_pModelCom->Get_BonePtr(L"Bip001RFinger21"));
+	m_pUIMain = static_cast<CUI_MainScreen*>(pGame->Find_GameObject(LEVEL_GAMEPLAY, L"UI_MainScreen"));
 }
 
 void CP_PlayerGirl::PreTick(_double TimeDelta)
@@ -207,7 +209,7 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 	pGameInstance->ShadowUpdate(250.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 
 	__super::Tick(TimeDelta);
-
+	
 	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::HOLD)
 	{
 		TimeDelay = 0.1;
@@ -2148,6 +2150,7 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 	// pEffPos : 두 콜라이더의 중간점, 이펙트 출력 기준위치
 	// fFinalDamage : 최종 대미지
 	// pAttackInfo->eElementType : 공격 판정의 속성
+	m_pUIMain->Set_Damage(10);
 	
 
 	// 사망 시 사망 애니메이션 실행 

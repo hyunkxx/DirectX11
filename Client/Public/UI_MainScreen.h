@@ -12,6 +12,7 @@ END
 
 BEGIN(Client)
 class CP_PlayerGirl;
+class CPlayerState;
 
 class CUI_MainScreen final : public CGameObject
 {
@@ -56,6 +57,7 @@ public:
 		_float fColorBCut = { 0.f };
 		_bool  OnRect; // 마우스가 버퍼 위에 있는지
 	}CUTRECT;
+
 protected:
 	explicit CUI_MainScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CUI_MainScreen(const CUI_MainScreen& rhs);
@@ -89,15 +91,21 @@ private:
 
 public:
 	void	Set_Texchange(_int Texindex);
+	void	Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; }
 	void	Add_PlayerNum() { ++m_HavePlayerNum; ++m_HadPlayerNum; AddPlayerRender(); }
 
 
 private:
 	void	SerectUI();
-	void	Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; }
-	void    UVWave(_double TimeDelta);
+	void	SetHP();
+	void	SetStaticSkillCoolTime();
+	void	SetCurCoolTime();
+	void	SetCurCoolRadian();
+	void	SetPlayerColor();
 	void	HPBar(_double TimeDelta);
 	void	HPRedBar(_double TimeDelta);
+	void    UVWave(_double TimeDelta);
+	
 	void	AlphaM(CUTRECT* pDesc, _double TimeDelta);
 	void	AlphaP(CUTRECT* pDesc, _double TimeDelta);
 
@@ -143,11 +151,6 @@ private:
 	void QCoolRenderOff();
 	void RCoolRenderOff();
 
-	void T(_double TimeDelta);
-	void E(_double TimeDelta);
-	void Q(_double TimeDelta);
-	void R(_double TimeDelta);
-
 	_bool TEnd(_double TimeDelta);
 	_bool EEnd(_double TimeDelta);
 	_bool QEnd(_double TimeDelta);
@@ -171,7 +174,7 @@ private:
 	_float m_CurrentHp = { 100.f };
 	_float m_PreHp = { 100.f };
 	_float m_fWhiteBar = { 1.f };
-	_float m_RedDamageACC = { 100.f }; // 빨간바 차있는 부분
+	_float m_RedDamageACC = { 500.f }; // 빨간바 차있는 부분
 	_float m_fRedBar = { 1.f };
 
 	//쿨타임
@@ -179,13 +182,13 @@ private:
 	_float Time = { 1.f };
 
 	_bool  bTEnd = { false }, bEEnd = { false }, bQEnd = { false }, bREnd = { false };
-	_bool  UsedTSkill[3] = { false,false,false }, UsedESkill[3] = { false,false,false }, UsedQSkill[3] = { false,false,false }, UsedRSkill[3] = { false,false,false };
-	_float StaticTSkillTime = { 3.f }, StaticESkillTime = { 5.f }, StaticQSkillTime = { 7.f }, StaticRSkillTime = { 9.f };
-	_float TTimeAcc[3] = { 0.f,0.f,0.f }, ETimeAcc[3] = { 0.f,0.f,0.f }, QTimeAcc[3] = { 0.f, 0.f, 0.f, }, RTimeAcc[3] = { 0.f, 0.f, 0.f, };
-	_float TCoolTime[3] = { 3.f,3.f ,3.f }, ECoolTime[3] = { 5.f ,5.f ,5.f }, QCoolTime[3] = { 7.f ,7.f ,7.f }, RCoolTime[3] = { 9.f ,9.f ,9.f };
-	_float TCoolRadian[3] = { 0.f ,0.f ,0.f }, ECoolRadian[3] = { 0.f,0.f ,0.f }, QCoolRadian[3] = { 0.f ,0.f ,0.f }, RCoolRadian[3] = { 0.f ,0.f,0.f };
-	_float RRRadian[3] = { 0.f ,0.f,0.f };
-	_float IconRadian[3] = { 0.f ,0.f,0.f };
+	_float StaticHookCoolTime = { 0.f }, StaticLevitationCoolTime = { 0.f }, StaticScannerCoolTimel = { 0.f };
+	_float StaticESkillTime = { 0.f }, StaticQSkillTime = { 0.f }, StaticRSkillTime = { 0.f };
+	_float TCoolTime = { 0.f }, ECoolTime = { 0.f }, QCoolTime = { 0.f }, RCoolTime = { 0.f };
+	_float TCoolRadian = { 0.f }, ECoolRadian = { 0.f }, QCoolRadian = { 0.f }, RCoolRadian = { 0.f };
+	_float RRCurGauge = { 0.f }, RRMaxGauge = { 0.f }, RRRadian = { 0.f };
+	_float QTERadian = { 0.f }, QTECurGauge = { 0.f }, QTEMaxGauge = { 0.f };
+	_float SkillRadian = { 0.f }, SkillCurGauge = { 0.f }, SkillMaxGauge = { 0.f };
 
 	_float2 m_fUV = { 0.f, 0.f }; // 텍스처uv흘리는애
 	_int m_MainMaskNum;
@@ -202,23 +205,25 @@ public:
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
 
+public:/*
+	ELEMENT::ELMT_SPECTRA = _float3{ 214.959f * 255.f, 208.637f * 255.f, 126.347f * 255.f };
+	ELEMENT::ELMT_AERO = _float3{ 107.f * 255.f, 234.f * 255.f, 219.f * 255.f };
+	ELEMENT::ELMT_FUSION = _float3{ 158.058f * 255.f, -255.f * 255.f, -231.818f * 255.f };*/
+
+private:
+	CP_PlayerGirl*  m_pPlayer = { nullptr };
+	CPlayerState*   m_pPlayerStateClass = { nullptr };
+
 
 
 
 private:
-	CP_PlayerGirl*  m_pPlayer = { nullptr };
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
 	CTexture*		m_pTexFunc = { nullptr };
-	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
+	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; 
 
 	vector<CUTRECT*>		  m_CutDescList;
-
-
-
-	ID3D11Device* m_pDevice;
-	ID3D11DeviceContext* m_pContext;
-
 
 };
 
