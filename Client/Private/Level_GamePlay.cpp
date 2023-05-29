@@ -48,8 +48,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_tree"))))
-		//return E_FAIL;
+	if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_tree"))))
+		return E_FAIL;	
 
 	if (FAILED(Ready_Layer_MapObject_Rock(TEXT("layer_rock"))))
 		return E_FAIL;
@@ -80,6 +80,7 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_MapObject_Statue(TEXT("layer_statue"))))
 		return E_FAIL;
+		
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);

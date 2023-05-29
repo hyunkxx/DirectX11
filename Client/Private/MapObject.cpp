@@ -38,6 +38,13 @@ HRESULT CMapObject::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	_uint		iNumInstance = { 0 };
+
+	iNumInstance = m_pModelCom->Get_TotalNumInstance();
+
+	if (0 >= iNumInstance)
+		Destroy();
+	
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, POSITION_ZERO);
 
 	m_EditionDesc.fCullingRatio = 0.0f;

@@ -109,10 +109,13 @@ HRESULT CModel_Instance::Initialize_Prototype(const _tchar* pModelFilePath, cons
 	if (FAILED(Load_InstanceData(pInstanceFilePath)))	
 		return E_FAIL;
 
-	if (FAILED(Ready_Meshes(&Model, m_pInstanceMatrix)))
-		return E_FAIL;
+	if (0 < m_iNumInstance)
+	{
+		if (FAILED(Ready_Meshes(&Model, m_pInstanceMatrix)))
+			return E_FAIL;
 
-	Safe_Delete_Array(m_pInstanceMatrix);
+		Safe_Delete_Array(m_pInstanceMatrix);
+	}
 
 	if (FAILED(Ready_Materials(&Model, pModelFilePath)))
 		return E_FAIL;
@@ -200,6 +203,7 @@ HRESULT CModel_Instance::Load_InstanceData(const _tchar * pInstanceFilePath)
 	{
 		ReadFile(hFile, &m_iNumInstance, sizeof(int), &dwByte, nullptr);
 
+		/*
 		if (0 >= m_iNumInstance)
 		{
 			m_iNumInstance = { 1 };
@@ -219,6 +223,18 @@ HRESULT CModel_Instance::Load_InstanceData(const _tchar * pInstanceFilePath)
 			for (_uint i = 0; i < m_iNumInstance; ++i)
 				ReadFile(hFile, &m_pInstanceMatrix[i], sizeof(_float4x4), &dwByte, nullptr);
 		}
+		*/
+
+		if (0 < m_iNumInstance)
+		{
+			m_pInstanceMatrix = new _float4x4[m_iNumInstance];
+			ZeroMemory(m_pInstanceMatrix, sizeof(_float4x4) * m_iNumInstance);
+
+			for (_uint i = 0; i < m_iNumInstance; ++i)
+				ReadFile(hFile, &m_pInstanceMatrix[i], sizeof(_float4x4), &dwByte, nullptr);
+		}
+		else
+			m_iNumInstance = 0;
 	}
 
 	CloseHandle(hFile);
@@ -229,7 +245,7 @@ HRESULT CModel_Instance::Load_InstanceData(const _tchar * pInstanceFilePath)
 
 _uint CModel_Instance::Get_TotalNumInstance()
 {
-	if (nullptr == m_Instance_Meshes[0])
+	if (m_Instance_Meshes.empty())
 		return 0;
 
 	return m_Instance_Meshes[0]->Get_TotalNumInstance();
@@ -237,7 +253,7 @@ _uint CModel_Instance::Get_TotalNumInstance()
 
 VTXMATRIX * CModel_Instance::Get_TotalInstanceMatrix()
 {
-	if (nullptr == m_Instance_Meshes[0])
+	if (m_Instance_Meshes.empty())
 		return nullptr;
 
 	return m_Instance_Meshes[0]->Get_TotalInstanceMatrix();
@@ -245,7 +261,7 @@ VTXMATRIX * CModel_Instance::Get_TotalInstanceMatrix()
 
 VTXMATRIX * CModel_Instance::Get_InstanceMatrix(_uint iInstanceNum)
 {
-	if (nullptr == m_Instance_Meshes[0])
+	if (m_Instance_Meshes.empty())
 		return nullptr;
 
 	return m_Instance_Meshes[0]->Get_InstanceMatrix(iInstanceNum);
@@ -253,7 +269,7 @@ VTXMATRIX * CModel_Instance::Get_InstanceMatrix(_uint iInstanceNum)
 
 void CModel_Instance::Get_PSA_To_InstanceMatrix(_uint iGetNum, SOBJECT_DESC * pOut)
 {
-	if (nullptr == m_Instance_Meshes[0])
+	if (m_Instance_Meshes.empty())
 		return;
 
 	return m_Instance_Meshes[0]->Get_PSA_To_InstanceMatrix(iGetNum, pOut);

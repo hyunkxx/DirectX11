@@ -133,7 +133,8 @@ PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
 	vector		vDiffuse_3 = g_DiffuseTexture_3.Sample(LinearSampler, In.vTexUV * 100.f);
 	vector		vDiffuse_4 = g_DiffuseTexture_4.Sample(LinearSampler, In.vTexUV * 100.f);
 
-	vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
+	//vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
+	vector		vFilter = g_FilterTexture.Sample(LinearSampler, float2(In.vTexUV.x, (In.vTexUV.y * 0.50f)));
 
 	vector		vMtrlDiffuse = { 0.0f, 0.0f, 0.0f, 0.0f };
 
@@ -194,7 +195,8 @@ PS_OUT PS_MAIN_PHONG_NORMALMAP(PS_IN_PHONG In)
 	vNormal_3 = mul(vNormal_3, WorldMatrix);
 	vNormal_4 = mul(vNormal_4, WorldMatrix);
 
-	vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
+	//vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
+	vector		vFilter = g_FilterTexture.Sample(LinearSampler, float2(In.vTexUV.x, (In.vTexUV.y * 0.50f)));
 
 	vector		vMtrlDiffuse = { 0.0f, 0.0f, 0.0f, 0.0f };
 	vector		vNormal = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -264,7 +266,8 @@ PS_OUT PS_MAIN_PHONG_NORMALMAP_DARK(PS_IN_PHONG In)
 	vNormal_3 = mul(vNormal_3, WorldMatrix);
 	vNormal_4 = mul(vNormal_4, WorldMatrix);
 
-	vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
+	//vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
+	vector		vFilter = g_FilterTexture.Sample(LinearSampler, float2(In.vTexUV.x, (In.vTexUV.y * 0.50f)));
 
 	vector		vMtrlDiffuse = { 0.0f, 0.0f, 0.0f, 0.0f };
 	vector		vNormal = { 0.0f, 0.0f, 0.0f, 0.0f };

@@ -53,8 +53,6 @@ private: // Render
 	HRESULT renderMainFrame();
 	HRESULT renderLeftPivot();
 	HRESULT renderSlots();	
-	 
-	
 
 public:
 	static CTerminalUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
