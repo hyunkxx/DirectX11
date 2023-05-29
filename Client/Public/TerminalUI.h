@@ -48,11 +48,13 @@ private:
 	void smoothScaleup(TERMINAL_UI eTerminal, _double TimeDelta);
 	void activeSlot(_double TimeDelta);
 	_int getSlotTexture(SLOT_TEXTURE eType, _int iIndex);
-
+	
 private: // Render
 	HRESULT renderMainFrame();
 	HRESULT renderLeftPivot();
-	HRESULT renderSlots();
+	HRESULT renderSlots();	
+	 
+	
 
 public:
 	static CTerminalUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
