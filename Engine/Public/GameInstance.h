@@ -100,6 +100,8 @@ public: //LightManager
 	_float4 GetLightDirection() const;
 
 	void ShadowUpdate(_float fLightHight, _vector vOriginPos);
+	void BakeShadowLight(_fvector vLightEye, _fvector vLightAt);
+	_float4x4 GetBakeLightFloat4x4(LIGHT_MATRIX eLightMatrix);
 
 public: //TargetManager
 	HRESULT Set_ShaderRenderTargetResourceView(class CShader* pShader, const _tchar* pTargetTag, const char* pContantName);

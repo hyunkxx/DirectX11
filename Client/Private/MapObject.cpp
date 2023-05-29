@@ -49,7 +49,7 @@ HRESULT CMapObject::Initialize(void * pArg)
 	
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, POSITION_ZERO);
 
-	m_EditionDesc.fCullingRatio = 0.0f;
+	m_EditionDesc.fCullingRatio = 0.f;
 
 	return S_OK;
 }
@@ -57,6 +57,9 @@ HRESULT CMapObject::Initialize(void * pArg)
 void CMapObject::Start()
 {
 	__super::Start();
+
+	if (m_EditionDesc.iTypeID != CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC_SHADOW, this);
 }
 
 void CMapObject::Tick(_double TimeDelta)
@@ -66,17 +69,22 @@ void CMapObject::Tick(_double TimeDelta)
 
 void CMapObject::LateTick(_double TimeDelta)
 {
+	CGameInstance* pGame = CGameInstance::GetInstance();
+
 	__super::LateTick(TimeDelta);
 
+	_bool bCulling = false;
 	if (nullptr != m_pModelCom && 0.0f < m_EditionDesc.fCullingRatio)
 		m_pModelCom->Culling(m_pMainTransform->Get_WorldMatrixInverse(), m_EditionDesc.fCullingRatio);
 
 	if (nullptr != m_pRendererCom)
 	{
+		m_pModelCom->Get_Pos_To_InstanceMatrix(m_EditionDesc.iTypeID);
+		_float fLength = XMVectorGetX(XMVector3Length(XMLoadFloat4(&pGame->Get_CamPosition()) - XMLoadFloat3(&m_pModelCom->Get_Pos_To_InstanceMatrix(m_EditionDesc.iTypeID))));
+
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
 
-		if(m_EditionDesc.iTypeID != CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC_SHADOW, this);
+
 	}
 }
 
@@ -506,7 +514,7 @@ HRESULT CMapObject::SetUp_ShadowShaderResources()
 
 	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
+	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->GetBakeLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_PROJ))))
 		return E_FAIL;

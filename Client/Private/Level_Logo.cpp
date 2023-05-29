@@ -32,7 +32,7 @@ HRESULT CLevel_Logo::Initialize()
 	LightDesc.vDiffuse = _float4(0.8f, 0.88f, 0.8f, 1.f);
 	LightDesc.vAmbient = _float4(0.65f, 0.65f, 0.65f, 1.f); //0.65f
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
+	
 	pGameInstance->SetLUT(CRenderer::LUT_DEFAULT);
 	pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)SHADOW_LEVEL::SHADOW_HIGH);
 	pGameInstance->OutlineToggle();

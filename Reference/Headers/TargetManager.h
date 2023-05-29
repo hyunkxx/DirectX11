@@ -35,6 +35,7 @@ public:
 	// [ Begin : MRT바인딩 ]   [ ShadowBegin : 12800x7200 바인딩 ]   [ BeginTarget : 지정한 단일타겟 바인딩 ]   [ SmallBeginTarget : 절반사이즈 단일타겟 바인딩 ]
 	HRESULT Begin(ID3D11DeviceContext* pContext, wstring strMRTTag, CGraphic_Device::VIEWPORT_TYPE eViewPortType = CGraphic_Device::VIEWPORT_TYPE::VIEWPORT_DEFAULT, _bool bClear = true);
 	HRESULT ShadowBegin(ID3D11DeviceContext* pContext, wstring strMRTTag);
+	HRESULT StaticShadowBegin(ID3D11DeviceContext* pContext, wstring strMRTTag);
 	HRESULT BeginTarget(ID3D11DeviceContext* pContext, class CRenderTarget* pTarget, _bool bClear = true);
 	HRESULT MiddleBeginTarget(ID3D11DeviceContext* pContext, CRenderTarget * pTarget, _bool bClear = true);
 	HRESULT SmallBeginTarget(ID3D11DeviceContext* pContext, CRenderTarget * pTarget, _bool bClear = true);

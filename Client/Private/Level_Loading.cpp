@@ -51,6 +51,8 @@ void CLevel_Loading::Tick(_double TimeDelta)
 	CAppManager* pApp = CAppManager::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+	pGM->ResetStaticShadowBake();
+
 #ifdef _DEBUG
 	wstring strTitleText = L"LOADING ";
 	pApp->SetTitle(strTitleText.append(m_pLoader->GetLoadingStateText()));
@@ -75,7 +77,7 @@ void CLevel_Loading::Tick(_double TimeDelta)
 		CLevel*	pLevel = { nullptr };
 
 		pGM->SetCurrentLevel(m_eNextLevel);
-
+		
 		switch (m_eNextLevel)
 		{
 		case LEVEL_LOGO:

@@ -20,10 +20,15 @@ public:
 
 	const LIGHT_DESC* GetLightDesc(_uint Index);
 
+	//DynamicLight
 	void ShadowUpdate(_float fLightHight, _vector vOriginPos);
 	void SetLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatrix);
 	_float4x4 GetLightFloat4x4(LIGHT_MATRIX eLightMatrix);
 	_float4x4 GetLightInverseFloat4x4(LIGHT_MATRIX eLightMatrix);
+
+	// StaticLight
+	void BakeShadowLight(_fvector vLightEye, _fvector vLightAt);
+	_float4x4 GetBakeLightFloat4x4(LIGHT_MATRIX eLightMatrix);
 
 	void SetLightPosition(_fvector vLightPos);
 	_float4 GetLightPosition() const { return m_vLightPos; };

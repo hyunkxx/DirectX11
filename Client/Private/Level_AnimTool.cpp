@@ -6,6 +6,7 @@
 #include "DynamicCamera.h"
 #include "Character.h"
 
+#include "GameMode.h"
 #include "AnimToolManager.h"
 #include "Camera.h"
 
@@ -56,8 +57,10 @@ void CLevel_AnimTool::Tick(_double TimeDelta)
 	m_pEffect_Tool->Tick(TimeDelta);
 	m_pEffect_Tool->LateTick(TimeDelta);
 #endif
+	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	pGameInstance->ShadowUpdate(60.f, XMLoadFloat4(&pGameInstance->Get_CamPosition()));
+
 }
 
 void CLevel_AnimTool::RenderLevelUI()

@@ -374,6 +374,7 @@ void CMesh_Instance::Culling(_fmatrix Inverse_WorldMatrix, _float fRadius)
 
 	_uint		iNumInstance = { 0 };
 
+
 	for (_uint i = 0; i < m_iTotalNumInstance; i++)
 	{
 		if (true == pGameInstance->InLocalSpace(XMLoadFloat4(&m_pTotalInstanceMatrix[i].vPosition), m_fRadius))
@@ -386,6 +387,8 @@ void CMesh_Instance::Culling(_fmatrix Inverse_WorldMatrix, _float fRadius)
 	m_iNumInstance = iNumInstance;
 
 	m_pContext->Unmap(m_pVBInstance, 0);
+
+	return;
 }
 
 #pragma endregion MODEL_INSTANCE

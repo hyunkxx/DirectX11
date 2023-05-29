@@ -55,6 +55,7 @@ private:
 	void Render_UI();
 
 public:
+	void ResetStaticShadow() { m_bShadowBaked = false; }
 	void AlphaSort(CRenderer::RENDER_GROUP eGroup);
 	void ApplyLUT(_uint iIndex);
 	void RGBSplit(const _tchar * pBindTargetTag, const _tchar * pSourTag);
@@ -131,6 +132,7 @@ private:
 	class CRenderSetting* m_pRenderSetting = nullptr;
 
 private:
+	_bool m_bShadowBaked = false;
 	_bool m_GlowEmpty = false;
 	SSAO_SETTING m_eSSAO;
 	

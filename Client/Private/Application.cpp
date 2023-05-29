@@ -178,6 +178,9 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	CGameMode* pGM = CGameMode::GetInstance();
+	pGM->SetupRenderer(m_pRenderer);
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::TRANSFORM,
 		CTransform::Create(m_pDevice, m_pContext))))
 		return E_FAIL;

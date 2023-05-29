@@ -51,11 +51,24 @@ void CLightManager::ShadowUpdate(_float fLightHight, _vector vOriginPos)
 	//카메라->플레이어 위치를 원점으로 하는 좌표로 변경
 	//_vector vCamPos = XMLoadFloat4(&pGameInstance->Get_CamPosition());
 	_vector vCamPos = vOriginPos;
-	_vector vLightEye = XMVectorSet(XMVectorGetX(vCamPos) - fRatio, fLightHight + fHeight, XMVectorGetZ(vCamPos) - fRatio, 1.f);
-	_vector vLightAt = XMVectorSet(XMVectorGetX(vCamPos) + fRatio + 50.f, fHeight, XMVectorGetZ(vCamPos) + fRatio + 50.f, 1.f);
+	_vector vLightEye = XMVectorSet(XMVectorGetX(vCamPos) - 50.f, fLightHight + fHeight, XMVectorGetZ(vCamPos) - 50.f, 1.f);
+	_vector vLightAt = XMVectorSet(XMVectorGetX(vCamPos) - 25.f, fHeight, XMVectorGetZ(vCamPos) - 25.f, 1.f);
 	_matrix vLightViewMatrix = XMMatrixLookAtLH(vLightEye, vLightAt, VECTOR_UP);
 	pGameInstance->SetLightMatrix(vLightViewMatrix, LIGHT_MATRIX::LIGHT_VIEW);
 	SetLightDirection(XMVector3Normalize(vLightAt - vLightEye));
+}
+
+void CLightManager::BakeShadowLight(_fvector vLightEye, _fvector vLightAt)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	_matrix vLightViewMatrix = XMMatrixLookAtLH(vLightEye, vLightAt, VECTOR_UP);
+	XMStoreFloat4x4(&m_BakeLightMatrix[LIGHT_VIEW], vLightViewMatrix);
+}
+
+_float4x4 CLightManager::GetBakeLightFloat4x4(LIGHT_MATRIX eLightMatrix)
+{
+	return m_BakeLightMatrix[eLightMatrix];
 }
 
 void CLightManager::SetLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatrix)
@@ -67,6 +80,7 @@ void CLightManager::SetLightMatrix(_fmatrix LightMatrix, LIGHT_MATRIX eLightMatr
 		break;
 	case Engine::CLightManager::LIGHT_PROJ:
 		XMStoreFloat4x4(&m_LightMatrix[LIGHT_PROJ], LightMatrix);
+		XMStoreFloat4x4(&m_BakeLightMatrix[LIGHT_PROJ], LightMatrix);
 		break;
 	default:
 		break;

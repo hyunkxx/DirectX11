@@ -11,7 +11,8 @@
 #define LEVEL_ANYWHERE CGameMode::GetInstance()->GetCurrentLevel()
 
 BEGIN(Engine)
-class CCamera;
+class CRenderer;
+
 END
 
 BEGIN(Client)
@@ -55,6 +56,9 @@ public:
 			return false;
 	};
 
+	void ResetStaticShadowBake() { m_pRenderer->ResetStaticShadow(); }
+	void SetupRenderer(CRenderer* pRenderer) { m_pRenderer = pRenderer; };
+
 	void SetupAcquireSystem(class CAcquireSystem* pAcquireSystem) {
 		m_pAcquireSystem = pAcquireSystem;
 	}
@@ -82,7 +86,7 @@ public: // UI Handler
 
 private: 
 	class CAcquireSystem* m_pAcquireSystem = nullptr;
-
+	CRenderer* m_pRenderer = nullptr;
 
 };
 

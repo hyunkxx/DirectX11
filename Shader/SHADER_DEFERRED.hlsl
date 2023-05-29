@@ -1,6 +1,7 @@
 #include "SHADER_DEFINES.hpp"
 
 float4x4  g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_LightViewMatrix, g_LightProjMatrix;
+float4x4 g_BakeLightViewMatrix;
 
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
@@ -423,33 +424,46 @@ PS_OUT_SHADOW PS_Shadow(PS_IN In)
 	vector vDepthInfo = g_DepthTexture.Sample(LinearBorderSampler, In.vTexUV);
 	float fViewZ = vDepthInfo.y * g_Far;
 
-	vector vPosition;
+	vector vPosition, vBakePosition;
 	vPosition.x = (In.vTexUV.x * 2.f - 1.f) * fViewZ;
 	vPosition.y = (In.vTexUV.y * -2.f + 1.f) * fViewZ;
 	vPosition.z = vDepthInfo.x * fViewZ;
 	vPosition.w = fViewZ;
 
+	vBakePosition = vPosition;
+
 	//해당 픽셀의 포지션을 월드까지 내림
 	vPosition = mul(vPosition, g_ProjMatrixInv);
 	vPosition = mul(vPosition, g_ViewMatrixInv);
 
+	vBakePosition = mul(vBakePosition, g_ProjMatrixInv);
+	vBakePosition = mul(vBakePosition, g_ViewMatrixInv);
+
 	vPosition = mul(vPosition, g_LightViewMatrix);
+	vBakePosition = mul(vBakePosition, g_BakeLightViewMatrix);
 
 	vector vLightUVPos = mul(vPosition, g_LightProjMatrix);
+	vector vBakeLightUVPos = mul(vBakePosition, g_LightProjMatrix);
+
 	float2 vLightUV, vBakeLightUV;
 
 	vLightUV.x = (vLightUVPos.x / vLightUVPos.w) * 0.5f + 0.5f;
 	vLightUV.y = (vLightUVPos.y / vLightUVPos.w) * -0.5f + 0.5f;
 
+	vBakeLightUV.x = (vBakeLightUVPos.x / vBakeLightUVPos.w) * 0.5f + 0.5f;
+	vBakeLightUV.y = (vBakeLightUVPos.y / vBakeLightUVPos.w) * -0.5f + 0.5f;
+
 	vector vShadowDepthInfo = g_ShadowDepthTexture.Sample(PointSampler, vLightUV);
-	vector vStaticShadowDepthInfo = g_StaticShadowTexture.Sample(PointSampler, vLightUV);
+	vector vStaticShadowDepthInfo = g_StaticShadowTexture.Sample(PointSampler, vBakeLightUV);
 
 	//Static Shadow
 	bool bCheck = false;
-	if (vPosition.z - 0.15f > (vStaticShadowDepthInfo.g * g_Far) && vDepthInfo.b != vStaticShadowDepthInfo.b)
+	if (vBakePosition.z - 0.5f > (vStaticShadowDepthInfo.g * g_Far) && vDepthInfo.b != vStaticShadowDepthInfo.b)
+	{
 		bCheck = true;
-
-	if (bCheck)
+	}
+	
+	if(bCheck)
 	{
 		Out.vDynamicShadow = g_vMtrlAmbient;
 	}

@@ -100,6 +100,7 @@ void CPlayerCamera::Start()
 	ShowCursor(false);
 
 	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
+
 }
 
 void CPlayerCamera::Tick(_double TimeDelta)

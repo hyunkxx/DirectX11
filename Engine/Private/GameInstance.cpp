@@ -172,7 +172,7 @@ HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel* pCurrentLevel)
 {
 	if (nullptr == m_pLevel_Manager)
 		return E_FAIL;
-
+	
 	return m_pLevel_Manager->Open_Level(iLevelIndex, pCurrentLevel);
 }
 
@@ -507,6 +507,19 @@ void CGameInstance::ShadowUpdate(_float fLightHight, _vector vOriginPos)
 		return;
 
 	return m_pLightManager->ShadowUpdate(fLightHight, vOriginPos);
+}
+
+void CGameInstance::BakeShadowLight(_fvector vLightEye, _fvector vLightAt)
+{
+	if (nullptr == m_pLightManager)
+		return;
+
+	m_pLightManager->BakeShadowLight(vLightEye, vLightAt);
+}
+
+_float4x4 CGameInstance::GetBakeLightFloat4x4(LIGHT_MATRIX eLightMatrix)
+{
+	return m_pLightManager->GetBakeLightFloat4x4(eLightMatrix);
 }
 
 HRESULT CGameInstance::Set_ShaderRenderTargetResourceView(CShader * pShader, const _tchar * pTargetTag, const char * pContantName)

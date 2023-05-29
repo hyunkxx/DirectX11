@@ -25,6 +25,7 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 HRESULT CLevel_GamePlay::Initialize()
 {
+	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	// 몬스터들 상태 초기화 해놓기
@@ -86,6 +87,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
 	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
 
+	pGM->ResetStaticShadowBake();
+
 	return S_OK;
 }
 
@@ -98,6 +101,7 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 	//pGameInstance->BGMSmoothOn(TimeDelta);
 
 	//임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것
@@ -269,6 +273,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	//Light Setting
 	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);
 	pGameInstance->SetLightMatrix(vLightProjMatrix, LIGHT_MATRIX::LIGHT_PROJ);
+
+	_vector vBakeLightPos = XMVectorSet(-90.f, 400.f, -90.f, 1.f);
+	_vector vBakeLightAt = XMVectorSet(200.f, 0.f, 200.f, 1.f);
+
+	pGameInstance->BakeShadowLight(vBakeLightPos, vBakeLightAt);
 
 	//PlayerCamera Setting
 	CPlayerCamera::PLAYERCAM_DESC PCamDesc;

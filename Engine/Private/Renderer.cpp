@@ -548,8 +548,13 @@ void CRenderer::Render_Priority()
 
 void CRenderer::Render_StaticShadowMap()
 {
+	if (m_bShadowBaked)
+		return;
+
 	if (nullptr == m_pTargetManager)
 		return;
+
+	m_bShadowBaked = true;
 
 	if (!m_pRenderSetting->IsActiveShadow())
 	{
@@ -560,7 +565,7 @@ void CRenderer::Render_StaticShadowMap()
 		return;
 	}
 
-	if (FAILED(m_pTargetManager->ShadowBegin(m_pContext, L"MRT_StaticShadow")))
+	if (FAILED(m_pTargetManager->StaticShadowBegin(m_pContext, L"MRT_StaticShadow")))
 		return;
 
 	for (auto& pGameObject : m_RenderObject[RENDER_STATIC_SHADOW])
@@ -913,9 +918,16 @@ void CRenderer::Render_Shadow()
 	if (FAILED(m_pShader->SetMatrix("g_LightProjMatrix", &pLighrManager->GetLightFloat4x4(CLightManager::LIGHT_MATRIX::LIGHT_PROJ))))
 		return;
 
+	//Static Shadow
+	if (FAILED(m_pShader->SetMatrix("g_BakeLightViewMatrix", &pLighrManager->GetBakeLightFloat4x4(CLightManager::LIGHT_MATRIX::LIGHT_VIEW))))
+		return;
+
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Depth"), "g_DepthTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_ShadowMap"), "g_ShadowDepthTexture")))
+		return;
+
+	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_StaticShadowMap"), "g_StaticShadowTexture")))
 		return;
 
 	m_pShader->Begin(7);
@@ -965,8 +977,7 @@ void CRenderer::Render_Blend()
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Shadow"), "g_ShadowTexture")))
 		return;
-	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_StaticShadowMap"), "g_StaticShadowTexture")))
-		return;
+
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_Glow"), "g_GlowTexture")))
 		return;
 	if (FAILED(m_pTargetManager->Set_ShaderResourceView(m_pShader, TEXT("Target_ShaderInfo"), "g_ShaderInfo")))

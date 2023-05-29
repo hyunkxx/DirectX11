@@ -327,12 +327,14 @@
     <ClCompile Include="..\private\TerminalUI.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI\Terminal</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\SlowKey.cpp" />
     <ClCompile Include="..\private\PlayerState.cpp">
       <Filter>src\02. GameObject\00. StaticClasses</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Test.cpp">
       <Filter>src\01. Level\99. AnimTool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SlowKey.cpp">
+      <Filter>src\05.AnimStateKeys</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -636,12 +638,14 @@
     <ClInclude Include="..\public\TerminalUI.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI\Terminal</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\SlowKey.h" />
     <ClInclude Include="..\public\PlayerState.h">
       <Filter>src\02. GameObject\00. StaticClasses</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Test.h">
       <Filter>src\01. Level\99. AnimTool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SlowKey.h">
+      <Filter>src\05.AnimStateKeys</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -207,7 +207,7 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	_double TimeDelay = 1.0;
-	pGameInstance->ShadowUpdate(250.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	pGameInstance->ShadowUpdate(50.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 
 	__super::Tick(TimeDelta);
 	
