@@ -302,10 +302,10 @@ void CPlayerCamera::Tick(_double TimeDelta)
 
 			_vector vPrevAt = XMLoadFloat3(&m_CameraDesc.vAt);
 
-			_vector vCurAt = XMVectorLerp(vPrevAt, vAtPos, TimeDelta * 5.f);
+			_vector vCurAt = XMVectorLerp(vPrevAt, vAtPos, (_float)TimeDelta * 5.f);
 
 			_vector vPrevEye = XMLoadFloat3(&m_CameraDesc.vEye);
-			_vector vCurEye = XMVectorLerp(vPrevEye, vEyePos, TimeDelta * 10.f);
+			_vector vCurEye = XMVectorLerp(vPrevEye, vEyePos, (_float)TimeDelta * 10.f);
 
 
 			XMStoreFloat3(&m_CameraDesc.vAt, vCurAt);

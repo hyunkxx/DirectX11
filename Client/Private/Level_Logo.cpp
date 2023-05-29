@@ -185,6 +185,9 @@ HRESULT CLevel_Logo::Ready_StaticGameObject(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::INVENTORY, pLayerTag, L"Inventory")))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::UI_TERMINAL, pLayerTag, L"Terminal")))
+		return E_FAIL;
+
 	return S_OK;
 }
 

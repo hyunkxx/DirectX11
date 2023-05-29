@@ -346,9 +346,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	pGameMode->SetupAcquireSystem(static_cast<CAcquireSystem*>(m_pAcquireSystem));
-	
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::UI_TERMINAL, pLayerTag, TEXT("Terminal"))))
-		return E_FAIL;
 
 	return S_OK;
 }

@@ -321,13 +321,18 @@
     <ClCompile Include="..\private\M_AWukaka.cpp">
       <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\PlayerState.cpp" />
-    <ClCompile Include="..\private\Level_Test.cpp" />
     <ClCompile Include="..\Private\UI_Tip.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClCompile>
     <ClCompile Include="..\private\TerminalUI.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI\Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SlowKey.cpp" />
+    <ClCompile Include="..\private\PlayerState.cpp">
+      <Filter>src\02. GameObject\00. StaticClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Test.cpp">
+      <Filter>src\01. Level\99. AnimTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -625,13 +630,18 @@
     <ClInclude Include="..\public\M_AWukaka.h">
       <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\PlayerState.h" />
-    <ClInclude Include="..\public\Level_Test.h" />
     <ClInclude Include="..\Public\UI_Tip.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClInclude>
     <ClInclude Include="..\public\TerminalUI.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI\Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SlowKey.h" />
+    <ClInclude Include="..\public\PlayerState.h">
+      <Filter>src\02. GameObject\00. StaticClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Test.h">
+      <Filter>src\01. Level\99. AnimTool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
