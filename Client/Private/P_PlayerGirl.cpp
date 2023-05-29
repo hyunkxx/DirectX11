@@ -384,33 +384,6 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 	// 다음프레임을 위해 초기화
 	m_pNearst = nullptr;
 	m_fNearstDist = 15.f;
-
-	// 디졸브 테스트 코드
-	/*if (pGameInstance->InputKey(DIK_G) == KEY_STATE::TAP)
-	{
-		m_bDissolve = true;
-		m_fDissolveTimeAcc = 0.f;
-	}
-	if (pGameInstance->InputKey(DIK_F) == KEY_STATE::TAP)
-	{
-		m_bDissolveType = !m_bDissolveType;
-	}*/
-
-	if (m_bDissolve)
-	{
-		m_fDissolveTimeAcc += (_float)TimeDelta * m_fDissolveSpeed;
-		if (2.f <= m_fDissolveTimeAcc)
-		{
-			m_bDissolve = false;
-			m_fDissolveTimeAcc = 0.f;
-		}
-
-		if(m_bDissolveType)
-			m_fDissolveAmount = 1.f - m_fDissolveTimeAcc;
-		else
-			m_fDissolveAmount = m_fDissolveTimeAcc;
-	}
-
 }
 
 HRESULT CP_PlayerGirl::Render()
@@ -454,14 +427,6 @@ HRESULT CP_PlayerGirl::Render()
 		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
 			return E_FAIL;
 
-
-		// Dissolve 변수
-		if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
-			return E_FAIL;
-
-		if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
-			return E_FAIL;
-
 		if (i == 5)
 		{
 			if (FAILED(m_pEyeBurstTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeBurstTexture")))
@@ -470,8 +435,21 @@ HRESULT CP_PlayerGirl::Render()
 				return E_FAIL;
 
 			// Eye
-			if(m_bDissolve)
+			if (m_bDissolve)
+			{
+				// Dissolve 변수
+				if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->SetRawValue("g_vDessolveColor", &m_vDissolveColor, sizeof(_float3))))
+					return E_FAIL;
+
 				m_pShaderCom->Begin(13);
+			}
+				
 			else
 				m_pShaderCom->Begin(7);		//Burst
 		}
@@ -852,23 +830,6 @@ void CP_PlayerGirl::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot);
 }
 
-void CP_PlayerGirl::Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed)
-{
-	m_bDissolve = true;
-	m_fDissolveTimeAcc = 0.f;
-
-	m_bDissolveType = bDissolveType;
-
-	m_fDissolveSpeed = fDissolveSpeed;
-}
-
-void CP_PlayerGirl::Shot_SlowKey(_float fTargetTime, _float fLerpSpeed)
-{
-	CGameInstance* pGame = CGameInstance::GetInstance();
-
-	pGame->TimeSlowDown(fTargetTime, fLerpSpeed);
-}
-
 void CP_PlayerGirl::SetUp_State()
 {
 	// 키 리셋
@@ -943,7 +904,7 @@ void CP_PlayerGirl::SetUp_State()
 		--m_iAirJumpCount;
 
 	// 무기 위치 잡기
-	if (0 == m_tCurState.bWeaponState)
+	if (false == m_tCurState.bWeaponState)
 		Set_WeaponUse(false);
 	else
 		Set_WeaponUse(true);
@@ -1019,13 +980,27 @@ void CP_PlayerGirl::Set_WeaponUse(_bool bBool)
 {
 	if (true == bBool)
 	{
-		m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON1);
-		m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON2);
+		if (m_bWeaponUsing != bBool)
+		{
+			m_bWeaponUsing = bBool;
+			m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true, 5.f, true);
+			m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, 5.f, true);
+
+			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON1);
+			m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON2);
+		}
 	}
 	else
 	{
-		m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON3);
-		m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON4);
+		if (m_bWeaponUsing != bBool)
+		{
+			m_bWeaponUsing = bBool;
+			m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true, 1.f, false);
+			m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, 1.f, false);
+
+			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON3);
+			m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON4);
+		}
 	}
 }
 
@@ -2460,7 +2435,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_AIRATTACK].fTPGain = 1.5f;
 	m_AttackInfos[ATK_AIRATTACK].iHitEffectID = 1;
 
-	m_AttackInfos[ATK_SKILL_01].fDamageFactor = 2.3f;
+	m_AttackInfos[ATK_SKILL_01].fDamageFactor = 2300.3f;
 	m_AttackInfos[ATK_SKILL_01].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_SKILL_01].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_SKILL_01].fSPGain = 1.5f;
@@ -2721,11 +2696,16 @@ HRESULT CP_PlayerGirl::Init_Parts()
 	PartsDesc.pParentTransform = m_pMainTransform;
 
 	m_Parts[PARTS_WEAPON_MAIN] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_SWORD_0_SWORD, &PartsDesc));
-	m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON7);
+	m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(EBONE_WEAPON02);
+	m_Parts[PARTS_WEAPON_MAIN]->Set_DissolveColor(_float3(0.3f, 0.6f, 1.f));
+
 	m_Parts[PARTS_WEAPON_SUB] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_SWORD_0_SCABBARD, &PartsDesc));
-	m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON7);
+	m_Parts[PARTS_WEAPON_SUB]->Set_Parent(EBONE_WEAPON01);
+	m_Parts[PARTS_WEAPON_SUB]->Set_DissolveColor(_float3(0.3f, 0.6f, 1.f));
+
 	m_Parts[PARTS_HULU] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_HULU_0, &PartsDesc));
 	m_Parts[PARTS_HULU]->Set_Parent(PBONE_HULU);
+	m_Parts[PARTS_HULU]->Set_DissolveColor(_float3(0.3f, 0.3f, 1.f));
 
 	return S_OK;
 }

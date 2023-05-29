@@ -160,22 +160,6 @@ void CTestVTF::LateTick(_double TimeDelta)
 
 	//Effect Bones 처리
 	Update_EffectBones();
-
-	// 디졸브 처리
-	if (m_bDissolve)
-	{
-		m_fDissolveTimeAcc += (_float)TimeDelta * m_fDissolveSpeed;
-		if (2.f <= m_fDissolveTimeAcc)
-		{
-			m_bDissolve = false;
-			m_fDissolveTimeAcc = 0.f;
-		}
-
-		if (m_bDissolveType)
-			m_fDissolveAmount = 1.f - m_fDissolveTimeAcc;
-		else
-			m_fDissolveAmount = m_fDissolveTimeAcc;
-	}
 }
 
 HRESULT CTestVTF::Render()
@@ -221,13 +205,6 @@ HRESULT CTestVTF::Render()
 		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
 			return E_FAIL;
 
-		// Dissolve 변수
-		if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
-			return E_FAIL;
-
-		if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
-			return E_FAIL;
-
 		if (i == iNumMeshes - 1)
 		{
 			/*if (FAILED(m_pEyeBurstTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeBurstTexture")))
@@ -240,14 +217,40 @@ HRESULT CTestVTF::Render()
 
 			// Eye
 			if (m_bDissolve)
+			{
+				// Dissolve 변수
+				if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->SetRawValue("g_vDessolveColor", &m_vDissolveColor, sizeof(_float3))))
+					return E_FAIL;
+
 				m_pShaderCom->Begin(13);
+			}
+				
 			else
 				m_pShaderCom->Begin(6);		//Burst
 		}
 		else
 		{
 			if (m_bDissolve)
+			{
+				// Dissolve 변수
+				if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->SetRawValue("g_vDessolveColor", &m_vDissolveColor, sizeof(_float3))))
+					return E_FAIL;
+
 				m_pShaderCom->Begin(13);
+			}
+
 			else
 				m_pShaderCom->Begin(iPass);
 		}
@@ -339,21 +342,6 @@ void CTestVTF::Shot_EffectKey(_tchar * szEffectTag, _uint EffectBoneID , _uint i
 		return;
 
 		pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
-}
-
-void CTestVTF::Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed)
-{
-	m_bDissolve = true;
-	m_fDissolveTimeAcc = 0.f;
-	m_bDissolveType = bDissolveType;
-	m_fDissolveSpeed = fDissolveSpeed;
-}
-
-void CTestVTF::Shot_SlowKey(_float fTargetTime, _float fLerpSpeed)
-{
-	CGameInstance* pGame = CGameInstance::GetInstance();
-
-	pGame->TimeSlowDown(fTargetTime, fLerpSpeed);
 }
 
 void CTestVTF::Safe_AnimID()

@@ -12,6 +12,7 @@
 #include "MissileKey.h"
 #include "Missile_Constant.h"
 #include "OBBKey.h"
+#include "DissolveKey.h"
 
 #include "CameraMovement.h"
 #include "Chest.h"
@@ -225,7 +226,23 @@ HRESULT CM_AWukaka::Render()
 		if (FAILED(m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(10);
+		if (m_bDissolve)
+		{
+			CGameInstance* pGame = CGameInstance::GetInstance();
+			// Dissolve º¯¼ö
+			if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_vDessolveColor", &m_vDissolveColor, sizeof(_float3))))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(12);
+		}
+		else
+			m_pShaderCom->Begin(10);
 		m_pModelCom->Render(i);
 
 	}
@@ -378,7 +395,7 @@ HRESULT CM_AWukaka::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pCon
 					m_tStates[i].ppStateKeys[j] = CPriorityKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_DISSOLVE:
-
+					m_tStates[i].ppStateKeys[j] = CDissolveKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_OBB:
 					m_tStates[i].ppStateKeys[j] = COBBKey::Create(pDevice, pContext, &tBaseData);
@@ -1005,6 +1022,7 @@ HRESULT CM_AWukaka::Init_EffectBones()
 	m_EffectBones[EBONE_SPINE] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine"));
 	m_EffectBones[EBONE_LHAND] = nullptr;
 	m_EffectBones[EBONE_RHAND] = nullptr;
+	m_EffectBones[EBONE_HEAD] = m_pModelCom->Get_BonePtr(TEXT("Bip001Head"));
 
 	return S_OK;
 }

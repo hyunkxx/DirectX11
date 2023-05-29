@@ -29,6 +29,21 @@ CCharacter::PHYSICMOVE CCharacter::StatePhysics[SP_END]
 };
 
 
+void CCharacter::Shot_SlowKey(_float fTargetTime, _float fLerpSpeed)
+{
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	pGame->TimeSlowDown(fTargetTime, fLerpSpeed);
+}
+
+void CCharacter::Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed)
+{
+	m_bDissolve = true;
+	m_fDissolveTimeAcc = 0.f;
+
+	m_bDissolveType = bDissolveType;
+	m_fDissolveSpeed = fDissolveSpeed;
+}
+
 CCharacter::CCharacter(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -47,6 +62,9 @@ HRESULT CCharacter::Initialize_Prototype()
 HRESULT CCharacter::Initialize(void * pArg)
 {
 	ZeroMemory(&m_Scon, sizeof StateController);
+
+	m_vDissolveColor = { 1.f, 0.7f, 0.4f };
+
 	return S_OK;
 }
 
@@ -60,6 +78,21 @@ void CCharacter::Tick(_double TimeDelta)
 
 void CCharacter::LateTick(_double TimeDelta)
 {
+	// 디졸브 프레임 단위 처리
+	if (m_bDissolve)
+	{
+		m_fDissolveTimeAcc += (_float)TimeDelta * m_fDissolveSpeed;
+		if (2.f <= m_fDissolveTimeAcc)
+		{
+			m_bDissolve = false;
+			m_fDissolveTimeAcc = 0.f;
+		}
+
+		if (m_bDissolveType)
+			m_fDissolveAmount = 1.f - m_fDissolveTimeAcc;
+		else
+			m_fDissolveAmount = m_fDissolveTimeAcc;
+	}
 }
 
 HRESULT CCharacter::Render()

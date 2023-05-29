@@ -399,8 +399,10 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint iEffectBoneID, _uint iTypeID, _bool bTracking) {}
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID) {}
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID) {}
-	virtual void Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed) {}
-	virtual void Shot_SlowKey(_float fTargetTime, _float fLerpSpeed) {}
+	
+	//
+	virtual void Shot_SlowKey(_float fTargetTime, _float fLerpSpeed);
+	virtual void Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed);
 
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -424,6 +426,14 @@ protected:
 	MONINFO			m_tCharInfo;
 	StateController m_Scon;
 	CollisionType	m_eCollisionType;
+
+	// 디졸브 벨류
+	_float m_fDissolveAmount = 0.f;
+	_float m_fDissolveTimeAcc = 0.f;
+	_bool m_bDissolve = false;
+	_bool m_bDissolveType = false;
+	_float m_fDissolveSpeed = 1.f;
+	_float3 m_vDissolveColor = {};
 
 public:
 	virtual void Free() override;

@@ -183,8 +183,6 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID , _uint iEffectTypeID, _bool bTracking);
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID);
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
-	virtual void Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed);
-	virtual void Shot_SlowKey(_float fTargetTime, _float fLerpSpeed);
 
 public:
 	virtual _uint Get_AttackID() override { return m_iCurAttackID; }
@@ -215,6 +213,7 @@ private:
 	// Parts 
 	class CParts*		m_Parts[PARTS_END] = { nullptr, };
 	CBone*				m_PartsBone[PBONE_END] = { nullptr, };
+	_bool				m_bWeaponUsing = { false };
 
 	// Effects
 	CBone*				m_EffectBones[EBONE_END] = { nullptr, };
@@ -266,12 +265,7 @@ private:
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
 	_float				m_fPushWeight = { 0.f };
 
-	// 임시 디졸브 벨류
-	_float m_fDissolveAmount = 0.f;
-	_float m_fDissolveTimeAcc = 0.f;
-	_bool m_bDissolve = false;
-	_bool m_bDissolveType = false;
-	_float m_fDissolveSpeed = 1.f;
+
 
 private:
 	HRESULT Add_Components();

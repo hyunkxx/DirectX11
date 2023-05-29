@@ -23,7 +23,7 @@ public:
 
 	enum DissolveType
 	{
-		DISS_ZLINEAR,
+		DISS_XLINEAR,
 		DISS_TEX,
 		DISS_END
 	};
@@ -67,6 +67,24 @@ public:
 		return &m_WorldMatrix;
 	}
 
+	void Set_DissolveColor(_float3& vDissolve)
+	{
+		m_vDissolveColor = vDissolve;
+	}
+
+	void Start_Dissolve(_bool bDissType, _float fDissSpeed, _bool bUseTex)
+	{
+		if (true == bUseTex)
+			m_eDissolveType = DISS_TEX;
+		else
+			m_eDissolveType = DISS_XLINEAR;
+
+		m_fDissolveSpeed = fDissSpeed;
+		m_bDissolveType = bDissType;
+		m_bDissolve = true;
+		m_fDissolveTimeAcc = 0.f;
+	}
+
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -82,12 +100,13 @@ private:
 	_bool				m_bOutline = { false };
 	
 	// 임시 디졸브 벨류
-	_float m_fDissolveAmount = 0.f;
-	_float m_fDissolveTimeAcc = 0.f;
-	_bool m_bDissolve = false;
-	DissolveType m_eDissolveType = DISS_ZLINEAR;
-	_bool m_bDissolveType = false;
-	_float m_fDissolveSpeed = 1.f;
+	_float				m_fDissolveAmount = 0.f;
+	_float				m_fDissolveTimeAcc = 0.f;
+	_bool				m_bDissolve = false;
+	DissolveType		m_eDissolveType = DISS_XLINEAR;
+	_bool				m_bDissolveType = false;
+	_float				m_fDissolveSpeed = 1.f;
+	_float3				m_vDissolveColor = {};
 
 	// 로컬 정점 Position XYZ 최소/최대값
 	_float3				m_vMinPoint = {};
