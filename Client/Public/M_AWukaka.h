@@ -118,13 +118,6 @@ public:
 	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
 
-	virtual _float4x4* Get_HeadMatrix()
-	{
-		if (nullptr == m_EffectBones[EBONE_HEAD])
-			return nullptr;
-
-		return &m_EffectBoneMatrices[EBONE_HEAD];
-	}
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };

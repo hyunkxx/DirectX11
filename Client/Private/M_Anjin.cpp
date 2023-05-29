@@ -1079,7 +1079,7 @@ HRESULT CM_Anjin::Init_EffectBones()
 	m_EffectBones[EBONE_SPINE] = nullptr;
 	m_EffectBones[EBONE_LHAND] = nullptr;
 	m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
-	m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001Head"));
+	m_EffectBones[EBONE_HEAD] = m_pModelCom->Get_BonePtr(TEXT("Bip001Head"));
 
 	return S_OK;
 }

@@ -1022,7 +1022,7 @@ HRESULT CM_AWukaka::Init_EffectBones()
 	m_EffectBones[EBONE_SPINE] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine"));
 	m_EffectBones[EBONE_LHAND] = nullptr;
 	m_EffectBones[EBONE_RHAND] = nullptr;
-	m_EffectBones[EBONE_HEAD] = m_pModelCom->Get_BonePtr(TEXT("Bip001Head"));
+	m_EffectBones[EBONE_HEAD] = m_EffectBones[EBONE_SPINE];
 
 	return S_OK;
 }

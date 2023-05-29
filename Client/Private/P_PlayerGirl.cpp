@@ -995,8 +995,8 @@ void CP_PlayerGirl::Set_WeaponUse(_bool bBool)
 		if (m_bWeaponUsing != bBool)
 		{
 			m_bWeaponUsing = bBool;
-			m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true, 1.f, false);
-			m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, 1.f, false);
+			m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true, 1.5f, false);
+			m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, 1.5f, false);
 
 			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON3);
 			m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON4);
