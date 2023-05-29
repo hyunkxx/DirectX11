@@ -1296,6 +1296,75 @@ HRESULT CApplication::Ready_Static_Effect()
 	}
 #pragma endregion
 
+#pragma region Yangyang
+	for (_int i = 0; 3 > i; i++)
+	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Attack_01.bin"),
+			"../../Resource/Effect/Player_Yangyang/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_YangYang_Attack_02.bin"),
+			"../../Resource/Effect/Player_Yangyang/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_YangYang_Attack_03.bin"),
+			"../../Resource/Effect/Player_Yangyang/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_YangYang_Attack_04_1.bin"),
+			"../../Resource/Effect/Player_Yangyang/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_YangYang_Attack_04_2.bin"),
+			"../../Resource/Effect/Player_Yangyang/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Attack_05.bin"),
+			"../../Resource/Effect/Player_Yangyang/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Attack_06.bin"),
+			"../../Resource/Effect/Player_Yangyang/Attack/")))
+			return E_FAIL;
+
+		// 공중 공격 후 착지할때 나오는 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_AirAttack_End_1.bin"),
+			"../../Resource/Effect/Player_Yangyang/AirAttack/")))
+			return E_FAIL;
+		// 착지 후 검집 닫을떄 한번 더 폭발하는 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_AirAttack_End_2.bin"),
+			"../../Resource/Effect/Player_Yangyang/AirAttack/")))
+			return E_FAIL;
+		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_AirAttack_Start_2_1.bin"),
+			"../../Resource/Effect/Player_Yangyang/AirAttack/")))
+			return E_FAIL;
+		// Start2_1 이 끝나갈때쯤  내려찍기 직전에 기모이는 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_AirAttack_Start_2_2.bin"),
+			"../../Resource/Effect/Player_Yangyang/AirAttack/")))
+			return E_FAIL;
+
+		// 회피 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Comon/P_Evasion_Effect_Y.bin"),
+			"../../Resource/Effect/Comon/P_Evasion_Effect/")))
+			return E_FAIL;
+
+	}
+	
+#pragma endregion
+
 
 #pragma region Comon
 
@@ -1543,6 +1612,33 @@ HRESULT CApplication::Ready_Static_Effect()
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
 			TEXT("../../Resource/Effect/M_Binglie/M_Binglie_Shoot_Ready.bin"),
 			"../../Resource/Effect/M_Binglie/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Binglie/M_Binglie_Ball.bin"),
+			"../../Resource/Effect/M_Binglie/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Binglie/M_Binglie_Ball_Ready.bin"),
+			"../../Resource/Effect/M_Binglie/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Binglie/M_Binglie_Shoot_Start.bin"),
+			"../../Resource/Effect/M_Binglie/Attack/")))
+			return E_FAIL;
+		
+		// 스킬쓰면서 지속적으로 빛나는 무기 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Fenglie/M_Fenglie_Weapon.bin"),
+			"../../Resource/Effect/M_Fenglie/Weapon/")))
+			return E_FAIL;
+
+		// 번개 내리꽂히는 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Fenglie/M_LeiFa_Lightning.bin"),
+			"../../Resource/Effect/M_Fenglie/Lightning/")))
 			return E_FAIL;
 
 	}
