@@ -112,6 +112,7 @@ HRESULT CM_AWukaka::Initialize(void * pArg)
 	if (pGame->Add_GameObjectEx(&pUIMon, LEVEL_ANYWHERE, OBJECT::UIMONSTER, TEXT("layer_UI"), szIndex, &MonInfo))
 		return E_FAIL;
 	m_pUIMon = static_cast<CUI_Monster*>(pUIMon);
+	m_pUIMon->Set_MonHP(m_tCharInfo.fMaxHP);
 	++Monindex;
 	return S_OK;
 }

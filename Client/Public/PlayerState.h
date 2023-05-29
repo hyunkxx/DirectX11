@@ -155,6 +155,7 @@ public:
 	CHARACTER_STATE* Get_SecondCharacterState() { return &(m_CharacterState[m_CharSlot[SLOT_SUB1]]); }
 	CHARACTER_STATE* Get_ThirdCharacterState() { return &(m_CharacterState[m_CharSlot[SLOT_SUB2]]); }
 	PLAYER_STATE* Get_PlayerState() { return &(m_PlayerState); }
+	void AddPlayer() { if (4 > m_PlayerState.iCharCount) { ++m_PlayerState.iCharCount; } }
 private:
 	void levelUp(CHARACTERS eCharater);
 

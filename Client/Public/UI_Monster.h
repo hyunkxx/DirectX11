@@ -93,6 +93,7 @@ public:
 	virtual void Free() override;
 
 public:
+	void Set_MonHP(_float HP) { m_HP = m_CurrentHp = m_RedHP = HP; }
 	void Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage); }
 	void Set_CharacterPos(_fvector vCharacterPos) { m_vCharacterPos = vCharacterPos; }
 	void Set_FontPos(_float3 vFontPos) { FontPos = vFontPos; }
@@ -119,7 +120,7 @@ private:
 	_float m_HP = { 500.f };
 	_float m_PreHp = { 500.f };
 	_float m_fWhiteBar = { 1.f };
-	_float m_RedDamageACC = { 500.f };
+	_float m_RedHP = { 500.f };
 	_float m_fRedBar = { 1.f };
 	_int m_Index = { 0 };
 	_int m_MonsterLevel = { 10 };

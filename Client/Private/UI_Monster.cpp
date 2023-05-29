@@ -734,7 +734,7 @@ void CUI_Monster::HPBar(_double TimeDelta)
 			if (m_PreHp + m_Damage < m_CurrentHp) // 힐 받은만큼만 참
 			{
 				m_bHit = false;
-				m_PreHp = m_RedDamageACC = m_CurrentHp;
+				m_PreHp = m_RedHP = m_CurrentHp;
 			}
 			m_CurrentHp += m_Damage * (_float)TimeDelta;
 			m_fWhiteBar = m_CurrentHp / m_HP;
@@ -752,10 +752,10 @@ void CUI_Monster::HPBar(_double TimeDelta)
 
 void CUI_Monster::HPRedBar(_double TimeDelta)
 {
-	if (m_CurrentHp < m_RedDamageACC)
+	if (m_CurrentHp < m_RedHP)
 	{
-		m_RedDamageACC += (m_CurrentHp - m_RedDamageACC) * (_float)TimeDelta;
-		m_fRedBar = m_RedDamageACC / m_HP;
+		m_RedHP += (m_CurrentHp - m_RedHP) * (_float)TimeDelta;
+		m_fRedBar = m_RedHP / m_HP;
 	}
 	else
 	{

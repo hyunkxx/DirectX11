@@ -178,7 +178,7 @@ private:
 	_float m_CurrentHp = { 100.f };
 	_float m_PreHp = { 100.f };
 	_float m_fWhiteBar = { 1.f };
-	_float m_RedDamageACC = { 500.f }; // 빨간바 차있는 부분
+	_float m_RedHP = { 500.f }; // 빨간바 차있는 부분
 	_float m_fRedBar = { 1.f };
 
 	//쿨타임

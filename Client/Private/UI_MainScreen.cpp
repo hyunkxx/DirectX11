@@ -72,6 +72,10 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	if (pGameInstance->InputKey(DIK_NUMPADENTER) == KEY_STATE::TAP) // 임시
+	{
+		m_pPlayerStateClass->AddPlayer();
+	}
 	if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP)
 	{
 		if (m_bRender)
@@ -1543,7 +1547,7 @@ void CUI_MainScreen::HPBar(_double TimeDelta)
 			if (m_PreHp + m_Damage < m_CurrentHp) // 힐 받은만큼만 참
 			{
 				m_bHit = false;
-				m_PreHp = m_RedDamageACC = m_CurrentHp;
+				m_PreHp = m_RedHP = m_CurrentHp;
 			}
 			m_CurrentHp += m_Damage * (_float)TimeDelta;
 			m_fWhiteBar = m_CurrentHp / m_HP;
@@ -1561,10 +1565,10 @@ void CUI_MainScreen::HPBar(_double TimeDelta)
 
 void CUI_MainScreen::HPRedBar(_double TimeDelta)
 {
-	if (m_CurrentHp < m_RedDamageACC)
+	if (m_CurrentHp < m_RedHP)
 	{
-		m_RedDamageACC += (m_CurrentHp - m_RedDamageACC) * (_float)TimeDelta;
-		m_fRedBar = m_RedDamageACC / m_HP;
+		m_RedHP += (m_CurrentHp - m_RedHP) * (_float)TimeDelta;
+		m_fRedBar = m_RedHP / m_HP;
 	}
 	else
 	{
