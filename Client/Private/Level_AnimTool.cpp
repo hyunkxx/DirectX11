@@ -36,6 +36,7 @@ HRESULT CLevel_AnimTool::Initialize()
 	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
 		return E_FAIL;
 
+	pGameInstance->StopAllSound();
 
 #ifdef _DEBUG
 	if (FAILED(Ready_Effect_Manager()))

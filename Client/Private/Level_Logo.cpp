@@ -56,7 +56,7 @@ HRESULT CLevel_Logo::Initialize()
 
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
 	pGameInstance->PlaySoundEx(L"Login.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
-
+	
 	return S_OK;
 }
 
