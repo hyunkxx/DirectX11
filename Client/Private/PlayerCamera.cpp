@@ -118,7 +118,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 	{
 #pragma region Input
 
-		//m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
+		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
 
 		if (pGameInstance->InputKey(DIK_LALT) == KEY_STATE::HOLD)
 		{

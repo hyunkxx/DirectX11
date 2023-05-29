@@ -31,6 +31,12 @@ public:
 	virtual HRESULT Render() override;
 	virtual void RenderGUI() override;
 
+public:
+	void SetUp_LevelFilePath(_uint iLevelID, const _tchar* pFilePath, _Out_ _tchar& szResultFilePath);
+
+private:
+	_tchar						m_szEdition_FilePath[MAX_PATH] = { L"" };
+
 private:
 	_uint						m_iShader_PassID = { 0 };
 

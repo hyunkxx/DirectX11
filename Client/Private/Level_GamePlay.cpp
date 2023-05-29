@@ -223,7 +223,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data");
+	EditionDesc.pEditionFilePath = TEXT("Terrain/UVSamplerRatio.data");
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TERRAIN, pLayerTag, L"terrain", &EditionDesc)))
 		return E_FAIL;
 
@@ -359,7 +359,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_0_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_0_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -367,7 +367,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_1_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_1_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -376,7 +376,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 	}
 	
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_2_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_2_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -384,7 +384,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_3_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_3_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -392,7 +392,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_4_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_4_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -400,7 +400,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_5_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_5_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -408,7 +408,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_6_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_6_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -416,7 +416,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_7_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_7_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -424,7 +424,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_8_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_8_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -432,7 +432,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_9_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_9_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -440,7 +440,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_10_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_10_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -450,7 +450,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_11_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_11_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -458,7 +458,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_12_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_12_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -466,7 +466,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_13_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_13_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -474,7 +474,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_14_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_14_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -482,7 +482,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_15_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_15_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -490,7 +490,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_16_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_16_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -498,7 +498,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_17_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_17_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -506,7 +506,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_18_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_18_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -514,7 +514,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_19_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_19_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -522,7 +522,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_20_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_20_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -532,7 +532,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_21_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_21_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -540,7 +540,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_22_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_22_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -548,7 +548,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_23_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_23_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -556,7 +556,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_24_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_24_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -564,7 +564,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_25_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_25_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -572,7 +572,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_26_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_26_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -580,7 +580,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_27_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_27_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -588,7 +588,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_28_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_28_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -596,7 +596,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_29_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_29_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -604,7 +604,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Trees/Tree_30_EditionColor.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_30_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
 	{
@@ -624,7 +624,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_0_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_0_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_5;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -633,7 +633,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_1_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_1_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_6;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -642,7 +642,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_2_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_2_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_7;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -651,7 +651,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_3_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_3_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_8;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -660,7 +660,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_4_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_4_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_9;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -669,7 +669,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_5_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_5_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_10;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -678,7 +678,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_6_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_6_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_11;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -687,7 +687,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_7_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_7_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_12;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -696,7 +696,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_8_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_8_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_14;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -705,7 +705,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_9_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_9_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_14;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -714,7 +714,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_10_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_10_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_15;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -725,7 +725,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 
 	
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_11_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_11_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_16;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -734,7 +734,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_12_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_12_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_17;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -743,7 +743,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_13_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_13_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_22;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -752,7 +752,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_14_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_14_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_23;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -761,7 +761,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_15_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_15_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_24;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -770,7 +770,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_16_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_16_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_25;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -779,7 +779,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_17_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_17_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_26;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -788,7 +788,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_18_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_18_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_27;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -797,7 +797,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_19_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_19_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_28;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -806,7 +806,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_20_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_20_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_29;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -817,7 +817,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_21_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_21_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_28;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -826,7 +826,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_22_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_22_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_28;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -835,7 +835,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_23_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_23_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_32;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -844,7 +844,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_24_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_24_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_32;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -853,7 +853,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_25_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_25_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_32;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -862,7 +862,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_26_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_26_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_35;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -871,7 +871,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_27_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_27_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_32;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -881,7 +881,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_28_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_28_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_NONE;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -890,7 +890,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_29_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_29_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_NONE;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -899,7 +899,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_30_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_30_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_NONE;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -910,7 +910,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_31_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_31_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_NONE;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -919,7 +919,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_32_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_32_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_41;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -928,7 +928,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_33_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_33_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_41_B;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -937,7 +937,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_34_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_34_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_42;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -946,7 +946,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_35_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_35_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_43;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -955,7 +955,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_36_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_36_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_44;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -964,7 +964,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_37_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_37_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_45;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -973,7 +973,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_38_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_38_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_50;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -982,7 +982,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_39_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_39_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_52;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -991,7 +991,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_40_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_40_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_55;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1002,7 +1002,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_41_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_41_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_66;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1011,7 +1011,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_42_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_42_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_67;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1020,7 +1020,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_43_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_43_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_68;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1029,7 +1029,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_44_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_44_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_70;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1038,7 +1038,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_45_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_45_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_71;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1047,7 +1047,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_46_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_46_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_72;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1056,7 +1056,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_47_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_47_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_76;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1065,7 +1065,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_48_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_48_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_77;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1074,7 +1074,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_49_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_49_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_78;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1083,7 +1083,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_50_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_50_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_80;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1094,7 +1094,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_51_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_51_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_82;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1103,7 +1103,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Rocks/Rock_52_DiffuseTexID.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_52_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
 	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_83;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
@@ -1124,7 +1124,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Floor(const _tchar * pLayerTag)
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Floors/Floor_0_Edition.data");;
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Floors/Floor_0_Edition.data");;
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Floor"), &EditionDesc)))
 	{
@@ -1132,7 +1132,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Floor(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Floors/Floor_1_Edition.data");;
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Floors/Floor_1_Edition.data");;
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Floor"), &EditionDesc)))
 	{
@@ -1140,7 +1140,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Floor(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Floors/Floor_2_Edition.data");;
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Floors/Floor_2_Edition.data");;
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Floor"), &EditionDesc)))
 	{
@@ -1148,7 +1148,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Floor(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Floors/Floor_3_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Floors/Floor_3_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Floor"), &EditionDesc)))
 	{
@@ -1156,7 +1156,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Floor(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Floors/Floor_4_Edition.data");;
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Floors/Floor_4_Edition.data");;
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Floor"), &EditionDesc)))
 	{
@@ -1176,7 +1176,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_0_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Stairs/Stairs_0_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
 	{
@@ -1184,7 +1184,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_1_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Stairs/Stairs_1_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
 	{
@@ -1192,7 +1192,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_2_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Stairs/Stairs_2_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
 	{
@@ -1200,7 +1200,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_3_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Stairs/Stairs_3_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
 	{
@@ -1208,7 +1208,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_4_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Stairs/Stairs_4_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
 	{
@@ -1216,7 +1216,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_5_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Stairs/Stairs_5_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
 	{
@@ -1224,7 +1224,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_6_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Stairs/Stairs_6_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
 	{
@@ -1232,7 +1232,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_7_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Stairs/Stairs_7_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
 	{
@@ -1240,7 +1240,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_8_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Stairs/Stairs_8_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
 	{
@@ -1248,7 +1248,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Stairs/Stairs_9_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Stairs/Stairs_9_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Stairs"), &EditionDesc)))
 	{
@@ -1268,7 +1268,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_0_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_0_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1276,7 +1276,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_1_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_1_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1284,7 +1284,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_2_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_2_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1292,7 +1292,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_3_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_3_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1300,7 +1300,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_4_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_4_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1308,7 +1308,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_5_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_5_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1316,7 +1316,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_6_SubEditionMask.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_6_SubEditionMask.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1324,7 +1324,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_7_SubEditionMask.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_7_SubEditionMask.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1332,7 +1332,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_8_SubEditionMask.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_8_SubEditionMask.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1340,7 +1340,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_9_SubEditionMask.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_9_SubEditionMask.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1349,7 +1349,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_10_SubEditionMask.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_10_SubEditionMask.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1358,7 +1358,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_11_SubEditionMask.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_11_SubEditionMask.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1367,7 +1367,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_12_SubEditionMask.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_12_SubEditionMask.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1376,7 +1376,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_13_SubEditionMask.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_13_SubEditionMask.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1385,7 +1385,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_14_SubEditionMask.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_14_SubEditionMask.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1394,7 +1394,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_15_SubEditionMask.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_15_SubEditionMask.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1403,7 +1403,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Grass/Grass_16_SubEditionMask.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_16_SubEditionMask.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Grass"), &EditionDesc)))
 	{
@@ -1423,7 +1423,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Vin/Vin_0_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_0_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
@@ -1431,7 +1431,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Vin/Vin_1_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_1_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
@@ -1439,7 +1439,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Vin/Vin_2_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_2_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
@@ -1447,7 +1447,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Vin/Vin_3_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_3_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
@@ -1455,7 +1455,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Vin/Vin_4_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_4_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
@@ -1463,7 +1463,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Vin/Vin_5_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_5_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
@@ -1471,7 +1471,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Vin/Vin_6_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_6_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
@@ -1479,7 +1479,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Vin/Vin_7_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_7_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
@@ -1487,7 +1487,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Vin/Vin_8_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_8_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
@@ -1495,7 +1495,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Vin/Vin_9_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_9_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
@@ -1503,7 +1503,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Vin/Vin_10_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_10_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
@@ -1512,7 +1512,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Vin/Vin_11_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_11_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Vin"), &EditionDesc)))
 	{
@@ -1532,7 +1532,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_0_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_0_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1540,7 +1540,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_1_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_1_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1548,7 +1548,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_2_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_2_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1556,7 +1556,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_3_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_3_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1564,7 +1564,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_4_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_4_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1572,7 +1572,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_5_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_5_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1580,7 +1580,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_6_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_6_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1588,7 +1588,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_7_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_7_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1596,7 +1596,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_8_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_8_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1604,7 +1604,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_9_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_9_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1613,7 +1613,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_10_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_10_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1621,7 +1621,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_11_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_11_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1629,7 +1629,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_12_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_12_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1637,7 +1637,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_13_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_13_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1645,7 +1645,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_14_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_14_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1653,7 +1653,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_15_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_15_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1661,7 +1661,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_16_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_16_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1669,7 +1669,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_17_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_17_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1677,7 +1677,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_18_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_18_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1685,7 +1685,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_19_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_19_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1694,7 +1694,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_20_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_20_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1702,7 +1702,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_21_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_21_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1710,7 +1710,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_22_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_22_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1718,7 +1718,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_23_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_23_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1726,7 +1726,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_24_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_24_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1734,7 +1734,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_25_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_25_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1742,7 +1742,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_26_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_26_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1750,7 +1750,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_27_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_27_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1758,7 +1758,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_28_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_28_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1766,7 +1766,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_29_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_29_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1776,7 +1776,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_30_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_30_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1784,7 +1784,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_31_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_31_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1792,7 +1792,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Veg/Veg_32_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_32_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Veg"), &EditionDesc)))
 	{
@@ -1812,7 +1812,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_0_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Shr/Shr_0_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
 	{
@@ -1820,7 +1820,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_1_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Shr/Shr_1_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
 	{
@@ -1828,7 +1828,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_2_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Shr/Shr_2_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
 	{
@@ -1836,7 +1836,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_3_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Shr/Shr_3_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
 	{
@@ -1844,7 +1844,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_4_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Shr/Shr_4_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
 	{
@@ -1852,7 +1852,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_5_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Shr/Shr_5_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
 	{
@@ -1860,7 +1860,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_6_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Shr/Shr_6_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
 	{
@@ -1868,7 +1868,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_7_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Shr/Shr_7_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
 	{
@@ -1876,7 +1876,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_8_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Shr/Shr_8_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
 	{
@@ -1884,7 +1884,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Shr/Shr_9_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Shr/Shr_9_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Shr"), &EditionDesc)))
 	{
@@ -1904,7 +1904,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Structure(const _tchar * pLayerTa
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Structure/Structure_0_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Structure/Structure_0_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Structure"), &EditionDesc)))
 	{
@@ -1913,7 +1913,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Structure(const _tchar * pLayerTa
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Structure/Structure_1_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Structure/Structure_1_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Structure"), &EditionDesc)))
 	{
@@ -1922,7 +1922,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Structure(const _tchar * pLayerTa
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Structure/Structure_2_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Structure/Structure_2_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Structure"), &EditionDesc)))
 	{
@@ -1931,7 +1931,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Structure(const _tchar * pLayerTa
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Structure/Structure_3_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Structure/Structure_3_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Structure"), &EditionDesc)))
 	{
@@ -1951,7 +1951,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Pil(const _tchar * pLayerTag)
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Pil/Pil_0_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Pil/Pil_0_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Pil"), &EditionDesc)))
 	{
@@ -1960,7 +1960,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Pil(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Pil/Pil_1_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Pil/Pil_1_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Pil"), &EditionDesc)))
 	{
@@ -1968,7 +1968,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Pil(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Pil/Pil_2_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Pil/Pil_2_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Pil"), &EditionDesc)))
 	{
@@ -1976,7 +1976,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Pil(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Pil/Pil_3_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Pil/Pil_3_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Pil"), &EditionDesc)))
 	{
@@ -1996,7 +1996,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Statue(const _tchar * pLayerTag)
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Statue/Statue_0_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Statue/Statue_0_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Statue"), &EditionDesc)))
 	{
@@ -2005,7 +2005,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Statue(const _tchar * pLayerTag)
 	}
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/MapObject/Statue/Statue_1_Edition.data");
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Statue/Statue_1_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Statue"), &EditionDesc)))
 	{

@@ -32,6 +32,8 @@ HRESULT CMapObject::Initialize(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_EditionDesc, pArg, sizeof(SMAP_OBJECT_EDITION_DESC));
 
+	SetUp_LevelFilePath(LEVEL_ANYWHERE, m_EditionDesc.pEditionFilePath, *m_szEdition_FilePath);
+
 	if (FAILED(Load_Edition()))
 		return E_FAIL;
 
@@ -294,9 +296,33 @@ HRESULT CMapObject::Render_Default()
 	return S_OK;
 }
 
+void CMapObject::SetUp_LevelFilePath(_uint iLevelID, const _tchar* pFilePath, _Out_ _tchar& szResultFilePath)
+{
+	ZeroMemory(&szResultFilePath, sizeof(_tchar) * MAX_PATH);
+
+	_tchar			szLevelFilePath[MAX_PATH] = TEXT("../../Data/");
+	_tchar			szDataFilePath[MAX_PATH] = TEXT("");
+
+	lstrcat(szDataFilePath, pFilePath);
+
+	switch (iLevelID)
+	{
+	case LEVEL_ID::LEVEL_GAMEPLAY:
+		lstrcat(szLevelFilePath, TEXT("GamePlay/"));
+		break;
+
+	default:
+		break;
+	}
+
+	lstrcat(&szResultFilePath, szLevelFilePath);
+	lstrcat(&szResultFilePath, szDataFilePath);
+
+}
+
 HRESULT CMapObject::Load_Edition()
 {
-	HANDLE		hFile = CreateFile(m_EditionDesc.pEditionFilePath, GENERIC_READ, 0, 0,
+	HANDLE		hFile = CreateFile(m_szEdition_FilePath, GENERIC_READ, 0, 0,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
 	if (INVALID_HANDLE_VALUE == hFile)

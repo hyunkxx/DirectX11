@@ -36,7 +36,9 @@ HRESULT CTerrain::Initialize(void* pArg)
 	{
 		memcpy(&m_EditionDesc, pArg, sizeof(SMAP_OBJECT_EDITION_DESC));
 
-		if (FAILED(Load_UVSamplerRatio_Data(m_EditionDesc.pEditionFilePath)))
+		SetUp_LevelFilePath(LEVEL_ANYWHERE, m_EditionDesc.pEditionFilePath, *m_szEdition_FilePath);
+
+		if (FAILED(Load_UVSamplerRatio_Data(m_szEdition_FilePath)))
 		{
 			m_fUVSampler_Ratio_1 = { 100.0f };
 			m_fUVSampler_Ratio_2 = { 100.0f };
@@ -109,6 +111,29 @@ HRESULT CTerrain::Render()
 
 void CTerrain::RenderGUI()
 {
+}
+
+void CTerrain::SetUp_LevelFilePath(_uint iLevelID, const _tchar * pFilePath, _tchar & szResultFilePath)
+{
+	ZeroMemory(&szResultFilePath, sizeof(_tchar) * MAX_PATH);
+
+	_tchar			szLevelFilePath[MAX_PATH] = TEXT("../../Data/");
+	_tchar			szDataFilePath[MAX_PATH] = TEXT("");
+
+	lstrcat(szDataFilePath, pFilePath);
+
+	switch (iLevelID)
+	{
+	case LEVEL_ID::LEVEL_GAMEPLAY:
+		lstrcat(szLevelFilePath, TEXT("GamePlay/"));
+		break;
+
+	default:
+		break;
+	}
+
+	lstrcat(&szResultFilePath, szLevelFilePath);
+	lstrcat(&szResultFilePath, szDataFilePath);
 }
 
 HRESULT CTerrain::Add_Components()

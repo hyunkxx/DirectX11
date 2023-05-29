@@ -45,6 +45,12 @@ public:
 	HRESULT Render_Default();
 
 public:
+	void SetUp_LevelFilePath(_uint iLevelID, const _tchar* pFilePath, _Out_ _tchar& szResultFilePath);
+
+private:
+	_tchar						m_szEdition_FilePath[MAX_PATH] = { L"" };
+
+public:
 	HRESULT Load_Edition();
 
 	void Load_EditionID(HANDLE& _hFile, DWORD& _dwByte);
