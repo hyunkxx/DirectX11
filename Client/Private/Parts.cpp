@@ -38,11 +38,21 @@ HRESULT CParts::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	if (m_iModelID == SMODEL::SMD_SWORD_0_SWORD)
+		int a = 1;
+
+	if (1 == m_pModelCom->Get_NumMeshes())
+	{
+		m_vMinPoint = *m_pModelCom->Get_MeshPosMinValue(0);
+		m_vMaxPoint = *m_pModelCom->Get_MeshPosMaxValue(0);
+	}
 
 	_float4x4 WorldMatrix;
 	XMStoreFloat4x4(&WorldMatrix, XMMatrixRotationY(XMConvertToRadians(180.f)));
 
 	m_pMainTransform->Set_WorldMatrix(WorldMatrix);
+
+	m_eDissolveType = DISS_ZLINEAR;
 
 	return S_OK;
 }
@@ -67,12 +77,43 @@ void CParts::LateTick(_double TimeDelta)
 		return;
 
 	__super::LateTick(TimeDelta);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	// 디졸브 테스트 코드
+	if (pGameInstance->InputKey(DIK_G) == KEY_STATE::TAP)
+	{
+		m_bDissolve = true;
+		m_fDissolveTimeAcc = 0.f;
+	}
+	if (pGameInstance->InputKey(DIK_F) == KEY_STATE::TAP)
+	{
+		m_bDissolveType = !m_bDissolveType;
+	}
+
+	if (m_bDissolve)
+	{
+		m_fDissolveTimeAcc += (_float)TimeDelta * m_fDissolveSpeed;
+		if (2.f <= m_fDissolveTimeAcc)
+		{
+			m_bDissolve = false;
+			m_fDissolveTimeAcc = 0.f;
+		}
+
+		if (m_bDissolveType)
+			m_fDissolveAmount = 1.f - m_fDissolveTimeAcc;
+		else
+			m_fDissolveAmount = m_fDissolveTimeAcc;
+	}
+
 }
 
 HRESULT CParts::Render()
 {
 	if (true != m_bRender)
 		return E_FAIL;
+
+	CGameInstance* pGame = CGameInstance::GetInstance();
 
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -91,7 +132,28 @@ HRESULT CParts::Render()
 		//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
 		//m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
-		if(m_bOutline)
+		// Dissolve 변수
+		if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
+			return E_FAIL;
+
+		if (m_bDissolve)
+		{
+			if (DISS_ZLINEAR == m_eDissolveType)
+			{
+				if (FAILED(m_pShaderCom->SetRawValue("g_vMinPoint", &m_vMinPoint, sizeof(_float3))))
+					return E_FAIL;
+				if (FAILED(m_pShaderCom->SetRawValue("g_vMaxPoint", &m_vMaxPoint, sizeof(_float3))))
+					return E_FAIL;
+
+				m_pShaderCom->Begin(10);
+			}
+			else
+				m_pShaderCom->Begin(9);
+		}
+		else if(m_bOutline)
 			m_pShaderCom->Begin(2);
 		else
 			m_pShaderCom->Begin(0);

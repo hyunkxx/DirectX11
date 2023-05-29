@@ -16,7 +16,7 @@ public:
 	virtual void Shot(class CCharacter* pMyCharacter) override;
 
 private:
-	_float m_fTargetTime = { false }; // fFloat0
+	_float m_fTargetTime = { 0.f }; // fFloat0
 	_float m_fLerpSpeed = { 0.f };	// iInt0 * 0.01f;
 
 public:

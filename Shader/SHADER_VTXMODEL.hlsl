@@ -52,6 +52,9 @@ float3 g_vDessolveColor = { 1.f, 0.7f, 0.4f }; // 디폴트 색상
 float g_fGlowRange = 0.05f;
 float g_fGlowFalloff = 0.05f;
 
+float3 g_vMinPoint = { -1.f, -1.f, -1.f };
+float3 g_vMaxPoint = { 1.f, 1.f, 1.f };
+
 VS_OUT VS_MAIN(VS_IN In)
 {
 	VS_OUT Out = (VS_OUT)0;
@@ -105,6 +108,28 @@ VS_OUT_SKY VS_MAIN_SKY(VS_IN In)
 
 	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
 	Out.vTexUV = In.vTexUV;
+
+	return Out;
+}
+
+VS_OUT VS_Dessolve_XLinear(VS_IN In)
+{
+	VS_OUT Out = (VS_OUT)0;
+
+	matrix	matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
+	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
+	// 로컬 포지션을 그대로 전달함
+	Out.vDepth = float4(In.vPosition, 1.f);
+
+	Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix)).xyz;
+	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent)).xyz;
 
 	return Out;
 }
@@ -391,6 +416,38 @@ PS_OUT_OUTLINE PS_Dessolve(PS_IN In)
 	return Out;
 }
 
+PS_OUT_OUTLINE PS_Dessolve_XLinear(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vNormal = In.vNormal;
+
+	float fLocalX = g_vMaxPoint.x - In.vDepth.x;
+	float fMaxX = g_vMaxPoint.x - g_vMinPoint.x;
+
+	float isVisible = fLocalX / fMaxX - g_fDissolveAmount;
+	clip(isVisible);
+
+	float isGlowing = smoothstep(g_fGlowRange + g_fGlowFalloff, g_fGlowRange, isVisible);
+	float3 vDessolveColor = isGlowing * g_vDessolveColor;
+
+	Out.vDiffuse = vMtrlDiffuse;
+	vMtrlDiffuse.a = 1.f;
+
+	Out.vNormal = float4(vNormal.xyz, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+
+	Out.vOutNormal = vector(vNormal.xyz, 1.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+
+	Out.vDiffuse += float4(vDessolveColor.xyz, 1.f);
+	Out.vGlow = float4(vDessolveColor.xyz, 1.f);
+	Out.vShaderInfo = float4(0.9f, 0.f, 0.f, 0.f);
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	//아웃라인 없는 디폴트 그리기
@@ -531,5 +588,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Dessolve();
+	}
+
+	// Weapon용 Z 선형 디졸브
+	pass Dessolve_SModel_Pass10
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_Dessolve_XLinear();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Dessolve_XLinear();
 	}
 }

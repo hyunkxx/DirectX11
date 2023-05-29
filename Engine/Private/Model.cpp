@@ -165,6 +165,16 @@ void CModel::SetUp_Texture(MytextureType eType, CTexture * pTexture)
 	}
 }
 
+_float3 * CModel::Get_MeshPosMinValue(_uint iMeshID)
+{
+	return m_Meshes[iMeshID]->Get_PosMinValue();
+}
+
+_float3 * CModel::Get_MeshPosMaxValue(_uint iMeshID)
+{
+	return m_Meshes[iMeshID]->Get_PosMaxValue();
+}
+
 HRESULT CModel::Render(_uint iMeshIndex)
 {
 	if (iMeshIndex >= m_iNumMeshes)

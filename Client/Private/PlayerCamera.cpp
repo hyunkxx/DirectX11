@@ -118,7 +118,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 	{
 #pragma region Input
 
-		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
+		//m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
 
 		if (pGameInstance->InputKey(DIK_LALT) == KEY_STATE::HOLD)
 		{
@@ -278,26 +278,30 @@ void CPlayerCamera::Tick(_double TimeDelta)
 			_vector vTargetPos = pTarget->Get_Position();
 			_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 			_float fDistance = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos));
+			_float fDistRate = fDistance / 25.f;
 
-			_vector vTargetDirLook = XMVector3Normalize(vTargetPos - vPlayerPos);
+			_vector vTargetDir = vTargetPos - vPlayerPos;
+			
+			_vector vTargetDirLook = XMVector3Normalize(XMVectorSetY(vTargetDir, 0.f));
 			_vector vTargetDirRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vTargetDirLook));
-			_vector vTargetDirUp = XMVector3Normalize(XMVector3Cross(vTargetDirLook, vTargetDirRight));
+			//_vector vTargetDirUp = XMVector3Normalize(XMVector3Cross(vTargetDirLook, vTargetDirRight));
+
+			_float fLookDist = -2.5f - fDistRate * 1.5f;
+			_float fUpDist = 1.3f;
+			_float fRightDist = 0.3f + fDistance * 0.12f;
+
+			_vector vEyePos = vPlayerPos + vTargetDirLook * fLookDist + vTargetDirRight * fRightDist + XMVectorSet(0.f, fUpDist, 0.f, 0.f);
 
 			// 거리가 0.f일 때 7:3 위치
-			_float fRatio = (fDistance <= 25.f) ? 0.5f + fDistance * 0.01f : 0.75f;
+			_float fRatio = 0.5f + fDistance * 0.02f;
 
 			// 타겟 쪽 Y값이 너무 높다면 플레이어 y 좌표 + 1로 고정
-			_vector vAtPosTemp = vPlayerPos * (1 - fRatio) + vTargetPos * fRatio + XMVectorSet(0.f, 0.8f, 0.f, 0.f) - vTargetDirRight * fDistance * 0.1f;
-			if (1.f < XMVectorGetY(vAtPosTemp) - XMVectorGetY(vPlayerPos))
-				vAtPosTemp = XMVectorSetY(vAtPosTemp, XMVectorGetY(vPlayerPos) + 1.f);
+			_vector vAtPosTemp = vPlayerPos * (1 - fRatio) + vTargetPos * fRatio - vTargetDirRight * fDistance * 0.1f;
+		
+			_float fAtY = min(XMVectorGetY(vAtPosTemp) + 1.2f - fDistRate  * 0.8f, XMVectorGetY(vEyePos) * 1.2f + fDistRate * 3.f);
+			//AtY = max(XMVectorGetY(vPlayerPos) - 3.f , AtY);
+			vAtPosTemp = XMVectorSetY(vAtPosTemp, fAtY);
 			
-
-			_float fLookDist = 3.f;
-			_float fUpDist = 1.3f;
-			_float fRightDist = fDistance * 0.1f;
-
-			_vector vEyePos = vPlayerPos - vTargetDirLook * fLookDist + vTargetDirRight * fRightDist +  XMVectorSet(0.f, fUpDist, 0.f, 0.f);
-
 			_vector vAtPos = vEyePos + XMVector3Normalize(vAtPosTemp - vEyePos) * 4.f;
 
 			_vector vPrevAt = XMLoadFloat3(&m_CameraDesc.vAt);

@@ -105,7 +105,7 @@ void CPlayerState::PreTick(_double TimeDelta)
 	// 캐릭터 스킬
 	for (_uint i = 0; i < CHARACTER_END; ++i)
 	{
-		for (_uint j = 0; j < SKILL_END; ++j)
+		for (_uint j = 0; j < COOL_END; ++j)
 		{
 			if (0.f < m_CharacterState[i].fCurCooltime[j])
 			{

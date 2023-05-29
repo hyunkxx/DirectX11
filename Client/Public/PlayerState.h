@@ -14,6 +14,7 @@ private:
 public:
 	enum CHARACTERS { CHARACTER_ROVER, CHARACTER_YANGYANG, CHARACTER_CHIXIA, CHARACTER_END };
 	enum CHARSLOT { SLOT_MAIN, SLOT_SUB1, SLOT_SUB2, SLOT_END };
+	enum TOOLS { TOOL_FIXHOOK, TOOL_LAVITATION, TOOL_SCANNER, TOOL_END };
 
 	// 스탯 종류
 	enum STATTYPE { STYPE_ATK, STYPE_DEF, STYPE_CRITRATE, STYPE_CRITDMG, STYPE_END };
@@ -21,10 +22,13 @@ public:
 	// BUFF/DEBUFF 는 곱연산, 백분율로 적용 (나머지는 합연산)
 	enum STAT { STAT_TOTAL, STAT_BASE, STAT_EQUIP, STAT_BUFF, STAT_DEBUFF, STAT_END };
 
-	// 스킬 사용 조건 : 쿨타임 / 수치
-	enum SKILL { SKILL_Q, SKILL_E, SKILL_R, SKILL_END };
+	//  쿨타임
+	enum CHARCOOLTIMES { COOL_ECHO, COOL_SKILL, COOL_BURST, COOL_END };
 
-	enum TOOLS { TOOL_FIXHOOK, TOOL_LAVITATION, TOOL_SCANNER, TOOL_END};
+	// 게이지
+	enum CHARGAUGES { GAUGE_SPECIAL, GAUGE_BURST, GAUGE_END };
+
+	
 
 	typedef struct tagPlayerState{
 		// 현재 캐릭터 수 // UI 표시 및 기능 제한용
@@ -76,10 +80,10 @@ public:
 		_float		fCriticalDamage[STAT_END];
 
 		// 스킬 별 쿨타임 / 스킬 게이지
-		_float		fCurCooltime[SKILL_END];
-		_float		fMaxCooltime[SKILL_END];
-		_float		fCurGauge[SKILL_END];
-		_float		fMaxGauge[SKILL_END];
+		_float		fCurCooltime[COOL_END];
+		_float		fMaxCooltime[COOL_END];
+		_float		fCurGauge[GAUGE_END];
+		_float		fMaxGauge[GAUGE_END];
 
 	}CHARACTER_STATE;
 
@@ -133,6 +137,13 @@ public: // Get
 	CCharacter* Get_LockOnTarget()
 	{
 		return m_PlayerState.pLockOnTarget;
+	}
+
+	void Gain_QTEGauge(_float fQTEGauge)
+	{
+		m_PlayerState.fCurQTEGauge += fQTEGauge;
+		if (m_PlayerState.fCurQTEGauge > m_PlayerState.fMaxQTEGauge)
+			m_PlayerState.fCurQTEGauge = m_PlayerState.fMaxQTEGauge;
 	}
 	
 

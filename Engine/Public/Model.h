@@ -29,6 +29,12 @@ public:
 	CBone*	Get_HangBone() { return m_pHangBone; }
 
 	void	SetUp_Texture(MytextureType eType, class CTexture* pTexture);
+
+
+	_float3* Get_MeshPosMinValue(_uint iMeshID);
+
+	_float3* Get_MeshPosMaxValue(_uint iMeshID);
+	
 protected:
 	_uint					m_iNumMeshes = { 0 };
 	vector<class CMesh*>	m_Meshes;

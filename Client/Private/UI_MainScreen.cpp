@@ -450,9 +450,9 @@ void CUI_MainScreen::SetStaticSkillCoolTime()
 	StaticQSkillTime = m_pPlayerStateClass->Get_MainCharacterState()->fMaxCooltime[0];
 	StaticESkillTime = m_pPlayerStateClass->Get_MainCharacterState()->fMaxCooltime[1];
 	StaticRSkillTime = m_pPlayerStateClass->Get_MainCharacterState()->fMaxCooltime[2];
-	RRMaxGauge = m_pPlayerStateClass->Get_MainCharacterState()->fMaxGauge[2];
+	RRMaxGauge = m_pPlayerStateClass->Get_MainCharacterState()->fMaxGauge[1];
 	QTEMaxGauge = m_pPlayerStateClass->Get_PlayerState()->fMaxQTEGauge;
-	SkillMaxGauge = m_pPlayerStateClass->Get_MainCharacterState()->fMaxGauge[1]; // E스킬게이지
+	SkillMaxGauge = m_pPlayerStateClass->Get_MainCharacterState()->fMaxGauge[0]; // E스킬게이지
 
 
 	switch (m_pPlayerStateClass->Get_PlayerState()->iCurToolID)
@@ -526,9 +526,9 @@ void CUI_MainScreen::SetCurCoolTime()
 	QCoolTime = m_pPlayerStateClass->Get_MainCharacterState()->fCurCooltime[0];
 	ECoolTime = m_pPlayerStateClass->Get_MainCharacterState()->fCurCooltime[1];
 	RCoolTime = m_pPlayerStateClass->Get_MainCharacterState()->fCurCooltime[2];
-	RRCurGauge = m_pPlayerStateClass->Get_MainCharacterState()->fCurGauge[2];
+	RRCurGauge = m_pPlayerStateClass->Get_MainCharacterState()->fCurGauge[1];
 	QTECurGauge = m_pPlayerStateClass->Get_PlayerState()->fCurQTEGauge;
-	SkillCurGauge = m_pPlayerStateClass->Get_MainCharacterState()->fCurGauge[1]; // E스킬게이지
+	SkillCurGauge = m_pPlayerStateClass->Get_MainCharacterState()->fCurGauge[0]; // E스킬게이지
 }
 void CUI_MainScreen::SetCurCoolRadian()
 {
@@ -554,12 +554,11 @@ void CUI_MainScreen::SetCurCoolRadian()
 	QCoolRadian = QCoolTime / StaticQSkillTime;
 	ECoolRadian = ECoolTime / StaticESkillTime;
 	RCoolRadian = RCoolTime / StaticRSkillTime;
-	//RRRadian = RRCurGauge / RRMaxGauge;
-	RRRadian += 0.001f; // 테스트
-	//QTERadian = QTECurGauge / QTEMaxGauge;
-	QTERadian += 0.001f; // 테스트
-	//SkillRadian = SkillCurGauge / SkillMaxGauge;
-	SkillRadian += 0.001f; // 테스트
+	RRRadian = RRCurGauge / RRMaxGauge;
+	QTERadian = QTECurGauge / QTEMaxGauge;
+	//QTERadian += 0.001f; // 테스트
+	SkillRadian = SkillCurGauge / SkillMaxGauge;
+	//SkillRadian += 0.001f; // 테스트
 }
 
 void CUI_MainScreen::SetPlayer()

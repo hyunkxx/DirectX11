@@ -9,6 +9,8 @@ CMesh::CMesh(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 CMesh::CMesh(const CMesh& rhs)
 	: CVIBuffer(rhs)
+	, m_fPosMaxValue{ rhs.m_fPosMaxValue } 
+	, m_fPosMinValue{ rhs.m_fPosMinValue }
 {
 }
 
@@ -25,6 +27,9 @@ HRESULT CMesh::Initialize_Prototype(void* pMeshInfo, CModel_Anim* pModel)
 	m_iVertexBuffersCount = 1;
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	m_fPosMinValue = { 10.f, 10.f, 10.f };
+	m_fPosMaxValue = { -10.f, -10.f, -10.f };
 
 	HRESULT hr;
 
@@ -108,6 +113,20 @@ HRESULT CMesh::Ready_VIBuffer_For_NonAnim(SMESHINFO* pMeshInfo)
 		//memcpy(&pVertices[i].vNormal, &pMeshInfo->s_pVertices[i].vNormal, sizeof(_float3));
 		//memcpy(&pVertices[i].vTexUV, &pMeshInfo->s_pVertices[i].vTexUV, sizeof(_float2));
 		//memcpy(&pVertices[i].vTangent, &pMeshInfo->s_pVertices[i].vTangent, sizeof(_float3));
+
+		if (pVertices[i].vPosition.x > m_fPosMaxValue.x)
+			m_fPosMaxValue.x = pVertices[i].vPosition.x;
+		if (pVertices[i].vPosition.y > m_fPosMaxValue.y)
+			m_fPosMaxValue.y = pVertices[i].vPosition.y;
+		if (pVertices[i].vPosition.z > m_fPosMaxValue.z)
+			m_fPosMaxValue.z = pVertices[i].vPosition.z;
+
+		if (pVertices[i].vPosition.x < m_fPosMinValue.x)
+			m_fPosMinValue.x = pVertices[i].vPosition.x;
+		if (pVertices[i].vPosition.y < m_fPosMinValue.y)
+			m_fPosMinValue.y = pVertices[i].vPosition.y;
+		if (pVertices[i].vPosition.z < m_fPosMinValue.z)
+			m_fPosMinValue.z = pVertices[i].vPosition.z;
 	}
 
 	m_SubResourceData.pSysMem = pVertices;

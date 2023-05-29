@@ -88,10 +88,10 @@ HRESULT CSandbag::Initialize(void * pArg)
 	m_tCharInfo.iExp = 0;
 	m_tCharInfo.fMaxHP = 200000.f;
 	m_tCharInfo.fCurHP = m_tCharInfo.fMaxHP;
-	m_tCharInfo.fMaxSP = 100.f;
-	m_tCharInfo.fCurSP = 0.f;
-	m_tCharInfo.fMaxTP = 100.f;
-	m_tCharInfo.fCurTP = 0.f;
+	//m_tCharInfo.fMaxSP = 100.f;
+	//m_tCharInfo.fCurSP = 0.f;
+	//m_tCharInfo.fMaxTP = 100.f;
+	//m_tCharInfo.fCurTP = 0.f;
 	m_tCharInfo.fAttack = 50.f;
 	m_tCharInfo.fDefense = 50.f;
 	m_tCharInfo.fCriticalRate = 0.1f;

@@ -171,13 +171,14 @@ void CP_PlayerGirl::Start()
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pCharacterState = m_pPlayerStateClass->Get_CharState_byChar(CPlayerState::CHARACTER_ROVER);
 
-	m_pCharacterState->fMaxCooltime[CPlayerState::SKILL_E] = (_float)m_tStates[IS_SKILL_01].CoolTime;
-	m_pCharacterState->fMaxGauge[CPlayerState::SKILL_Q] = 100.f;
-	m_pCharacterState->fMaxCooltime[CPlayerState::SKILL_R] = (_float)m_tStates[IS_BURST].CoolTime;
+	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = (_float)m_tStates[IS_SKILL_01].CoolTime;
+	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST] = (_float)m_tStates[IS_BURST].CoolTime;
+	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 100.f;
+	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] = 100.f;
 	
 
 	// TODO: 에코 쿨타임, 에코 착용 시 변경하도록 바꿔야 함
-	m_pCharacterState->fMaxCooltime[CPlayerState::SKILL_Q] = 5.f;
+	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO] = 5.f;
 	//
 
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
@@ -194,7 +195,7 @@ void CP_PlayerGirl::PreTick(_double TimeDelta)
 	if (nullptr != m_pFixedTarget)
 	{
 		if (false == m_pFixedTarget->IsActive() ||
-			15.f <  XMVectorGetX(XMVector3Length(m_pFixedTarget->Get_Position() - Get_Position())))
+			25.f <  XMVectorGetX(XMVector3Length(m_pFixedTarget->Get_Position() - Get_Position())))
 		{
 			m_pFixedTarget = nullptr;
 			m_pPlayerStateClass->Set_LockOn(false, nullptr);
@@ -382,10 +383,10 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 
 	// 다음프레임을 위해 초기화
 	m_pNearst = nullptr;
-	m_fNearstDist = 30.f;
+	m_fNearstDist = 15.f;
 
 	// 디졸브 테스트 코드
-	if (pGameInstance->InputKey(DIK_G) == KEY_STATE::TAP)
+	/*if (pGameInstance->InputKey(DIK_G) == KEY_STATE::TAP)
 	{
 		m_bDissolve = true;
 		m_fDissolveTimeAcc = 0.f;
@@ -393,7 +394,7 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 	if (pGameInstance->InputKey(DIK_F) == KEY_STATE::TAP)
 	{
 		m_bDissolveType = !m_bDissolveType;
-	}
+	}*/
 
 	if (m_bDissolve)
 	{
@@ -952,16 +953,19 @@ void CP_PlayerGirl::SetUp_State()
 	{
 		if (IS_SKILL_01 == m_Scon.iCurState ||
 			IS_SKILL_02 == m_Scon.iCurState)
-			m_pCharacterState[CPlayerState::CHARACTER_ROVER].fCurCooltime[CPlayerState::SKILL_E] = m_pCharacterState[CPlayerState::CHARACTER_ROVER].fMaxCooltime[CPlayerState::SKILL_E];
+			m_pCharacterState->fCurCooltime[CPlayerState::COOL_SKILL] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL];
 		else if (IS_BURST == m_Scon.iCurState)
-			m_pCharacterState[CPlayerState::CHARACTER_ROVER].fCurCooltime[CPlayerState::SKILL_R] = m_pCharacterState[CPlayerState::CHARACTER_ROVER].fMaxCooltime[CPlayerState::SKILL_R];
+			m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST];
 		else if (SS_SUMMON == m_Scon.iCurState)
-			m_pCharacterState[CPlayerState::CHARACTER_ROVER].fCurCooltime[CPlayerState::SKILL_Q] = m_pCharacterState[CPlayerState::CHARACTER_ROVER].fMaxCooltime[CPlayerState::SKILL_Q];
+			m_pCharacterState->fCurCooltime[CPlayerState::COOL_ECHO] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO];
 		else if (SS_FIXHOOK_END_UP == m_Scon.iCurState)
 			m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_FIXHOOK);
 		else if (SS_THROW_F == m_Scon.iCurState)
 			m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_LAVITATION);
 	}
+
+	// 게이지 차감
+	//if(IS)
 	
 	//PhysicMove
 	if (false == m_tCurState.bRootMotion)
@@ -1419,9 +1423,9 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_PlayerGirl::INPUT_SKILL:
-			if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::SKILL_E])
+			if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::COOL_SKILL])
 			{
-				if (m_pCharacterState->fCurGauge[CPlayerState::SKILL_E] >= 50.f)
+				if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] >= 50.f)
 					m_Scon.iNextState = IS_SKILL_02;
 				else
 					m_Scon.iNextState = IS_SKILL_01;
@@ -1429,8 +1433,8 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_PlayerGirl::INPUT_BURST:
-			if(0.0 == m_pCharacterState->fCurCooltime[CPlayerState::SKILL_R] &&
-				m_pCharacterState->fMaxGauge[CPlayerState::SKILL_R] == m_pCharacterState->fCurGauge[CPlayerState::SKILL_R])
+			if(0.0 == m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] &&
+				m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] == m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST])
 				m_Scon.iNextState = IS_BURST;
 			break;
 
@@ -2142,7 +2146,9 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
-	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tCharInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
+	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint *
+		((fAttackPoint * 2 - m_pCharacterState->fDefense[CPlayerState::STAT_TOTAL]) / fAttackPoint); 
+		/** 추후 속성 보너스 추가*/
 
 	m_tCharInfo.fCurHP -= fFinalDamage;
 
@@ -2150,7 +2156,7 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 	// pEffPos : 두 콜라이더의 중간점, 이펙트 출력 기준위치
 	// fFinalDamage : 최종 대미지
 	// pAttackInfo->eElementType : 공격 판정의 속성
-	m_pUIMain->Set_Damage(10);
+	m_pUIMain->Set_Damage(fFinalDamage);
 	
 
 	// 사망 시 사망 애니메이션 실행 
@@ -2372,6 +2378,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_01].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK_01].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_01].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Hit_Effect_01"));
@@ -2380,6 +2387,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK_02].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_02].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Hit_Effect_02"));
@@ -2388,6 +2396,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_NONE;
 	m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK_03].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_03].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_03].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Hit_Effect_03"));
@@ -2396,6 +2405,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_04].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK_04].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK_04].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_04].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_04].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_04].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_04].szHitEffectTag, TEXT("Hit_Effect_04"));
@@ -2404,6 +2414,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_05_01].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_05_01].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK_05_01].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_05_01].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_05_01].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_05_01].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_05_01].szHitEffectTag, TEXT("Hit_Effect_05_01"));
@@ -2412,6 +2423,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_05_02].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK_05_02].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK_05_02].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_05_02].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_05_02].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_05_02].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_05_02].szHitEffectTag, TEXT("Hit_Effect_05_02"));
@@ -2420,6 +2432,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_09].eHitIntensity = HIT_NONE;
 	m_AttackInfos[ATK_ATTACK_09].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK_09].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_09].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_09].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_09].iHitEffectID = 1;
 
@@ -2427,6 +2440,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_PO_2].eHitIntensity = HIT_NONE;
 	m_AttackInfos[ATK_ATTACK_PO_2].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_ATTACK_PO_2].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_PO_2].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_PO_2].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_PO_2].iHitEffectID = 1;
 
@@ -2434,6 +2448,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_PO_3].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK_PO_3].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_ATTACK_PO_3].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_PO_3].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_PO_3].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_PO_3].iHitEffectID = 1;
 
@@ -2441,6 +2456,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_AIRATTACK].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_AIRATTACK].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_AIRATTACK].fSPGain = 1.5f;
+	m_AttackInfos[ATK_AIRATTACK].fBPGain = 1.5f;
 	m_AttackInfos[ATK_AIRATTACK].fTPGain = 1.5f;
 	m_AttackInfos[ATK_AIRATTACK].iHitEffectID = 1;
 
@@ -2448,6 +2464,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_01].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_SKILL_01].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_SKILL_01].fSPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_01].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_01].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_01].iHitEffectID = 1;
 
@@ -2455,6 +2472,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_02_01].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_SKILL_02_01].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_SKILL_02_01].fSPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_02_01].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_02_01].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_02_01].iHitEffectID = 1;
 
@@ -2462,6 +2480,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_02_02].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_SKILL_02_02].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_SKILL_02_02].fSPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_02_02].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_02_02].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_02_02].iHitEffectID = 1;
 
@@ -2469,6 +2488,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_02_03].eHitIntensity = HIT_NONE;
 	m_AttackInfos[ATK_SKILL_02_03].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_SKILL_02_03].fSPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_02_03].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_02_03].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_02_03].iHitEffectID = 1;
 
@@ -2476,6 +2496,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_QTE].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_SKILL_QTE].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_SKILL_QTE].fSPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_QTE].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_QTE].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_QTE].iHitEffectID = 1;
 
@@ -2483,6 +2504,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_BURST_01].eHitIntensity = HIT_NONE;
 	m_AttackInfos[ATK_BURST_01].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_BURST_01].fSPGain = 1.5f;
+	m_AttackInfos[ATK_BURST_01].fBPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_01].fTPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_01].iHitEffectID = 1;
 
@@ -2490,6 +2512,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_BURST_02].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_BURST_02].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_BURST_02].fSPGain = 1.5f;
+	m_AttackInfos[ATK_BURST_02].fBPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_02].fTPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_02].iHitEffectID = 1;
 }
@@ -2808,20 +2831,18 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 			if (true == src->Compare(GetAttackCollider()) &&
 				true == dest->Compare(pOpponent->GetHitCollider()))
 			{
-				// 플/몬 공통 : 히트 이펙트는 피격자쪽에서 처리
-				// 콜라이더 2개 사이의 중점 찾아서  
+				// 플레이어 전용 : 카메라 쉐이크 / 블러 / 쉐이더 / 히트렉(혼자 1~2프레임 애니메이션 정지 or 느려지기) 등??
 
+				// SP BP TP 수치 회복 처리
+				m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] += m_AttackInfos[m_iCurAttackID].fSPGain;
+				if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL])
+					m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL];
+				
+				m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] += m_AttackInfos[m_iCurAttackID].fBPGain;
+				if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST])
+					m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST];
 
-				// 플레이어 전용 : 카메라 쉐이크 / 블러 / 쉐이더 / 히트렉(혼자 1~2프레임 애니메이션 정지 or 느려지기) 등 
-				// SP TP 수치 회복 처리
-				
-				m_tCharInfo.fCurSP += m_AttackInfos[m_iCurAttackID].fSPGain;
-				if (m_tCharInfo.fCurSP > m_tCharInfo.fMaxSP)
-					m_tCharInfo.fCurSP = m_tCharInfo.fMaxSP;
-				
-				m_tCharInfo.fCurTP += m_AttackInfos[m_iCurAttackID].fTPGain;
-				if (m_tCharInfo.fCurTP > m_tCharInfo.fMaxTP)
-					m_tCharInfo.fCurTP = m_tCharInfo.fMaxTP;
+				m_pPlayerStateClass->Gain_QTEGauge(m_AttackInfos[m_iCurAttackID].fTPGain);
 
 			}
 
@@ -2935,3 +2956,4 @@ void CP_PlayerGirl::OnCollisionStay(CCollider * src, CCollider * dest)
 void CP_PlayerGirl::OnCollisionExit(CCollider * src, CCollider * dest)
 {
 }
+

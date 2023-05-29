@@ -348,7 +348,7 @@ public:
 		HIT_END
 	}HIT;
 
-	typedef struct tagCharacterInformation
+	typedef struct tagMonsterInformation
 	{
 		_tchar	szName[MAX_PATH];
 		ELEMENT	eElement;
@@ -356,14 +356,11 @@ public:
 		_uint	iExp;
 		_float	fMaxHP;
 		_float	fCurHP;
-		_float	fMaxSP;	// Skill Point - 스킬 강화 게이지
-		_float	fCurSP;
-		_float	fMaxTP;	// Tag Point - QTE 게이지
-		_float	fCurTP;
 		_float	fAttack;
 		_float	fDefense;
 		_float	fCriticalRate;
-	}TAGCHAR;
+		_float	fCriticalDMG;
+	}MONINFO;
 
 	// 공격 정보를 정의하는 구조체
 	typedef struct tagAttackInformation
@@ -371,7 +368,8 @@ public:
 		_float	fDamageFactor;	// 대미지 계수
 		ELEMENT	eElementType;	// 공격 속성
 		HIT		eHitIntensity;	// 피격 강도
-		_float	fSPGain;		// 스킬 게이지 회복량
+		_float	fSPGain;		// Special 게이지 회복량
+		_float	fBPGain;		// Burst 게이지 회복량
 		_float	fTPGain;		// QTE 게이지 회복량
 		_tchar  szHitEffectTag[MAX_PATH]; // 히트 이펙트 태그
 		_uint	iHitEffectID;	// 히트 이펙트 레이어 ID
@@ -423,7 +421,7 @@ public:
 	//UI
 	static _int Monindex;
 protected:
-	TAGCHAR			m_tCharInfo;
+	MONINFO			m_tCharInfo;
 	StateController m_Scon;
 	CollisionType	m_eCollisionType;
 

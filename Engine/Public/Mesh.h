@@ -25,10 +25,16 @@ public:
 	const _tchar* Get_Name() { return m_szName; }
 	void Get_BoneMatrices(_float4x4* pMeshBoneMatrices, CModel_Anim* Model);
 	void Get_BoneMatrices_VTF(_float4x4* pMeshBoneMatrices, CModel_Anim* Model);
+
+	_float3* Get_PosMinValue() { return &m_fPosMinValue; }
+	_float3* Get_PosMaxValue() { return &m_fPosMaxValue; }
 private:
 	_tchar	m_szName[MAX_PATH] = TEXT("");
 	_uint	m_iMaterialIndex = { 0 };
 	_uint	m_iNumBones = { 0 };
+
+	_float3	m_fPosMinValue = { };
+	_float3	m_fPosMaxValue = { };
 
 private:
 	//vector<_uint>	m_BoneIndices;
