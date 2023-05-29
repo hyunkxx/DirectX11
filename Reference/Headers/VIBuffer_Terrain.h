@@ -38,6 +38,7 @@ public:
 public:
 	_float Compute_Height(_fvector vPosition);
 	void Culling(_fmatrix Inverse_WorldMatrix);
+	void Reset_Culling();
 
 public:
 	HRESULT Load_Vertices(const _tchar* pFilePath);
@@ -57,6 +58,9 @@ private:
 
 	VTXNORTEX*			m_pVertices = { nullptr };
 	FACEINDICES32*		m_pIndices = { nullptr };
+
+	_uint				m_iOrigin_FaceCount = { 0 };
+	FACEINDICES32*		m_pOrigin_Indices = { nullptr };
 
 	class CFrustum*		m_pFrustum = { nullptr };
 	class CQuadTree*	m_pQuadTree = { nullptr };

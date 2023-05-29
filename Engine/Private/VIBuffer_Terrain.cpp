@@ -18,6 +18,8 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs)
 	, m_VertexPos(rhs.m_VertexPos)
 	, m_pVertices{ rhs.m_pVertices }
 	, m_pIndices{ rhs.m_pIndices }
+	, m_iOrigin_FaceCount{ rhs.m_iOrigin_FaceCount }
+	, m_pOrigin_Indices{ rhs.m_pOrigin_Indices }
 	, m_pFrustum{ rhs.m_pFrustum }
 	, m_pQuadTree{ rhs.m_pQuadTree }
 {
@@ -56,7 +58,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	m_iVertexCount = m_dwVertexCountX * m_dwVertexCountZ;
 
 	m_iFaceIndexSize = sizeof(FACEINDICES32);
-	m_iFaceCount = (m_dwVertexCountX - 1) * (m_dwVertexCountZ - 1) * 2;
+	m_iOrigin_FaceCount = m_iFaceCount = (m_dwVertexCountX - 1) * (m_dwVertexCountZ - 1) * 2;
 	m_iFaceIndexCount = 3;
 	m_iVertexBuffersCount = 1;
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
@@ -92,6 +94,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 
 	m_pIndices = new FACEINDICES32[m_iFaceCount];
 	ZeroMemory(m_pIndices, sizeof(FACEINDICES32) * m_iFaceCount);
+
+	m_pOrigin_Indices = new FACEINDICES32[m_iFaceCount];
+	ZeroMemory(m_pOrigin_Indices, sizeof(FACEINDICES32) * m_iFaceCount);
 
 	_uint		iNumFaces = 0;
 
@@ -149,6 +154,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 			++iNumFaces;
 		}
 	}
+
+	memcpy(m_pOrigin_Indices, m_pIndices, sizeof(FACEINDICES32) * m_iFaceCount);
 
 	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
 
@@ -361,13 +368,15 @@ _float CVIBuffer_Terrain::Compute_Height(_fvector vPosition)
 
 void CVIBuffer_Terrain::Culling(_fmatrix Inverse_WorldMatrix)
 {
+	
+	// 지형의 스페이스는 로컬이다. -> 비교도 로컬에서 해야 함 -> 그러기 위해 지형 객체 월드행렬의 역 행렬을 얻어와서 던져준다 
 	m_pFrustum->Transform_ToLocalSpace(Inverse_WorldMatrix);
 
 	_uint		iNumFace = { 0 };
 
 	m_pQuadTree->Culling(m_pFrustum, m_VertexPos, m_pIndices, &iNumFace);
 
-	/* 컬링을 한 이후 정점 정보를 컬링을 한뒤의 정보로 바꿔줘야함 */
+	// 컬링을 한 이후 정점 정보를 컬링을 한뒤의 정보로 바꿔줘야함 
 	D3D11_MAPPED_SUBRESOURCE		Subresource;
 	ZeroMemory(&Subresource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
@@ -378,6 +387,85 @@ void CVIBuffer_Terrain::Culling(_fmatrix Inverse_WorldMatrix)
 	m_pContext->Unmap(m_pIB, 0);
 
 	m_iFaceCount = iNumFace;
+	
+
+	/*
+	m_pFrustum->Transform_ToLocalSpace(Inverse_WorldMatrix);
+
+	// 컬링을 한 이후 정점 정보를 컬링을 한뒤의 정보로 바꿔줘야함 
+	D3D11_MAPPED_SUBRESOURCE		Subresource;
+	ZeroMemory(&Subresource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	m_pContext->Map(m_pIB, 0, D3D11_MAP_WRITE_DISCARD, 0, &Subresource);
+
+	_uint		iNumFace = { 0 };
+	_uint		iNumFaces_Culling = { 0 };
+
+	for (_ulong i = 0; i < m_dwVertexCountZ - 1; ++i)
+	{
+		for (_ulong j = 0; j < m_dwVertexCountX - 1; ++j)
+		{
+			_uint		iIndex = i * m_dwVertexCountX + j;
+
+			if (true == m_pFrustum->InLocalSpace(XMLoadFloat3(&m_pVertices[m_pOrigin_Indices[iNumFace]._0].vPosition), 20.0f))
+			{
+				memcpy(&m_pIndices[iNumFaces_Culling], &m_pOrigin_Indices[iNumFace], sizeof(FACEINDICES32));
+				++iNumFaces_Culling;
+			}
+			else if (true == m_pFrustum->InLocalSpace(XMLoadFloat3(&m_pVertices[m_pOrigin_Indices[iNumFace]._1].vPosition), 20.0f))
+			{
+				memcpy(&m_pIndices[iNumFaces_Culling], &m_pOrigin_Indices[iNumFace], sizeof(FACEINDICES32));
+				++iNumFaces_Culling;
+			}
+			else if (true == m_pFrustum->InLocalSpace(XMLoadFloat3(&m_pVertices[m_pOrigin_Indices[iNumFace]._2].vPosition), 20.0f))
+			{
+				memcpy(&m_pIndices[iNumFaces_Culling], &m_pOrigin_Indices[iNumFace], sizeof(FACEINDICES32));
+				++iNumFaces_Culling;
+			}
+
+			iNumFace++;
+
+			if (true == m_pFrustum->InLocalSpace(XMLoadFloat3(&m_pVertices[m_pOrigin_Indices[iNumFace]._0].vPosition), 20.0f))
+			{
+				memcpy(&m_pIndices[iNumFaces_Culling], &m_pOrigin_Indices[iNumFace], sizeof(FACEINDICES32));
+				++iNumFaces_Culling;
+			}
+			else if (true == m_pFrustum->InLocalSpace(XMLoadFloat3(&m_pVertices[m_pOrigin_Indices[iNumFace]._1].vPosition), 20.0f))
+			{
+				memcpy(&m_pIndices[iNumFaces_Culling], &m_pOrigin_Indices[iNumFace], sizeof(FACEINDICES32));
+				++iNumFaces_Culling;
+			}
+			else if (true == m_pFrustum->InLocalSpace(XMLoadFloat3(&m_pVertices[m_pOrigin_Indices[iNumFace]._2].vPosition), 20.0f))
+			{
+				memcpy(&m_pIndices[iNumFaces_Culling], &m_pOrigin_Indices[iNumFace], sizeof(FACEINDICES32));
+				++iNumFaces_Culling;
+			}
+
+			iNumFace++;
+		}
+	}
+
+	m_iFaceCount = iNumFaces_Culling;
+
+	memcpy(Subresource.pData, m_pIndices, sizeof(FACEINDICES32) * m_iFaceCount);
+
+	m_pContext->Unmap(m_pIB, 0);
+	*/	
+}
+
+void CVIBuffer_Terrain::Reset_Culling()
+{
+	m_iFaceCount = m_iOrigin_FaceCount;
+	memcpy(m_pIndices, m_pOrigin_Indices, sizeof(FACEINDICES32) * m_iFaceCount);
+
+	D3D11_MAPPED_SUBRESOURCE		Subresource;
+	ZeroMemory(&Subresource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	m_pContext->Map(m_pIB, 0, D3D11_MAP_WRITE_DISCARD, 0, &Subresource);
+
+	memcpy(Subresource.pData, m_pIndices, sizeof(FACEINDICES32) * m_iFaceCount);
+
+	m_pContext->Unmap(m_pIB, 0);
 }
 
 HRESULT CVIBuffer_Terrain::Load_Vertices(const _tchar * pFilePath)
@@ -469,5 +557,6 @@ void CVIBuffer_Terrain::Free()
 
 		Safe_Delete_Array(m_pVertices);
 		Safe_Delete_Array(m_pIndices);
+		Safe_Delete_Array(m_pOrigin_Indices);
 	}
 }

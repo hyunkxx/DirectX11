@@ -46,6 +46,7 @@ public:
 
 public:
 	void Get_PSA_To_InstanceMatrix(_uint iGetNum, __out SOBJECT_DESC* pOut);
+	_float3 Get_Pos_To_InstanceMatrix(_uint iGetNum);
 
 private:
 	_uint					m_iNumInstance = { 0 };

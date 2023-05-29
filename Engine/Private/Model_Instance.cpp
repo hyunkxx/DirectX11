@@ -275,6 +275,14 @@ void CModel_Instance::Get_PSA_To_InstanceMatrix(_uint iGetNum, SOBJECT_DESC * pO
 	return m_Instance_Meshes[0]->Get_PSA_To_InstanceMatrix(iGetNum, pOut);
 }
 
+_float3 CModel_Instance::Get_Pos_To_InstanceMatrix(_uint iGetNum)
+{
+	if (m_Instance_Meshes.empty())
+		return _float3(0.0f, 0.0f, 0.0f);
+
+	return m_Instance_Meshes[0]->GetPosition_To_InstanceMatrix(iGetNum);
+}
+
 void CModel_Instance::Culling(_fmatrix Inverse_WorldMatrix, _float fRadius)
 {
 	for (auto& pInstanceMash : m_Instance_Meshes)

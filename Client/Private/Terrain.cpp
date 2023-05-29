@@ -77,7 +77,7 @@ void CTerrain::Tick(_double TimeDelta)
 void CTerrain::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
-
+	
 	//m_pVIBuffer->Culling(m_pMainTransform->Get_WorldMatrixInverse());
 
 	if (nullptr != m_pRenderer)
