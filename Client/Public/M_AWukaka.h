@@ -60,6 +60,7 @@ public:
 		EBONE_SPINE,
 		EBONE_LHAND,
 		EBONE_RHAND,
+		EBONE_HEAD,
 		// 여기까지 몬스터 공통으로 고정
 		EBONE_END
 	};
@@ -116,6 +117,14 @@ public:
 		*pAttackOut = m_tCharInfo.fAttack;
 	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
+
+	virtual _float4x4* Get_HeadMatrix()
+	{
+		if (nullptr == m_EffectBones[EBONE_HEAD])
+			return nullptr;
+
+		return &m_EffectBoneMatrices[EBONE_HEAD];
+	}
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };

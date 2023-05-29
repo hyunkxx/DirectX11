@@ -52,7 +52,7 @@ HRESULT CParts::Initialize(void * pArg)
 
 	m_pMainTransform->Set_WorldMatrix(WorldMatrix);
 
-	m_eDissolveType = DISS_ZLINEAR;
+	m_eDissolveType = DISS_XLINEAR;
 
 	return S_OK;
 }
@@ -94,7 +94,7 @@ void CParts::LateTick(_double TimeDelta)
 	if (m_bDissolve)
 	{
 		m_fDissolveTimeAcc += (_float)TimeDelta * m_fDissolveSpeed;
-		if (2.f <= m_fDissolveTimeAcc)
+		if (1.f <= m_fDissolveTimeAcc)
 		{
 			m_bDissolve = false;
 			m_fDissolveTimeAcc = 0.f;
@@ -141,7 +141,10 @@ HRESULT CParts::Render()
 
 		if (m_bDissolve)
 		{
-			if (DISS_ZLINEAR == m_eDissolveType)
+			if (FAILED(m_pShaderCom->SetRawValue("g_vDessolveColor", &m_vDissolveColor, sizeof(_float3))))
+				return E_FAIL;
+
+			if (DISS_XLINEAR == m_eDissolveType)
 			{
 				if (FAILED(m_pShaderCom->SetRawValue("g_vMinPoint", &m_vMinPoint, sizeof(_float3))))
 					return E_FAIL;

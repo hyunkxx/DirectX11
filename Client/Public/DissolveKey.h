@@ -16,7 +16,7 @@ public:
 	virtual void Shot(class CCharacter* pMyCharacter) override;
 
 private:
-	_bool m_bDissolveType = { false }; // iInt0 : true == dissoveIn
+	_bool m_bDissolveType = { false }; // iInt0 : true == dissove  In
 	_float m_fDissolveSpeed = { 0.f };	// fFloat0
 
 public:
