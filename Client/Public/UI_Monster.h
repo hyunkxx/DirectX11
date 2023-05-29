@@ -106,6 +106,7 @@ private:
 	void CommonLevel();
 	void DecideRender();
 	void Damage(_float Damage);
+	void Font(_float TimeDelta);
 	void Load();
 
 
@@ -128,7 +129,7 @@ private:
 	_int m_MaskTextureNum2 = { 67 };
 	_float2 m_MonsterUV = { 0.f, 0.f }; // 텍스처uv흘리는애
 	_float m_MonsterGauge = { 1.f };
-	MONSTERTYPE m_MonsterType = { MONSTERTYPE::BOSS };
+	MONSTERTYPE m_MonsterType = { MONSTERTYPE::TYPE1 };
 
 	_bool  m_bRender = { true };
 	_bool	m_bNameRender = { false };

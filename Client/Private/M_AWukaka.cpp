@@ -107,8 +107,8 @@ HRESULT CM_AWukaka::Initialize(void * pArg)
 	_tchar szIndex[MAX_PATH];
 	wsprintf(szIndex, TEXT("UI_Monster%d"), Monindex);
 	CUI_Monster::MONINFO MonInfo;
-	MonInfo.Level = 3;
-	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
+	MonInfo.Level = 2;
+	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE1;
 	CGameObject * pUIMon = nullptr;
 	if (pGame->Add_GameObjectEx(&pUIMon, LEVEL_ANYWHERE, OBJECT::UIMONSTER, TEXT("layer_UI"), szIndex, &MonInfo))
 		return E_FAIL;

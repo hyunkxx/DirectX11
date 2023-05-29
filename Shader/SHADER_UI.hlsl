@@ -23,7 +23,8 @@ float  g_RRadianAcc;
 float  g_QRadianAcc;
 float  g_SkillRadian;
 float2  g_GraphUV;
-float  g_MonsterGauge;
+
+float2 g_TitleUV;
 
 //Sprite Image
 float  g_CurrentCount;		//ÇöÀç ÀÎµ¦½º
@@ -35,6 +36,7 @@ texture2D			g_GMask;
 texture2D			g_GMask2;
 texture2D			g_PMask;
 texture2D			g_PMask2;
+texture2D			g_Title;
 texture2D			g_Sprite;
 
 struct VS_IN
@@ -439,6 +441,26 @@ PS_OUT PS_COOLEFFECT(PS_IN In)
 }
 
 
+PS_OUT PS_TITLE(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+	float4 Defuse = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	float4 Mask = g_Title.Sample(LinearSampler,  float2(In.vTexUV.x + g_TitleUV.x ,In.vTexUV.y));
+	
+	Defuse.r += Mask.r;
+	Defuse.g += Mask.g;
+	Defuse.b += Mask.b;
+
+
+	Defuse.r += g_fColorR/255.f;
+	Defuse.g += g_fColorG/255.f;
+	Defuse.b += g_fColorB/255.f;
+	Defuse.a += g_fColorA/255.f;
+	Out.vColor = Defuse;
+
+	return Out;
+}
+
 
 technique11 DefaultTechnique
 {
@@ -675,6 +697,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_LinearDiscard();
+	}
+
+				pass UI_TITLE // 18
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_TITLE();
 	}
 }
 
