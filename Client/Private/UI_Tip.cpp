@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\UI_Tip.h"
+#include "GameMode.h"
 #include "GameInstance.h"
 #include "RenderTarget.h"
 
@@ -28,14 +29,6 @@ HRESULT CUI_Tip::Initialize(void * pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
-
-	//m_SpriteSize = { 5.f, 6.f };
-	//m_Sprite.fX = m_DescList[0].fX;
-	//m_Sprite.fY = m_DescList[0].fY;
-	//m_Sprite.fWidth = m_DescList[0].fWidth;
-	//m_Sprite.fHeight = m_DescList[0].fHeight;
-	//m_Sprite.WorldMatrix = m_DescList[0].WorldMatrix;
-
 
 	Load();
 	return S_OK;
@@ -120,24 +113,6 @@ HRESULT CUI_Tip::Render()
 		m_pVIBuffer->Render();
 	}
 	
-/*
-	if (true == m_bUIRender)
-	{
-		if (FAILED(m_pTexFunc.Setup_ShaderResource(m_pShader, "g_Sprite", 248)))
-			return E_FAIL;
-
-		if (FAILED(m_pShader.SetRawValue("g_CurrentCount", &(m_fCurrentSpriteIndex), sizeof(_float))))
-			return E_FAIL;
-		if (FAILED(m_pShader.SetRawValue("g_SpriteXY", &(m_SpriteSize), sizeof(_float2))))
-			return E_FAIL;
-		m_Sprite.WorldMatrix = m_DescList[0].WorldMatrix;
-
-		if (FAILED(m_pShader.SetMatrix("g_MyWorldMatrix", &(m_Sprite.WorldMatrix))))
-			return E_FAIL;
-		m_pShader.Begin(15);
-		m_pVIBuffer.Render();
-	}*/
-	
 	return S_OK;
 }
 
@@ -157,7 +132,7 @@ HRESULT CUI_Tip::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UITIP,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UITIP,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
@@ -271,7 +246,6 @@ void CUI_Tip::Load()
 			if (0 == dwByte)
 				break;
 		}
-		Desc.fColorA = -255.f;
 		m_DescList.push_back(Desc);
 		CloseHandle(hFile);
 

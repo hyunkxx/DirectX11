@@ -11,6 +11,7 @@
 #include "Level_Test.h"
 #include "Level_AnimTool.h"
 #include "BackGround.h"
+#include "Intro.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -37,7 +38,7 @@ HRESULT CLevel_Loading::Initialize(LEVEL_ID eNextLevel)
 	}
 	else
 	{
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOADING, OBJECT::INTRO, L"layher_background", L"background")))
+		if (FAILED(pGameInstance->Add_GameObjectEx(&m_pLoading, LEVEL_LOADING, OBJECT::INTRO, L"layher_background", L"background")))
 			return E_FAIL;
 	}
 
@@ -63,6 +64,11 @@ void CLevel_Loading::Tick(_double TimeDelta)
 		_float fLoadingRatio = pApp->GetCurrentLoadRatio();
 		static_cast<CBackGround*>(m_pLoading)->SetLoadRatio(fLoadingRatio);
 	}
+	else
+	{
+		_float fLoadingRatio = pApp->GetCurrentLoadRatio();
+		static_cast<CIntro*>(m_pLoading)->SetLoadRatio(fLoadingRatio);
+	}
 
 	if (true == m_pLoader->IsFinished())
 	{
@@ -79,6 +85,7 @@ void CLevel_Loading::Tick(_double TimeDelta)
 			pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
 			break;
 		case LEVEL_TEST:
+
 			pLevel = CLevel_Test::Create(m_pDevice, m_pContext);
 			break;
 		case LEVEL_ANIMTOOL:

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\UI_MainScreen.h"
 #include "GameInstance.h"
+#include "GameMode.h"
 #include "UI_Mouse.h"
 #include "P_PlayerGirl.h"
 #include "Character.h"
@@ -57,7 +58,7 @@ HRESULT CUI_MainScreen::Initialize(void * pArg)
 void CUI_MainScreen::Start()
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	m_pPlayer = static_cast<CP_PlayerGirl*>(pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Player")));
+	m_pPlayer = static_cast<CP_PlayerGirl*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	
 	SetPlayer();
@@ -211,7 +212,7 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	 if (true == m_bRedStart)
 	 {
 		 HPRedBar(TimeDelta);
-	 }
+	 }	
 	 UVWave(TimeDelta);
 }
 
@@ -351,7 +352,7 @@ void CUI_MainScreen::SerectUI()
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 
-	CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("layer_UI"), TEXT("UI_Mouse"));
+	CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("layer_UI"), TEXT("UI_Mouse"));
 	if (nullptr != pMouse)
 	{
 		_float3	fMousePos = dynamic_cast<CUI_Mouse*>(pMouse)->Get_MousePos();
@@ -372,7 +373,7 @@ void CUI_MainScreen::SerectUI()
 				if ((XMVectorGetY(P0) > XMVectorGetY(vMousePos)) && (XMVectorGetY(P2) < XMVectorGetY(vMousePos)))
 				{
 					pCutDesc->OnRect = true;
-					CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("UI_Mouse"));
+					CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Mouse"));
 					dynamic_cast<CUI_Mouse*>(pMouse)->Set_Texchange(true);
 				}
 
@@ -401,9 +402,11 @@ _bool CUI_MainScreen::QTEFull()
 {
 	if (1.f <= QTERadian)
 	{
+		m_CutDescList[38]->bRender = true;
 		m_CutDescList[51]->bRender = true;
 		return true;
 	}
+	m_CutDescList[38]->bRender = false;
 	m_CutDescList[51]->bRender = false;
 	return false;
 }
@@ -432,6 +435,7 @@ _bool CUI_MainScreen::RRFull()
 		m_CutDescList[37]->bRender = true;
 		return true;
 	}
+	m_CutDescList[37]->bRender = false;
 	return false;
 }
 
@@ -781,7 +785,7 @@ HRESULT CUI_MainScreen::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UI,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UI,
 		TEXT("com_texFunc"), (CComponent**)&m_pTexFunc)))
 		return E_FAIL;
 

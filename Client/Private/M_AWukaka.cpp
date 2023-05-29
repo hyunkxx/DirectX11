@@ -108,7 +108,7 @@ HRESULT CM_AWukaka::Initialize(void * pArg)
 	wsprintf(szIndex, TEXT("UI_Monster%d"), Monindex);
 	CUI_Monster::MONINFO MonInfo;
 	MonInfo.Level = 3;
-	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
+	MonInfo.Type = CUI_Monster::MONSTERTYPE::BOSS;
 	CGameObject * pUIMon = nullptr;
 	if (pGame->Add_GameObjectEx(&pUIMon, LEVEL_ANYWHERE, OBJECT::UIMONSTER, TEXT("layer_UI"), szIndex, &MonInfo))
 		return E_FAIL;
@@ -187,7 +187,7 @@ void CM_AWukaka::Tick(_double TimeDelta)
 	//UIÃß°¡
 	if (false == this->IsDisable())
 	{
-		m_pUIMon->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+		m_pUIMon->Set_CharacterPos(XMLoadFloat4x4(&m_EffectBoneMatrices[EBONE_HEAD]).r[2]);
 		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 		m_pUIIcon->SetRender(m_UIIndex, true);
 	}

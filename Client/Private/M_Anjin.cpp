@@ -186,7 +186,7 @@ void CM_Anjin::Tick(_double TimeDelta)
 
 	if (false == this->IsDisable())
 	{
-		m_pUIMon->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+		m_pUIMon->Set_CharacterPos(XMLoadFloat4x4(&m_EffectBoneMatrices[EBONE_HEAD]).r[2]);
 		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 		m_pUIIcon->SetRender(m_UIIndex, true);
 	}

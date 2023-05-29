@@ -105,6 +105,7 @@ private:
 	void CommonHP();
 	void CommonLevel();
 	void DecideRender();
+	void Font(_float TimeDelta);
 	void Damage(_float Damage);
 	void Load();
 

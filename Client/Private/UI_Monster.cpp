@@ -1,3 +1,4 @@
+
 #include "stdafx.h"
 #include "..\Public\UI_Monster.h"
 #include "GameMode.h"
@@ -25,7 +26,7 @@ HRESULT CUI_Monster::Initialize_Prototype()
 
 HRESULT CUI_Monster::Initialize(void * pArg)
 {
-	if (FAILED(__super::Initialize(pArg))) // 타입이랑 레벨 인자로 받아서 해당 버퍼만 랜더on 시키기
+	if (FAILED(__super::Initialize(pArg))) // ?????? ???? ????? ???? ??? ????? ????on ?????
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -55,63 +56,9 @@ void CUI_Monster::Tick(_double TimeDelta)
 	}
 
 	CommonHP();
+	DecideRender();
 	CommonLevel();
-
-	switch (m_MonsterType)
-	{
-	case Client::CUI_Monster::MONSTERTYPE::TYPE0: //레벨,hp
-	{
-		m_DescList[8].bRender = false;
-		m_DescList[9].bRender = false;
-	}
-	break;
-	case Client::CUI_Monster::MONSTERTYPE::TYPE1: // 레벨, hp, 아이콘, 추가방어바
-	{
-
-		m_MonsterUV.x += (_float)TimeDelta*0.3f;
-		//m_MonsterGauge += (_float)TimeDelta*0.2f;
-		m_DescList[8].bRender = true;
-		m_DescList[9].bRender = true;
-	}
-	break;
-	case Client::CUI_Monster::MONSTERTYPE::BOSS:
-	{
-		m_MonsterUV.x += (_float)TimeDelta*0.3f;
-		//m_MonsterGauge += (_float)TimeDelta*0.2f;
-
-		_int LevelTen = m_MonsterLevel / 10;
-		_int LevelOne = m_MonsterLevel % 10; // 0 = 33 1 = 34
-
-		if (1> LevelTen)
-		{
-			//11,12,13
-			m_DescList[13].bRender = false;
-			m_DescList[14].iTexNum = LevelOne + 33;
-		}
-		//만약 두자리일때 좌측 위치
-		else
-		{
-			//6번 그대로 5번 b랜더 true
-			m_DescList[13].bRender = true;
-			m_DescList[13].iTexNum = LevelTen + 33;
-			m_DescList[14].iTexNum = LevelOne + 33;
-		}
-
-		for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
-		{
-			XMStoreFloat4x4(&(m_DescList[i].WorldMatrix), XMMatrixScaling(m_DescList[i].fWidth, m_DescList[i].fHeight, 1.f) *
-				XMMatrixTranslation(m_DescList[i].fX, m_DescList[i].fY, m_DescList[i].fZ));
-			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-		}
-
-
-	}
-	break;
-	default:
-		break;
-	}
-
+	Font(TimeDelta);
 
 	if (true == m_bHit)
 	{
@@ -122,64 +69,8 @@ void CUI_Monster::Tick(_double TimeDelta)
 	{
 		HPRedBar(TimeDelta);
 	}
-	DecideRender();
-
-	{// 데미지 폰트 출력
-		if (0 < (_int)DamageList.size())
-		{
-			list<DAMAGEDESC>::iterator iter = DamageList.begin();
-			for (iter; iter != DamageList.end();)
-			{
-				if (-255.f > iter->Color.w)
-				{
-					iter = DamageList.erase(iter);
-				}
-				else
-				{
-					++iter;
-				}
-			}
-		}
-
-		for (auto& Desc : DamageList)
-		{
-			//아래에서 위로 올라감 -> 알파가 기준점 이하로 떨어지면 위로 다시 올라가면서 완전히 알파 -255
-
-			if (78 == Desc.TextureNum)
-			{
-				// 뒤에 빛효과
-				Desc.Size.x += (_float)TimeDelta * 500.f;
-				Desc.Size.y -= (_float)TimeDelta * 30.f;
-				if (0.f >= Desc.Size.y)
-				{
-					Desc.Size.y = 0.f;
-				}
-			}
-
-			Desc.Color.w -= (_float)TimeDelta * 150.f;
-			if (-30.f < Desc.Color.w)
-			{
-				Acc += (_float)TimeDelta *1000.f;
-				Desc.Pos.x += sinf(XMConvertToRadians(Acc) + 2.f);
-				Desc.Pos.y += sinf(XMConvertToRadians(Acc));
-			}
-			if (-100.f < Desc.Color.w)
-			{
-
-				Desc.Pos.y += (_float)TimeDelta * 40.f;
-			}
-			if (-180.f >= Desc.Color.w)
-			{
-				Desc.Pos.y += (_float)TimeDelta * 100.f;
-			}
-
-			XMStoreFloat4x4(&(Desc.WorldMat), XMMatrixScaling(Desc.Size.x, Desc.Size.y, 0.f)
-				* XMMatrixTranslation(Desc.Pos.x, Desc.Pos.y, 0.f));
-			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-		}
-
-	}
+	m_MonsterUV.x += (_float)TimeDelta*0.3f;
+	//m_MonsterGauge += (_float)TimeDelta*0.2f;
 }
 
 void CUI_Monster::LateTick(_double TimeDelta)
@@ -275,7 +166,61 @@ HRESULT CUI_Monster::Render()
 void CUI_Monster::RenderGUI()
 {
 }
+void CUI_Monster::Font(_float TimeDelta) // ?????? ??? ???
+{
+	if (0 < (_int)DamageList.size())
+	{
+		list<DAMAGEDESC>::iterator iter = DamageList.begin();
+		for (iter; iter != DamageList.end();)
+		{
+			if (-255.f > iter->Color.w)
+			{
+				iter = DamageList.erase(iter);
+			}
+			else
+			{
+				++iter;
+			}
+		}
+	}
 
+	for (auto& Desc : DamageList)
+	{
+		if (78 == Desc.TextureNum)
+		{
+			// ??? ?????
+			Desc.Size.x += (_float)TimeDelta * 500.f;
+			Desc.Size.y -= (_float)TimeDelta * 30.f;
+			if (0.f >= Desc.Size.y)
+			{
+				Desc.Size.y = 0.f;
+			}
+		}
+
+		Desc.Color.w -= (_float)TimeDelta * 150.f;
+		if (-30.f < Desc.Color.w)
+		{
+			Acc += (_float)TimeDelta *1000.f;
+			Desc.Pos.x += sinf(XMConvertToRadians(Acc) + 2.f);
+			Desc.Pos.y += sinf(XMConvertToRadians(Acc));
+		}
+		if (-100.f < Desc.Color.w)
+		{
+
+			Desc.Pos.y += (_float)TimeDelta * 40.f;
+		}
+		if (-180.f >= Desc.Color.w)
+		{
+			Desc.Pos.y += (_float)TimeDelta * 100.f;
+		}
+
+		XMStoreFloat4x4(&(Desc.WorldMat), XMMatrixScaling(Desc.Size.x, Desc.Size.y, 0.f)
+			* XMMatrixTranslation(Desc.Pos.x, Desc.Pos.y, 0.f));
+		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+	}
+
+}
 
 void	CUI_Monster::Damage(_float Damage)
 {
@@ -291,7 +236,7 @@ void	CUI_Monster::Damage(_float Damage)
 	if (10 == m_HitCount)
 		m_HitCount = 1;
 	srand((unsigned int)time(NULL));
-	_float pos = _float(rand() % (100 + 1 - (-100)) + (-100)); //a가 작은수
+	_float pos = _float(rand() % (100 + 1 - (-100)) + (-100)); //a?? ??????
 
 	if (0 == m_HitCount % 2)
 	{
@@ -473,7 +418,7 @@ HRESULT CUI_Monster::Add_Components()
 		TEXT("com_renderer"), (CComponent**)&m_pRenderer)))
 		return E_FAIL;
 
-	/*버퍼 하나당  세이브파일 한개 , 로드할때 파일  하나당 할당 하나. 리스트 원소개수로*/
+	/*???? ?????  ????????? ??? , ?ε???? ????  ????? ??? ???. ????? ?????????*/
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI,
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
@@ -573,18 +518,16 @@ HRESULT CUI_Monster::Setup_ShaderResourcesMask(_int index)
 	if (nullptr == m_pShader)
 		return E_FAIL;
 
+	if (FAILED(m_pShader->SetRawValue("g_GraphUV", &(m_MonsterUV), sizeof(_float2))))
+		return E_FAIL;
 	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index].iTexNum)))
 		return E_FAIL;
 	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask", m_MaskTextureNum)))
 		return E_FAIL;
 	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask2", m_MaskTextureNum2)))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_MonUV", &(m_MonsterUV), sizeof(_float2))))
+	if (FAILED(m_pShader->SetRawValue("g_SkillRadian", &m_MonsterGauge, sizeof(_float)))) 
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_SkillRadian", &m_MonsterGauge, sizeof(_float)))) // 70번 스킬강화게이지 오른쪽으로 어디까지 찼는지때문에추가 ->나중에몬스터꺼로바꾸기
-		return E_FAIL;
-	//if (FAILED(m_pShader->SetRawValue("g_MonsterGauge", &(m_MonsterGauge), sizeof(_float)))) 
-	//	return E_FAIL;
 
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index].WorldMatrix))))
 		return E_FAIL;
@@ -611,24 +554,16 @@ HRESULT CUI_Monster::Setup_ShaderResourcesBoss(_int index)
 {
 	if (nullptr == m_pShader)
 		return E_FAIL;
-
-	if (nullptr != m_pTexture)
-	{
-		if (FAILED(m_pShader->SetRawValue("g_MonUV", &(m_MonsterUV), sizeof(_float2))))
-			return E_FAIL;
-
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index].iTexNum)))
-			return E_FAIL;
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask", m_MaskTextureNum)))
-			return E_FAIL;
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask2", m_MaskTextureNum2)))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_SkillRadian", &m_MonsterGauge, sizeof(_float)))) // 70번 스킬강화게이지 오른쪽으로 어디까지 찼는지때문에추가 ->나중에몬스터꺼로바꾸기
-			return E_FAIL;
-		//if (FAILED(m_pShader->SetRawValue("g_MonsterGauge", &(m_MonsterGauge), sizeof(_float)))) 
-		//	return E_FAIL;
-	}
-	
+	if (FAILED(m_pShader->SetRawValue("g_GraphUV", &(m_MonsterUV), sizeof(_float2))))
+		return E_FAIL;
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index].iTexNum)))
+		return E_FAIL;
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask", m_MaskTextureNum)))
+		return E_FAIL;
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask2", m_MaskTextureNum2)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_SkillRadian", &m_MonsterGauge, sizeof(_float))))
+		return E_FAIL;
 
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index].WorldMatrix))))
 		return E_FAIL;
@@ -646,12 +581,8 @@ HRESULT CUI_Monster::Setup_ShaderResourcesBoss(_int index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
-
-	if (true == m_bRedStart)
-	{
-		if (FAILED(m_pShader->SetRawValue("g_fRedBar", &m_fRedBar, sizeof(_float))))
-			return E_FAIL;
-	}
+	if (FAILED(m_pShader->SetRawValue("g_fRedBar", &m_fRedBar, sizeof(_float))))
+		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fwhiteBar", &m_fWhiteBar, sizeof(_float))))
 		return E_FAIL;
 
@@ -729,9 +660,9 @@ void CUI_Monster::HPBar(_double TimeDelta)
 {
 	if (0.f < m_fWhiteBar)
 	{
-		if (0 < m_Damage) // 힐
+		if (0 < m_Damage) // ??
 		{
-			if (m_PreHp + m_Damage < m_CurrentHp) // 힐 받은만큼만 참
+			if (m_PreHp + m_Damage < m_CurrentHp) // ?? ????????? ??
 			{
 				m_bHit = false;
 				m_PreHp = m_RedHP = m_CurrentHp;
@@ -742,7 +673,7 @@ void CUI_Monster::HPBar(_double TimeDelta)
 		else
 		{
 			m_CurrentHp += m_Damage;
-			m_fWhiteBar = m_CurrentHp / m_HP; // 현재체력/전체체력 
+			m_fWhiteBar = m_CurrentHp / m_HP; // ???????/?????? 
 			m_PreHp = m_CurrentHp;
 			m_bHit = false;
 			m_bRedStart = true;
@@ -759,7 +690,7 @@ void CUI_Monster::HPRedBar(_double TimeDelta)
 	}
 	else
 	{
-		// 피가 다 닳았으면
+		// ??? ?? ???????
 		m_bRedStart = false;
 
 	}
@@ -805,14 +736,11 @@ void CUI_Monster::CommonLevel()
 
 	if (1> LevelTen)
 	{
-		//6번 그대로 5번 b랜더false 
 		m_DescList[5].bRender = false;
 		m_DescList[6].iTexNum = LevelOne + 33;
 	}
-	//만약 두자리일때 좌측 위치
 	else
 	{
-		//6번 그대로 5번 b랜더 true
 		m_DescList[5].bRender = true;
 		m_DescList[5].iTexNum = LevelTen + 33;
 		m_DescList[6].iTexNum = LevelOne + 33;
@@ -837,11 +765,8 @@ void CUI_Monster::DecideRender()
 {
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	// 플레이어 pos - 캐릭터 pos => 방향벡터 -> 노멀라이즈
-	// 플레이어 look -> 노멀라이즈
-	// 내적 
-	CPipeLine* pPipe = CPipeLine::GetInstance();
-	_matrix CamMat = pPipe->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
+	CPipeLine* pPiipe = CPipeLine::GetInstance();
+	_matrix CamMat = pPiipe->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
 	_vector CamLook = CamMat.r[2];
 	_vector CamPos = CamMat.r[3];
 	XMVectorSetY(CamLook, 0.f);
@@ -858,32 +783,97 @@ void CUI_Monster::DecideRender()
 		{
 			Desc.bRender = false;
 		}
-		else
+		else 
 		{
-			if (-0.2f > Get)       //1이면 같은 방향 0보다 작으면 반대방향
-			{
-				Desc.bRender = false;
+				if (-0.2f > Get) 
+				{
+					Desc.bRender = false;
 
-			}
+				}
 			else
-			{
-				Desc.bRender = true;
-				if (true == m_bNameRender)
 				{
-					m_DescList[4].bRender = false;
-					m_DescList[5].bRender = false;
-					m_DescList[6].bRender = false;
-					m_DescList[7].bRender = true;
-				}
-				else
-				{
-					m_DescList[4].bRender = true;
-					m_DescList[5].bRender = true;
-					m_DescList[6].bRender = true;
-					m_DescList[7].bRender = false;
-				}
+						switch (m_MonsterType)
+						{
+						case Client::CUI_Monster::MONSTERTYPE::TYPE0: 
+						{
+							m_DescList[8].bRender = false;
+							m_DescList[9].bRender = false;
 
-			}
+
+							if (true == m_bNameRender)
+							{
+								m_DescList[4].bRender = false;
+								m_DescList[5].bRender = false;
+								m_DescList[6].bRender = false;
+								m_DescList[7].bRender = true;
+							}
+							else
+							{
+								m_DescList[4].bRender = true;
+								m_DescList[5].bRender = true;
+								m_DescList[6].bRender = true;
+								m_DescList[7].bRender = false;
+							}
+						}
+						break;
+						case Client::CUI_Monster::MONSTERTYPE::TYPE1: 
+						{
+							m_DescList[8].bRender = true;
+							m_DescList[9].bRender = true;
+
+
+							if (true == m_bNameRender)
+							{
+								m_DescList[4].bRender = false;
+								m_DescList[5].bRender = false;
+								m_DescList[6].bRender = false;
+								m_DescList[7].bRender = true;
+							}
+							else
+							{
+								m_DescList[4].bRender = true;
+								m_DescList[5].bRender = true;
+								m_DescList[6].bRender = true;
+								m_DescList[7].bRender = false;
+							}
+
+						}
+						break;
+						case Client::CUI_Monster::MONSTERTYPE::BOSS:
+						{
+							for (_uint i = 0; i < 10; ++i)
+							{
+								m_DescList[i].bRender = false;
+							}
+							for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
+							{
+								m_DescList[i].bRender = true;
+								XMStoreFloat4x4(&(m_DescList[i].WorldMatrix), XMMatrixScaling(m_DescList[i].fWidth, m_DescList[i].fHeight, 1.f) *
+									XMMatrixTranslation(m_DescList[i].fX, m_DescList[i].fY, m_DescList[i].fZ));
+								XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+								XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+							}
+
+							_int LevelTen = m_MonsterLevel / 10;
+							_int LevelOne = m_MonsterLevel % 10; // 0 = 33 1 = 34
+
+							if (1> LevelTen)
+							{
+								//11,12,13
+								m_DescList[13].bRender = false;
+								m_DescList[14].iTexNum = LevelOne + 33;
+							}
+							else
+							{
+								m_DescList[13].bRender = true;
+								m_DescList[13].iTexNum = LevelTen + 33;
+								m_DescList[14].iTexNum = LevelOne + 33;
+							}
+						}
+						break;
+						}
+
+				}
 		}
 	}
 

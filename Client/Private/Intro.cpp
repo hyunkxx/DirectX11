@@ -51,7 +51,7 @@ void CIntro::Tick(_double TimeDelta)
 
 	if (false == m_bLoadingEnd)
 	{
-		LoadingBar(3, TimeDelta);
+		m_fLoading = m_fLoadRatio;
 	}
 	if (true == m_bLoadingEnd)
 	{
@@ -174,22 +174,6 @@ void CIntro::RenderGUI()
 
 }
 
-
-
-void CIntro::LoadingBar(_uint iNum, _double TimeDelta)
-{
-	m_DescList[iNum]->TimeAcc += (_float)TimeDelta;
-
-	if (m_DescList[iNum]->TimeAcc > m_DescList[iNum]->Duration)
-	{
-		m_DescList[iNum]->TimeAcc = 0.f;
-		m_bLoadingEnd = true;
-	}
-
-	m_fLoadingBar += (_float)TimeDelta * 180.f;
-	m_fLoading = m_fLoadingBar / m_DescList[iNum]->fWidth;
-
-}
 
 
 

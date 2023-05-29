@@ -67,10 +67,8 @@ public:
 	virtual HRESULT Render() override;
 	virtual void RenderGUI() override;
 
-
 public:
-	void Set_LoadingBar(_float fNum) { m_fLoadingBar += fNum; }
-
+	void SetLoadRatio(_float fValue) { m_fLoadRatio = fValue; }
 private:
 	HRESULT Add_Components();
 	HRESULT Setup_ShaderResources(_uint i);
@@ -99,7 +97,7 @@ private:
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_int m_iPass = { 0 };
 	_int m_Index = { 0 };
-	_float m_fLoadingBar = { 0.f };
+	_float m_fLoadRatio = { 0.f };
 	_float m_fLoading = { 0.f };
 	_bool  m_bLoadingEnd = { false };
 	_bool  m_bXYM = { false };

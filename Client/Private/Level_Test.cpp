@@ -31,8 +31,8 @@ HRESULT CLevel_Test::Initialize()
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
 	CSandbag::Init_States(m_pDevice, m_pContext);
 
-	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
@@ -43,8 +43,8 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Layer_Monster(TEXT("layer_monster"))))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
+		return E_FAIL;
 
 	//if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_tree"))))
 	//return E_FAIL;
@@ -187,11 +187,11 @@ HRESULT CLevel_Test::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-	//SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
-	//ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	//EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data");
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::TERRAIN, pLayerTag, L"terrain", &EditionDesc)))
-	//	return E_FAIL;
+	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data");
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::TERRAIN, pLayerTag, L"terrain", &EditionDesc)))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANIMTOOL, OBJECT::FLOOR, pLayerTag, L"floor")))
 		return E_FAIL;
@@ -290,20 +290,13 @@ HRESULT CLevel_Test::Ready_Layer_UI(const _tchar * pLayerTag)
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::UI, pLayerTag, TEXT("UI_MainScreen"))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::UI, pLayerTag, TEXT("UI_MainScreen"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::UI, pLayerTag, TEXT("UI_MainScreen"))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MOUSE, pLayerTag, TEXT("UI_Mouse"))))
-	//	return E_FAIL;
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::UITAPT, pLayerTag, TEXT("UI_TapT"))))
-	//	return E_FAIL;
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::UIMINIMAP, pLayerTag, TEXT("UI_Minimap"))))
-	//	return E_FAIL;
-	///*if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::UIMONSTER, pLayerTag, TEXT("UI_Monster"))))
-	//return E_FAIL;*/
-
-	//if (FAILED(pGameInstance->Add_GameObjectEx(&m_pAcquireSystem, LEVEL_TEST, OBJECT::ACQUIRE_SYSTEM, pLayerTag, TEXT("AcquireSystem"))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObjectEx(&m_pAcquireSystem, LEVEL_TEST, OBJECT::ACQUIRE_SYSTEM, pLayerTag, TEXT("AcquireSystem"))))
+		return E_FAIL;
 
 	pGameMode->SetupAcquireSystem(static_cast<CAcquireSystem*>(m_pAcquireSystem));
 
