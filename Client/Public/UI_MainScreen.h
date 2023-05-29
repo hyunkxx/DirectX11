@@ -141,10 +141,6 @@ private:
 
 	void AddPlayerRender();
 
-	void ChoicePlayer1();
-	void ChoicePlayer2();
-	void ChoicePlayer3();
-
 	void TCoolRender();
 	void ECoolRender();
 	void QCoolRender();

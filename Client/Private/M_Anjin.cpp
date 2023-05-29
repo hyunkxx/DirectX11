@@ -186,7 +186,10 @@ void CM_Anjin::Tick(_double TimeDelta)
 
 	if (false == this->IsDisable())
 	{
-		m_pUIMon->Set_CharacterPos(XMLoadFloat4x4(&m_EffectBoneMatrices[EBONE_HEAD]).r[2]);
+		_float4 Head;
+		XMStoreFloat4(&Head, XMLoadFloat4x4(&m_EffectBoneMatrices[EBONE_HEAD]).r[3]);
+		Head.y += 0.5f;
+		m_pUIMon->Set_CharacterPos(XMLoadFloat4(&Head));
 		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 		m_pUIIcon->SetRender(m_UIIndex, true);
 	}

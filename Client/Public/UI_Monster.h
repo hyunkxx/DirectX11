@@ -12,6 +12,7 @@ END
 
 BEGIN(Client)
 class CCharacter;
+class CPlayerState;
 
 class CUI_Monster final : public CGameObject
 {
@@ -74,6 +75,7 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Start() override;
 	virtual void Tick(_double TimeDelta) override;
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
@@ -106,6 +108,7 @@ private:
 	void CommonLevel();
 	void DecideRender();
 	void Font(_float TimeDelta);
+	void FontColor();
 	void Damage(_float Damage);
 	void Load();
 
@@ -137,9 +140,11 @@ private:
 	_int    m_HitCount = { 0 };
 	_float Acc = { 0.f };
 	_float3 FontPos = { 0.f, 0.f, 0.f };
-	ELEMENT		ElementType;
+	_float4 fFontColor = { 0.f, 0.f, 0.f, 0.f };
 
 private:
+	CPlayerState*   m_pPlayerStateClass = { nullptr };
+
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
 

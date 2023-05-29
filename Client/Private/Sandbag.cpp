@@ -17,8 +17,8 @@
 #include "CameraMovement.h"
 #include "Chest.h"
 //UI추가
-//#include "UI_Monster.h"
-//#include "UI_Minimap.h"
+#include "UI_Monster.h"
+#include "UI_Minimap.h"
 
 CCharacter::SINGLESTATE CSandbag::m_tStates[IS_END];
 
@@ -104,17 +104,18 @@ HRESULT CSandbag::Initialize(void * pArg)
 	//m_pAttackCollider->SetActive(false);
 
 	//UI추가
-	/*CGameInstance* pGame = CGameInstance::GetInstance();
+	CGameInstance* pGame = CGameInstance::GetInstance();
 	_tchar szIndex[MAX_PATH];
 	wsprintf(szIndex, TEXT("UI_Monster%d"), Monindex);
 	CUI_Monster::MONINFO MonInfo;
-	MonInfo.Level = 3;
-	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
+	MonInfo.Level = 99;
+	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE1;
 	CGameObject * pUIMon = nullptr;
 	if (pGame->Add_GameObjectEx(&pUIMon, LEVEL_ANYWHERE, OBJECT::UIMONSTER, TEXT("layer_UI"), szIndex, &MonInfo))
 		return E_FAIL;
 	m_pUIMon = static_cast<CUI_Monster*>(pUIMon);
-	++Monindex;*/
+	m_pUIMon->Set_MonHP(m_tCharInfo.fMaxHP);
+	++Monindex;
 	return S_OK;
 }
 
@@ -182,11 +183,15 @@ void CSandbag::Tick(_double TimeDelta)
 	pGameInstance->AddCollider(m_pMoveCollider, COLL_MOVE);
 	m_pMoveCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
-	/*if (false == this->IsDisable())
+	if (false == this->IsDisable())
 	{
-		m_pUIMon->Set_CharacterPos(m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+		_float4 Head;
+		XMStoreFloat4(&Head, XMLoadFloat4x4(&m_EffectBoneMatrices[EBONE_HEAD]).r[3]);
+		Head.y += 0.5f;
+		m_pUIMon->Set_CharacterPos(XMLoadFloat4(&Head));
 		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
-	}*/
+		m_pUIIcon->SetRender(m_UIIndex, true);
+	}
 }
 
 void CSandbag::LateTick(_double TimeDelta)
@@ -907,10 +912,12 @@ void CSandbag::Tick_State(_double TimeDelta)
 		if (IS_DEAD == m_Scon.iCurState)
 		{
 			SetState(DISABLE);
-			//m_pUIMon->SetState(DISABLE);
+			m_pUIMon->SetState(DISABLE);
 			m_pUIMon = nullptr;
+			m_pUIIcon->SetRender(m_UIIndex, false);
 			m_pUIIcon = nullptr;
 		}
+
 		// 공격 행동 시
 		if (IS_ATTACK01 == m_Scon.iCurState ||
 			IS_ATTACK02_1 == m_Scon.iCurState ||
@@ -997,10 +1004,10 @@ void CSandbag::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float
 	m_tCharInfo.fCurHP -= fFinalDamage;
 
 	// TODO: 여기서 대미지 폰트 출력
-	/*if (false == m_pUIMon->IsDisable())
+	if (false == m_pUIMon->IsDisable())
 	{
 		m_pUIMon->Set_Damage(fFinalDamage);
-	}*/
+	}
 
 	// 사망 시 사망 애니메이션 실행 
 	if (0.f >= m_tCharInfo.fCurHP)

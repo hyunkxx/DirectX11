@@ -7,6 +7,7 @@
 #include "UI_Mouse.h"
 #include "P_PlayerGirl.h"
 #include "DynamicCamera.h"
+#include "PlayerState.h"
 CUI_Monster::CUI_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -37,6 +38,12 @@ HRESULT CUI_Monster::Initialize(void * pArg)
 	m_MonsterLevel = MonInfo.Level;
 	m_MonsterType = MonInfo.Type;
 	return S_OK;
+}
+
+void CUI_Monster::Start()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 }
 
 void CUI_Monster::Tick(_double TimeDelta)
@@ -166,7 +173,7 @@ HRESULT CUI_Monster::Render()
 void CUI_Monster::RenderGUI()
 {
 }
-void CUI_Monster::Font(_float TimeDelta) // ?????? ??? ???
+void CUI_Monster::Font(_float TimeDelta) 
 {
 	if (0 < (_int)DamageList.size())
 	{
@@ -224,6 +231,7 @@ void CUI_Monster::Font(_float TimeDelta) // ?????? ??? ???
 
 void	CUI_Monster::Damage(_float Damage)
 {
+	FontColor();
 	_int iDamage = (_int)Damage;
 	_int Damage1000, Damage100, Damage10, Damage1;
 	Damage1000 = iDamage / 1000;
@@ -236,7 +244,7 @@ void	CUI_Monster::Damage(_float Damage)
 	if (10 == m_HitCount)
 		m_HitCount = 1;
 	srand((unsigned int)time(NULL));
-	_float pos = _float(rand() % (100 + 1 - (-100)) + (-100)); //a?? ??????
+	_float pos = _float(rand() % (100 + 1 - (-100)) + (-100)); 
 
 	if (0 == m_HitCount % 2)
 	{
@@ -250,7 +258,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc1000.Pos = _float3{ m_DescList[0].fX + pos, m_DescList[0].fY + pos, 0.f };
 		Desc1000.Size = _float2{ 30.f, 30.f };
 		Desc1000.TextureNum = -Damage1000 + 33;
-		Desc1000.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		Desc1000.Color = fFontColor;
 		if (0 == m_HitCount / 2)
 			Desc1000.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc1000.WorldMat, XMMatrixIdentity());
@@ -261,7 +269,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc100.Pos = _float3{ Desc1000.Pos.x + (15.f) , Desc1000.Pos.y, 0.f };
 		Desc100.Size = _float2{ 30.f, 30.f };
 		Desc100.TextureNum = -Damage100 + 33;
-		Desc100.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		Desc100.Color = fFontColor;
 		if (0 == m_HitCount / 2)
 			Desc100.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc100.WorldMat, XMMatrixIdentity());
@@ -272,7 +280,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc10.Pos = _float3{ Desc1000.Pos.x + (30.f) , Desc1000.Pos.y, 0.f };
 		Desc10.Size = _float2{ 30.f, 30.f };
 		Desc10.TextureNum = -Damage10 + 33;
-		Desc10.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		Desc10.Color = fFontColor;
 		if (0 == m_HitCount / 2)
 			Desc10.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc10.WorldMat, XMMatrixIdentity());
@@ -283,7 +291,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc1.Pos = _float3{ Desc1000.Pos.x + (45.f), Desc1000.Pos.y, 0.f };
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
-		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		Desc1.Color = fFontColor;
 		if (0 == m_HitCount / 2)
 			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
@@ -309,7 +317,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc100.Pos = _float3{ m_DescList[0].fX + pos, m_DescList[0].fY + pos, 0.f };
 		Desc100.Size = _float2{ 30.f, 30.f };
 		Desc100.TextureNum = -Damage100 + 33;
-		Desc100.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		Desc100.Color = fFontColor;
 		if (0 == m_HitCount / 3)
 			Desc100.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc100.WorldMat, XMMatrixIdentity());
@@ -320,7 +328,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc10.Pos = _float3{ Desc100.Pos.x + (15.f) , Desc100.Pos.y ,0.f };
 		Desc10.Size = _float2{ 30.f, 30.f };
 		Desc10.TextureNum = -Damage10 + 33;
-		Desc10.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		Desc10.Color = fFontColor;
 		if (0 == m_HitCount / 3)
 			Desc10.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc10.WorldMat, XMMatrixIdentity());
@@ -331,7 +339,7 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc1.Pos = _float3{ Desc100.Pos.x + (30.f), Desc100.Pos.y, 0.f };
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
-		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
+		Desc1.Color = fFontColor;
 		if (0 == m_HitCount / 3)
 			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
@@ -343,7 +351,7 @@ void	CUI_Monster::Damage(_float Damage)
 			Desc.Pos = _float3{ (Desc100.Pos.x + Desc1.Pos.x) / 2.f, Desc100.Pos.y, 0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };
+			Desc.Color = fFontColor;
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
@@ -412,6 +420,28 @@ void	CUI_Monster::Damage(_float Damage)
 
 }
 
+void CUI_Monster::FontColor()
+{
+	switch (m_pPlayerStateClass->Get_MainCharacterState()->eElement)
+	{
+	case ELEMENT::ELMT_SPECTRA:
+	{
+		fFontColor = _float4(214.959f , 208.637f , 126.347f , 0.f );
+	}
+	break;
+	case ELEMENT::ELMT_CONDUCTO:
+	{
+		fFontColor = _float4( 107.f, 234.f, 219.f, 0.f );
+	}
+	break;
+	case ELEMENT::ELMT_FUSION:
+	{
+		fFontColor = _float4(158.058f, -255.f, -231.818f, 0.f);
+	}
+	break;
+	}
+
+}
 HRESULT CUI_Monster::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
@@ -699,12 +729,7 @@ void CUI_Monster::HPRedBar(_double TimeDelta)
 void CUI_Monster::CommonHP()
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
 	_float4 fCharacterPos;
-	XMStoreFloat4(&fCharacterPos, m_vCharacterPos);
-	fCharacterPos.y = fCharacterPos.y + 1.4f;
-	m_vCharacterPos = XMLoadFloat4(&fCharacterPos);
 	_vector View, ViewProj;
 	View = XMVector3TransformCoord(m_vCharacterPos, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_VIEW));
 	ViewProj = XMVector3TransformCoord(View, pGameInstance->Get_Transform_Matrix(CPipeLine::TS_PROJ));
@@ -724,9 +749,6 @@ void CUI_Monster::CommonHP()
 		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 		m_DescList[i].bRender = true;
 	}
-
-
-	Safe_Release(pGameInstance);
 }
 
 void CUI_Monster::CommonLevel()
@@ -765,8 +787,7 @@ void CUI_Monster::DecideRender()
 {
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	CPipeLine* pPiipe = CPipeLine::GetInstance();
-	_matrix CamMat = pPiipe->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
+	_matrix CamMat = pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
 	_vector CamLook = CamMat.r[2];
 	_vector CamPos = CamMat.r[3];
 	XMVectorSetY(CamLook, 0.f);
