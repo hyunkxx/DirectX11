@@ -689,6 +689,9 @@ HRESULT CParticle_Effect::Add_Component(const EFFECT_DESC & ParticleDesc)
 	if (FAILED(Add_Texture("T_Ring_009", "../../Resource/Texture/Ring/T_Ring_009.dds")))
 		return E_FAIL;
 
+	if (FAILED(Add_Texture("T_Sub_Yumao_30001", "../../Resource/Texture/Sub/T_Sub_Yumao_30001.dds")))
+		return E_FAIL;
+	
 	/*if (FAILED(Add_Texture("T_Sub_Yumao_30001", "../../Resource/Texture/Particle/T_Sub_Yumao_30001.dds")))
 		return E_FAIL;*/
 

@@ -1349,10 +1349,22 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_AirAttack_Start_2_1.bin"),
 			"../../Resource/Effect/Player_Yangyang/AirAttack/")))
 			return E_FAIL;
+
 		// Start2_1 이 끝나갈때쯤  내려찍기 직전에 기모이는 이펙트
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
 			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_AirAttack_Start_2_2.bin"),
 			"../../Resource/Effect/Player_Yangyang/AirAttack/")))
+			return E_FAIL;
+
+		//Burst 회오리 : 미사일은 터레인 높이 태우면 좋을것 같음.
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Burst_01.bin"),
+			"../../Resource/Effect/Player_Yangyang/Burst/")))
+			return E_FAIL;
+		//Burst 회오리 끝나고 터지는 이펙트 블러 처리 해줘야함. 높이 높여줄 필요 없음. Burst_01 높이 그대로
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Burst_02.bin"),
+			"../../Resource/Effect/Player_Yangyang/Burst/")))
 			return E_FAIL;
 
 		// 회피 이펙트

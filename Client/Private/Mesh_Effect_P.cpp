@@ -398,7 +398,7 @@ void CMesh_Effect_P::Add_Model(const char * pFileTag, const char * TextureName, 
 		TextureTag2, MAX_PATH);
 
 	*pModel = CModel::Create(m_pDevice, m_pContext, TextureTag2);
-	_int i = 0;
+
 }
 
 CMesh_Effect_P * CMesh_Effect_P::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const char* pFileTag, const EFFECT_DESC & MeshDesc)
