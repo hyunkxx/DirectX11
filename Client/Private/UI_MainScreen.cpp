@@ -60,9 +60,10 @@ void CUI_MainScreen::Start()
 	m_pPlayer = static_cast<CP_PlayerGirl*>(pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Player")));
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	
-	SetPlayerColor();
-	SetStaticSkillCoolTime(); // 메인캐릭터로 전체 쿨타임 설정
+	SetPlayer();
 	SetHP();
+	SetStaticSkillCoolTime(); // 메인캐릭터로 전체 쿨타임 설정
+	
 	
 }
 
@@ -71,12 +72,27 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	SetPlayerColor(); // 각 슬롯에 맞는 플레이어 색깔 설정, 현재 보유한 캐릭터 수
+	if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP)
+	{
+		if (m_bRender)
+			m_bRender = !m_bRender;
+		else
+			m_bRender = !m_bRender;
+	}
+
+	SetPlayer(); // 각 슬롯에 맞는 플레이어 색깔 설정, 현재 보유한 캐릭터 수, 스킬 설정
 	 // skillcool
 	 // 0 = Q, 1 = E , 2 = R
 	 SetCurCoolTime(); // 메인캐릭터로 현재 쿨타임 설정 
 	 SetCurCoolRadian(); // 각 라디안 설정
-	 
+	 if (QTEFull())
+	 {
+		 QTEAct(TimeDelta);
+	 }
+	 if (RRFull())
+	 {
+		 RRAct(TimeDelta);
+	 }
 	 // 보유 캐릭터에 따라서 랜더onoff
 	 switch (m_HavePlayerNum)
 	 {
@@ -84,8 +100,8 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	 {
 		// 무조건 현재 플레이어
 		 //플레이어스테이트에 현재플레이어 Set++() 만들기->플레이어 추가 확인용
-		 // SetCurSkill() -> 현재 플레이어에 따라 스킬 바꿔줘야함
-		 // SetQTEFull() -> 51, 52, 53번 체크는 QTE 다 차면 랜더,효과 추가해야함 -> x,y 사이즈 커지면서 알파 줄어듦 -> 알파 사라지면 사이즈,알파 초기화 -> QTECur가 0이 될 때 멈춤
+		 // SetCurSkill() -> 현재 플레이어에 따라 스킬 바꿔줘야함 ->> 일단 셋플레이어에서 바꿔줌 툴은 탭에서 텍스처 바꾸고 셋플레이어state에서 관리
+		 // QTEFull() -> 51, 52, 53번 체크는 QTE 다 차면 랜더,효과 추가해야함 -> x,y 사이즈 커지면서 알파 줄어듦 -> 알파 사라지면 사이즈,알파 초기화 -> QTECur가 0이 될 때 멈춤
 		 // SetRRFull() -> RR 다 차면 효과 추가해야함
 		 // 플레이어 랜더 쿨타임 추가해야함
 		 // 새로운 플레이어 추가되면 New Player 흘리고 -> 플레이어 사진만 랜더 상태에서 커졌다 원래 사이즈로 -> 평소 렌더상태
@@ -360,6 +376,60 @@ void CUI_MainScreen::SerectUI()
 		}
 	}
 }
+void CUI_MainScreen::QTEAct(_double TimeDelta)
+{
+	// 38 사이즈 알파 100 * 100
+	if (-255.f < m_CutDescList[38]->fColorACut)
+	{
+		m_CutDescList[38]->fColorACut -= (_float)TimeDelta * 200.f;
+		m_CutDescList[38]->fWidthCut += (_float)TimeDelta * 400.f;
+		m_CutDescList[38]->fHeightCut += (_float)TimeDelta * 400.f;
+	}
+	else
+	{
+		m_CutDescList[38]->fColorACut = 0.f;
+		m_CutDescList[38]->fWidthCut = 100.f;
+		m_CutDescList[38]->fHeightCut = 100.f;
+	}
+}
+
+_bool CUI_MainScreen::QTEFull()
+{
+	if (1.f <= QTERadian)
+	{
+		m_CutDescList[51]->bRender = true;
+		return true;
+	}
+	m_CutDescList[51]->bRender = false;
+	return false;
+}
+void CUI_MainScreen::RRAct(_double TimeDelta)
+{
+	// 37사이즈 알파 94*94
+
+	if (-255.f < m_CutDescList[37]->fColorACut)
+	{
+		m_CutDescList[37]->fColorACut -= (_float)TimeDelta * 200.f;
+		m_CutDescList[37]->fWidthCut  += (_float)TimeDelta * 400.f;
+		m_CutDescList[37]->fHeightCut += (_float)TimeDelta * 400.f;
+	}
+	else
+	{
+		m_CutDescList[37]->fColorACut = 0.f;
+		m_CutDescList[37]->fWidthCut = 94.f;
+		m_CutDescList[37]->fHeightCut = 94.f;
+	}
+}
+
+_bool CUI_MainScreen::RRFull()
+{
+	if (1.f <= RRRadian)
+	{
+		m_CutDescList[37]->bRender = true;
+		return true;
+	}
+	return false;
+}
 
 void CUI_MainScreen::SetHP()
 {
@@ -480,14 +550,15 @@ void CUI_MainScreen::SetCurCoolRadian()
 	QCoolRadian = QCoolTime / StaticQSkillTime;
 	ECoolRadian = ECoolTime / StaticESkillTime;
 	RCoolRadian = RCoolTime / StaticRSkillTime;
-	RRRadian = RRCurGauge / RRMaxGauge;
+	//RRRadian = RRCurGauge / RRMaxGauge;
+	RRRadian += 0.001f; // 테스트
 	//QTERadian = QTECurGauge / QTEMaxGauge;
 	QTERadian += 0.001f; // 테스트
 	//SkillRadian = SkillCurGauge / SkillMaxGauge;
 	SkillRadian += 0.001f; // 테스트
 }
 
-void CUI_MainScreen::SetPlayerColor()
+void CUI_MainScreen::SetPlayer()
 {
 	m_HavePlayerNum = m_pPlayerStateClass->Get_PlayerState()->iCharCount;
 	switch (m_pPlayerStateClass->Get_MainCharacterState()->eElement)
@@ -521,6 +592,11 @@ void CUI_MainScreen::SetPlayerColor()
 		m_CutDescList[36]->fColorRCut = 214.959f;
 		m_CutDescList[36]->fColorGCut = 208.637f;
 		m_CutDescList[36]->fColorBCut = 126.347f;
+
+		// 스킬 텍스처
+		m_CutDescList[5]->iTexNum = 124;
+		m_CutDescList[6]->iTexNum = 158;
+		m_CutDescList[7]->iTexNum = 125;
 	}
 	break;
 	case ELEMENT::ELMT_CONDUCTO:
@@ -552,6 +628,11 @@ void CUI_MainScreen::SetPlayerColor()
 		m_CutDescList[36]->fColorRCut = 107.f;
 		m_CutDescList[36]->fColorGCut = 234.f;
 		m_CutDescList[36]->fColorBCut = 219.f;
+
+		// 스킬 텍스처
+		m_CutDescList[5]->iTexNum = 114;
+		m_CutDescList[6]->iTexNum = 150;
+		m_CutDescList[7]->iTexNum = 115;
 	}
 	break;
 	case ELEMENT::ELMT_FUSION:
@@ -583,6 +664,11 @@ void CUI_MainScreen::SetPlayerColor()
 		m_CutDescList[36]->fColorRCut = 158.058f;
 		m_CutDescList[36]->fColorGCut = 255.f;
 		m_CutDescList[36]->fColorBCut = 231.818f;
+
+		// 스킬 텍스처
+		m_CutDescList[5]->iTexNum = 131;
+		m_CutDescList[6]->iTexNum = 149;
+		m_CutDescList[7]->iTexNum = 132;
 	}
 	break;
 	default:
@@ -600,6 +686,7 @@ void CUI_MainScreen::SetPlayerColor()
 		m_CutDescList[55]->fColorRCut = 214.959f * 255.f;
 		m_CutDescList[55]->fColorGCut = 208.637f * 255.f;
 		m_CutDescList[55]->fColorBCut = 126.347f * 255.f;
+
 	}
 	break;
 	case ELEMENT::ELMT_CONDUCTO:
@@ -1131,20 +1218,13 @@ _bool CUI_MainScreen::REnd(_double TimeDelta)
 
 void	CUI_MainScreen::RenderCurrentPlayer1()
 {
-	/*
-	레벨
-	경험치
-	공
-	방
-	체
-	크리확률
-	*/
 	m_CutDescList[0]->bRender = true;
 	m_CutDescList[16]->bRender = true;
-	m_CutDescList[51]->bRender = true;
+	
 	m_CutDescList[54]->bRender = true;
 	m_CutDescList[58]->bRender = true;
 
+	m_CutDescList[51]->bRender = false;
 	m_CutDescList[10]->bRender = false;
 	m_CutDescList[13]->bRender = false;
 	m_CutDescList[45]->bRender = false;
@@ -1162,10 +1242,10 @@ void CUI_MainScreen::RenderCurrentPlayer2()
 {
 	m_CutDescList[1]->bRender = true;
 	m_CutDescList[17]->bRender = true;
-	m_CutDescList[52]->bRender = true;
 	m_CutDescList[55]->bRender = true;
 	m_CutDescList[59]->bRender = true;
 
+	m_CutDescList[52]->bRender = false;
 	m_CutDescList[11]->bRender = false;
 	m_CutDescList[14]->bRender = false;
 	m_CutDescList[47]->bRender = false;
@@ -1182,10 +1262,10 @@ void CUI_MainScreen::RenderCurrentPlayer3()
 {
 	m_CutDescList[2]->bRender = true;
 	m_CutDescList[18]->bRender = true;
-	m_CutDescList[53]->bRender = true;
 	m_CutDescList[56]->bRender = true;
 	m_CutDescList[60]->bRender = true;
 
+	m_CutDescList[53]->bRender = false;
 	m_CutDescList[12]->bRender = false;
 	m_CutDescList[15]->bRender = false;
 	m_CutDescList[49]->bRender = false;
@@ -1205,11 +1285,11 @@ void CUI_MainScreen::RenderPlayer1()
 
 	m_CutDescList[0]->bRender = true;
 	m_CutDescList[10]->bRender = true;
-	m_CutDescList[51]->bRender = true;
 	m_CutDescList[54]->bRender = true;
 	m_CutDescList[58]->bRender = true;
 
 
+	m_CutDescList[51]->bRender = false;
 	m_CutDescList[13]->bRender = false;
 	m_CutDescList[16]->bRender = false;
 	m_CutDescList[45]->bRender = false;
@@ -1221,11 +1301,11 @@ void CUI_MainScreen::RenderPlayer2()
 {
 	m_CutDescList[1]->bRender = true;
 	m_CutDescList[11]->bRender = true;
-	m_CutDescList[52]->bRender = true;
 	m_CutDescList[55]->bRender = true;
 	m_CutDescList[59]->bRender = true;
 
 
+	m_CutDescList[52]->bRender = false;
 	m_CutDescList[14]->bRender = false;
 	m_CutDescList[17]->bRender = false;
 	m_CutDescList[47]->bRender = false;
@@ -1237,11 +1317,11 @@ void CUI_MainScreen::RenderPlayer3()
 {
 	m_CutDescList[2]->bRender = true;
 	m_CutDescList[12]->bRender = true;
-	m_CutDescList[53]->bRender = true;
 	m_CutDescList[56]->bRender = true;
 	m_CutDescList[60]->bRender = true;
 
 
+	m_CutDescList[53]->bRender = false;
 	m_CutDescList[15]->bRender = false;
 	m_CutDescList[18]->bRender = false;
 	m_CutDescList[49]->bRender = false;

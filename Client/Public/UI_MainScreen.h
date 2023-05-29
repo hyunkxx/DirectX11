@@ -101,10 +101,14 @@ private:
 	void	SetStaticSkillCoolTime();
 	void	SetCurCoolTime();
 	void	SetCurCoolRadian();
-	void	SetPlayerColor();
+	void	SetPlayer();
 	void	HPBar(_double TimeDelta);
 	void	HPRedBar(_double TimeDelta);
 	void    UVWave(_double TimeDelta);
+	_bool	QTEFull();
+	void	QTEAct(_double TimeDelta);
+	_bool	RRFull();
+	void	RRAct(_double TimeDelta);
 	
 	void	AlphaM(CUTRECT* pDesc, _double TimeDelta);
 	void	AlphaP(CUTRECT* pDesc, _double TimeDelta);
