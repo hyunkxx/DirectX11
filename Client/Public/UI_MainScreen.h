@@ -13,6 +13,7 @@ END
 BEGIN(Client)
 class CP_PlayerGirl;
 class CPlayerState;
+class CTerminalUI;
 
 class CUI_MainScreen final : public CGameObject
 {
@@ -55,8 +56,16 @@ public:
 		_float fColorRCut = { 0.f };
 		_float fColorGCut = { 0.f };
 		_float fColorBCut = { 0.f };
-		_bool  OnRect; // 마우스가 버퍼 위에 있는지
 	}CUTRECT;
+
+	typedef struct tagDamage
+	{
+		_float3		Pos;
+		_float2		Size;
+		_int		TextureNum;
+		_float4x4	WorldMat;
+		_float4		Color;
+	}DAMAGEDESC;
 
 protected:
 	explicit CUI_MainScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -75,6 +84,7 @@ public:
 
 private:
 	HRESULT Add_Components();
+	HRESULT Setup_ShaderResourcesDamage(DAMAGEDESC * pDamage);
 	HRESULT Setup_ShaderResourcesCut(_uint Bufferindex);
 	HRESULT Setup_ShaderResourcesGraphs0(_uint Bufferindex);
 	HRESULT Setup_ShaderResourcesGraphs1(_uint Bufferindex);
@@ -91,17 +101,16 @@ private:
 
 public:
 	void	Set_Texchange(_int Texindex);
-	void	Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; }
-	void	Add_PlayerNum() { ++m_HavePlayerNum; ++m_HadPlayerNum; AddPlayerRender(); }
-
+	void	Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage);}
 
 private:
-	void	SerectUI();
 	void	SetHP();
 	void	SetStaticSkillCoolTime();
 	void	SetCurCoolTime();
 	void	SetCurCoolRadian();
 	void	SetPlayer();
+	void	SetSlotRender();
+	void	HP(_double TimeDelta);
 	void	HPBar(_double TimeDelta);
 	void	HPRedBar(_double TimeDelta);
 	void    UVWave(_double TimeDelta);
@@ -109,11 +118,18 @@ private:
 	void	QTEAct(_double TimeDelta);
 	_bool	RRFull();
 	void	RRAct(_double TimeDelta);
-	
+	void	Font(_double TimeDelta);
+	void	Damage(_float Damage);
+	void	T(_double TimeDelta);
+	void	E(_double TimeDelta);
+	void	Q(_double TimeDelta);
+	void	R(_double TimeDelta);
+
+
+
 	void	AlphaM(CUTRECT* pDesc, _double TimeDelta);
 	void	AlphaP(CUTRECT* pDesc, _double TimeDelta);
 
-	void	CountDownCool(_double TimeDelta);
 	void	CoolTimeEnd(_double TimeDelta);
 	_bool	CoolTime(CUTRECT* pDesc, _double TimeDelta);
 
@@ -127,19 +143,9 @@ private:
 	void	DisappearIcon(_uint indexstart, _uint indexend, _double TimeDelta);
 	void	AppearIcon(_uint indexstart, _uint indexend, _double TimeDelta);
 
-	void RenderCurrentPlayer1();
-	void RenderCurrentPlayer2();
-	void RenderCurrentPlayer3();
-
 	void RenderPlayer1();
 	void RenderPlayer2();
 	void RenderPlayer3();
-
-	void RenderOffPlayer1();
-	void RenderOffPlayer2();
-	void RenderOffPlayer3();
-
-	void AddPlayerRender();
 
 	void TCoolRender();
 	void ECoolRender();
@@ -151,6 +157,8 @@ private:
 	void QCoolRenderOff();
 	void RCoolRenderOff();
 
+	
+
 	_bool TEnd(_double TimeDelta);
 	_bool EEnd(_double TimeDelta);
 	_bool QEnd(_double TimeDelta);
@@ -158,13 +166,15 @@ private:
 
 	void	Load();
 private:
+	_int m_Index = { 0 }; // 임시
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint   m_iPass = { 1 };
+	_bool	m_bHide = { false }; // 다른 ui 엑티브체크
 	_bool	m_bRender = { true }; // 전체 랜더onoff
-	eKeyType m_iCurrentPlayer = { eKeyType::DANSUN };
-	eKeyType m_iPrePlayer = { eKeyType::DANSUN };
-	_uint	m_HavePlayerNum = { 0 };
-	_uint	m_HadPlayerNum = { 0 };
+	_uint	m_HavePlayerNum = { 1 };
+	_uint	m_HadPlayerNum = { 1 };
+	//플레이어 교대
+	_float CurTagCool = { 0.f }, MaxTagCool = { 0.f }, TagRadian = { 0.f };
 
 	//Hp
 	_bool m_bHit = { false };
@@ -179,17 +189,16 @@ private:
 
 	//쿨타임
 	_bool  Coolend = { false };
-	_float Time = { 1.f };
-
 	_bool  bTEnd = { false }, bEEnd = { false }, bQEnd = { false }, bREnd = { false };
 	_float StaticHookCoolTime = { 0.f }, StaticLevitationCoolTime = { 0.f }, StaticScannerCoolTimel = { 0.f };
 	_float StaticESkillTime = { 0.f }, StaticQSkillTime = { 0.f }, StaticRSkillTime = { 0.f };
 	_float TCoolTime = { 0.f }, ECoolTime = { 0.f }, QCoolTime = { 0.f }, RCoolTime = { 0.f };
 	_float TCoolRadian = { 0.f }, ECoolRadian = { 0.f }, QCoolRadian = { 0.f }, RCoolRadian = { 0.f };
-	_float RRCurGauge = { 0.f }, RRMaxGauge = { 0.f }, RRRadian = { 0.f };
-	_float QTERadian = { 0.f }, QTECurGauge = { 0.f }, QTEMaxGauge = { 0.f };
-	_float SkillRadian = { 0.f }, SkillCurGauge = { 0.f }, SkillMaxGauge = { 0.f };
+	_float RRCurGauge = { 0.f }, RRMaxGauge = { 0.f }, RRRadian = { 0.f }; // 궁게이지
+	_float QTERadian = { 0.f }, QTECurGauge = { 0.f }, QTEMaxGauge = { 0.f }; // 체력바옆에육각형
+	_float SkillRadian = { 0.f }, SkillCurGauge = { 0.f }, SkillMaxGauge = { 0.f }; // 메인그래프
 
+	//그레프
 	_float2 m_fUV = { 0.f, 0.f }; // 텍스처uv흘리는애
 	_int m_MainMaskNum;
 	_int m_MainMaskNum2;
@@ -200,31 +209,27 @@ private:
 	_int m_Mini2MaskNum;
 	_int m_Mini2MaskNum2;
 
+	//데미지폰트
+	_float	Acc = { 0.f };
+	_float4 fFontColor = { 0.f, 0.f, 0.f, 0.f };
+
 public:
 	static CUI_MainScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
 
-public:/*
-	ELEMENT::ELMT_SPECTRA = _float3{ 214.959f * 255.f, 208.637f * 255.f, 126.347f * 255.f };
-	ELEMENT::ELMT_AERO = _float3{ 107.f * 255.f, 234.f * 255.f, 219.f * 255.f };
-	ELEMENT::ELMT_FUSION = _float3{ 158.058f * 255.f, -255.f * 255.f, -231.818f * 255.f };*/
-
 private:
 	CP_PlayerGirl*  m_pPlayer = { nullptr };
 	CPlayerState*   m_pPlayerStateClass = { nullptr };
-
-
-
-
+	CTerminalUI*	m_pTerminalUI = { nullptr };
 private:
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
 	CTexture*		m_pTexFunc = { nullptr };
 	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; 
 
-	vector<CUTRECT*>		  m_CutDescList;
-
+	vector<CUTRECT*>	  m_CutDescList;
+	list<DAMAGEDESC>	  DamageList;
 };
 
 END

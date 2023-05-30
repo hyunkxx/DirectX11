@@ -5,6 +5,7 @@
 #include "UI_Mouse.h"
 #include "P_PlayerGirl.h"
 #include "Terrain.h"
+#include "TerminalUI.h"
 
 CUI_Minimap::CUI_Minimap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -45,6 +46,7 @@ void CUI_Minimap::Start()
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	m_pPlayer = static_cast<CP_PlayerGirl*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
+	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
 }
 
 void CUI_Minimap::Tick(_double TimeDelta)
@@ -52,13 +54,10 @@ void CUI_Minimap::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 
-	if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP)
-	{
-		if (m_bRender)
-			m_bRender = !m_bRender;
-		else
-			m_bRender = !m_bRender;
-	}
+	if (m_pTerminalUI->IsActive())
+		m_bRender = false;
+	else
+		m_bRender = true;
 
 
 	// ¹Ì´Ï¸Ê 
@@ -85,7 +84,6 @@ void CUI_Minimap::Tick(_double TimeDelta)
 		m_TerrainRB.y = -m_fPointRB.y / m_fHeightMiniMap + 0.5f;
 
 		XMStoreFloat4x4(&m_WorldMatrixMiniMap, XMMatrixScaling(m_fWidthMiniMap, m_fHeightMiniMap, 1.f) * XMMatrixTranslation(m_fXMiniMap, m_fYMiniMap, m_fZMiniMap));
-		XMStoreFloat4x4(&m_WorldMatrixFrame, XMMatrixScaling(m_fWidthFrame, m_fHeightFrame, 1.f) * XMMatrixTranslation(m_fXFrame, m_fYFrame, m_fZFrame));
 		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 
@@ -263,21 +261,6 @@ HRESULT CUI_Minimap::Render()
 		if (FAILED(__super::Render()))
 			return E_FAIL;
 
-		// ¹Ì´Ï¸Ê
-		if ((false == m_bNull) && (nullptr != m_pVIBufferMiniMap))
-		{
-			if (FAILED(Setup_ShaderResourcesMiniMap()))
-				return E_FAIL;
-			m_pShader->Begin(5);
-			m_pVIBufferMiniMap->Render();
-
-			if (FAILED(Setup_ShaderResourcesFrame()))
-				return E_FAIL;
-			m_pShader->Begin(m_FramePass);
-			m_pVIBufferMiniMap->Render();
-
-		}
-
 		//µðÆúÆ®¾ÆÀÌÄÜ
 		for (_uint i = 0; i < 2; ++i)
 		{
@@ -315,6 +298,15 @@ HRESULT CUI_Minimap::Render()
 				m_pVIBufferMiniMap->Render();
 			}
 		}
+
+		// ¹Ì´Ï¸Ê
+		if ((false == m_bNull) && (nullptr != m_pVIBufferMiniMap))
+		{
+			if (FAILED(Setup_ShaderResourcesMiniMap()))
+				return E_FAIL;
+			m_pShader->Begin(16);
+			m_pVIBufferMiniMap->Render();
+		}
 	}
 	return S_OK;
 }
@@ -332,11 +324,6 @@ HRESULT CUI_Minimap::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI,
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
-		return E_FAIL;
-
-	//¹Ì´Ï¸Ê
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UIMAP,
-		TEXT("com_texMap"), (CComponent**)&m_pTexMiniMap)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::VIBUFFER_RECT,
@@ -440,9 +427,7 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesIcons(ICONDESC* pDesc)
 
 HRESULT CUI_Minimap::Setup_ShaderResourcesMiniMap()
 {
-	if (FAILED(m_pTexMiniMap->Setup_ShaderResource(m_pShader, "g_MyTexture")))
-		return E_FAIL;
-	if (FAILED(m_pTexMiniMap->Setup_ShaderResource(m_pShader, "g_MyTexture2", 1)))
+	if (FAILED(m_pTexDefaultIcon->Setup_ShaderResource(m_pShader, "g_MyTexture",2)))
 		return E_FAIL;
 	if (nullptr != m_pVIBufferMiniMap)
 	{
@@ -471,37 +456,6 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesMiniMap()
 	return S_OK;
 }
 
-HRESULT CUI_Minimap::Setup_ShaderResourcesFrame()
-{
-	if (FAILED(m_pTexMiniMap->Setup_ShaderResource(m_pShader, "g_MyTexture", 1)))
-		return E_FAIL;
-	if (nullptr != m_pVIBufferMiniMap)
-	{
-
-		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &m_WorldMatrixFrame)))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fLU", &m_TerrainLU, sizeof(_float2))))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fRB", &m_TerrainRB, sizeof(_float2))))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fColorR", &m_fColorRFrame, sizeof(_float))))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fColorG", &m_fColorGFrame, sizeof(_float))))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fColorB", &m_fColorBFrame, sizeof(_float))))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fColorA", &m_fColorAFrame, sizeof(_float))))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-
 
 HRESULT CUI_Minimap::Setup_ShaderResourcesDefaultIcon(_uint Bufferindex)
 {
@@ -512,6 +466,12 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesDefaultIcon(_uint Bufferindex)
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &m_fColorADefaultIcon[Bufferindex], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &m_fColorADefaultIcon[Bufferindex], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &m_fColorADefaultIcon[Bufferindex], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &m_fColorADefaultIcon[Bufferindex], sizeof(_float))))
 		return E_FAIL;
@@ -530,6 +490,12 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesIcon(_uint Bufferindex)
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_IconDescList[Bufferindex].fColorA), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_IconDescList[Bufferindex].fColorA), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_IconDescList[Bufferindex].fColorA), sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_IconDescList[Bufferindex].fColorA), sizeof(_float))))
 		return E_FAIL;
@@ -569,7 +535,6 @@ void CUI_Minimap::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexIcon);
-	Safe_Release(m_pTexMiniMap);
 	Safe_Release(m_pTexDefaultIcon);
 	Safe_Release(m_pVIBufferMiniMap);
 

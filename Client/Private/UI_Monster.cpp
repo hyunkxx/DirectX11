@@ -173,7 +173,8 @@ HRESULT CUI_Monster::Render()
 void CUI_Monster::RenderGUI()
 {
 }
-void CUI_Monster::Font(_float TimeDelta) 
+
+void CUI_Monster::Font(_double TimeDelta)
 {
 	if (0 < (_int)DamageList.size())
 	{
@@ -195,36 +196,56 @@ void CUI_Monster::Font(_float TimeDelta)
 	{
 		if (78 == Desc.TextureNum)
 		{
-			// ??? ?????
-			Desc.Size.x += (_float)TimeDelta * 500.f;
-			Desc.Size.y -= (_float)TimeDelta * 30.f;
+			Desc.Size.x += (_float)(TimeDelta * 500.f);
+			Desc.Size.y -= (_float)(TimeDelta * 30.f);
 			if (0.f >= Desc.Size.y)
 			{
 				Desc.Size.y = 0.f;
 			}
 		}
 
-		Desc.Color.w -= (_float)TimeDelta * 150.f;
+
+		Desc.Color.w -= (_float)(TimeDelta * 150.f);
+
+		if (-20.f < Desc.Color.w)
+		{
+			Desc.Size.x += (_float)TimeDelta * 200.f;
+			Desc.Size.y += (_float)TimeDelta * 200.f;
+		}
+		if ((-20.f > Desc.Color.w) && (-30.f > Desc.Color.w))
+		{
+			if (30.f >= Desc.Size.x)
+			{
+				Desc.Size.x = 30.f;
+				Desc.Size.y = 30.f;
+			}
+			else
+			{
+				Desc.Size.x -= (_float)TimeDelta * 400.f;
+				Desc.Size.y -= (_float)TimeDelta * 400.f;
+			}
+		}
+
+
+
 		if (-30.f < Desc.Color.w)
 		{
-			Acc += (_float)TimeDelta *1000.f;
+			Acc += (_float)(TimeDelta *1000.f);
 			Desc.Pos.x += sinf(XMConvertToRadians(Acc) + 2.f);
 			Desc.Pos.y += sinf(XMConvertToRadians(Acc));
 		}
 		if (-100.f < Desc.Color.w)
 		{
 
-			Desc.Pos.y += (_float)TimeDelta * 40.f;
+			Desc.Pos.y += (_float)(TimeDelta * 40.f);
 		}
 		if (-180.f >= Desc.Color.w)
 		{
-			Desc.Pos.y += (_float)TimeDelta * 100.f;
+			Desc.Pos.y += (_float)(TimeDelta * 100.f);
 		}
 
 		XMStoreFloat4x4(&(Desc.WorldMat), XMMatrixScaling(Desc.Size.x, Desc.Size.y, 0.f)
 			* XMMatrixTranslation(Desc.Pos.x, Desc.Pos.y, 0.f));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	}
 
 }
@@ -759,13 +780,13 @@ void CUI_Monster::CommonLevel()
 	if (1> LevelTen)
 	{
 		m_DescList[5].bRender = false;
-		m_DescList[6].iTexNum = LevelOne + 33;
+		m_DescList[6].iTexNum = LevelOne + 79;
 	}
 	else
 	{
 		m_DescList[5].bRender = true;
-		m_DescList[5].iTexNum = LevelTen + 33;
-		m_DescList[6].iTexNum = LevelOne + 33;
+		m_DescList[5].iTexNum = LevelTen + 79;
+		m_DescList[6].iTexNum = LevelOne + 79;
 	}
 
 	if (3 < (_uint)m_DescList.size())
@@ -882,13 +903,13 @@ void CUI_Monster::DecideRender()
 							{
 								//11,12,13
 								m_DescList[13].bRender = false;
-								m_DescList[14].iTexNum = LevelOne + 33;
+								m_DescList[14].iTexNum = LevelOne + 79;
 							}
 							else
 							{
 								m_DescList[13].bRender = true;
-								m_DescList[13].iTexNum = LevelTen + 33;
-								m_DescList[14].iTexNum = LevelOne + 33;
+								m_DescList[13].iTexNum = LevelTen + 79;
+								m_DescList[14].iTexNum = LevelOne + 79;
 							}
 						}
 						break;

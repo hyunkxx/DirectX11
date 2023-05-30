@@ -460,6 +460,22 @@ PS_OUT PS_TITLE(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN3(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+	vector vcolor;
+	vcolor = g_MyTexture.Sample(LinearSampler, In.vTexUV);
+	if((vcolor.a >0.1f)&&(0.5f > vcolor.r * vcolor.g * vcolor.b))
+	{
+		vcolor.r += g_fColorR/255.f;
+		vcolor.g += g_fColorG/255.f;
+		vcolor.b += g_fColorB/255.f;
+		vcolor.a += g_fColorA/255.f;
+	}
+	
+	Out.vColor = vcolor;
+	return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -672,19 +688,19 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_COOLEFFECT();
 	}
 
-			pass UI_Sprite // 16
+			pass UI_MAIN3 // 16
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
-		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);        
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_Sprite();
+		PixelShader = compile ps_5_0 PS_MAIN3();
 	}
-	
+
 			pass UI_LinearDiscard // 17
 	{
 		SetRasterizerState(RS_Default);

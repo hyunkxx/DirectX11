@@ -7,6 +7,7 @@
 #include "Character.h"
 #include "Terrain.h"
 #include "PlayerState.h"
+#include "TerminalUI.h"
 
 CUI_MainScreen::CUI_MainScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -49,9 +50,6 @@ HRESULT CUI_MainScreen::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	Add_PlayerNum();
-	--m_HadPlayerNum;
-
 	return S_OK;
 }
 
@@ -60,11 +58,11 @@ void CUI_MainScreen::Start()
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	m_pPlayer = static_cast<CP_PlayerGirl*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
 	
 	SetPlayer();
 	SetHP();
 	SetStaticSkillCoolTime(); // 메인캐릭터로 전체 쿨타임 설정
-	
 	
 }
 
@@ -77,143 +75,36 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	{
 		m_pPlayerStateClass->AddPlayer();
 	}
-	if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP)
+	if (m_pTerminalUI->IsActive())
+		m_bRender = false;
+	else
+		m_bRender = true;
+	SetPlayer(); // 각 슬롯에 맞는 플레이어 색깔 설정, 스킬 텍스처 설정, 보유캐릭터
+	if (m_HadPlayerNum != m_HavePlayerNum)
 	{
-		if (m_bRender)
-			m_bRender = !m_bRender;
-		else
-			m_bRender = !m_bRender;
+		SetSlotRender();
+	}
+	// skillcool
+	// 0 = Q, 1 = E , 2 = R
+	SetCurCoolTime(); // 메인캐릭터로 현재 쿨타임 설정, 태그쿨
+	SetCurCoolRadian(); // 각 라디안 설정
+	T(TimeDelta);
+	E(TimeDelta);
+	Q(TimeDelta);
+	R(TimeDelta);
+	HP(TimeDelta);
+	UVWave(TimeDelta);
+	Font(TimeDelta);
+
+	if (QTEFull())
+	{
+		QTEAct(TimeDelta);
+	}
+	if (RRFull())
+	{
+		RRAct(TimeDelta);
 	}
 
-	SetPlayer(); // 각 슬롯에 맞는 플레이어 색깔 설정, 현재 보유한 캐릭터 수, 스킬 설정
-	 // skillcool
-	 // 0 = Q, 1 = E , 2 = R
-	 SetCurCoolTime(); // 메인캐릭터로 현재 쿨타임 설정 
-	 SetCurCoolRadian(); // 각 라디안 설정
-	 if (QTEFull())
-	 {
-		 QTEAct(TimeDelta);
-	 }
-	 if (RRFull())
-	 {
-		 RRAct(TimeDelta);
-	 }
-	 // 보유 캐릭터에 따라서 랜더onoff
-	 switch (m_HavePlayerNum)
-	 {
-	 case 1:
-	 {
-		// 무조건 현재 플레이어
-		 //플레이어스테이트에 현재플레이어 Set++() 만들기->플레이어 추가 확인용
-		 // SetCurSkill() -> 현재 플레이어에 따라 스킬 바꿔줘야함 ->> 일단 셋플레이어에서 바꿔줌 툴은 탭에서 텍스처 바꾸고 셋플레이어state에서 관리
-		 // QTEFull() -> 51, 52, 53번 체크는 QTE 다 차면 랜더,효과 추가해야함 -> x,y 사이즈 커지면서 알파 줄어듦 -> 알파 사라지면 사이즈,알파 초기화 -> QTECur가 0이 될 때 멈춤
-		 // SetRRFull() -> RR 다 차면 효과 추가해야함
-		 // 플레이어 랜더 쿨타임 추가해야함
-		 // 새로운 플레이어 추가되면 New Player 흘리고 -> 플레이어 사진만 랜더 상태에서 커졌다 원래 사이즈로 -> 평소 렌더상태
-	 }
-	 break;
-	 case 2:
-	 {
-		 RenderPlayer2();
-	 }
-	 break;
-	 case 3:
-	 {
-		 RenderPlayer2();
-		 RenderPlayer3();
-	 }
-	 break;
-	 }
-
-	 if (0.f != TCoolTime)
-	 {
-		 TCoolRender();
-		 _int Units = (_int)TCoolTime * 10 / 10;
-		 _int Tenths = (_int)(TCoolTime * 10.f) % 10;
-		 m_CutDescList[71]->iTexNum = 190 + Units;
-		 m_CutDescList[72]->iTexNum = 190 + Tenths;
-
-	 }
-	 if((0.1f > TCoolTime)&&(TCoolTime > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-	 {
-		 TCoolRenderOff();
-		 bTEnd = true;//엔드모션
-	 }
-	 if (true == bTEnd)
-	 {
-		 TEnd(TimeDelta); // bool값 반환 
-	 }
-
-	 //
-	 if (0.f != ECoolTime)
-	 {
-		 ECoolRender();
-		 _int Units = (_int)ECoolTime * 10 / 10;
-		 _int Tenths = (_int)(ECoolTime * 10.f) % 10;
-		 m_CutDescList[39]->iTexNum = 190 + Units;
-		 m_CutDescList[40]->iTexNum = 190 + Tenths;
-
-	 }
-	 if ((0.1f > ECoolTime) && (ECoolTime > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-	 {
-		 ECoolRenderOff();
-		 bEEnd = true;//엔드모션
-	 }
-	 if (true == bEEnd)
-	 {
-		 EEnd(TimeDelta); // bool값 반환 
-	 }
-
-	 //
-	 if (0.f != QCoolTime)
-	 {
-		 QCoolRender();
-		 _int Units = (_int)QCoolTime * 10 / 10;
-		 _int Tenths = (_int)(QCoolTime * 10.f) % 10;
-		 m_CutDescList[41]->iTexNum = 190 + Units;
-		 m_CutDescList[42]->iTexNum = 190 + Tenths;
-
-	 }
-	 if ((0.1f > QCoolTime) && (QCoolTime > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-	 {
-		 QCoolRenderOff();
-		 bQEnd = true;//엔드모션
-	 }
-	 if (true == bQEnd)
-	 {
-		 QEnd(TimeDelta); // bool값 반환 
-	 }
-
-	 //
-	 if (0.f != RCoolTime)
-	 {
-		 RCoolRender();
-		 _int Units = (_int)RCoolTime * 10 / 10;
-		 _int Tenths = (_int)(RCoolTime * 10.f) % 10;
-		 m_CutDescList[43]->iTexNum = 190 + Units;
-		 m_CutDescList[44]->iTexNum = 190 + Tenths;
-
-	 }
-	 if ((0.1f > RCoolTime) && (RCoolTime > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-	 {
-		 RCoolRenderOff();
-		 bREnd = true;//엔드모션
-	 }
-	 if (true == bREnd)
-	 {
-		 REnd(TimeDelta); // bool값 반환 
-	 }
-
-	 if (true == m_bHit)
-	 {
-		 HPBar(TimeDelta);
-
-	 }
-	 if (true == m_bRedStart)
-	 {
-		 HPRedBar(TimeDelta);
-	 }	
-	 UVWave(TimeDelta);
 }
 
 void CUI_MainScreen::LateTick(_double TimeDelta)
@@ -231,6 +122,16 @@ HRESULT CUI_MainScreen::Render()
 	{
 		if (FAILED(__super::Render()))
 			return E_FAIL;
+
+		for (auto& Desc : DamageList)
+		{
+			if (FAILED(__super::Render()))
+				return E_FAIL;
+			if (FAILED(Setup_ShaderResourcesDamage(&Desc)))
+				return E_FAIL;
+			m_pShader->Begin(0);
+			m_pVIBuffer->Render();
+		}
 
 		for (_uint i = 0; i < (_uint)m_CutDescList.size(); ++i)
 		{
@@ -348,39 +249,6 @@ void CUI_MainScreen::RenderGUI()
 {
 }
 
-void CUI_MainScreen::SerectUI()
-{
-	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-
-	CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("layer_UI"), TEXT("UI_Mouse"));
-	if (nullptr != pMouse)
-	{
-		_float3	fMousePos = dynamic_cast<CUI_Mouse*>(pMouse)->Get_MousePos();
-		_vector vMousePos = XMLoadFloat3(&fMousePos);
-
-		for (auto& pCutDesc : m_CutDescList)
-		{
-			_float Dist = 1.f;
-			// 버퍼의 각 꼭지점
-			_vector P0 = XMVectorSet(pCutDesc->fXCut - pCutDesc->fWidthCut * 0.5f, pCutDesc->fYCut + pCutDesc->fHeightCut * 0.5f, pCutDesc->fZCut, 1.f);
-			_vector P1 = XMVectorSet(pCutDesc->fXCut + pCutDesc->fWidthCut * 0.5f, pCutDesc->fYCut + pCutDesc->fHeightCut * 0.5f, pCutDesc->fZCut, 1.f);
-			_vector P2 = XMVectorSet(pCutDesc->fXCut + pCutDesc->fWidthCut * 0.5f, pCutDesc->fYCut - pCutDesc->fHeightCut * 0.5f, pCutDesc->fZCut, 1.f);
-			_vector P3 = XMVectorSet(pCutDesc->fXCut - pCutDesc->fWidthCut * 0.5f, pCutDesc->fYCut - pCutDesc->fHeightCut * 0.5f, pCutDesc->fZCut, 1.f);
-
-			// UI크기에 맞춰서 범위체크
-			if ((XMVectorGetX(P0) < XMVectorGetX(vMousePos)) && (XMVectorGetX(P1) > XMVectorGetX(vMousePos)))
-			{
-				if ((XMVectorGetY(P0) > XMVectorGetY(vMousePos)) && (XMVectorGetY(P2) < XMVectorGetY(vMousePos)))
-				{
-					pCutDesc->OnRect = true;
-					CGameObject* pMouse = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Mouse"));
-					dynamic_cast<CUI_Mouse*>(pMouse)->Set_Texchange(true);
-				}
-
-			}
-		}
-	}
-}
 void CUI_MainScreen::QTEAct(_double TimeDelta)
 {
 	// 38 사이즈 알파 100 * 100
@@ -447,6 +315,7 @@ void CUI_MainScreen::SetHP()
 
 void CUI_MainScreen::SetStaticSkillCoolTime()
 {
+	MaxTagCool = m_pPlayerStateClass->Get_PlayerState()->fMaxTagCooltime;
 	// 0 = Q, 1 = E , 2 = R
 	StaticHookCoolTime		 = m_pPlayerStateClass->Get_PlayerState()->fMaxToolCooltime[0]; // 후크
 	StaticLevitationCoolTime = m_pPlayerStateClass->Get_PlayerState()->fMaxToolCooltime[1]; // 체공
@@ -507,6 +376,7 @@ void CUI_MainScreen::SetStaticSkillCoolTime()
 
 void CUI_MainScreen::SetCurCoolTime()
 {
+
 	switch (m_pPlayerStateClass->Get_PlayerState()->iCurToolID)
 	{
 		case 0:
@@ -533,6 +403,7 @@ void CUI_MainScreen::SetCurCoolTime()
 	RRCurGauge = m_pPlayerStateClass->Get_MainCharacterState()->fCurGauge[1];
 	QTECurGauge = m_pPlayerStateClass->Get_PlayerState()->fCurQTEGauge;
 	SkillCurGauge = m_pPlayerStateClass->Get_MainCharacterState()->fCurGauge[0]; // E스킬게이지
+	CurTagCool = m_pPlayerStateClass->Get_PlayerState()->fCurTagCooltime; //태그쿨
 }
 void CUI_MainScreen::SetCurCoolRadian()
 {
@@ -563,11 +434,13 @@ void CUI_MainScreen::SetCurCoolRadian()
 	//QTERadian += 0.001f; // 테스트
 	SkillRadian = SkillCurGauge / SkillMaxGauge;
 	//SkillRadian += 0.001f; // 테스트
+	TagRadian = CurTagCool / MaxTagCool;
 }
 
 void CUI_MainScreen::SetPlayer()
 {
 	m_HavePlayerNum = m_pPlayerStateClass->Get_PlayerState()->iCharCount;
+
 	switch (m_pPlayerStateClass->Get_MainCharacterState()->eElement)
 	{
 	case ELEMENT::ELMT_SPECTRA:
@@ -770,8 +643,296 @@ void CUI_MainScreen::SetPlayer()
 		break;
 	}
 }
+void CUI_MainScreen::SetSlotRender()
+{
+switch (m_HavePlayerNum)
+{
+case 1:
+{
+	// 플레이어 랜더 쿨타임 추가해야함
+	// 새로운 플레이어 추가되면 New Player 흘리고 -> 플레이어 사진만 랜더 상태에서 커졌다 원래 사이즈로 -> 평소 렌더상태
+}
+break;
+case 2:
+{
+	RenderPlayer2();
+}
+break;
+case 3:
+{
+	RenderPlayer2();
+	RenderPlayer3();
+}
+break;
+}
+}
+
+void CUI_MainScreen::Font(_double TimeDelta)
+{
+	if (0 < (_int)DamageList.size())
+	{
+		list<DAMAGEDESC>::iterator iter = DamageList.begin();
+		for (iter; iter != DamageList.end();)
+		{
+			if (-255.f > iter->Color.w)
+			{
+				iter = DamageList.erase(iter);
+			}
+			else
+			{
+				++iter;
+			}
+		}
+	}
+
+	for (auto& Desc : DamageList)
+	{
+		Desc.Color.w -= (_float)TimeDelta * 150.f;
+
+		if (-20.f < Desc.Color.w)
+		{
+			Desc.Size.x += (_float)TimeDelta * 200.f;
+			Desc.Size.y += (_float)TimeDelta * 200.f;
+		}
+		if ((-20.f > Desc.Color.w) && (-30.f > Desc.Color.w))
+		{
+			if (30.f >= Desc.Size.x)
+			{
+				Desc.Size.x = 30.f;
+				Desc.Size.y = 30.f;
+			}
+			else
+			{
+				Desc.Size.x -= (_float)TimeDelta * 400.f;
+				Desc.Size.y -= (_float)TimeDelta * 400.f;
+			}
+		}
 
 
+		if (-30.f < Desc.Color.w)
+		{
+			Acc += (_float)TimeDelta *1000.f;
+			Desc.Pos.x += sinf(XMConvertToRadians(Acc) + 2.f);
+			Desc.Pos.y += sinf(XMConvertToRadians(Acc));
+		}
+		if (-100.f < Desc.Color.w)
+		{
+
+			Desc.Pos.y += (_float)TimeDelta * 40.f;
+		}
+		if (-180.f >= Desc.Color.w)
+		{
+			Desc.Pos.y += (_float)TimeDelta * 100.f;
+		}
+
+		XMStoreFloat4x4(&(Desc.WorldMat), XMMatrixScaling(Desc.Size.x, Desc.Size.y, 0.f)
+			* XMMatrixTranslation(Desc.Pos.x, Desc.Pos.y, 0.f));
+	}
+
+}
+
+void	CUI_MainScreen::Damage(_float Damage)
+{
+	_int iDamage = (_int)Damage;
+	_int Damage1000, Damage100, Damage10, Damage1;
+	Damage1000 = iDamage / 1000;
+	iDamage = iDamage % 1000;
+	Damage100 = iDamage / 100;
+	iDamage = iDamage % 100;
+	Damage10 = iDamage / 10;
+	Damage1 = iDamage % 10;
+
+	if (Damage < -40)
+	{
+		fFontColor = _float4{ 255.f, -255.f, -255.f,0.f };
+	}
+	_float3 PlayerPos;
+	XMStoreFloat3(&PlayerPos, m_pPlayer->Get_Position());
+	
+	if (0 != Damage1000)
+	{
+		DAMAGEDESC Desc1000;
+		Desc1000.Pos = PlayerPos;
+		Desc1000.Size = _float2{ 30.f, 30.f };
+		Desc1000.TextureNum = -Damage1000 + 33;
+		Desc1000.Color = fFontColor;
+		DamageList.push_back(Desc1000);
+
+		DAMAGEDESC Desc100;
+		Desc100.Pos = _float3{ Desc1000.Pos.x + (15.f) , Desc1000.Pos.y, 0.f };
+		Desc100.Size = _float2{ 30.f, 30.f };
+		Desc100.TextureNum = -Damage100 + 33;
+		Desc100.Color = fFontColor;
+		DamageList.push_back(Desc100);
+
+		DAMAGEDESC Desc10;
+		Desc10.Pos = _float3{ Desc1000.Pos.x + (30.f) , Desc1000.Pos.y, 0.f };
+		Desc10.Size = _float2{ 30.f, 30.f };
+		Desc10.TextureNum = -Damage10 + 33;
+		Desc10.Color = fFontColor;
+		DamageList.push_back(Desc10);
+
+		DAMAGEDESC Desc1;
+		Desc1.Pos = _float3{ Desc1000.Pos.x + (45.f), Desc1000.Pos.y, 0.f };
+		Desc1.Size = _float2{ 30.f, 30.f };
+		Desc1.TextureNum = -Damage1 + 33;
+		Desc1.Color = fFontColor;
+		DamageList.push_back(Desc1);
+		
+	}
+	else if ((0 == Damage1000) && (0 != Damage100))
+	{
+
+		DAMAGEDESC Desc100;
+		Desc100.Pos = PlayerPos;
+		Desc100.Size = _float2{ 30.f, 30.f };
+		Desc100.TextureNum = -Damage100 + 33;
+		Desc100.Color = fFontColor;
+		DamageList.push_back(Desc100);
+
+		DAMAGEDESC Desc10;
+		Desc10.Pos = _float3{ Desc100.Pos.x + (15.f) , Desc100.Pos.y ,0.f };
+		Desc10.Size = _float2{ 30.f, 30.f };
+		Desc10.TextureNum = -Damage10 + 33;
+		Desc10.Color = fFontColor;
+		DamageList.push_back(Desc10);
+
+		DAMAGEDESC Desc1;
+		Desc1.Pos = _float3{ Desc100.Pos.x + (30.f), Desc100.Pos.y, 0.f };
+		Desc1.Size = _float2{ 30.f, 30.f };
+		Desc1.TextureNum = -Damage1 + 33;
+		Desc1.Color = fFontColor;
+		DamageList.push_back(Desc1);
+
+	}
+	else if ((0 == Damage1000) && (0 == Damage100) && (0 != Damage10))
+	{
+		DAMAGEDESC Desc10;
+		Desc10.Pos = PlayerPos;
+		Desc10.Size = _float2{ 30.f, 30.f };
+		Desc10.TextureNum = -Damage10 + 33;
+		Desc10.Color = fFontColor;
+		DamageList.push_back(Desc10);
+
+		DAMAGEDESC Desc1;
+		Desc1.Pos = _float3{ Desc10.Pos.x + (15.f), Desc10.Pos.y, 0.f };
+		Desc1.Size = _float2{ 30.f, 30.f };
+		Desc1.TextureNum = -Damage1 + 33;
+		Desc1.Color = fFontColor;
+		DamageList.push_back(Desc1);
+
+	}
+	else
+	{
+		DAMAGEDESC Desc1;
+		Desc1.Pos = PlayerPos;
+		Desc1.Size = _float2{ 30.f, 30.f };
+		Desc1.TextureNum = -Damage1 + 33;
+		Desc1.Color = fFontColor;
+		DamageList.push_back(Desc1);
+	}
+
+}
+
+void CUI_MainScreen::T(_double TimeDelta)
+{
+	if (0.f != TCoolTime)
+	{
+		TCoolRender();
+		_int Units = (_int)TCoolTime * 10 / 10;
+		_int Tenths = (_int)(TCoolTime * 10.f) % 10;
+		m_CutDescList[71]->iTexNum = 190 + Units;
+		m_CutDescList[72]->iTexNum = 190 + Tenths;
+
+	}
+	if ((0.1f > TCoolTime) && (TCoolTime > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
+	{
+		TCoolRenderOff();
+		bTEnd = true;//엔드모션
+	}
+	if (true == bTEnd)
+	{
+		TEnd(TimeDelta); // bool값 반환 
+	}
+}
+
+void CUI_MainScreen::E(_double TimeDelta)
+{
+	if (0.f != ECoolTime)
+	{
+		ECoolRender();
+		_int Units = (_int)ECoolTime * 10 / 10;
+		_int Tenths = (_int)(ECoolTime * 10.f) % 10;
+		m_CutDescList[39]->iTexNum = 190 + Units;
+		m_CutDescList[40]->iTexNum = 190 + Tenths;
+
+	}
+	if ((0.1f > ECoolTime) && (ECoolTime > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
+	{
+		ECoolRenderOff();
+		bEEnd = true;//엔드모션
+	}
+	if (true == bEEnd)
+	{
+		EEnd(TimeDelta); // bool값 반환 
+	}
+}
+
+void CUI_MainScreen::Q(_double TimeDelta)
+{
+	if (0.f != QCoolTime)
+	{
+		QCoolRender();
+		_int Units = (_int)QCoolTime * 10 / 10;
+		_int Tenths = (_int)(QCoolTime * 10.f) % 10;
+		m_CutDescList[41]->iTexNum = 190 + Units;
+		m_CutDescList[42]->iTexNum = 190 + Tenths;
+
+	}
+	if ((0.1f > QCoolTime) && (QCoolTime > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
+	{
+		QCoolRenderOff();
+		bQEnd = true;//엔드모션
+	}
+	if (true == bQEnd)
+	{
+		QEnd(TimeDelta); // bool값 반환 
+	}
+}
+void CUI_MainScreen::R(_double TimeDelta)
+{
+	if (0.f != RCoolTime)
+	{
+		RCoolRender();
+		_int Units = (_int)RCoolTime * 10 / 10;
+		_int Tenths = (_int)(RCoolTime * 10.f) % 10;
+		m_CutDescList[43]->iTexNum = 190 + Units;
+		m_CutDescList[44]->iTexNum = 190 + Tenths;
+
+	}
+	if ((0.1f > RCoolTime) && (RCoolTime > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
+	{
+		RCoolRenderOff();
+		bREnd = true;//엔드모션
+	}
+	if (true == bREnd)
+	{
+		REnd(TimeDelta); // bool값 반환 
+	}
+}
+
+void CUI_MainScreen::HP(_double TimeDelta)
+{
+	if (true == m_bHit)
+	{
+		HPBar(TimeDelta);
+
+	}
+	if (true == m_bRedStart)
+	{
+		HPRedBar(TimeDelta);
+	}
+}
 
 HRESULT CUI_MainScreen::Add_Components()
 {
@@ -945,57 +1106,12 @@ void CUI_MainScreen::AlphaP(CUTRECT* pDesc, _double TimeDelta)
 	pDesc->fColorACut += pDesc->fSpeedAlpha * (_float)TimeDelta;
 }
 
-void CUI_MainScreen::CountDownCool(_double TimeDelta)
-{
-
-	if (m_iPrePlayer == eKeyType::DANSUN )
-	{
-		m_CutDescList[45]->iTexNum = 190;
-		if (Time >= 1.f - m_CutDescList[13]->TimeAcc)
-		{
-			Time -= 0.1f;
-			m_CutDescList[46]->iTexNum -= 1;
-			if (190 >= m_CutDescList[46]->iTexNum)
-			{
-				m_CutDescList[46]->iTexNum = 190;
-			}
-		}
-	}
-	if (m_iPrePlayer == eKeyType::YANGYANG)
-	{
-		m_CutDescList[47]->iTexNum = 190;
-		if (Time >= 1.f - m_CutDescList[14]->TimeAcc)
-		{
-			Time -= 0.1f;
-			m_CutDescList[48]->iTexNum -= 1;
-			if (190 >= m_CutDescList[48]->iTexNum)
-			{
-				m_CutDescList[48]->iTexNum = 190;
-			}
-		}
-	}
-	if (m_iPrePlayer == eKeyType::RED)
-	{
-		m_CutDescList[49]->iTexNum = 190;
-		if (Time >= 1.f - m_CutDescList[15]->TimeAcc)
-		{
-			Time -= 0.1f;
-			m_CutDescList[50]->iTexNum -= 1;
-			if (190 >= m_CutDescList[50]->iTexNum)
-			{
-				m_CutDescList[50]->iTexNum = 190;
-			}
-		}
-	}
-
-}
-
 
 
 void CUI_MainScreen::CoolTimeEnd(_double TimeDelta)
 {
 
-	CUTRECT* pDesc = nullptr;
+	CUTRECT* pDesc = nullptr;/*
 	if (m_iPrePlayer == eKeyType::DANSUN )
 	{
 		pDesc = m_CutDescList[0];
@@ -1008,7 +1124,7 @@ void CUI_MainScreen::CoolTimeEnd(_double TimeDelta)
 	if (m_iPrePlayer == eKeyType::RED)
 	{
 		pDesc = m_CutDescList[2];
-	}
+	}*/
 
 	pDesc->TimeAcc += (_float)TimeDelta;
 
@@ -1223,69 +1339,6 @@ _bool CUI_MainScreen::REnd(_double TimeDelta)
 	return false;
 }
 
-void	CUI_MainScreen::RenderCurrentPlayer1()
-{
-	m_CutDescList[0]->bRender = true;
-	m_CutDescList[16]->bRender = true;
-	
-	m_CutDescList[54]->bRender = true;
-	m_CutDescList[58]->bRender = true;
-
-	m_CutDescList[51]->bRender = false;
-	m_CutDescList[10]->bRender = false;
-	m_CutDescList[13]->bRender = false;
-	m_CutDescList[45]->bRender = false;
-	m_CutDescList[46]->bRender = false;
-	m_CutDescList[66]->bRender = false;
-
-	//스킬
-	m_CutDescList[5]->iTexNum = 124;
-	m_CutDescList[6]->iTexNum = 158;
-	m_CutDescList[7]->iTexNum = 125;
-
-}
-
-void CUI_MainScreen::RenderCurrentPlayer2()
-{
-	m_CutDescList[1]->bRender = true;
-	m_CutDescList[17]->bRender = true;
-	m_CutDescList[55]->bRender = true;
-	m_CutDescList[59]->bRender = true;
-
-	m_CutDescList[52]->bRender = false;
-	m_CutDescList[11]->bRender = false;
-	m_CutDescList[14]->bRender = false;
-	m_CutDescList[47]->bRender = false;
-	m_CutDescList[48]->bRender = false;
-	m_CutDescList[65]->bRender = false;
-
-	//스킬
-	m_CutDescList[5]->iTexNum = 78;
-	m_CutDescList[6]->iTexNum = 79;
-	m_CutDescList[7]->iTexNum = 80;
-}
-
-void CUI_MainScreen::RenderCurrentPlayer3()
-{
-	m_CutDescList[2]->bRender = true;
-	m_CutDescList[18]->bRender = true;
-	m_CutDescList[56]->bRender = true;
-	m_CutDescList[60]->bRender = true;
-
-	m_CutDescList[53]->bRender = false;
-	m_CutDescList[12]->bRender = false;
-	m_CutDescList[15]->bRender = false;
-	m_CutDescList[49]->bRender = false;
-	m_CutDescList[50]->bRender = false;
-	m_CutDescList[64]->bRender = false;
-
-
-	//스킬
-	m_CutDescList[5]->iTexNum = 82;
-	m_CutDescList[6]->iTexNum = 83;
-	m_CutDescList[7]->iTexNum = 84;
-}
-
 
 void CUI_MainScreen::RenderPlayer1()
 {
@@ -1336,110 +1389,6 @@ void CUI_MainScreen::RenderPlayer3()
 	m_CutDescList[64]->bRender = false;
 }
 
-
-void CUI_MainScreen::RenderOffPlayer1()
-{
-	m_CutDescList[0]->bRender = false;
-	m_CutDescList[10]->bRender = false;
-	m_CutDescList[13]->bRender = false;
-	m_CutDescList[16]->bRender = false;
-	m_CutDescList[45]->bRender = false;
-	m_CutDescList[46]->bRender = false;
-	m_CutDescList[51]->bRender = false;
-	m_CutDescList[54]->bRender = false;
-	m_CutDescList[58]->bRender = false;
-	m_CutDescList[66]->bRender = false;
-}
-
-void CUI_MainScreen::RenderOffPlayer2()
-{
-	m_CutDescList[1]->bRender = false;
-	m_CutDescList[11]->bRender = false;
-	m_CutDescList[14]->bRender = false;
-	m_CutDescList[17]->bRender = false;
-	m_CutDescList[47]->bRender = false;
-	m_CutDescList[48]->bRender = false;
-	m_CutDescList[52]->bRender = false;
-	m_CutDescList[55]->bRender = false;
-	m_CutDescList[59]->bRender = false;
-	m_CutDescList[65]->bRender = false;
-}
-
-void CUI_MainScreen::RenderOffPlayer3()
-{
-	m_CutDescList[2]->bRender = false;
-	m_CutDescList[12]->bRender = false;
-	m_CutDescList[15]->bRender = false;
-	m_CutDescList[18]->bRender = false;
-	m_CutDescList[49]->bRender = false;
-	m_CutDescList[50]->bRender = false;
-	m_CutDescList[53]->bRender = false;
-	m_CutDescList[56]->bRender = false;
-	m_CutDescList[60]->bRender = false;
-	m_CutDescList[64]->bRender = false;
-}
-
-void CUI_MainScreen::AddPlayerRender()
-{
-	if (1 == m_HavePlayerNum)
-	{
-		RenderCurrentPlayer1();
-		RenderOffPlayer2();
-		RenderOffPlayer3();
-	}
-	else if (2 == m_HavePlayerNum)
-	{
-		switch (m_iCurrentPlayer)
-		{
-		case Client::CUI_MainScreen::eKeyType::YANGYANG:
-		{
-			RenderCurrentPlayer1();
-			RenderPlayer2();
-			RenderOffPlayer3();
-		}
-		break;
-		case Client::CUI_MainScreen::eKeyType::DANSUN:
-		{
-			RenderCurrentPlayer2();
-			RenderPlayer1();
-			RenderOffPlayer3();
-		}
-		break;
-		default:
-			break;
-		}
-
-	}
-	else
-	{
-		switch (m_iCurrentPlayer)
-		{
-		case Client::CUI_MainScreen::eKeyType::YANGYANG:
-		{
-			RenderCurrentPlayer1();
-			RenderPlayer2();
-			RenderPlayer3();
-		}
-		break;
-		case Client::CUI_MainScreen::eKeyType::DANSUN:
-		{
-			RenderCurrentPlayer2();
-			RenderPlayer1();
-			RenderPlayer3();
-		}
-		break;
-		case Client::CUI_MainScreen::eKeyType::RED:
-		{
-			RenderCurrentPlayer3();
-			RenderPlayer1();
-			RenderPlayer2();
-		}
-		break;
-		default:
-			break;
-		}
-	}
-}
 
 
 void CUI_MainScreen::Load()
@@ -1506,6 +1455,7 @@ void CUI_MainScreen::Load()
 
 		if (nullptr != Desc)
 		{
+			Desc->ColorCut.w = Desc->fColorACut;
 			m_CutDescList.push_back(Desc);
 
 		}
@@ -1656,6 +1606,33 @@ void CUI_MainScreen::RCoolRenderOff()
 	m_CutDescList[35]->bRender = false;
 }
 
+HRESULT CUI_MainScreen::Setup_ShaderResourcesDamage(DAMAGEDESC* pDamage)
+{
+	if (nullptr == m_pShader)
+		return E_FAIL;
+
+	if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture", pDamage->TextureNum)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(pDamage->WorldMat))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(pDamage->Color.x), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(pDamage->Color.y), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(pDamage->Color.z), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(pDamage->Color.w), sizeof(_float))))
+		return E_FAIL;
+
+	return S_OK;
+}
 
 HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 {

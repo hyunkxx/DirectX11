@@ -62,9 +62,6 @@ void CUI_TapT::Tick(_double TimeDelta)
 			Add_Alpha(0, 16, TimeDelta);
 			Start_Move(4, 10, TimeDelta);
 
-
-
-
 			//마우스커서
 			SerectUI();
 			for (_uint i = 4; i < 10; ++i)

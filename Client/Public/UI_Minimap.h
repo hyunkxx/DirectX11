@@ -12,6 +12,7 @@ END
 
 BEGIN(Client)
 class CP_PlayerGirl;
+class CTerminalUI;
 class CUI_Minimap final : public CGameObject
 {
 public:
@@ -112,27 +113,13 @@ private:
 	_float			m_fWidthMiniMap = { 190.f };
 	_float			m_fHeightMiniMap = { 190.f };
 	_float4x4		m_WorldMatrixMiniMap;
-
-	_float			m_fXFrame = { -540.f };
-	_float			m_fYFrame = { 260.f };
-	_float			m_fZFrame = { 0.f };
-	_float			m_fWidthFrame = { 200.f };
-	_float			m_fHeightFrame = { 200.f };
-	_float4x4		m_WorldMatrixFrame;
-	_int			m_FramePass = { 1 };
 	_float4x4		m_ViewMatrix, m_ProjMatrix;
 
 	_float4 ColorMiniMap;
-	_float m_fColorAMiniMap = { 0.f };
+	_float m_fColorAMiniMap = { 30.f };
 	_float m_fColorRMiniMap = { 0.f };
 	_float m_fColorGMiniMap = { 0.f };
 	_float m_fColorBMiniMap = { 0.f };
-
-	_float4 ColorFrame;
-	_float m_fColorAFrame = { 0.f };
-	_float m_fColorRFrame = { 244.f };
-	_float m_fColorGFrame = { 244.f };
-	_float m_fColorBFrame = { 234.f };
 
 	//디폴트 아이콘(플레이어표시,시야) 
 	_float2			m_DefaultIconLU[2] = { { 0.f,0.f } };
@@ -159,11 +146,11 @@ private:
 
 private:
 	CP_PlayerGirl*	m_pPlayer = { nullptr };
+	CTerminalUI*	m_pTerminalUI = { nullptr };
+
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
-
 	CTexture*		m_pTexIcon = { nullptr };
-	CTexture*		m_pTexMiniMap = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferMiniMap = { nullptr };
 
 	CTexture*		m_pTexDefaultIcon = { nullptr };

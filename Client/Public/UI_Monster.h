@@ -98,7 +98,6 @@ public:
 	void Set_MonHP(_float HP) { m_HP = m_CurrentHp = m_RedHP = HP; }
 	void Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage); }
 	void Set_CharacterPos(_fvector vCharacterPos) { m_vCharacterPos = vCharacterPos; }
-	void Set_FontPos(_float3 vFontPos) { FontPos = vFontPos; }
 	void Set_ElementType(ELEMENT ElementType) { ElementType = ElementType; }
 	void Set_Render(_bool brender) { m_bRender = brender; }
 private:
@@ -107,7 +106,7 @@ private:
 	void CommonHP();
 	void CommonLevel();
 	void DecideRender();
-	void Font(_float TimeDelta);
+	void Font(_double TimeDelta);
 	void FontColor();
 	void Damage(_float Damage);
 	void Load();
@@ -139,7 +138,6 @@ private:
 	_vector m_vCharacterPos = { 0.f, 0.f, 0.f, 1.f };
 	_int    m_HitCount = { 0 };
 	_float Acc = { 0.f };
-	_float3 FontPos = { 0.f, 0.f, 0.f };
 	_float4 fFontColor = { 0.f, 0.f, 0.f, 0.f };
 
 private:

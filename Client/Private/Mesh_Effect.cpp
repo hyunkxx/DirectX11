@@ -60,7 +60,7 @@ void CMesh_Effect::Tick(_double TimeDelta)
 	}
 	
 
-	m_fEffectAcc += TimeDelta;
+	m_fEffectAcc += (_float)TimeDelta;
 
 	if (m_fEffectAcc >= START_DISTIME && m_fEffectAcc <= END_DISTIME)
 	{
