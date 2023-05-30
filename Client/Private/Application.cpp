@@ -74,7 +74,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성
@@ -1370,6 +1370,17 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/Player_Yangyang/Burst/")))
 			return E_FAIL;
 
+		//Skill_01
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Skill_01_01.bin"),
+			"../../Resource/Effect/Player_Yangyang/Burst/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Skill_01_02.bin"),
+			"../../Resource/Effect/Player_Yangyang/Burst/")))
+			return E_FAIL;
+		
 		// 회피 이펙트
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
 			TEXT("../../Resource/Effect/Comon/P_Evasion_Effect_Y.bin"),
@@ -1378,6 +1389,44 @@ HRESULT CApplication::Ready_Static_Effect()
 
 	}
 	
+	//Nvzhu 기본 공격에 따른 히트 이펙트
+	for (_int i = 0; 30 > i; i++)
+	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/Hit_Effect_Y_01.bin"),
+			"../../Resource/Effect/Player_Yangyang/Hit_Effect/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/Hit_Effect_Y_02.bin"),
+			"../../Resource/Effect/Player_Yangyang/Hit_Effect/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/Hit_Effect_Y_3.bin"),
+			"../../Resource/Effect/Player_Yangyang/Hit_Effect/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/Hit_Effect_Y_4_1.bin"),
+			"../../Resource/Effect/Player_Yangyang/Hit_Effect/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/Hit_Effect_Y_4_2.bin"),
+			"../../Resource/Effect/Player_Yangyang/Hit_Effect/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/Hit_Effect_Y_5.bin"),
+			"../../Resource/Effect/Player_Yangyang/Hit_Effect/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/Hit_Effect_Y_6.bin"),
+			"../../Resource/Effect/Player_Yangyang/Hit_Effect/")))
+			return E_FAIL;
+	}
 #pragma endregion
 
 
