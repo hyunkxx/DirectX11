@@ -74,7 +74,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
+	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성
@@ -1380,6 +1380,11 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Skill_01_02.bin"),
 			"../../Resource/Effect/Player_Yangyang/Burst/")))
 			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Skill_02.bin"),
+			"../../Resource/Effect/Player_Yangyang/Attack/")))
+			return E_FAIL;
 		
 		// 회피 이펙트
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
@@ -1493,6 +1498,18 @@ HRESULT CApplication::Ready_Static_Effect()
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
 			TEXT("../../Resource/Effect/Comon/Parry_Effect.bin"),
 			"../../Resource/Effect/Comon/Parry_Effect/")))
+			return E_FAIL;
+
+
+		// 아이템 획득 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Get_Item_Effect_01.bin"),
+			"../../Resource/Effect/Comon/Item/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Get_Item_Effect_02.bin"),
+			"../../Resource/Effect/Comon/Item/")))
 			return E_FAIL;
 
 	}
