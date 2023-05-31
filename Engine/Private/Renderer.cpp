@@ -1477,7 +1477,7 @@ void CRenderer::FinalExtraction()
 	if (FAILED(m_pShader_Extraction->SetRawValue("g_vCamPosition", &pGameInstance->Get_CamPosition(), sizeof(_float4))))
 		return;
 
-	_float2 fFog = { 100.f, 1000.f };
+	_float2 fFog = { 50.f, 500.f };
 	if (FAILED(m_pShader_Extraction->SetRawValue("g_fFogStart", &fFog.x, sizeof(_float))))
 		return;
 	if (FAILED(m_pShader_Extraction->SetRawValue("g_fFogEnd", &fFog.y, sizeof(_float))))

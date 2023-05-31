@@ -157,7 +157,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 	{
 		if (vShaderInfo.r == 1.f)
 		{
-			Out.vShade = g_vLightDiffuse * fDot * (saturate(vShade + (float4(0.8f, 0.8f, 0.8f, 0.8f)) * vSSAO.r));
+			Out.vShade = g_vLightDiffuse * fDot * (saturate(vShade + (float4(0.4f, 0.4f, 0.4f, 0.4f)) * vSSAO.r));
 			Out.vShade.a = 1.f;
 		}
 		else
@@ -224,7 +224,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 	{
 		if (vShaderInfo.r == 1.f)
 		{
-			Out.vShade = g_vLightDiffuse * fDot * (saturate(vShade + (float4(0.8f, 0.8f, 0.8f, 0.8f))));
+			Out.vShade = g_vLightDiffuse * fDot * (saturate(vShade + (float4(0.4f, 0.4f, 0.4f, 0.4f))));
 			Out.vShade.a = 1.f;
 		}
 		else
@@ -341,7 +341,7 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 		else if (vShaderInfo.r == 0.1f)//스카이박스
 			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.35f));
 		else
-			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.8f));
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 
 		Out.vColor.rgb = vFinalColor.rgb * (1.f - vGlowColor.a) + +vGlowColor.rgb * vGlowColor.a;
 		Out.vColor.a = (vFinalColor).a;
@@ -380,12 +380,12 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 		}
 		else
 		{
-			if (vShaderInfo.r == 1.f)//식생
+			if (vShaderInfo.r == 1.f)
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.8f));
 			else if (vShaderInfo.r == 0.1f)//스카이박스
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.35f));
 			else
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.8f));
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 
 			Out.vColor.rgb = vFinalColor.rgb * vShadow.r  * (1.f - vGlowColor.a) + +vGlowColor.rgb * vGlowColor.a;
 			Out.vColor.a = (vFinalColor * vShadow.r).a;
@@ -406,7 +406,7 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 			else if (vShaderInfo.r == 0.1f)//스카이박스
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.35f));
 			else
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.8f));
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 
 			Out.vColor = vFinalColor * vShadow.r + float4(vGlowColor.rgb, 0.f);
 		}

@@ -136,7 +136,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 	float fGlowValue = vMtrlDiffuse.r;
 
 	// NormalTex
-	if (0.0f >= In.vModelOption_NEG.x)
+	if (0.f <  In.vModelOption_NEG.x)
 	{
 		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 		float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
@@ -166,7 +166,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.6f, 1.f);
 	Out.vOutNormal = float4(Out.vNormal.xyz, 1.f);
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
-	Out.vShaderInfo = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vShaderInfo = float4(1.f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -180,7 +180,7 @@ PS_OUT	PS_MAIN_SELFSHADOW(PS_IN In)
 	float fGlowValue = vMtrlDiffuse.r;
 
 	// NormalTex
-	if (0.0f >= In.vModelOption_NEG.x)
+	if (0.f <  In.vModelOption_NEG.x)
 	{
 		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 		float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
@@ -241,7 +241,7 @@ PS_OUT	PS_MAIN_SUB_EDITIONCOLOR_MASK(PS_IN In)
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
-	Out.vShaderInfo = float4(1.f, 0.f, 0.f, 0.f);
+	Out.vShaderInfo = float4(0.4f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -256,7 +256,7 @@ PS_OUT PS_MAIN_SUB_DIFFUSE_MASK(PS_IN In)
 	vector			vMaskTexture = g_MaskTexture.Sample(LinearSampler, In.vTexUV);
 	vector			vSubDiffuse = g_SubDiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
-	if (0.0f >= In.vModelOption_NEG.x)
+	if (0.f < In.vModelOption_NEG.x)
 	{
 		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 		float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
@@ -277,7 +277,7 @@ PS_OUT PS_MAIN_SUB_DIFFUSE_MASK(PS_IN In)
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
-	Out.vShaderInfo = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vShaderInfo = float4(1.f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
