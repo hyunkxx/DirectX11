@@ -99,7 +99,7 @@ HRESULT CMapObject::Render()
 	switch (m_EditionDesc.iTypeID)
 	{
 	case CMapObject::MAPOBJECT_TYPEID::ID_TREE:
-		if (FAILED(Render_Default()))
+		if (FAILED(Render_Default_SelfShadow()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_ROCK:
@@ -107,15 +107,15 @@ HRESULT CMapObject::Render()
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_FLOOR:
-		if (FAILED(Render_Default()))
+		if (FAILED(Render_Default_SelfShadow()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_STAIRS:
-		if (FAILED(Render_Default()))
+		if (FAILED(Render_Default_SelfShadow()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS:
-		if (FAILED(Render_Default()))
+		if (FAILED(Render_Default_SelfShadow()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK:
@@ -125,28 +125,28 @@ HRESULT CMapObject::Render()
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_VIN:
-		if (FAILED(Render_Default()))
+		if (FAILED(Render_Default_SelfShadow()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_VEG:
-		if (FAILED(Render_Default()))
+		if (FAILED(Render_Default_SelfShadow()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_SHR:
-		if (FAILED(Render_Default()))
+		if (FAILED(Render_Default_SelfShadow()))
 			return E_FAIL;
 		break;
 
 	case CMapObject::MAPOBJECT_TYPEID::ID_STRUCTURE:
-		if (FAILED(Render_Default()))
+		if (FAILED(Render_Default_SelfShadow()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_PIL:
-		if (FAILED(Render_Default()))
+		if (FAILED(Render_Default_SelfShadow()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_STATUE:
-		if (FAILED(Render_Default()))
+		if (FAILED(Render_Default_SelfShadow()))
 			return E_FAIL;
 		break;
 
