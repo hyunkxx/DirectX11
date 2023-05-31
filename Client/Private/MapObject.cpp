@@ -119,6 +119,8 @@ HRESULT CMapObject::Render()
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK:
+		/*if (FAILED(Render_Default()))
+			return E_FAIL;*/
 		if (FAILED(Render_SubEditionColor_Mask()))
 			return E_FAIL;
 		break;
