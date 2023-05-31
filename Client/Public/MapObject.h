@@ -37,12 +37,12 @@ public:
 	virtual HRESULT RenderShadow() override;
 
 public:
-	HRESULT Render_EditionColor();
 	HRESULT Render_Rock();
 
 	HRESULT Render_SubEditionColor_Mask();
 
 	HRESULT Render_Default();
+	HRESULT Render_Default_SelfShadow();
 
 public:
 	void SetUp_LevelFilePath(_uint iLevelID, const _tchar* pFilePath, _Out_ _tchar& szResultFilePath);
@@ -63,6 +63,8 @@ private:
 	SMAP_OBJECT_EDITION_DESC	m_EditionDesc = {};
 
 	_uint						m_iShaderPassID = { 0 };
+
+	_bool						m_IsUse_EdtionColor = { false };
 
 private:
 	CRenderer*					m_pRendererCom = { nullptr };

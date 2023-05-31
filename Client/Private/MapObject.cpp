@@ -99,7 +99,7 @@ HRESULT CMapObject::Render()
 	switch (m_EditionDesc.iTypeID)
 	{
 	case CMapObject::MAPOBJECT_TYPEID::ID_TREE:
-		if (FAILED(Render_EditionColor()))
+		if (FAILED(Render_Default()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_ROCK:
@@ -125,15 +125,15 @@ HRESULT CMapObject::Render()
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_VIN:
-		if (FAILED(Render_EditionColor()))
+		if (FAILED(Render_Default()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_VEG:
-		if (FAILED(Render_EditionColor()))
+		if (FAILED(Render_Default()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_SHR:
-		if (FAILED(Render_EditionColor()))
+		if (FAILED(Render_Default()))
 			return E_FAIL;
 		break;
 
@@ -172,48 +172,6 @@ HRESULT CMapObject::RenderShadow()
 	return S_OK;
 }
 
-HRESULT CMapObject::Render_EditionColor()
-{
-	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (_uint i = 0; i < iNumMeshes; ++i)
-	{
-		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
-			return E_FAIL;
-
-		// Model 중 NormalTextrue 가 없는 Model 은 m_IsDistinction_NormalTex 가 true 가 되어서 노말맵 을 적용시키지 않음.
-		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsDistinction_NormalTex)))
-			return E_FAIL;
-
-		if (true == m_EditionDesc.UseEditionColor && i == m_EditionDesc.iEditionColor_MeshNum)
-		{
-			if (true == m_IsDistinction_NormalTex)
-			{
-				m_iShaderPassID = 3;
-				m_IsDistinction_NormalTex = false;
-			}
-			else
-				m_iShaderPassID = 4;
-		}
-		else
-		{
-			if (true == m_IsDistinction_NormalTex)
-			{
-				m_iShaderPassID = 0;
-				m_IsDistinction_NormalTex = false;
-			}
-			else
-				m_iShaderPassID = 1;
-		}
-
-		m_pShaderCom->Begin(m_iShaderPassID);
-
-		m_pModelCom->Render(i);
-	}
-
-	return S_OK;
-}
-
 HRESULT CMapObject::Render_Rock()
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
@@ -230,25 +188,22 @@ HRESULT CMapObject::Render_Rock()
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsDistinction_NormalTex)))
 			return E_FAIL;
 
-		if (true == m_IsDistinction_NormalTex)
-		{
+		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseNormalTex", &m_IsDistinction_NormalTex, sizeof(_bool))))
+			return E_FAIL;
+
+		m_IsDistinction_NormalTex = false;
+
+		if (STATIC_IMAGE::ROCK_MASK_NONE == m_EditionDesc.iMaskTex_ID)
 			m_iShaderPassID = 0;
-			m_IsDistinction_NormalTex = false;
-		}
 		else
 		{
-			if (STATIC_IMAGE::ROCK_MASK_NONE == m_EditionDesc.iMaskTex_ID)
-				m_iShaderPassID = 1;
-			else
-			{
-				if (FAILED(pGameInstance->SetupSRV(m_EditionDesc.iMaskTex_ID, m_pShaderCom, "g_MaskTexture")))
-					return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(m_EditionDesc.iMaskTex_ID, m_pShaderCom, "g_MaskTexture")))
+				return E_FAIL;
 
-				if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ROCK_SUB_D, m_pShaderCom, "g_SubDiffuseTexture")))
-					return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ROCK_SUB_D, m_pShaderCom, "g_SubDiffuseTexture")))
+				return E_FAIL;
 
-				m_iShaderPassID = 8;
-			}
+			m_iShaderPassID = 4;
 		}
 
 		m_pShaderCom->Begin(m_iShaderPassID);
@@ -267,7 +222,7 @@ HRESULT CMapObject::Render_SubEditionColor_Mask()
 	{
 		m_pGrassMaskTexture[m_EditionDesc.iMaskTex_ID]->Setup_ShaderResource(m_pShaderCom, "g_MaskTexture");
 
-		m_iShaderPassID = 7;
+		m_iShaderPassID = 3;
 
 		m_pShaderCom->Begin(m_iShaderPassID);
 
@@ -290,13 +245,56 @@ HRESULT CMapObject::Render_Default()
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsDistinction_NormalTex)))
 			return E_FAIL;
 
-		if (true == m_IsDistinction_NormalTex)
-		{
-			m_iShaderPassID = 5;
-			m_IsDistinction_NormalTex = false;
-		}
+		m_iShaderPassID = 0;
+
+		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseNormalTex", &m_IsDistinction_NormalTex, sizeof(_bool))))
+			return E_FAIL;
+
+		m_IsDistinction_NormalTex = false;
+
+		if (true == m_EditionDesc.UseEditionColor && i == m_EditionDesc.iEditionColor_MeshNum)
+			m_IsUse_EdtionColor = true;
 		else
-			m_iShaderPassID = 6;
+			m_IsUse_EdtionColor = false;
+
+		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseEditionColor", &m_IsUse_EdtionColor, sizeof(_bool))))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(m_iShaderPassID);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+HRESULT CMapObject::Render_Default_SelfShadow()
+{
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		// Model 중 NormalTextrue 가 없는 Model 은 m_IsDistinction_NormalTex 가 true 가 되어서 노말맵 을 적용시키지 않음.
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsDistinction_NormalTex)))
+			return E_FAIL;
+
+		m_iShaderPassID = 1;
+
+		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseNormalTex", &m_IsDistinction_NormalTex, sizeof(_bool))))
+			return E_FAIL;
+
+		m_IsDistinction_NormalTex = false;
+
+		if (true == m_EditionDesc.UseEditionColor && i == m_EditionDesc.iEditionColor_MeshNum)
+			m_IsUse_EdtionColor = true;
+		else
+			m_IsUse_EdtionColor = false;
+
+		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseEditionColor", &m_IsUse_EdtionColor, sizeof(_bool))))
+			return E_FAIL;
 
 		m_pShaderCom->Begin(m_iShaderPassID);
 
@@ -392,6 +390,8 @@ void CMapObject::Load_EditionID(HANDLE& _hFile, DWORD& _dwByte)
 {
 	ReadFile(_hFile, &m_EditionDesc.iSIMD_ID, sizeof(_uint), &_dwByte, nullptr);
 	ReadFile(_hFile, &m_EditionDesc.iTypeID, sizeof(_uint), &_dwByte, nullptr);
+
+	ReadFile(_hFile, &m_EditionDesc.UseGlow, sizeof(_bool), &_dwByte, nullptr);
 }
 
 void CMapObject::Load_EditionColor(HANDLE& _hFile, DWORD& _dwByte)
@@ -409,7 +409,7 @@ void CMapObject::Load_DiffuseTexID(HANDLE& _hFile, DWORD& _dwByte)
 void CMapObject::Load_SubEditionColor_Mask(HANDLE& _hFile, DWORD& _dwByte)
 {
 	ReadFile(_hFile, &m_EditionDesc.vEditionColor, sizeof(_float3), &_dwByte, nullptr);
-	ReadFile(_hFile, &m_EditionDesc.iMaskTex_ID, sizeof(_float3), &_dwByte, nullptr);
+	ReadFile(_hFile, &m_EditionDesc.iMaskTex_ID, sizeof(_uint), &_dwByte, nullptr);
 	ReadFile(_hFile, &m_EditionDesc.vSubEditionColor, sizeof(_float3), &_dwByte, nullptr);
 }
 
@@ -503,6 +503,9 @@ HRESULT CMapObject::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->SetRawValue("g_vSubEditionColor", &m_EditionDesc.vSubEditionColor, sizeof(_float3))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetRawValue("g_IsUseGlow", &m_EditionDesc.UseGlow, sizeof(_bool))))
 		return E_FAIL;
 
 	return S_OK;

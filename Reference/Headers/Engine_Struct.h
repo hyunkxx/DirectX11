@@ -399,6 +399,8 @@ namespace Engine
 		// 디퓨즈 없는객체 서브컬러
 		_float3				vSubEditionColor = { 0.0f, 0.0f, 0.0f };
 
+		// Glow 사용 유무
+		_bool				UseGlow = { false };
 	}SMAP_OBJECT_EDITION_DESC;
 #pragma endregion STATIC_OBJECT
 
