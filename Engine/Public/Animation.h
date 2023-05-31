@@ -43,6 +43,8 @@ public:
 	const _uint Get_NumChannels() const { return m_iNumChannels; }
 	vector<class CChannel*>& Get_Channels();
 
+	CChannel*	Get_Channel(_tchar* pChannelTag);
+
 private:
 	_tchar	m_szName[MAX_PATH] = TEXT("");
 	_double	m_Duration = { 0.0 };

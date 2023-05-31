@@ -151,7 +151,7 @@ const char CTestChar::szSharedStateTag[SS_END][MAX_PATH] =
 	"SS_BEHIT_FLY_FALL",
 	"SS_BEHIT_PRESS",
 	"SS_DEATH_IN_WATER",
-	"SS_DEATH",
+	"SS_DEAD",
 };
 
 
@@ -172,7 +172,9 @@ const char CTestChar::szPhysicMoveTag[CCharacter::SP_END][MAX_PATH] =
 	"SPRINT_F",
 	"SPRINT_B",
 	"FALL",
-	"PLAYERGIRL_AIRATTACK"
+	"PLAYERGIRL_AIRATTACK",
+	"BEHIT_FLY",
+	"BEHIT_HOVER"
 };
 
 CTestChar::CTestChar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

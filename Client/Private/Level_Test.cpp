@@ -11,6 +11,7 @@
 #include "M_GAzizi.h"
 #include "M_Anjin.h"
 #include "M_AWukaka.h"
+#include "M_Crownless_P1.h"
 #include "AcquireSystem.h"
 #include "Sandbag.h"
 
@@ -30,9 +31,10 @@ HRESULT CLevel_Test::Initialize()
 	// 몬스터들 상태 초기화 해놓기
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
 	CSandbag::Init_States(m_pDevice, m_pContext);
+	CM_Crownless_P1::Init_States(m_pDevice, m_pContext);
 
-	//if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
@@ -187,11 +189,11 @@ HRESULT CLevel_Test::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
-	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
-	EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data");
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::TERRAIN, pLayerTag, L"terrain", &EditionDesc)))
-		return E_FAIL;
+	//SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
+	//ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	//EditionDesc.pEditionFilePath = TEXT("../../Data/GamePlay/Terrain/UVSamplerRatio.data");
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::TERRAIN, pLayerTag, L"terrain", &EditionDesc)))
+	//	return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANIMTOOL, OBJECT::FLOOR, pLayerTag, L"floor")))
 		return E_FAIL;
@@ -268,17 +270,12 @@ HRESULT CLevel_Test::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
-		return E_FAIL;
-
-	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag1"))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag2"))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag3"))))
+	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
 		return E_FAIL;*/
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_CROWNLESS_P1, pLayerTag, TEXT("Crownless_P1"))))
+		return E_FAIL;
+
 
 
 	return S_OK;
@@ -290,8 +287,6 @@ HRESULT CLevel_Test::Ready_Layer_UI(const _tchar * pLayerTag)
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::UI, pLayerTag, TEXT("UI_MainScreen"))))
-		return E_FAIL;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::UI, pLayerTag, TEXT("UI_MainScreen"))))
 		return E_FAIL;
 
@@ -324,4 +319,5 @@ void CLevel_Test::Free()
 
 	CP_PlayerGirl::Release_States();
 	CSandbag::Release_States();
+	CM_Crownless_P1::Release_States();
 }

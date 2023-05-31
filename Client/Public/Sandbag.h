@@ -25,7 +25,7 @@ public:
 		AI_IDLE,
 		AI_CHASE,
 		AI_STAY,
-		AI_ATTACK,
+		AI_ATTACK_RANGE,
 		AI_COMBO,
 		AI_END
 	};
@@ -123,7 +123,7 @@ public:
 	virtual void Get_AttackInfo(_uint iAttackID, TAGATTACK* pAttackInfoOut, _float* pAttackOut) override
 	{
 		memcpy(pAttackInfoOut, &m_AttackInfos[iAttackID], sizeof(TAGATTACK));
-		*pAttackOut = m_tCharInfo.fAttack;
+		*pAttackOut = m_tMonsterInfo.fAttack;
 	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
 

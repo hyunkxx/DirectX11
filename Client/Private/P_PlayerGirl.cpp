@@ -131,19 +131,19 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	SetUp_Animations(false);
 
 	// CharInfo 초기화 >> 플레이어는 CharInfo 안씀
-	/*lstrcpy(m_tCharInfo.szName, TEXT("Rover"));
-	m_tCharInfo.eElement = ELMT_SPECTRA;
-	m_tCharInfo.iLevel = 10;
-	m_tCharInfo.iExp = 0;
-	m_tCharInfo.fMaxHP = 100.f;
-	m_tCharInfo.fCurHP = m_tCharInfo.fMaxHP;
-	m_tCharInfo.fMaxSP = 100.f;
-	m_tCharInfo.fCurSP = 0.f;
-	m_tCharInfo.fMaxTP = 100.f;
-	m_tCharInfo.fCurTP = 0.f;
-	m_tCharInfo.fAttack = 50.f;
-	m_tCharInfo.fDefense = 50.f;
-	m_tCharInfo.fCriticalRate = 0.1f; */
+	/*lstrcpy(m_tMonsterInfo.szName, TEXT("Rover"));
+	m_tMonsterInfo.eElement = ELMT_SPECTRA;
+	m_tMonsterInfo.iLevel = 10;
+	m_tMonsterInfo.iExp = 0;
+	m_tMonsterInfo.fMaxHP = 100.f;
+	m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
+	m_tMonsterInfo.fMaxSP = 100.f;
+	m_tMonsterInfo.fCurSP = 0.f;
+	m_tMonsterInfo.fMaxTP = 100.f;
+	m_tMonsterInfo.fCurTP = 0.f;
+	m_tMonsterInfo.fAttack = 50.f;
+	m_tMonsterInfo.fDefense = 50.f;
+	m_tMonsterInfo.fCriticalRate = 0.1f; */
 	
 	// 충돌 타입 처리
 	m_eCollisionType = CT_PLAYER;
@@ -175,6 +175,9 @@ void CP_PlayerGirl::Start()
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST] = (_float)m_tStates[IS_BURST].CoolTime;
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 100.f;
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] = 100.f;
+
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 100.f;
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 100.f;
 	
 
 	// TODO: 에코 쿨타임, 에코 착용 시 변경하도록 바꿔야 함
@@ -415,6 +418,7 @@ HRESULT CP_PlayerGirl::Render()
 				m_Parts[i]->Set_Outline(true);
 		}
 	}
+
 
 	for (_uint i = 0; i < 6; ++i)
 	{
@@ -790,6 +794,7 @@ void CP_PlayerGirl::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint Effect
 
 void CP_PlayerGirl::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
 {
+	m_bAttack = true;
 	m_pAttackCollider->SetActive(bOBB);
 	m_iCurAttackID = iAttackInfoID;
 }
@@ -798,6 +803,8 @@ void CP_PlayerGirl::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 {
 	if (MISS_END <= iMissilePoolID || EBONE_END <= iEffectBoneID)
 		return; 
+
+	m_bAttack = true;
 
 	if (iMissilePoolID == MISS_BURST_02)
 	{
@@ -909,7 +916,7 @@ void CP_PlayerGirl::SetUp_State()
 	else
 		Set_WeaponUse(true);
 
-	// 쿨타임 적용
+	// 쿨타임, 게이지 적용
 	if (true == m_tCurState.bApplyCoolTime)
 	{
 		if (IS_SKILL_01 == m_Scon.iCurState ||
@@ -926,8 +933,12 @@ void CP_PlayerGirl::SetUp_State()
 	}
 
 	// 게이지 차감
-	//if(IS)
-	
+	if (IS_SKILL_02 == m_Scon.iCurState)
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] -= 10.f;
+	else if (IS_BURST == m_Scon.iCurState)
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] -= 10.f;
+
+
 	//PhysicMove
 	if (false == m_tCurState.bRootMotion)
 	{
@@ -1062,12 +1073,6 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 
 		SetUp_State();
 		}*/
-
-		if (pGame->InputKey(DIK_TAB) == KEY_STATE::TAP)
-		{
-			m_Scon.iNextState = 145;
-			SetUp_State();
-		}
 
 		if (pGame->InputKey(DIK_P) == KEY_STATE::TAP)
 		{
@@ -1257,9 +1262,9 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				{
 					_bool	bLeft = (0.f > XMVectorGetY(XMVector3Cross(vTargetDir, vInputDir)));
 					_float fScalar = XMVectorGetX(XMVector3Dot(vTargetDir, vInputDir));
-					if (fScalar > 0.85f)
+					if (fScalar > 0.98f)
 						m_Scon.iNextState = SS_WALK_F;
-					else if (fScalar < -0.85f)
+					else if (fScalar < -0.98f)
 						m_Scon.iNextState = SS_WALK_B;
 					else if (bLeft == true)
 					{
@@ -1280,9 +1285,9 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				{
 					_bool	bLeft = (0.f > XMVectorGetY(XMVector3Cross(vTargetDir, vInputDir)));
 					_float fScalar = XMVectorGetX(XMVector3Dot(vTargetDir, vInputDir));
-					if (fScalar > 0.85f)
+					if (fScalar > 0.98f)
 						m_Scon.iNextState = SS_RUN_F;
-					else if (fScalar < -0.85f)
+					else if (fScalar < -0.98f)
 						m_Scon.iNextState = SS_RUN_B;
 					else if (bLeft == true)
 					{
@@ -1787,6 +1792,8 @@ void CP_PlayerGirl::Tick_State(_double TimeDelta)
 {
 	CGameInstance* pGI = CGameInstance::GetInstance();
 
+	
+
 	if (false == m_Scon.bAnimFinished)
 	{
 		_float4 vRotation = _float4(0.f, 0.f, 0.f, 1.f);
@@ -1862,6 +1869,10 @@ void CP_PlayerGirl::Tick_State(_double TimeDelta)
 		
 		XMStoreFloat3(&m_Scon.vPrevMovement, XMLoadFloat3(&vMovement) / (_float)TimeDelta);
 		
+
+		// 이번 프레임에 공격이 발동했는지 체크하는 변수
+		m_bAttack = false;
+
 		// StateKey 처리
 		for (_uint i = 0; i < m_tCurState.iKeyCount; ++i)
 		{
@@ -2125,7 +2136,7 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 		((fAttackPoint * 2 - m_pCharacterState->fDefense[CPlayerState::STAT_TOTAL]) / fAttackPoint); 
 		/** 추후 속성 보너스 추가*/
 
-	m_tCharInfo.fCurHP -= fFinalDamage;
+	m_pCharacterState->fCurHP -= fFinalDamage;
 
 	// TODO: 대미지 폰트 UI 출력
 	// pEffPos : 두 콜라이더의 중간점, 이펙트 출력 기준위치
@@ -2135,10 +2146,10 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 	
 
 	// 사망 시 사망 애니메이션 실행 
-	if (false/*0.f >= m_tCharInfo.fCurHP*/)
+	if (false/*0.f >= m_tMonsterInfo.fCurHP*/)
 	{
-		m_tCharInfo.fCurHP = 0.f;
-		m_Scon.iNextState = SS_DEATH;
+		m_pCharacterState->fCurHP = 0.f;
+		m_Scon.iNextState = SS_DEAD;
 	}
 	// 지상에서만 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)
@@ -2155,11 +2166,9 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 				m_Scon.iNextState = SS_BEHIT_B;
 				break;
 			case HIT_FLY:
-			{
 				//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
 				m_Scon.iNextState = SS_BEHIT_FLY_START;
 				break;
-			}
 			default:
 				break;
 			}

@@ -195,7 +195,11 @@ public:
 	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
 
-public:
+	virtual _bool Get_Attack()
+	{
+		return m_bAttack;
+	}
+
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -264,6 +268,10 @@ private:
 	// MoveCollider 충돌 시 비교할 무게
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
 	_float				m_fPushWeight = { 0.f };
+
+	// 몬스터한테 공격 타이밍 알려주기 위한 변수
+	// 미사일, OBB 발사 프레임에만 true로 변경
+	_bool				m_bAttack = { false };
 
 
 

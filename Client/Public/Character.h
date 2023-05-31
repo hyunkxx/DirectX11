@@ -197,11 +197,11 @@ public:
 		SS_BEHIT_FLY_FALL,
 		SS_BEHIT_PRESS, // 바닥에 쳐박힘
 		SS_DEATH_IN_WATER, // 익사
-		SS_DEATH, // 일반 사망
+		SS_DEAD, // 일반 사망
 		SS_END
 	};
 
-	// 플레이어가 사용할 등가속 운동 움직임
+	// 등가속 운동 움직임
 	enum StatePhysics
 	{
 		SP_NONE,
@@ -393,6 +393,9 @@ public:
 
 	virtual _float Get_CoolTime(_uint iType) { return 0.f; }
 
+	virtual _bool Get_Attack() { return false; }
+
+
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration) {}
 	virtual void Shot_PriorityKey(_uint iLeavePriority) {}
@@ -423,7 +426,7 @@ public:
 	//UI
 	static _int Monindex;
 protected:
-	MONINFO			m_tCharInfo;
+	MONINFO			m_tMonsterInfo;
 	StateController m_Scon;
 	CollisionType	m_eCollisionType;
 

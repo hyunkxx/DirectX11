@@ -287,7 +287,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 			_vector vTargetDirRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vTargetDirLook));
 			//_vector vTargetDirUp = XMVector3Normalize(XMVector3Cross(vTargetDirLook, vTargetDirRight));
 
-			_float fLookDist = -2.5f - fDistRate * 1.5f;
+			_float fLookDist = -3.5f - fDistRate * 1.5f;
 			_float fUpDist = 1.3f;
 			_float fRightDist = 0.3f + fDistance * 0.12f;
 
@@ -349,7 +349,6 @@ void CPlayerCamera::Tick(_double TimeDelta)
 		vCurAt = vAtPos + XMVector3Normalize(vCurAt - vAtPos) * m_fMaxPosDistance;
 		else if (XMVector3NearEqual(vPrevAt, vAtPos, XMVectorSet(0.05f, 0.05f, 0.05f, 0.05f)))
 		vCurAt = vAtPos;*/
-
 
 		XMStoreFloat3(&m_CameraDesc.vAt, vPlayerPos);
 		XMStoreFloat3(&m_CameraDesc.vEye, vPlayerPos - vCamLook * m_fCurDistance);

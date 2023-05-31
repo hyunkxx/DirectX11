@@ -82,19 +82,19 @@ HRESULT CM_Anjin::Initialize(void * pArg)
 	m_bAttackReady = true;
 
 	// CharInfo 초기화
-	lstrcpy(m_tCharInfo.szName, TEXT("nat dn human"));
-	m_tCharInfo.eElement = ELMT_SPECTRA;
-	m_tCharInfo.iLevel = 1;
-	m_tCharInfo.iExp = 0;
-	m_tCharInfo.fMaxHP = 2000.f;
-	m_tCharInfo.fCurHP = m_tCharInfo.fMaxHP;
-	//m_tCharInfo.fMaxSP = 100.f;
-	//m_tCharInfo.fCurSP = 0.f;
-	//m_tCharInfo.fMaxTP = 100.f;
-	//m_tCharInfo.fCurTP = 0.f;
-	m_tCharInfo.fAttack = 50.f;
-	m_tCharInfo.fDefense = 50.f;
-	m_tCharInfo.fCriticalRate = 0.1f;
+	lstrcpy(m_tMonsterInfo.szName, TEXT("nat dn human"));
+	m_tMonsterInfo.eElement = ELMT_SPECTRA;
+	m_tMonsterInfo.iLevel = 1;
+	m_tMonsterInfo.iExp = 0;
+	m_tMonsterInfo.fMaxHP = 2000.f;
+	m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
+	//m_tMonsterInfo.fMaxSP = 100.f;
+	//m_tMonsterInfo.fCurSP = 0.f;
+	//m_tMonsterInfo.fMaxTP = 100.f;
+	//m_tMonsterInfo.fCurTP = 0.f;
+	m_tMonsterInfo.fAttack = 50.f;
+	m_tMonsterInfo.fDefense = 50.f;
+	m_tMonsterInfo.fCriticalRate = 0.1f;
 
 	// 충돌 타입 처리
 	m_eCollisionType = CT_MONSTER;
@@ -113,7 +113,7 @@ HRESULT CM_Anjin::Initialize(void * pArg)
 	if (pGame->Add_GameObjectEx(&pUIMon, LEVEL_ANYWHERE, OBJECT::UIMONSTER, TEXT("layer_UI"), szIndex, &MonInfo))
 		return E_FAIL;
 	m_pUIMon = static_cast<CUI_Monster*>(pUIMon);
-	m_pUIMon->Set_MonHP(m_tCharInfo.fMaxHP);
+	m_pUIMon->Set_MonHP(m_tMonsterInfo.fMaxHP);
 	++Monindex;
 	return S_OK;
 }
@@ -349,7 +349,7 @@ HRESULT CM_Anjin::Add_Components()
 
 	CollDesc.owner = this;
 	CollDesc.vCenter = { 0.f, 0.f, 0.f };
-	CollDesc.vExtents = { 0.4f, 0.f, 0.4f };
+	CollDesc.vExtents = { 0.4f, 0.4f, 0.4f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_MoveCollider"), (CComponent**)&m_pMoveCollider, &CollDesc)))
@@ -759,7 +759,7 @@ void CM_Anjin::Select_State(_double TimeDelta)
 			{
 				if (true == m_bAttackReady)
 				{
-					iCurFrameAI = AI_ATTACK;
+					iCurFrameAI = AI_ATTACK_RANGE;
 				}
 				else
 				{
@@ -774,7 +774,7 @@ void CM_Anjin::Select_State(_double TimeDelta)
 	case Client::CM_Anjin::AI_IDLE:
 		m_Scon.iNextState = AI_IDLE;
 		break;
-	case Client::CM_Anjin::AI_ATTACK:
+	case Client::CM_Anjin::AI_ATTACK_RANGE:
 		if (0.0 == m_StateCoolTimes[IS_ATTACK03_READY])
 			m_Scon.iNextState = IS_ATTACK03_READY;
 		else if (0.0 == m_StateCoolTimes[IS_ATTACK02_1])
@@ -1002,9 +1002,9 @@ void CM_Anjin::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
-	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tCharInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
+	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
 
-	m_tCharInfo.fCurHP -= fFinalDamage;
+	m_tMonsterInfo.fCurHP -= fFinalDamage;
 
 	// TODO: 여기서 대미지 폰트 출력
 	if (false == m_pUIMon->IsDisable())
@@ -1013,9 +1013,9 @@ void CM_Anjin::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float
 	}
 
 	// 사망 시 사망 애니메이션 실행 
-	if (0.f >= m_tCharInfo.fCurHP)
+	if (0.f >= m_tMonsterInfo.fCurHP)
 	{
-		m_tCharInfo.fCurHP = 0.f;
+		m_tMonsterInfo.fCurHP = 0.f;
 		m_Scon.iNextState = IS_DEAD;
 	}
 	// 피격 애니메이션 실행

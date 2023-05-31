@@ -49,6 +49,19 @@ vector<class CChannel*>& CAnimation::Get_Channels()
 	return m_Channels;
 }
 
+CChannel * CAnimation::Get_Channel(_tchar * pChannelTag)
+{
+	auto& iter = find_if(m_Channels.begin(), m_Channels.end(), [&](CChannel* pChannel)
+	{
+		return !lstrcmp(pChannel->Get_Name(), pChannelTag);
+	});
+
+	if (iter == m_Channels.end())
+		return nullptr;
+
+	return *iter;
+}
+
 CAnimation * CAnimation::Create(ANIMINFO * pAnimInfo, CModel_Anim * pModel)
 {
 	CAnimation* pInstance = new CAnimation();
