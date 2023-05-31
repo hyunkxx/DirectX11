@@ -149,18 +149,22 @@ HRESULT CModel_Instance::SetUp_ShaderMaterialResource(CShader * pShaderCom, cons
 	return m_ModelMaterials[m_Instance_Meshes[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType]->Setup_ShaderResource(pShaderCom, pConstantName);
 }
 
-HRESULT CModel_Instance::SetUp_ShaderMaterialResource_Distinction(CShader * pShaderCom, const char * pConstantName, _uint iMeshIndex, MytextureType eType, _bool* IsDistinction)
+HRESULT CModel_Instance::SetUp_ShaderMaterialResource_Distinction(CShader * pShaderCom, const char * pConstantName, _uint iMeshIndex, MytextureType eType, _bool* IsTexture)
 {
 	if (iMeshIndex >= m_iNumMeshes)
 		return E_FAIL;
 
 	if (nullptr == m_ModelMaterials[m_Instance_Meshes[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType])
 	{
-		if (nullptr != IsDistinction)
-			*IsDistinction = true;
+		if (nullptr != IsTexture)
+			*IsTexture = false;
 
 		return S_OK;
 	}
+
+	if (nullptr != IsTexture)
+		*IsTexture = true;
+
 
 	return m_ModelMaterials[m_Instance_Meshes[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType]->Setup_ShaderResource(pShaderCom, pConstantName);
 }

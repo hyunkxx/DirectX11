@@ -135,7 +135,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
 	// NormalTex
-	if (0.0f >= In.vModelOption_NEG.x)
+	if (0.0f < In.vModelOption_NEG.x)
 	{
 		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 		float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
@@ -173,7 +173,7 @@ PS_OUT	PS_MAIN_SELFSHADOW(PS_IN In)
 	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
 	// NormalTex
-	if (0.0f >= In.vModelOption_NEG.x)
+	if (0.0f < In.vModelOption_NEG.x)
 	{
 		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 		float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
@@ -248,7 +248,7 @@ PS_OUT PS_MAIN_SUB_DIFFUSE_MASK(PS_IN In)
 	vector			vMaskTexture = g_MaskTexture.Sample(LinearSampler, In.vTexUV);
 	vector			vSubDiffuse = g_SubDiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
-	if (0.0f >= In.vModelOption_NEG.x)
+	if (0.0f < In.vModelOption_NEG.x)
 	{
 		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 		float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;

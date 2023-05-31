@@ -26,7 +26,7 @@ public:
 
 public:
 	HRESULT	SetUp_ShaderMaterialResource(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex, MytextureType eType);
-	HRESULT	SetUp_ShaderMaterialResource_Distinction(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex, MytextureType eType, _bool* IsDistinction = nullptr);
+	HRESULT	SetUp_ShaderMaterialResource_Distinction(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex, MytextureType eType, _bool* IsTexture = nullptr);
 
 protected:
 	_uint							m_iNumMeshes = { 0 };
