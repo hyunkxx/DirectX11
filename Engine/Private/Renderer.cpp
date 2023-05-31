@@ -1485,18 +1485,13 @@ void CRenderer::FinalExtraction()
 
 	if (pSourTarget)
 		pSourTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_SourTexture");
+	if (pDepthTarget)
+		pDepthTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_DepthTexture");
 
 	if (m_pRenderSetting->IsActiveBlackWhite())
-	{
-		m_pShader_Extraction->Begin(0);
-	}
+		m_pShader_Extraction->Begin(1);
 	else
-	{
-		if (pDepthTarget)
-			pDepthTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_DepthTexture");
-
 		m_pShader_Extraction->Begin(5);
-	}
 
 	m_pVIBuffer->Render();
 }

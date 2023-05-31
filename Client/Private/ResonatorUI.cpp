@@ -179,6 +179,9 @@ HRESULT CResonatorUI::Render()
 		break;
 	}
 
+	if (FAILED(m_pShader->SetRawValue("g_vColor", &_float3(1.f, 1.f, 1.f), sizeof(_float3))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

@@ -108,12 +108,12 @@ HRESULT CApplication::Render()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	//m_pGUIManager->NewFrame();
-	//m_pGameInstance->RenderGUI();
-	//m_pGameInstance->RenderLevelUI();
-	//m_pGUIManager->Render();
+	m_pGUIManager->NewFrame();
+	m_pGameInstance->RenderGUI();
+	m_pGameInstance->RenderLevelUI();
+	m_pGUIManager->Render();
 
-	//m_pContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
+	m_pContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
 #endif
 
 	m_pGameInstance->Clear_RenderTargetView(_float4(0.f, 0.f, 0.f, 0.f));
@@ -140,7 +140,7 @@ HRESULT CApplication::Render()
 		_float2(0.5f, 0.5f)
 	);
 #ifdef _DEBUG 
-	//m_pGUIManager->RenderDrawData();
+	m_pGUIManager->RenderDrawData();
 #endif
 
 	m_pGameInstance->Present();

@@ -830,6 +830,9 @@ HRESULT CTerminalUI::renderLeftPivot()
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
 
+	if (FAILED(m_pShader->SetRawValue("g_vColor", &_float3(1.f, 1.f, 1.f), sizeof(_float3))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
