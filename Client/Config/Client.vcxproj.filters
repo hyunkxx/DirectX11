@@ -339,6 +339,7 @@
     <ClCompile Include="..\Private\TestChar.cpp">
       <Filter>src\NEW_FILES</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\M_Crownless_P1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -656,6 +657,7 @@
     <ClInclude Include="UIInterface.h">
       <Filter>src\NEW_FILES</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\M_Crownless_P1.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

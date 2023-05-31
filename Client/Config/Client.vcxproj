@@ -209,7 +209,10 @@
     <ClInclude Include="..\Public\Client_TextureEnum.h" />
     <ClInclude Include="..\Public\Efffect_Tool.h" />
     <ClInclude Include="..\public\Inventory.h" />
-    <ClInclude Include="..\public\Level_Test.h" />
+    <ClInclude Include="..\public\Level_Test.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\Mesh_Effect.h" />
     <ClInclude Include="..\Public\Missile.h" />
     <ClInclude Include="..\Public\MissilePool.h" />
@@ -217,8 +220,10 @@
     <ClInclude Include="..\Public\Missile_RotAround.h" />
     <ClInclude Include="..\public\M_Anjin.h" />
     <ClInclude Include="..\public\M_AWukaka.h" />
-    <ClInclude Include="..\public\M_Crownless_P1.h" />
-    <ClInclude Include="..\public\M_Crownless_P2.h" />
+    <ClInclude Include="..\public\M_Crownless_P1.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\public\M_GAzizi.h" />
     <ClInclude Include="..\Public\Particle_Effect.h" />
     <ClInclude Include="..\public\PlayerState.h" />
@@ -333,7 +338,10 @@
     <ClCompile Include="..\private\Chest.cpp" />
     <ClCompile Include="..\Private\Efffect_Tool.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />
-    <ClCompile Include="..\private\Level_Test.cpp" />
+    <ClCompile Include="..\private\Level_Test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\Mesh_Effect.cpp" />
     <ClCompile Include="..\Private\Missile.cpp" />
     <ClCompile Include="..\Private\MissilePool.cpp" />
@@ -341,8 +349,10 @@
     <ClCompile Include="..\Private\Missile_RotAround.cpp" />
     <ClCompile Include="..\private\M_Anjin.cpp" />
     <ClCompile Include="..\private\M_AWukaka.cpp" />
-    <ClCompile Include="..\private\M_Crownless_P1.cpp" />
-    <ClCompile Include="..\private\M_Crownless_P2.cpp" />
+    <ClCompile Include="..\private\M_Crownless_P1.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\private\M_GAzizi.cpp" />
     <ClCompile Include="..\Private\Particle_Effect.cpp" />
     <ClCompile Include="..\private\PlayerState.cpp" />

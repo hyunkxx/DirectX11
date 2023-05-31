@@ -184,7 +184,7 @@ HRESULT CMapObject::Render_Rock()
 	{
 		m_pDiffuseTexture[m_EditionDesc.iDiffuseTex_ID]->Setup_ShaderResource(m_pShaderCom, "g_DiffuseTexture");
 
-		// Model 중 NormalTextrue 가 없는 Model 은 m_IsNormalTex 가 false 가 되어서 노말맵 을 적용시키지 않음.
+		// Model 중 NormalTextrue 가 없는 Model 은 m_IsDistinction_NormalTex 가 true 가 되어서 노말맵 을 적용시키지 않음.
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsNormalTex)))
 			return E_FAIL;
 
@@ -241,7 +241,7 @@ HRESULT CMapObject::Render_Default()
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		// Model 중 NormalTextrue 가 없는 Model 은 m_IsNormalTex 가 false 가 되어서 노말맵 을 적용시키지 않음.
+		// Model 중 NormalTextrue 가 없는 Model 은 m_IsDistinction_NormalTex 가 true 가 되어서 노말맵 을 적용시키지 않음.
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsNormalTex)))
 			return E_FAIL;
 
@@ -277,7 +277,7 @@ HRESULT CMapObject::Render_Default_SelfShadow()
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		// Model 중 NormalTextrue 가 없는 Model 은 m_IsNormalTex 가 false 가 되어서 노말맵 을 적용시키지 않음.
+		// Model 중 NormalTextrue 가 없는 Model 은 m_IsDistinction_NormalTex 가 true 가 되어서 노말맵 을 적용시키지 않음.
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsNormalTex)))
 			return E_FAIL;
 

@@ -474,7 +474,7 @@ HRESULT CResonatorUI::stateData()
 	for (_uint i = 0; i < STATE_END; ++i)
 	{
 		// State Data
-		_uint dataSize = strData[i].size();
+		_uint dataSize = (_uint)strData[i].size();
 		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fButtonAlpha[i], sizeof(_float))))
 			return E_FAIL;
 

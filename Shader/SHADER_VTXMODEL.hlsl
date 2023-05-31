@@ -304,7 +304,8 @@ PS_OUT_SKY PS_MAIN_SKY(PS_IN_SKY In)
 {
 	PS_OUT_SKY	Out = (PS_OUT_SKY)0;
 
-	Out.vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
 	Out.vNormal	= float4(0.f, 0.f, 0.f, 1.f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 1.f);
 	Out.vDepth = float4(0.f, 0.f, 0.f, 1.f);

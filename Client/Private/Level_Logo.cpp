@@ -30,7 +30,8 @@ HRESULT CLevel_Logo::Initialize()
 	LightDesc.eLightType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(2.f, -0.3f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(0.9f, 1.f, 0.9f, 1.f);
-	//LightDesc.vDiffuse = _float4(1.f, 0.98f, 1.f, 1.f);
+	//LightDesc.vDiffuse = _float4(0.8f, 0.9f, 0.8f, 1.f);
+
 	LightDesc.vAmbient = _float4(0.65f, 0.65f, 0.65f, 1.f); //0.65f
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	
