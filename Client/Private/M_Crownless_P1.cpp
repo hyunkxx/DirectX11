@@ -20,7 +20,7 @@
 #include "UI_Monster.h"
 #include "UI_Minimap.h"
 
-#define DIST_MELEE 4.f
+#define DIST_MELEE 3.f
 #define DIST_MIDRANGE 12.f
 
 CCharacter::SINGLESTATE CM_Crownless_P1::m_tStates[IS_END];
@@ -100,6 +100,7 @@ HRESULT CM_Crownless_P1::Initialize(void * pArg)
 	m_eCollisionType = CT_MONSTER;
 	m_fPushWeight = 150.f;
 
+
 	//m_pAttackCollider->SetActive(false);
 
 
@@ -172,7 +173,7 @@ void CM_Crownless_P1::Tick(_double TimeDelta)
 
 	if (0.f < m_fHitPoint ||
 		100.f > m_fHitPoint)
-		m_fHitPoint += TimeDelta * 2.f;
+		m_fHitPoint += (_float)TimeDelta * 2.f;
 
 
 	
@@ -187,6 +188,8 @@ void CM_Crownless_P1::Tick(_double TimeDelta)
 	pGameInstance->AddCollider(m_pCollider);
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
+	pGameInstance->AddCollider(m_pAttackCollider, COLL_MONSTERATTACK);
+	m_pAttackCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
 	pGameInstance->AddCollider(m_pHitCollider, COLL_PLAYERATTACK);
 	m_pHitCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
@@ -213,6 +216,43 @@ void CM_Crownless_P1::LateTick(_double TimeDelta)
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
+
+
+
+	// 돌진기 스킬 예외처리 // 거리비교해서
+	if (m_fTargetDistance <= 3.f)
+	{
+		static _bool bOverlapedCheck = false;
+
+		if (IS_ATTACK02 == m_Scon.iCurState)
+		{
+			static _vector vTargetPos;
+
+
+			_float fExtents = m_pTarget->GetMoveCollider()->GetExtents().x;
+
+			if (!bOverlapedCheck)
+			{
+				bOverlapedCheck = true;
+				vTargetPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION);
+			}
+
+			_vector vCurPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+			_vector vOffSetPos = vTargetPos + XMVector3Normalize(vCurPos - vTargetPos) * fExtents;
+
+			vCurPos = XMVectorSetY(XMVectorLerp(vCurPos, vOffSetPos, (_float)TimeDelta * 10.f), XMVectorGetY(vCurPos));
+
+			m_tCurState.bRootMotion = false;
+			m_Scon.vMovement = _float3(0.f, 0.f, 0.f);
+
+			m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
+		}
+		else
+		{
+			bOverlapedCheck = false;
+		}
+	}
+
 
 	//Effect Bones 처리
 	Update_EffectBones();
@@ -340,6 +380,14 @@ HRESULT CM_Crownless_P1::Add_Components()
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::OBB,
 		TEXT("Com_Collider"), (CComponent**)&m_pCollider, &CollDesc)))
+		return E_FAIL;
+
+	CollDesc.owner = this;
+	CollDesc.vCenter = { 0.f, 1.2f, 0.9f };
+	CollDesc.vExtents = { 0.9f, 0.9f, 0.9f };
+	CollDesc.vRotation = { 0.f, 0.f, 0.f };
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
+		TEXT("Com_AttackCollider"), (CComponent**)&m_pAttackCollider, &CollDesc)))
 		return E_FAIL;
 
 	CollDesc.owner = this;
@@ -485,6 +533,12 @@ void CM_Crownless_P1::Shot_PriorityKey(_uint iLeavePriority)
 	m_tCurState.iLeavePriority = iLeavePriority;
 }
 
+void CM_Crownless_P1::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
+{
+	m_pAttackCollider->SetActive(bOBB);
+	m_iCurAttackID = iAttackInfoID;
+}
+
 void CM_Crownless_P1::SetUp_State()
 {
 	_uint iPrevState = m_Scon.iCurState;
@@ -511,11 +565,11 @@ void CM_Crownless_P1::SetUp_State()
 	m_Scon.bAnimFinished = false;
 
 	// 도발 스택 초기화
-	if (m_Scon.iCurState != IS_GREETING)
+	if (m_Scon.iCurState != IS_TAUNT)
 		m_iTauntStack = 0;
 
 	// 애니메이션이 강제로 끊긴 경우 대비 애니메이션 갱신 시 OBB 콜라이더 무조건 끄기
-	//m_pAttackCollider->SetActive(false);
+	m_pAttackCollider->SetActive(false);
 
 	//Position State 반영
 	if ((IS_BEHIT_FLY_START == m_Scon.iCurState) &&
@@ -583,25 +637,43 @@ void CM_Crownless_P1::Find_Target()
 void CM_Crownless_P1::Init_AttackInfos()
 {
 	for (_uint i = 0; i < ATK_END; ++i)
-	{
 		ZeroMemory(&m_AttackInfos[i], sizeof TAGATTACK);
-	}
 
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_02].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	//m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 3.5f;
-	//m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_FLY;
-	//m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_HAVOC;
-	//m_AttackInfos[ATK_ATTACK_03].fSPGain = 0.f;
-	//m_AttackInfos[ATK_ATTACK_03].fTPGain = 0.f;
-	//m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 2;
-	//lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK_04_1].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK_04_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_04_1].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK_04_1].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_1].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK_04_3].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK_04_3].eHitIntensity = HIT_PUSH;
+	m_AttackInfos[ATK_ATTACK_04_3].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK_04_3].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_3].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK_05].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK_05].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_05].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK_05].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_05].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK_08].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK_08].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_08].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK_08].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_08].szHitEffectTag, TEXT("Anjin_Hit"));
 }
 
 void CM_Crownless_P1::Init_Missiles()
@@ -610,20 +682,62 @@ void CM_Crownless_P1::Init_Missiles()
 	CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	tMissilePoolDesc.pMissilePoolTag = TEXT("Crownless_P1_Attack02_%d");
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Crownless_P1_Attack03_%d");
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
-	tMissilePoolDesc.iNumMissiles = 3;
+	tMissilePoolDesc.iNumMissiles = 2;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Boom"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; 
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.15;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_02;
-	tMissilePoolDesc.tMissileDesc.fExtents = 1.f;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_03;
+	tMissilePoolDesc.tMissileDesc.fExtents = 2.f;
 
-	m_MissilePools[MISS_ATTACK_02] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.f, 1.5f, 0.f), &tMissilePoolDesc);
-	m_MissileRotAngles[MISS_ATTACK_02] = _float3(0.f, 0.f, 0.f);
+	m_MissilePools[MISS_ATTACK_03] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK_03] = _float3(0.f, 0.f, 0.f);
+
+
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Crownless_P1_Attack05_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("GenkiDama_Shoot"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_05;
+	tMissilePoolDesc.tMissileDesc.fExtents = 0.8f;
+
+	tMissilePoolDesc.bTargetDir = true;
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 18.f;
+	tMissilePoolDesc.StopTime = 3.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+
+	m_MissilePools[MISS_ATTACK_05] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.f, 1.5f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK_05] = _float3(0.f, 0.f, 0.f);
+
+
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Crownless_P1_Attack08_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Boom"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.15;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_08;
+	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
+
+	m_MissilePools[MISS_ATTACK_08] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK_08] = _float3(0.f, 0.f, 0.f);
 }
 
 void CM_Crownless_P1::Init_AnimSystem()
@@ -834,7 +948,7 @@ void CM_Crownless_P1::Select_State(_double TimeDelta)
 		case Client::CM_Crownless_P1::AI_CHASE:
 			if (m_iTauntStack >= 2)
 			{
-				m_Scon.iNextState = IS_GREETING;
+				m_Scon.iNextState = IS_TAUNT;
 			}
 			else
 			{
@@ -1217,8 +1331,8 @@ HRESULT CM_Crownless_P1::Init_EffectBones()
 {
 	//NONE은 걍 월드 매트릭스를 저장해놨다가 던짐
 	m_EffectBones[EBONE_SPINE] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine"));
-	m_EffectBones[EBONE_LHAND] = nullptr;
-	m_EffectBones[EBONE_RHAND] = nullptr;
+	m_EffectBones[EBONE_LHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001LHand"));
+	m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
 	m_EffectBones[EBONE_HEAD] = m_pModelCom->Get_BonePtr(TEXT("Bip001Head"));
 
 	return S_OK;
@@ -1280,6 +1394,7 @@ void CM_Crownless_P1::Free()
 	Safe_Release(m_pRendererCom);
 
 	Safe_Release(m_pCollider);
+	Safe_Release(m_pAttackCollider);
 	Safe_Release(m_pHitCollider);
 	Safe_Release(m_pMoveCollider);
 

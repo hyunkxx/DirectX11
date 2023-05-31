@@ -593,7 +593,6 @@ void CM_AWukaka::Init_AttackInfos()
 
 void CM_AWukaka::Init_Missiles()
 {
-	//Attack01
 	CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
@@ -601,8 +600,8 @@ void CM_AWukaka::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 1;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("GenkiDama_Boom"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; 
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;

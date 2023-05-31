@@ -223,9 +223,6 @@ private:
 	CBone*				m_EffectBones[EBONE_END] = { nullptr, };
 	_float4x4			m_EffectBoneMatrices[EBONE_END] = {};
 
-	// 매 프레임 이펙트 본 사용중인지 체크해서 저장, 사용중인 본만 행렬 갱신해줌
-	_bool				m_bEffectBoneActive[EBONE_END] = { false, };
-
 	// 벽타기용 본
 	CBone*				m_pClimbBones[CBONE_END] = { nullptr };
 	_float3				m_vClimbExitPos = {};

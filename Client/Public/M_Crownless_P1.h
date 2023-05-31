@@ -34,7 +34,7 @@ public:
 	enum IndividualStates
 	{
 		IS_IDLE, // 다음 행동 선택
-		IS_GREETING,
+		IS_TAUNT,
 		IS_BACKSTEP,	//Attack_01
 		IS_SIDESTEP_L,	//Attack_06
 		IS_SIDESTEP_R,	//Attack_07
@@ -76,7 +76,6 @@ public:
 		ATK_ATTACK_02,
 		ATK_ATTACK_03,
 		ATK_ATTACK_04_1,
-		ATK_ATTACK_04_2,
 		ATK_ATTACK_04_3,
 		ATK_ATTACK_05,
 		ATK_ATTACK_08,
@@ -86,11 +85,7 @@ public:
 	// 미사일 종류
 	enum Missiles
 	{
-		MISS_ATTACK_02,
 		MISS_ATTACK_03,
-		MISS_ATTACK_04_1,
-		MISS_ATTACK_04_2,
-		MISS_ATTACK_04_3,
 		MISS_ATTACK_05,
 		MISS_ATTACK_08,
 		MISS_END
@@ -122,6 +117,7 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _uint iEffectTypeID, _bool bTracking);
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
 	virtual void Shot_PriorityKey(_uint iLeavePriority);
+	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID);
 
 public:
 	virtual _uint Get_AttackID() override { return m_iCurAttackID; }
@@ -165,6 +161,7 @@ private:
 	_float3				m_MissileRotAngles[MISS_END];
 
 	// 몬스터 변수
+	MONINFO			m_tMonsterInfo;
 	// 타겟 플레이어 > 생성될 때 Start에서 플레이어 넣어줌
 	CCharacter*			m_pTarget = { nullptr };
 	CTransform*			m_pTargetTransform = { nullptr };
@@ -191,7 +188,6 @@ private:
 	//
 	_double				m_DodgeTimeAcc = { 0.0 };
 	_uint				m_iDodgeCount = { 0 };
-
 
 	//UI추가
 	class CUI_Minimap*		m_pUIIcon = { nullptr };
@@ -233,6 +229,7 @@ public:
 
 	CCollider* GetDefaultCollider() const { return m_pCollider; }
 
+	virtual CCollider* GetAttackCollider() const override { return m_pAttackCollider; }
 	virtual CCollider* GetHitCollider() const override { return m_pHitCollider; }
 	virtual CCollider* GetMoveCollider() const override { return m_pMoveCollider; }
 
@@ -242,6 +239,7 @@ public:
 
 	CCollider* m_pCollider = nullptr;
 
+	CCollider* m_pAttackCollider = nullptr;
 	CCollider* m_pHitCollider = nullptr;
 	CCollider* m_pMoveCollider = nullptr;
 

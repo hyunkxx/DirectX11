@@ -149,6 +149,7 @@ private:
 
 
 	// 몬스터 변수
+	MONINFO			m_tMonsterInfo;
 	// 타겟 플레이어 > 생성되는 타이밍에 무조건 플레이어 박음
 	CCharacter*			m_pTarget = { nullptr };
 	CTransform*			m_pTargetTransform = { nullptr };

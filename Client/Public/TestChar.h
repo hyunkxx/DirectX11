@@ -53,10 +53,6 @@ public:
 		CStateKey** ppStateKeys;
 	}SINGLESTATE_TOOL;
 
-
-	
-
-
 protected:
 	CTestChar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CTestChar(const CTestChar& rhs);

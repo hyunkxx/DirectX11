@@ -868,6 +868,7 @@ void CP_PlayerGirl::SetUp_State()
 		SS_FIXHOOK_END_UP == m_Scon.iCurState ||
 		SS_CLIMB_MOVE == m_Scon.iCurState ||
 		SS_BEHIT_FLY_START == m_Scon.iCurState ||
+		SS_BEHIT_PUSH == m_Scon.iCurState ||
 		SS_FALL == m_Scon.iCurState) &&
 		PS_AIR != m_Scon.ePositionState)
 	{
@@ -1262,9 +1263,9 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				{
 					_bool	bLeft = (0.f > XMVectorGetY(XMVector3Cross(vTargetDir, vInputDir)));
 					_float fScalar = XMVectorGetX(XMVector3Dot(vTargetDir, vInputDir));
-					if (fScalar > 0.98f)
+					if (fScalar > 0.85f)
 						m_Scon.iNextState = SS_WALK_F;
-					else if (fScalar < -0.98f)
+					else if (fScalar < -0.85f)
 						m_Scon.iNextState = SS_WALK_B;
 					else if (bLeft == true)
 					{
@@ -1285,9 +1286,9 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				{
 					_bool	bLeft = (0.f > XMVectorGetY(XMVector3Cross(vTargetDir, vInputDir)));
 					_float fScalar = XMVectorGetX(XMVector3Dot(vTargetDir, vInputDir));
-					if (fScalar > 0.98f)
+					if (fScalar > 0.85f)
 						m_Scon.iNextState = SS_RUN_F;
-					else if (fScalar < -0.98f)
+					else if (fScalar < -0.85f)
 						m_Scon.iNextState = SS_RUN_B;
 					else if (bLeft == true)
 					{
@@ -2016,6 +2017,7 @@ void CP_PlayerGirl::On_Cell()
 						m_Scon.iNextState = IS_AIRATTACK_END;
 					}
 					else if (SS_BEHIT_FLY_START == m_Scon.iCurState ||
+						SS_BEHIT_PUSH == m_Scon.iCurState ||
 						SS_BEHIT_FLY_LOOP == m_Scon.iCurState)
 					{
 						m_pCamMovement->StartWave();
@@ -2157,8 +2159,7 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 	// 지상에서만 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)
 	{
-		if (SS_BEHIT_FLY_FALL != m_Scon.iCurState &&
-			SS_BEHIT_PRESS != m_Scon.iCurState)
+		if (SS_BEHIT_FLY_FALL != m_Scon.iCurState)
 		{
 			switch (pAttackInfo->eHitIntensity)
 			{
@@ -2169,8 +2170,10 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 				m_Scon.iNextState = SS_BEHIT_B;
 				break;
 			case HIT_FLY:
-				//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
 				m_Scon.iNextState = SS_BEHIT_FLY_START;
+				break;
+			case HIT_PUSH:
+				m_Scon.iNextState = SS_BEHIT_PUSH;
 				break;
 			default:
 				break;
@@ -2182,6 +2185,9 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 			{
 			case HIT_FLY:
 				m_Scon.iNextState = SS_BEHIT_FLY_START;
+				break;
+			case HIT_PUSH:
+				m_Scon.iNextState = SS_BEHIT_PUSH;
 				break;
 			default:
 				break;
@@ -2856,7 +2862,8 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 				//XMStoreFloat3(&EffPos, (XMLoadFloat3(&dest->GetCenter()) + XMLoadFloat3(&src->GetCenter())) * 0.5f);
 
 				// 피격 처리 함수 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
-				On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
+				if (SS_DEAD != m_Scon.iCurState)
+					On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
 			}
 		}
 #pragma endregion
@@ -2886,7 +2893,8 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 				/*_float3 EffPos;
 				XMStoreFloat3(&EffPos, (XMLoadFloat3(&dest->GetCenter()) + XMLoadFloat3(&src->GetCenter())) * 0.5f);*/
-				On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos);
+				if(SS_DEAD != m_Scon.iCurState)
+					On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos);
 			}
 		}
 	}

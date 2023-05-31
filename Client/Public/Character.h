@@ -195,7 +195,7 @@ public:
 		SS_BEHIT_FLY_START, // or PUSH  ~~ 둘이 비슷함
 		SS_BEHIT_FLY_LOOP,
 		SS_BEHIT_FLY_FALL,
-		SS_BEHIT_PRESS, // 바닥에 쳐박힘
+		SS_BEHIT_PUSH, // 바닥에 쳐박힘
 		SS_DEATH_IN_WATER, // 익사
 		SS_DEAD, // 일반 사망
 		SS_END
@@ -213,11 +213,12 @@ public:
 		SP_FALL,
 		SP_PLAYERGIRL_AIRATTACK,
 
-		// 일반몹, 플레이어 강피격 날라가기
+		// 강피격 위로 뜨는 날리기
 		SP_BEHIT_FLY_START,
 		// 공중 피격, 떠있는 상태 지속
 		SP_BEHIT_HOVER,
-
+		// 강피격, 뒤로 쭉 밀리는 날리기
+		SP_BEHIT_PUSH,
 		SP_END,
 
 	};
@@ -345,6 +346,7 @@ public:
 		HIT_SMALL,
 		HIT_BIG,
 		HIT_FLY,
+		HIT_PUSH,
 		HIT_END
 	}HIT;
 
@@ -426,7 +428,6 @@ public:
 	//UI
 	static _int Monindex;
 protected:
-	MONINFO			m_tMonsterInfo;
 	StateController m_Scon;
 	CollisionType	m_eCollisionType;
 

@@ -218,6 +218,7 @@
     <ClInclude Include="..\public\M_Anjin.h" />
     <ClInclude Include="..\public\M_AWukaka.h" />
     <ClInclude Include="..\public\M_Crownless_P1.h" />
+    <ClInclude Include="..\public\M_Crownless_P2.h" />
     <ClInclude Include="..\public\M_GAzizi.h" />
     <ClInclude Include="..\Public\Particle_Effect.h" />
     <ClInclude Include="..\public\PlayerState.h" />
@@ -341,6 +342,7 @@
     <ClCompile Include="..\private\M_Anjin.cpp" />
     <ClCompile Include="..\private\M_AWukaka.cpp" />
     <ClCompile Include="..\private\M_Crownless_P1.cpp" />
+    <ClCompile Include="..\private\M_Crownless_P2.cpp" />
     <ClCompile Include="..\private\M_GAzizi.cpp" />
     <ClCompile Include="..\Private\Particle_Effect.cpp" />
     <ClCompile Include="..\private\PlayerState.cpp" />
