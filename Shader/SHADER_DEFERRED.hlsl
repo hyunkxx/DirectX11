@@ -328,7 +328,8 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 	float4 vFinalColor;
 	if (vShaderInfo.r == 0.9f)
 	{
-		vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
+		/*vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));*/
+		vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.1f));
 		float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
 		float4 vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z);
 		Out.vColor.rgb = vColor.rgb * (1.f - vGlowColor.a) + vGlowColor.rgb * vGlowColor.a;
@@ -336,12 +337,19 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 	}
 	else
 	{
+		//if (vShaderInfo.r == 1.f)
+		//	vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.8f));
+		//else if (vShaderInfo.r == 0.1f)//스카이박스
+		//	vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
+		//else
+		//	vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
+
 		if (vShaderInfo.r == 1.f)
-			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.0f));
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 		else if (vShaderInfo.r == 0.1f)//스카이박스
-			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
-		else
 			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
+		else
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 
 		Out.vColor.rgb = vFinalColor.rgb * (1.f - vGlowColor.a) + +vGlowColor.rgb * vGlowColor.a;
 		Out.vColor.a = (vFinalColor).a;
@@ -372,7 +380,8 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 	{
 		if (vShaderInfo.r == 0.9f)
 		{
-			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
+			/*vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));*/
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.1f));
 			float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
 			float4 vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r;
 			Out.vColor.rgb = vColor.rgb * (1.f - vGlowColor.a) + vGlowColor.rgb * vGlowColor.a;
@@ -380,13 +389,19 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 		}
 		else
 		{
+			//if (vShaderInfo.r == 1.f)//식생
+			//	vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.8f));
+			//else if(vShaderInfo.r == 0.1f)//스카이박스
+			//	vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
+			//else
+			//	vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
+
 			if (vShaderInfo.r == 1.f)//식생
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.0f));
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 			else if(vShaderInfo.r == 0.1f)//스카이박스
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
-			else
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
-			
+			else
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 			Out.vColor.rgb = vFinalColor.rgb * vShadow.r  * (1.f - vGlowColor.a) + +vGlowColor.rgb * vGlowColor.a;
 			Out.vColor.a = (vFinalColor * vShadow.r).a;
 		}
@@ -395,18 +410,26 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 	{
 		if (vShaderInfo.r == 0.9f)
 		{
-			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
+			/*vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));*/
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.1f));
 			float vOutline = g_OutlineTexture.Sample(LinearClampSampler, In.vTexUV).r;
 			Out.vColor = float4(vFinalColor.xyz * vOutline, vFinalColor.z) * vShadow.r + float4(vGlowColor.rgb, 0.f);
 		}
 		else 
 		{
 			if(vShaderInfo.r == 1.f)
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.0f));
+			//	vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.8f));
+			//else if (vShaderInfo.r == 0.1f)//스카이박스
+			//	vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
+			//else
+			//	vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
+
+			if (vShaderInfo.r == 1.f)
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 			else if (vShaderInfo.r == 0.1f)//스카이박스
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
-			else
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.2f));
+			else
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 
 			Out.vColor = vFinalColor * vShadow.r + float4(vGlowColor.rgb, 0.f);
 		}
@@ -465,7 +488,7 @@ PS_OUT_SHADOW PS_Shadow(PS_IN In)
 	
 	if(bCheck)
 	{
-		Out.vDynamicShadow = g_vMtrlAmbient;
+		Out.vDynamicShadow = vector(0.2f, 0.2f, 0.2f, 0.5f);
 	}
 	else
 	{

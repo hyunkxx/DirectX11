@@ -210,7 +210,7 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	_double TimeDelay = 1.0;
-	pGameInstance->ShadowUpdate(50.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	pGameInstance->ShadowUpdate(80.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 
 	__super::Tick(TimeDelta);
 	
@@ -1755,6 +1755,9 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				if (!XMVector3Equal(vFinalDir, XMVectorZero()))
 					m_pMainTransform->Set_LookDir(vFinalDir);
 			}
+
+			if (IS_ATTACK_PO_3 == m_Scon.iCurState)
+				pGame->TimeSlowDown(0.1f, 0.3f, 15.f);
 
 			//±Ã±Ø±â Ä«¸Þ¶ó ¸ð¼Ç ½ÇÇà
 			if (IS_BURST == m_Scon.iCurState)

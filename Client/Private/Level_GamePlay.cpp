@@ -274,7 +274,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);
 	pGameInstance->SetLightMatrix(vLightProjMatrix, LIGHT_MATRIX::LIGHT_PROJ);
 
-	_vector vBakeLightPos = XMVectorSet(-90.f, 400.f, -90.f, 1.f);
+	_vector vBakeLightPos = XMVectorSet(-80.f, 390.f, -80.f, 1.f);
 	_vector vBakeLightAt = XMVectorSet(200.f, 0.f, 200.f, 1.f);
 
 	pGameInstance->BakeShadowLight(vBakeLightPos, vBakeLightAt);

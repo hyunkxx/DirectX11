@@ -222,6 +222,7 @@
     <ClInclude Include="..\Public\Particle_Effect.h" />
     <ClInclude Include="..\public\PlayerState.h" />
     <ClInclude Include="..\Public\Rect_Effect.h" />
+    <ClInclude Include="..\public\ResonatorUI.h" />
     <ClInclude Include="..\public\Sandbag.h" />
     <ClInclude Include="..\public\DissolveKey.h" />
     <ClInclude Include="..\public\DynamicCamera.h" />
@@ -286,6 +287,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UIInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ImGui\imgui.cpp">
@@ -343,6 +345,7 @@
     <ClCompile Include="..\Private\Particle_Effect.cpp" />
     <ClCompile Include="..\private\PlayerState.cpp" />
     <ClCompile Include="..\Private\Rect_Effect.cpp" />
+    <ClCompile Include="..\private\ResonatorUI.cpp" />
     <ClCompile Include="..\private\Sandbag.cpp" />
     <ClCompile Include="..\private\DissolveKey.cpp" />
     <ClCompile Include="..\private\DynamicCamera.cpp" />

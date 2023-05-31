@@ -52,7 +52,7 @@ void CLightManager::ShadowUpdate(_float fLightHight, _vector vOriginPos)
 	//_vector vCamPos = XMLoadFloat4(&pGameInstance->Get_CamPosition());
 	_vector vCamPos = vOriginPos;
 	_vector vLightEye = XMVectorSet(XMVectorGetX(vCamPos) - 50.f, fLightHight + fHeight, XMVectorGetZ(vCamPos) - 50.f, 1.f);
-	_vector vLightAt = XMVectorSet(XMVectorGetX(vCamPos) - 25.f, fHeight, XMVectorGetZ(vCamPos) - 25.f, 1.f);
+	_vector vLightAt = XMVectorSet(XMVectorGetX(vCamPos), fHeight, XMVectorGetZ(vCamPos), 1.f);
 	_matrix vLightViewMatrix = XMMatrixLookAtLH(vLightEye, vLightAt, VECTOR_UP);
 	pGameInstance->SetLightMatrix(vLightViewMatrix, LIGHT_MATRIX::LIGHT_VIEW);
 	SetLightDirection(XMVector3Normalize(vLightAt - vLightEye));

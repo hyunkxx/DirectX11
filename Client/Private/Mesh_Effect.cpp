@@ -73,7 +73,7 @@ void CMesh_Effect::Tick(_double TimeDelta)
 
 	if (m_fEffectAcc > END_DISTIME)
 	{
-		DISTORTION_POWER -= DISTORTION_SPEED * TimeDelta;
+		DISTORTION_POWER -= DISTORTION_SPEED * (_float)TimeDelta;
 		if (0.f >= DISTORTION_POWER)
 		{
 			DISTORTION_POWER = 0.f;

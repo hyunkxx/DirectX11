@@ -156,9 +156,6 @@
     <ClCompile Include="..\Private\PartsKey.cpp">
       <Filter>src\05.AnimStateKeys</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\TestChar.cpp">
-      <Filter>src\NEW_FILES</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\TestVTF.cpp">
       <Filter>src\NEW_FILES</Filter>
     </ClCompile>
@@ -324,9 +321,6 @@
     <ClCompile Include="..\Private\UI_Tip.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\TerminalUI.cpp">
-      <Filter>src\02. GameObject\99. UI\02. IngameUI\Terminal</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\PlayerState.cpp">
       <Filter>src\02. GameObject\00. StaticClasses</Filter>
     </ClCompile>
@@ -335,6 +329,15 @@
     </ClCompile>
     <ClCompile Include="..\private\SlowKey.cpp">
       <Filter>src\05.AnimStateKeys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TerminalUI.cpp">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ResonatorUI.cpp">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TestChar.cpp">
+      <Filter>src\NEW_FILES</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -635,9 +638,6 @@
     <ClInclude Include="..\Public\UI_Tip.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\TerminalUI.h">
-      <Filter>src\02. GameObject\99. UI\02. IngameUI\Terminal</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\PlayerState.h">
       <Filter>src\02. GameObject\00. StaticClasses</Filter>
     </ClInclude>
@@ -646,6 +646,15 @@
     </ClInclude>
     <ClInclude Include="..\public\SlowKey.h">
       <Filter>src\05.AnimStateKeys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TerminalUI.h">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ResonatorUI.h">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="UIInterface.h">
+      <Filter>src\NEW_FILES</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -785,8 +794,8 @@
     <Filter Include="src\02. GameObject\99. UI\02. LoadingImage">
       <UniqueIdentifier>{975476c6-7409-4c8e-93ab-d8f8f4b64e95}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\02. GameObject\99. UI\02. IngameUI\Terminal">
-      <UniqueIdentifier>{eb53fe2f-d602-4499-b0d0-a1d7e14fde52}</UniqueIdentifier>
+    <Filter Include="src\02. GameObject\99. UI\04. Terminal">
+      <UniqueIdentifier>{a7d228b4-699a-47f0-9d12-4cf8a08b5c3d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

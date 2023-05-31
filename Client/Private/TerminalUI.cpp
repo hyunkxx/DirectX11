@@ -31,20 +31,23 @@ HRESULT CTerminalUI::Initialize(void * pArg)
 	CAppManager* pApp = CAppManager::GetInstance();
 
 	// MainFrame
-	ZeroMemory(&m_bActive, sizeof(_bool) * TERMINAL_END);
-	ZeroMemory(&m_fAlpha, sizeof(_float) * TERMINAL_END);
-	ZeroMemory(&m_fScaleAcc, sizeof(_float) * TERMINAL_END);
+	ZeroMemory(m_bActive, sizeof(_bool) * TERMINAL_END);
+	ZeroMemory(m_fAlpha, sizeof(_float) * TERMINAL_END);
+	ZeroMemory(m_fScaleAcc, sizeof(_float) * TERMINAL_END);
 
 	// Slot
 	for (int i = 0; i < SLOT_MAX; ++i)
 		m_fSlotAlpha[i] = 1.f;
 	
-	ZeroMemory(&m_bSlotOnMouse, sizeof(_bool) * SLOT_MAX);
+	ZeroMemory(m_bSlotOnMouse, sizeof(_bool) * SLOT_MAX);
 
 	if (FAILED(CGameObject::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(addComponents()))
+		return E_FAIL;
+
+	if (FAILED(addGameObjects()))
 		return E_FAIL;
 
 	// Ortho Settings
@@ -242,7 +245,6 @@ HRESULT CTerminalUI::Initialize(void * pArg)
 
 void CTerminalUI::Start()
 {
-
 }
 
 void CTerminalUI::Tick(_double TimeDelta)
@@ -250,6 +252,7 @@ void CTerminalUI::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	inputKey(TimeDelta);
+
 	activeCheck(TimeDelta);
 	activeSlot(TimeDelta);
 
@@ -268,7 +271,10 @@ void CTerminalUI::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	if (m_fAlpha[TERMINAL_MAINFRAME] > 0.f)
+	if (!m_pActivateList.empty() && m_pActivateList.top() == this)
+		m_bRender = true;
+
+	if (m_fAlpha[TERMINAL_MAINFRAME] > 0.f && m_bRender)
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }
 
@@ -295,10 +301,33 @@ void CTerminalUI::inputKey(_double TimeDelta)
 	_bool isMainCam = CCameraMovement::CAM_MAINPLAYER == m_pCamMovement->GetCurrentCamType();
 	if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP && isMainCam)
 	{
-		if (m_fAlpha[TERMINAL_MAINFRAME] == 0.f || m_fAlpha[TERMINAL_MAINFRAME] == 1.f)
+		// 최상위 UI가 터미널이 아닐경우 터미널 On 아니면 최상위 UI만 끈다.
+		if (!m_pActivateList.empty())
 		{
-			m_bSlotActive[0] = m_bActive[TERMINAL_MAINFRAME] = m_bMainActive = !m_bMainActive;
-			ShowCursor(m_bMainActive);
+			if (m_pActivateList.top() != this)
+			{
+				m_pActivateList.top()->SetActive(false);
+				m_pActivateList.pop();
+				m_pActivateList.top()->SetRender(true);
+				m_pActivateList.top()->SetActive(true);
+			}
+			else
+			{
+				m_pActivateList.pop();
+				m_bSlotActive[0] = m_bActive[TERMINAL_MAINFRAME] = m_bMainActive = !m_bMainActive;
+				ShowCursor(m_bMainActive);
+			}
+		}
+		else
+		{
+			if (m_fAlpha[TERMINAL_MAINFRAME] == 0.f || m_fAlpha[TERMINAL_MAINFRAME] == 1.f)
+			{
+				if (!m_bActive[TERMINAL_MAINFRAME])
+					m_pActivateList.push(this);
+
+				m_bRender = m_bSlotActive[0] = m_bActive[TERMINAL_MAINFRAME] = m_bMainActive = !m_bMainActive;
+				ShowCursor(m_bMainActive);
+			}
 		}
 
 		if (m_bMainActive)
@@ -363,15 +392,29 @@ void CTerminalUI::smoothScaleup(TERMINAL_UI eTerminal, _double TimeDelta)
 void CTerminalUI::activeSlot(_double TimeDelta)
 {
 	CGameMode* pGM = CGameMode::GetInstance();
+	CGameInstance* pGI = CGameInstance::GetInstance();
 	
 	if (m_bSlotActive[0])
 	{
 		for (int i = 0; i < SLOT_MAX; ++i)
 		{
-			if (pGM->OnMouse(m_OrthoSlot[i]))
-				m_bSlotOnMouse[i] = true;
-			else
-				m_bSlotOnMouse[i] = false;
+			// 렌더중일 경우
+			if (m_bRender)
+			{
+				if (pGM->OnMouse(m_OrthoSlot[i]))
+					m_bSlotOnMouse[i] = true;
+				else
+					m_bSlotOnMouse[i] = false;
+
+				if (m_bSlotOnMouse[i] && pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+				{
+					IOnClick* pClickedUI = dynamic_cast<IOnClick*>(m_pSlotUI[i]);
+
+					if (pClickedUI)
+						pClickedUI->OnClick();
+				}
+
+			}
 
 			if (m_bSlotActive[i])
 			{
@@ -509,6 +552,17 @@ _bool CTerminalUI::activeDraw(TERMINAL_UI eTerminal, _double TimeDelta)
 	}
 }
 
+void CTerminalUI::PushActiveUI(IActivate * pActivateUI)
+{
+	if (m_pActivateList.empty())
+		return;
+
+	m_pActivateList.top()->SetRender(false);
+	m_pActivateList.push(pActivateUI);
+	m_pActivateList.top()->SetActive(true);
+	m_pActivateList.top()->SetRender(true);
+}
+
 HRESULT CTerminalUI::addComponents()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
@@ -521,6 +575,16 @@ HRESULT CTerminalUI::addComponents()
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI_SUB,
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CTerminalUI::addGameObjects()
+{
+	CGameInstance* pGI = CGameInstance::GetInstance();
+
+	if (FAILED(pGI->Add_GameObjectEx(&m_pSlotUI[0], LEVEL_STATIC, OBJECT::UI_TERMINAL_RESONATOR, L"Terminal_UI", L"Resonator", this)))
 		return E_FAIL;
 
 	return S_OK;

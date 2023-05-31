@@ -8,6 +8,7 @@
 
 #include "ItemDB.h"
 #include "UI_Minimap.h"
+#include "Effect.h"
 
 CChest::CChest(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CInteractionObject(pDevice, pContext)
@@ -84,13 +85,21 @@ void CChest::Tick(_double TimeDelta)
 	{
 		if (pGameInstance->InputKey(DIK_F) == KEY_STATE::HOLD && !m_bInteractionActive)
 		{
+			//pGameMode->PlayEffect("Get_Item_Effect_01",COMMON)
+			//pGameMode->PlayEffect("Get_Item_Effect_02",COMMON)
+			//pGameInstance->Get_Effect(L"Get_Item_Effect_02", EFFECT_ID::COMON);
+
+			//CEffect* pOpenEffect = pGameInstance->Get_Effect(L"Smoke_05_Gray", EFFECT_ID::COMON);
+			//pOpenEffect->Play_Effect(&m_pMainTransform->Get_WorldMatrix());
+
 			m_fPushButtonAcc += (_float)TimeDelta;
 			pGameMode->SetGagebar(m_fPushButtonAcc);
 			if (m_fPushButtonAcc > 1.f)
 			{
 				m_fPushButtonAcc = 0.f;
 				m_bInteractionBegin = true;
-				//UI추가
+
+				//UI 추가
 				m_pUIIcon->SetRender(m_UIIndex, false);
 				m_pUIIcon = nullptr;
 			}

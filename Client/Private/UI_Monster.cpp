@@ -65,7 +65,7 @@ void CUI_Monster::Tick(_double TimeDelta)
 	CommonHP();
 	DecideRender();
 	CommonLevel();
-	Font(TimeDelta);
+	Font((_float)TimeDelta);
 
 	if (true == m_bHit)
 	{

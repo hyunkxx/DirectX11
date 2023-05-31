@@ -47,8 +47,8 @@ void CRenderer::Draw()
 
 		if (m_pRenderSetting->GetShadowLevel() == CRenderSetting::SHADOW_HIGH)
 		{
-			Target_Blur(L"Target_Shadow");
-			Extraction(L"Target_Shadow", L"Target_BlurY");
+			Target_Blur_High(L"Target_Shadow");
+			Extraction(L"Target_Shadow", L"Target_BlurY_High");
 		}
 	}
 
@@ -1485,13 +1485,18 @@ void CRenderer::FinalExtraction()
 
 	if (pSourTarget)
 		pSourTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_SourTexture");
-	if (pDepthTarget)
-		pDepthTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_DepthTexture");
 
-	if(m_pRenderSetting->IsActiveBlackWhite())
-		m_pShader_Extraction->Begin(1);
+	if (m_pRenderSetting->IsActiveBlackWhite())
+	{
+		m_pShader_Extraction->Begin(0);
+	}
 	else
+	{
+		if (pDepthTarget)
+			pDepthTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_DepthTexture");
+
 		m_pShader_Extraction->Begin(5);
+	}
 
 	m_pVIBuffer->Render();
 }

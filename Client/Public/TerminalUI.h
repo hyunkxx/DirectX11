@@ -1,5 +1,6 @@
 #pragma once
 
+#include "UIInterface.h"
 #include "GameObject.h"
 
 BEGIN(Engine)
@@ -12,7 +13,9 @@ END
 
 BEGIN(Client)
 
-class CTerminalUI final : public CGameObject
+class CTerminalUI final 
+	: public CGameObject
+	, public IActivate
 {
 public:
 	enum SLOT_TEXTURE { SLOT_ICON, SLOT_TEXT };
@@ -37,10 +40,18 @@ public:
 	virtual void RenderGUI() override;
 
 public:
+	virtual void SetActive(_bool bValue) { m_bMainActive = bValue; };
+	virtual void SetRender(_bool bValue) { m_bRender = bValue; };
+
+public:
 	_bool IsActive() const { return m_bMainActive; }
+	_uint AddActiveCount() { m_iActiveUICount++; }
+	void PushActiveUI(struct IActivate* pActivateUI);
 
 private:
 	HRESULT addComponents();
+	HRESULT addGameObjects();
+
 	void inputKey(_double TimeDelta);
 	void shutdownUI(_double TimeDelta);
 	void activeCheck(_double TimeDelta);
@@ -59,17 +70,24 @@ public:
 	virtual CGameObject * Clone(void * pArg = nullptr) override;
 	virtual void Free() override;
 
-private:
+private://Components
 	CShader* m_pShader = nullptr;
 	CRenderer* m_pRenderer = nullptr;
 	CVIBuffer_Rect* m_pVIBuffer = nullptr;
 
+private://GameObjects
 	class CPlayerState* m_pCharacterState = nullptr;
 	class CCameraMovement* m_pCamMovement = nullptr;
+
+	class CGameObject* m_pSlotUI[SLOT_MAX];
+	stack<struct IActivate*> m_pActivateList;
+
 private: //Ortho Desc
 	_float4x4 m_ViewMatrix, m_ProjMatrix;	
 
 private:
+	_bool m_bRender = false;
+
 	_bool m_bMainActive = false;
 	_bool m_bActive[TERMINAL_END];
 
@@ -91,7 +109,10 @@ private:
 	_bool m_bSlotOnMouse[SLOT_MAX];
 	_float m_fSlotAlpha[SLOT_MAX];
 
-private: // Test
+private:
+	_uint m_iActiveUICount = 0;
+
+private: // Test UnionExp
 	_float m_fTestTimer = 0.f;
 	_int m_iCount = 1;
 

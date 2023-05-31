@@ -53,6 +53,7 @@
 #include <map>
 #include <set>
 #include <queue>
+#include <stack>
 #include <concurrent_priority_queue.h>
 #include <unordered_map>
 #include <unordered_set>

@@ -30,6 +30,7 @@
 #include "InteractionUI.h"
 #include "AcquireSystem.h"
 #include "TerminalUI.h"
+#include "ResonatorUI.h"
 
 CApplication::CApplication()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -107,12 +108,12 @@ HRESULT CApplication::Render()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	m_pGUIManager->NewFrame();
-	m_pGameInstance->RenderGUI();
-	m_pGameInstance->RenderLevelUI();
-	m_pGUIManager->Render();
+	//m_pGUIManager->NewFrame();
+	//m_pGameInstance->RenderGUI();
+	//m_pGameInstance->RenderLevelUI();
+	//m_pGUIManager->Render();
 
-	m_pContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
+	//m_pContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
 #endif
 
 	m_pGameInstance->Clear_RenderTargetView(_float4(0.f, 0.f, 0.f, 0.f));
@@ -139,7 +140,7 @@ HRESULT CApplication::Render()
 		_float2(0.5f, 0.5f)
 	);
 #ifdef _DEBUG 
-	m_pGUIManager->RenderDrawData();
+	//m_pGUIManager->RenderDrawData();
 #endif
 
 	m_pGameInstance->Present();
@@ -829,6 +830,10 @@ HRESULT CApplication::Ready_UI_Data()
 		CTerminalUI::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::UI_TERMINAL_RESONATOR,
+		CResonatorUI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -1016,6 +1021,54 @@ HRESULT CApplication::Ready_Item_Image()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_TERMINAL_ICON_SETTING,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/IconSetting.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_DETAILPANEL,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/DetailPanel.png")))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_GRADBACKGROUND,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/GradBack.png")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_GLOWBUTTON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/GlowButton.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_RESONATOR_STATETEXT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StateDetailsText.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_RESONATOR_WEAPONTEXT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/WeaponText.dds")))))
+		return E_FAIL;
+
+	// Resonator UI
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_RESONATOR_STATE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StateIcon.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_RESONATOR_WEAPON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/WeaponIcon.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_RESONATOR_ECHO,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/EchoIcon.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_RESONATOR_RENONANCE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/ResonanceIcon.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_RESONATOR_WUTHERIDE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/WutherideIcon.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::RESONATOR_STATE_HP,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StateHP.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::RESONATOR_STATE_ATTACK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StateAttack.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::RESONATOR_STATE_DEFENSE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StateDefense.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::RESONATOR_STATE_CRITRATE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StateCritRate.dds")))))
 		return E_FAIL;
 
 	return S_OK;

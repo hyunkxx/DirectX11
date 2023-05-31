@@ -31,6 +31,7 @@ public:
 	virtual void Free() override;
 
 	CGameObject* m_pAcquireSystem = nullptr;
+
 };
 
 END
