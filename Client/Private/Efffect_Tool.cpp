@@ -41,7 +41,7 @@ HRESULT CEfffect_Tool::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pC
 void CEfffect_Tool::Tick(_double TimeDelta)
 {
 
-	if (CGameInstance::GetInstance()->InputKey(DIK_DELETE) == KEY_STATE::TAP)
+	if (CGameInstance::GetInstance()->InputKey(DIK_INSERT) == KEY_STATE::TAP)
 	{
 		if (m_bRender)
 			m_bRender = false;

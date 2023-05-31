@@ -74,7 +74,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성
@@ -633,8 +633,6 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 	
 #pragma endregion ROCK_MASK
 	
-
-
 	CVIBuffer_Terrain::TERRAIN_SIZE tSize;
 	tSize.mX = 300;
 	tSize.mZ = 300;
@@ -1702,6 +1700,11 @@ HRESULT CApplication::Ready_Static_Effect()
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
 			TEXT("../../Resource/Effect/M_Binglie/M_Binglie_Ball_Ready.bin"),
+			"../../Resource/Effect/M_Binglie/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Binglie/M_Binglie_Ball_Boom.bin"),
 			"../../Resource/Effect/M_Binglie/Attack/")))
 			return E_FAIL;
 
