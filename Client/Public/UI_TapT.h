@@ -61,7 +61,7 @@ private:
 	HRESULT Setup_ShaderResources(_uint Bufferindex);
 
 private:
-	void	SerectUI();
+	void	SelectUI();
 
 
 

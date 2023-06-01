@@ -37,6 +37,8 @@ HRESULT CUI_TapT::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	return S_OK;
 }
 
@@ -63,7 +65,7 @@ void CUI_TapT::Tick(_double TimeDelta)
 			Start_Move(4, 10, TimeDelta);
 
 			//마우스커서
-			SerectUI();
+			SelectUI();
 			for (_uint i = 4; i < 10; ++i)
 			{
 				if (true == m_DescList[i]->OnRect)
@@ -169,7 +171,7 @@ void CUI_TapT::RenderGUI()
 {
 }
 
-void CUI_TapT::SerectUI()
+void CUI_TapT::SelectUI()
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	if (nullptr != m_pUIMouse)
@@ -256,12 +258,6 @@ HRESULT CUI_TapT::Setup_ShaderResources(_uint Bufferindex)
 
 	if (nullptr != (*Desciter))
 	{
-		XMStoreFloat4x4(&((*Desciter)->WorldMatrix), XMMatrixScaling((*Desciter)->fWidth, (*Desciter)->fHeight, 1.f) *
-			XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians((*Desciter)->fDegree))
-			* XMMatrixTranslation((*Desciter)->fX, (*Desciter)->fY, (*Desciter)->fZ));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &((*Desciter)->WorldMatrix))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -369,6 +365,10 @@ void CUI_TapT::Load()
 
 		if (nullptr != Desc)
 		{
+
+			XMStoreFloat4x4(&(Desc->WorldMatrix), XMMatrixScaling(Desc->fWidth, Desc->fHeight, 1.f) *
+				XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(Desc->fDegree))
+				* XMMatrixTranslation(Desc->fX, Desc->fY, Desc->fZ));
 			m_DescList.push_back(Desc);
 		}
 	}

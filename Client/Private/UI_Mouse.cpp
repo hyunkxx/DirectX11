@@ -41,8 +41,6 @@ void CUI_Mouse::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 	Get_MousePos();
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(m_fWidth, m_fHeight, 1.f) * XMMatrixTranslation(m_fX + 5.f, m_fY - 6.f, m_fZ));
-	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 
 }
 
@@ -76,20 +74,15 @@ void CUI_Mouse::RenderGUI()
 
 _float3	CUI_Mouse::Get_MousePos()
 {
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	
 	POINT		MousePos{};
 	
 	GetCursorPos(&MousePos);
 	ScreenToClient(g_hWnd, &MousePos);
-
-	UINT           pNumViewports;
-	m_pContext->RSGetViewports(&pNumViewports, NULL);
-	D3D11_VIEWPORT*		pViewPort = new D3D11_VIEWPORT[pNumViewports];
-	m_pContext->RSGetViewports(&pNumViewports, pViewPort);
-
-	float Viewport_Width = (float)pViewPort[0].Width;
-	float Viewport_Height = (float)pViewPort[0].Height;
-
-	Safe_Delete_Array(pViewPort);
+	const D3D11_VIEWPORT* pViewPort = pGame->GetViewport(VIEWPORT_TYPE::VIEWPORT_DEFAULT);
+	float Viewport_Width = (float)pViewPort->Width;
+	float Viewport_Height = (float)pViewPort->Height;
 
 	_float3	fMousePos;
 	m_fX = MousePos.x - (Viewport_Width * 0.5f);

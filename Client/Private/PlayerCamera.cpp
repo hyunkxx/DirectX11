@@ -6,6 +6,8 @@
 
 #include "CameraMovement.h"
 #include "TerminalUI.h"
+#include "UI_TapT.h"
+#include "UI_Tip.h"
 
 CPlayerCamera::CPlayerCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCamera(pDevice, pContext)
@@ -100,6 +102,8 @@ void CPlayerCamera::Start()
 	ShowCursor(false);
 
 	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
+	m_pUITap = static_cast<CUI_TapT*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_TapT"));
+	m_pUITip = static_cast<CUI_Tip*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
 
 }
 
@@ -118,8 +122,15 @@ void CPlayerCamera::Tick(_double TimeDelta)
 	if (false == m_bApplyCurve)
 	{
 #pragma region Input
-
 		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
+		if (false == m_pTerminalUI->IsActive())
+		{
+			m_bFixMouse = m_pUITip->IsMouseActive() ? false : true;
+		}
+		else
+		{
+			m_pUITip->SetState(DISABLE);
+		}
 
 		if (pGameInstance->InputKey(DIK_LALT) == KEY_STATE::HOLD)
 		{

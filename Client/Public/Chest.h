@@ -70,6 +70,7 @@ private:
 
 	//UI Ãß°¡
 	class CUI_Minimap*		m_pUIIcon = { nullptr };
+	class CUI_Tip*		  m_pUITip = { nullptr };
 private:
 	CHEST_TYPE m_eChestType = CHEST_SIMPLE;
 	_bool m_bOverlapedPlayer = false;

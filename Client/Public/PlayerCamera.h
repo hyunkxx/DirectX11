@@ -120,7 +120,8 @@ public:
 
 private:
 	class CTerminalUI* m_pTerminalUI = nullptr;
-
+	class CUI_TapT*	   m_pUITap = { nullptr };
+	class CUI_Tip*	   m_pUITip = { nullptr };
 };
 
 END

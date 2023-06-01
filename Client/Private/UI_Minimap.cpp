@@ -36,9 +36,9 @@ HRESULT CUI_Minimap::Initialize(void * pArg)
 	{
 		XMStoreFloat4x4(&(m_WorldMatrixDefaultIcon[i]), XMMatrixScaling(m_fWidthDefaultIcon[i], m_fHeightDefaultIcon[i], 1.f)
 			* XMMatrixTranslation(m_fXDefaultIcon[i], m_fYDefaultIcon[i], m_fZDefaultIcon[i]));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	}
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	return S_OK;
 }
 
@@ -62,8 +62,6 @@ void CUI_Minimap::Tick(_double TimeDelta)
 
 
 	// 미니맵 
-	_float3 fTerrainScale;
-	
 	// 가져온 오브젝트들이 준비가 되면 랜더 돌릴 수 있음-> 랜더조건
 	if (nullptr != m_pPlayer)
 	{
@@ -85,8 +83,7 @@ void CUI_Minimap::Tick(_double TimeDelta)
 		m_TerrainRB.y = -m_fPointRB.y / m_fHeightMiniMap + 0.5f;
 
 		XMStoreFloat4x4(&m_WorldMatrixMiniMap, XMMatrixScaling(m_fWidthMiniMap, m_fHeightMiniMap, 1.f) * XMMatrixTranslation(m_fXMiniMap, m_fYMiniMap, m_fZMiniMap));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+
 
 
 		for (_uint i = 0; i < 2; ++i)
@@ -112,16 +109,14 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			_float Y = XMVectorGetZ(vPlayerPos - vWorldPos);
 			_float Dist = XMVectorGetX(XMVector4Length(vPlayerPos - vWorldPos));
 			
-			if (200.f <= Dist)
-			{
+			if ((190.f <= Dist)||((_int)pDesc.IconLU.x == -1))
 				pDesc.bRender = false;
-			}
-			XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)  
-				* XMMatrixTranslation(-540.f - X * m_fWidthMiniMap/g_iWinSizeX 
-					, 260.f - Y  * m_fHeightMiniMap/g_iWinSizeY , 0.f));
-			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+			if((190.f > Dist) && ((_int)pDesc.IconLU.x != -1))
+				pDesc.bRender = true;
 
+			XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)  
+				* XMMatrixTranslation(-540.f - X * (m_fWidthMiniMap/g_iWinSizeX) * 1.5f 
+					, 260.f - Y  * (m_fHeightMiniMap/g_iWinSizeY) * 1.5f , 0.f));
 		}
 
 
@@ -207,9 +202,9 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			IconPos.x = IconPos.x + Dist;
 		}
 
-		if (-260.f >= IconPos.y)
+		if (-250.f >= IconPos.y)
 		{
-			_float Dist = -260.f - IconPos.y;
+			_float Dist = -250.f - IconPos.y;
 			IconPos.y = IconPos.y + Dist;
 		}
 		if (320.f <= IconPos.y)
@@ -239,8 +234,6 @@ void CUI_Minimap::Tick(_double TimeDelta)
 		Desc.Dist = Dist;
 		XMStoreFloat4x4(&(Desc.IconWorldMatrix), XMMatrixScaling(30.f, 30.f, 1.f)
 			* XMMatrixTranslation(IconPos.x, IconPos.y, 0.f));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f)); 
 	}
 
 }
@@ -260,47 +253,46 @@ HRESULT CUI_Minimap::Render()
 	{
 		if (FAILED(__super::Render()))
 			return E_FAIL;
-
-		//디폴트아이콘
-		for (_uint i = 0; i < 2; ++i)
-		{
-			if (false == m_bNull)
+			//디폴트아이콘
+			for (_uint i = 0; i < 2; ++i)
 			{
-				if (FAILED(Setup_ShaderResourcesDefaultIcon(i)))
-					return E_FAIL;
-				m_pShader->Begin(1);
-				m_pVIBufferMiniMap->Render();
+				if (false == m_bNull)
+				{
+					if (FAILED(Setup_ShaderResourcesDefaultIcon(i)))
+						return E_FAIL;
+					m_pShader->Begin(1);
+					m_pVIBufferMiniMap->Render();
+				}
 			}
-		}
 
-		//미니맵아이콘
-		_uint Descindex = 0;
-		for (auto& Desc : m_IconDescList)
-		{
-			if (true == Desc.bRender)
+			//미니맵아이콘
+			_uint Descindex = 0;
+			for (auto& Desc : m_IconDescList)
 			{
-				if (FAILED(Setup_ShaderResourcesIcon(Descindex)))
-					return E_FAIL;
-				m_pShader->Begin(1);
-				m_pVIBufferMiniMap->Render();
+				if (true == Desc.bRender)
+				{
+					if (FAILED(Setup_ShaderResourcesIcon(Descindex)))
+						return E_FAIL;
+					m_pShader->Begin(1);
+					m_pVIBufferMiniMap->Render();
+				}
+				++Descindex;
 			}
-			++Descindex;
-		}
 
-		//메인화면아이콘
-		for (auto& Desc : m_DescList)
-		{
-			if ((true == Desc.bRender)&&(Desc.Dist > 50.f) && (Desc.Dist < 250.f))
+			//메인화면아이콘
+			for (auto& Desc : m_DescList)
 			{
-				if (FAILED(Setup_ShaderResourcesIcons(&Desc)))
-					return E_FAIL;
-				m_pShader->Begin(1);
-				m_pVIBufferMiniMap->Render();
+				if ((true == Desc.bRender) && (Desc.Dist > 50.f) && (Desc.Dist < 250.f))
+				{
+					if (FAILED(Setup_ShaderResourcesIcons(&Desc)))
+						return E_FAIL;
+					m_pShader->Begin(1);
+					m_pVIBufferMiniMap->Render();
+				}
 			}
-		}
 
 		// 미니맵
-		if ((false == m_bNull) && (nullptr != m_pVIBufferMiniMap))
+		if (false == m_bNull)
 		{
 			if (FAILED(Setup_ShaderResourcesMiniMap()))
 				return E_FAIL;
@@ -343,16 +335,14 @@ HRESULT CUI_Minimap::Add_Components()
 
 }
 
+
 void CUI_Minimap::Set_ObjectPos(_int Index, _fvector vObjectPos)
 {
-	for (auto& Desc : m_DescList)
-	{
-		if (Index == Desc.Index)
-		{
-			m_DescList[Index].vObjectPos = vObjectPos;
-			break;
-		}
-	}
+	m_DescList[Index].vObjectPos = vObjectPos;
+}
+void CUI_Minimap::Set_Disable(_int Index)
+{
+	m_IconDescList[Index].IconLU.x = -1.f;
 }
 
 void CUI_Minimap::SetRender(_int index, _bool bRender)
@@ -386,7 +376,7 @@ _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 	m_IconDescList.push_back(MiniMapDesc);
 
 
-	//메인아이콘ㅋ
+	//메인아이콘
 	XMStoreFloat4x4(&fWorldMat, WorldMat);
 	ICONDESC Desc;
 	Desc.vObjectPos = vObjectPos;

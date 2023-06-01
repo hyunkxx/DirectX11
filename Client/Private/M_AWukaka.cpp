@@ -135,6 +135,7 @@ void CM_AWukaka::Start()
 	//UIÃß°¡
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 44);
+	m_pUIIcon->SetRender(m_UIIndex, true);
 }
 
 void CM_AWukaka::PreTick(_double TimeDelta)
@@ -192,7 +193,6 @@ void CM_AWukaka::Tick(_double TimeDelta)
 		Head.y += 0.7f;
 		m_pUIMon->Set_CharacterPos(XMLoadFloat4(&Head));
 		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
-		m_pUIIcon->SetRender(m_UIIndex, true);
 	}
 }
 
@@ -861,7 +861,7 @@ void CM_AWukaka::Tick_State(_double TimeDelta)
 			SetState(DISABLE);
 			m_pUIMon->SetState(DISABLE);
 			m_pUIMon = nullptr;
-			m_pUIIcon->SetRender(m_UIIndex, false);
+			m_pUIIcon->Set_Disable(m_UIIndex);
 			m_pUIIcon = nullptr;
 		}
 

@@ -50,6 +50,8 @@ HRESULT CUI_MainScreen::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	return S_OK;
 }
 
@@ -114,15 +116,17 @@ void CUI_MainScreen::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	if (nullptr != m_pRenderer)
-		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
+
+	if (true == m_bRender)
+	{
+		if (nullptr != m_pRenderer)
+			m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
+	}
 }
 
 
 HRESULT CUI_MainScreen::Render()
 {
-	if (true == m_bRender)
-	{
 		if (FAILED(__super::Render()))
 			return E_FAIL;
 
@@ -241,15 +245,67 @@ HRESULT CUI_MainScreen::Render()
 					m_pVIBuffer->Render();
 				}
 			}
-
-
 		}
-	}
 	return S_OK;
 }
 
 void CUI_MainScreen::RenderGUI()
 {
+	ImGui::Begin("UI");
+		ImGui::InputInt("Index", &m_Index);
+		if((0 <= m_Index)&&(m_Index <= m_CutDescList.size()))
+	{
+		ImGui::InputInt("PlayerType", &(m_CutDescList[m_Index]->eKeyType));
+		ImGui::Separator();
+
+		ImGui::InputInt("texNum", &(m_CutDescList[m_Index]->iTexNum));
+		ImGui::InputInt("passNum", &(m_CutDescList[m_Index]->iPass));
+
+		//if (ImGui::Button("Rot")) 
+		//{ CurrentCutDesc->bRot = true; }
+		ImGui::Separator();
+
+		_float4 CutPos = _float4{ m_CutDescList[m_Index]->fXCut, m_CutDescList[m_Index]->fYCut, m_CutDescList[m_Index]->fZCut, 1.f };
+		ImGui::InputFloat3("Cut", &CutPos.x, "%.2f");
+		ImGui::SliderFloat("CutX", &CutPos.x, -640.f, 640.f);
+		ImGui::SliderFloat("CutY", &CutPos.y, -360.f, 360.f);
+		ImGui::SliderFloat("CutZ", &CutPos.z, -1.f, 1.f);
+		m_CutDescList[m_Index]->fXCut = m_CutDescList[m_Index]->WorldMatrixCut._41 = CutPos.x;
+		m_CutDescList[m_Index]->fYCut = m_CutDescList[m_Index]->WorldMatrixCut._42 = CutPos.y;
+		m_CutDescList[m_Index]->fZCut = m_CutDescList[m_Index]->WorldMatrixCut._43 = CutPos.z;
+		ImGui::Separator();
+
+
+		ImGui::InputFloat("ScaleX", &(m_CutDescList[m_Index]->fWidthCut));
+		ImGui::NewLine();
+		ImGui::InputFloat("ScaleY", &(m_CutDescList[m_Index]->fHeightCut));
+		ImGui::NewLine();
+		ImGui::SliderFloat("sScaleX", &(m_CutDescList[m_Index]->fWidthCut), 0.1f, 1280.f);
+		ImGui::NewLine();
+		ImGui::SliderFloat("sScaleY", &(m_CutDescList[m_Index]->fHeightCut), 0.1f, 720.f);
+		ImGui::NewLine();
+		m_CutDescList[m_Index]->WorldMatrixCut._11 = m_CutDescList[m_Index]->fWidthCut;
+		m_CutDescList[m_Index]->WorldMatrixCut._22 = m_CutDescList[m_Index]->fHeightCut;
+		ImGui::Separator();
+
+		// 알파값
+		m_CutDescList[m_Index]->ColorCut.x = m_CutDescList[m_Index]->fColorRCut;
+		m_CutDescList[m_Index]->ColorCut.y = m_CutDescList[m_Index]->fColorGCut;
+		m_CutDescList[m_Index]->ColorCut.z = m_CutDescList[m_Index]->fColorBCut;
+		m_CutDescList[m_Index]->ColorCut.w = m_CutDescList[m_Index]->fColorACut;
+		if (ImGui::InputFloat("ColorR", &(m_CutDescList[m_Index]->ColorCut.x))) { m_CutDescList[m_Index]->fColorRCut = m_CutDescList[m_Index]->ColorCut.x; }
+		if (ImGui::InputFloat("ColorG", &(m_CutDescList[m_Index]->ColorCut.y))) { m_CutDescList[m_Index]->fColorGCut = m_CutDescList[m_Index]->ColorCut.y; }
+		if (ImGui::InputFloat("ColorB", &(m_CutDescList[m_Index]->ColorCut.z))) { m_CutDescList[m_Index]->fColorBCut = m_CutDescList[m_Index]->ColorCut.z; }
+		if (ImGui::InputFloat("ColorA", &(m_CutDescList[m_Index]->ColorCut.w))) { m_CutDescList[m_Index]->fColorACut = m_CutDescList[m_Index]->ColorCut.w; }
+		if (ImGui::SliderFloat("sColorR", &(m_CutDescList[m_Index]->ColorCut.x), -255.f, 255.f)) { m_CutDescList[m_Index]->fColorRCut = m_CutDescList[m_Index]->ColorCut.x; }
+		if (ImGui::SliderFloat("sColorG", &(m_CutDescList[m_Index]->ColorCut.y), -255.f, 255.f)) { m_CutDescList[m_Index]->fColorGCut = m_CutDescList[m_Index]->ColorCut.y; }
+		if (ImGui::SliderFloat("sColorB", &(m_CutDescList[m_Index]->ColorCut.z), -255.f, 255.f)) { m_CutDescList[m_Index]->fColorBCut = m_CutDescList[m_Index]->ColorCut.z; }
+		if (ImGui::SliderFloat("sColorA", &(m_CutDescList[m_Index]->ColorCut.w), -255.f, 255.f)) { m_CutDescList[m_Index]->fColorACut = m_CutDescList[m_Index]->ColorCut.w; }
+		ImGui::Separator();
+	}
+
+	ImGui::End();
+
 }
 
 void CUI_MainScreen::QTEAct(_double TimeDelta)
@@ -960,85 +1016,6 @@ HRESULT CUI_MainScreen::Add_Components()
 	return S_OK;
 
 }
-void CUI_MainScreen::Start_Go(_double TimeDelta)
-{
-	// 사라지는 타이밍 잡아서 호출
-	DisappearIcon(0, 3, TimeDelta);
-	DisappearIcon(10, 19, TimeDelta);
-	DisappearIcon(45, 57, TimeDelta);
-	DisappearIcon(58, 61, TimeDelta);
-	DisappearIcon(64, 67, TimeDelta);
-
-}
-
-void CUI_MainScreen::Start_Come(_double TimeDelta)
-{
-	// 나타나는 타이밍 잡아서 호출
-	AppearIcon(0, 3, TimeDelta);
-	AppearIcon(10, 19, TimeDelta);
-	AppearIcon(45, 57, TimeDelta);
-	AppearIcon(58, 61, TimeDelta);
-	AppearIcon(64, 67, TimeDelta);
-
-}
-
-
-void CUI_MainScreen::DisappearIcon(_uint indexstart, _uint indexend, _double TimeDelta)
-{
-	for (_uint i = indexstart; i < indexend; ++i)
-	{
-		_vector AimPos = XMVectorSet(m_CutDescList[i]->AimPos.x, m_CutDescList[i]->AimPos.y, 0.01f, 1.f);
-		_vector OriPos = XMVectorSet(m_CutDescList[i]->OriPos.x, m_CutDescList[i]->OriPos.y, 0.01f, 1.f);
-		_vector vDir = AimPos - OriPos;
-
-		_vector CurrentPos = XMVectorSet(m_CutDescList[i]->fXCut, m_CutDescList[i]->fYCut, 0.0f, 1.f);
-		CurrentPos += XMVector4Normalize(vDir) * (_float)TimeDelta;
-
-		_vector pos = CurrentPos;
-		pos += (AimPos - CurrentPos) * (_float)TimeDelta;
-		_float Dist = Distance(AimPos, CurrentPos);
-
-
-
-		m_CutDescList[i]->fXCut = XMVectorGetX(pos);
-		m_CutDescList[i]->fYCut = XMVectorGetY(pos);
-
-		if (0.1f > Dist)
-		{
-			m_CutDescList[i]->fXCut = m_CutDescList[i]->AimPos.x;
-		}
-	}
-}
-
-void CUI_MainScreen::AppearIcon(_uint indexstart, _uint indexend, _double TimeDelta)
-{
-	for (_uint i = indexstart; i < indexend; ++i)
-	{
-		_vector AimPos = XMVectorSet(m_CutDescList[i]->AimPos.x, m_CutDescList[i]->AimPos.y, 0.01f, 1.f);
-		_vector OriPos = XMVectorSet(m_CutDescList[i]->OriPos.x, m_CutDescList[i]->OriPos.y, 0.01f, 1.f);
-		_vector vDir = OriPos - AimPos;
-
-		_vector CurrentPos = XMVectorSet(m_CutDescList[i]->fXCut, m_CutDescList[i]->fYCut, 0.0f, 1.f);
-		CurrentPos += XMVector4Normalize(vDir) * (_float)TimeDelta;
-
-		_vector pos = CurrentPos;
-		pos += (OriPos - CurrentPos) * (_float)TimeDelta;
-		_float Dist = Distance(OriPos, CurrentPos);
-
-
-		if (0.1f < Dist)
-		{
-			m_CutDescList[i]->fXCut = XMVectorGetX(pos);
-			m_CutDescList[i]->fYCut = XMVectorGetY(pos);
-		}
-		else
-		{
-			m_CutDescList[i]->fXCut = m_CutDescList[i]->OriPos.x;
-		}
-
-	}
-}
-
 
 _float CUI_MainScreen::Distance(_fvector TargetPos, _fvector CurrentPos)
 {
@@ -1459,6 +1436,11 @@ void CUI_MainScreen::Load()
 		if (nullptr != Desc)
 		{
 			Desc->ColorCut.w = Desc->fColorACut;
+			Desc->OriPos = _float2(Desc->fXCut, Desc->fYCut);
+			Desc->AimPos = _float2(640.f + Desc->fWidthCut /2.f , -360.f - Desc->fHeightCut / 2.f);
+			XMStoreFloat4x4(&(Desc->WorldMatrixCut), XMMatrixScaling(Desc->fWidthCut, Desc->fHeightCut, 1.f)
+				* XMMatrixTranslation(Desc->fXCut, Desc->fYCut, Desc->fZCut));
+
 			m_CutDescList.push_back(Desc);
 
 		}
@@ -1658,9 +1640,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 		
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
@@ -1715,9 +1694,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesGraphs0(_uint Bufferindex)
 		}
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
@@ -1754,9 +1730,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesGraphs1(_uint Bufferindex)
 
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
@@ -1793,9 +1766,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesGraphs2(_uint Bufferindex)
 
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
@@ -1828,9 +1798,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesT(_uint Bufferindex)
 
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
@@ -1864,9 +1831,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesQ(_uint Bufferindex)
 
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
@@ -1899,9 +1863,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesE(_uint Bufferindex)
 
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
@@ -1934,9 +1895,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesR(_uint Bufferindex)
 
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
@@ -1966,9 +1924,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesRR(_uint Bufferindex)
 
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
@@ -2000,9 +1955,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesI0(_uint Bufferindex)
 
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
@@ -2033,9 +1985,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesI1(_uint Bufferindex)
 
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
@@ -2066,9 +2015,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesI2(_uint Bufferindex)
 
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
@@ -2113,9 +2059,6 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesPlayer(_uint Bufferindex)
 
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
-
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;

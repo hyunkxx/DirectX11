@@ -37,6 +37,9 @@ HRESULT CUI_Monster::Initialize(void * pArg)
 	memcpy(&MonInfo, pArg, sizeof(MONINFO));
 	m_MonsterLevel = MonInfo.Level;
 	m_MonsterType = MonInfo.Type;
+
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	return S_OK;
 }
 
@@ -766,8 +769,6 @@ void CUI_Monster::CommonHP()
 
 		XMStoreFloat4x4(&(m_DescList[i].WorldMatrix), XMMatrixScaling((m_DescList[i]).fWidth, (m_DescList[i]).fHeight, 1.f)
 			* XMMatrixTranslation((m_DescList[i]).fX, (m_DescList[i]).fY, (m_DescList[i]).fZ));
-		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 		m_DescList[i].bRender = true;
 	}
 }
@@ -798,8 +799,6 @@ void CUI_Monster::CommonLevel()
 
 			XMStoreFloat4x4(&(m_DescList[i].WorldMatrix), XMMatrixScaling((m_DescList[i]).fWidth, (m_DescList[i]).fHeight, 1.f)
 				* XMMatrixTranslation((m_DescList[i]).fX, (m_DescList[i]).fY, (m_DescList[i]).fZ));
-			XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-			XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 		}
 	}
 }
@@ -892,8 +891,6 @@ void CUI_Monster::DecideRender()
 								m_DescList[i].bRender = true;
 								XMStoreFloat4x4(&(m_DescList[i].WorldMatrix), XMMatrixScaling(m_DescList[i].fWidth, m_DescList[i].fHeight, 1.f) *
 									XMMatrixTranslation(m_DescList[i].fX, m_DescList[i].fY, m_DescList[i].fZ));
-								XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-								XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 							}
 
 							_int LevelTen = m_MonsterLevel / 10;

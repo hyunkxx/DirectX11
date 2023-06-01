@@ -102,6 +102,8 @@ private:
 public:
 	void	Set_Texchange(_int Texindex);
 	void	Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage);}
+	void	Start_Go(_double TimeDelta);
+	_bool	Start_Come(_double TimeDelta);
 
 private:
 	void	SetHP();
@@ -138,11 +140,8 @@ private:
 	_bool	SizeXYP(CUTRECT* pDesc, _double TimeDelta);
 	_bool	SizeXYM(CUTRECT* pDesc, _double TimeDelta);
 
-	void	Start_Go(_double TimeDelta);
-	void	Start_Come(_double TimeDelta);
-	void	DisappearIcon(_uint indexstart, _uint indexend, _double TimeDelta);
-	void	AppearIcon(_uint indexstart, _uint indexend, _double TimeDelta);
-
+	
+	
 	void RenderPlayer1();
 	void RenderPlayer2();
 	void RenderPlayer3();

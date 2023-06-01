@@ -70,7 +70,6 @@ public:
 private:
 	HRESULT Add_Components();
 	HRESULT Setup_ShaderResourcesMiniMap();
-	HRESULT Setup_ShaderResourcesFrame();
 	HRESULT Setup_ShaderResourcesDefaultIcon(_uint Bufferindex);
 	HRESULT Setup_ShaderResourcesIcon(_uint Bufferindex);
 	HRESULT Setup_ShaderResourcesIcons(ICONDESC* pDesc);
@@ -84,6 +83,7 @@ public:
 
 public:
 	void Set_ObjectPos(_int Index, _fvector vObjectPos);
+	void Set_Disable(_int Index);
 	void SetRender(_int index, _bool bRender);
 	_int Add_Icon(_fvector vObjectPos, _int	TextureNum);
 private:
@@ -105,7 +105,7 @@ private:
 	_float2			m_fPointRB = { 0.f,0.f };
 
 	_bool			m_Render = { true }; // 미니맵 위로 사라질때 디폴트+일반아이콘 랜더off
-	_float2			AimPosMiniMap = { -540.f , -360.f - 150.f / 2.f };
+	_float2			AimPosMiniMap = { -540.f , -360.f - 190.f / 2.f };
 	_float2			OriPosMiniMap = { -540.f , 260.f };
 	_float			m_fXMiniMap = { -540.f };
 	_float			m_fYMiniMap = { 260.f };
@@ -154,7 +154,7 @@ private:
 	CVIBuffer_Rect* m_pVIBufferMiniMap = { nullptr };
 
 	CTexture*		m_pTexDefaultIcon = { nullptr };
-	vector<MAPDESC>		  m_IconDescList;
+	vector<MAPDESC>		 m_IconDescList;
 };
 
 END
