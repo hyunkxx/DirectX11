@@ -75,7 +75,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성
@@ -1780,6 +1780,48 @@ HRESULT CApplication::Ready_Static_Effect()
 
 	}
 	
+#pragma endregion
+
+
+#pragma region Boss_Crownless
+
+	// 모션들 중 빠르게 이동하는 모션 시전 시 나오는 이펙트
+	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_Dash.bin"),
+		"../../Resource/Effect/B_Crownless/Attack/")))
+		return E_FAIL;
+
+	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_01_1.bin"),
+		"../../Resource/Effect/B_Crownless/Attack/")))
+		return E_FAIL;
+
+	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_02_2.bin"),
+		"../../Resource/Effect/B_Crownless/Attack/")))
+		return E_FAIL;
+
+	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_03_1.bin"),
+		"../../Resource/Effect/B_Crownless/Attack/")))
+		return E_FAIL;
+
+	// Attack_8 이펙트들
+	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_08.bin"),
+		"../../Resource/Effect/B_Crownless/Attack/")))
+		return E_FAIL;
+
+	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_08_Circle.bin"),
+		"../../Resource/Effect/B_Crownless/Attack/")))
+		return E_FAIL;
+
+	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_08_Jump.bin"),
+		"../../Resource/Effect/B_Crownless/Attack/")))
+		return E_FAIL;
+
 #pragma endregion
 
 
