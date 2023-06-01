@@ -180,7 +180,7 @@ PS_OUT	PS_MAIN_SELFSHADOW(PS_IN In)
 	float fGlowValue = vMtrlDiffuse.r;
 
 	// NormalTex
-	if (0.f <  In.vModelOption_NEG.x)
+	if (0.0f <  In.vModelOption_NEG.x)
 	{
 		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 		float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;

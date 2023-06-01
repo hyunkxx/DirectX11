@@ -689,7 +689,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_6_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
-	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_11;
+	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_NONE;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
 	{
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_ROCK_6");
@@ -799,7 +799,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_18_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
-	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_27;
+	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_NONE;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
 	{
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_ROCK_18");
@@ -882,7 +882,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_27_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
-	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_32;
+	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_NONE;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
 	{
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_ROCK_27");
@@ -930,7 +930,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_32_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
-	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_41;
+	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_NONE;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
 	{
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_ROCK_32");
@@ -939,7 +939,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_33_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 30.0f;
-	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_41_B;
+	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_NONE;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
 	{
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_ROCK_33");
@@ -966,7 +966,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_36_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
-	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_44;
+	EditionDesc.iMaskTex_ID = STATIC_IMAGE::ROCK_MASK_NONE;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Rock"), &EditionDesc)))
 	{
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_ROCK_36");
