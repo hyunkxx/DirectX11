@@ -220,11 +220,11 @@ void CM_Crownless_P1::LateTick(_double TimeDelta)
 
 
 	// 돌진기 스킬 예외처리 // 거리비교해서
-	if (m_fTargetDistance <= 3.f)
+	if (m_fTargetDistance <= 1.8f)
 	{
 		static _bool bOverlapedCheck = false;
 
-		if (IS_ATTACK02 == m_Scon.iCurState)
+		if (IS_ATTACK02 == m_Scon.iCurState && true == m_tCurState.bRootMotion)
 		{
 			static _vector vTargetPos;
 
@@ -270,7 +270,7 @@ HRESULT CM_Crownless_P1::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		if (2 == i || 4 == i || 6 == i)
+		if (2 == i || 4 == i)
 			continue;
 
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
@@ -317,7 +317,7 @@ HRESULT CM_Crownless_P1::RenderShadow()
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		if (2 == i || 4 == i || 6 == i)
+		if (2 == i || 4 == i)
 			continue;
 
 		if (FAILED(m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i)))
@@ -564,9 +564,6 @@ void CM_Crownless_P1::SetUp_State()
 	m_Scon.TrackPos = 0.0;
 	m_Scon.bAnimFinished = false;
 
-	// 도발 스택 초기화
-	if (m_Scon.iCurState != IS_TAUNT)
-		m_iTauntStack = 0;
 
 	// 애니메이션이 강제로 끊긴 경우 대비 애니메이션 갱신 시 OBB 콜라이더 무조건 끄기
 	m_pAttackCollider->SetActive(false);
@@ -952,7 +949,6 @@ void CM_Crownless_P1::Select_State(_double TimeDelta)
 			}
 			else
 			{
-				++m_iTauntStack;
 				m_Scon.iNextState = IS_WALK_F;
 			}
 			break;
@@ -1024,6 +1020,11 @@ void CM_Crownless_P1::Select_State(_double TimeDelta)
 	{
 		if (m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
 		{
+			if (AI_CHASE == iCurFrameAI)
+				++m_iTauntStack;
+			else
+				m_iTauntStack = 0;
+
 			SetUp_State();
 			m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, false);
 			// 상태 갱신 시 1번만 회전

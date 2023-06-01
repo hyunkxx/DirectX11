@@ -219,6 +219,8 @@ public:
 		SP_BEHIT_HOVER,
 		// 강피격, 뒤로 쭉 밀리는 날리기
 		SP_BEHIT_PUSH,
+		// BEHIT_FLY 플레이어 버전
+		SP_BEHIT_FLY_PLAYER,
 		SP_END,
 
 	};
@@ -396,6 +398,9 @@ public:
 	virtual _float Get_CoolTime(_uint iType) { return 0.f; }
 
 	virtual _bool Get_Attack() { return false; }
+
+
+	virtual void Set_TimeDelay(_double DelayDuration, _double DelayValue) {}
 
 
 public: // StateKey 대응 함수 모음

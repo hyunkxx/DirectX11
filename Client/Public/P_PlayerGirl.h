@@ -172,6 +172,7 @@ public:
 
 	// 
 	virtual void Check_Nearst(CCharacter* pChar, _float fDist) override;
+	virtual void Check_TimeDelay(_double TimeDelta);
 
 	// 주변 몬스터 리스트
 	// 몬스터 쪽에서 플레이어랑의 거리가 일정값 이하일 때? 플레이어를 발견했을 때 부터
@@ -198,6 +199,17 @@ public:
 	virtual _bool Get_Attack()
 	{
 		return m_bAttack;
+	}
+
+	virtual _bool Get_Hit()
+	{
+		return m_bHit;
+	}
+
+	virtual void Set_TimeDelay(_double DelayDuration, _double DelayValue)
+	{
+		m_TimeDelay = DelayValue;
+		m_DelayDuration = DelayDuration;
 	}
 
 
@@ -269,6 +281,12 @@ private:
 	// 몬스터한테 공격 타이밍 알려주기 위한 변수
 	// 미사일, OBB 발사 프레임에만 true로 변경
 	_bool				m_bAttack = { false };
+	// 몬스터한테 피격 여부 알려주기 위한 변수
+	// 회피x, 대미지 처리 시에만 true로 변경
+	_bool				m_bHit = { false };
+	// 자신에게만 적용되는 시간계수
+	_double				m_TimeDelay = { 1.0 };
+	_double				m_DelayDuration = { 0.0 };
 
 
 

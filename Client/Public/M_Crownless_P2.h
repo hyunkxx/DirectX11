@@ -43,7 +43,7 @@ public:
 		IS_ATTACK03,	// 올려차기
 		IS_ATTACK05,	// 3타 콤보
 		IS_ATTACK06,	// (Attack7 종료 시 연계, Attack3 히트 시 확정 연계) 720도 돌려차기
-		IS_ATTACK07,	// (Attack8 2타 히트 시 연계)슈퍼맨 펀치 ~ 달리기 이행
+		IS_ATTACK07,	// (Attack8 2타 히트 즉시 연계)슈퍼맨 펀치 ~ 달리기 이행
 		IS_ATTACK08,	// 2단 차기
 		IS_ATTACK10,	// 횡신 꿀밤
 		IS_ATTACK11,	// (Attack10 히트 시 연계) 플라잉 니킥
@@ -53,8 +53,7 @@ public:
 		IS_ATTACK19,	// 사커킥
 		IS_ATTACK20,	// 4타 콤보
 		IS_ATTACK21,	// (승룡권 miss 시 연계) 땅찍기
-		IS_ATTACK22,	// (패링 준비 중 피격 시 연계) 팔꿈치 
-		
+		IS_ATTACK22,	// (패링 준비 중 피격 즉시 연계) 팔꿈치 
 		IS_STANDUP,
 		IS_BEHIT_S, // Small
 		IS_BEHIT_B, // Big
@@ -64,12 +63,20 @@ public:
 		IS_BEHIT_HOVER, // 뜬 채로 맞음
 		IS_DEAD,
 		IS_WAIT,		// 페이즈 전환 연출 대기
+		IS_ATTACK06_NOSLOW,
 		IS_END
 	};
 
 	enum MeleeAttacks
 	{
-		MA_ATTACK03, 
+		MA_ATTACK03,
+		MA_ATTACK05,	// 3타 콤보
+		MA_ATTACK08,	// 2단 차기
+		MA_ATTACK10,	// 횡신 꿀밤
+		MA_ATTACK12,	// 백스텝 후 패링 준비
+		MA_ATTACK18,	// 승룡권
+		MA_ATTACK20,	// 4타 콤보
+		MA_END
 	};
 
 	// 이펙트용 본 월드 행렬 배열 인덱스 
@@ -81,27 +88,43 @@ public:
 		EBONE_RHAND,
 		EBONE_HEAD,
 		// 여기까지 몬스터 공통으로 고정
+		EBONE_LFOOT,
+		EBONE_RFOOT,
+
 		EBONE_END
 	};
 
 	// 공격 종류
 	enum Attacks
 	{
-		ATK_ATTACK_02,
-		ATK_ATTACK_03,
-		ATK_ATTACK_04_1,
-		ATK_ATTACK_04_3,
-		ATK_ATTACK_05,
-		ATK_ATTACK_08,
+		ATK_ATTACK03,
+		ATK_ATTACK05_1,
+		ATK_ATTACK05_2,
+		ATK_ATTACK05_3,
+		ATK_ATTACK06,
+		ATK_ATTACK07,
+		ATK_ATTACK08_1,
+		ATK_ATTACK08_2,
+		ATK_ATTACK10,
+		ATK_ATTACK11,
+		ATK_ATTACK17,
+		ATK_ATTACK18,
+		ATK_ATTACK19,
+		ATK_ATTACK20_1,
+		ATK_ATTACK20_2,
+		ATK_ATTACK20_3,
+		ATK_ATTACK20_4,
+		ATK_ATTACK20_5,
+		ATK_ATTACK21,
+		ATK_ATTACK22,
 		ATK_END
 	};
 
 	// 미사일 종류
 	enum Missiles
 	{
-		MISS_ATTACK_03,
-		MISS_ATTACK_05,
-		MISS_ATTACK_08,
+		MISS_ATTACK_17,
+		MISS_ATTACK_21,
 		MISS_END
 	};
 
@@ -170,7 +193,7 @@ private:
 	TAGATTACK			m_AttackInfos[ATK_END];
 	_uint				m_iCurAttackID = { 0 };	// OBB 히트 시 사용할 공격 구조체ID
 
-												// 미사일 풀
+	// 미사일 풀
 	CMissilePool*		m_MissilePools[MISS_END] = { nullptr, };
 	_float3				m_MissileRotAngles[MISS_END];
 
@@ -189,6 +212,12 @@ private:
 	// 공격 행동에 대한 글로벌 쿨타임 변수
 	_double				m_GlobalCoolTime = { 0.0 };
 	_bool				m_bAttackReady = { false };
+	
+	_bool			m_bAttackHit = { false };
+
+	// 
+	_uint				m_iMeleeAttackID = { MA_ATTACK03 };
+	_uint				m_iMeleeStartAttackArray[MA_END] = {};
 
 	// MoveCollider 충돌 시 비교할 무게
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
@@ -213,6 +242,7 @@ private:
 	void SetUp_State();
 	// 플레이어가 일정 거리 안으로 접근했는지 확인하는 함수
 	void Find_Target();
+	void Check_AttackHit();
 
 	void Init_AttackInfos();
 	void Init_Missiles();
@@ -261,4 +291,5 @@ public:
 };
 
 END
+
 

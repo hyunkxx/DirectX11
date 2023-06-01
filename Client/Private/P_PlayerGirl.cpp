@@ -207,20 +207,22 @@ void CP_PlayerGirl::PreTick(_double TimeDelta)
 
 void CP_PlayerGirl::Tick(_double TimeDelta)
 {
+	Check_TimeDelay(TimeDelta);
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	_double TimeDelay = 1.0;
+	
 	pGameInstance->ShadowUpdate(80.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 
-	__super::Tick(TimeDelta);
+	__super::Tick(TimeDelta * m_TimeDelay);
 	
-	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::HOLD)
+	/*if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::HOLD)
 	{
-		TimeDelay = 0.1;
+		m_TimeDelay = 0.1;
 	}
 	else
 	{
-		TimeDelay = 1.0;
-	}
+		m_TimeDelay = 1.0;
+	}*/
 
 	if (pGameInstance->InputMouse(DIMK_WHEEL) == KEY_STATE::AWAY)
 	{
@@ -248,11 +250,11 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 	else
 		m_ReleaseTargetTimeAcc = 0.0;
 
-
+	
 		
-	Key_Input(TimeDelta * TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
+	Key_Input(TimeDelta * m_TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
 
-	Tick_State(TimeDelta * TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
+	Tick_State(TimeDelta * m_TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 
 	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
 	
@@ -260,7 +262,7 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 	for (_uint i = 0; i < PARTS_END; ++i)
 	{
 		if (nullptr != m_Parts[i])
-			m_Parts[i]->Tick(TimeDelta * TimeDelay);
+			m_Parts[i]->Tick(TimeDelta * m_TimeDelay);
 	}
 
 	pGameInstance->AddCollider(m_pCollider);
@@ -278,7 +280,7 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 
 void CP_PlayerGirl::LateTick(_double TimeDelta)
 {
-	__super::LateTick(TimeDelta);
+	__super::LateTick(TimeDelta * m_TimeDelay);
 
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
@@ -288,7 +290,7 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 	{
 		if (nullptr != m_Parts[i])
 		{
-			m_Parts[i]->LateTick(TimeDelta);
+			m_Parts[i]->LateTick(TimeDelta * m_TimeDelay);
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, m_Parts[i]);
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, m_Parts[i]);
 		}
@@ -386,6 +388,7 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 	// 다음프레임을 위해 초기화
 	m_pNearst = nullptr;
 	m_fNearstDist = 15.f;
+	m_bHit = false;
 }
 
 HRESULT CP_PlayerGirl::Render()
@@ -731,6 +734,19 @@ void CP_PlayerGirl::Check_Nearst(CCharacter * pChar, _float fDist)
 			m_fTargetDist = fDist;
 		}
 		
+	}
+}
+
+void CP_PlayerGirl::Check_TimeDelay(_double TimeDelta)
+{
+	if (m_DelayDuration > 0.0)
+	{
+		m_DelayDuration -= TimeDelta;
+		if (m_DelayDuration < 0.0)
+		{
+			m_DelayDuration = 0;
+			m_TimeDelay = 1.0;
+		}
 	}
 }
 
@@ -2155,19 +2171,50 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 		m_pCharacterState->fCurHP = 0.f;
 		m_Scon.iNextState = SS_DEAD;
 	}
-	// 지상에서만 피격 애니메이션 실행
-	else if (PS_GROUND == m_Scon.ePositionState)
+	
+	else 
 	{
-		if (SS_BEHIT_FLY_FALL != m_Scon.iCurState)
+		if (PS_GROUND == m_Scon.ePositionState)
+		{
+			if (SS_BEHIT_FLY_FALL != m_Scon.iCurState)
+			{
+				switch (pAttackInfo->eHitIntensity)
+				{
+				case HIT_SMALL:
+					m_Scon.iNextState = SS_BEHIT_S;
+					break;
+				case HIT_BIG:
+					m_Scon.iNextState = SS_BEHIT_B;
+					break;
+				case HIT_FLY:
+					m_Scon.iNextState = SS_BEHIT_FLY_START;
+					break;
+				case HIT_PUSH:
+					m_Scon.iNextState = SS_BEHIT_PUSH;
+					break;
+				default:
+					break;
+				}
+			}
+			else
+			{
+				switch (pAttackInfo->eHitIntensity)
+				{
+				case HIT_FLY:
+					m_Scon.iNextState = SS_BEHIT_FLY_START;
+					break;
+				case HIT_PUSH:
+					m_Scon.iNextState = SS_BEHIT_PUSH;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		else if (PS_AIR == m_Scon.ePositionState)
 		{
 			switch (pAttackInfo->eHitIntensity)
 			{
-			case HIT_SMALL:
-				m_Scon.iNextState = SS_BEHIT_S;
-				break;
-			case HIT_BIG:
-				m_Scon.iNextState = SS_BEHIT_B;
-				break;
 			case HIT_FLY:
 				m_Scon.iNextState = SS_BEHIT_FLY_START;
 				break;
@@ -2178,21 +2225,7 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 				break;
 			}
 		}
-		else
-		{
-			switch (pAttackInfo->eHitIntensity)
-			{
-			case HIT_FLY:
-				m_Scon.iNextState = SS_BEHIT_FLY_START;
-				break;
-			case HIT_PUSH:
-				m_Scon.iNextState = SS_BEHIT_PUSH;
-				break;
-			default:
-				break;
-			}
-		}
-
+	
 		if (m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
 		{
 			m_pMainTransform->Set_LookDir(XMVectorSetY(
@@ -2862,7 +2895,11 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 				// 피격 처리 함수 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
 				if (SS_DEAD != m_Scon.iCurState)
+				{
+					m_bHit = true;
 					On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
+				}
+					
 			}
 		}
 #pragma endregion
@@ -2892,7 +2929,7 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 				/*_float3 EffPos;
 				XMStoreFloat3(&EffPos, (XMLoadFloat3(&dest->GetCenter()) + XMLoadFloat3(&src->GetCenter())) * 0.5f);*/
-				if(SS_DEAD != m_Scon.iCurState)
+				if (SS_DEAD != m_Scon.iCurState)
 					On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos);
 			}
 		}

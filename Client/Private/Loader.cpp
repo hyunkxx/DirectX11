@@ -21,6 +21,7 @@
 #include "M_Anjin.h"
 #include "M_AWukaka.h"
 #include "M_Crownless_P1.h"
+#include "M_Crownless_P2.h"
 
 #include "PlayerState.h"
 #include "Inventory.h"
@@ -2251,6 +2252,9 @@ HRESULT CLoader::Load_Level_Test()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_CROWNLESS_P1, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P1.dmdl")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_CROWNLESS_P2, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P2.dmdl")))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
 		return E_FAIL;
 
@@ -2291,6 +2295,8 @@ HRESULT CLoader::Load_Level_Test()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P1, CM_Crownless_P1::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P2, CM_Crownless_P2::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SWORD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SWORD))))

@@ -26,7 +26,9 @@ CCharacter::PHYSICMOVE CCharacter::StatePhysics[SP_END]
 	// BEHIT_HOVER, 
 	{ true, false, _float3(0.f, 0.2f, 1.f), 5.f, 0.5f, 20.f, 20.f, -20.f},
 	// BEHIT_PUSH, 
-	{ true, false, _float3(0.f, 1.f, 0.25f), 20.f, 0.5f, 20.f, 20.f, -20.f}
+	{ true, false, _float3(0.f, 1.f, 0.25f), 20.f, 0.5f, 20.f, 20.f, -20.f},
+	// BEHIT_FLY_PLAYER
+	{ true, false, _float3(0.f, 0.45f, 0.55f), 13.5f, 0.5f, 20.f, 20.f, -20.f },
 };
 
 void CCharacter::Shot_SlowKey(_float fTargetTime, _float fLerpSpeed)

@@ -8,6 +8,7 @@
 #include "EffectKey.h"
 #include "PartsKey.h"
 #include "PriorityKey.h"
+#include "SlowKey.h"
 #include "Missile.h"
 #include "MissileKey.h"
 #include "Missile_Constant.h"
@@ -20,8 +21,8 @@
 #include "UI_Monster.h"
 #include "UI_Minimap.h"
 
-#define DIST_MELEE 3.f
-#define DIST_MIDRANGE 12.f
+#define DIST_MELEE 3.5f
+#define DIST_MIDRANGE 15.f
 
 CCharacter::SINGLESTATE CM_Crownless_P2::m_tStates[IS_END];
 CM_Crownless_P2::CM_Crownless_P2(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -60,6 +61,14 @@ HRESULT CM_Crownless_P2::Initialize(void * pArg)
 
 	Init_AttackInfos();
 	Init_Missiles();
+
+	m_iMeleeStartAttackArray[MA_ATTACK03] = IS_ATTACK03;
+	m_iMeleeStartAttackArray[MA_ATTACK05] = IS_ATTACK05;
+	m_iMeleeStartAttackArray[MA_ATTACK08] = IS_ATTACK08;
+	m_iMeleeStartAttackArray[MA_ATTACK10] = IS_ATTACK10;
+	m_iMeleeStartAttackArray[MA_ATTACK12] = IS_ATTACK12;
+	m_iMeleeStartAttackArray[MA_ATTACK18] = IS_ATTACK18;
+	m_iMeleeStartAttackArray[MA_ATTACK20] = IS_ATTACK20;
 
 	for (_uint i = 0; i < IS_END; ++i)
 		m_pModelCom->Get_Animation(m_tStates[i].iAnimID)->Set_TicksPerSecond(m_tStates[i].FramePerSec);
@@ -148,8 +157,13 @@ void CM_Crownless_P2::PreTick(_double TimeDelta)
 	//if(false == m_pTarget->IsActive())
 	//	 Find ActivePlayer
 
+	
+
 	// 매 프레임 타겟까지의 거리를 계산하는 함수, 위에서 컬링해야 함
 	Find_Target();
+
+	// 공격이 히트했을 경우에 대한 조건처리
+	Check_AttackHit();
 }
 
 void CM_Crownless_P2::Tick(_double TimeDelta)
@@ -220,14 +234,14 @@ void CM_Crownless_P2::LateTick(_double TimeDelta)
 
 
 	// 돌진기 스킬 예외처리 // 거리비교해서
-	if (m_fTargetDistance <= 3.f)
+	if (m_fTargetDistance <= 1.8f)
 	{
 		static _bool bOverlapedCheck = false;
 
-		if (IS_ATTACK02 == m_Scon.iCurState)
+		if ((IS_ATTACK19 == m_Scon.iCurState)
+			&& true == m_tCurState.bRootMotion)
 		{
 			static _vector vTargetPos;
-
 
 			_float fExtents = m_pTarget->GetMoveCollider()->GetExtents().x;
 
@@ -270,7 +284,7 @@ HRESULT CM_Crownless_P2::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		if (2 == i || 4 == i || 6 == i)
+		if (2 == i || 4 == i || 5 == i || 6 == i)
 			continue;
 
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
@@ -317,7 +331,7 @@ HRESULT CM_Crownless_P2::RenderShadow()
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		if (2 == i || 4 == i || 6 == i)
+		if (2 == i || 4 == i || 5 == i || 6 == i)
 			continue;
 
 		if (FAILED(m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i)))
@@ -360,7 +374,7 @@ HRESULT CM_Crownless_P2::Add_Components()
 		TEXT("Com_Shader_ModelAnim"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_MONSTER_CROWNLESS_P1,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_MONSTER_CROWNLESS_P2,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
@@ -384,7 +398,7 @@ HRESULT CM_Crownless_P2::Add_Components()
 
 	CollDesc.owner = this;
 	CollDesc.vCenter = { 0.f, 1.2f, 0.9f };
-	CollDesc.vExtents = { 0.9f, 0.9f, 0.9f };
+	CollDesc.vExtents = { 1.2f, 1.2f, 1.2f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_AttackCollider"), (CComponent**)&m_pAttackCollider, &CollDesc)))
@@ -418,7 +432,7 @@ HRESULT CM_Crownless_P2::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext*
 	for (_int i = 0; i < IS_END; ++i)
 	{
 		_tchar szBuffer[MAX_PATH];
-		wsprintf(szBuffer, TEXT("../../Data/CharState/M_Crownless_P1/M_Crownless_P1_%d.state"), i);
+		wsprintf(szBuffer, TEXT("../../Data/CharState/M_Crownless_P2/M_Crownless_P2_%d.state"), i);
 		HANDLE hFile = CreateFile(szBuffer, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
 		if (INVALID_HANDLE_VALUE == hFile)
@@ -458,6 +472,9 @@ HRESULT CM_Crownless_P2::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext*
 					break;
 				case CStateKey::TYPE_MISSILE:
 					m_tStates[i].ppStateKeys[j] = CMissileKey::Create(pDevice, pContext, &tBaseData);
+					break;
+				case CStateKey::TYPE_SLOW:
+					m_tStates[i].ppStateKeys[j] = CSlowKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_SOUND:
 
@@ -535,6 +552,9 @@ void CM_Crownless_P2::Shot_PriorityKey(_uint iLeavePriority)
 
 void CM_Crownless_P2::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
 {
+	if (iAttackInfoID == 4)
+		int a = 1;
+
 	m_pAttackCollider->SetActive(bOBB);
 	m_iCurAttackID = iAttackInfoID;
 }
@@ -542,7 +562,6 @@ void CM_Crownless_P2::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
 void CM_Crownless_P2::SetUp_State()
 {
 	_uint iPrevState = m_Scon.iCurState;
-
 
 	// 키 리셋
 	for (_uint i = 0; i < m_tCurState.iKeyCount; ++i)
@@ -564,6 +583,20 @@ void CM_Crownless_P2::SetUp_State()
 	m_Scon.TrackPos = 0.0;
 	m_Scon.bAnimFinished = false;
 
+	m_bAttackHit = false;
+
+	// 근접 시동기 사용 시 다음 근접 시동기로 인덱스 넘김z
+	for (_uint i = 0; i < MA_END; ++i)
+	{
+		if (m_Scon.iCurState == m_iMeleeStartAttackArray[i])
+		{
+			++m_iMeleeAttackID;
+			if (MA_END <= m_iMeleeAttackID)
+				m_iMeleeAttackID = MA_ATTACK03;
+		}
+			
+	}
+
 	// 도발 스택 초기화
 	if (m_Scon.iCurState != IS_TAUNT)
 		m_iTauntStack = 0;
@@ -572,7 +605,8 @@ void CM_Crownless_P2::SetUp_State()
 	m_pAttackCollider->SetActive(false);
 
 	//Position State 반영
-	if ((IS_BEHIT_FLY_START == m_Scon.iCurState) &&
+	if ((IS_BEHIT_FLY_START == m_Scon.iCurState ||
+		IS_ATTACK18 == m_Scon.iCurState) &&
 		PS_AIR != m_Scon.ePositionState)
 	{
 		m_Scon.ePositionState = PS_AIR;
@@ -599,8 +633,13 @@ void CM_Crownless_P2::SetUp_State()
 	if (true == m_tCurState.bApplyCoolTime)
 		m_StateCoolTimes[m_Scon.iCurState] = m_tCurState.CoolTime;
 	else if (IS_SIDESTEP_L == m_Scon.iCurState ||
-		IS_SIDESTEP_R == m_Scon.iCurState)
-		m_StateCoolTimes[IS_BACKSTEP] = m_tStates[IS_BACKSTEP].CoolTime;
+		0 == m_Scon.iCurState)
+		m_StateCoolTimes[0] = m_tStates[0].CoolTime;
+
+	//if (IS_ATTACK11 == m_Scon.iCurState)
+	//	m_pMoveCollider->SetActive(false);
+	//else
+	//	m_pMoveCollider->SetActive(true);
 
 
 	//if (IS_ATTACK03 == iPrevState)
@@ -623,13 +662,71 @@ void CM_Crownless_P2::Find_Target()
 		if (m_fAlertRange > m_fTargetDistance)
 		{
 			m_bAlert = true;
-			m_Scon.iNextState = IS_ATTACK02;
+			m_Scon.iNextState = 1;
 			SetUp_State();
 			m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true, false);
 			m_pMainTransform->Set_LookDir(XMVectorSetY(m_pTargetTransform->Get_State(CTransform::STATE_POSITION) - m_pMainTransform->Get_State(CTransform::STATE_POSITION), 0.f));
 
-			m_fHitPoint = 100;
+			m_fHitPoint = 150;
 			m_iDodgeCount = 2;
+		}
+	}
+}
+
+void CM_Crownless_P2::Check_AttackHit()
+{
+	if (true == m_bAttackHit)
+	{
+		if (IS_ATTACK03 == m_Scon.iCurState)
+		{
+			if (32.0 <= m_Scon.TrackPos)
+			{
+				m_Scon.iNextState = IS_ATTACK06;
+				SetUp_State();
+				m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true);
+			}
+		}
+
+		else if (IS_ATTACK08 == m_Scon.iCurState)
+		{
+			if (35.0 <= m_Scon.TrackPos)
+			{
+				m_Scon.iNextState = IS_ATTACK07;
+				SetUp_State();
+				m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true);
+			}
+		}
+
+		else if (IS_ATTACK07 == m_Scon.iCurState)
+		{
+			if (42.0 <= m_Scon.TrackPos)
+			{
+				m_Scon.iNextState = IS_ATTACK06_NOSLOW;
+				SetUp_State();
+				m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true);
+			}
+		}
+		else if (IS_ATTACK10 == m_Scon.iCurState)
+		{
+			if (16.0 <= m_Scon.TrackPos)
+			{
+				m_Scon.iNextState = IS_ATTACK11;
+				SetUp_State();
+				m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true);
+			}
+		}
+		
+	}
+	else
+	{
+		if (IS_ATTACK18 == m_Scon.iCurState)
+		{
+			if (39.0 <= m_Scon.TrackPos)
+			{
+				m_Scon.iNextState = IS_ATTACK21;
+				SetUp_State();
+				m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true);
+			}
 		}
 	}
 }
@@ -639,64 +736,131 @@ void CM_Crownless_P2::Init_AttackInfos()
 	for (_uint i = 0; i < ATK_END; ++i)
 		ZeroMemory(&m_AttackInfos[i], sizeof TAGATTACK);
 
-	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 2.f;
-	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK03].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK03].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK03].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK03].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK03].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 2.f;
-	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_FLY;
-	m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK05_1].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK05_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK05_1].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK05_1].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK05_1].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_04_1].fDamageFactor = 2.f;
-	m_AttackInfos[ATK_ATTACK_04_1].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_ATTACK_04_1].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_04_1].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_04_1].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK05_2].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK05_2].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK05_2].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK05_2].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK05_2].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_04_3].fDamageFactor = 2.f;
-	m_AttackInfos[ATK_ATTACK_04_3].eHitIntensity = HIT_PUSH;
-	m_AttackInfos[ATK_ATTACK_04_3].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_04_3].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_04_3].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK05_3].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK05_3].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK05_3].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK05_3].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK05_3].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_05].fDamageFactor = 2.f;
-	m_AttackInfos[ATK_ATTACK_05].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_ATTACK_05].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_05].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_05].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK06].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK06].eHitIntensity = HIT_PUSH;
+	m_AttackInfos[ATK_ATTACK06].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK06].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK06].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_08].fDamageFactor = 2.f;
-	m_AttackInfos[ATK_ATTACK_08].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_ATTACK_08].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_08].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_08].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK07].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK07].eHitIntensity = HIT_PUSH;
+	m_AttackInfos[ATK_ATTACK07].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK07].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK07].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK08_1].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK08_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK08_1].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK08_1].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_1].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK08_2].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK08_2].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK08_2].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK08_2].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_2].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK10].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK10].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK10].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK10].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK10].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK11].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK11].eHitIntensity = HIT_PUSH;
+	m_AttackInfos[ATK_ATTACK11].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK11].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK11].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK17].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK17].eHitIntensity = HIT_PUSH;
+	m_AttackInfos[ATK_ATTACK17].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK17].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK17].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK18].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK18].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK18].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK18].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK18].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK19].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK19].eHitIntensity = HIT_PUSH;
+	m_AttackInfos[ATK_ATTACK19].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK19].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK19].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK20_1].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK20_1].eHitIntensity = HIT_NONE;
+	m_AttackInfos[ATK_ATTACK20_1].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK20_1].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK20_1].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK20_2].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK20_2].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK20_2].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK20_2].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK20_2].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK20_3].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK20_3].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK20_3].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK20_3].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK20_3].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK20_4].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK20_4].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK20_4].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK20_4].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK20_4].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK20_5].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK20_5].eHitIntensity = HIT_PUSH;
+	m_AttackInfos[ATK_ATTACK20_5].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK20_5].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK20_5].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK21].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK21].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK21].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK21].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK21].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK22].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK22].eHitIntensity = HIT_PUSH;
+	m_AttackInfos[ATK_ATTACK22].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK22].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK22].szHitEffectTag, TEXT("Anjin_Hit"));
+
 }
 
 void CM_Crownless_P2::Init_Missiles()
 {
-	//Attack01
 	CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
-	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
-
-	tMissilePoolDesc.pMissilePoolTag = TEXT("Crownless_P1_Attack03_%d");
-	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
-	tMissilePoolDesc.iNumMissiles = 2;
-
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Boom"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
-	tMissilePoolDesc.tMissileDesc.pOwner = this;
-	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 0.15;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_03;
-	tMissilePoolDesc.tMissileDesc.fExtents = 2.f;
-
-	m_MissilePools[MISS_ATTACK_03] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
-	m_MissileRotAngles[MISS_ATTACK_03] = _float3(0.f, 0.f, 0.f);
-
 
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
@@ -709,22 +873,22 @@ void CM_Crownless_P2::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_05;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK17;
 	tMissilePoolDesc.tMissileDesc.fExtents = 0.8f;
 
 	tMissilePoolDesc.bTargetDir = true;
 	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-	tMissilePoolDesc.fVelocity = 18.f;
+	tMissilePoolDesc.fVelocity = 50.f;
 	tMissilePoolDesc.StopTime = 3.0;
 	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
 
-	m_MissilePools[MISS_ATTACK_05] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.f, 1.5f, 0.f), &tMissilePoolDesc);
-	m_MissileRotAngles[MISS_ATTACK_05] = _float3(0.f, 0.f, 0.f);
+	m_MissilePools[MISS_ATTACK_17] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.f, 1.5f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK_17] = _float3(0.f, 0.f, 0.f);
 
 
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	tMissilePoolDesc.pMissilePoolTag = TEXT("Crownless_P1_Attack08_%d");
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Crownless_P1_Attack03_%d");
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 2;
 
@@ -733,11 +897,13 @@ void CM_Crownless_P2::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.15;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_08;
-	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK21;
+	tMissilePoolDesc.tMissileDesc.fExtents = 2.f;
 
-	m_MissilePools[MISS_ATTACK_08] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
-	m_MissileRotAngles[MISS_ATTACK_08] = _float3(0.f, 0.f, 0.f);
+	m_MissilePools[MISS_ATTACK_21] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK_21] = _float3(0.f, 0.f, 0.f);
+
+
 }
 
 void CM_Crownless_P2::Init_AnimSystem()
@@ -899,10 +1065,8 @@ HRESULT CM_Crownless_P2::Setup_ShadowShaderResource()
 
 void CM_Crownless_P2::Select_State(_double TimeDelta)
 {
-
 	_vector vTargetDir = XMVector3Normalize(XMVectorSetY(m_pTargetTransform->Get_State(CTransform::STATE_POSITION) - m_pMainTransform->Get_State(CTransform::STATE_POSITION), 0.f));
 	_vector vLevelCenterDir = XMVector3Normalize(XMVectorSetY(XMLoadFloat3(&m_vLevelCenterPosition) - m_pMainTransform->Get_State(CTransform::STATE_POSITION), 0.f));
-
 
 	AI_STATE iCurFrameAI = AI_NONE;
 
@@ -919,7 +1083,7 @@ void CM_Crownless_P2::Select_State(_double TimeDelta)
 		else
 		{
 			if (m_pTarget->Get_Attack() &&
-				0.0 == m_StateCoolTimes[IS_BACKSTEP])
+				0.0 == m_StateCoolTimes[0])
 			{
 				iCurFrameAI = AI_DODGE;
 			}
@@ -952,53 +1116,23 @@ void CM_Crownless_P2::Select_State(_double TimeDelta)
 			}
 			else
 			{
-				++m_iTauntStack;
 				m_Scon.iNextState = IS_WALK_F;
 			}
 			break;
 
 		case Client::CM_Crownless_P2::AI_DODGE:
-			if (0.f > XMVectorGetY(XMVector3Cross(vTargetDir, vLevelCenterDir)))
-				m_Scon.iNextState = IS_SIDESTEP_L;
-			else
-				m_Scon.iNextState = IS_SIDESTEP_R;
-
+			m_Scon.iNextState = IS_SIDESTEP_L;
 			break;
 
 		case Client::CM_Crownless_P2::AI_ATTACK_RANGE:
-			if (0.0 == m_StateCoolTimes[IS_ATTACK08])
-			{
-				m_Scon.iNextState = IS_ATTACK08;
-			}
-			else if (0.0 == m_StateCoolTimes[IS_ATTACK02])
-			{
-				m_Scon.iNextState = IS_ATTACK02;
-			}
-			else if (0.0 == m_StateCoolTimes[IS_ATTACK05])
-			{
-				m_Scon.iNextState = IS_ATTACK05;
-			}
+			if (0.0 == m_StateCoolTimes[IS_ATTACK17])
+				m_Scon.iNextState = IS_ATTACK17;
 			else
-			{
-				m_Scon.iNextState = IS_ATTACK02;
-			}
-
+				m_Scon.iNextState = IS_ATTACK19;
 			break;
 
 		case Client::CM_Crownless_P2::AI_ATTACK_MELEE:
-			if (0.0 == m_StateCoolTimes[IS_ATTACK04])
-			{
-				m_Scon.iNextState = IS_ATTACK04;
-			}
-			else if (0.0 == m_StateCoolTimes[IS_ATTACK03])
-			{
-				m_Scon.iNextState = IS_ATTACK03;
-			}
-			else
-			{
-				m_Scon.iNextState = IS_BACKSTEP;
-			}
-
+			m_Scon.iNextState = m_iMeleeStartAttackArray[m_iMeleeAttackID];
 			break;
 
 		case Client::CM_Crownless_P2::AI_STAY:
@@ -1024,6 +1158,11 @@ void CM_Crownless_P2::Select_State(_double TimeDelta)
 	{
 		if (m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
 		{
+			if(AI_CHASE == iCurFrameAI)
+				++m_iTauntStack;
+			else
+				m_iTauntStack = 0;
+
 			SetUp_State();
 			m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, false);
 			// 상태 갱신 시 1번만 회전
@@ -1058,7 +1197,7 @@ void CM_Crownless_P2::Select_State(_double TimeDelta)
 void CM_Crownless_P2::Tick_State(_double TimeDelta)
 {
 	// 애니메이션 개별 처리
-	if (m_Scon.iCurState == IS_ATTACK08)
+	/*if (m_Scon.iCurState == IS_ATTACK08)
 	{
 		if (m_Scon.TrackPos >= 65.0)
 		{
@@ -1070,7 +1209,7 @@ void CM_Crownless_P2::Tick_State(_double TimeDelta)
 		else if (m_Scon.TrackPos >= 16)
 			m_pHitCollider->SetActive(false);
 
-	}
+	}*/
 
 	//
 	if (false == m_Scon.bAnimFinished)
@@ -1150,14 +1289,11 @@ void CM_Crownless_P2::Tick_State(_double TimeDelta)
 
 
 		// 공격 행동 시
-		if (IS_ATTACK02 == m_Scon.iCurState ||
-			IS_ATTACK03 == m_Scon.iCurState ||
-			IS_ATTACK04 == m_Scon.iCurState ||
-			IS_ATTACK05 == m_Scon.iCurState ||
-			IS_ATTACK08 == m_Scon.iCurState)
+		if (7 <= m_Scon.iCurState &&
+			21 > m_Scon.iCurState)
 		{
 			m_bAttackReady = false;
-			m_GlobalCoolTime += 1.f;
+			m_GlobalCoolTime += _double(rand() % 15) * 0.1 + 0.5;
 		}
 
 		// 피격 애니메이션 종료 시
@@ -1165,7 +1301,7 @@ void CM_Crownless_P2::Tick_State(_double TimeDelta)
 			IS_BEHIT_S == m_Scon.iCurState ||
 			IS_BEHIT_FLY_FALL == m_Scon.iCurState)
 		{
-			m_fHitPoint = 100.f;
+			m_fHitPoint = 150.f;
 		}
 
 		if (true == m_tCurState.bLoop)
@@ -1178,11 +1314,11 @@ void CM_Crownless_P2::Tick_State(_double TimeDelta)
 		}
 		else
 		{
-			if (m_Scon.iCurState == IS_BEHIT_FLY_START)
-				int a = 1;
-
 			if (NO_ANIM != m_tCurState.iNextState)
 			{
+				if (IS_ATTACK18 == m_Scon.iCurState)
+					m_Scon.ePositionState = PS_GROUND;
+
 				m_Scon.iNextState = m_tCurState.iNextState;
 				SetUp_State();
 
@@ -1200,7 +1336,7 @@ void CM_Crownless_P2::On_Cell()
 
 	if (PS_GROUND == m_Scon.ePositionState)
 	{
-		if (IS_ATTACK02 != m_Scon.iCurState)
+		if (0 != m_Scon.iCurState)
 			m_pMainTransform->Set_PosY(fCellHeight);
 	}
 	else if (PS_AIR == m_Scon.ePositionState)
@@ -1221,6 +1357,12 @@ void CM_Crownless_P2::On_Cell()
 					m_Scon.iNextState = IS_BEHIT_FLY_FALL;
 					SetUp_State();
 					m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, m_tCurState.bLerp, false);
+				}
+				else if (IS_ATTACK21 == m_Scon.iCurState ||
+					IS_ATTACK18 == m_Scon.iCurState)
+				{
+					m_pMainTransform->Set_PosY(fCellHeight);
+					m_Scon.ePositionState = PS_GROUND;
 				}
 			}
 		}
@@ -1309,8 +1451,13 @@ void CM_Crownless_P2::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo,
 	{
 		if (pAttackInfo->eHitIntensity != HIT_NONE)
 		{
-			m_Scon.iNextState = IS_BEHIT_HOVER;
-			bHitCheck = true;
+			if (IS_BEHIT_FLY_LOOP == m_Scon.iCurState ||
+				IS_BEHIT_FLY_START == m_Scon.iCurState ||
+				IS_BEHIT_HOVER == m_Scon.iCurState)
+			{
+				m_Scon.iNextState = IS_BEHIT_HOVER;
+				bHitCheck = true;
+			}
 		}
 	}
 
@@ -1334,6 +1481,9 @@ HRESULT CM_Crownless_P2::Init_EffectBones()
 	m_EffectBones[EBONE_LHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001LHand"));
 	m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
 	m_EffectBones[EBONE_HEAD] = m_pModelCom->Get_BonePtr(TEXT("Bip001Head"));
+
+	m_EffectBones[EBONE_LFOOT] = m_pModelCom->Get_BonePtr(TEXT("Bip001LFoot"));
+	m_EffectBones[EBONE_RFOOT] = m_pModelCom->Get_BonePtr(TEXT("Bip001RFoot"));
 
 	return S_OK;
 }
@@ -1414,8 +1564,22 @@ void CM_Crownless_P2::OnCollisionEnter(CCollider * src, CCollider * dest)
 			if (true == src->Compare(GetAttackCollider()) &&
 				true == dest->Compare(pOpponent->GetHitCollider()))
 			{
-				// 타격 위치를 찾아서 히트 이펙트 출력
 				m_pCamMovement->StartVibration(10.f, 0.5f);
+
+				if (ATK_ATTACK03 == m_iCurAttackID)
+				{
+					m_bAttackHit = true;
+					pOpponent->Set_TimeDelay(1.0, 0.33);
+				}
+				else if (ATK_ATTACK07 == m_iCurAttackID)
+					m_bAttackHit = true;
+				else if (ATK_ATTACK08_2 == m_iCurAttackID)
+					m_bAttackHit = true;
+				else if (ATK_ATTACK10 == m_iCurAttackID)
+					m_bAttackHit = true;
+				else if (ATK_ATTACK18 == m_iCurAttackID)
+					m_bAttackHit = true;
+
 			}
 
 			// 상대의 공격이 나에게 적중한 경우 
@@ -1436,7 +1600,18 @@ void CM_Crownless_P2::OnCollisionEnter(CCollider * src, CCollider * dest)
 				_float3 EffPos = _float3(0.f, 0.f, 0.f);
 				XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
 
-				On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
+				if(IS_ATTACK12 != m_Scon.iCurState)
+					On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
+				else
+				{
+					if (5.0 < m_Scon.TrackPos)
+					{
+						m_Scon.iNextState = IS_ATTACK22;
+						Shot_SlowKey(0.5, 0.1);
+						SetUp_State();
+						m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true);
+					}
+				}
 			}
 		}
 	}
@@ -1484,7 +1659,7 @@ void CM_Crownless_P2::OnCollisionStay(CCollider * src, CCollider * dest)
 			true == dest->Compare(pOpponent->GetMoveCollider()))
 		{
 			//// 전진형 공격을 정지시킴
-			if (IS_ATTACK02 == m_Scon.iCurState ||
+			if (0 == m_Scon.iCurState ||
 				IS_ATTACK03 == m_Scon.iCurState ||
 				IS_ATTACK05 == m_Scon.iCurState ||
 				IS_ATTACK08 == m_Scon.iCurState)

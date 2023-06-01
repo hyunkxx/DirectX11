@@ -12,6 +12,7 @@
 #include "M_Anjin.h"
 #include "M_AWukaka.h"
 #include "M_Crownless_P1.h"
+#include "M_Crownless_P2.h"
 #include "AcquireSystem.h"
 #include "Sandbag.h"
 
@@ -32,6 +33,7 @@ HRESULT CLevel_Test::Initialize()
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
 	CSandbag::Init_States(m_pDevice, m_pContext);
 	CM_Crownless_P1::Init_States(m_pDevice, m_pContext);
+	CM_Crownless_P2::Init_States(m_pDevice, m_pContext);
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
@@ -273,7 +275,10 @@ HRESULT CLevel_Test::Ready_Layer_Monster(const _tchar * pLayerTag)
 	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
 		return E_FAIL;*/
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_CROWNLESS_P1, pLayerTag, TEXT("Crownless_P1"))))
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_CROWNLESS_P1, pLayerTag, TEXT("Crownless_P1"))))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_CROWNLESS_P2, pLayerTag, TEXT("Crownless_P2"))))
 		return E_FAIL;
 
 
@@ -320,4 +325,5 @@ void CLevel_Test::Free()
 	CP_PlayerGirl::Release_States();
 	CSandbag::Release_States();
 	CM_Crownless_P1::Release_States();
+	CM_Crownless_P2::Release_States();
 }
