@@ -100,7 +100,7 @@ void CChest::Tick(_double TimeDelta)
 				m_bInteractionBegin = true;
 
 				//UI Ãß°¡
-				m_pUIIcon->SetRender(m_UIIndex, false);
+				m_pUIIcon->Set_Disable(m_UIIndex);
 				m_pUIIcon = nullptr;
 			}
 		}
