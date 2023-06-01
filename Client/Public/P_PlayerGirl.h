@@ -21,6 +21,7 @@ END
 BEGIN(Client)
 
 class CCameraMovement;
+class CUI_MainScreen;
 class CP_PlayerGirl 
 	: public CCharacter	
 {

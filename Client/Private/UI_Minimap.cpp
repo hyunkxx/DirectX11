@@ -52,10 +52,9 @@ void CUI_Minimap::Start()
 void CUI_Minimap::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
-	CGameMode* pGameMode = CGameMode::GetInstance();
-	
-	if (pGameMode->IsActiveUI())
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+
+	if (m_pTerminalUI->IsActive())
 		m_bRender = false;
 	else
 		m_bRender = true;
@@ -177,7 +176,8 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			}
 		}
 	}
-	
+
+
 	// 메인화면아이콘
 
 	for (auto& Desc : m_DescList)

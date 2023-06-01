@@ -72,14 +72,11 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	CGameMode* pGameMode = CGameMode::GetInstance();
-	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
-
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	if (pGameInstance->InputKey(DIK_NUMPADENTER) == KEY_STATE::TAP) // юс╫ц
 	{
 		m_pPlayerStateClass->AddPlayer();
 	}
-
 	if (m_pTerminalUI->IsActive())
 		m_bRender = false;
 	else

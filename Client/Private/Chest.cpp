@@ -8,6 +8,7 @@
 
 #include "ItemDB.h"
 #include "UI_Minimap.h"
+#include "UI_Tip.h"
 #include "Effect.h"
 
 CChest::CChest(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -70,6 +71,7 @@ void CChest::Start()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 45);
+	m_pUITip = static_cast<CUI_Tip*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
 }
 
 void CChest::PreTick(_double TimeDelta)
@@ -426,6 +428,23 @@ void CChest::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
 	CGameMode* pGameMode = CGameMode::GetInstance();
 
+	CP_PlayerGirl* pPlayer = dynamic_cast<CP_PlayerGirl*>(dest->GetOwner());
+	if (pPlayer)
+	{
+		switch (m_eChestType)
+		{
+		case CChest::CHEST_SIMPLE:
+			m_pUITip->SetTipIndex(CUI_Tip::SITUINDEX::AREA_OPENING);
+			break;
+		case CChest::CHEST_STANDARD:
+			m_pUITip->SetTipIndex(CUI_Tip::SITUINDEX::CHAR_YANGYANG);
+			break;
+		case CChest::CHEST_EXPANDED:
+			m_pUITip->SetTipIndex(CUI_Tip::SITUINDEX::CHAR_CHIXIA);
+			break;
+		}
+		
+	}
 }
 
 void CChest::OnCollisionStay(CCollider * src, CCollider * dest)
