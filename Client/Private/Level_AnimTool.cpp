@@ -114,6 +114,9 @@ HRESULT CLevel_AnimTool::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANIMTOOL, OBJECT::FLOOR, pLayerTag, L"floor")))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANIMTOOL, OBJECT::SKY, pLayerTag, L"sky")))
+		return E_FAIL;
+
 	return S_OK;
 }
 

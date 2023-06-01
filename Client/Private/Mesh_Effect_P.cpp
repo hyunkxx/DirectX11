@@ -76,9 +76,10 @@ void CMesh_Effect_P::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	SetUp_Linear();
-	Setup_Matrix();
 
 	XMStoreFloat2(&m_EffectDesc.vUV, XMLoadFloat2(&m_EffectDesc.vUV) + XMLoadFloat2(&m_EffectDesc.fUVSpeed) * (_float)TimeDelta);
+
+	Setup_Matrix();
 
 	if (m_pRendererCom != nullptr)
 		m_pRendererCom->Add_RenderGroup((CRenderer::RENDER_GROUP)m_EffectDesc.iRenderGroup, this);
@@ -208,6 +209,18 @@ HRESULT CMesh_Effect_P::SetUp_ShaderResources()
 			return E_FAIL;
 	}
 
+	if (m_EffectDesc.bDissolveTexure &&  nullptr != m_pDissolveTextureCom)
+	{
+		if (FAILED(m_pDissolveTextureCom->Setup_ShaderResource(m_pShaderCom, "g_DissolveTexture")))
+			return E_FAIL;
+	}
+
+	if (m_EffectDesc.bNoiseTexure && nullptr != m_pNoiseTextureCom)
+	{
+		if (FAILED(m_pNoiseTextureCom->Setup_ShaderResource(m_pShaderCom, "g_NoiseTexture")))
+			return E_FAIL;
+	}
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
@@ -230,18 +243,25 @@ HRESULT CMesh_Effect_P::SetUp_ShaderResources()
 	vUV.x = m_EffectDesc.vUV.x + m_EffectDesc.vMinScale.x;
 	vUV.y = m_EffectDesc.vUV.y + m_EffectDesc.vMinScale.y;
 
-	if (FAILED(m_pShaderCom->SetRawValue("g_vUV", &m_EffectDesc.vUV, sizeof(_float2))))
+	if (FAILED(m_pShaderCom->SetRawValue("g_vUV", &vUV, sizeof(_float2))))
 		return E_FAIL;
 
-	if (m_EffectDesc.bDissolveTexure &&  nullptr != m_pDissolveTextureCom)
+	if (m_EffectDesc.iPass > 6)
 	{
-		if (FAILED(m_pDissolveTextureCom->Setup_ShaderResource(m_pShaderCom, "g_DissolveTexture")))
+		if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_FinalBlend"), "g_BackTexture")))
 			return E_FAIL;
 
-		_float fTimeAcc = (m_fEffectAcc / m_EffectDesc.fEffectTime) * 3.f;
+		if (FAILED(m_pShaderCom->SetRawValue("g_fTimeAcc", &m_fEffectAcc, sizeof(_float))))
+			return E_FAIL;
+	}
+	else
+	{
+		_float fTimeAcc = (m_fEffectAcc / m_EffectDesc.fEffectTime) * 2.f;
 		if (FAILED(m_pShaderCom->SetRawValue("g_fTimeAcc", &fTimeAcc, sizeof(_float))))
 			return E_FAIL;
 	}
+
+
 
 	if (m_bDistortion)
 	{
@@ -250,18 +270,8 @@ HRESULT CMesh_Effect_P::SetUp_ShaderResources()
 		if (FAILED(CGameInstance::GetInstance()->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_DistortionMap"), "g_DepthTexture")))
 			return E_FAIL;
 
-		_float fTimeAcc = (m_fEffectAcc / m_EffectDesc.fEffectTime) * 3.f;
-		if (FAILED(m_pShaderCom->SetRawValue("g_fTimeAcc", &fTimeAcc, sizeof(_float))))
-			return E_FAIL;
-
 		if (FAILED(m_pShaderCom->SetRawValue("g_fDisPower", &m_EffectDesc.vMaxScale.z, sizeof(_float))))
 			return E_FAIL;
-
-		if (m_EffectDesc.bNoiseTexure && nullptr != m_pNoiseTextureCom)
-		{
-			if (FAILED(m_pNoiseTextureCom->Setup_ShaderResource(m_pShaderCom, "g_NoiseTexture")))
-				return E_FAIL;
-		}
 	}
 
 	Safe_Release(pGameInstance);

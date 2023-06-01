@@ -355,6 +355,33 @@ PS_OUT	PS_MAIN_DISTORTION_MASK(PS_IN_DISTORTION In)
 	return Out;
 }
 
+PS_OUT	PS_MAIN_MIX_DISTORTION(PS_IN_DISTORTION In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	float2 vUV;
+	float2 vDistotionUV;
+
+	vDistotionUV.x = (In.vTexUV.x) + g_ihlslWinSizeX  * sin(g_fTimeAcc / 50000.f);
+	vDistotionUV.y = (In.vTexUV.y) + g_ihlslWinSizeY  * sin(g_fTimeAcc / 50000.f);
+
+	vector BurshColor = g_NoiseTexture.Sample(LinearSampler, vDistotionUV);
+
+	vUV.x = In.vTexUV.x + BurshColor.r / 20.f;
+	vUV.y = In.vTexUV.y + BurshColor.g / 20.f;
+
+	//vector DisolveColor = g_DissolveTexture.Sample(LinearSampler, vUV * 10.f);
+	vector BaseColor = g_DiffuseTexture.Sample(LinearSampler, clamp(vUV.xy + g_vUV.xy, 0.f, 1.f));
+	Out.vDiffuse.a = (BaseColor.r + BaseColor.g + BaseColor.b) / 3.f;
+
+	Out.vDiffuse.rgb = (BaseColor.rgb * g_vColor) * Out.vDiffuse.a;
+
+	if (Out.vDiffuse.a < 0.3f)
+		Out.vDiffuse.a = 0.3f;
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass Default
@@ -447,4 +474,16 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_DISTORTION_MASK();
 	}
 
+	pass Mix_Distortion
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_DISTORTION();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_MIX_DISTORTION();
+	}
 }

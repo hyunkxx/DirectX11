@@ -1809,7 +1809,7 @@ HRESULT CApplication::Ready_Static_Effect()
 		return E_FAIL;
 
 	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
-		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_01_1.bin"),
+		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_02_1.bin"),
 		"../../Resource/Effect/B_Crownless/Attack/")))
 		return E_FAIL;
 
@@ -1820,6 +1820,11 @@ HRESULT CApplication::Ready_Static_Effect()
 
 	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
 		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_03_1.bin"),
+		"../../Resource/Effect/B_Crownless/Attack/")))
+		return E_FAIL;
+
+	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_03_2.bin"),
 		"../../Resource/Effect/B_Crownless/Attack/")))
 		return E_FAIL;
 
