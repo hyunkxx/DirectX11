@@ -161,8 +161,7 @@ HRESULT CMesh_Effect::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
-		
+		//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
 		m_pShaderCom->Begin(m_EffectDesc.iPass);
 		m_pModelCom->Render(i);
 	}
@@ -695,6 +694,11 @@ HRESULT CMesh_Effect::SetUp_ShaderResources()
 		return E_FAIL;
 
 
+	if (m_pTextureCom != nullptr)
+	{
+		if (FAILED(m_pTextureCom->Setup_ShaderResource(m_pShaderCom, "g_DiffuseTexture")))
+			return E_FAIL;
+	}
 
 	if (m_EffectDesc.bDissolveTexure &&  nullptr != m_pDissolveTextureCom)
 	{
@@ -963,7 +967,7 @@ void CMesh_Effect::Set_Image(const char * pImageTag)
 			}
 			else
 			{
-				m_pModelCom->SetUp_Texture(MyTextureType_DIFFUSE, iter.second);
+				m_pTextureCom = iter.second;
 			}
 		}
 	}
