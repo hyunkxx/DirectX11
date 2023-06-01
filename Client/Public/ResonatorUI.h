@@ -87,6 +87,10 @@ private:
 	
 	// Stats Detail
 	//title name level
+	ORTHO_DESC m_OrthoPlayerText;
+	ORTHO_DESC m_OrthoLevelText;
+	ORTHO_DESC m_OrthoLevel[5];
+	ORTHO_DESC m_OrthoExp;
 
 	// State
 	enum { STATE_HP, STATE_ATTACK, STATE_DEFENSE, STATE_CRITRATE, STATE_END };

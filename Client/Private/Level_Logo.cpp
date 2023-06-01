@@ -29,7 +29,7 @@ HRESULT CLevel_Logo::Initialize()
 	ZeroMemory(&LightDesc, sizeof LightDesc);
 	LightDesc.eLightType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(2.f, -0.3f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.9f, 1.f, 0.9f, 1.f);
+	LightDesc.vDiffuse = _float4(0.85f, 0.95f, 0.85f, 1.f);
 	//LightDesc.vDiffuse = _float4(0.8f, 0.9f, 0.8f, 1.f);
 
 	LightDesc.vAmbient = _float4(0.65f, 0.65f, 0.65f, 1.f); //0.65f

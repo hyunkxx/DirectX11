@@ -1071,6 +1071,23 @@ HRESULT CApplication::Ready_Item_Image()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StateCritRate.dds")))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RESONATOR_PLAYER,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/PlayerText.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RESONATOR_LEVEL,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StateLevelText.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SLASH,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/TextSlash.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_PER,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/Per.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_DOT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/Dot.dds")))))
+		return E_FAIL;
+
+	//¿ÃπÃ¡ˆ
 	return S_OK;
 }
 

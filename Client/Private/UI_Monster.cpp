@@ -85,7 +85,7 @@ void CUI_Monster::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	if (nullptr != m_pRenderer)
-		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
+		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI_PRE, this);
 }
 
 HRESULT CUI_Monster::Render()

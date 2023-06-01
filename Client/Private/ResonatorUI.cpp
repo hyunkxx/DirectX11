@@ -46,6 +46,7 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 
+#pragma region FRAME_ORTHO
 	// Background
 	m_OrthoBackground.fWidth = g_iWinSizeX;
 	m_OrthoBackground.fHeight = g_iWinSizeY;
@@ -59,6 +60,40 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_OrthoTitleText.fX = 320.f;
 	m_OrthoTitleText.fY = 90.f;
 	pApp->ComputeOrtho(&m_OrthoTitleText);
+
+#pragma endregion
+
+#pragma region STATE_DETAILS
+	// PlayerText
+	m_OrthoPlayerText.fWidth = 512.f * 0.6f;
+	m_OrthoPlayerText.fHeight = 64.f * 0.6f;
+	m_OrthoPlayerText.fX = 320.f;
+	m_OrthoPlayerText.fY = 185.f;
+	pApp->ComputeOrtho(&m_OrthoPlayerText);
+
+	// LevelText
+	m_OrthoLevelText.fWidth = 512.f * 0.6f;
+	m_OrthoLevelText.fHeight = 64.f * 0.6f;
+	m_OrthoLevelText.fX = 320.f;
+	m_OrthoLevelText.fY = 175.f + 64.f * 0.6f;
+	pApp->ComputeOrtho(&m_OrthoLevelText);
+
+	// CurLevel
+	for (_uint i = 0; i < 5; ++i)
+	{
+		m_OrthoLevel[i].fWidth = 16.f * 0.8f;
+		m_OrthoLevel[i].fHeight = 25.f * 0.8f;
+		m_OrthoLevel[i].fX = 230.f + (i * (18.f * 0.7f));
+		m_OrthoLevel[i].fY = 173.f + 64.f * 0.6f;
+		pApp->ComputeOrtho(&m_OrthoLevel[i]);
+	}
+
+	// Exp
+	m_OrthoExp.fWidth = 220.f;
+	m_OrthoExp.fHeight = 8.f;
+	m_OrthoExp.fX = 270.f;
+	m_OrthoExp.fY = 200.f + 64.f * 0.6f;
+	pApp->ComputeOrtho(&m_OrthoExp);
 
 	// Buttons
 	for (_uint i = 0; i < BTN_END; ++i)
@@ -84,7 +119,7 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 
 	m_OrthoState[0].fWidth = 400.f * fRatio;
 	m_OrthoState[0].fHeight = 150.f * fRatio;
-	m_OrthoState[0].fX = 250.f;
+	m_OrthoState[0].fX = 240.f;
 	m_OrthoState[0].fY = 300.f;
 	pApp->ComputeOrtho(&m_OrthoState[0]);
 
@@ -106,7 +141,7 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_OrthoState[3].fY = 300.f + (m_OrthoState[0].fHeight + fOffset);
 	pApp->ComputeOrtho(&m_OrthoState[3]);
 
-	// StateData 출력 최대 4자리
+	// StateData 출력 최대 6자리
 	for (_uint i = 0; i < STATE_END; ++i)
 	{
 		for (_uint digit = 0; digit < 6; ++digit)
@@ -120,6 +155,8 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 		}
 	}
 
+#pragma endregion
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	m_pPlayerState = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 
@@ -132,7 +169,14 @@ void CResonatorUI::Start()
 
 void CResonatorUI::Tick(_double TimeDelta)
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 	__super::Tick(TimeDelta);
+
+	if (pGameInstance->InputKey(DIK_B) == KEY_STATE::TAP)
+	{
+		m_pPlayerState->AddExp(CPlayerState::CHARACTER_ROVER, 10.f);
+	}
 
 	stateUpdate(TimeDelta);
 }
@@ -455,6 +499,102 @@ HRESULT CResonatorUI::stateRender()
 		m_pVIBuffer->Render();
 	}
 
+	// Player Text
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fButtonAlpha[0], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoPlayerText.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_RESONATOR_PLAYER, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// Level Text
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fButtonAlpha[0], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoLevelText.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_RESONATOR_LEVEL, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	CPlayerState::CHARACTER_STATE* pPlayerState = m_pPlayerState->Get_CharState_bySlot(CPlayerState::SLOT_MAIN);
+	string strCurLevel = to_string((_int)pPlayerState->iCurLevel);
+	_uint iLevelDigit = (_uint)strCurLevel.size();
+
+	//CurLevel
+	for (_uint i = 0; i < iLevelDigit; ++i)
+	{
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fButtonAlpha[0], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoLevel[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(strCurLevel[i] - '0', m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+	}
+
+	// 슬래쉬
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fButtonAlpha[0], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoLevel[iLevelDigit].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SLASH, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+	// MaxLevel = 50
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fButtonAlpha[0], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoLevel[iLevelDigit + 1].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_5, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fButtonAlpha[0], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoLevel[iLevelDigit + 2].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_0, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// Exp Gage Back
+	_float3 vColor = { 0.7f, 0.7f, 0.7f };
+	if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fButtonAlpha[0], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoExp.WorldMatrix)))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_WHITE_RECT, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(9);
+	m_pVIBuffer->Render();
+
+	_float fFill = pPlayerState->fCurExp / pPlayerState->fMaxExp;
+
+	// ExpGage Front
+	if (FAILED(m_pShader->SetRawValue("g_fFillAmount", &fFill, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fButtonAlpha[0], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoExp.WorldMatrix)))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_WHITE_RECT, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(2);
+	m_pVIBuffer->Render();
+
 	return S_OK;
 }
 
@@ -491,6 +631,18 @@ HRESULT CResonatorUI::stateData()
 			m_pVIBuffer->Render();
 		}
 	}
+
+	// 퍼센트 붙히기
+	_uint iPerIndex = (_uint)strData[3].size();
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fButtonAlpha[3], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoStateData[STATE_CRITRATE][iPerIndex].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_PER, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
 
 
 	return S_OK;

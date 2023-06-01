@@ -339,7 +339,9 @@
     <ClCompile Include="..\Private\TestChar.cpp">
       <Filter>src\NEW_FILES</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\M_Crownless_P1.cpp" />
+    <ClCompile Include="..\private\M_Crownless_P1.cpp">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -657,7 +659,9 @@
     <ClInclude Include="UIInterface.h">
       <Filter>src\NEW_FILES</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\M_Crownless_P1.h" />
+    <ClInclude Include="..\public\M_Crownless_P1.h">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

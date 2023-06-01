@@ -91,7 +91,9 @@ void CRenderer::Draw()
 #endif
 	pGameInstance->CollisionRender();
 
+	Render_UI_Pre();
 	Render_UI();
+	Render_UI_Post();
 
 #ifdef _DEBUG
 	if (m_pRenderSetting->IsDebug())
@@ -1228,6 +1230,18 @@ void CRenderer::Render_PostEffect()
 
 }
 
+void CRenderer::Render_UI_Pre()
+{
+	for (auto& pGameObject : m_RenderObject[RENDER_UI_PRE])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObject[RENDER_UI_PRE].clear();
+}
+
 void CRenderer::Render_UI()
 {
 	for (auto& pGameObject : m_RenderObject[RENDER_UI])
@@ -1238,6 +1252,18 @@ void CRenderer::Render_UI()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObject[RENDER_UI].clear();
+}
+
+void CRenderer::Render_UI_Post()
+{
+	for (auto& pGameObject : m_RenderObject[RENDER_UI_POST])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObject[RENDER_UI_POST].clear();
 }
 
 bool Compute(Engine::CGameObject* pSourObject, Engine::CGameObject* pDestObject)
