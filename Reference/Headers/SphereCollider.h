@@ -26,6 +26,15 @@ public:
 	virtual void SetExtents(_float3 vExtents);
 	virtual void SetRotation(_float3 vRotation);
 
+	virtual void SetCenter_(_float3 vPosition)
+	{
+		_sphereOriginal->Center = vPosition;
+	}
+	virtual void SetExtents_(_float3 vExtents)
+	{
+		_sphereOriginal->Radius = vExtents.x;
+	}
+
 public:
 	static CSphereCollider* Create(ID3D11Device* device, ID3D11DeviceContext* context);
 	virtual CComponent* Clone(void* arg) override;

@@ -28,6 +28,15 @@ public:
 
 	_float3 GetCorners();
 
+	virtual void SetCenter_(_float3 vPosition)
+	{
+		_obbOriginal->Center = vPosition;
+	}
+	virtual void SetExtents_(_float3 vExtents) 
+	{
+		_obbOriginal->Extents = vExtents;
+	}
+
 public:
 	static COBBCollider* Create(ID3D11Device* device, ID3D11DeviceContext* context);
 	virtual CComponent* Clone(void* arg) override;

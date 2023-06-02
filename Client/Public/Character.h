@@ -329,7 +329,7 @@ public:
 	struct StateController
 	{
 		_uint			iCurState;		// 현재 상태 ID
-		_uint			iNextState;		// 다음 상태 ID > Setup_State 호출 시 다음 상태로 넘어가게 됨
+		_uint			iNextState;		// 다음 상태 ID > Setup_State 호출 시 이 상태로 넘어가게 됨
 		_double			TrackPos;		// 현재 재생 중인 애니메이션의 트랙포지션(누적 '프레임' 값 ~~ 24fps ~~ 1 frame == 1/24 sec)
 		_uint			iPrevCellState;	// 전 프레임 네비 셀 타입 저장
 		PositionState	ePositionState;
@@ -338,7 +338,7 @@ public:
 		_float3			vPrevMovement;
 		_bool			bWalk;
 		_bool			bFalling;
-		_float4x4		DefaultMatrix; // 애니메이션 시작 상태 행렬
+		//_float4x4		DefaultMatrix; // 애니메이션 시작 상태 행렬
 	};
 
 	// 피격 애니메이션 강도
@@ -399,8 +399,9 @@ public:
 
 	virtual _bool Get_Attack() { return false; }
 
-
 	virtual void Set_TimeDelay(_double DelayDuration, _double DelayValue) {}
+
+	virtual void Set_AttackHit(_bool bAttackHit) {}
 
 
 public: // StateKey 대응 함수 모음

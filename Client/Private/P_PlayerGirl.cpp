@@ -236,7 +236,7 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 				m_pPlayerStateClass->Set_LockOn(true, m_pFixedTarget);
 			}
 		}
-		else if (nullptr != m_pFixedTarget && 2.0 < m_ReleaseTargetTimeAcc)
+		else if (nullptr != m_pFixedTarget && 1.0 < m_ReleaseTargetTimeAcc)
 		{
 			m_pFixedTarget = nullptr;
 			m_pPlayerStateClass->Set_LockOn(false, nullptr);
@@ -408,7 +408,7 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 
 	// 다음프레임을 위해 초기화
 	m_pNearst = nullptr;
-	m_fNearstDist = 15.f;
+	m_fNearstDist = 20.f;
 	m_bHit = false;
 }
 
@@ -669,8 +669,8 @@ HRESULT CP_PlayerGirl::Add_Components()
 		return E_FAIL;
 
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 0.75f, 0.f };
-	CollDesc.vExtents = { 0.75f, 0.75f, 0.75f };
+	CollDesc.vCenter = { 0.f, 1.f, 0.f };
+	CollDesc.vExtents = { 0.8f, 0.8f, 0.8f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_HitCollider"), (CComponent**)&m_pHitCollider, &CollDesc)))
@@ -2193,7 +2193,8 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 	{
 		return;
 	}
-
+	
+	static_cast<CCharacter*>(pGameObject)->Set_AttackHit(true);
 
 	// 그 외 피격 처리
 	// 피격 이펙트 출력

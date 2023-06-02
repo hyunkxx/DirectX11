@@ -225,6 +225,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\M_Crownless_P2.h" />
+    <ClInclude Include="..\public\M_Crownless_P3.h" />
     <ClInclude Include="..\public\M_GAzizi.h" />
     <ClInclude Include="..\Public\Particle_Effect.h" />
     <ClInclude Include="..\public\PlayerState.h" />
@@ -355,6 +356,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\M_Crownless_P2.cpp" />
+    <ClCompile Include="..\private\M_Crownless_P3.cpp" />
     <ClCompile Include="..\private\M_GAzizi.cpp" />
     <ClCompile Include="..\Private\Particle_Effect.cpp" />
     <ClCompile Include="..\private\PlayerState.cpp" />

@@ -181,12 +181,19 @@ void CM_Crownless_P2::Tick(_double TimeDelta)
 		TimeDelay = 1.0;
 	}
 
+	// 테스트
+	if (pGameInstance->InputKey(DIK_NUMPAD8) == KEY_STATE::TAP)
+	{
+		SetState(DISABLE);
+	}
+	//
+
 	__super::Tick(TimeDelta);
 
 	Apply_CoolTime(TimeDelta * TimeDelay); // 쿨타임 갱신
 
 	if (0.f < m_fHitPoint ||
-		100.f > m_fHitPoint)
+		150.f > m_fHitPoint)
 		m_fHitPoint += (_float)TimeDelta * 2.f;
 
 
@@ -1298,7 +1305,7 @@ void CM_Crownless_P2::Tick_State(_double TimeDelta)
 
 		// 피격 애니메이션 종료 시
 		if (IS_BEHIT_S == m_Scon.iCurState ||
-			IS_BEHIT_S == m_Scon.iCurState ||
+			IS_BEHIT_B == m_Scon.iCurState ||
 			IS_BEHIT_FLY_FALL == m_Scon.iCurState)
 		{
 			m_fHitPoint = 150.f;
@@ -1607,7 +1614,7 @@ void CM_Crownless_P2::OnCollisionEnter(CCollider * src, CCollider * dest)
 					if (5.0 < m_Scon.TrackPos)
 					{
 						m_Scon.iNextState = IS_ATTACK22;
-						Shot_SlowKey(0.5, 0.1);
+						Shot_SlowKey(0.5f, 0.1f);
 						SetUp_State();
 						m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true);
 					}
