@@ -58,6 +58,7 @@ private:
 	HRESULT Setup_ShaderResources(_uint index);
 	HRESULT Setup_ShaderResourcesYang(_uint index);
 	HRESULT Setup_ShaderResourcesChixia(_uint index);
+
 private:
 	_bool	AddAlpha(vector<TIPDESC>* pDesc, _double TimeDelta);
 	_bool	MinusAlpha(vector<TIPDESC>* pDesc, _double TimeDelta);
