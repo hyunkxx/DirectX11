@@ -1802,47 +1802,55 @@ HRESULT CApplication::Ready_Static_Effect()
 
 #pragma region Boss_Crownless
 
-	// 모션들 중 빠르게 이동하는 모션 시전 시 나오는 이펙트
-	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
-		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_Dash.bin"),
-		"../../Resource/Effect/B_Crownless/Attack/")))
-		return E_FAIL;
+	for (_int i = 0; 3 > i; i++)
+	{
+		// 모션들 중 빠르게 이동하는 모션 시전 시 나오는 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_Dash.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
 
-	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
-		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_02_1.bin"),
-		"../../Resource/Effect/B_Crownless/Attack/")))
-		return E_FAIL;
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_02_1.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
 
-	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
-		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_02_2.bin"),
-		"../../Resource/Effect/B_Crownless/Attack/")))
-		return E_FAIL;
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_02_2.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
 
-	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
-		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_03_1.bin"),
-		"../../Resource/Effect/B_Crownless/Attack/")))
-		return E_FAIL;
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_03_1.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
 
-	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
-		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_03_2.bin"),
-		"../../Resource/Effect/B_Crownless/Attack/")))
-		return E_FAIL;
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_03_2.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
 
-	// Attack_8 이펙트들
-	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
-		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_08.bin"),
-		"../../Resource/Effect/B_Crownless/Attack/")))
-		return E_FAIL;
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_03_Flare.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+		// Attack_8 이펙트들
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_08.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
 
-	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
-		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_08_Circle.bin"),
-		"../../Resource/Effect/B_Crownless/Attack/")))
-		return E_FAIL;
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_08_Circle.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
 
-	if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
-		TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_08_Jump.bin"),
-		"../../Resource/Effect/B_Crownless/Attack/")))
-		return E_FAIL;
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_08_Jump.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+	}
+
 
 #pragma endregion
 
