@@ -13,6 +13,7 @@ float				g_fTimeAcc = 0.f;
 float				g_fFillAmount = 1.f;
 
 float3				g_vColor = { 1.f, 1.f, 1.f };
+float4				g_vColor4 = { 1.f, 1.f, 1.f, 1.f };
 
 //Sprite Image
 float g_CurrentCount;		//ÇöÀç ÀÎµ¦½º
@@ -163,7 +164,7 @@ PS_OUT PS_Sprite(PS_IN In)
 	uv.y = In.vTexUV.y / g_SpriteXY.y + (fHeight * (1 / g_SpriteXY.y));
 
 	Out.vColor = g_DiffuseTexture.Sample(LinearClampSampler, uv);
-	Out.vColor = Out.vColor * float4(g_vColor, Out.vColor.a);
+	Out.vColor = Out.vColor * float4(g_vColor4);
 
 	if (Out.vColor.a < DISCARD_ALPHA)
 		discard;

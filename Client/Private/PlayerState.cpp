@@ -183,14 +183,14 @@ void CPlayerState::AddExp(CHARACTERS eCharater, _float fExp)
 void CPlayerState::levelUp(CHARACTERS eCharater)
 {
 	m_CharacterState[eCharater].iCurLevel++;
-	m_CharacterState[eCharater].fMaxExp *= 2.f;
+	m_CharacterState[eCharater].fMaxExp += 1.1f;
 
-	m_CharacterState[eCharater].fMaxHP *= 1.5f;
+	m_CharacterState[eCharater].fMaxHP += 50.f;
 
-	m_CharacterState[eCharater].fAttack[STAT_BASE] *= 1.5f;
-	m_CharacterState[eCharater].fDefense[STAT_BASE] *= 1.2f;
+	m_CharacterState[eCharater].fAttack[STAT_BASE] += 2.5f;
+	m_CharacterState[eCharater].fDefense[STAT_BASE] += 1.5f;
 	
-	m_CharacterState[eCharater].fCriticalRate[STAT_BASE] += 0.5f;
+	m_CharacterState[eCharater].fCriticalRate[STAT_BASE] += 0.25f;
 	if (m_CharacterState[eCharater].fCriticalRate[STAT_BASE] > 100.f)
 		m_CharacterState[eCharater].fCriticalRate[STAT_BASE] = 100.f;
 }

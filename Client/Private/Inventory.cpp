@@ -158,6 +158,19 @@ void CInventory::DiscardItem(INVEN_TYPE eInvenType, _uint iSlotIndex, _uint iAmo
 	}
 }
 
+_uint CInventory::GetTotalAmount(INVEN_TYPE eInvenType, _uint iItemID)
+{
+	//모든 슬롯을 순회하면서 해당 아이템의 수량을 더함
+	_uint iAmount = 0;
+	for (auto iter = m_Items[eInvenType].begin(); iter != m_Items[eInvenType].end(); ++iter)
+	{
+		if (iter->iItemID == iItemID)
+			iAmount += iter->iAmount;
+	}
+
+	return iAmount;
+}
+
 _bool CInventory::addWeapon(CItem::ITEM_DESC tagItemDesc)
 {
 	if (m_Items[INVEN_WEAPON].size() < m_iSlotLimit[INVEN_WEAPON])

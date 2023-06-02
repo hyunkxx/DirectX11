@@ -22,6 +22,7 @@ texture2D	g_NormalTexture;
 //Rim Light
 float4 g_RimColor = float4(1.f, 0.7f, 0.4f, 1.f);
 float g_RimPower = 5.f;
+float g_fTimeAcc = 0.f;
 
 //Dessolve
 
@@ -368,6 +369,10 @@ PS_OUT_OUTLINE PS_RimLight(PS_IN In)
 {
 	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
 
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+
 	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	vector vCamDir = normalize(In.vWorldPos - g_vCamPosition);
 	float rim = 0;
@@ -376,19 +381,18 @@ PS_OUT_OUTLINE PS_RimLight(PS_IN In)
 	rim = pow(rim, g_RimPower);
 
 	float4 rimColor = rim * g_RimColor;
-	Out.vDiffuse = rimColor;
+	Out.vDiffuse = rimColor * g_fTimeAcc;
 
-	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
-	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
-	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	Out.vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+	Out.vOutNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 
-	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vGlow = Out.vDiffuse;
 
-	Out.vShaderInfo = float4(0.f, 0.f, 0.f, 0.f);
+	if ((vNormalDesc.r + vNormalDesc.g) / 2 > (vNormalDesc.b * 2.f))
+		Out.vSpecGlow = float4(vDiffuse.xyz, 1.f);
+
+	Out.vShaderInfo = float4(0.9f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -419,7 +423,7 @@ PS_OUT_OUTLINE PS_DiffuseAddRim(PS_IN In)
 
 	Out.vGlow = float4(0.f, 0.f, 0.f, 1.f);
 
-	Out.vShaderInfo = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vShaderInfo = float4(0.9f, 0.f, 0.f, 0.f);
 
 	return Out;
 }

@@ -12,6 +12,7 @@ public:
 
 	typedef struct tagItemDesc
 	{
+		_uint				iItemID;			// 아이템 ID
 		ITEM_TYPE			eItemType;			// 아이템 종류
 		ITEM_GRADE			eItemGrade;			// 아이템 등급
 		_uint				iImageIndex;		// 아이템 아이콘 텍스쳐(인덱스)

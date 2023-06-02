@@ -36,6 +36,12 @@ extern int g_iGUIID;
 #define ADVANCED_COLOR  { 50.f / 255.f, 230.f / 255.f, 80.f / 255.f }
 #define RARE_COLOR  { 50.f / 255.f, 150.f / 255.f, 255.f / 255.f }
 #define UNIQUE_COLOR  { 210.f / 255.f, 110.f / 255.f, 255.f / 255.f }
-#define LEGEND_COLOR { 250.f / 255.f, 255.f / 255.f, 110.f / 255.f }
+#define LEGEND_COLOR { 241.f / 255.f, 225.f / 255.f, 105.f / 255.f }
+
+// SlotColor Tonedown
+#define SLOT_COLOR  { 120.f / 255.f, 123.f / 255.f, 127.f / 255.f }
+#define SLOT_ADVANCED_COLOR  { 102.f / 255.f, 128.f / 255.f, 78.f / 255.f }
+#define SLOT_RARE_COLOR  { 74.f / 255.f, 105.f / 255.f, 124.f / 255.f }
+#define SLOT_UNIQUE_COLOR  { 98.f / 255.f, 73.f / 255.f, 129.f / 255.f }
 
 #define FALL_THROUGH

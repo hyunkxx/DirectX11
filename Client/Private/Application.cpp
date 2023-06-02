@@ -1033,13 +1033,26 @@ HRESULT CApplication::Ready_Item_Image()
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_GLOWBUTTON,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/GlowButton.dds")))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_GLOW_SOLID_BUTTON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/GlowSolidButton.dds")))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_RESONATOR_STATETEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StateDetailsText.dds")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StatsDetailTitle.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_RESONATOR_WEAPONTEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/WeaponText.dds")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/WeaponTitle.dds")))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_RESONATOR_ECHOTEXT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/EchoTitle.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_RESONATOR_RESONANCETEXT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/ResonanceTitle.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_RESONATOR_WUTHERIDETEXT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/WutherideTitle.dds")))))
+		return E_FAIL;
+
 
 	// Resonator UI
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_RESONATOR_STATE,
@@ -1071,9 +1084,16 @@ HRESULT CApplication::Ready_Item_Image()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StateCritRate.dds")))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RESONATOR_PLAYER,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/PlayerText.dds")))))
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RESONATOR_ROVER,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/Rover.dds")))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RESONATOR_YANGYANG,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/Yangyang.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RESONATOR_CHIXIA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/Chixia.dds")))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RESONATOR_LEVEL,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StateLevelText.dds")))))
 		return E_FAIL;
@@ -1085,6 +1105,71 @@ HRESULT CApplication::Ready_Item_Image()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_DOT,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/Dot.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::GLOW_CIRCLE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/GlowCircle.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_ROVER_GRAD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/RoverGrad.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_YANGYANG_GRAD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/YangyangGrad.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_GUNNER_GRAD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/GunnerGrad.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_EXP0,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconRub/StandardCapsule.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_EXP1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconRub/ExtandedCapsule.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_EXP2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconRub/HighendCapsule.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_EXP3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconRub/UniqueCapsule.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_EXP0,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconRub/IconExp0.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_EXP1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconRub/IconExp1.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_EXP2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconRub/IconExp2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_EXP3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconRub/IconExp3.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::SLOT_EMPTY,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SlotEmpty.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::SLOT_UPGRADE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/UpgradeSlot.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::SPRITE_UI_FLASH,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SpriteFlash6x5.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_UPGRADE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/UpgradeText.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_GLOW_UPARROW_BUTTON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/GlowUpArrowButton.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_CONSUME,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/ConsumeText.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_OWN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/OwnText.dds")))))
 		return E_FAIL;
 
 	//¿ÃπÃ¡ˆ
