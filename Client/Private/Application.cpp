@@ -1865,6 +1865,12 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/B_Crownless/Attack/")))
 			return E_FAIL;
 
+		// ÃÑ¾Ë
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_05_Bullet.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+		
 		// Attack_8 ÀÌÆåÆ®µé
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
 			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_08.bin"),
