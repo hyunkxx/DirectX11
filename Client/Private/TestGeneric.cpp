@@ -677,6 +677,18 @@ HRESULT CTestGeneric::Init_EffectBones()
 	if (nullptr != pBone)
 		m_EffectBones[EBONE_RHAND] = pBone;
 
+	pBone = m_pModelCom->Get_BonePtr(TEXT("Bip001Head"));
+	if (nullptr != pBone)
+		m_EffectBones[EBONE_HEAD] = pBone;
+
+	pBone = m_pModelCom->Get_BonePtr(TEXT("Bip001LFoot"));
+	if (nullptr != pBone)
+		m_EffectBones[EBONE_LFOOT] = pBone;
+
+	pBone = m_pModelCom->Get_BonePtr(TEXT("Bip001RFoot"));
+	if (nullptr != pBone)
+		m_EffectBones[EBONE_RFOOT] = pBone;
+
 	return S_OK;
 }
 

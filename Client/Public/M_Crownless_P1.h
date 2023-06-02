@@ -67,6 +67,9 @@ public:
 		EBONE_RHAND,
 		EBONE_HEAD,
 		// 여기까지 몬스터 공통으로 고정
+		EBONE_LFOOT,
+		EBONE_RFOOT,
+
 		EBONE_END
 	};
 

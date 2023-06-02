@@ -1163,7 +1163,7 @@ void CM_Crownless_P1::Tick_State(_double TimeDelta)
 		
 		// 피격 애니메이션 종료 시
 		if (IS_BEHIT_S == m_Scon.iCurState ||
-			IS_BEHIT_S == m_Scon.iCurState ||
+			IS_BEHIT_B == m_Scon.iCurState ||
 			IS_BEHIT_FLY_FALL == m_Scon.iCurState)
 		{
 			m_fHitPoint = 100.f;
@@ -1335,6 +1335,8 @@ HRESULT CM_Crownless_P1::Init_EffectBones()
 	m_EffectBones[EBONE_LHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001LHand"));
 	m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
 	m_EffectBones[EBONE_HEAD] = m_pModelCom->Get_BonePtr(TEXT("Bip001Head"));
+	m_EffectBones[EBONE_LFOOT] = m_pModelCom->Get_BonePtr(TEXT("Bip001LFoot"));
+	m_EffectBones[EBONE_RFOOT] = m_pModelCom->Get_BonePtr(TEXT("Bip001RFoot"));
 
 	return S_OK;
 }
