@@ -318,6 +318,9 @@ HRESULT CRect_Effect_P::Add_Texture(const char * pFileTag, const char * TextureN
 
 	*pTexture = CTexture::Create(m_pDevice, m_pContext, TextureTag2);
 	
+	if (nullptr == *pTexture)
+		return E_FAIL;
+
 	return S_OK;
 }
 
