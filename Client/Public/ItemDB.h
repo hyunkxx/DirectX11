@@ -34,6 +34,10 @@ namespace ITEM
 		COMMEMORATIVE_COIN,
 		TACTITE_COIN,
 		
+		EXP0,
+		EXP1,
+		EXP2,
+		EXP3,
 	};
 }
 

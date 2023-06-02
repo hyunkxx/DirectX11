@@ -126,7 +126,19 @@ HRESULT CLobbyCharacter::Render()
 
 		if (m_bOnMoused)
 		{
-			m_pShaderCom->Begin(9);
+			_float fAlpha = 0.3f;
+			_float vRimPower = 8.f;
+			_float3 vColor = DEFAULT_COLOR;
+			_float4 vRimColor = _float4(vColor.x, vColor.y, vColor.z, 1.f);
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_RimPower", &vRimPower, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->SetRawValue("g_RimColor", &vRimColor, sizeof(_float4))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(8);
 			m_pModelCom->Render(i);
 		}
 	}

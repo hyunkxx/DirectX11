@@ -45,6 +45,9 @@ public:
 	void PushItem(CItem::ITEM_DESC tagItemDesc);
 	void DiscardItem(INVEN_TYPE eInvenType, _uint iSlotIndex, _uint iAmount = 1);
 
+	// 검색할 아이템의 전체 갯수 (슬롯 상관 x)
+	_uint GetTotalAmount(INVEN_TYPE eInvenType, _uint iItemID);
+
 private:
 	_bool addWeapon(CItem::ITEM_DESC tagItemDesc);
 	_bool addItem(INVEN_TYPE eInvenType, CItem::ITEM_DESC tagItemDesc);

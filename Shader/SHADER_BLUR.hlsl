@@ -157,6 +157,7 @@ PS_OUT PS_MAIN_GLOW(PS_IN In)
 	// g_GlowOriTexture
 
 	float3 color = pow(g_GlowOriTexture.Sample(LinearBorderSampler, In.vTexUV).rgb * g_fColorRange, float3(2.2f, 2.2f, 2.2f));
+
 	color = pow(color, float3(2.2f, 2.2f, 2.2f));
 	color += pow(getBloom(In.vTexUV), float3(2.2f, 2.2f, 2.2f));
 	color = pow(color, float3(1.f / 2.2f, 1.f / 2.2f, 1.f / 2.2f));

@@ -282,6 +282,29 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta * m_TimeDelay);
 
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	//림라이트 임시테스트
+	if (pGameInstance->InputKey(DIK_H) == KEY_STATE::TAP)
+		m_bRimToggle = !m_bRimToggle;
+
+	if (m_bRimToggle)
+	{
+		m_fRimAlpha += (_float)TimeDelta;
+		if (m_fRimAlpha >= 1.f)
+			m_fRimAlpha = 0.f;
+	}
+
+	// BurstRim
+	if (m_Scon.iCurState == IS_BURST)
+		m_fBurstRim = 0.3f;
+	else
+	{
+		m_fBurstRim -= (_float)TimeDelta * 0.5f;
+		if (m_fBurstRim <= 0.f)
+			m_fBurstRim = 0.f;
+	}
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
@@ -296,8 +319,6 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 		}
 	}
 
-	CGameMode* pGameMode = CGameMode::GetInstance();
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	static _bool bCamLock = false;
 	if (pGameInstance->InputKey(DIK_SCROLL) == KEY_STATE::TAP)
 	{
@@ -469,12 +490,45 @@ HRESULT CP_PlayerGirl::Render()
 
 		m_pModelCom->Render(i);
 
-		////Rim Light
-		//if (i != 5 && 10.f > ComputeCameraLength())
-		//{
-		//	m_pShaderCom->Begin(8);
-		//	m_pModelCom->Render(i);
-		//}
+		//Rim Light
+		if (m_bRimToggle && m_Scon.iCurState != IS_BURST && i != 5)
+		{
+			/* H키 누르면 활성화/비활성화 토글
+			* g_RimPower : 일반적으로 5정도 주고 값이 높을수록 Rim의 라인 굵기가 얇아짐
+			* g_RimColor : 림라이트의 색상값 기본색(흰), 초록(고급), 파랑(레어), 보라(고급), 노랑(신화) 등급 색상은 매크로로 지정 되있음 직접 세팅해도됨
+			* g_fTimeAcc : VTXMODELANIM 쉐이더에서는 림라이트에서만 TimeAcc 적용하고있고 림라이트의 알파값을 의미함
+			*/
+			_float vRimPower = 5.f;
+			_float3 vColor = UNIQUE_COLOR;
+			_float4 vRimColor = _float4(vColor.x, vColor.y, vColor.z, 1.f);
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_RimPower", &vRimPower, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->SetRawValue("g_RimColor", &vRimColor, sizeof(_float4))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->SetRawValue("g_fTimeAcc", &m_fRimAlpha, sizeof(_float))))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(8);
+			m_pModelCom->Render(i);
+		}
+
+		// Burst Rim
+		if (i != 5 && m_fBurstRim > 0.f)
+		{
+			_float vRimPower = 10.f;
+			_float3 vColor = LEGEND_COLOR;
+			_float4 vRimColor = _float4(vColor.x, vColor.y, vColor.z, 1.f);
+			if (FAILED(m_pShaderCom->SetRawValue("g_RimPower", &vRimPower, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->SetRawValue("g_RimColor", &vRimColor, sizeof(_float4))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->SetRawValue("g_fTimeAcc", &m_fBurstRim, sizeof(_float))))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(8);
+			m_pModelCom->Render(i);
+		}
 	}
 
 #ifdef _DEBUG
@@ -1192,9 +1246,10 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		else
 			m_ChargeAcc = 0.0;
 
-		if (pGame->InputMouse(DIMK_RB) == KEY_STATE::TAP)
+		if (!pGM->IsActiveUI())
 		{
-			pGame->TimeSlowDown(0.5f, 0.1f);
+			if (pGame->InputMouse(DIMK_RB) == KEY_STATE::TAP)
+				pGame->TimeSlowDown(0.5f, 0.1f);
 		}
 
 		// Tool

@@ -1132,7 +1132,7 @@ void CRenderer::Render_SpecularGlow()
 
 void CRenderer::Render_ModelGlow()
 {
-	Target_Blur_Middle(L"Target_ModelLight", 1);
+	Target_Blur_Middle(L"Target_ModelLight", 3);
 
 	CRenderTarget* pTarget = m_pTargetManager->FindTarget(L"Target_ModelGlow");
 	m_pTargetManager->BeginTarget(m_pContext, pTarget);

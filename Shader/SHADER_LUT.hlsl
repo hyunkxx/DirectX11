@@ -18,8 +18,8 @@ float3 GetLutColor(float3 ColorIn)
 	LutUV.x += LutUV.w * LutSize.y;
 	LutUV.z = LutUV.x + LutSize.y;
 
-	vector Lut1 = g_LUT.Sample(PointSampler, LutUV.xyzz);
-	vector Lut2 = g_LUT.Sample(PointSampler, LutUV.zyzz);
+	vector Lut1 = g_LUT.Sample(LinearSampler, LutUV.xyzz);
+	vector Lut2 = g_LUT.Sample(LinearSampler, LutUV.zyzz);
 
 	return lerp(Lut1.xyz, Lut2.xyz, ColorIn.b - LutUV.w);
 }
