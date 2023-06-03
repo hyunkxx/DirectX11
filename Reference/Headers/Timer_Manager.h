@@ -19,9 +19,6 @@ public:
 	_bool IsScaleUpdate() const { return m_bScaleUpdate; }
 	_double GetTimeScale() const { return m_fTimeScale; }
 	void SetTimeScaleDesc(_float fDuration, _float fTargetTime, _float fLerpTime) {
-		if (m_bSlowDown)
-			return;
-
 		m_bSlowDown = true;
 		m_fDuration = fDuration;
 		m_fLerpTime = fLerpTime;

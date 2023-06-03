@@ -39,7 +39,7 @@ HRESULT CPlayerState::Initialize_Prototype()
 
 		m_CharacterState[i].iCurLevel = 1;
 		m_CharacterState[i].fCurExp = 0.f;
-		m_CharacterState[i].fMaxExp = 500.f;
+		m_CharacterState[i].fMaxExp = 50.f;
 
 		m_CharacterState[i].fMaxHP = 500.f;
 		m_CharacterState[i].fCurHP = m_CharacterState[i].fMaxHP;
@@ -183,7 +183,7 @@ void CPlayerState::AddExp(CHARACTERS eCharater, _float fExp)
 void CPlayerState::levelUp(CHARACTERS eCharater)
 {
 	m_CharacterState[eCharater].iCurLevel++;
-	m_CharacterState[eCharater].fMaxExp *= 1.1f;
+	m_CharacterState[eCharater].fMaxExp += 1.1f;
 
 	m_CharacterState[eCharater].fMaxHP += 50.f;
 

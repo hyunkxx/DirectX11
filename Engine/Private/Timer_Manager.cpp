@@ -61,10 +61,7 @@ void CTimer_Manager::TimeScaleDown(_double TimeDelta)
 		m_fTimeScale = XMVectorGetX(vCurTime);
 		if (m_fTimeScale >= 0.99f)
 		{
-			m_fLerpTime = 5.f;
-			m_fDuration = 1.f;
 			m_fTimeScale = 1.f;
-			m_fTargetTimeScale = 1.f;
 			m_bScaleUpdate = false;
 			bScaleDownFinish = false;
 		}
