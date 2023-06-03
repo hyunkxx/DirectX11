@@ -125,9 +125,11 @@ void CTerrain::SetUp_LevelFilePath(_uint iLevelID, const _tchar * pFilePath, _tc
 	switch (iLevelID)
 	{
 	case LEVEL_ID::LEVEL_GAMEPLAY:
-		lstrcat(szLevelFilePath, TEXT("GamePlay/"));
-		break;
+		//lstrcat(szLevelFilePath, TEXT("GamePlay/"));
 
+		lstrcat(szLevelFilePath, TEXT("City/"));
+		break;
+		
 	default:
 		break;
 	}

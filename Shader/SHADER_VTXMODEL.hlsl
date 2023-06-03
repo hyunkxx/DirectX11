@@ -18,6 +18,8 @@ texture2D   g_MaskTexture;
 
 float		g_fTimeAcc;
 
+bool		g_IsUseNormalTex;
+
 struct VS_IN
 {
 	float3 vPosition : POSITION;
@@ -182,7 +184,20 @@ PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
+	if (true == g_IsUseNormalTex)
+	{
+		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+		float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+		float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+		vNormal = mul(vNormal, WorldMatrix);
+		In.vNormal.xyz = vNormal;
+	}
+
 	Out.vDiffuse = vMtrlDiffuse;
+
+	if (Out.vDiffuse.a < 0.1f)
+		Out.vDiffuse.a = 0.0f;
+
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 	//Out.vOutNormal = vector(0.f, 0.f, 0.f, 0.f);

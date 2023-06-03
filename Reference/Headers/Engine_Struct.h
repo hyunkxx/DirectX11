@@ -412,4 +412,24 @@ namespace Engine
 	}NAVIPOINT_DESC;
 #pragma endregion NAVIGATION
 
+#pragma region CITY_OBJECT
+	typedef struct tagStaticCityObject_Desc
+	{
+		SOBJECT_DESC		PSA = {};
+
+		// 모델 컴포넌트 구분
+		_uint				iSMD_ID = { 0 };
+
+		// 오브젝트 종류 구분
+		_uint				iType_ID = { 0 };
+
+		// 옵션 구분
+		_uint				iOption_ID = { 0 };
+
+		// 몇번째 오브젝트인지 구분
+		_uint				iSelf_ID = { 0 };
+
+	}SCITY_OBJECT_DESC;
+#pragma endregion CITY_OBJECT
+
 }

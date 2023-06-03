@@ -147,6 +147,25 @@ HRESULT CModel::SetUp_ShaderMaterialResource(CShader * pShaderCom, const char * 
 	return m_ModelMaterials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType]->Setup_ShaderResource(pShaderCom, pConstantName);
 }
 
+HRESULT CModel::SetUp_ShaderMaterialResource_Distinction(CShader * pShaderCom, const char * pConstantName, _uint iMeshIndex, MytextureType eType, _bool * IsTexture)
+{
+	if (iMeshIndex >= m_iNumMeshes)
+		return E_FAIL;
+
+	if (nullptr == m_ModelMaterials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType])
+	{
+		if (nullptr != IsTexture)
+			*IsTexture = false;
+
+		return S_OK;
+	}
+
+	if (nullptr != IsTexture)
+		*IsTexture = true;
+
+	return m_ModelMaterials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType]->Setup_ShaderResource(pShaderCom, pConstantName);
+}
+
 void CModel::Set_HangBone(CBone * pBone)
 {
 	m_pHangBone = pBone;

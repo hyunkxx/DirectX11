@@ -24,6 +24,7 @@ public:
 
 public:
 	HRESULT	SetUp_ShaderMaterialResource(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex, MytextureType eType);
+	HRESULT	SetUp_ShaderMaterialResource_Distinction(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex, MytextureType eType, _bool* IsTexture = nullptr);
 
 	void	Set_HangBone(class CBone* pBone);
 	CBone*	Get_HangBone() { return m_pHangBone; }

@@ -52,7 +52,6 @@ void CUI_Minimap::Start()
 void CUI_Minimap::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 
 	if (m_pTerminalUI->IsActive())
 		m_bRender = false;

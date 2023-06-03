@@ -276,8 +276,12 @@ PS_OUT PS_MAIN_SUB_DIFFUSE_MASK(PS_IN In)
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.6f, 0.f);
 	Out.vOutNormal = float4(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+<<<<<<< Updated upstream
 	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vShaderInfo = float4(1.f, 0.f, 0.f, 0.f);
+=======
+	Out.vGlow = float4(1.f, 0.f, 0.f, 0.f);
+>>>>>>> Stashed changes
 
 	return Out;
 }

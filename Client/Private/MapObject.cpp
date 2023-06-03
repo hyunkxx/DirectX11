@@ -83,8 +83,6 @@ void CMapObject::LateTick(_double TimeDelta)
 		_float fLength = XMVectorGetX(XMVector3Length(XMLoadFloat4(&pGame->Get_CamPosition()) - XMLoadFloat3(&m_pModelCom->Get_Pos_To_InstanceMatrix(m_EditionDesc.iTypeID))));
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
-
-
 	}
 }
 
@@ -103,7 +101,7 @@ HRESULT CMapObject::Render()
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_ROCK:
-		if (FAILED(Render_Rock()))
+		if (FAILED(Render_Default_SelfShadow()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_FLOOR:
