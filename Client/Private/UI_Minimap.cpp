@@ -53,6 +53,10 @@ void CUI_Minimap::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return;
+
 	if (m_pTerminalUI->IsActive())
 		m_bRender = false;
 	else

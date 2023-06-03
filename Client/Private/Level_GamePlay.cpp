@@ -85,13 +85,10 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_MapObject_Statue(TEXT("layer_statue"))))
 		return E_FAIL;
 	
-
-
 #pragma region CITY_LEVEL
 	//if (FAILED(Ready_Layer_CityObject()))
 		//return E_FAIL;
 #pragma endregion CITY_LEVEL
-
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);

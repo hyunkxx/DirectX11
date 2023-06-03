@@ -176,6 +176,10 @@ HRESULT CCityObject::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pMainTransform, &TransformDesc)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
+		TEXT("com_collider_sphere"), (CComponent**)&m_pCollider)))
+		return E_FAIL;
+
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, m_CityObject_Desc.iSMD_ID,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
@@ -184,10 +188,6 @@ HRESULT CCityObject::Add_Components()
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODEL,
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
-		TEXT("com_collider_sphere"), (CComponent**)&m_pCollider)))
 		return E_FAIL;
 
 	return S_OK;
