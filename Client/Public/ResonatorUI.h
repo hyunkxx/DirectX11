@@ -54,11 +54,13 @@ private:
 	_uint getStateImage(_uint iIndex);
 
 	HRESULT defaultSlotRender();
+	void keyInput(_double TimeDelta);
 
 	// State Detail
 	HRESULT stateRender();
 	HRESULT stateData();
-	void keyInput(_double TimeDelta);
+	void stateKeyInput(_double TimeDelta);
+	void upgradeCharacter(_uint iCharacterType);
 
 	// 
 
@@ -143,6 +145,7 @@ private:
 	enum { DRAW_MAX = 8 };
 	_uint m_iCurCoin = 0;
 	_uint m_iTotalConsume = 0;
+	_float m_fTotalExp = 0.f;
 	ORTHO_DESC m_OrthoConsumeCoin[DRAW_MAX];
 	ORTHO_DESC m_OrthoOwnCoin[DRAW_MAX];
 

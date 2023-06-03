@@ -297,10 +297,9 @@ void CResonatorUI::Tick(_double TimeDelta)
 	if (!m_bRender)
 		return;
 
+	keyInput(TimeDelta);
 	stateUpdate(TimeDelta);
 	elemAlphaUpdate(TimeDelta);
-
-	keyInput(TimeDelta);
 
 }
 
@@ -660,6 +659,18 @@ HRESULT CResonatorUI::defaultSlotRender()
 	}
 
 	return S_OK;
+}
+
+void CResonatorUI::keyInput(_double TimeDelta)
+{
+	switch (m_eCurButton)
+	{
+	case BTN_STATE:
+		stateKeyInput(TimeDelta);
+		break;
+	default:
+		break;
+	}
 }
 
 HRESULT CResonatorUI::stateRender()
@@ -1137,93 +1148,87 @@ HRESULT CResonatorUI::stateData()
 	return S_OK;
 }
 
-void CResonatorUI::keyInput(_double TimeDelta)
+void CResonatorUI::stateKeyInput(_double TimeDelta)
 {
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (m_eCurButton == BTN_STATE)
+	// 경험치 증가 임시
+	if (pGameInstance->InputKey(DIK_B) == KEY_STATE::TAP)
+		m_pPlayerState->AddExp((CPlayerState::CHARACTERS)m_iCurCharacter, 10.f);
+
+	if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 	{
-		// 경험치 증가 임시
-		if (pGameInstance->InputKey(DIK_B) == KEY_STATE::TAP)
-			m_pPlayerState->AddExp((CPlayerState::CHARACTERS)m_iCurCharacter, 10.f);
-
-		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		//Chracter Icon Click
+		for (_uint i = 0; i < 3; ++i)
 		{
-			//Chracter Icon Click
-			for (_uint i = 0; i < 3; ++i)
+			if (pGM->OnMouse(m_OrthoCharBack[i]))
 			{
-				if (pGM->OnMouse(m_OrthoCharBack[i]))
-				{
-					if (m_iCurCharacter != i)
-						elemAlphaReset(1);
+				if (m_iCurCharacter != i)
+					elemAlphaReset(1);
 
-					m_iCurCharacter = i;
-				}
-
+				m_iCurCharacter = i;
 			}
 
 		}
 
-		//사용할 경험치 캡슐 추가/감소
-		for (_uint iCapsule = 0; iCapsule < 4; ++iCapsule)
+	}
+
+	//사용할 경험치 캡슐 추가/감소
+	for (_uint iCapsule = 0; iCapsule < 4; ++iCapsule)
+	{
+		_uint iItemAmount = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::EXP0 + iCapsule);
+		if (pGM->OnMouse(m_OrthoUpgradeSlot[iCapsule]))
 		{
-			_uint iItemAmount = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::EXP0 + iCapsule);
-			if (pGM->OnMouse(m_OrthoUpgradeSlot[iCapsule]))
+			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+				if (iItemAmount > m_iUseAmount[iCapsule])
 				{
-					if (iItemAmount > m_iUseAmount[iCapsule])
-					{
-						//재클릭시 리셋
-						m_fFlashCount[iCapsule] = 0.f;
-						m_fFlashAcc[iCapsule] = 0.f;
+					//재클릭시 리셋
+					m_fFlashCount[iCapsule] = 0.f;
+					m_fFlashAcc[iCapsule] = 0.f;
 
-						m_bFlashStart[iCapsule] = true;
-						m_iUseAmount[iCapsule]++;
-					}
+					m_bFlashStart[iCapsule] = true;
+					m_iUseAmount[iCapsule]++;
 				}
+			}
 
-				if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::TAP)
+			if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::TAP)
+			{
+				if (0 < m_iUseAmount[iCapsule])
 				{
-					if (0 < m_iUseAmount[iCapsule])
-					{
-						//재클릭시 리셋
-						m_fFlashCount[iCapsule] = 0.f;
-						m_fFlashAcc[iCapsule] = 0.f;
+					//재클릭시 리셋
+					m_fFlashCount[iCapsule] = 0.f;
+					m_fFlashAcc[iCapsule] = 0.f;
 
-						m_bFlashStart[iCapsule] = true;
-						m_iUseAmount[iCapsule]--;
-					}
+					m_bFlashStart[iCapsule] = true;
+					m_iUseAmount[iCapsule]--;
 				}
 			}
 		}
+	}
 
-		m_iTotalConsume = 0;
-		m_iCurCoin = m_pInven->GetCoin();
-		CItemDB* pDB = CItemDB::GetInstance();
-		for (_uint i = 0; i < 4; ++i)
-		{
-			CItem::ITEM_DESC itemDesc = pDB->GetItemData(ITEM::EXP0 + i);
-			m_iTotalConsume += itemDesc.iData[1] * m_iUseAmount[i];
-		}
+	m_fTotalExp = 0.f;
+	m_iTotalConsume = 0;
+	m_iCurCoin = m_pInven->GetCoin();
+	CItemDB* pDB = CItemDB::GetInstance();
+	for (_uint i = 0; i < 4; ++i)
+	{
+		CItem::ITEM_DESC itemDesc = pDB->GetItemData(ITEM::EXP0 + i);
+		m_fTotalExp += itemDesc.iData[0] * m_iUseAmount[i];
+		m_iTotalConsume += itemDesc.iData[1] * m_iUseAmount[i];
+	}
 
-		if (pGM->OnMouse(m_OrthoUpgradeBtn))
+	if (pGM->OnMouse(m_OrthoUpgradeBtn))
+	{
+		if (m_iTotalConsume > 0 && m_iTotalConsume <= m_iCurCoin &&
+			pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
 		{
-			if (m_iTotalConsume > 0 && m_iTotalConsume <= m_iCurCoin &&
-				pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+			m_fPushAcc += (_float)TimeDelta;
+			if (m_fPushAcc > 1.f)
 			{
-				m_fPushAcc += (_float)TimeDelta;
-				if (m_fPushAcc > 1.f)
-				{
-					m_fPushAcc = 1.f;
-					m_bUpgradeConfirm = true;
-				}
-			}
-			else
-			{
-				m_fPushAcc = 0.f;
-				m_bUpgradeConfirm = false;
+				m_fPushAcc = 1.f;
+				m_bUpgradeConfirm = true;
 			}
 		}
 		else
@@ -1231,30 +1236,51 @@ void CResonatorUI::keyInput(_double TimeDelta)
 			m_fPushAcc = 0.f;
 			m_bUpgradeConfirm = false;
 		}
+	}
+	else
+	{
+		m_fPushAcc = 0.f;
+		m_bUpgradeConfirm = false;
+	}
 
-		//Capsule FlashSlot
-		for (_uint i = 0; i < 4; ++i)
+	if (m_bUpgradeConfirm)
+	{
+		m_fPushAcc = 0.f;
+		m_bUpgradeConfirm = false;
+		upgradeCharacter(m_iCurCharacter);
+
+		ZeroMemory(m_iUseAmount, sizeof m_iUseAmount);
+	}
+
+	//Capsule FlashSlot
+	for (_uint i = 0; i < 4; ++i)
+	{
+		if (m_bFlashStart[i])
 		{
-			if (m_bFlashStart[i])
+			m_fFlashAcc[i] += (_float)TimeDelta;
+			if (m_fFlashAcc[i] >= 0.02f)
 			{
-				m_fFlashAcc[i] += (_float)TimeDelta;
-				if (m_fFlashAcc[i] >= 0.02f)
-				{
-					m_fFlashAcc[i] = 0.f;
+				m_fFlashAcc[i] = 0.f;
 					
-					m_fFlashCount[i] += 1.f;
-					if (m_fFlashCount[i] > 29.f)
-					{
-						m_bFlashStart[i] = false;
-						m_fFlashCount[i] = 0.f;
-					}
+				m_fFlashCount[i] += 1.f;
+				if (m_fFlashCount[i] > 29.f)
+				{
+					m_bFlashStart[i] = false;
+					m_fFlashCount[i] = 0.f;
 				}
 			}
 		}
-
 	}
 
+}
 
+void CResonatorUI::upgradeCharacter(_uint iCharacterType)
+{
+	for (_uint i = 0; i < 4; ++i)
+		m_pInven->EraseItem(CInventory::INVEN_MATERIAL, ITEM::EXP0 + i, m_iUseAmount[i]);
+
+	m_pInven->DeleteCoin(m_iTotalConsume);
+	m_pPlayerState->AddExp((CPlayerState::CHARACTERS)iCharacterType, m_fTotalExp);
 }
 
 CResonatorUI * CResonatorUI::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

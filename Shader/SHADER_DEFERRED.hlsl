@@ -339,7 +339,7 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 		if (vShaderInfo.r == 1.f)
 			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.9f));
 		else if (vShaderInfo.r == 0.1f)//스카이박스
-			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.5f));
 		else
 			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 
@@ -383,7 +383,7 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 			if (vShaderInfo.r == 1.f)
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.9f));
 			else if (vShaderInfo.r == 0.1f)//스카이박스
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.5f));
 			else
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 
@@ -404,7 +404,7 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 			if (vShaderInfo.r == 1.f)
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.9f));
 			else if (vShaderInfo.r == 0.1f)//스카이박스
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.4f));
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.5f));
 			else
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 

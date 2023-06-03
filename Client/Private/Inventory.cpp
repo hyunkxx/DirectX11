@@ -111,6 +111,17 @@ void CInventory::RenderGUI()
 	}
 }
 
+_bool CInventory::DeleteCoin(_uint iPayment)
+{
+	if (iPayment > m_iCoin)
+		return false;
+	else
+	{
+		m_iCoin -= iPayment;
+		return true;
+	}
+}
+
 void CInventory::PushItem(CItem::ITEM_DESC tagItemDesc)
 {
 	_bool bResult = false;
@@ -156,6 +167,40 @@ void CInventory::DiscardItem(INVEN_TYPE eInvenType, _uint iSlotIndex, _uint iAmo
 			++i;
 		}
 	}
+}
+
+_bool CInventory::EraseItem(INVEN_TYPE eInvenType, _uint iItemID, _uint iAmount)
+{
+	_uint iEraseCount = 0;
+	for (auto iter = m_Items[eInvenType].begin(); iter != m_Items[eInvenType].end(); )
+	{
+		if (iter->iItemID == iItemID)
+		{
+			if (iter->iAmount <= iAmount)
+			{
+				iEraseCount += iter->iAmount;
+				iter = m_Items[eInvenType].erase(iter);
+				sort(m_Items[eInvenType].begin(), m_Items[eInvenType].end(), CompareItemGrade());
+			}
+			else
+			{
+				iEraseCount += iter->iAmount;
+				iter->iAmount -= iAmount;
+			}
+		}
+		else
+		{
+			iter++;
+		}
+
+		if (iEraseCount >= iAmount)
+		{
+			sort(m_Items[eInvenType].begin(), m_Items[eInvenType].end(), CompareItemGrade());
+			break;
+		}
+	}
+
+	return true;
 }
 
 _uint CInventory::GetTotalAmount(INVEN_TYPE eInvenType, _uint iItemID)
