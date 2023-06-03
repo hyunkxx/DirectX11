@@ -1971,6 +1971,64 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P1_Attack_08_Jump.bin"),
 			"../../Resource/Effect/B_Crownless/Attack/")))  
 			return E_FAIL;
+		
+		//Page_02
+		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_03_01.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_03_Dash.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_03_Flare.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_05_01.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_05_02.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_05_02_Boom.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_05_03.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_05_Flare.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_17_01.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_17_02.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_17_03.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+		
 	}
 
 
