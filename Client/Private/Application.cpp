@@ -81,7 +81,7 @@ HRESULT CApplication::Initialize()
 	//UI에 필요한 텍스쳐 원본 생성A
 
 	//콜라이더 보이기/숨기기
-	m_pGameInstance->SetCollisionDebugRender(true);
+	m_pGameInstance->SetCollisionDebugRender(false);
 #ifdef _DEBUG
 	m_pRenderer->DebugBundleRender_Control(false);
 #endif
@@ -1172,7 +1172,112 @@ HRESULT CApplication::Ready_Item_Image()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/OwnText.dds")))))
 		return E_FAIL;
 
+	// 무기 타이틀
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TITLE_SWORD_0,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextTitleSword0.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TITLE_SWORD_1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextTitleSword1.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TITLE_SWORD_2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextTitleSword2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TITLE_SWORD_3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextTitleSword3.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TITLE_SWORD_4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextTitleSword4.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TITLE_GUN_0,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextTitleGun0.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TITLE_GUN_1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextTitleGun1.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TITLE_GUN_2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextTitleGun2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TITLE_GUN_3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextTitleGun3.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TITLE_GUN_4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextTitleGun4.dds")))))
+		return E_FAIL;
+
+	// 무기 아이콘
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SWORD_0,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconSword0.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SWORD_1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconSword1.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SWORD_2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconSword2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SWORD_3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconSword3.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SWORD_4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconSword4.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_GUN_0,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconGun0.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_GUN_1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconGun1.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_GUN_2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconGun2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_GUN_3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconGun3.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_GUN_4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconGun4.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_UPGRADE_SIGN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/UpgradeSign.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_ATTACK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/AttackText.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_WEAPONDESC,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextWeaponDesc.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_WHITE_GRADBACK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/WhiteGradBack.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_CRITICAL_DAMAGE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/CDText.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_PHISICAL_RATE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/PDText.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SWITCH,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SwitchText.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_WEAPON_UPGRADE_BUTTON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/wu.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_WEAPON_SWITCH_BUTTON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/ws.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_UPGRADECOST,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/UpgradeCost.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_GEM,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconGem.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_GEM,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/GemText.dds")))))
+		return E_FAIL;
+
 	//이미지
+
 	return S_OK;
 }
 

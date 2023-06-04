@@ -76,6 +76,8 @@ namespace OBJECT
 		MISSILE_CONSTANT,
 		MISSILE_ROTAROUND,
 
+		UICharacter,
+
 		// AnimTool 전용 오브젝트
 		TESTVTF_BEGIN = 900000,
 		TESTVTF_PLAYERGIRL = 900000,

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\PlayerState.h"
+#include "ItemDB.h"
 
 CPlayerState::CPlayerState(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -39,7 +40,7 @@ HRESULT CPlayerState::Initialize_Prototype()
 
 		m_CharacterState[i].iCurLevel = 1;
 		m_CharacterState[i].fCurExp = 0.f;
-		m_CharacterState[i].fMaxExp = 50.f;
+		m_CharacterState[i].fMaxExp = 500.f;
 
 		m_CharacterState[i].fMaxHP = 500.f;
 		m_CharacterState[i].fCurHP = m_CharacterState[i].fMaxHP;
@@ -64,13 +65,19 @@ HRESULT CPlayerState::Initialize_Prototype()
 	m_CharSlot[SLOT_MAIN] = CHARACTER_ROVER;
 	m_CharSlot[SLOT_SUB1] = CHARACTER_YANGYANG;
 	m_CharSlot[SLOT_SUB2] = CHARACTER_CHIXIA;
-	
+
 	return S_OK;
 }
 
 HRESULT CPlayerState::Initialize(void * pArg)
 {
+	CItemDB* pDB = CItemDB::GetInstance();
+	m_EquipWeapons[CHARACTER_ROVER] = pDB->GetItemData(ITEM::SWORD0);
+	m_EquipWeapons[CHARACTER_ROVER].iData[2] = 2; //임시 강화 횟수
 
+	m_EquipWeapons[CHARACTER_YANGYANG] = pDB->GetItemData(ITEM::SWORD0);
+	m_EquipWeapons[CHARACTER_CHIXIA] = pDB->GetItemData(ITEM::GUN0);
+	
 	return S_OK;
 }
 
@@ -170,12 +177,30 @@ void CPlayerState::AddExp(CHARACTERS eCharater, _float fExp)
 		return;
 	}
 
-	m_CharacterState[eCharater].fCurExp += fExp;
+	_float fTotalExp = fExp;
 
-	if (m_CharacterState[eCharater].fCurExp >= m_CharacterState[eCharater].fMaxExp)
+	while (fTotalExp > 0.f)
 	{
-		m_CharacterState[eCharater].fCurExp = (m_CharacterState[eCharater].fCurExp + fExp) - m_CharacterState[eCharater].fMaxExp;
-		levelUp(eCharater);
+		if (m_CharacterState[eCharater].fMaxExp < fTotalExp)
+		{
+			fTotalExp -= m_CharacterState[eCharater].fMaxExp - m_CharacterState[eCharater].fCurExp;
+			levelUp(eCharater);
+			m_CharacterState[eCharater].fCurExp = 0.f;
+
+			continue;
+		}
+		else
+		{
+			m_CharacterState[eCharater].fCurExp += fTotalExp;
+
+			if (m_CharacterState[eCharater].fCurExp >= m_CharacterState[eCharater].fMaxExp)
+			{
+				m_CharacterState[eCharater].fCurExp = (m_CharacterState[eCharater].fCurExp + fTotalExp) - m_CharacterState[eCharater].fMaxExp;
+				levelUp(eCharater);
+			}
+
+			fTotalExp = 0.f;
+		}
 	}
 
 }
@@ -183,9 +208,9 @@ void CPlayerState::AddExp(CHARACTERS eCharater, _float fExp)
 void CPlayerState::levelUp(CHARACTERS eCharater)
 {
 	m_CharacterState[eCharater].iCurLevel++;
-	m_CharacterState[eCharater].fMaxExp += 1.1f;
+	m_CharacterState[eCharater].fMaxExp *= 1.1f;
 
-	m_CharacterState[eCharater].fMaxHP += 50.f;
+	m_CharacterState[eCharater].fMaxHP += 30.f;
 
 	m_CharacterState[eCharater].fAttack[STAT_BASE] += 2.5f;
 	m_CharacterState[eCharater].fDefense[STAT_BASE] += 1.5f;

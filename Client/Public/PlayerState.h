@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Client_Defines.h"
 #include "Character.h"
+#include "ItemDB.h"
 
 BEGIN(Client)
 
@@ -146,6 +147,7 @@ public: // Get
 			m_PlayerState.fCurQTEGauge = m_PlayerState.fMaxQTEGauge;
 	}
 	
+	CItem::ITEM_DESC* GetCurWeaponDesc(CHARACTERS eCharType) { return &m_EquipWeapons[eCharType]; }
 
 public: // Set
 	void Set_ToolUsed(_uint iToolID)
@@ -183,6 +185,8 @@ private:
 	// 캐릭터 슬롯 현황, enum ID값만 순서대로 저장해놓음, 캐릭터 교체하는 순서에 따라 위치가 바뀜
 	CHARACTERS			m_CharSlot[SLOT_END];
 
+	// 착용된 무기
+	CItem::ITEM_DESC	m_EquipWeapons[CHARACTER_END];
 };
 
 END

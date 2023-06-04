@@ -14,6 +14,7 @@
 
 #include "Lobby_Character.h"
 #include "P_PlayerGirl.h"
+#include "UICharacter.h"
 #include "Parts.h"
 
 #include "Sandbag.h"
@@ -339,6 +340,13 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	m_pApp->LoadRatio(0.2f);
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
+
+	// UIModel_Rover
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_UI_ROVER, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_UI_ROVER_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Ribbon.dmdl")))))
+		return E_FAIL;
 
 	// SMODEL
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sword.smdl")))))
@@ -1884,6 +1892,10 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_EXPANDED, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_EXPANDED))))
 		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UICharacter, UICharacter::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	//UIUI
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UI, CUI_MainScreen::Create(m_pDevice, m_pContext))))

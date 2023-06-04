@@ -273,6 +273,7 @@
     <ClInclude Include="..\Public\TestChar.h" />
     <ClInclude Include="..\public\TestGeneric.h" />
     <ClInclude Include="..\Public\TestVTF.h" />
+    <ClInclude Include="..\public\UICharacter.h" />
     <ClInclude Include="..\Public\UI_MainScreen.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -407,6 +408,7 @@
     <ClCompile Include="..\Private\TestChar.cpp" />
     <ClCompile Include="..\private\TestGeneric.cpp" />
     <ClCompile Include="..\Private\TestVTF.cpp" />
+    <ClCompile Include="..\private\UICharacter.cpp" />
     <ClCompile Include="..\Private\UI_MainScreen.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

@@ -65,7 +65,7 @@ void CAcquireSystem::Tick(_double TimeDelta)
 		CItemDB* pDB = CItemDB::GetInstance();
 		CItem::ITEM_DESC itemDesc = pDB->GetItemData(ITEM::TACTREITE_VOUCHER);
 		
-		m_pInventory->PushItem(itemDesc);
+		m_pInventory->PushItemDesc(itemDesc);
 	}
 }
 

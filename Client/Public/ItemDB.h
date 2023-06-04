@@ -17,6 +17,8 @@ public:
 
 public:
 	static _float3 GetItemColor(CItem::ITEM_GRADE eItemGrade);
+	static _uint ComputeWeaponDamage(CItem::ITEM_DESC tagItemDesc);
+	static _uint ComputeWeaponCriticalRate(CItem::ITEM_DESC tagItemDesc);
 
 public:
 	CItem::ITEM_DESC GetItemData(_uint iKey);
@@ -38,6 +40,20 @@ namespace ITEM
 		EXP1,
 		EXP2,
 		EXP3,
+
+		SWORD0,
+		SWORD1,
+		SWORD2,
+		SWORD3,
+		SWORD4,
+
+		GUN0,
+		GUN1,
+		GUN2,
+		GUN3,
+		GUN4,
+
+		GEM
 	};
 }
 

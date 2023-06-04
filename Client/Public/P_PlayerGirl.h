@@ -288,7 +288,7 @@ private:
 	_double				m_TimeDelay = { 1.0 };
 	_double				m_DelayDuration = { 0.0 };
 
-	// Rim Light Alphatest
+	// Rim Light Alpha
 	_bool m_bRimToggle = false;
 	_float m_fBurstRim = 1.f;
 	_float m_fRimAlpha = 0.f;

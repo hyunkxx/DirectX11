@@ -342,6 +342,15 @@
     <ClCompile Include="..\private\M_Crownless_P1.cpp">
       <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\M_Crownless_P2.cpp">
+      <Filter>src\02. GameObject\03. Character\02. Crownless</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\M_Crownless_P3.cpp">
+      <Filter>src\02. GameObject\03. Character\02. Crownless</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UICharacter.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -662,6 +671,15 @@
     <ClInclude Include="..\public\M_Crownless_P1.h">
       <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\M_Crownless_P3.h">
+      <Filter>src\02. GameObject\03. Character\02. Crownless</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\M_Crownless_P2.h">
+      <Filter>src\02. GameObject\03. Character\02. Crownless</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UICharacter.h">
+      <Filter>src\02. GameObject\03. Character\00. Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -802,6 +820,9 @@
     </Filter>
     <Filter Include="src\02. GameObject\99. UI\04. Terminal">
       <UniqueIdentifier>{a7d228b4-699a-47f0-9d12-4cf8a08b5c3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\03. Character\02. Crownless">
+      <UniqueIdentifier>{10d46d23-d1c1-4c2f-98a4-620878fa2f7f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

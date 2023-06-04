@@ -19,7 +19,7 @@ public:
 		_uint				iImageTextIndex;	// 아이템 이름 텍스쳐(인덱스)
 		_uint				iAmount;			// 수량
 		_tchar				szTag[MAX_TAG];		// 아이템 태그
-		_int				iData[2];			// 부가 정보
+		_int				iData[4];			// 부가 정보
 		_bool				bAvailable;			// 사용가능 여부(단독적으로)
 
 	}ITEM_DESC;

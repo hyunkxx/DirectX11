@@ -39,11 +39,14 @@ public:
 	*/
 
 public:
+	_bool DeleteCoin(_uint iPayment);
 	_uint GetCoin() const { return m_iCoin; }
 	CItem::ITEM_DESC& GetSlotData(INVEN_TYPE eInvenType, _uint iSlotIndex) { return m_Items[eInvenType][iSlotIndex]; };
 
-	void PushItem(CItem::ITEM_DESC tagItemDesc);
+	void PushItemDesc(CItem::ITEM_DESC tagItemDesc);
+	void AddItem(_uint iItemID, _uint iAmount);
 	void DiscardItem(INVEN_TYPE eInvenType, _uint iSlotIndex, _uint iAmount = 1);
+	_bool EraseItem(INVEN_TYPE eInvenType, _uint iItemID, _uint iAmount);
 
 	// 검색할 아이템의 전체 갯수 (슬롯 상관 x)
 	_uint GetTotalAmount(INVEN_TYPE eInvenType, _uint iItemID);
@@ -62,7 +65,7 @@ private:
 	enum { MAX_AMOUNT = 50 };
 	_uint m_iSlotLimit[INVEN_MAX];
 
-	_uint m_iCoin = 1000; // 기본 메인 재화
+	_uint m_iCoin = 100000; // 기본 메인 재화
 	vector<CItem::ITEM_DESC> m_Items[INVEN_MAX];
 
 };

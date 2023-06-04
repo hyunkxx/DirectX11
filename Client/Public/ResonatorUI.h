@@ -52,15 +52,30 @@ private:
 	_uint getCurSlotText(RESONATOR_BTN eButton);
 	_uint getCurSlotIcon(RESONATOR_BTN eButton);
 	_uint getStateImage(_uint iIndex);
+	_uint getWeaponText();
 
 	HRESULT defaultSlotRender();
+	void keyInput(_double TimeDelta);
+
+	// Common
+	HRESULT chooseCharacter();
 
 	// State Detail
 	HRESULT stateRender();
 	HRESULT stateData();
-	void keyInput(_double TimeDelta);
+	
+	void selectCharacter(_double TimeDelta);
+	void stateKeyInput(_double TimeDelta);
+	void upgradeCharacter(_uint iCharacterType);
 
-	// 
+
+	void weaponKeyInput(_double TimeDelta);
+	void pushUpgradeButton(_double TimeDelta);
+	void flashGemSlot(_double TimeDelta);
+
+	// Weapon
+	HRESULT weaponStateRender();
+	void upgradeWeapon();
 
 public:
 	static CResonatorUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -143,9 +158,45 @@ private:
 	enum { DRAW_MAX = 8 };
 	_uint m_iCurCoin = 0;
 	_uint m_iTotalConsume = 0;
+	_float m_fTotalExp = 0.f;
 	ORTHO_DESC m_OrthoConsumeCoin[DRAW_MAX];
 	ORTHO_DESC m_OrthoOwnCoin[DRAW_MAX];
 
+#pragma endregion
+
+#pragma region Weapon
+	enum { MAX_WEAPON_UPGRADE = 5};
+
+	ORTHO_DESC m_OrthoWeaponName;
+	ORTHO_DESC m_OrthoWeaponDesc; //무기 탭 설명
+	ORTHO_DESC m_OrthoUpgradeSign[MAX_WEAPON_UPGRADE]; //강화 표식 0/5회
+	ORTHO_DESC m_OrthoDamageBack;
+	ORTHO_DESC m_OrthoCriDamageBack;
+
+	// 데미지, 치명타 공격계수(퍼센트)
+	enum { DAMAGE_MAX = 4 };
+	ORTHO_DESC m_OrthoAttackText[2];
+	ORTHO_DESC m_OrthoDamage[DAMAGE_MAX];
+	ORTHO_DESC m_OrthoCriRate[DAMAGE_MAX];
+	ORTHO_DESC m_OrthoWeaponUpgradeText;
+	ORTHO_DESC m_OrthoWeaponUpgradeButton;
+	ORTHO_DESC m_OrthoWeaponSwitchText;
+	ORTHO_DESC m_OrthoWeaponSwitchButton;
+
+	ORTHO_DESC m_OrthoUpgradeCostBack;
+	ORTHO_DESC m_OrthoUpgradeCostText;
+	ORTHO_DESC m_OrthoUpgradeOwnCostText;
+
+	enum { GEM_DIGIT_MAX = 4};
+	ORTHO_DESC m_OrthoGemIconBack;
+	ORTHO_DESC m_OrthoGemIcon;
+	ORTHO_DESC m_OrthoGemCost[GEM_DIGIT_MAX];
+	ORTHO_DESC m_OrthoOwnGemCost[GEM_DIGIT_MAX];
+
+	// Weapon Upgrade Cost
+	_uint m_iOwnGem = 0;
+	_uint m_iGemCost = 0;
+	_float m_fSwitchWeaponAcc = 0.f;
 #pragma endregion
 
 private:

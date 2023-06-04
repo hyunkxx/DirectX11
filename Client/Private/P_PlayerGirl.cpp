@@ -189,6 +189,8 @@ void CP_PlayerGirl::Start()
 	m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
 	m_pCamMovement->SetupBone(CCameraMovement::CAM_BANGSUN, m_pModelCom->Get_BonePtr(L"Bip001RFinger21"));
 	m_pUIMain = static_cast<CUI_MainScreen*>(pGame->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));
+
+	m_pInven->AddItem(ITEM::GEM, 100);
 }
 
 void CP_PlayerGirl::PreTick(_double TimeDelta)
