@@ -36,6 +36,10 @@ HRESULT UICharacter::Initialize(void * pArg)
 
 	m_pAnimSetBase->Set_RootBone(TEXT("Root"));
 
+
+	m_pAnimSetBase->SetUp_Animation(0, true);
+	m_pAnimSetRibbon->SetUp_Animation(0, true);
+
 	return S_OK;
 }
 
@@ -140,6 +144,14 @@ void UICharacter::initAnimation()
 		{
 			const _tchar* szChannelName = pChannel->Get_Name();
 			CBone* pBone = m_pAnimSetRibbon->Get_BonePtr(pChannel->Get_TargetBoneID());
+
+
+			if (!wcsncmp(szChannelName, TEXT("Root"), 4) ||
+				!wcsncmp(szChannelName, TEXT("Bip001"), 6) ||
+				!wcsncmp(szChannelName, TEXT("Weapon"), 6) ||
+				!wcsncmp(szChannelName, TEXT("R2"), 2) ||
+				!wcsncmp(szChannelName, TEXT("Hulu"), 4))
+				pChannel->Set_Apply(false);
 
 			pChannel->Set_Apply(true);
 		}
