@@ -40,6 +40,19 @@ HRESULT CCityObject::Initialize(void * pArg)
 
 	SetUp_State(m_CityObject_Desc.PSA.vP, m_CityObject_Desc.PSA.vS, m_CityObject_Desc.PSA.vA);
 
+	switch (m_CityObject_Desc.iSMD_ID)
+	{
+	case SMODEL::SMD_CIT_BUI_6:
+		m_fCullingRatio = { 0.0f };
+		break;
+	case SMODEL::SMD_CIT_GRO_0:
+		m_fCullingRatio = { 0.0f };
+		break;
+	default:
+		m_fCullingRatio = { 20.0f };
+		break;
+	}
+
 	return S_OK;
 }
 
@@ -59,11 +72,12 @@ void CCityObject::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	CGameInstance*		pGameInstacne = CGameInstance::GetInstance();
-	if (nullptr == pGameInstacne)
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
 		return;
 
-	if (nullptr != m_pRendererCom)
+	if (nullptr != m_pRendererCom && 0.0f < m_fCullingRatio 
+		&& true == pGameInstance->InWorldSpace(m_pMainTransform->Get_State(CTransform::STATE_POSITION), m_fCullingRatio))
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
 }
 

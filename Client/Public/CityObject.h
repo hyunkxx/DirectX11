@@ -48,6 +48,8 @@ private:
 
 	_uint						m_iShaderPassID = { 0 };
 
+	_float						m_fCullingRatio = { 0.0f };
+
 private:
 	CRenderer*					m_pRendererCom = { nullptr };
 	CShader*					m_pShaderCom = { nullptr };
