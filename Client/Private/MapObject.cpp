@@ -101,7 +101,7 @@ HRESULT CMapObject::Render()
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_ROCK:
-		if (FAILED(Render_Default_SelfShadow()))
+		if (FAILED(Render_Rock()))
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_FLOOR:
