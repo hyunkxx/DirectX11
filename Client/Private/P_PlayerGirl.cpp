@@ -2440,7 +2440,6 @@ void CP_PlayerGirl::Init_AnimSystem()
 		}
 	}
 
-
 	// FramePerSec 세팅
 	for(_uint i= 0; i < iStateLimit; ++i)
 	{ 
@@ -2456,7 +2455,6 @@ void CP_PlayerGirl::Init_AttackInfos()
 		ZeroMemory(&m_AttackInfos[i], sizeof TAGATTACK);
 	}
 	
-
 	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_ATTACK_01].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_01].eElementType = ELMT_NONE;
@@ -2520,7 +2518,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_09].iHitEffectID = 1;
 
 	m_AttackInfos[ATK_ATTACK_PO_2].fDamageFactor = 1.3f;
-	m_AttackInfos[ATK_ATTACK_PO_2].eHitIntensity = HIT_NONE;
+	m_AttackInfos[ATK_ATTACK_PO_2].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_PO_2].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_ATTACK_PO_2].fSPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_PO_2].fBPGain = 1.5f;
@@ -2802,6 +2800,10 @@ HRESULT CP_PlayerGirl::Init_Parts()
 	ZeroMemory(&PartsDesc, sizeof PartsDesc);
 	PartsDesc.ppParentBone = m_PartsBone;
 	PartsDesc.pParentTransform = m_pMainTransform;
+
+	// P_Player : 스태틱 변수로 Clone_GameObject해서 별도의
+
+	// CharState? 지금 사용중인 WEAPONMAIN 
 
 	m_Parts[PARTS_WEAPON_MAIN] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_SWORD_0_SWORD, &PartsDesc));
 	m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(EBONE_WEAPON02);

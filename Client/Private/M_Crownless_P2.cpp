@@ -24,6 +24,8 @@
 #define DIST_MELEE 3.5f
 #define DIST_MIDRANGE 15.f
 
+const _double CM_Crownless_P2::m_TraceInterval = 0.18;
+
 CCharacter::SINGLESTATE CM_Crownless_P2::m_tStates[IS_END];
 CM_Crownless_P2::CM_Crownless_P2(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCharacter(pDevice, pContext)
@@ -61,6 +63,10 @@ HRESULT CM_Crownless_P2::Initialize(void * pArg)
 
 	Init_AttackInfos();
 	Init_Missiles();
+
+	Init_Traces();
+
+	m_bTraceOn = false;
 
 	m_iMeleeStartAttackArray[MA_ATTACK03] = IS_ATTACK03;
 	m_iMeleeStartAttackArray[MA_ATTACK05] = IS_ATTACK05;
@@ -324,6 +330,39 @@ HRESULT CM_Crownless_P2::Render()
 
 	}
 
+	// 여기부터 잔상 그리기
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (true == m_TraceArray[i].bRendering)
+		{
+			if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_TraceArray[i].TraceWorldMatrix)))
+				return E_FAIL;
+
+			_float fFadeRatio = 1.f;
+			if (m_TraceArray[i].TraceTimeAcc != 0.0)
+				int a = 1; 
+			if (m_TraceArray[i].TraceTimeAcc < m_TraceArray[i].FadeInRate * m_TraceArray[i].TraceDuration)
+				fFadeRatio = _float(m_TraceArray[i].TraceTimeAcc / (m_TraceArray[i].FadeInRate * m_TraceArray[i].TraceDuration));
+			else if (m_TraceArray[i].TraceTimeAcc >	m_TraceArray[i].FadeOutRate * m_TraceArray[i].TraceDuration)
+				fFadeRatio = _float((m_TraceArray[i].TraceDuration - m_TraceArray[i].TraceTimeAcc) / (m_TraceArray[i].TraceDuration - m_TraceArray[i].FadeOutRate * m_TraceArray[i].TraceDuration));
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_fFadeRatio", &fFadeRatio, sizeof(_float))))
+				return E_FAIL;
+
+ 			for (_uint j = 0; j < iNumMeshes; ++j)
+			{
+				if (2 == j || 4 == j || 5 == j || 6 == j)
+					continue;
+
+				m_pShaderCom->Set_Matrices("g_BoneMatrix", m_TraceArray[i].ppTraceBoneMatrices[j], 256);
+
+
+				m_pShaderCom->Begin(14);
+				m_pModelCom->Render(j);
+			}
+		}
+	}
+
 	return S_OK;
 }
 
@@ -559,12 +598,42 @@ void CM_Crownless_P2::Shot_PriorityKey(_uint iLeavePriority)
 
 void CM_Crownless_P2::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
 {
-	if (iAttackInfoID == 4)
-		int a = 1;
-
 	m_pAttackCollider->SetActive(bOBB);
 	m_iCurAttackID = iAttackInfoID;
 }
+
+void CM_Crownless_P2::Shot_Trace(_double Duration, _double FInRate, _double FOutRate)
+{
+	_bool bOK = false;
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (false == m_TraceArray[i].bRendering)
+		{
+			m_TraceArray[i].TraceWorldMatrix = m_pMainTransform->Get_WorldMatrix();
+
+			for (_uint j = 0; j < m_pModelCom->Get_NumMeshes(); ++j)
+			{
+				m_pModelCom->Get_BoneMeatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
+			}
+
+			m_TraceArray[i].TraceTimeAcc = 0.0;
+			m_TraceArray[i].TraceDuration = Duration;
+			m_TraceArray[i].FadeInRate = FInRate;
+			m_TraceArray[i].FadeOutRate = FOutRate;
+			
+			bOK = m_TraceArray[i].bRendering = true;
+		}
+		if (bOK)
+			break;
+	}
+
+	// 모든 잔상이 사용 중이면 여기 떨어짐
+	if (false == bOK)
+	{
+		int a = 1;
+	}
+}
+
 
 void CM_Crownless_P2::SetUp_State()
 {
@@ -576,6 +645,12 @@ void CM_Crownless_P2::SetUp_State()
 		if (nullptr != m_tCurState.ppStateKeys[i])
 			m_tCurState.ppStateKeys[i]->Reset();
 	}
+
+	//// 애니메이션 캔슬 시 잔상 남김
+	//if(false == m_Scon.bAnimFinished && IS_IDLE != m_Scon.iCurState)
+	//{
+	//	Shot_Trace(2.0, 0.5, 0.5);
+	//}
 
 	// 오입력 예외처리
 	if (m_Scon.iNextState >= IS_END)
@@ -603,10 +678,6 @@ void CM_Crownless_P2::SetUp_State()
 		}
 			
 	}
-
-	// 도발 스택 초기화
-	if (m_Scon.iCurState != IS_TAUNT)
-		m_iTauntStack = 0;
 
 	// 애니메이션이 강제로 끊긴 경우 대비 애니메이션 갱신 시 OBB 콜라이더 무조건 끄기
 	m_pAttackCollider->SetActive(false);
@@ -676,6 +747,7 @@ void CM_Crownless_P2::Find_Target()
 
 			m_fHitPoint = 150;
 			m_iDodgeCount = 2;
+			m_DodgeTimeAcc = 15.0;
 		}
 	}
 }
@@ -998,6 +1070,40 @@ void CM_Crownless_P2::Init_AnimSystem()
 	}
 }
 
+void CM_Crownless_P2::Init_Traces()
+{
+	ZeroMemory(m_TraceArray, sizeof(TRACE) * m_iTraceCount);
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+	
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		m_TraceArray[i].ppTraceBoneMatrices = new _float4x4*[iNumMeshes];
+		ZeroMemory(m_TraceArray[i].ppTraceBoneMatrices, sizeof(_float4x4*) * iNumMeshes);
+		for (_uint j = 0; j < iNumMeshes; ++j)
+		{
+			m_TraceArray[i].ppTraceBoneMatrices[j] = new _float4x4[256];
+			ZeroMemory(m_TraceArray[i].ppTraceBoneMatrices[j], sizeof(_float4x4) * 256);
+		}
+	}
+
+}
+
+void CM_Crownless_P2::Release_Traces()
+{
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		for (_uint j = 0; j < iNumMeshes; ++j)
+		{
+			Safe_Delete_Array(m_TraceArray[i].ppTraceBoneMatrices[j]);
+		}
+		Safe_Delete_Array(m_TraceArray[i].ppTraceBoneMatrices);
+	}
+}
+
+
 void CM_Crownless_P2::Apply_CoolTime(_double TimeDelta)
 {
 	if (0.0 < m_GlobalCoolTime)
@@ -1010,7 +1116,7 @@ void CM_Crownless_P2::Apply_CoolTime(_double TimeDelta)
 		}
 	}
 
-	if (0.0 < m_DodgeTimeAcc)
+	if (0.0 < m_DodgeTimeAcc && m_iDodgeCount < 2)
 	{
 		m_DodgeTimeAcc -= TimeDelta;
 		if (0.0 > m_DodgeTimeAcc)
@@ -1018,8 +1124,30 @@ void CM_Crownless_P2::Apply_CoolTime(_double TimeDelta)
 			m_DodgeTimeAcc = 15.0;
 			++m_iDodgeCount;
 
-			if (m_iDodgeCount > 3)
-				m_iDodgeCount = 3;
+			if (m_iDodgeCount > 2)
+				m_iDodgeCount = 2;
+		}
+	}
+
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (true == m_TraceArray[i].bRendering)
+		{
+			m_TraceArray[i].TraceTimeAcc += TimeDelta;
+			if (m_TraceArray[i].TraceTimeAcc > m_TraceArray[i].TraceDuration)
+			{
+				m_TraceArray[i].bRendering = false;
+			}
+		}
+	}
+
+	if (true == m_bTraceOn)
+	{
+		m_TraceTimeAcc -= TimeDelta;
+		if (0.0 > m_TraceTimeAcc)
+		{
+			m_TraceTimeAcc = m_TraceInterval;
+			Shot_Trace(m_TraceDuration, 0.05, 0.15);
 		}
 	}
 
@@ -1538,10 +1666,14 @@ CGameObject * CM_Crownless_P2::Clone(void * pArg)
 
 void CM_Crownless_P2::Free()
 {
+
 	__super::Free();
 
 	for (_uint i = 0; i < MISS_END; ++i)
 		Safe_Release(m_MissilePools[i]);
+
+	if(m_bClone)
+		Release_Traces();
 
 
 	Safe_Release(m_pNaviCom);

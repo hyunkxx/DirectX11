@@ -278,6 +278,14 @@ HRESULT CModel_Anim::SetUp_BoneMatrices(CShader * pShaderCom, const char * pCons
 	return  pShaderCom->Set_Matrices(pConstantName, MeshBoneMatrices, 256);
 }
 
+void CModel_Anim::Get_BoneMeatrices(_float4x4 * pBoneMatrices, _uint iMeshIndex)
+{
+	if (iMeshIndex >= m_iNumMeshes)
+		return;
+
+	m_Meshes[iMeshIndex]->Get_BoneMatrices(pBoneMatrices, this);
+}
+
 HRESULT CModel_Anim::SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate, _bool bContinue)
 {
 	if (iAnimationIndex >= m_iNumAnimations)

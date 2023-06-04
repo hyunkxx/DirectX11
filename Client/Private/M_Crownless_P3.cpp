@@ -14,6 +14,7 @@
 #include "Missile_Constant.h"
 #include "OBBKey.h"
 #include "DissolveKey.h"
+#include "TraceKey.h"
 
 #include "CameraMovement.h"
 #include "Chest.h"
@@ -23,6 +24,8 @@
 
 #define DIST_MELEE 5.f
 #define DIST_MIDRANGE 20.f
+
+const _double CM_Crownless_P3::m_TraceInterval = 0.09;
 
 CCharacter::SINGLESTATE CM_Crownless_P3::m_tStates[IS_END];
 CM_Crownless_P3::CM_Crownless_P3(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -60,6 +63,8 @@ HRESULT CM_Crownless_P3::Initialize(void * pArg)
 
 	Init_AttackInfos();
 	Init_Missiles();
+
+	Init_Traces();
 
 	m_iMeleeStartAttackArray[MA_ATTACK08] = IS_ATTACK08;
 	m_iMeleeStartAttackArray[MA_ATTACK10] = IS_ATTACK10;
@@ -105,7 +110,7 @@ HRESULT CM_Crownless_P3::Initialize(void * pArg)
 	m_fPushWeight = 150.f;
 
 	m_fHitPoint = 150.f;
-	m_fParalysisPoint = 10.f;
+	m_fParalysisPoint = 300.f;
 
 	//m_pAttackCollider->SetActive(true);
 
@@ -230,11 +235,11 @@ void CM_Crownless_P3::LateTick(_double TimeDelta)
 
 
 	// 돌진기 스킬 예외처리 // 거리비교해서
-	/*if (m_fTargetDistance <= 1.8f)
+	if (m_fTargetDistance <= 1.8f)
 	{
 		static _bool bOverlapedCheck = false;
 
-		if ((0 == m_Scon.iCurState)
+		if ((IS_ATTACK07 == m_Scon.iCurState)
 			&& true == m_tCurState.bRootMotion)
 		{
 			static _vector vTargetPos;
@@ -261,7 +266,7 @@ void CM_Crownless_P3::LateTick(_double TimeDelta)
 		{
 			bOverlapedCheck = false;
 		}
-	}*/
+	}
 
 
 	//Effect Bones 처리
@@ -311,6 +316,36 @@ HRESULT CM_Crownless_P3::Render()
 			m_pShaderCom->Begin(10);
 		m_pModelCom->Render(i);
 
+	}
+
+	// 여기부터 잔상 그리기
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (true == m_TraceArray[i].bRendering)
+		{
+			if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_TraceArray[i].TraceWorldMatrix)))
+				return E_FAIL;
+
+			_float fFadeRatio = 1.f;
+
+			if (m_TraceArray[i].TraceTimeAcc < m_TraceArray[i].FadeInRate * m_TraceArray[i].TraceDuration)
+				fFadeRatio = _float(m_TraceArray[i].TraceTimeAcc / (m_TraceArray[i].FadeInRate * m_TraceArray[i].TraceDuration));
+			else if (m_TraceArray[i].TraceTimeAcc >	m_TraceArray[i].FadeOutRate * m_TraceArray[i].TraceDuration)
+				fFadeRatio = _float((m_TraceArray[i].TraceDuration - m_TraceArray[i].TraceTimeAcc) / (m_TraceArray[i].TraceDuration - m_TraceArray[i].FadeOutRate * m_TraceArray[i].TraceDuration));
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_fFadeRatio", &fFadeRatio, sizeof(_float))))
+				return E_FAIL;
+
+			for (_uint j = 0; j < iNumMeshes; ++j)
+			{
+
+				m_pShaderCom->Set_Matrices("g_BoneMatrix", m_TraceArray[i].ppTraceBoneMatrices[j], 256);
+
+
+				m_pShaderCom->Begin(14);
+				m_pModelCom->Render(j);
+			}
+		}
 	}
 
 	return S_OK;
@@ -472,6 +507,9 @@ HRESULT CM_Crownless_P3::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext*
 				case CStateKey::TYPE_SLOW:
 					m_tStates[i].ppStateKeys[j] = CSlowKey::Create(pDevice, pContext, &tBaseData);
 					break;
+				case CStateKey::TYPE_TRACE:
+					m_tStates[i].ppStateKeys[j] = CTraceKey::Create(pDevice, pContext, &tBaseData);
+					break;
 				case CStateKey::TYPE_SOUND:
 
 					break;
@@ -502,6 +540,52 @@ void CM_Crownless_P3::Release_States()
 				Safe_Release(m_tStates[i].ppStateKeys[j]);
 		}
 		Safe_Delete_Array(m_tStates[i].ppStateKeys);
+	}
+}
+
+void CM_Crownless_P3::Shot_Trace(_double Duration, _double FadeInRate, _double FadeOutRate)
+{
+	_bool bOK = false;
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (false == m_TraceArray[i].bRendering)
+		{
+			m_TraceArray[i].TraceWorldMatrix = m_pMainTransform->Get_WorldMatrix();
+
+			for (_uint j = 0; j < m_pModelCom->Get_NumMeshes(); ++j)
+			{
+				m_pModelCom->Get_BoneMeatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
+			}
+
+			m_TraceArray[i].TraceTimeAcc = 0.0;
+			m_TraceArray[i].TraceDuration = Duration;
+			m_TraceArray[i].FadeInRate = FadeInRate;
+			m_TraceArray[i].FadeOutRate = FadeOutRate;
+
+			bOK = m_TraceArray[i].bRendering = true;
+		}
+		if (bOK)
+			break;
+	}
+
+	// 모든 잔상이 사용 중이면 여기 떨어짐
+	if (false == bOK)
+	{
+		int a = 1;
+	}
+}
+
+void CM_Crownless_P3::Release_Traces()
+{
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		for (_uint j = 0; j < iNumMeshes; ++j)
+		{
+			Safe_Delete_Array(m_TraceArray[i].ppTraceBoneMatrices[j]);
+		}
+		Safe_Delete_Array(m_TraceArray[i].ppTraceBoneMatrices);
 	}
 }
 
@@ -603,8 +687,12 @@ void CM_Crownless_P3::SetUp_State()
 
 	
 
-	// 애니메이션이 강제로 끊긴 경우 대비 애니메이션 갱신 시 OBB 콜라이더 무조건 끄기
+	// 애니메이션이 강제로 끊긴 경우 처리
+	// OBB 끔, 잔상 끔, 패리 불가능
 	m_pAttackCollider->SetActive(false);
+	m_bParryable = false;
+	m_bTraceOn = false;
+	
 
 	//Position State 반영
 	if ((IS_BEHIT_FLY_START == m_Scon.iCurState ||
@@ -635,6 +723,18 @@ void CM_Crownless_P3::SetUp_State()
 		m_ParalysisTimeAcc = 10.0;
 	}
 
+	if (IS_STEP_L == m_Scon.iCurState ||
+		IS_STEP_R == m_Scon.iCurState)
+	{
+		m_StateCoolTimes[IS_STEP_L] = m_tStates[IS_STEP_L].CoolTime;
+
+		if (m_iDodgeCount == 3)
+			m_DodgeTimeAcc = 15.0;
+
+		--m_iDodgeCount;
+	}
+		
+
 	//PhysicMove
 	if (false == m_tCurState.bRootMotion)
 	{
@@ -662,10 +762,11 @@ void CM_Crownless_P3::SetUp_State()
 	//	//m_tCurState.bLerp = false;
 	//}
 
-	if(IS_ATTACK09 == m_Scon.iCurState)
+	if(IS_ATTACK09 == m_Scon.iCurState ||
+		IS_ATTACK07 == m_Scon.iCurState)
 	{
 		m_pAttackCollider->SetCenter_(_float3(2.4f, 0.f, 0.f));
-		m_pAttackCollider->SetExtents_(_float3(3.f, 2.f, 2.2f));
+		m_pAttackCollider->SetExtents_(_float3(3.f, 1.f, 1.f));
 	}
 	else
 	{
@@ -694,7 +795,8 @@ void CM_Crownless_P3::Find_Target()
 			m_pMainTransform->Set_LookDir(XMVectorSetY(m_pTargetTransform->Get_State(CTransform::STATE_POSITION) - m_pMainTransform->Get_State(CTransform::STATE_POSITION), 0.f));
 
 			m_fHitPoint = 150;
-			m_iDodgeCount = 2;
+			m_iDodgeCount = 3;
+			m_DodgeTimeAcc = 15.0;
 		}
 	}
 }
@@ -725,6 +827,50 @@ void CM_Crownless_P3::Check_AttackHit()
 
 			SetUp_State();
 			m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true);
+		}
+	}
+	else if (IS_ATTACK07 == m_Scon.iCurState)
+	{
+		if (36.0 <= m_Scon.TrackPos && 40.0 > m_Scon.TrackPos)
+		{
+			m_bParryable = true;
+		}
+		else
+		{
+			m_bParryable = false;
+		}
+	}
+	else if (IS_ATTACK10 == m_Scon.iCurState)
+	{
+		if (80.0 <= m_Scon.TrackPos)
+		{
+			m_pAttackCollider->SetCenter_(_float3(2.4f, 0.f, 0.f));
+			m_pAttackCollider->SetExtents_(_float3(3.f, 1.f, 1.f));
+		}
+	}
+	else if (IS_ATTACK11 == m_Scon.iCurState)
+	{
+		if (60.0 <= m_Scon.TrackPos)
+		{
+			m_pAttackCollider->SetCenter_(_float3(2.4f, 0.f, 0.f));
+			m_pAttackCollider->SetExtents_(_float3(3.f, 1.f, 1.f));
+		}
+	}
+	else if (IS_ATTACK12 == m_Scon.iCurState)
+	{
+		if (70.0 < m_Scon.TrackPos)
+		{
+			if(m_tCurState.iRotationType != ROT_TURN)
+				m_tCurState.iRotationType = ROT_TURN;
+		}
+		else if (56.0 < m_Scon.TrackPos)
+		{
+			m_pMoveCollider->SetActive(true);
+		}
+		else if (45.0 < m_Scon.TrackPos)
+		{
+			if(m_tCurState.iRotationType != ROT_NONE)
+				m_tCurState.iRotationType = ROT_NONE;
 		}
 	}
 	
@@ -990,6 +1136,24 @@ void CM_Crownless_P3::Init_Missiles()
 	m_MissileRotAngles[MISS_ATTACK13_7] = _float3(0.f, 0.f, 0.f);
 }
 
+void CM_Crownless_P3::Init_Traces()
+{
+	ZeroMemory(m_TraceArray, sizeof(TRACE) * m_iTraceCount);
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		m_TraceArray[i].ppTraceBoneMatrices = new _float4x4*[iNumMeshes];
+		ZeroMemory(m_TraceArray[i].ppTraceBoneMatrices, sizeof(_float4x4*) * iNumMeshes);
+		for (_uint j = 0; j < iNumMeshes; ++j)
+		{
+			m_TraceArray[i].ppTraceBoneMatrices[j] = new _float4x4[256];
+			ZeroMemory(m_TraceArray[i].ppTraceBoneMatrices[j], sizeof(_float4x4) * 256);
+		}
+	}
+}
+
 void CM_Crownless_P3::Apply_CoolTime(_double TimeDelta)
 {
 	if (0.0 < m_GlobalCoolTime)
@@ -1014,7 +1178,7 @@ void CM_Crownless_P3::Apply_CoolTime(_double TimeDelta)
 		}
 	}
 
-	if (0.0 < m_DodgeTimeAcc)
+	if (0.0 < m_DodgeTimeAcc && m_iDodgeCount < 3)
 	{
 		m_DodgeTimeAcc -= TimeDelta;
 		if (0.0 > m_DodgeTimeAcc)
@@ -1022,10 +1186,32 @@ void CM_Crownless_P3::Apply_CoolTime(_double TimeDelta)
 			m_DodgeTimeAcc = 15.0;
 			++m_iDodgeCount;
 
-			if (m_iDodgeCount > 3)
-				m_iDodgeCount = 3;
+			m_iDodgeCount = 3;
 		}
 	}
+
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (true == m_TraceArray[i].bRendering)
+		{
+			m_TraceArray[i].TraceTimeAcc += TimeDelta;
+			if (m_TraceArray[i].TraceTimeAcc > m_TraceArray[i].TraceDuration)
+			{
+				m_TraceArray[i].bRendering = false;
+			}
+		}
+	}
+
+	if (true == m_bTraceOn)
+	{
+		m_TraceTimeAcc -= TimeDelta;
+		if (0.0 > m_TraceTimeAcc)
+		{
+			m_TraceTimeAcc = m_TraceInterval;
+			Shot_Trace(m_TraceDuration, 0.05, 0.15);
+		}
+	}
+
 
 
 	for (_uint i = 0; i < IS_END; ++i)
@@ -1094,7 +1280,9 @@ void CM_Crownless_P3::Select_State(_double TimeDelta)
 		else
 		{
 			if (m_pTarget->Get_Attack() &&
-				0.0 == m_StateCoolTimes[0])
+				0.0 == m_StateCoolTimes[IS_STEP_L] &&
+				0 < m_iDodgeCount &&
+				false == m_bParryable)
 			{
 				iCurFrameAI = AI_DODGE;
 			}
@@ -1132,13 +1320,13 @@ void CM_Crownless_P3::Select_State(_double TimeDelta)
 			break;
 
 		case Client::CM_Crownless_P3::AI_ATTACK_RANGE:
-			if (0.0 == m_StateCoolTimes[IS_ATTACK13])
+			/*if (0.0 == m_StateCoolTimes[IS_ATTACK13])
 				m_Scon.iNextState = IS_ATTACK13;
 			else if (0.0 == m_StateCoolTimes[IS_ATTACK12])
 				m_Scon.iNextState = IS_ATTACK12;
 			else if (0.0 == m_StateCoolTimes[IS_ATTACK01])
 				m_Scon.iNextState = IS_ATTACK01;
-			else
+			else*/
 				m_Scon.iNextState = IS_ATTACK07;
 			break;
 
@@ -1321,7 +1509,7 @@ void CM_Crownless_P3::Tick_State(_double TimeDelta)
 		}
 
 		// 피격 애니메이션 종료 시
-		if (0 == m_Scon.iCurState ||
+		if (IS_BEHIT_B == m_Scon.iCurState ||
 			IS_BEHIT_FLY_FALL == m_Scon.iCurState)
 		{
 			m_fHitPoint = 150.f;
@@ -1394,12 +1582,6 @@ void CM_Crownless_P3::On_Cell()
 					SetUp_State();
 					m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, m_tCurState.bLerp, false);
 				}
-				else if (0 == m_Scon.iCurState ||
-					0 == m_Scon.iCurState)
-				{
-					m_pMainTransform->Set_PosY(fCellHeight);
-					m_Scon.ePositionState = PS_GROUND;
-				}
 			}
 		}
 	}
@@ -1409,15 +1591,16 @@ void CM_Crownless_P3::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo,
 {
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGI = CGameInstance::GetInstance();
+
+	_float4x4 EffectMatrix = m_pMainTransform->Get_WorldMatrix();
+	m_pMainTransform->Get_WorldMatrix();
+	memcpy(EffectMatrix.m[3], pEffPos, sizeof(_float3));
+
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
-	{
-		_float4x4 EffectMatrix = m_pMainTransform->Get_WorldMatrix();
-		memcpy(EffectMatrix.m[3], pEffPos, sizeof(_float3));
+	{	
 		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
 	}
-
-
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
@@ -1459,26 +1642,9 @@ void CM_Crownless_P3::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo,
 					
 				break;
 			case HIT_SMALL:
-				m_fHitPoint -= 10.f;
-				if (m_fHitPoint > 0.f)
+				if (m_bParryable)
 				{
-					m_fParalysisPoint -= 5.f;
-					if (m_fParalysisPoint < 1.f)
-						m_fParalysisPoint = 1.f;
-				}
-					
-				break;
-			case HIT_BIG:
-				m_fHitPoint -= 25.f;
-				if (m_fHitPoint < 0.f)
-				{
-					m_pCamMovement->StartVibration(10.f, 0.7f);
-					m_Scon.iNextState = IS_BEHIT_B;
-					bHitCheck = true;
-				}
-				else
-				{
-					m_fParalysisPoint -= 10.f;
+					m_fParalysisPoint -= 90.f;
 					if (m_fParalysisPoint < 0.f && PS_GROUND == m_Scon.ePositionState)
 					{
 						m_pCamMovement->StartVibration(20.f, 0.7f);
@@ -1486,28 +1652,110 @@ void CM_Crownless_P3::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo,
 						m_Scon.iNextState = IS_PARALYSIS_START;
 						bHitCheck = true;
 					}
-				}
-					
-				break;
-			case HIT_FLY:
-			{
-				m_fHitPoint -= 60.f;
-				if (m_fHitPoint < 0)
-				{
-					//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
-					m_pCamMovement->StartWave();
-					m_Scon.iNextState = IS_BEHIT_FLY_START;
-					bHitCheck = true;
+					else
+					{
+						m_pCamMovement->StartVibration(20.f, 0.7f);
+						pGI->TimeSlowDown(0.3f, 0.1f, 8.f);
+						m_Scon.iNextState = IS_BEHIT_BLOCK;
+						pGI->Get_Effect(TEXT("Parry_Effect"), EFFECT_ID::COMON)->Play_Effect(&EffectMatrix);
+						bHitCheck = true;
+					}
 				}
 				else
 				{
-					m_fParalysisPoint -= 30.f;
+					m_fHitPoint -= 10.f;
+
+					if (m_fHitPoint > 0.f)
+					{
+						m_fParalysisPoint -= 5.f;
+						if (m_fParalysisPoint < 1.f)
+							m_fParalysisPoint = 1.f;
+					}
+				}
+				break;
+			case HIT_BIG:
+				if (m_bParryable)
+				{
+					m_fParalysisPoint -= 90.f;
 					if (m_fParalysisPoint < 0.f && PS_GROUND == m_Scon.ePositionState)
 					{
 						m_pCamMovement->StartVibration(20.f, 0.7f);
 						pGI->TimeSlowDown(0.3f, 0.1f, 8.f);
 						m_Scon.iNextState = IS_PARALYSIS_START;
 						bHitCheck = true;
+					}
+					else
+					{
+						m_pCamMovement->StartVibration(20.f, 0.7f);
+						pGI->TimeSlowDown(0.3f, 0.1f, 8.f);
+						m_Scon.iNextState = IS_BEHIT_BLOCK;
+						bHitCheck = true;
+						pGI->Get_Effect(TEXT("Parry_Effect"), EFFECT_ID::COMON)->Play_Effect(&EffectMatrix);
+					}
+				}
+				else
+				{
+					m_fHitPoint -= 25.f;
+					if (m_fHitPoint < 0.f)
+					{
+						m_pCamMovement->StartVibration(10.f, 0.7f);
+						m_Scon.iNextState = IS_BEHIT_B;
+						bHitCheck = true;
+					}
+					else
+					{
+						m_fParalysisPoint -= 10.f;
+						if (m_fParalysisPoint < 0.f && PS_GROUND == m_Scon.ePositionState)
+						{
+							m_pCamMovement->StartVibration(20.f, 0.7f);
+							pGI->TimeSlowDown(0.3f, 0.1f, 8.f);
+							m_Scon.iNextState = IS_PARALYSIS_START;
+							bHitCheck = true;
+						}
+					}
+				}
+				break;
+			case HIT_FLY:
+			{
+				if (m_bParryable)
+				{
+					m_fParalysisPoint -= 90.f;
+					if (m_fParalysisPoint < 0.f && PS_GROUND == m_Scon.ePositionState)
+					{
+						m_pCamMovement->StartVibration(20.f, 0.7f);
+						pGI->TimeSlowDown(0.3f, 0.1f, 8.f);
+						m_Scon.iNextState = IS_PARALYSIS_START;
+						bHitCheck = true;
+					}
+					else
+					{
+						m_pCamMovement->StartVibration(20.f, 0.7f);
+						pGI->TimeSlowDown(0.3f, 0.1f, 8.f);
+						m_Scon.iNextState = IS_BEHIT_BLOCK;
+						bHitCheck = true;
+						pGI->Get_Effect(TEXT("Parry_Effect"), EFFECT_ID::COMON)->Play_Effect(&EffectMatrix);
+					}
+				}
+				else
+				{
+					m_fHitPoint -= 60.f;
+					if (m_fHitPoint < 0)
+					{
+						//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
+						m_pCamMovement->StartWave();
+						m_Scon.iNextState = IS_BEHIT_FLY_START;
+						bHitCheck = true;
+					}
+					else
+					{
+						m_fParalysisPoint -= 30.f;
+						if (m_fParalysisPoint < 0.f && PS_GROUND == m_Scon.ePositionState)
+						{
+							m_pCamMovement->StartVibration(20.f, 0.7f);
+							pGI->TimeSlowDown(0.3f, 0.1f, 8.f);
+							m_Scon.iNextState = IS_PARALYSIS_START;
+							bHitCheck = true;
+						}
 					}
 				}
 				break;
@@ -1608,6 +1856,9 @@ void CM_Crownless_P3::Free()
 
 	for (_uint i = 0; i < MISS_END; ++i)
 		Safe_Release(m_MissilePools[i]);
+
+	if (m_bClone)
+		Release_Traces();
 
 
 	Safe_Release(m_pNaviCom);

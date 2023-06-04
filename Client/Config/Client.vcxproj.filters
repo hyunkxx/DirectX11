@@ -351,6 +351,9 @@
     <ClCompile Include="..\private\UICharacter.cpp">
       <Filter>src\02. GameObject\03. Character\00. Base</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CityObject.cpp" />
+    <ClCompile Include="..\Private\TraceKey.cpp" />
+    <ClCompile Include="..\private\P_Yangyang.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -680,6 +683,9 @@
     <ClInclude Include="..\public\UICharacter.h">
       <Filter>src\02. GameObject\03. Character\00. Base</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CityObject.h" />
+    <ClInclude Include="..\Public\TraceKey.h" />
+    <ClInclude Include="..\public\P_Yangyang.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

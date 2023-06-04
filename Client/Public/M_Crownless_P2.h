@@ -155,6 +155,11 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
 	virtual void Shot_PriorityKey(_uint iLeavePriority);
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID);
+	virtual void Shot_TraceKey(_bool bTraceOn, _double TraceDuration)
+	{
+		m_bTraceOn = bTraceOn;
+		m_TraceDuration = TraceDuration;
+	}
 
 public:
 	virtual _uint Get_AttackID() override { return m_iCurAttackID; }
@@ -173,6 +178,18 @@ public:
 		return &m_EffectBoneMatrices[EBONE_HEAD];
 	}
 
+	void Shot_Trace(_double Duration, _double FadeInRate = 0.15, _double FadeOutRate = 0.85);
+
+	void Trace_On()
+	{
+		m_bTraceOn = true;
+		m_TraceTimeAcc = m_TraceInterval;
+	}
+	void Trace_Off()
+	{
+		m_bTraceOn = false;
+	}
+
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
 	CShader*			m_pShaderCom = { nullptr };
@@ -184,6 +201,16 @@ private:
 	static SINGLESTATE	m_tStates[IS_END];
 	SINGLESTATE			m_tCurState;
 	_double				m_StateCoolTimes[IS_END] = { 0.0, };
+
+	// Trace > 잔상
+	static const _uint	m_iTraceCount = 10;
+	static const _double m_TraceInterval; // _double은 In-class Initializer 안된다고 함
+	_double				m_TraceTimeAcc = 0.0;
+	TRACE				m_TraceArray[m_iTraceCount] = {}; 
+
+	_double				m_TraceDuration = 0.0;
+	_bool				m_bTraceOn = false;
+	
 
 	// Effects
 	CBone*				m_EffectBones[EBONE_END] = { nullptr, };
@@ -198,7 +225,7 @@ private:
 	_float3				m_MissileRotAngles[MISS_END];
 
 	// 몬스터 변수
-	MONINFO			m_tMonsterInfo;
+	MONINFO				m_tMonsterInfo;
 	// 타겟 플레이어 > 생성될 때 Start에서 플레이어 넣어줌
 	CCharacter*			m_pTarget = { nullptr };
 	CTransform*			m_pTargetTransform = { nullptr };
@@ -213,7 +240,7 @@ private:
 	_double				m_GlobalCoolTime = { 0.0 };
 	_bool				m_bAttackReady = { false };
 	
-	_bool			m_bAttackHit = { false };
+	_bool				m_bAttackHit = { false };
 
 	// 
 	_uint				m_iMeleeAttackID = { MA_ATTACK03 };
@@ -247,6 +274,8 @@ private:
 	void Init_AttackInfos();
 	void Init_Missiles();
 	void Init_AnimSystem();
+	void Init_Traces();
+	void Release_Traces();
 
 	// 적용 중인 쿨타임 TimeDelta 만큼 줄여주는 함수
 	void Apply_CoolTime(_double TimeDelta);

@@ -11,7 +11,9 @@
 #include "MissileKey.h"
 #include "DissolveKey.h"
 #include "SlowKey.h"
+#include "TraceKey.h"
 
+const _double CTestGeneric::m_TraceInterval = 0.09;
 
 CTestGeneric::CTestGeneric(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CTestChar(pDevice, pContext)
@@ -50,6 +52,8 @@ HRESULT CTestGeneric::Initialize(void * pArg)
 	//	return E_FAIL;
 
 	//Init_AnimSystem();
+
+	Init_Traces();
 
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
@@ -130,6 +134,9 @@ void CTestGeneric::Tick(_double TimeDelta)
 		}
 	}
 
+	// Trace 처리
+	Apply_Time(TimeDelta);
+
 
 	Tick_State(TimeDelta);
 
@@ -207,6 +214,36 @@ HRESULT CTestGeneric::Render()
 
 	}
 
+	// 여기부터 잔상 그리기
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (true == m_TraceArray[i].bRendering)
+		{
+			if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_TraceArray[i].TraceWorldMatrix)))
+				return E_FAIL;
+
+			_float fFadeRatio = 1.f;
+
+			if (m_TraceArray[i].TraceTimeAcc < m_TraceArray[i].FadeInRate * m_TraceArray[i].TraceDuration)
+				fFadeRatio = _float(m_TraceArray[i].TraceTimeAcc / (m_TraceArray[i].FadeInRate * m_TraceArray[i].TraceDuration));
+			else if (m_TraceArray[i].TraceTimeAcc >	m_TraceArray[i].FadeOutRate * m_TraceArray[i].TraceDuration)
+				fFadeRatio = _float((m_TraceArray[i].TraceDuration - m_TraceArray[i].TraceTimeAcc) / (m_TraceArray[i].TraceDuration - m_TraceArray[i].FadeOutRate * m_TraceArray[i].TraceDuration));
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_fFadeRatio", &fFadeRatio, sizeof(_float))))
+				return E_FAIL;
+
+			for (_uint j = 0; j < iNumMeshes; ++j)
+			{
+
+				m_pShaderCom->Set_Matrices("g_BoneMatrix", m_TraceArray[i].ppTraceBoneMatrices[j], 256);
+
+
+				m_pShaderCom->Begin(14);
+				m_pModelCom->Render(j);
+			}
+		}
+	}
+
 	return S_OK;
 }
 
@@ -239,6 +276,78 @@ void CTestGeneric::SetUp_Animation(_uint iType)
 {
 	Safe_AnimID();
 	m_pModelCom->SetUp_Animation(m_tStates[m_iStateID].iAnimID, m_tStates[m_iStateID].bLerp);
+}
+
+void CTestGeneric::Shot_Trace(_double Duration, _double FadeInRate, _double FadeOutRate)
+{
+	_bool bOK = false;
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (false == m_TraceArray[i].bRendering)
+		{
+			m_TraceArray[i].TraceWorldMatrix = m_pMainTransform->Get_WorldMatrix();
+
+			for (_uint j = 0; j < m_pModelCom->Get_NumMeshes(); ++j)
+			{
+				m_pModelCom->Get_BoneMeatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
+			}
+
+			m_TraceArray[i].TraceTimeAcc = 0.0;
+			m_TraceArray[i].TraceDuration = Duration;
+			m_TraceArray[i].FadeInRate = FadeInRate;
+			m_TraceArray[i].FadeOutRate = FadeOutRate;
+
+			bOK = m_TraceArray[i].bRendering = true;
+		}
+		if (bOK)
+			break;
+	}
+
+	// 모든 잔상이 사용 중이면 여기 떨어짐
+	if (false == bOK)
+	{
+		int a = 1;
+	}
+
+}
+
+void CTestGeneric::Apply_Time(_double TimeDelta)
+{
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (true == m_TraceArray[i].bRendering)
+		{
+			m_TraceArray[i].TraceTimeAcc += TimeDelta;
+			if (m_TraceArray[i].TraceTimeAcc > m_TraceArray[i].TraceDuration)
+			{
+				m_TraceArray[i].bRendering = false;
+			}
+		}
+	}
+
+	if (true == m_bTraceOn)
+	{
+		m_TraceTimeAcc -= TimeDelta;
+		if (0.0 > m_TraceTimeAcc)
+		{
+			m_TraceTimeAcc = m_TraceInterval;
+			Shot_Trace(m_TraceDuration, 0.05, 0.15);
+		}
+	}
+}
+
+void CTestGeneric::Release_Traces()
+{
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		for (_uint j = 0; j < iNumMeshes; ++j)
+		{
+			Safe_Delete_Array(m_TraceArray[i].ppTraceBoneMatrices[j]);
+		}
+		Safe_Delete_Array(m_TraceArray[i].ppTraceBoneMatrices);
+	}
 }
 
 void CTestGeneric::Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration)
@@ -406,6 +515,9 @@ HRESULT CTestGeneric::Init_States()
 				case CStateKey::TYPE_SLOW:
 					tSingleState.ppStateKeys[j] = CSlowKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
+				case CStateKey::TYPE_TRACE:
+					tSingleState.ppStateKeys[j] = CTraceKey::Create(m_pDevice, m_pContext, &tBaseData);
+					break;
 				case CStateKey::TYPE_SOUND:
 
 					break;
@@ -544,6 +656,24 @@ void CTestGeneric::SetUp_Animation()
 {
 	Safe_AnimID();
 	m_pModelCom->SetUp_Animation(m_tStates[m_iStateID].iAnimID, m_tStates[m_iStateID].bLerp);
+}
+
+void CTestGeneric::Init_Traces()
+{
+	ZeroMemory(m_TraceArray, sizeof(TRACE) * m_iTraceCount);
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		m_TraceArray[i].ppTraceBoneMatrices = new _float4x4*[iNumMeshes];
+		ZeroMemory(m_TraceArray[i].ppTraceBoneMatrices, sizeof(_float4x4*) * iNumMeshes);
+		for (_uint j = 0; j < iNumMeshes; ++j)
+		{
+			m_TraceArray[i].ppTraceBoneMatrices[j] = new _float4x4[256];
+			ZeroMemory(m_TraceArray[i].ppTraceBoneMatrices[j], sizeof(_float4x4) * 256);
+		}
+	}
 }
 
 void CTestGeneric::Tick_State(_double TimeDelta)
@@ -752,6 +882,8 @@ void CTestGeneric::Free()
 				Safe_Delete_Array(m_tStates[i].ppStateKeys);
 			}
 		}
+
+		Release_Traces();
 	}
 
 

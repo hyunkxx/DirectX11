@@ -13,6 +13,7 @@
 #include "Missile_Constant.h"
 #include "OBBKey.h"
 #include "DissolveKey.h"
+#include "TraceKey.h"
 
 #include "CameraMovement.h"
 #include "Chest.h"
@@ -22,6 +23,8 @@
 
 #define DIST_MELEE 3.f
 #define DIST_MIDRANGE 12.f
+
+const _double CM_Crownless_P1::m_TraceInterval = 0.09;
 
 CCharacter::SINGLESTATE CM_Crownless_P1::m_tStates[IS_END];
 CM_Crownless_P1::CM_Crownless_P1(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -60,6 +63,8 @@ HRESULT CM_Crownless_P1::Initialize(void * pArg)
 
 	Init_AttackInfos();
 	Init_Missiles();
+
+	Init_Traces();
 
 	for (_uint i = 0; i < IS_END; ++i)
 		m_pModelCom->Get_Animation(m_tStates[i].iAnimID)->Set_TicksPerSecond(m_tStates[i].FramePerSec);
@@ -309,6 +314,36 @@ HRESULT CM_Crownless_P1::Render()
 
 	}
 
+	// 여기부터 잔상 그리기
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (true == m_TraceArray[i].bRendering)
+		{
+			if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_TraceArray[i].TraceWorldMatrix)))
+				return E_FAIL;
+
+			_float fFadeRatio = 1.f;
+
+			if (m_TraceArray[i].TraceTimeAcc < m_TraceArray[i].FadeInRate * m_TraceArray[i].TraceDuration)
+				fFadeRatio = _float(m_TraceArray[i].TraceTimeAcc / (m_TraceArray[i].FadeInRate * m_TraceArray[i].TraceDuration));
+			else if (m_TraceArray[i].TraceTimeAcc >	m_TraceArray[i].FadeOutRate * m_TraceArray[i].TraceDuration)
+				fFadeRatio = _float((m_TraceArray[i].TraceDuration - m_TraceArray[i].TraceTimeAcc) / (m_TraceArray[i].TraceDuration - m_TraceArray[i].FadeOutRate * m_TraceArray[i].TraceDuration));
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_fFadeRatio", &fFadeRatio, sizeof(_float))))
+				return E_FAIL;
+
+			for (_uint j = 0; j < iNumMeshes; ++j)
+			{
+
+				m_pShaderCom->Set_Matrices("g_BoneMatrix", m_TraceArray[i].ppTraceBoneMatrices[j], 256);
+
+
+				m_pShaderCom->Begin(14);
+				m_pModelCom->Render(j);
+			}
+		}
+	}
+
 	return S_OK;
 }
 
@@ -465,6 +500,9 @@ HRESULT CM_Crownless_P1::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext*
 				case CStateKey::TYPE_MISSILE:
 					m_tStates[i].ppStateKeys[j] = CMissileKey::Create(pDevice, pContext, &tBaseData);
 					break;
+				case CStateKey::TYPE_TRACE:
+					m_tStates[i].ppStateKeys[j] = CTraceKey::Create(pDevice, pContext, &tBaseData);
+					break;
 				case CStateKey::TYPE_SOUND:
 
 					break;
@@ -495,6 +533,52 @@ void CM_Crownless_P1::Release_States()
 				Safe_Release(m_tStates[i].ppStateKeys[j]);
 		}
 		Safe_Delete_Array(m_tStates[i].ppStateKeys);
+	}
+}
+
+void CM_Crownless_P1::Shot_Trace(_double Duration, _double FadeInRate, _double FadeOutRate)
+{
+	_bool bOK = false;
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (false == m_TraceArray[i].bRendering)
+		{
+			m_TraceArray[i].TraceWorldMatrix = m_pMainTransform->Get_WorldMatrix();
+
+			for (_uint j = 0; j < m_pModelCom->Get_NumMeshes(); ++j)
+			{
+				m_pModelCom->Get_BoneMeatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
+			}
+
+			m_TraceArray[i].TraceTimeAcc = 0.0;
+			m_TraceArray[i].TraceDuration = Duration;
+			m_TraceArray[i].FadeInRate = FadeInRate;
+			m_TraceArray[i].FadeOutRate = FadeOutRate;
+
+			bOK = m_TraceArray[i].bRendering = true;
+		}
+		if (bOK)
+			break;
+	}
+
+	// 모든 잔상이 사용 중이면 여기 떨어짐
+	if (false == bOK)
+	{
+		int a = 1;
+	}
+}
+
+void CM_Crownless_P1::Release_Traces()
+{
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		for (_uint j = 0; j < iNumMeshes; ++j)
+		{
+			Safe_Delete_Array(m_TraceArray[i].ppTraceBoneMatrices[j]);
+		}
+		Safe_Delete_Array(m_TraceArray[i].ppTraceBoneMatrices);
 	}
 }
 
@@ -633,6 +717,7 @@ void CM_Crownless_P1::Find_Target()
 
 			m_fHitPoint = 100;
 			m_iDodgeCount = 2;
+			m_DodgeTimeAcc = 15.0;
 		}
 	}
 }
@@ -689,13 +774,13 @@ void CM_Crownless_P1::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 2;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Boom"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; 
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; 
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.15;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_03;
-	tMissilePoolDesc.tMissileDesc.fExtents = 2.f;
+	tMissilePoolDesc.tMissileDesc.fExtents = 10.f;
 
 	m_MissilePools[MISS_ATTACK_03] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_ATTACK_03] = _float3(0.f, 0.f, 0.f);
@@ -707,8 +792,8 @@ void CM_Crownless_P1::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 2;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("GenkiDama_Shoot"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; 
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("B_Crownless_P1_Attack_05_Bullet"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::BOSS_CROWNLESS;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
@@ -717,11 +802,11 @@ void CM_Crownless_P1::Init_Missiles()
 
 	tMissilePoolDesc.bTargetDir = true;
 	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-	tMissilePoolDesc.fVelocity = 18.f;
+	tMissilePoolDesc.fVelocity = 30.f;
 	tMissilePoolDesc.StopTime = 3.0;
 	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
 
-	m_MissilePools[MISS_ATTACK_05] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.f, 1.5f, 0.f), &tMissilePoolDesc);
+	m_MissilePools[MISS_ATTACK_05] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_ATTACK_05] = _float3(0.f, 0.f, 0.f);
 
 
@@ -731,8 +816,8 @@ void CM_Crownless_P1::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 2;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Boom"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; 
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; 
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.15;
@@ -828,6 +913,24 @@ void CM_Crownless_P1::Init_AnimSystem()
 	}
 }
 
+void CM_Crownless_P1::Init_Traces()
+{
+	ZeroMemory(m_TraceArray, sizeof(TRACE) * m_iTraceCount);
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		m_TraceArray[i].ppTraceBoneMatrices = new _float4x4*[iNumMeshes];
+		ZeroMemory(m_TraceArray[i].ppTraceBoneMatrices, sizeof(_float4x4*) * iNumMeshes);
+		for (_uint j = 0; j < iNumMeshes; ++j)
+		{
+			m_TraceArray[i].ppTraceBoneMatrices[j] = new _float4x4[256];
+			ZeroMemory(m_TraceArray[i].ppTraceBoneMatrices[j], sizeof(_float4x4) * 256);
+		}
+	}
+}
+
 void CM_Crownless_P1::Apply_CoolTime(_double TimeDelta)
 {
 	if (0.0 < m_GlobalCoolTime)
@@ -840,7 +943,7 @@ void CM_Crownless_P1::Apply_CoolTime(_double TimeDelta)
 		}
 	}
 
-	if (0.0 < m_DodgeTimeAcc)
+	if (0.0 < m_DodgeTimeAcc && m_iDodgeCount < 2)
 	{
 		m_DodgeTimeAcc -= TimeDelta;
 		if (0.0 > m_DodgeTimeAcc)
@@ -848,8 +951,30 @@ void CM_Crownless_P1::Apply_CoolTime(_double TimeDelta)
 			m_DodgeTimeAcc = 15.0;
 			++m_iDodgeCount;
 
-			if (m_iDodgeCount > 3)
-				m_iDodgeCount = 3;
+			if (m_iDodgeCount > 2)
+				m_iDodgeCount = 2;
+		}
+	}
+
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (true == m_TraceArray[i].bRendering)
+		{
+			m_TraceArray[i].TraceTimeAcc += TimeDelta;
+			if (m_TraceArray[i].TraceTimeAcc > m_TraceArray[i].TraceDuration)
+			{
+				m_TraceArray[i].bRendering = false;
+			}
+		}
+	}
+
+	if (true == m_bTraceOn)
+	{
+		m_TraceTimeAcc -= TimeDelta;
+		if (0.0 > m_TraceTimeAcc)
+		{
+			m_TraceTimeAcc = m_TraceInterval;
+			Shot_Trace(m_TraceDuration, 0.05, 0.15);
 		}
 	}
 	
@@ -1009,6 +1134,8 @@ void CM_Crownless_P1::Select_State(_double TimeDelta)
 				_int iRand = rand() % 2;
 				if (0 == iRand)
 					m_Scon.iNextState = IS_WALK_L;
+				else
+					m_Scon.iNextState = IS_WALK_R;
 			}
 			else
 			{
@@ -1395,6 +1522,8 @@ void CM_Crownless_P1::Free()
 	for (_uint i = 0; i < MISS_END; ++i)
 		Safe_Release(m_MissilePools[i]);
 
+	if (m_bClone)
+		Release_Traces();
 
 	Safe_Release(m_pNaviCom);
 	Safe_Release(m_pModelCom);

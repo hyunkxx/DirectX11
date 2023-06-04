@@ -116,11 +116,30 @@ public:
 	// State 정보 삭제
 	static void Release_States();
 
+	void Trace_On()
+	{
+		m_bTraceOn = true;
+		m_TraceTimeAcc = m_TraceInterval;
+	}
+	void Trace_Off()
+	{
+		m_bTraceOn = false;
+	}
+
+	void Shot_Trace(_double Duration, _double FadeInRate = 0.15, _double FadeOutRate = 0.85);
+
+	void Release_Traces();
+
 public: // StateKey 대응 함수 모음
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _uint iEffectTypeID, _bool bTracking);
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
 	virtual void Shot_PriorityKey(_uint iLeavePriority);
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID);
+	virtual void Shot_TraceKey(_bool bTraceOn, _double TraceDuration)
+	{
+		m_bTraceOn = bTraceOn;
+		m_TraceDuration = TraceDuration;
+	}
 
 public:
 	virtual _uint Get_AttackID() override { return m_iCurAttackID; }
@@ -150,6 +169,15 @@ private:
 	static SINGLESTATE	m_tStates[IS_END];
 	SINGLESTATE			m_tCurState;
 	_double				m_StateCoolTimes[IS_END] = { 0.0, };
+
+	// Trace > 잔상
+	static const _uint	m_iTraceCount = 20;
+	static const _double m_TraceInterval; // _double은 In-class Initializer 안된다고 함
+	_double				m_TraceTimeAcc = 0.0;
+	TRACE				m_TraceArray[m_iTraceCount] = {};
+
+	_double				m_TraceDuration = 0.0;
+	_bool				m_bTraceOn = false;
 
 	// Effects
 	CBone*				m_EffectBones[EBONE_END] = { nullptr, };
@@ -206,6 +234,8 @@ private:
 	void Init_AttackInfos();
 	void Init_Missiles();
 	void Init_AnimSystem();
+
+	void Init_Traces();
 
 	// 적용 중인 쿨타임 TimeDelta 만큼 줄여주는 함수
 	void Apply_CoolTime(_double TimeDelta);

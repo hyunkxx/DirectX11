@@ -10,6 +10,7 @@ const char* CStateKey::szStateKeyTag[TYPE_END] =
 	"OBBKey",
 	"MissileKey",
 	"SlowKey",
+	"TraceKey",
 	"SoundKey",
 };
 

@@ -13,6 +13,7 @@
 #include "MissileKey.h"
 #include "DissolveKey.h"
 #include "SlowKey.h"
+#include "TraceKey.h"
 
 IMPLEMENT_SINGLETON(CAnimToolManager)
 
@@ -1324,6 +1325,9 @@ void CAnimToolManager::Create_Key()
 		break;
 	case CStateKey::TYPE_SLOW:
 		pStateKey = CSlowKey::Create(m_pDevice, m_pContext, &m_tKeyData);
+		break;
+	case CStateKey::TYPE_TRACE:
+		pStateKey = CTraceKey::Create(m_pDevice, m_pContext, &m_tKeyData);
 		break;
 	case CStateKey::TYPE_SOUND:
 

@@ -112,9 +112,31 @@ public:
 	void SetUp_Animation();
 	void SetUp_Animation(_uint iType);
 
+	void Trace_On()
+	{
+		m_bTraceOn = true;
+		m_TraceTimeAcc = m_TraceInterval;
+	}
+	void Trace_Off()
+	{
+		m_bTraceOn = false;
+	}
+
+	void Shot_Trace(_double Duration, _double FadeInRate = 0.15, _double FadeOutRate = 0.85);
+	void Apply_Time(_double TimeDelta);
+
+	void Release_Traces();
+
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _uint iEffectID, _bool bTracking);
+	virtual void Shot_TraceKey(_bool bTraceOn, _double TraceDuration)
+	{
+		m_bTraceOn = bTraceOn;
+		m_TraceDuration = TraceDuration;
+	}
+
+	
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -128,6 +150,16 @@ private:
 	// State
 	SINGLESTATE_TOOL		m_tStates[200];
 	_float				m_TrackPos = { 0.f, };
+
+	// Trace > 잔상
+	static const _uint	m_iTraceCount = 20;
+	static const _double m_TraceInterval; // _double은 In-class Initializer 안된다고 함
+	_double				m_TraceTimeAcc = 0.0;
+	TRACE				m_TraceArray[m_iTraceCount] = {};
+
+	_double				m_TraceDuration = 0.0;
+	_bool				m_bTraceOn = false;
+
 
 	// Parts
 	class CParts*		m_Parts[PARTS_END] = { nullptr, };
@@ -148,10 +180,15 @@ private:
 	HRESULT Init_States();
 	//void Init_AnimSystem();
 
+	//
+	void Init_Traces();
+
 	void Tick_State(_double TimeDelta);
 
 	// Parts
 	HRESULT Init_Parts();
+	
+
 
 	// Effect
 	HRESULT	Init_EffectBones();

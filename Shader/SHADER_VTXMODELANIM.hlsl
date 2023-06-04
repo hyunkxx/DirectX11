@@ -38,6 +38,9 @@ float3 g_vDessolveColor = { 0.f, 0.5f, 1.f }; // µðÆúÆ® »ö»ó
 float g_fGlowRange = 0.05f;
 float g_fGlowFalloff = 0.05f;
 
+// ÀÜ»ó FadeIn/Out¿ë º¯¼ö
+float		g_fFadeRatio;
+
 struct VS_IN
 {
 	float3 vPosition : POSITION;
@@ -528,6 +531,31 @@ PS_OUT_OUTLINE PS_Dissolve(PS_IN In)
 	return Out;
 }
 
+// ÀÜ»ó
+PS_OUT PS_TraceFade(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+
+	//vMtrlDiffuse *= 0.5f;
+	float fValue = max(max(vMtrlDiffuse.r, vMtrlDiffuse.g), vMtrlDiffuse.b);
+	vMtrlDiffuse = float4(fValue, fValue, fValue, 1.f);
+
+	vMtrlDiffuse.r *= 0.329f;
+	vMtrlDiffuse.g *= 0.164f;
+	vMtrlDiffuse.b *= 1.f;
+
+	vMtrlDiffuse += 0.15f;
+	vMtrlDiffuse.a = g_fFadeRatio;
+
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vNormal = In.vNormal;
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass Default_0
@@ -711,6 +739,20 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Dissolve();
+	}
+
+	// ÀÜ»ó + FadeIn/Out
+	pass TraceFade_Model_Pass14
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_TraceFade();
 	}
 
 }

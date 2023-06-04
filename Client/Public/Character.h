@@ -5,6 +5,7 @@
 #include "StateKey.h"
 #include "Collider.h"
 
+
 BEGIN(Client)
 
 class CCharacter abstract 
@@ -379,6 +380,17 @@ public:
 		_uint	iHitEffectID;	// 히트 이펙트 레이어 ID
 	}TAGATTACK;
 
+	typedef struct tagTraceDesc
+	{
+		_float4x4	TraceWorldMatrix;
+		_float4x4**	ppTraceBoneMatrices;
+		_double		TraceDuration;
+		_double		TraceTimeAcc;
+		_double		FadeInRate;
+		_double		FadeOutRate;
+		_bool		bRendering;
+	}TRACE;
+
 public:
 	virtual void Check_Nearst(CCharacter* pChar, _float fDist) {}
 	virtual CCollider* GetAttackCollider() const { return nullptr; }
@@ -410,6 +422,7 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint iEffectBoneID, _uint iTypeID, _bool bTracking) {}
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID) {}
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID) {}
+	virtual void Shot_TraceKey(_bool bTraceOn, _double Duration) {}
 	
 	//
 	virtual void Shot_SlowKey(_float fTargetTime, _float fLerpSpeed);

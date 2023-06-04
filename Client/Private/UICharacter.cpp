@@ -36,9 +36,10 @@ HRESULT UICharacter::Initialize(void * pArg)
 
 	m_pAnimSetBase->Set_RootBone(TEXT("Root"));
 
+	m_iAnimID = UICHAR_IDLE;
 
-	m_pAnimSetBase->SetUp_Animation(0, true);
-	m_pAnimSetRibbon->SetUp_Animation(0, true);
+	m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+	m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
 
 	return S_OK;
 }
@@ -132,7 +133,14 @@ void UICharacter::initAnimation()
 			const _tchar* szChannelName = pChannel->Get_Name();
 			CBone* pBone = m_pAnimSetBase->Get_BonePtr(pChannel->Get_TargetBoneID());
 
-			pChannel->Set_Apply(true);
+			if ((wcsncmp(szChannelName, TEXT("Bip001"), 6) &&
+				lstrcmp(szChannelName, TEXT("WeaponProp01")) &&
+				lstrcmp(szChannelName, TEXT("WeaponProp02")) &&
+				wcsncmp(szChannelName, TEXT("Root"), 4)) ||
+				pBone->Is_ChildOf(TEXT("Bip001Head")))
+				pChannel->Set_Apply(false);
+			else
+				pChannel->Set_Apply(true);
 		}
 	}
 
@@ -152,8 +160,8 @@ void UICharacter::initAnimation()
 				!wcsncmp(szChannelName, TEXT("R2"), 2) ||
 				!wcsncmp(szChannelName, TEXT("Hulu"), 4))
 				pChannel->Set_Apply(false);
-
-			pChannel->Set_Apply(true);
+			else 
+				pChannel->Set_Apply(true);
 		}
 	}
 }
@@ -171,8 +179,20 @@ void UICharacter::updateAnimationState(_double TimeDelta)
 
 	if (bFinished)
 	{
-		m_pAnimSetBase->SetUp_Animation(m_eState, true);
-		m_pAnimSetRibbon->SetUp_Animation(m_eState, true);
+		// 현재 UI 상태에 따라 다음 애니메이션 결정,
+		switch (m_iUIState)
+		{
+		// ex) Weapon 탭이 선택된 상태라면 다음 애니메이션을 WEAPON LOOP로 함?
+		case 2:
+			m_iAnimID = UICHAR_WEAPON_LOOP;
+			break;
+		default:
+			break;
+		}
+
+
+		m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+		m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
 	}
 }
 
