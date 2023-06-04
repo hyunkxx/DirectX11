@@ -166,9 +166,9 @@ private:
 	_bool m_bRenderCheck = { true };
 	_int  m_EntireCount = { 0 };
 	_int  m_Count = { 0 };
+	_bool	m_bRender = { true }; // 전체 랜더onoff
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint   m_iPass = { 1 };
-	_bool	m_bHide = { false }; // 다른 ui 엑티브체크
 	_uint	m_HavePlayerNum = { 1 };
 	_uint	m_HadPlayerNum = { 1 };
 	//플레이어 교대

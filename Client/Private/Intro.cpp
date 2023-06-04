@@ -474,6 +474,8 @@ void CIntro::Load()
 
 		if (nullptr != Desc)
 		{
+			if (i == 3)
+				Desc->iPass = 20;
 			m_DescList.push_back(Desc);
 			
 		}

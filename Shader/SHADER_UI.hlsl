@@ -478,6 +478,21 @@ PS_OUT PS_MAIN3(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_EDIT(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_MyTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor.a *= Out.vColor.rgb;
+	Out.vColor.rgb = 0.f;
+	
+	Out.vColor.r += g_fColorR/255.f;
+	Out.vColor.g += g_fColorG/255.f;
+	Out.vColor.b += g_fColorB/255.f;
+	Out.vColor.a += g_fColorA/255.f;
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 
@@ -728,7 +743,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_TITLE();
 	}
 
-	pass Out_Sprite // 19 
+	pass UI_Edit //19
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -738,7 +753,33 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_Sprite();
+		PixelShader = compile ps_5_0 PS_MAIN_EDIT();
+	}
+
+			pass UI_Default //20
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_LOADING();
+	}
+
+		pass UI_NoZ //21
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN2();
 	}
 }
 	

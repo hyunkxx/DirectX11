@@ -191,11 +191,182 @@ void CUI_Tip::Tick(_double TimeDelta)
 	UVWave(TimeDelta);
 }
 
+void CUI_Tip::LateTick(_double TimeDelta)
+{
+	__super::LateTick(TimeDelta);
+
+	if (nullptr != m_pRenderer)
+		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI_POST, this);
+}
+
+HRESULT CUI_Tip::Render()
+{
+
+	if (FAILED(__super::Render()))
+		return E_FAIL;
+
+		switch (SituIndex)
+		{
+		case Client::CUI_Tip::AREA_OPENING:
+		{
+			for (_uint i = 0; i <(_uint)m_OpeningDescList.size(); ++i)
+			{
+				if (FAILED(Setup_ShaderResources(i)))
+					return E_FAIL;
+				m_pShader->Begin(m_iPass);
+				m_pVIBuffer->Render();
+			}
+
+		}
+		break;
+		case Client::CUI_Tip::CHAR_YANGYANG:
+		{
+			for (_uint i = 0; i <(_uint)m_YangyanDescList.size(); ++i)
+			{
+				if (FAILED(Setup_ShaderResourcesYang(i)))
+					return E_FAIL;
+				m_pShader->Begin(m_iPass);
+				m_pVIBuffer->Render();
+			}
+		}
+		break;
+		case Client::CUI_Tip::CHAR_CHIXIA:
+		{
+			for (_uint i = 0; i <(_uint)m_ChixiaDescList.size(); ++i)
+			{
+				if (FAILED(Setup_ShaderResourcesChixia(i)))
+					return E_FAIL;
+				m_pShader->Begin(m_iPass);
+				m_pVIBuffer->Render();
+			}
+		}
+		break;
+		default:
+			break;
+		}
+
+
+	return S_OK;
+}
+
+void CUI_Tip::RenderGUI()
+{
+}
+
+HRESULT CUI_Tip::Add_Components()
+{
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
+		TEXT("com_renderer"), (CComponent**)&m_pRenderer)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI,
+		TEXT("com_shader"), (CComponent**)&m_pShader)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UITIP,
+		TEXT("com_texture"), (CComponent**)&m_pTexture)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::VIBUFFER_RECT,
+		TEXT("com_vibuffer"), (CComponent**)&m_pVIBuffer)))
+		return E_FAIL;
+
+	return S_OK;
+
+}
+
+HRESULT CUI_Tip::Setup_ShaderResources(_uint index)
+{
+
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_OpeningDescList[index].iTexNum)))
+		return E_FAIL;
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Title", m_MainMaskNum)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_TitleUV", &m_fUV, sizeof(_float2))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_OpeningDescList[index].WorldMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_OpeningDescList[index].fColorR), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_OpeningDescList[index].fColorG), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_OpeningDescList[index].fColorB), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_OpeningDescList[index].fColorA), sizeof(_float))))
+		return E_FAIL;
+
+	m_iPass = m_OpeningDescList[index].iPass;
+
+	return S_OK;
+}
+
+HRESULT CUI_Tip::Setup_ShaderResourcesYang(_uint index)
+{
+
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_YangyanDescList[index].iTexNum)))
+		return E_FAIL;
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Title", m_MainMaskNum)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_TitleUV", &m_fUV, sizeof(_float2))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_YangyanDescList[index].WorldMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_YangyanDescList[index].fColorR), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_YangyanDescList[index].fColorG), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_YangyanDescList[index].fColorB), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_YangyanDescList[index].fColorA), sizeof(_float))))
+		return E_FAIL;
+
+	m_iPass = m_YangyanDescList[index].iPass;
+
+	return S_OK;
+}
+
+HRESULT CUI_Tip::Setup_ShaderResourcesChixia(_uint index)
+{
+
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_ChixiaDescList[index].iTexNum)))
+		return E_FAIL;
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Title", m_MainMaskNum)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_TitleUV", &m_fUV, sizeof(_float2))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_ChixiaDescList[index].WorldMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_ChixiaDescList[index].fColorR), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_ChixiaDescList[index].fColorG), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_ChixiaDescList[index].fColorB), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_ChixiaDescList[index].fColorA), sizeof(_float))))
+		return E_FAIL;
+
+	m_iPass = m_YangyanDescList[index].iPass;
+
+	return S_OK;
+}
+
 _bool CUI_Tip::AddAlpha(vector<TIPDESC>* pDesc, _double TimeDelta)
 {
 	for (_uint i = 0; i < (_int)(*pDesc).size(); ++i)
 	{
-		if (0.f > (*pDesc)[i].fColorA)
+		if (0.f >(*pDesc)[i].fColorA)
 		{
 			(*pDesc)[i].fColorA += (_float)TimeDelta * 100.f;
 		}
@@ -325,210 +496,38 @@ void CUI_Tip::ColorM(TIPDESC* pDesc, _float4 fcolor, _double TimeDelta)
 		pDesc->fColorB = fcolor.z;
 }
 
-void CUI_Tip::LateTick(_double TimeDelta)
-{
-	__super::LateTick(TimeDelta);
-
-	if (nullptr != m_pRenderer)
-		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI_POST, this);
-}
-
-HRESULT CUI_Tip::Render()
-{
-
-	if (FAILED(__super::Render()))
-		return E_FAIL;
-
-		switch (SituIndex)
-		{
-		case Client::CUI_Tip::AREA_OPENING:
-		{
-			for (_uint i = 0; i <(_uint)m_OpeningDescList.size(); ++i)
-			{
-				if (FAILED(Setup_ShaderResources(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-
-		}
-		break;
-		case Client::CUI_Tip::CHAR_YANGYANG:
-		{
-			for (_uint i = 0; i <(_uint)m_YangyanDescList.size(); ++i)
-			{
-				if (FAILED(Setup_ShaderResourcesYang(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-		}
-		break;
-		case Client::CUI_Tip::CHAR_CHIXIA:
-		{
-			for (_uint i = 0; i <(_uint)m_ChixiaDescList.size(); ++i)
-			{
-				if (FAILED(Setup_ShaderResourcesChixia(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-		}
-		break;
-		default:
-			break;
-		}
-
-
-	return S_OK;
-}
-
-void CUI_Tip::RenderGUI()
-{
-}
-
 _bool CUI_Tip::SelectUI(TIPDESC* pDesc)
 {
-		_float3	fMousePos = m_pUIMouse->Get_MousePos();
-		_vector vMouse = XMLoadFloat3(&fMousePos);
-				_float Dist = 1.f;
-				// 버퍼의 각 꼭지점
-				_vector P0 = XMVectorSet(pDesc->fX - pDesc->fWidth * 0.5f, pDesc->fY + pDesc->fHeight * 0.5f, pDesc->fZ, 1.f);
-				_vector P1 = XMVectorSet(pDesc->fX + pDesc->fWidth * 0.5f, pDesc->fY + pDesc->fHeight * 0.5f, pDesc->fZ, 1.f);
-				_vector P2 = XMVectorSet(pDesc->fX + pDesc->fWidth * 0.5f, pDesc->fY - pDesc->fHeight * 0.5f, pDesc->fZ, 1.f);
-				_vector P3 = XMVectorSet(pDesc->fX - pDesc->fWidth * 0.5f, pDesc->fY - pDesc->fHeight * 0.5f, pDesc->fZ, 1.f);
+	_float3	fMousePos = m_pUIMouse->Get_MousePos();
+	_vector vMouse = XMLoadFloat3(&fMousePos);
+	_float Dist = 1.f;
+	// 버퍼의 각 꼭지점
+	_vector P0 = XMVectorSet(pDesc->fX - pDesc->fWidth * 0.5f, pDesc->fY + pDesc->fHeight * 0.5f, pDesc->fZ, 1.f);
+	_vector P1 = XMVectorSet(pDesc->fX + pDesc->fWidth * 0.5f, pDesc->fY + pDesc->fHeight * 0.5f, pDesc->fZ, 1.f);
+	_vector P2 = XMVectorSet(pDesc->fX + pDesc->fWidth * 0.5f, pDesc->fY - pDesc->fHeight * 0.5f, pDesc->fZ, 1.f);
+	_vector P3 = XMVectorSet(pDesc->fX - pDesc->fWidth * 0.5f, pDesc->fY - pDesc->fHeight * 0.5f, pDesc->fZ, 1.f);
 
-				// UI크기에 맞춰서 범위체크
-				if ((XMVectorGetX(P0) < XMVectorGetX(vMouse)) && (XMVectorGetX(P1) > XMVectorGetX(vMouse)))
-				{
-					if ((XMVectorGetY(P0) > XMVectorGetY(vMouse)) && (XMVectorGetY(P2) < XMVectorGetY(vMouse)))
-					{
-						m_pUIMouse->Set_Texchange(true);
-						return true;
-					}
-					else
-					{
-						return false;
+	// UI크기에 맞춰서 범위체크
+	if ((XMVectorGetX(P0) < XMVectorGetX(vMouse)) && (XMVectorGetX(P1) > XMVectorGetX(vMouse)))
+	{
+		if ((XMVectorGetY(P0) > XMVectorGetY(vMouse)) && (XMVectorGetY(P2) < XMVectorGetY(vMouse)))
+		{
+			m_pUIMouse->Set_Texchange(true);
+			return true;
+		}
+		else
+		{
+			return false;
 
-					}
-				}
-				else
-				{
-					return false;
-				}
+		}
+	}
+	else
+	{
+		return false;
+	}
 
-				return false;
+	return false;
 }
-
-HRESULT CUI_Tip::Add_Components()
-{
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
-		TEXT("com_renderer"), (CComponent**)&m_pRenderer)))
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI,
-		TEXT("com_shader"), (CComponent**)&m_pShader)))
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UITIP,
-		TEXT("com_texture"), (CComponent**)&m_pTexture)))
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::VIBUFFER_RECT,
-		TEXT("com_vibuffer"), (CComponent**)&m_pVIBuffer)))
-		return E_FAIL;
-
-	return S_OK;
-
-}
-
-HRESULT CUI_Tip::Setup_ShaderResources(_uint index)
-{
-
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_OpeningDescList[index].iTexNum)))
-		return E_FAIL;
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Title", m_MainMaskNum)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_TitleUV", &m_fUV, sizeof(_float2))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_OpeningDescList[index].WorldMatrix))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_OpeningDescList[index].fColorR), sizeof(_float))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_OpeningDescList[index].fColorG), sizeof(_float))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_OpeningDescList[index].fColorB), sizeof(_float))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_OpeningDescList[index].fColorA), sizeof(_float))))
-		return E_FAIL;
-
-	m_iPass = m_OpeningDescList[index].iPass;
-
-	return S_OK;
-}
-
-HRESULT CUI_Tip::Setup_ShaderResourcesYang(_uint index)
-{
-
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_YangyanDescList[index].iTexNum)))
-		return E_FAIL;
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Title", m_MainMaskNum)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_TitleUV", &m_fUV, sizeof(_float2))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_YangyanDescList[index].WorldMatrix))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_YangyanDescList[index].fColorR), sizeof(_float))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_YangyanDescList[index].fColorG), sizeof(_float))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_YangyanDescList[index].fColorB), sizeof(_float))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_YangyanDescList[index].fColorA), sizeof(_float))))
-		return E_FAIL;
-
-	m_iPass = m_YangyanDescList[index].iPass;
-
-	return S_OK;
-}
-
-HRESULT CUI_Tip::Setup_ShaderResourcesChixia(_uint index)
-{
-
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_ChixiaDescList[index].iTexNum)))
-		return E_FAIL;
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_Title", m_MainMaskNum)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_TitleUV", &m_fUV, sizeof(_float2))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_ChixiaDescList[index].WorldMatrix))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_ChixiaDescList[index].fColorR), sizeof(_float))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_ChixiaDescList[index].fColorG), sizeof(_float))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_ChixiaDescList[index].fColorB), sizeof(_float))))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_ChixiaDescList[index].fColorA), sizeof(_float))))
-		return E_FAIL;
-
-	m_iPass = m_YangyanDescList[index].iPass;
-
-	return S_OK;
-}
-
 
 void CUI_Tip::UVWave(_double TimeDelta)
 {
