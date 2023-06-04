@@ -87,6 +87,8 @@ private:
 	HRESULT Setup_ShaderResources(_int index);
 	HRESULT Setup_ShaderResourcesMask(_int index);
 	HRESULT Setup_ShaderResourcesBoss(_int index);
+	HRESULT Setup_ShaderResourcesBossG1(_int index);
+	HRESULT Setup_ShaderResourcesBossG2(_int index);
 	HRESULT Setup_ShaderResourcesDamage(DAMAGEDESC* pDamage);
 
 public:
@@ -105,7 +107,7 @@ private:
 	void HPRedBar(_double TimeDelta);
 	void CommonHP();
 	void CommonLevel();
-	void DecideRender();
+	void DecideRender(_double TimeDelta);
 	void Font(_double TimeDelta);
 	void FontColor();
 	void Damage(_float Damage);
@@ -128,9 +130,10 @@ private:
 	_int m_Index = { 0 };
 	_int m_MonsterLevel = { 10 };
 	_int m_MaskTextureNum = { 57 };
-	_int m_MaskTextureNum2 = { 67 };
+	_int m_MaskTextureNum2 = { 54 };
 	_float2 m_MonsterUV = { 0.f, 0.f }; // 텍스처uv흘리는애
-	_float m_MonsterGauge = { 1.f };
+	_float m_MonsterGauge1 = { 1.f };
+	_float m_MonsterGauge2 = { 1.f };
 	MONSTERTYPE m_MonsterType = { MONSTERTYPE::BOSS };
 
 	_bool  m_bRender = { true };
@@ -139,7 +142,7 @@ private:
 	_int    m_HitCount = { 0 };
 	_float Acc = { 0.f };
 	_float4 fFontColor = { 0.f, 0.f, 0.f, 0.f };
-
+	_float DamageY = { 0.f };
 private:
 	CPlayerState*   m_pPlayerStateClass = { nullptr };
 

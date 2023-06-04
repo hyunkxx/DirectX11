@@ -8,6 +8,7 @@
 #include "Terrain.h"
 #include "PlayerState.h"
 #include "TerminalUI.h"
+#include "UI_Tip.h"
 
 CUI_MainScreen::CUI_MainScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -61,6 +62,7 @@ void CUI_MainScreen::Start()
 	m_pPlayer = static_cast<CP_PlayerGirl*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
+	m_pTip = static_cast<CUI_Tip*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
 	
 	SetPlayer();
 	SetHP();
@@ -77,10 +79,7 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	{
 		m_pPlayerStateClass->AddPlayer();
 	}
-	if (m_pTerminalUI->IsActive())
-		m_bRender = false;
-	else
-		m_bRender = true;
+	//OtherobjIsActive(TimeDelta);
 	SetPlayer(); // 각 슬롯에 맞는 플레이어 색깔 설정, 스킬 텍스처 설정, 보유캐릭터
 	if (m_HadPlayerNum != m_HavePlayerNum)
 	{
@@ -108,17 +107,96 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	}
 
 }
+void CUI_MainScreen::OtherobjIsActive(_double TimeDelta)
+{
+	if (m_pTerminalUI->IsActive())
+	{
+		OffRender(TimeDelta);
+	}
+	else if (m_pTip->IsActive())
+	{
+		OffRender(TimeDelta);
+	}
+	else
+	{
+		Counting();
+		if (false == m_bRenderCheck)
+		{
+			OnRender(TimeDelta);
+		}
+	}
+
+}
+
+void CUI_MainScreen::OffRender(_double TimeDelta)
+{
+	for (auto& Desc : m_CutDescList)
+	{
+		if (true == Desc->bRender)
+		{
+			if (Desc->fColorACut > -255.f)
+			{
+				Desc->fColorACut -= (_float)TimeDelta;
+			}
+			else
+			{
+				Desc->fColorACut = -255.f;
+			}
+		}
+	}
+}
+
+void CUI_MainScreen::OnRender(_double TimeDelta)
+{
+	for (auto& Desc : m_CutDescList)
+	{
+		if (true == Desc->bRender)
+		{
+			if (Desc->fColorACut < Desc->ColorCut.w)
+			{
+				Desc->fColorACut += (_float)TimeDelta * 200.f;
+			}
+			else
+			{
+				Desc->fColorACut = Desc->ColorCut.w;
+			}
+		}
+	}
+}
+void CUI_MainScreen::Counting()
+{
+	for (auto& Desc : m_CutDescList)
+	{
+		if (true == Desc->bRender)
+		{
+			++m_EntireCount;
+			if (Desc->fColorACut >= Desc->ColorCut.w)
+			{
+				++m_Count;
+			}
+		}
+	}
+	if (m_EntireCount != m_Count)
+	{
+		m_bRenderCheck = false;
+		m_EntireCount = 0;
+		m_Count = 0;
+	}
+	else
+	{
+		m_bRenderCheck = true;
+		m_EntireCount = 0;
+		m_Count = 0;
+	}
+}
+
 
 void CUI_MainScreen::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-
-	if (true == m_bRender)
-	{
-		if (nullptr != m_pRenderer)
-			m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
-	}
+	if (nullptr != m_pRenderer)
+		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }
 
 
@@ -310,9 +388,9 @@ void CUI_MainScreen::QTEAct(_double TimeDelta)
 	// 38 사이즈 알파 100 * 100
 	if (-255.f < m_CutDescList[38]->fColorACut)
 	{
-		m_CutDescList[38]->fColorACut -= (_float)TimeDelta * 200.f;
-		m_CutDescList[38]->fWidthCut += (_float)TimeDelta * 400.f;
-		m_CutDescList[38]->fHeightCut += (_float)TimeDelta * 400.f;
+		m_CutDescList[38]->fColorACut -= (_float)TimeDelta * 100.f;
+		m_CutDescList[38]->fWidthCut += (_float)TimeDelta * 100.f;
+		m_CutDescList[38]->fHeightCut += (_float)TimeDelta * 100.f;
 	}
 	else
 	{
@@ -338,17 +416,31 @@ void CUI_MainScreen::RRAct(_double TimeDelta)
 {
 	// 37사이즈 알파 94*94
 
+
 	if (-255.f < m_CutDescList[37]->fColorACut)
 	{
 		m_CutDescList[37]->fColorACut -= (_float)TimeDelta * 200.f;
-		m_CutDescList[37]->fWidthCut  += (_float)TimeDelta * 400.f;
-		m_CutDescList[37]->fHeightCut += (_float)TimeDelta * 400.f;
+		m_CutDescList[37]->fWidthCut += (_float)TimeDelta * 300.f;
+		m_CutDescList[37]->fHeightCut += (_float)TimeDelta * 300.f;
 	}
 	else
 	{
 		m_CutDescList[37]->fColorACut = 0.f;
-		m_CutDescList[37]->fWidthCut = 94.f;
-		m_CutDescList[37]->fHeightCut = 94.f;
+		m_CutDescList[37]->fWidthCut = 110.f;
+		m_CutDescList[37]->fHeightCut = 110.f;
+	}
+
+	if (-255.f < m_CutDescList[9]->fColorACut)
+	{
+		m_CutDescList[9]->fColorACut -= (_float)TimeDelta * 300.f;
+		m_CutDescList[9]->fWidthCut += (_float)TimeDelta * 40.f;
+		m_CutDescList[9]->fHeightCut += (_float)TimeDelta * 40.f;
+	}
+	else
+	{
+		m_CutDescList[9]->fColorACut = 0.f;
+		m_CutDescList[9]->fWidthCut  = 56.f;
+		m_CutDescList[9]->fHeightCut = 56.f;
 	}
 }
 
@@ -359,6 +451,14 @@ _bool CUI_MainScreen::RRFull()
 		m_CutDescList[37]->bRender = true;
 		return true;
 	}
+	m_CutDescList[37]->fColorACut = 0.f;
+	m_CutDescList[37]->fWidthCut = 56.f;
+	m_CutDescList[37]->fHeightCut = 56.f;
+
+	m_CutDescList[9]->fColorACut = 0.f;
+	m_CutDescList[9]->fWidthCut = 56.f;
+	m_CutDescList[9]->fHeightCut = 56.f;
+
 	m_CutDescList[37]->bRender = false;
 	return false;
 }
@@ -487,7 +587,7 @@ void CUI_MainScreen::SetCurCoolRadian()
 	RCoolRadian = RCoolTime / StaticRSkillTime;
 	RRRadian = RRCurGauge / RRMaxGauge;
 	QTERadian = QTECurGauge / QTEMaxGauge;
-	//QTERadian += 0.001f; // 테스트
+	//QTERadian = 1.f; // 테스트
 	SkillRadian = SkillCurGauge / SkillMaxGauge;
 	//SkillRadian += 0.001f; // 테스트
 	TagRadian = CurTagCool / MaxTagCool;
@@ -1635,7 +1735,7 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 				return E_FAIL;
 		}
 		
-		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
+		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f) 
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))

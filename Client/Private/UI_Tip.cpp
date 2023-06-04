@@ -43,8 +43,6 @@ void CUI_Tip::Start()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
-	m_pUIMain = static_cast<CUI_MainScreen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));
-	m_pUIMinimap = static_cast<CUI_Minimap*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Minimap"));
 	SetState(DISABLE);
 }
 
@@ -332,7 +330,7 @@ void CUI_Tip::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	if (nullptr != m_pRenderer)
-		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI, this);
+		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI_POST, this);
 }
 
 HRESULT CUI_Tip::Render()

@@ -6,6 +6,7 @@
 #include "P_PlayerGirl.h"
 #include "Terrain.h"
 #include "TerminalUI.h"
+#include "UI_Tip.h"
 
 CUI_Minimap::CUI_Minimap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -47,21 +48,14 @@ void CUI_Minimap::Start()
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	m_pPlayer = static_cast<CP_PlayerGirl*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
 	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
+	m_pTip = static_cast<CUI_Tip*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
 }
 
 void CUI_Minimap::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	if (nullptr == pGameInstance)
-		return;
-
-	if (m_pTerminalUI->IsActive())
-		m_bRender = false;
-	else
-		m_bRender = true;
-
+	OtherobjIsActive();
 
 	// 미니맵 
 	// 가져온 오브젝트들이 준비가 되면 랜더 돌릴 수 있음-> 랜더조건
@@ -110,22 +104,22 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			_float X = XMVectorGetX(vPlayerPos - vWorldPos);
 			_float Y = XMVectorGetZ(vPlayerPos - vWorldPos);
 			_float Dist = XMVectorGetX(XMVector4Length(vPlayerPos - vWorldPos));
-			
-			if ((190.f <= Dist)||((_int)pDesc.IconLU.x == -1))
+
+			if ((190.f <= Dist) || ((_int)pDesc.IconLU.x == -1))
 				pDesc.bRender = false;
-			if((190.f > Dist) && ((_int)pDesc.IconLU.x != -1))
+			if ((190.f > Dist) && ((_int)pDesc.IconLU.x != -1))
 				pDesc.bRender = true;
 
-			XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)  
-				* XMMatrixTranslation(-540.f - X * (m_fWidthMiniMap/g_iWinSizeX) * 1.5f 
-					, 260.f - Y  * (m_fHeightMiniMap/g_iWinSizeY) * 1.5f , 0.f));
+			XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)
+				* XMMatrixTranslation(-540.f - X * (m_fWidthMiniMap / g_iWinSizeX) * 1.5f
+					, 260.f - Y  * (m_fHeightMiniMap / g_iWinSizeY) * 1.5f, 0.f));
 		}
 
 
 
 		// 플레이어 아이콘 돌리는 기능
 		{
-			_float4x4 PlayerWorldMat =pComponent->Get_WorldMatrix();
+			_float4x4 PlayerWorldMat = pComponent->Get_WorldMatrix();
 			_vector vPlayerLook = XMLoadFloat4x4(&PlayerWorldMat).r[2];
 			XMVectorSetY(vPlayerLook, 0.f);
 			vPlayerLook = XMVector3Normalize(vPlayerLook); //플레이어 룩 노멀라이즈
@@ -256,43 +250,43 @@ HRESULT CUI_Minimap::Render()
 	{
 		if (FAILED(__super::Render()))
 			return E_FAIL;
-			//디폴트아이콘
-			for (_uint i = 0; i < 2; ++i)
+		//디폴트아이콘
+		for (_uint i = 0; i < 2; ++i)
+		{
+			if (false == m_bNull)
 			{
-				if (false == m_bNull)
-				{
-					if (FAILED(Setup_ShaderResourcesDefaultIcon(i)))
-						return E_FAIL;
-					m_pShader->Begin(1);
-					m_pVIBufferMiniMap->Render();
-				}
+				if (FAILED(Setup_ShaderResourcesDefaultIcon(i)))
+					return E_FAIL;
+				m_pShader->Begin(1);
+				m_pVIBufferMiniMap->Render();
 			}
+		}
 
-			//미니맵아이콘
-			_uint Descindex = 0;
-			for (auto& Desc : m_IconDescList)
+		//미니맵아이콘
+		_uint Descindex = 0;
+		for (auto& Desc : m_IconDescList)
+		{
+			if (true == Desc.bRender)
 			{
-				if (true == Desc.bRender)
-				{
-					if (FAILED(Setup_ShaderResourcesIcon(Descindex)))
-						return E_FAIL;
-					m_pShader->Begin(1);
-					m_pVIBufferMiniMap->Render();
-				}
-				++Descindex;
+				if (FAILED(Setup_ShaderResourcesIcon(Descindex)))
+					return E_FAIL;
+				m_pShader->Begin(1);
+				m_pVIBufferMiniMap->Render();
 			}
+			++Descindex;
+		}
 
-			//메인화면아이콘
-			for (auto& Desc : m_DescList)
+		//메인화면아이콘
+		for (auto& Desc : m_DescList)
+		{
+			if ((true == Desc.bRender) && (Desc.Dist > 50.f) && (Desc.Dist < 250.f))
 			{
-				if ((true == Desc.bRender) && (Desc.Dist > 50.f) && (Desc.Dist < 250.f))
-				{
-					if (FAILED(Setup_ShaderResourcesIcons(&Desc)))
-						return E_FAIL;
-					m_pShader->Begin(1);
-					m_pVIBufferMiniMap->Render();
-				}
+				if (FAILED(Setup_ShaderResourcesIcons(&Desc)))
+					return E_FAIL;
+				m_pShader->Begin(1);
+				m_pVIBufferMiniMap->Render();
 			}
+		}
 
 		// 미니맵
 		if (false == m_bNull)
@@ -338,6 +332,16 @@ HRESULT CUI_Minimap::Add_Components()
 
 }
 
+void CUI_Minimap::OtherobjIsActive()
+{
+	if (m_pTerminalUI->IsActive())
+		m_bRender = false;
+	else if (m_pTip->IsActive())
+		m_bRender = false;
+	else
+		m_bRender = true;
+
+}
 
 void CUI_Minimap::Set_ObjectPos(_int Index, _fvector vObjectPos)
 {
@@ -350,8 +354,8 @@ void CUI_Minimap::Set_Disable(_int Index)
 
 void CUI_Minimap::SetRender(_int index, _bool bRender)
 {
-	 m_IconDescList[index].bRender = bRender; 
-	 m_DescList[index].bRender = bRender; 
+	m_IconDescList[index].bRender = bRender;
+	m_DescList[index].bRender = bRender;
 }
 
 _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
@@ -420,7 +424,7 @@ HRESULT CUI_Minimap::Setup_ShaderResourcesIcons(ICONDESC* pDesc)
 
 HRESULT CUI_Minimap::Setup_ShaderResourcesMiniMap()
 {
-	if (FAILED(m_pTexDefaultIcon->Setup_ShaderResource(m_pShader, "g_MyTexture",2)))
+	if (FAILED(m_pTexDefaultIcon->Setup_ShaderResource(m_pShader, "g_MyTexture", 2)))
 		return E_FAIL;
 	if (nullptr != m_pVIBufferMiniMap)
 	{

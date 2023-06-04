@@ -81,7 +81,6 @@ private://GameObjects
 
 	class CGameObject* m_pSlotUI[SLOT_MAX];
 	stack<struct IActivate*> m_pActivateList;
-
 private: //Ortho Desc
 	_float4x4 m_ViewMatrix, m_ProjMatrix;	
 

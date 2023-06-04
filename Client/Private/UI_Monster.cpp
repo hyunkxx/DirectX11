@@ -66,7 +66,7 @@ void CUI_Monster::Tick(_double TimeDelta)
 	}
 
 	CommonHP();
-	DecideRender();
+	DecideRender(TimeDelta);
 	CommonLevel();
 	Font(TimeDelta);
 
@@ -79,8 +79,13 @@ void CUI_Monster::Tick(_double TimeDelta)
 	{
 		HPRedBar(TimeDelta);
 	}
-	m_MonsterUV.x += (_float)TimeDelta*0.3f;
-	//m_MonsterGauge += (_float)TimeDelta*0.2f;
+
+	m_MonsterUV.x += (_float)TimeDelta * 0.3f;
+	//m_MonsterGauge2 = 몬스터의어떤게이지
+	//if (0.f > = m_MonsterGauge2)
+	//{
+	//	m_MonsterGauge = 몬스터의어떤게이지
+	//}
 }
 
 void CUI_Monster::LateTick(_double TimeDelta)
@@ -93,6 +98,7 @@ void CUI_Monster::LateTick(_double TimeDelta)
 
 HRESULT CUI_Monster::Render()
 {
+	
 	if (true == m_bRender)
 	{
 		for (auto& Desc : DamageList)
@@ -105,70 +111,118 @@ HRESULT CUI_Monster::Render()
 			m_pVIBuffer->Render();
 		}
 
-		for (_uint i = 0; i < 4; ++i)
+		switch (m_MonsterType)
 		{
-			if (true == m_DescList[i].bRender)
+		case Client::CUI_Monster::MONSTERTYPE::TYPE0:
+		{
+			for (_uint i = 0; i < 4; ++i)
+			{
+				if (true == m_DescList[i].bRender)
+				{
+					if (FAILED(__super::Render()))
+						return E_FAIL;
+					if (FAILED(Setup_ShaderResourcesHP(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_DescList[i].iPass);
+					m_pVIBuffer->Render();
+				}
+			}
+
+			for (_uint i = 4; i < 8; ++i)
+			{
+				if (true == m_DescList[i].bRender)
+				{
+					if (FAILED(__super::Render()))
+						return E_FAIL;
+					if (FAILED(Setup_ShaderResources(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_DescList[i].iPass);
+					m_pVIBuffer->Render();
+				}
+			}
+		}
+			break;
+		case Client::CUI_Monster::MONSTERTYPE::TYPE1:
+		{
+			if (true == m_DescList[9].bRender)
 			{
 				if (FAILED(__super::Render()))
 					return E_FAIL;
-				if (FAILED(Setup_ShaderResourcesHP(i)))
+				if (FAILED(Setup_ShaderResourcesMask(9)))
 					return E_FAIL;
-				m_pShader->Begin(m_DescList[i].iPass);
+				m_pShader->Begin(m_DescList[9].iPass);
 				m_pVIBuffer->Render();
 			}
-		}
 
-		for (_uint i = 4; i < 8; ++i)
+			for (_uint i = 0; i < 4; ++i)
+			{
+				if (true == m_DescList[i].bRender)
+				{
+					if (FAILED(__super::Render()))
+						return E_FAIL;
+					if (FAILED(Setup_ShaderResourcesHP(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_DescList[i].iPass);
+					m_pVIBuffer->Render();
+				}
+			}
+
+			for (_uint i = 4; i < 9; ++i)
+			{
+				if (true == m_DescList[i].bRender)
+				{
+					if (FAILED(__super::Render()))
+						return E_FAIL;
+					if (FAILED(Setup_ShaderResources(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_DescList[i].iPass);
+					m_pVIBuffer->Render();
+				}
+			}
+			
+
+		}
+			break;
+		case Client::CUI_Monster::MONSTERTYPE::BOSS:
 		{
-			if (true == m_DescList[i].bRender)
+			for (_uint i = 10; i < (_uint)m_DescList.size()-1; ++i)
+			{
+				if (i == 16)
+					continue;
+				if (true == m_DescList[i].bRender)
+				{
+					if (FAILED(__super::Render()))
+						return E_FAIL;
+					if (FAILED(Setup_ShaderResourcesBoss(i)))
+						return E_FAIL;
+					m_pShader->Begin(m_DescList[i].iPass);
+					m_pVIBuffer->Render();
+				}
+			}
+			if (true == m_DescList[16].bRender)
 			{
 				if (FAILED(__super::Render()))
 					return E_FAIL;
-				if (FAILED(Setup_ShaderResources(i)))
+				if (FAILED(Setup_ShaderResourcesBossG1(16)))
 					return E_FAIL;
-				m_pShader->Begin(m_DescList[i].iPass);
+				m_pShader->Begin(m_DescList[16].iPass);
 				m_pVIBuffer->Render();
 			}
-		}
-
-
-		if (true == m_DescList[8].bRender)
-		{
-			if (FAILED(__super::Render()))
-				return E_FAIL;
-			if (FAILED(Setup_ShaderResources(8)))
-				return E_FAIL;
-			m_pShader->Begin(m_DescList[8].iPass);
-			m_pVIBuffer->Render();
-		}
-
-		for (_uint i = 9; i < 10; ++i)
-		{
-			if (true == m_DescList[i].bRender)
+			if (true == m_DescList[20].bRender)
 			{
 				if (FAILED(__super::Render()))
 					return E_FAIL;
-				if (FAILED(Setup_ShaderResourcesMask(i)))
+				if (FAILED(Setup_ShaderResourcesBossG2(20)))
 					return E_FAIL;
-				m_pShader->Begin(m_DescList[i].iPass);
+				m_pShader->Begin(m_DescList[20].iPass);
 				m_pVIBuffer->Render();
 			}
 		}
-
-
-
-		for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
-		{
-			if (true == m_DescList[i].bRender)
-			{
-				if (FAILED(__super::Render()))
-					return E_FAIL;
-				if (FAILED(Setup_ShaderResourcesBoss(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_DescList[i].iPass);
-				m_pVIBuffer->Render();
-			}
+			break;
+		default:
+			break;
 		}
+	
 	}
 	return S_OK;
 }
@@ -247,7 +301,7 @@ void CUI_Monster::Font(_double TimeDelta)
 			Desc.Pos.y += (_float)(TimeDelta * 100.f);
 		}
 
-		XMStoreFloat4x4(&(Desc.WorldMat), XMMatrixScaling(Desc.Size.x, Desc.Size.y, 0.f)
+		XMStoreFloat4x4(&(Desc.WorldMat), XMMatrixScaling(Desc.Size.x, Desc.Size.y, 1.f)
 			* XMMatrixTranslation(Desc.Pos.x, Desc.Pos.y, 0.f));
 	}
 
@@ -472,8 +526,6 @@ HRESULT CUI_Monster::Add_Components()
 		TEXT("com_renderer"), (CComponent**)&m_pRenderer)))
 		return E_FAIL;
 
-	/*???? ?????  ????????? ??? , ?ε???? ????  ????? ??? ???. ????? ?????????*/
-
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI,
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
@@ -580,8 +632,12 @@ HRESULT CUI_Monster::Setup_ShaderResourcesMask(_int index)
 		return E_FAIL;
 	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask2", m_MaskTextureNum2)))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_SkillRadian", &m_MonsterGauge, sizeof(_float)))) 
+	if (FAILED(m_pShader->SetRawValue("g_SkillRadian", &m_MonsterGauge1, sizeof(_float)))) // 오른쪽으로 어디까지 찼는지때문에추가 몬스터는 추가 방어력으로 쓰임
 		return E_FAIL;
+
+
+	XMStoreFloat4x4(&(m_DescList[index].WorldMatrix), XMMatrixScaling(m_DescList[index].fWidth, m_DescList[index].fHeight, 1.f) *
+		XMMatrixTranslation(m_DescList[index].fX, m_DescList[index].fY, m_DescList[index].fZ));
 
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index].WorldMatrix))))
 		return E_FAIL;
@@ -602,31 +658,22 @@ HRESULT CUI_Monster::Setup_ShaderResourcesMask(_int index)
 
 	return S_OK;
 }
+
 
 
 HRESULT CUI_Monster::Setup_ShaderResourcesBoss(_int index)
 {
 	if (nullptr == m_pShader)
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_GraphUV", &(m_MonsterUV), sizeof(_float2))))
-		return E_FAIL;
+
 	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index].iTexNum)))
 		return E_FAIL;
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask", m_MaskTextureNum)))
-		return E_FAIL;
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask2", m_MaskTextureNum2)))
-		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_SkillRadian", &m_MonsterGauge, sizeof(_float))))
-		return E_FAIL;
-
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index].WorldMatrix))))
 		return E_FAIL;
-
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-
 	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index].fColorR), sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index].fColorG), sizeof(_float))))
@@ -635,14 +682,81 @@ HRESULT CUI_Monster::Setup_ShaderResourcesBoss(_int index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fRedBar", &m_fRedBar, sizeof(_float))))
-		return E_FAIL;
+
+	if (true == m_bRedStart)
+	{
+		if (FAILED(m_pShader->SetRawValue("g_fRedBar", &m_fRedBar, sizeof(_float))))
+			return E_FAIL;
+	}
 	if (FAILED(m_pShader->SetRawValue("g_fwhiteBar", &m_fWhiteBar, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;
 }
+HRESULT CUI_Monster::Setup_ShaderResourcesBossG1(_int index)
+{
+	if (nullptr == m_pShader)
+		return E_FAIL;
 
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index].iTexNum)))
+		return E_FAIL;
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask", m_MaskTextureNum)))
+		return E_FAIL;
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask2", m_MaskTextureNum2)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_GraphUV", &(_float2(m_MonsterUV.x, m_MonsterUV.y)), sizeof(_float2))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_SkillRadian", &m_MonsterGauge1, sizeof(_float)))) // 오른쪽으로 어디까지 찼는지때문에추가 몬스터는 추가 방어력으로 쓰임
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index].WorldMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index].fColorR), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index].fColorG), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_DescList[index].fColorB), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index].fColorA), sizeof(_float))))
+		return E_FAIL;
+
+	return S_OK;
+}
+HRESULT CUI_Monster::Setup_ShaderResourcesBossG2(_int index)
+{
+	if (nullptr == m_pShader)
+		return E_FAIL;
+
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_DescList[index].iTexNum)))
+		return E_FAIL;
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask", m_MaskTextureNum)))
+		return E_FAIL;
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_GMask2", m_MaskTextureNum2)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_GraphUV", &(_float2(-m_MonsterUV.x, m_MonsterUV.y)), sizeof(_float2))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_SkillRadian", &m_MonsterGauge2, sizeof(_float)))) // 오른쪽으로 어디까지 찼는지때문에추가 몬스터는 추가 방어력으로 쓰임
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_DescList[index].WorldMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index].fColorR), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index].fColorG), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_DescList[index].fColorB), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index].fColorA), sizeof(_float))))
+		return E_FAIL;
+
+	return S_OK;
+}
 
 HRESULT CUI_Monster::Setup_ShaderResourcesDamage(DAMAGEDESC* pDamage)
 {
@@ -792,7 +906,7 @@ void CUI_Monster::CommonLevel()
 
 	if (3 < (_uint)m_DescList.size())
 	{
-		for (_uint i = 4; i < 9; ++i)
+		for (_uint i = 4; i < 10; ++i)
 		{
 			m_DescList[i].fX = m_DescList[0].fX + m_DescList[i].PosSet.x;
 			m_DescList[i].fY = m_DescList[0].fY + m_DescList[i].PosSet.y;
@@ -803,7 +917,7 @@ void CUI_Monster::CommonLevel()
 	}
 }
 
-void CUI_Monster::DecideRender()
+void CUI_Monster::DecideRender(_double TimeDelta)
 {
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -817,110 +931,120 @@ void CUI_Monster::DecideRender()
 
 	_float Get = XMVectorGetX(XMVector4Dot(vNormailzeLook, vNormailzeDir));
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, m_vCharacterPos);
+	_float Dsit;
 	for (auto& Desc : m_DescList)
 	{
-		_float Dsit = m_pMainTransform->Compute_Distance(CamPos);
+		Dsit = m_pMainTransform->Compute_Distance(CamPos);
 		if (Dsit > 30.f)
 		{
 			Desc.bRender = false;
 		}
-		else 
+		else
 		{
-				if (-0.2f > Get) 
-				{
-					Desc.bRender = false;
-
-				}
-			else
-				{
-						switch (m_MonsterType)
-						{
-						case Client::CUI_Monster::MONSTERTYPE::TYPE0: 
-						{
-							m_DescList[8].bRender = false;
-							m_DescList[9].bRender = false;
-
-
-							if (true == m_bNameRender)
-							{
-								m_DescList[4].bRender = false;
-								m_DescList[5].bRender = false;
-								m_DescList[6].bRender = false;
-								m_DescList[7].bRender = true;
-							}
-							else
-							{
-								m_DescList[4].bRender = true;
-								m_DescList[5].bRender = true;
-								m_DescList[6].bRender = true;
-								m_DescList[7].bRender = false;
-							}
-						}
-						break;
-						case Client::CUI_Monster::MONSTERTYPE::TYPE1: 
-						{
-							m_DescList[8].bRender = true;
-							m_DescList[9].bRender = true;
-
-
-							if (true == m_bNameRender)
-							{
-								m_DescList[4].bRender = false;
-								m_DescList[5].bRender = false;
-								m_DescList[6].bRender = false;
-								m_DescList[7].bRender = true;
-							}
-							else
-							{
-								m_DescList[4].bRender = true;
-								m_DescList[5].bRender = true;
-								m_DescList[6].bRender = true;
-								m_DescList[7].bRender = false;
-							}
-
-						}
-						break;
-						case Client::CUI_Monster::MONSTERTYPE::BOSS:
-						{
-							for (_uint i = 0; i < 10; ++i)
-							{
-								m_DescList[i].bRender = false;
-							}
-							for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
-							{
-								m_DescList[i].bRender = true;
-								XMStoreFloat4x4(&(m_DescList[i].WorldMatrix), XMMatrixScaling(m_DescList[i].fWidth, m_DescList[i].fHeight, 1.f) *
-									XMMatrixTranslation(m_DescList[i].fX, m_DescList[i].fY, m_DescList[i].fZ));
-							}
-
-							_int LevelTen = m_MonsterLevel / 10;
-							_int LevelOne = m_MonsterLevel % 10; // 0 = 33 1 = 34
-
-							if (1> LevelTen)
-							{
-								//11,12,13
-								m_DescList[13].bRender = false;
-								m_DescList[14].iTexNum = LevelOne + 79;
-							}
-							else
-							{
-								m_DescList[13].bRender = true;
-								m_DescList[13].iTexNum = LevelTen + 79;
-								m_DescList[14].iTexNum = LevelOne + 79;
-							}
-						}
-						break;
-						}
-
-				}
+			if (-0.2f > Get)
+			{
+				Desc.bRender = false;
+			}
 		}
 	}
 
+	if ((Dsit < 30.f)&(-0.2f < Get))
+	{
+		switch (m_MonsterType)
+		{
+			case Client::CUI_Monster::MONSTERTYPE::TYPE0:
+			{
+				m_DescList[8].bRender = false;
+				m_DescList[9].bRender = false;
+
+
+				if (true == m_bNameRender)
+				{
+					m_DescList[4].bRender = false;
+					m_DescList[5].bRender = false;
+					m_DescList[6].bRender = false;
+					m_DescList[7].bRender = true;
+				}
+				else
+				{
+					m_DescList[4].bRender = true;
+					m_DescList[5].bRender = true;
+					m_DescList[6].bRender = true;
+					m_DescList[7].bRender = false;
+				}
+			}
+			break;
+			case Client::CUI_Monster::MONSTERTYPE::TYPE1:
+			{
+				m_DescList[8].bRender = true;
+				m_DescList[9].bRender = true;
+
+
+				if (true == m_bNameRender)
+				{
+					m_DescList[4].bRender = false;
+					m_DescList[5].bRender = false;
+					m_DescList[6].bRender = false;
+					m_DescList[7].bRender = true;
+				}
+				else
+				{
+					m_DescList[4].bRender = true;
+					m_DescList[5].bRender = true;
+					m_DescList[6].bRender = true;
+					m_DescList[7].bRender = false;
+				}
+
+			}
+			break;
+			case Client::CUI_Monster::MONSTERTYPE::BOSS:
+			{
+				for (_uint i = 0; i < 10; ++i)
+				{
+					m_DescList[i].bRender = false;
+				}
+				if (true == m_bHit)
+				{
+					m_DescList[16].fHeight = 35.f + abs(m_Damage * 0.3f);
+					m_DescList[20].fHeight = 35.f + abs(m_Damage * 0.3f);
+					if (m_DescList[16].fHeight > 35.f) { m_DescList[16].fHeight -= abs(m_Damage * 0.05f); }
+					if (m_DescList[20].fHeight > 35.f) { m_DescList[20].fHeight -= abs(m_Damage * 0.05f); }
+					if (m_DescList[16].fHeight > 55.f) { m_DescList[16].fHeight = 35.f; }
+					if (m_DescList[20].fHeight > 55.f) { m_DescList[20].fHeight = 35.f; }
+				}
+
+				for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
+				{
+					m_DescList[i].bRender = true;
+					XMStoreFloat4x4(&(m_DescList[i].WorldMatrix), XMMatrixScaling(m_DescList[i].fWidth, m_DescList[i].fHeight, 1.f) *
+						XMMatrixTranslation(m_DescList[i].fX, m_DescList[i].fY, m_DescList[i].fZ));
+				}
+
+				_int LevelTen = m_MonsterLevel / 10;
+				_int LevelOne = m_MonsterLevel % 10; // 0 = 33 1 = 34
+
+				if (1 > LevelTen)
+				{
+					//11,12,13
+					m_DescList[13].bRender = false;
+					m_DescList[14].iTexNum = LevelOne + 79;
+				}
+				else
+				{
+					m_DescList[13].bRender = true;
+					m_DescList[13].iTexNum = LevelTen + 79;
+					m_DescList[14].iTexNum = LevelOne + 79;
+				}
+			}
+			break;
+		}
+
+	}
 }
 
 void CUI_Monster::Load()
 {
-	_uint index = 19;
+	_uint index = 21;
 	for (_uint i = 0; i<index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";

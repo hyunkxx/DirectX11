@@ -11,10 +11,6 @@ class CTransform;
 END
 
 BEGIN(Client)
-class CP_PlayerGirl;
-class CPlayerState;
-class CTerminalUI;
-
 class CUI_MainScreen final : public CGameObject
 {
 public: enum class eKeyType
@@ -49,7 +45,6 @@ public:
 		_bool		bRender = { true };
 		_float2     AimPos;
 		_float2     OriPos;
-
 		//툴변수 저장은 안하지만 제로메모리로 불러서 각 버퍼마다 쓰는 변수
 		_float4x4	WorldMatrixCut;
 		_float4 ColorCut;
@@ -102,11 +97,14 @@ private:
 public:
 	void	Set_Texchange(_int Texindex);
 	void	Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage);}
-	void	Start_Go(_double TimeDelta);
-	_bool	Start_Come(_double TimeDelta);
+
 
 private:
 	void	SetHP();
+	void	OtherobjIsActive(_double TimeDelta);
+	void	OffRender(_double TimeDelta);
+	void	OnRender(_double TimeDelta);
+	void	Counting();
 	void	SetStaticSkillCoolTime();
 	void	SetCurCoolTime();
 	void	SetCurCoolRadian();
@@ -126,7 +124,6 @@ private:
 	void	E(_double TimeDelta);
 	void	Q(_double TimeDelta);
 	void	R(_double TimeDelta);
-
 
 
 	void	AlphaM(CUTRECT* pDesc, _double TimeDelta);
@@ -166,10 +163,12 @@ private:
 	void	Load();
 private:
 	_int m_Index = { 0 }; // 임시
+	_bool m_bRenderCheck = { true };
+	_int  m_EntireCount = { 0 };
+	_int  m_Count = { 0 };
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint   m_iPass = { 1 };
 	_bool	m_bHide = { false }; // 다른 ui 엑티브체크
-	_bool	m_bRender = { true }; // 전체 랜더onoff
 	_uint	m_HavePlayerNum = { 1 };
 	_uint	m_HadPlayerNum = { 1 };
 	//플레이어 교대
@@ -218,9 +217,10 @@ public:
 	virtual void Free() override;
 
 private:
-	CP_PlayerGirl*  m_pPlayer = { nullptr };
-	CPlayerState*   m_pPlayerStateClass = { nullptr };
-	CTerminalUI*	m_pTerminalUI = { nullptr };
+	class CP_PlayerGirl*  m_pPlayer = { nullptr };
+	class CPlayerState*   m_pPlayerStateClass = { nullptr };
+	class CTerminalUI*	m_pTerminalUI = { nullptr };
+	class CUI_Tip*		m_pTip = { nullptr };
 private:
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };

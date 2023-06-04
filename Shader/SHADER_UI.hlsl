@@ -413,7 +413,8 @@ PS_OUT PS_MASK(PS_IN In)
 
 	if(In.vTexUV.x > g_SkillRadian)
 	   discard;
-
+	if(Out.vColor.a < 0.1)
+	discard;
 	return Out;
 
 }
@@ -511,7 +512,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
@@ -726,21 +727,22 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_TITLE();
 	}
+
+	pass Out_Sprite // 19 
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Sprite();
+	}
 }
-
 	
-	//pass Out_File //7 
-	//{
-	//	SetRasterizerState(RS_Default);
-	//	SetDepthStencilState(DS_Default, 0);
-	//	SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
-
-	//	VertexShader = compile vs_5_0 VS_MAIN();
-	//	GeometryShader = NULL;
-	//	HullShader = NULL;
-	//	DomainShader = NULL;
-	//	PixelShader = compile ps_5_0 PS_MAIN_OUT();
-	//}
+	
 
 //PS_OUT PS_MAIN_EDIT(PS_IN In)
 //{
