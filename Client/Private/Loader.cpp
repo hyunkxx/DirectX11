@@ -336,6 +336,15 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::NAVIGATION,
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Navigation/Navigation.data")))))
 		return E_FAIL;
+	
+#pragma region CITY_LEVEL
+	/*
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::NAVIGATION,
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/City/Navigation/Navigation.data")))))
+		return E_FAIL;
+		*/
+#pragma endregion CITY_LEVEL
+
 
 
 	m_pApp->LoadRatio(0.2f);
@@ -1597,6 +1606,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	
 	// GamePlay
 	// Height7 Height7_1 
+	
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::VIBUFFER_TERRAIN,
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height7_1.bmp"), TEXT("../../Data/GamePlay/Terrain/Height_Map/Vertices.data")))))
 		return E_FAIL;
@@ -1606,6 +1616,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Terrain/Filter_Map/Filter.dds")))))
 		return E_FAIL;
 	
+
 #pragma region CITY_LEVEL
 	/*
 	// Height_0

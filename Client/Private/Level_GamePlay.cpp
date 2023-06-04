@@ -52,7 +52,6 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
 		return E_FAIL;
 
-	
 	if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_tree"))))
 		return E_FAIL;	
 
@@ -87,8 +86,10 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 	
 #pragma region CITY_LEVEL
-	//if (FAILED(Ready_Layer_CityObject()))
-		//return E_FAIL;
+	/*
+	if (FAILED(Ready_Layer_CityObject()))
+		return E_FAIL;
+		*/
 #pragma endregion CITY_LEVEL
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
