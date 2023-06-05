@@ -123,7 +123,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 #pragma region Input
 
 		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
-	  if (false == m_pTerminalUI->IsActive())
+		if (false == m_pTerminalUI->IsActive())
 		{
 			m_bFixMouse = m_pUITip->IsMouseActive() ? false : true;
 		}
