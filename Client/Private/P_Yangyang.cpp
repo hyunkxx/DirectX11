@@ -217,6 +217,13 @@ void CP_Yangyang::Tick(_double TimeDelta)
 
 	__super::Tick(TimeDelta * m_TimeDelay);
 
+	if (pGameInstance->InputKey(DIK_NUMPAD1) == KEY_STATE::TAP)
+	{
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 0.f, 30.776f, 1.f));
+		m_pNaviCom->Set_CurrentIndex(0);
+		m_Scon.ePositionState = PS_GROUND;
+	}
+
 	/*if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::HOLD)
 	{
 	m_TimeDelay = 0.1;
