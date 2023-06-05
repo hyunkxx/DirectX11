@@ -44,6 +44,18 @@ void CAnimation::Play_Animation(_double TimeDelta, CAnimController::ANIMSTATE& t
 	}
 }
 
+void CAnimation::Update_RibbonAnimation(_double BaseAnimTrackRatio, CAnimController::ANIMSTATE & tState, CModel_Anim * pModel)
+{
+	
+	tState.FrameAcc = m_Duration * BaseAnimTrackRatio;
+
+	_uint iChannelID = 0;
+	for (auto& pChannel : m_Channels)
+	{
+		pChannel->Invalidate_Transform(iChannelID++, tState, pModel);
+	}
+}
+
 vector<class CChannel*>& CAnimation::Get_Channels()
 {
 	return m_Channels;

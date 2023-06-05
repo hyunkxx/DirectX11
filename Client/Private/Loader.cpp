@@ -14,6 +14,7 @@
 
 #include "Lobby_Character.h"
 #include "P_PlayerGirl.h"
+#include "P_Yangyang.h"
 #include "UICharacter.h"
 #include "Parts.h"
 
@@ -2011,21 +2012,21 @@ HRESULT CLoader::Load_Level_AnimTool()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY_LOBBY, CSky::Create(m_pDevice, m_pContext, CSky::LOBBY))))
 		return E_FAIL;
 
-	//// yangyang == ¾ç¾ç
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
-	//	return E_FAIL;
+	// yangyang == ¾ç¾ç
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Base.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Base.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Ribbon.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Ribbon.dmdl")))))
+		return E_FAIL;
 
 	//// chixia == ½Ö±ÇÃÑ³à // AimAttack, AirAttack, HoldShot ´õ ÀÖÀ½
 	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia.dmdl")))))
@@ -2159,33 +2160,33 @@ HRESULT CLoader::Load_Level_AnimTool()
 		return E_FAIL;
 	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_PLAYERGIRL_UI), TEXT("PlayerGirl_UI"));
 
-	//// YANGYANG
-	//ZeroMemory(&tDesc, sizeof tDesc);
-	//tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
-	//tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_ANIMSET_BASE;
-	//tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_ANIMSET_RIBBON;
-	//tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
-	//tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
-	//tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_0;
-	//lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang/YangYang_%d.state"));
+	// YANGYANG
+	ZeroMemory(&tDesc, sizeof tDesc);
+	tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_ANIMSET_BASE;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_ANIMSET_RIBBON;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_0;
+	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang/YangYang_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG), TEXT("YangYang"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG), TEXT("YangYang"));
 
-	//// YANGYANG_UI
-	//ZeroMemory(&tDesc, sizeof tDesc);
-	//tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
-	//tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_UI_BASE;
-	//tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_UI_RIBBON;
-	//tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
-	//tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
-	//tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_0;
-	//lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang_UI/YangYang_UI_%d.state"));
+	// YANGYANG_UI
+	ZeroMemory(&tDesc, sizeof tDesc);
+	tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_UI_BASE;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_UI_RIBBON;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_0;
+	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang_UI/YangYang_UI_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG_UI), TEXT("YangYang_UI"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG_UI), TEXT("YangYang_UI"));
 
 	//// CHIXIA
 	//ZeroMemory(&tDesc, sizeof tDesc);
@@ -2482,6 +2483,16 @@ HRESULT CLoader::Load_Level_Test()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+	m_pApp->LoadRatio(0.6f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin.dmdl")))))
 		return E_FAIL;
 
@@ -2517,7 +2528,11 @@ HRESULT CLoader::Load_Level_Test()
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CAMERA, CPlayerCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_PLAYERGIRL, CP_PlayerGirl::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_YANGYANG, CP_Yangyang::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE, CMissile::Create(m_pDevice, m_pContext))))

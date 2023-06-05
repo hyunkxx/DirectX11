@@ -31,7 +31,7 @@ void CAnimToolManager::Save_State()
 	_tchar szFileName[MAX_PATH] = TEXT("");
 
 	if (MODEL_VTF == m_iModelType)
-		wsprintf(szFileName, m_pTargetVTF->Get_FilePath(), *m_pTargetVTF->Get_StateID());
+		wsprintf(szFileName,  m_pTargetVTF->Get_FilePath(), *m_pTargetVTF->Get_StateID());
 	else if(MODEL_GENERIC == m_iModelType)
 		wsprintf(szFileName, m_pTargetGeneric->Get_FilePath(), *m_pTargetGeneric->Get_StateID());
 

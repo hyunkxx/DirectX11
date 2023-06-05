@@ -95,7 +95,9 @@ public:
 	/* 재생할 애니메이션에 따라 AnimController를 초기화한다. */
 	HRESULT SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate, _bool bContinue = false);
 	/* 애니메이션 재생한다.(안에서 Invalidate_CombinedMatrices 호출 안함) */
-	void	Play_Animation(_double TimeDelta, _float4* pRotOut = nullptr, _float3* pMoveOut = nullptr, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr);
+	void	Play_Animation(_double TimeDelta, _float4* pRotOut = nullptr, _float3* pMoveOut = nullptr, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr, _double* pProgressRatio = nullptr);
+
+	void	Update_RibbonAnimation(_double BaseAnimTrackRatio);
 
 	void	Update_TargetBones();
 	void	Ribbon_TargetBones();

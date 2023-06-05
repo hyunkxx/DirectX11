@@ -230,9 +230,11 @@ HRESULT CTestVTF::Render()
 
 				m_pShaderCom->Begin(13);
 			}
-				
 			else
-				m_pShaderCom->Begin(6);		//Burst
+				if (DMODEL::DMD_YANGYANG_MODEL == m_tDesc.iModelID)
+					m_pShaderCom->Begin(15);
+				else
+					m_pShaderCom->Begin(6);		//Burst
 		}
 		else
 		{
@@ -250,7 +252,6 @@ HRESULT CTestVTF::Render()
 
 				m_pShaderCom->Begin(13);
 			}
-
 			else
 				m_pShaderCom->Begin(iPass);
 		}
@@ -292,31 +293,44 @@ void CTestVTF::SetUp_Animation(_uint iType)
 	m_pAnimSetCom[iType]->SetUp_Animation(m_tStates[m_iStateID].iAnimID[iType], m_tStates[m_iStateID].bLerp);
 }
 
-void CTestVTF::Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration)
+void CTestVTF::Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _float fDissSpeed)
 {
 	// Weapon Main / Sub
-	if(0 == iParts)
+	if (0 == iParts)
 	{
 		// 등으로
 		if (0 == iState)
 		{
-			Set_WeaponUse(false);
+			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON3);
+			m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON4);
 		}
 		// 손으로
 		else if (1 == iState)
 		{
-			Set_WeaponUse(true);
+			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON1);
+			m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON2);
 		}
 
 		// Dissolve In
-		if (1 == iDissolve)
+		if (0 == iDissolve)
 		{
-		
+			// 등으로 갈 때 텍스처 사용 x
+			if (0 == iState)
+			{
+				m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true, fDissSpeed, false);
+				m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, fDissSpeed, false);
+			}
+			else
+			{
+				m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true, fDissSpeed, true);
+				m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, fDissSpeed, true);
+			}
 		}
 		// Dissolve Out
-		else if (2 == iDissolve)
+		else if (1 == iDissolve)
 		{
-
+			m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(false, fDissSpeed, true);
+			m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(false, fDissSpeed, true);
 		}
 	}
 	// Hulu
@@ -614,12 +628,13 @@ void CTestVTF::Tick_State(_double TimeDelta)
 	{
 		_float4 vRotation;
 		_float3 vMovement;
+		_double	ProgressRatio;
 
-		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &vRotation, &vMovement, &BaseTrackPos, &m_Scon.bAnimFinished);
-		m_pAnimSetCom[ANIMSET_RIBBON]->Play_Animation(TimeDelta, nullptr, nullptr, &RibbonTrackPos, &bRibbonFinished);
+		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &vRotation, &vMovement, &BaseTrackPos, &m_Scon.bAnimFinished, &ProgressRatio);
+		m_pAnimSetCom[ANIMSET_RIBBON]->Update_RibbonAnimation(ProgressRatio);
 
 		m_TrackPos[ANIMSET_BASE] = (_float)BaseTrackPos;
-		m_TrackPos[ANIMSET_RIBBON] = (_float)RibbonTrackPos;
+		m_TrackPos[ANIMSET_RIBBON] = _float(ProgressRatio * m_pAnimSetCom[ANIMSET_RIBBON]->Get_Animation(m_tStates[m_iStateID].iAnimID[ANIMSET_RIBBON])->Get_Duration());
 
 		m_pAnimSetCom[ANIMSET_BASE]->Update_TargetBones();
 		m_pAnimSetCom[ANIMSET_RIBBON]->Ribbon_TargetBones();
@@ -704,90 +719,196 @@ void CTestVTF::Tick_State(_double TimeDelta)
 void CTestVTF::Init_AnimSystem()
 {
 	// Base
-	for (auto& pBone : m_pAnimSetCom[ANIMSET_BASE]->Get_Bones())
-		pBone->Set_TargetBone(m_pModelCom->Get_BonePtr(pBone->Get_Name()));
-
-	for(auto& pAnim : m_pAnimSetCom[ANIMSET_BASE]->Get_Animations())
+	if (DMODEL::DMD_PLAYERGIRL_MODEL == m_tDesc.iModelID)
 	{
-		const _tchar* szAnimName = pAnim->Get_Name();
+		for (auto& pBone : m_pAnimSetCom[ANIMSET_BASE]->Get_Bones())
+			pBone->Set_TargetBone(m_pModelCom->Get_BonePtr(pBone->Get_Name()));
 
-		for (auto& pChannel : pAnim->Get_Channels())
+		for (auto& pAnim : m_pAnimSetCom[ANIMSET_BASE]->Get_Animations())
 		{
-			const _tchar* szChannelName = pChannel->Get_Name();
-			CBone* pBone = m_pAnimSetCom[ANIMSET_BASE]->Get_BonePtr(pChannel->Get_TargetBoneID());
+			const _tchar* szAnimName = pAnim->Get_Name();
 
-			if (wcsncmp(szChannelName, TEXT("Bip001"), 6) &&
-				lstrcmp(szChannelName, TEXT("WeaponProp01")) &&
-				lstrcmp(szChannelName, TEXT("WeaponProp02")) &&
-				wcsncmp(szChannelName, TEXT("Root"), 4))
-				pChannel->Set_Apply(false);
-
-			if (true == pBone->Is_ChildOf(TEXT("Bip001Head")))
+			for (auto& pChannel : pAnim->Get_Channels())
 			{
-				if (lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_End")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Loop")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Start")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack01")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack02")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack03")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack04")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack09")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack_po2_Temp")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack_po3_Temp")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Burst01")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Skill01")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Skill02")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|SkillQte")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action01")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action02")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action03")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand2")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|StandChange")))
+				const _tchar* szChannelName = pChannel->Get_Name();
+				CBone* pBone = m_pAnimSetCom[ANIMSET_BASE]->Get_BonePtr(pChannel->Get_TargetBoneID());
+
+				if (wcsncmp(szChannelName, TEXT("Bip001"), 6) &&
+					lstrcmp(szChannelName, TEXT("WeaponProp01")) &&
+					lstrcmp(szChannelName, TEXT("WeaponProp02")) &&
+					wcsncmp(szChannelName, TEXT("Root"), 4))
+					pChannel->Set_Apply(false);
+
+				if (true == pBone->Is_ChildOf(TEXT("Bip001Head")))
+				{
+					if (lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_End")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Loop")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Start")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack01")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack02")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack03")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack04")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack09")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack_po2_Temp")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack_po3_Temp")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Burst01")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Skill01")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Skill02")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|SkillQte")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action01")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action02")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action03")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand2")) &&
+						lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|StandChange")))
+					{
+						pChannel->Set_Apply(false);
+					}
+				}
+
+
+
+			}
+		}
+
+		// Ribbon
+		for (auto& pBone : m_pAnimSetCom[ANIMSET_RIBBON]->Get_Bones())
+			pBone->Set_TargetBone(m_pModelCom->Get_BonePtr(pBone->Get_Name()));
+
+		for (auto& pAnim : m_pAnimSetCom[ANIMSET_RIBBON]->Get_Animations())
+		{
+			const _tchar* szAnimName = pAnim->Get_Name();
+
+			for (auto& pChannel : pAnim->Get_Channels())
+			{
+				const _tchar* szChannelName = pChannel->Get_Name();
+				CBone* pBone = m_pAnimSetCom[ANIMSET_RIBBON]->Get_BonePtr(pChannel->Get_TargetBoneID());
+
+				/*if (pChannel->Get_NumKeyFrames() <= 2)
+				continue;*/
+
+				if (!(true == pBone->Is_ChildOf(TEXT("Hair_M_B00")) ||
+					true == pBone->Is_ChildOf(TEXT("Piao_L_lingjie01")) ||
+					true == pBone->Is_ChildOf(TEXT("Piao_R_lingjie01")) ||
+					true == pBone->Is_ChildOf(TEXT("skrit_L_F02")) ||
+					true == pBone->Is_ChildOf(TEXT("skirt_M_B02")) ||
+					true == pBone->Is_ChildOf(TEXT("Piao_F01")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Piao011_L")) ||
+					!lstrcmp(szChannelName, TEXT("Hair_M_B00")) ||
+					!lstrcmp(szChannelName, TEXT("Piao_L_lingjie01")) ||
+					!lstrcmp(szChannelName, TEXT("Piao_R_lingjie01")) ||
+					!lstrcmp(szChannelName, TEXT("Piao_L_pidai01")) ||
+					!lstrcmp(szChannelName, TEXT("Piao_R_pidai01")) ||
+					!lstrcmp(szChannelName, TEXT("skrit_L_F01")) ||
+					!lstrcmp(szChannelName, TEXT("skirt_M_B01")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Piao011_L"))))
 				{
 					pChannel->Set_Apply(false);
 				}
 			}
-
-
-
 		}
 	}
-
-	// Ribbon
-	for (auto& pBone : m_pAnimSetCom[ANIMSET_RIBBON]->Get_Bones())
-		pBone->Set_TargetBone(m_pModelCom->Get_BonePtr(pBone->Get_Name()));
-
-	for (auto& pAnim : m_pAnimSetCom[ANIMSET_RIBBON]->Get_Animations())
+	else if (DMODEL::DMD_YANGYANG_MODEL == m_tDesc.iModelID)
 	{
-		const _tchar* szAnimName = pAnim->Get_Name();
+		for (auto& pBone : m_pAnimSetCom[ANIMSET_BASE]->Get_Bones())
+			pBone->Set_TargetBone(m_pModelCom->Get_BonePtr(pBone->Get_Name()));
 
-		for (auto& pChannel : pAnim->Get_Channels())
+		for (auto& pAnim : m_pAnimSetCom[ANIMSET_BASE]->Get_Animations())
 		{
-			const _tchar* szChannelName = pChannel->Get_Name();
-			CBone* pBone = m_pAnimSetCom[ANIMSET_RIBBON]->Get_BonePtr(pChannel->Get_TargetBoneID());
+			const _tchar* szAnimName = pAnim->Get_Name();
 
-			/*if (pChannel->Get_NumKeyFrames() <= 2)
+			for (auto& pChannel : pAnim->Get_Channels())
+			{
+				const _tchar* szChannelName = pChannel->Get_Name();
+				CBone* pBone = m_pAnimSetCom[ANIMSET_BASE]->Get_BonePtr(pChannel->Get_TargetBoneID());
+
+				if (wcsncmp(szChannelName, TEXT("Bip001"), 6) &&
+					lstrcmp(szChannelName, TEXT("WeaponProp01")) &&
+					lstrcmp(szChannelName, TEXT("WeaponProp02")) &&
+					wcsncmp(szChannelName, TEXT("Root"), 4))
+					pChannel->Set_Apply(false);
+
+				if (true == pBone->Is_ChildOf(TEXT("Bip001Head")))
+				{
+					if (lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_End")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_End_2")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Loop")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Start")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Start_2")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack01")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack02")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack03")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack04")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack06")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Burst01")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Skill01")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Skill02")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|SkillQte")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Stand1_Action01")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Stand1_Action02")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Stand1_Action03")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Stand2")) &&
+						lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|StandChange")))
+					{
+						pChannel->Set_Apply(false);
+					}
+				}
+			}
+		}
+
+		// Ribbon
+		for (auto& pBone : m_pAnimSetCom[ANIMSET_RIBBON]->Get_Bones())
+			pBone->Set_TargetBone(m_pModelCom->Get_BonePtr(pBone->Get_Name()));
+
+		for (auto& pAnim : m_pAnimSetCom[ANIMSET_RIBBON]->Get_Animations())
+		{
+			const _tchar* szAnimName = pAnim->Get_Name();
+
+			for (auto& pChannel : pAnim->Get_Channels())
+			{
+				const _tchar* szChannelName = pChannel->Get_Name();
+				CBone* pBone = m_pAnimSetCom[ANIMSET_RIBBON]->Get_BonePtr(pChannel->Get_TargetBoneID());
+
+				/*if (pChannel->Get_NumKeyFrames() <= 2)
 				continue;*/
 
-			if (!(true == pBone->Is_ChildOf(TEXT("Hair_M_B00")) ||
-				true == pBone->Is_ChildOf(TEXT("Piao_L_lingjie01")) ||
-				true == pBone->Is_ChildOf(TEXT("Piao_R_lingjie01")) ||
-				true == pBone->Is_ChildOf(TEXT("skrit_L_F02")) ||
-				true == pBone->Is_ChildOf(TEXT("skirt_M_B02")) ||
-				true == pBone->Is_ChildOf(TEXT("Piao_F01"))))
-			{
-				pChannel->Set_Apply(false);
-			}
-			else if (!(!lstrcmp(szChannelName, TEXT("Hair_M_B00")) ||
-				!lstrcmp(szChannelName, TEXT("Piao_L_lingjie01")) ||
-				!lstrcmp(szChannelName, TEXT("Piao_R_lingjie01")) ||
-				!lstrcmp(szChannelName, TEXT("Piao_L_pidai01")) ||
-				!lstrcmp(szChannelName, TEXT("Piao_R_pidai01")) ||
-				!lstrcmp(szChannelName, TEXT("skrit_L_F01")) ||
-				!lstrcmp(szChannelName, TEXT("skirt_M_B01"))) 
-				/*!lstrcmp(szChannelName, TEXT("Piao_F01"))*/)
-			{
-				pChannel->Set_Apply(false);
+				// spine 자식 Bone
+				if (!(true == pBone->Is_ChildOf(TEXT("R_Skirt_Bone09")) ||
+					!lstrcmp(szChannelName, TEXT("R_Skirt_Bone09")) ||
+					true == pBone->Is_ChildOf(TEXT("R_Skirt_Bone19")) ||
+					!lstrcmp(szChannelName, TEXT("R_Skirt_Bone19")) ||
+					true == pBone->Is_ChildOf(TEXT("L_Skirt_Bone09")) ||
+					!lstrcmp(szChannelName, TEXT("L_Skirt_Bone09")) ||
+					true == pBone->Is_ChildOf(TEXT("L_Skirt_Bone19")) ||
+					!lstrcmp(szChannelName, TEXT("L_Skirt_Bone19")) ||
+					true == pBone->Is_ChildOf(TEXT("R_Skirt_Bone38")) ||
+					!lstrcmp(szChannelName, TEXT("R_Skirt_Bone38")) ||
+					true == pBone->Is_ChildOf(TEXT("L_Skirt_Bone38")) ||
+					!lstrcmp(szChannelName, TEXT("L_Skirt_Bone38")) ||
+					true == pBone->Is_ChildOf(TEXT("HairLong_Bone01")) ||
+					!lstrcmp(szChannelName, TEXT("HairLong_Bone01")) ||
+					true == pBone->Is_ChildOf(TEXT("HairLong_Bone20")) ||
+					!lstrcmp(szChannelName, TEXT("HairLong_Bone20")) ||
+					true == pBone->Is_ChildOf(TEXT("HairF_Bone17")) ||
+					!lstrcmp(szChannelName, TEXT("HairF_Bone17")) ||
+					true == pBone->Is_ChildOf(TEXT("HairF_Bone13")) ||
+					!lstrcmp(szChannelName, TEXT("HairF_Bone13")) ||
+					true == pBone->Is_ChildOf(TEXT("HairF_Bone09")) ||
+					!lstrcmp(szChannelName, TEXT("HairF_Bone09")) ||
+					true == pBone->Is_ChildOf(TEXT("HairF_Bone05")) ||
+					!lstrcmp(szChannelName, TEXT("HairF_Bone05")) ||
+					true == pBone->Is_ChildOf(TEXT("HairF_Bone01")) ||
+					!lstrcmp(szChannelName, TEXT("HairF_Bone01")) ||
+					true == pBone->Is_ChildOf(TEXT("Fadai_Bone01")) ||
+					!lstrcmp(szChannelName, TEXT("Fadai_Bone01")) ||
+					true == pBone->Is_ChildOf(TEXT("Fadai_Bone08")) ||
+					!lstrcmp(szChannelName, TEXT("Fadai_Bone08")) ||
+					true == pBone->Is_ChildOf(TEXT("Fadai_Bone11")) ||
+					!lstrcmp(szChannelName, TEXT("Fadai_Bone11")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Piao007_R")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Piao007_R"))))
+				{
+					pChannel->Set_Apply(false);
+				}
 			}
 		}
 	}

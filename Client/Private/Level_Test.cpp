@@ -8,6 +8,7 @@
 #include "PlayerCamera.h"
 #include "Character.h"
 #include "P_PlayerGirl.h"
+#include "P_Yangyang.h"
 #include "M_GAzizi.h"
 #include "M_Anjin.h"
 #include "M_AWukaka.h"
@@ -33,6 +34,7 @@ HRESULT CLevel_Test::Initialize()
 
 	// 몬스터들 상태 초기화 해놓기
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
+	CP_Yangyang::Init_States(m_pDevice, m_pContext);
 	CSandbag::Init_States(m_pDevice, m_pContext);
 	CM_Crownless_P1::Init_States(m_pDevice, m_pContext);
 	CM_Crownless_P2::Init_States(m_pDevice, m_pContext);
@@ -267,7 +269,10 @@ HRESULT CLevel_Test::Ready_Layer_Player(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_YANGYANG, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -287,8 +292,8 @@ HRESULT CLevel_Test::Ready_Layer_Monster(const _tchar * pLayerTag)
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_CROWNLESS_P2, pLayerTag, TEXT("Crownless_P2"))))
 	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_CROWNLESS_P3, pLayerTag, TEXT("Crownless_P3"))))
-		return E_FAIL;
+	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_CROWNLESS_P3, pLayerTag, TEXT("Crownless_P3"))))
+		return E_FAIL;*/
 
 
 	return S_OK;
@@ -331,6 +336,7 @@ void CLevel_Test::Free()
 	__super::Free();
 
 	CP_PlayerGirl::Release_States();
+	CP_Yangyang::Release_States();
 	CSandbag::Release_States();
 	CM_Crownless_P1::Release_States();
 	CM_Crownless_P2::Release_States();

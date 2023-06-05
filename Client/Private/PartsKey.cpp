@@ -16,14 +16,14 @@ HRESULT CPartsKey::Initialize(BaseData * pData)
 	m_iPartsID = pData->iInt0;
 	m_iPartsState = pData->iInt1;
 	m_iDissolveType = pData->iInt2;
-	m_DissolveDuration = (_double)pData->fFloat0;
+	m_fDissolveSpeed = pData->fFloat0;
 
 	return S_OK;
 }
 
 void CPartsKey::Shot(CCharacter * pMyCharacter)
 {
-	pMyCharacter->Shot_PartsKey(m_iPartsID, m_iPartsState, m_iDissolveType, m_DissolveDuration);
+	pMyCharacter->Shot_PartsKey(m_iPartsID, m_iPartsState, m_iDissolveType, m_fDissolveSpeed);
 }
 
 CPartsKey * CPartsKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, BaseData* pData)

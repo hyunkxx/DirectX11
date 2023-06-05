@@ -125,7 +125,7 @@ public:
 	}
 
 public: // StateKey 대응 함수 모음
-	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);
+	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _float fDissSpeed);
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID , _uint iEffectID, _bool bTracking);
 
 private:

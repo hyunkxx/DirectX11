@@ -806,7 +806,7 @@ void CP_PlayerGirl::Check_TimeDelay(_double TimeDelta)
 	}
 }
 
-void CP_PlayerGirl::Shot_PartsKey(_uint iParts/*int0*/, _uint iState/*int1*/, _uint iDissolve/*int2*/, _double Duration/*float*/)
+void CP_PlayerGirl::Shot_PartsKey(_uint iParts/*int0*/, _uint iState/*int1*/, _uint iDissolve/*int2*/, _float fDissSpeed/*float*/)
 {
 	// Weapon Main / Sub
 	if (0 == iParts)
@@ -814,23 +814,36 @@ void CP_PlayerGirl::Shot_PartsKey(_uint iParts/*int0*/, _uint iState/*int1*/, _u
 		// 등으로
 		if (0 == iState)
 		{
-			Set_WeaponUse(false);
+			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON3);
+			m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON4);
 		}
 		// 손으로
 		else if (1 == iState)
 		{
-			Set_WeaponUse(true);
+			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON1);
+			m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON2);
 		}
 
 		// Dissolve In
-		if (1 == iDissolve)
+		if (0 == iDissolve)
 		{
-
+			// 등으로 갈 때 텍스처 사용 x
+			if (0 == iState)
+			{
+				m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true, fDissSpeed, false);
+				m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, fDissSpeed, false);
+			}
+			else
+			{
+				m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true, fDissSpeed, true);
+				m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, fDissSpeed, true);
+			}
 		}
 		// Dissolve Out
-		else if (2 == iDissolve)
+		else if (1 == iDissolve)
 		{
-
+			m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(false, fDissSpeed, true);
+			m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(false, fDissSpeed, true);
 		}
 	}
 	//// Hulu
@@ -1874,13 +1887,13 @@ void CP_PlayerGirl::Tick_State(_double TimeDelta)
 	{
 		_float4 vRotation = _float4(0.f, 0.f, 0.f, 1.f);
 		_float3 vMovement;
-
+		_double ProgressRatio;
+		
 		// 애니메이션 갱신
-		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &vRotation, &vMovement, &m_Scon.TrackPos, &m_Scon.bAnimFinished);
-		m_pAnimSetCom[ANIMSET_RIBBON]->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, nullptr);
+		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &vRotation, &vMovement, &m_Scon.TrackPos, &m_Scon.bAnimFinished, &ProgressRatio);
+		m_pAnimSetCom[ANIMSET_RIBBON]->Update_RibbonAnimation(ProgressRatio);
 
 		m_pAnimSetCom[ANIMSET_BASE]->Update_TargetBones();
-		
 		m_pAnimSetCom[ANIMSET_RIBBON]->Ribbon_TargetBones();
 		// 여기까지 Playanimation
 
@@ -2420,19 +2433,15 @@ void CP_PlayerGirl::Init_AnimSystem()
 					true == pBone->Is_ChildOf(TEXT("skrit_L_F02")) ||
 					true == pBone->Is_ChildOf(TEXT("skirt_M_B02")) ||
 					true == pBone->Is_ChildOf(TEXT("Piao_F01")) ||
-					true == pBone->Is_ChildOf(TEXT("Bone_Piao011_L"))))
-				{
-					pChannel->Set_Apply(false);
-				}
-				else if (!(!lstrcmp(szChannelName, TEXT("Hair_M_B00")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Piao011_L")) ||
+					!lstrcmp(szChannelName, TEXT("Hair_M_B00")) ||
 					!lstrcmp(szChannelName, TEXT("Piao_L_lingjie01")) ||
 					!lstrcmp(szChannelName, TEXT("Piao_R_lingjie01")) ||
 					!lstrcmp(szChannelName, TEXT("Piao_L_pidai01")) ||
 					!lstrcmp(szChannelName, TEXT("Piao_R_pidai01")) ||
 					!lstrcmp(szChannelName, TEXT("skrit_L_F01")) ||
 					!lstrcmp(szChannelName, TEXT("skirt_M_B01")) ||
-					!lstrcmp(szChannelName, TEXT("Bone_Piao011_L")))
-					/*!lstrcmp(szChannelName, TEXT("Piao_F01"))*/)
+					!lstrcmp(szChannelName, TEXT("Bone_Piao011_L"))))
 				{
 					pChannel->Set_Apply(false);
 				}

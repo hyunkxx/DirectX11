@@ -59,7 +59,7 @@ HRESULT CAnimController::SetUp_Animation(_uint iAnimationIndex, CModel_Anim * pM
 	return S_OK;
 }
 
-void CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * pModel, _float4* pRotOut, _float3* pMoveOut, _double* pFrameAccOut, _bool* pFinishedOut)
+void CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * pModel, _float4* pRotOut, _float3* pMoveOut, _double* pFrameAccOut, _double* pProgressRatio, _bool* pFinishedOut)
 {
 	if (true == m_tAnimState.isFinished)
 		return;
@@ -72,6 +72,12 @@ void CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * pModel, _f
 	{
 		*pFrameAccOut = m_tAnimState.FrameAcc;
 	}
+
+	if (nullptr != pProgressRatio)
+	{
+		*pProgressRatio = m_tAnimState.FrameAcc / pAnim->Get_Duration();
+	}
+
 	if (nullptr != pFinishedOut)
 	{
 		*pFinishedOut = m_tAnimState.isFinished;
@@ -105,6 +111,14 @@ void CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * pModel, _f
 
 	return ;
 }
+
+void CAnimController::Update_RibbonAnimation(_double BaseAnimTrackRatio, CModel_Anim * pModel)
+{
+	CAnimation* pAnim = pModel->Get_Animation(m_iCurAnimation);
+
+	pAnim->Update_RibbonAnimation(BaseAnimTrackRatio, m_tAnimState, pModel);
+}
+
 
 CAnimController * CAnimController::Create(_uint iNumBones)
 {
