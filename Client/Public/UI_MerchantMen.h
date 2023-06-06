@@ -118,7 +118,7 @@ private:
 	_int		m_PlayerCurrentLevel = { 50 };
 	// 임시 변수
 	_int		CurrentOwn = { 18 };
-	_int		NeddNum		= { 0 };
+	_int		NeedNum		= { 0 };
 	_int		ItemNum		= { 0 };
 
 	//툴

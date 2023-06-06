@@ -9,6 +9,7 @@
 #include "PlayerState.h"
 #include "TerminalUI.h"
 #include "UI_Tip.h"
+#include "UI_MerchantMen.h"
 
 CUI_MainScreen::CUI_MainScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -63,6 +64,7 @@ void CUI_MainScreen::Start()
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
 	m_pTip = static_cast<CUI_Tip*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
+	m_pUIMen = static_cast<CUI_MerchantMen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MerchantMen"));
 	
 	SetPlayer();
 	SetHP();
@@ -77,16 +79,12 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	if (pGameInstance->InputKey(DIK_NUMPADENTER) == KEY_STATE::TAP) // 임시
 	{
-		m_pPlayerStateClass->AddPlayer();
+		m_pUIMen->SetState(ACTIVE);
+		m_pUIMen->Set_SituMeet();
+		//m_pPlayerStateClass->AddPlayer();
 	}
-	/*if (m_pTerminalUI->IsActive())
-		m_bRender = false;
-	else if (m_pTip->IsActive())
-		m_bRender = false;
-	else
-		m_bRender = true;*/
+	OtherobjIsActive(TimeDelta);
 
-	//OtherobjIsActive(TimeDelta); // 서서히 사라지고 나타나기 수정해야함
 	SetPlayer(); // 각 슬롯에 맞는 플레이어 색깔 설정, 스킬 텍스처 설정, 보유캐릭터
 	if (m_HadPlayerNum != m_HavePlayerNum)
 	{
@@ -281,21 +279,29 @@ HRESULT CUI_MainScreen::Add_Components()
 void CUI_MainScreen::OtherobjIsActive(_double TimeDelta)
 {
 	if (m_pTerminalUI->IsActive())
-	{
-		OffRender(TimeDelta);
-	}
+		m_bRender = false;
 	else if (m_pTip->IsActive())
-	{
-		OffRender(TimeDelta);
-	}
+		m_bRender = false;
+	else if (m_pUIMen->IsActive())
+		m_bRender = false;
 	else
-	{
-		Counting();
-		if (false == m_bRenderCheck)
-		{
-			OnRender(TimeDelta);
-		}
-	}
+		m_bRender = true;
+	//if (m_pTerminalUI->IsActive())
+	//{
+	//	OffRender(TimeDelta);
+	//}
+	//else if (m_pTip->IsActive())
+	//{
+	//	OffRender(TimeDelta);
+	//}
+	//else
+	//{
+	//	Counting();
+	//	if (false == m_bRenderCheck)
+	//	{
+	//		OnRender(TimeDelta);
+	//	}
+	//}
 
 }
 

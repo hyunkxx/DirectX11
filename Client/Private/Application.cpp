@@ -75,7 +75,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
+	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성A
@@ -850,6 +850,12 @@ HRESULT CApplication::Ready_Item_Image()
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_TACTITE_COIN,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconCommon/T_IconA160_hsb_UI.png")))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_CASKET,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconCommon/T_IconMst160_006_UI.png")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_CASKETPIECE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/IconCommon/T_IconMst_001_1_UI.png")))))
+		return E_FAIL;
 
 #pragma endregion
 
@@ -900,6 +906,12 @@ HRESULT CApplication::Ready_Item_Image()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TACTITE_COIN,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/Text/TacetiteCoin.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_CASKET,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/Text/Casket.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_CASKETPIECE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Items/Text/CasketPiece.dds")))))
 		return E_FAIL;
 
 #pragma endregion

@@ -13,7 +13,7 @@ BEGIN(Client)
 class CInventory final : public CGameObject
 {
 public:
-	enum INVEN_TYPE  { INVEN_WEAPON, INVEN_COOK,	, INVEN_COIN, INVEN_MAX };
+	enum INVEN_TYPE  { INVEN_WEAPON, INVEN_COOK, INVEN_MATERIAL, INVEN_COIN, INVEN_MAX };
 public:
 	explicit CInventory(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CInventory(const CInventory& rhs);
