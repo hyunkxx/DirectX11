@@ -275,6 +275,9 @@ void CM_Crownless_P3::LateTick(_double TimeDelta)
 
 HRESULT CM_Crownless_P3::Render()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
@@ -353,6 +356,9 @@ HRESULT CM_Crownless_P3::Render()
 
 HRESULT CM_Crownless_P3::RenderShadow()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::RenderShadow()))
 		return E_FAIL;
 
@@ -554,7 +560,7 @@ void CM_Crownless_P3::Shot_Trace(_double Duration, _double FadeInRate, _double F
 
 			for (_uint j = 0; j < m_pModelCom->Get_NumMeshes(); ++j)
 			{
-				m_pModelCom->Get_BoneMeatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
+				m_pModelCom->Get_BoneMatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
 			}
 
 			m_TraceArray[i].TraceTimeAcc = 0.0;
@@ -1320,13 +1326,13 @@ void CM_Crownless_P3::Select_State(_double TimeDelta)
 			break;
 
 		case Client::CM_Crownless_P3::AI_ATTACK_RANGE:
-			/*if (0.0 == m_StateCoolTimes[IS_ATTACK13])
+			if (0.0 == m_StateCoolTimes[IS_ATTACK13])
 				m_Scon.iNextState = IS_ATTACK13;
 			else if (0.0 == m_StateCoolTimes[IS_ATTACK12])
 				m_Scon.iNextState = IS_ATTACK12;
 			else if (0.0 == m_StateCoolTimes[IS_ATTACK01])
 				m_Scon.iNextState = IS_ATTACK01;
-			else*/
+			else
 				m_Scon.iNextState = IS_ATTACK07;
 			break;
 
@@ -1587,7 +1593,7 @@ void CM_Crownless_P3::On_Cell()
 	}
 }
 
-void CM_Crownless_P3::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+void CM_Crownless_P3::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
 {
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGI = CGameInstance::GetInstance();
@@ -1601,6 +1607,8 @@ void CM_Crownless_P3::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo,
 	{	
 		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
 	}
+
+	pChar->Recover_Gauge(pAttackInfo->fSPGain, pAttackInfo->fBPGain, pAttackInfo->fTPGain);
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
@@ -1782,9 +1790,7 @@ void CM_Crownless_P3::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo,
 
 	if (true == bHitCheck || m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
 	{
-		m_pMainTransform->Set_LookDir(XMVectorSetY(
-			static_cast<CTransform*>(pGameObject->Find_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION)
-			- this->Get_Position(), 0.f));
+		m_pMainTransform->Set_LookDir(XMVectorSetY(pChar->Get_Position() - this->Get_Position(), 0.f));
 		SetUp_State();
 		m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
 	}

@@ -415,6 +415,8 @@ public:
 
 	virtual void Set_AttackHit(_bool bAttackHit) {}
 
+	virtual void Recover_Gauge(_float fSP, _float fBP, _float fTP) {}
+
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _float fDissSpeed) {}
@@ -422,7 +424,7 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint iEffectBoneID, _uint iTypeID, _bool bTracking) {}
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID) {}
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID) {}
-	virtual void Shot_TraceKey(_bool bTraceOn, _double Duration) {}
+	virtual void Shot_TraceKey(_bool bTraceOn, _bool bOnce, _double Duration) {}
 	
 	//
 	virtual void Shot_SlowKey(_float fTargetTime, _float fLerpSpeed);
@@ -444,11 +446,13 @@ public:
 	virtual void RenderGUI();
 
 	static PHYSICMOVE StatePhysics[SP_END];
+
 	//UI
 	static _int Monindex;
 protected:
 	StateController m_Scon;
 	CollisionType	m_eCollisionType;
+	_bool			m_bRender = true;
 
 	// 디졸브 벨류
 	_float m_fDissolveAmount = 0.f;

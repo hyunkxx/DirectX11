@@ -148,15 +148,17 @@ void CTestVTF::LateTick(_double TimeDelta)
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 
 	// Parts 贸府
-	for (_uint i = 0; i < PARTS_END; ++i)
+	if (true == m_bRender)
 	{
-		if (nullptr != m_Parts[i])
+		for (_uint i = 0; i < PARTS_END; ++i)
 		{
-			m_Parts[i]->LateTick(TimeDelta);
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, m_Parts[i]);
+			if (nullptr != m_Parts[i])
+			{
+				m_Parts[i]->LateTick(TimeDelta);
+				m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, m_Parts[i]);
+			}
 		}
 	}
-
 
 	//Effect Bones 贸府
 	Update_EffectBones();
@@ -164,6 +166,9 @@ void CTestVTF::LateTick(_double TimeDelta)
 
 HRESULT CTestVTF::Render()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	CGameInstance* pGame = CGameInstance::GetInstance();
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -264,6 +269,9 @@ HRESULT CTestVTF::Render()
 
 HRESULT CTestVTF::RenderShadow()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::RenderShadow()))
 		return E_FAIL;
 

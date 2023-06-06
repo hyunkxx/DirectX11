@@ -110,9 +110,6 @@ HRESULT CP_Yangyang::Initialize(void * pArg)
 	//m_pMainTransform->Set_Scale(_float3(10.f, 10.f, 10.f));
 	//m_pNaviCom->Set_CurrentIndex(90);
 
-	// 요거 건들였어요.
-	//m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(137.131f, 25.745f, 196.163f, 1.f));
-	//m_pNaviCom->Set_CurrentIndex(1457);
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 30.776f, 1.f));
 	m_pNaviCom->Set_CurrentIndex(0);
 
@@ -172,10 +169,10 @@ void CP_Yangyang::Start()
 
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = (_float)m_tStates[IS_SKILL_01].CoolTime;
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST] = (_float)m_tStates[IS_BURST].CoolTime;
-	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 100.f;
+	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 3.f;
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
-	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 100.f;
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 0.f;
 	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
 
@@ -318,13 +315,16 @@ void CP_Yangyang::LateTick(_double TimeDelta)
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 
-	for (_uint i = 0; i < PARTS_END; ++i)
+	if (true == m_bRender)
 	{
-		if (nullptr != m_Parts[i])
+		for (_uint i = 0; i < PARTS_END; ++i)
 		{
-			m_Parts[i]->LateTick(TimeDelta * m_TimeDelay);
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, m_Parts[i]);
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, m_Parts[i]);
+			if (nullptr != m_Parts[i])
+			{
+				m_Parts[i]->LateTick(TimeDelta * m_TimeDelay);
+				m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, m_Parts[i]);
+				m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, m_Parts[i]);
+			}
 		}
 	}
 
@@ -423,6 +423,9 @@ void CP_Yangyang::LateTick(_double TimeDelta)
 
 HRESULT CP_Yangyang::Render()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
 	if (FAILED(__super::Render()))
@@ -549,6 +552,9 @@ HRESULT CP_Yangyang::Render()
 
 HRESULT CP_Yangyang::RenderShadow()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::RenderShadow()))
 		return E_FAIL;
 
@@ -859,6 +865,9 @@ void CP_Yangyang::Shot_PartsKey(_uint iParts/*int0*/, _uint iState/*int1*/, _uin
 void CP_Yangyang::Shot_PriorityKey(_uint iLeavePriority)
 {
 	m_tCurState.iLeavePriority = iLeavePriority;
+
+	if (IS_SKILL_02 == m_Scon.iCurState)
+		m_pMoveCollider->SetActive(true);
 }
 
 void CP_Yangyang::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _uint iEffectTypeID, _bool bTracking/*iInt1*/)
@@ -875,6 +884,29 @@ void CP_Yangyang::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
 	m_bAttack = true;
 	m_pAttackCollider->SetActive(bOBB);
 	m_iCurAttackID = iAttackInfoID;
+
+	if (IS_ATTACK_05 == m_Scon.iCurState)
+	{
+		m_pAttackCollider->SetCenter_(_float3(-0.6f, 0.f, 0.f));
+		m_pAttackCollider->SetExtents_(_float3(0.75f, 0.15f, 0.15f));
+	}
+	else if(IS_ATTACK_06 == m_Scon.iCurState)
+	{
+		m_pAttackCollider->SetCenter_(_float3(-1.2f, 0.f, 0.f));
+		m_pAttackCollider->SetExtents_(_float3(1.5f, 0.15f, 0.15f));
+	}
+
+	else if (IS_SKILL_02 == m_Scon.iCurState)
+	{
+		m_pAttackCollider->SetCenter_(_float3(0.f, 0.f, 0.f));
+		m_pAttackCollider->SetExtents_(_float3(1.5f, 0.5f, 0.5f));
+	}
+	else
+	{
+		m_pAttackCollider->SetCenter_(_float3(-0.4f, 0.f, 0.f));
+		m_pAttackCollider->SetExtents_(_float3(0.5f, 0.05f, 0.05f));
+	}
+	
 }
 
 void CP_Yangyang::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
@@ -884,7 +916,7 @@ void CP_Yangyang::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 
 	m_bAttack = true;
 
-	if (iMissilePoolID == MISS_BURST_02)
+	if (iMissilePoolID == MISS_BURST_1)
 	{
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
 		pGameInstance->StartBlackWhite(0.25f);
@@ -947,6 +979,7 @@ void CP_Yangyang::SetUp_State()
 		SS_CLIMB_MOVE == m_Scon.iCurState ||
 		SS_BEHIT_FLY_START == m_Scon.iCurState ||
 		SS_BEHIT_PUSH == m_Scon.iCurState ||
+		IS_SKILL_QTE == m_Scon.iCurState ||
 		SS_FALL == m_Scon.iCurState) &&
 		PS_AIR != m_Scon.ePositionState)
 	{
@@ -975,6 +1008,12 @@ void CP_Yangyang::SetUp_State()
 	{
 		m_Scon.ePositionState = PS_CLIMB;
 	}
+
+	// Move 끄기
+	if (IS_SKILL_02 == m_Scon.iCurState)
+		m_pMoveCollider->SetActive(false);
+	else
+		m_pMoveCollider->SetActive(true);
 
 	// Climb 종료 시 Look 방향 되돌리기
 	if (SS_CLIMB_ONTOP == m_Scon.iCurState ||
@@ -1011,10 +1050,14 @@ void CP_Yangyang::SetUp_State()
 		else if (SS_THROW_F == m_Scon.iCurState)
 			m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_LAVITATION);
 	}
+	
+	if (false == m_bRender)
+		if (IS_AIRATTACK_2_END == m_Scon.iCurState)
+			m_bRender = true;
 
 	// 게이지 차감
-	if (IS_SKILL_02 == m_Scon.iCurState)
-		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] -= 10.f;
+	if (IS_AIRATTACK_2_START == m_Scon.iCurState)
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 0.f;
 	else if (IS_BURST == m_Scon.iCurState)
 		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] -= 10.f;
 
@@ -1398,9 +1441,6 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 				else
 					m_Scon.iNextState = SS_RUN_F;
 			}
-
-
-
 			break;
 
 		case Client::CP_Yangyang::INPUT_DASH:
@@ -1450,18 +1490,23 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 				m_Scon.iNextState = IS_ATTACK_03;
 				break;
 			case IS_ATTACK_03:
-				if (m_Scon.TrackPos > 17.f && m_Scon.TrackPos < 20.f)
-					m_Scon.iNextState = IS_ATTACK_01;
-				else
-					m_Scon.iNextState = IS_ATTACK_04;
-				break;
-			case IS_SKILL_02:
-				m_Scon.iNextState = IS_ATTACK_05;
+				m_Scon.iNextState = IS_ATTACK_04;
 				break;
 
 			case SS_MOVE_LIMIT_B:
 			case SS_MOVE_LIMIT_F:
-				m_Scon.iNextState = IS_ATTACK_01;
+				m_Scon.iNextState = IS_SKILL_02;
+				break;
+
+			case IS_ATTACK_05:
+				m_Scon.iNextState = IS_ATTACK_06;
+				break;
+
+			case IS_SKILL_02:
+				if (m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] == m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL])
+					m_Scon.iNextState = IS_SKILL_QTE;
+				else
+					m_Scon.iNextState = IS_ATTACK_06;
 				break;
 
 			default:
@@ -1471,17 +1516,14 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_Yangyang::INPUT_ATTACK_CHARGE:
-			m_Scon.iNextState = IS_ATTACK_06;
+			if (m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] == m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL])
+				m_Scon.iNextState = IS_SKILL_02;
+			else 
+				m_Scon.iNextState = IS_ATTACK_05;
 			break;
 
 		case Client::CP_Yangyang::INPUT_SKILL:
-			if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::COOL_SKILL])
-			{
-				if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] >= 50.f)
-					m_Scon.iNextState = IS_SKILL_02;
-				else
-					m_Scon.iNextState = IS_SKILL_01;
-			}
+			m_Scon.iNextState = IS_SKILL_01;
 			break;
 
 		case Client::CP_Yangyang::INPUT_BURST:
@@ -1521,7 +1563,10 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 			}
 			break;
 		case Client::CP_Yangyang::INPUT_ATTACK:
-			m_Scon.iNextState = IS_AIRATTACK_1_START;
+			if (m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] <= m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL])
+				m_Scon.iNextState = IS_AIRATTACK_2_START;
+			else
+				m_Scon.iNextState = IS_AIRATTACK_1_START;
 			break;
 		case Client::CP_Yangyang::INPUT_TOOL:
 			if (0.0 == m_pPlayerStateClass->Get_CurToolCoolTime())
@@ -1870,10 +1915,11 @@ void CP_Yangyang::Tick_State(_double TimeDelta)
 	{
 		_float4 vRotation = _float4(0.f, 0.f, 0.f, 1.f);
 		_float3 vMovement;
+		_double ProgressRatio;
 
 		// 애니메이션 갱신
-		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &vRotation, &vMovement, &m_Scon.TrackPos, &m_Scon.bAnimFinished);
-		m_pAnimSetCom[ANIMSET_RIBBON]->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, nullptr);
+		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &vRotation, &vMovement, &m_Scon.TrackPos, &m_Scon.bAnimFinished, &ProgressRatio);
+		m_pAnimSetCom[ANIMSET_RIBBON]->Update_RibbonAnimation(ProgressRatio);
 
 		m_pAnimSetCom[ANIMSET_BASE]->Update_TargetBones();
 
@@ -2079,11 +2125,16 @@ void CP_Yangyang::On_Cell()
 				{
 					// 공중 공격으로 착지하는 경우
 					if (IS_AIRATTACK_1_START == m_Scon.iCurState ||
-						IS_AIRATTACK_2_START == m_Scon.iCurState ||
-						IS_AIRATTACK_LOOP == m_Scon.iCurState)
+						IS_AIRATTACK_1_LOOP == m_Scon.iCurState)
 					{
 						m_pCamMovement->StartWave();
 						m_Scon.iNextState = IS_AIRATTACK_1_END;
+					}
+					else if (IS_AIRATTACK_2_START == m_Scon.iCurState ||
+						IS_AIRATTACK_2_LOOP == m_Scon.iCurState)
+					{
+						m_pCamMovement->StartWave();
+						m_Scon.iNextState = IS_AIRATTACK_2_END;
 					}
 					else if (SS_BEHIT_FLY_START == m_Scon.iCurState ||
 						SS_BEHIT_PUSH == m_Scon.iCurState ||
@@ -2304,7 +2355,6 @@ void CP_Yangyang::On_Dodge()
 
 void CP_Yangyang::Init_AnimSystem()
 {
-	// Base
 	for (auto& pBone : m_pAnimSetCom[ANIMSET_BASE]->Get_Bones())
 		pBone->Set_TargetBone(m_pModelCom->Get_BonePtr(pBone->Get_Name()));
 
@@ -2312,33 +2362,11 @@ void CP_Yangyang::Init_AnimSystem()
 	{
 		const _tchar* szAnimName = pAnim->Get_Name();
 
-		if (!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Start")))
+		if (!lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Start")))
 			pAnim->Set_Duration(10.0);
 
-		if (!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_D_1")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_D_2")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_DL_1")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_DL_2")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_DR_1")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_DR_2")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_L_1")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_L_2")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_R_1")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_R_2")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_U_1")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_U_2")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_UL_1")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_UL_2")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_UR_1")) ||
-			!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_UR_2")))
-			pAnim->Set_Duration(15.0);
-
-
-		if (!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Climb_OnTop")))
-			pAnim->Set_Duration(48.0);
-
-		//if (!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Move_F")))
-		//	pAnim->Set_Duration(12.0);
+		if (!lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Start_2")))
+			pAnim->Set_Duration(30.0);
 
 
 		for (auto& pChannel : pAnim->Get_Channels())
@@ -2354,25 +2382,25 @@ void CP_Yangyang::Init_AnimSystem()
 
 			if (true == pBone->Is_ChildOf(TEXT("Bip001Head")))
 			{
-				if (lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_End")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Loop")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|AirAttack_Start")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack01")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack02")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack03")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack04")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack09")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack_po2_Temp")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Attack_po3_Temp")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Burst01")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Skill01")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Skill02")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|SkillQte")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action01")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action02")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand1_Action03")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Stand2")) &&
-					lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|StandChange")))
+				if (lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_End")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_End_2")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Loop")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Start")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Start_2")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack02")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack03")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack04")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack06")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Burst01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Skill01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Skill02")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|SkillQte")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Stand1_Action01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Stand1_Action02")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Stand1_Action03")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Stand2")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|StandChange")))
 				{
 					pChannel->Set_Apply(false);
 				}
@@ -2393,56 +2421,49 @@ void CP_Yangyang::Init_AnimSystem()
 			const _tchar* szChannelName = pChannel->Get_Name();
 			CBone* pBone = m_pAnimSetCom[ANIMSET_RIBBON]->Get_BonePtr(pChannel->Get_TargetBoneID());
 
-			// 필살기 
-			if (!lstrcmp(szAnimName, TEXT("R2T1PlayerFemaleMd10011.ao|Rib_Burst01")))
+			/*if (pChannel->Get_NumKeyFrames() <= 2)
+			continue;*/
+
+			// spine 자식 Bone
+			if (!(true == pBone->Is_ChildOf(TEXT("R_Skirt_Bone09")) ||
+				!lstrcmp(szChannelName, TEXT("R_Skirt_Bone09")) ||
+				true == pBone->Is_ChildOf(TEXT("R_Skirt_Bone19")) ||
+				!lstrcmp(szChannelName, TEXT("R_Skirt_Bone19")) ||
+				true == pBone->Is_ChildOf(TEXT("L_Skirt_Bone09")) ||
+				!lstrcmp(szChannelName, TEXT("L_Skirt_Bone09")) ||
+				true == pBone->Is_ChildOf(TEXT("L_Skirt_Bone19")) ||
+				!lstrcmp(szChannelName, TEXT("L_Skirt_Bone19")) ||
+				true == pBone->Is_ChildOf(TEXT("R_Skirt_Bone38")) ||
+				!lstrcmp(szChannelName, TEXT("R_Skirt_Bone38")) ||
+				true == pBone->Is_ChildOf(TEXT("L_Skirt_Bone38")) ||
+				!lstrcmp(szChannelName, TEXT("L_Skirt_Bone38")) ||
+				true == pBone->Is_ChildOf(TEXT("HairLong_Bone01")) ||
+				!lstrcmp(szChannelName, TEXT("HairLong_Bone01")) ||
+				true == pBone->Is_ChildOf(TEXT("HairLong_Bone20")) ||
+				!lstrcmp(szChannelName, TEXT("HairLong_Bone20")) ||
+				true == pBone->Is_ChildOf(TEXT("HairF_Bone17")) ||
+				!lstrcmp(szChannelName, TEXT("HairF_Bone17")) ||
+				true == pBone->Is_ChildOf(TEXT("HairF_Bone13")) ||
+				!lstrcmp(szChannelName, TEXT("HairF_Bone13")) ||
+				true == pBone->Is_ChildOf(TEXT("HairF_Bone09")) ||
+				!lstrcmp(szChannelName, TEXT("HairF_Bone09")) ||
+				true == pBone->Is_ChildOf(TEXT("HairF_Bone05")) ||
+				!lstrcmp(szChannelName, TEXT("HairF_Bone05")) ||
+				true == pBone->Is_ChildOf(TEXT("HairF_Bone01")) ||
+				!lstrcmp(szChannelName, TEXT("HairF_Bone01")) ||
+				true == pBone->Is_ChildOf(TEXT("Fadai_Bone01")) ||
+				!lstrcmp(szChannelName, TEXT("Fadai_Bone01")) ||
+				true == pBone->Is_ChildOf(TEXT("Fadai_Bone08")) ||
+				!lstrcmp(szChannelName, TEXT("Fadai_Bone08")) ||
+				true == pBone->Is_ChildOf(TEXT("Fadai_Bone11")) ||
+				!lstrcmp(szChannelName, TEXT("Fadai_Bone11")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Piao007_R")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Piao007_R"))))
 			{
-				if (!wcsncmp(szChannelName, TEXT("Root"), 4) ||
-					!wcsncmp(szChannelName, TEXT("Bip001"), 6) ||
-					!wcsncmp(szChannelName, TEXT("Weapon"), 6) ||
-					!wcsncmp(szChannelName, TEXT("Hulu"), 4) ||
-					!lstrcmp(szChannelName, TEXT("R2T1PlayerFemaleMd10011.ao")) ||
-					!lstrcmp(szChannelName, TEXT("Bone_Hair001_L")) ||
-					!lstrcmp(szChannelName, TEXT("Bone_Hair001_R")) ||
-					!lstrcmp(szChannelName, TEXT("Hiar_L_F01")) ||
-					!lstrcmp(szChannelName, TEXT("Hiar_R_F01")) ||
-					!lstrcmp(szChannelName, TEXT("Hair_liuhai01")))
-					pChannel->Set_Apply(false);
-			}
-			else
-			{
-				// 이전 세팅
-				if (!(true == pBone->Is_ChildOf(TEXT("Hair_M_B00")) ||
-					true == pBone->Is_ChildOf(TEXT("Piao_L_lingjie01")) ||
-					true == pBone->Is_ChildOf(TEXT("Piao_R_lingjie01")) ||
-					true == pBone->Is_ChildOf(TEXT("skrit_L_F02")) ||
-					true == pBone->Is_ChildOf(TEXT("skirt_M_B02")) ||
-					true == pBone->Is_ChildOf(TEXT("Piao_F01")) ||
-					true == pBone->Is_ChildOf(TEXT("Bone_Piao011_L"))))
-				{
-					pChannel->Set_Apply(false);
-				}
-				else if (!(!lstrcmp(szChannelName, TEXT("Hair_M_B00")) ||
-					!lstrcmp(szChannelName, TEXT("Piao_L_lingjie01")) ||
-					!lstrcmp(szChannelName, TEXT("Piao_R_lingjie01")) ||
-					!lstrcmp(szChannelName, TEXT("Piao_L_pidai01")) ||
-					!lstrcmp(szChannelName, TEXT("Piao_R_pidai01")) ||
-					!lstrcmp(szChannelName, TEXT("skrit_L_F01")) ||
-					!lstrcmp(szChannelName, TEXT("skirt_M_B01")) ||
-					!lstrcmp(szChannelName, TEXT("Bone_Piao011_L")))
-					/*!lstrcmp(szChannelName, TEXT("Piao_F01"))*/)
-				{
-					pChannel->Set_Apply(false);
-				}
+				pChannel->Set_Apply(false);
 			}
 		}
 	}
-
-	// FramePerSec 세팅
-	/*for (_uint i = 0; i < iStateLimit; ++i)
-	{
-		m_pAnimSetCom[ANIMSET_BASE]->Get_Animation(m_tStates[i].iAnimID[ANIMSET_BASE])->Set_TicksPerSecond(m_tStates[i].FramePerSec);
-		m_pAnimSetCom[ANIMSET_RIBBON]->Get_Animation(m_tStates[i].iAnimID[ANIMSET_RIBBON])->Set_TicksPerSecond(m_tStates[i].FramePerSec);
-	}*/
 }
 
 void CP_Yangyang::Init_AttackInfos()
@@ -2452,331 +2473,376 @@ void CP_Yangyang::Init_AttackInfos()
 		ZeroMemory(&m_AttackInfos[i], sizeof TAGATTACK);
 	}
 
-	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = 0.95f;
 	m_AttackInfos[ATK_ATTACK_01].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_01].eElementType = ELMT_NONE;
-	m_AttackInfos[ATK_ATTACK_01].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_01].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Hit_Effect_01"));
+	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 5;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Hit_Effect_Y_01"));
 
-	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 1.2f;
+	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 1.1f;
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_NONE;
-	m_AttackInfos[ATK_ATTACK_02].fSPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_02].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Hit_Effect_02"));
+	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 5;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Hit_Effect_Y_02"));
 
-	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 0.3f;
-	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_NONE;
-	m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_NONE;
-	m_AttackInfos[ATK_ATTACK_03].fSPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_03].fBPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_03].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Hit_Effect_03"));
+	m_AttackInfos[ATK_ATTACK_03_1].fDamageFactor = 0.75f;
+	m_AttackInfos[ATK_ATTACK_03_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_03_1].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK_03_1].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_03_1].fBPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_03_1].fTPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_03_1].iHitEffectID = 5;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03_1].szHitEffectTag, TEXT("Hit_Effect_Y_3"));
 
-	m_AttackInfos[ATK_ATTACK_04].fDamageFactor = 1.8f;
-	m_AttackInfos[ATK_ATTACK_04].eHitIntensity = HIT_BIG;
-	m_AttackInfos[ATK_ATTACK_04].eElementType = ELMT_NONE;
-	m_AttackInfos[ATK_ATTACK_04].fSPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_04].fBPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_04].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_04].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_04].szHitEffectTag, TEXT("Hit_Effect_04"));
+	m_AttackInfos[ATK_ATTACK_03_2].fDamageFactor = 1.05f;
+	m_AttackInfos[ATK_ATTACK_03_2].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK_03_2].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK_03_2].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_03_2].fBPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_03_2].fTPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_03_2].iHitEffectID = 5;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03_2].szHitEffectTag, TEXT("Hit_Effect_Y_3"));
 
-	m_AttackInfos[ATK_ATTACK_05_01].fDamageFactor = 0.8f;
-	m_AttackInfos[ATK_ATTACK_05_01].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_ATTACK_05_01].eElementType = ELMT_NONE;
-	m_AttackInfos[ATK_ATTACK_05_01].fSPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_05_01].fBPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_05_01].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_05_01].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_05_01].szHitEffectTag, TEXT("Hit_Effect_05_01"));
+	m_AttackInfos[ATK_ATTACK_04_1].fDamageFactor = 0.9f;
+	m_AttackInfos[ATK_ATTACK_04_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_04_1].eElementType = ELMT_AERO;
+	m_AttackInfos[ATK_ATTACK_04_1].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_04_1].fBPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_04_1].fTPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_04_1].iHitEffectID = 5;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_1].szHitEffectTag, TEXT("Hit_Effect_Y_4_1"));
 
-	m_AttackInfos[ATK_ATTACK_05_02].fDamageFactor = 1.2f;
-	m_AttackInfos[ATK_ATTACK_05_02].eHitIntensity = HIT_BIG;
-	m_AttackInfos[ATK_ATTACK_05_02].eElementType = ELMT_NONE;
-	m_AttackInfos[ATK_ATTACK_05_02].fSPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_05_02].fBPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_05_02].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_05_02].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_05_02].szHitEffectTag, TEXT("Hit_Effect_05_02"));
+	m_AttackInfos[ATK_ATTACK_04_2].fDamageFactor = 1.3f;
+	m_AttackInfos[ATK_ATTACK_04_2].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_04_2].eElementType = ELMT_AERO;
+	m_AttackInfos[ATK_ATTACK_04_2].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_04_2].fBPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_04_2].fTPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_04_2].iHitEffectID = 5;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_2].szHitEffectTag, TEXT("Hit_Effect_Y_4_1"));
 
-	m_AttackInfos[ATK_ATTACK_09].fDamageFactor = 0.45f;
-	m_AttackInfos[ATK_ATTACK_09].eHitIntensity = HIT_NONE;
-	m_AttackInfos[ATK_ATTACK_09].eElementType = ELMT_NONE;
-	m_AttackInfos[ATK_ATTACK_09].fSPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_09].fBPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_09].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_09].iHitEffectID = 1;
+	m_AttackInfos[ATK_ATTACK_04_3].fDamageFactor = 1.6f;
+	m_AttackInfos[ATK_ATTACK_04_3].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK_04_3].eElementType = ELMT_AERO;
+	m_AttackInfos[ATK_ATTACK_04_3].fSPGain = 1.f;
+	m_AttackInfos[ATK_ATTACK_04_3].fBPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_04_3].fTPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_04_3].iHitEffectID = 5;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_3].szHitEffectTag, TEXT("Hit_Effect_Y_4_2"));
 
-	m_AttackInfos[ATK_ATTACK_PO_2].fDamageFactor = 1.3f;
-	m_AttackInfos[ATK_ATTACK_PO_2].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_ATTACK_PO_2].eElementType = ELMT_SPECTRA;
-	m_AttackInfos[ATK_ATTACK_PO_2].fSPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_PO_2].fBPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_PO_2].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_PO_2].iHitEffectID = 1;
+	m_AttackInfos[ATK_ATTACK_05].fDamageFactor = 1.25f;
+	m_AttackInfos[ATK_ATTACK_05].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_05].eElementType = ELMT_AERO;
+	m_AttackInfos[ATK_ATTACK_05].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_05].fBPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_05].fTPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_05].iHitEffectID = 5;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_05].szHitEffectTag, TEXT("Hit_Effect_Y_5"));
 
-	m_AttackInfos[ATK_ATTACK_PO_3].fDamageFactor = 2.15f;
-	m_AttackInfos[ATK_ATTACK_PO_3].eHitIntensity = HIT_FLY;
-	m_AttackInfos[ATK_ATTACK_PO_3].eElementType = ELMT_SPECTRA;
-	m_AttackInfos[ATK_ATTACK_PO_3].fSPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_PO_3].fBPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_PO_3].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_PO_3].iHitEffectID = 1;
+	m_AttackInfos[ATK_ATTACK_06].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_ATTACK_06].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_06].eElementType = ELMT_AERO;
+	m_AttackInfos[ATK_ATTACK_06].fSPGain = 1.f;
+	m_AttackInfos[ATK_ATTACK_06].fBPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_06].fTPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_06].iHitEffectID = 5;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_06].szHitEffectTag, TEXT("Hit_Effect_Y_6"));
 
-	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 1.55f;
-	m_AttackInfos[ATK_AIRATTACK].eHitIntensity = HIT_BIG;
-	m_AttackInfos[ATK_AIRATTACK].eElementType = ELMT_SPECTRA;
-	m_AttackInfos[ATK_AIRATTACK].fSPGain = 1.5f;
-	m_AttackInfos[ATK_AIRATTACK].fBPGain = 1.5f;
-	m_AttackInfos[ATK_AIRATTACK].fTPGain = 1.5f;
-	m_AttackInfos[ATK_AIRATTACK].iHitEffectID = 1;
+	m_AttackInfos[ATK_AIRATTACK_1].fDamageFactor = 1.55f;
+	m_AttackInfos[ATK_AIRATTACK_1].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_AIRATTACK_1].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_AIRATTACK_1].fSPGain = 0.f;
+	m_AttackInfos[ATK_AIRATTACK_1].fBPGain = 1.5f;
+	m_AttackInfos[ATK_AIRATTACK_1].fTPGain = 1.5f;
+	m_AttackInfos[ATK_AIRATTACK_1].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_AIRATTACK_1].szHitEffectTag, TEXT("Hit_Effect_01"));
 
-	m_AttackInfos[ATK_SKILL_01].fDamageFactor = 2300.3f;
-	m_AttackInfos[ATK_SKILL_01].eHitIntensity = HIT_BIG;
-	m_AttackInfos[ATK_SKILL_01].eElementType = ELMT_SPECTRA;
-	m_AttackInfos[ATK_SKILL_01].fSPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_01].fBPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_01].fTPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_01].iHitEffectID = 1;
+	m_AttackInfos[ATK_AIRATTACK_2_1].fDamageFactor = 0.45f;
+	m_AttackInfos[ATK_AIRATTACK_2_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_AIRATTACK_2_1].eElementType = ELMT_AERO;
+	m_AttackInfos[ATK_AIRATTACK_2_1].fSPGain = 0.f;
+	m_AttackInfos[ATK_AIRATTACK_2_1].fBPGain = 1.5f;
+	m_AttackInfos[ATK_AIRATTACK_2_1].fTPGain = 1.5f;
+	m_AttackInfos[ATK_AIRATTACK_2_1].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_AIRATTACK_2_1].szHitEffectTag, TEXT("Hit_Effect_01"));
 
-	m_AttackInfos[ATK_SKILL_02_01].fDamageFactor = 1.7f;
-	m_AttackInfos[ATK_SKILL_02_01].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_SKILL_02_01].eElementType = ELMT_SPECTRA;
-	m_AttackInfos[ATK_SKILL_02_01].fSPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_02_01].fBPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_02_01].fTPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_02_01].iHitEffectID = 1;
+	m_AttackInfos[ATK_AIRATTACK_2_2].fDamageFactor = 1.35f;
+	m_AttackInfos[ATK_AIRATTACK_2_2].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_AIRATTACK_2_2].eElementType = ELMT_AERO;
+	m_AttackInfos[ATK_AIRATTACK_2_2].fSPGain = 0.f;
+	m_AttackInfos[ATK_AIRATTACK_2_2].fBPGain = 1.5f;
+	m_AttackInfos[ATK_AIRATTACK_2_2].fTPGain = 1.5f;
+	m_AttackInfos[ATK_AIRATTACK_2_2].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_AIRATTACK_2_2].szHitEffectTag, TEXT("Hit_Effect_01"));
 
-	m_AttackInfos[ATK_SKILL_02_02].fDamageFactor = 2.4f;
-	m_AttackInfos[ATK_SKILL_02_02].eHitIntensity = HIT_BIG;
-	m_AttackInfos[ATK_SKILL_02_02].eElementType = ELMT_SPECTRA;
-	m_AttackInfos[ATK_SKILL_02_02].fSPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_02_02].fBPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_02_02].fTPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_02_02].iHitEffectID = 1;
+	m_AttackInfos[ATK_AIRATTACK_2_3].fDamageFactor = 2.15f;
+	m_AttackInfos[ATK_AIRATTACK_2_3].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_AIRATTACK_2_3].eElementType = ELMT_AERO;
+	m_AttackInfos[ATK_AIRATTACK_2_3].fSPGain = 0.f;
+	m_AttackInfos[ATK_AIRATTACK_2_3].fBPGain = 1.5f;
+	m_AttackInfos[ATK_AIRATTACK_2_3].fTPGain = 1.5f;
+	m_AttackInfos[ATK_AIRATTACK_2_3].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_AIRATTACK_2_3].szHitEffectTag, TEXT("Hit_Effect_01"));
 
-	m_AttackInfos[ATK_SKILL_02_03].fDamageFactor = 0.77f;
-	m_AttackInfos[ATK_SKILL_02_03].eHitIntensity = HIT_NONE;
-	m_AttackInfos[ATK_SKILL_02_03].eElementType = ELMT_SPECTRA;
-	m_AttackInfos[ATK_SKILL_02_03].fSPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_02_03].fBPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_02_03].fTPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_02_03].iHitEffectID = 1;
+	m_AttackInfos[ATK_SKILL_01_1].fDamageFactor = 1.2f;
+	m_AttackInfos[ATK_SKILL_01_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_SKILL_01_1].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_SKILL_01_1].fSPGain = 1.f;
+	m_AttackInfos[ATK_SKILL_01_1].fBPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_01_1].fTPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_01_1].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_SKILL_01_1].szHitEffectTag, TEXT("Hit_Effect_01"));
 
-	m_AttackInfos[ATK_SKILL_QTE].fDamageFactor = 1.95f;
-	m_AttackInfos[ATK_SKILL_QTE].eHitIntensity = HIT_BIG;
-	m_AttackInfos[ATK_SKILL_QTE].eElementType = ELMT_SPECTRA;
-	m_AttackInfos[ATK_SKILL_QTE].fSPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_01_2].fDamageFactor = 0.65f;
+	m_AttackInfos[ATK_SKILL_01_2].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_SKILL_01_2].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_SKILL_01_2].fSPGain = 0.f;
+	m_AttackInfos[ATK_SKILL_01_2].fBPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_01_2].fTPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_01_2].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_SKILL_01_2].szHitEffectTag, TEXT("Hit_Effect_01"));
+
+	m_AttackInfos[ATK_SKILL_01_3].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_SKILL_01_3].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_SKILL_01_3].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_SKILL_01_3].fSPGain = 0.f;
+	m_AttackInfos[ATK_SKILL_01_3].fBPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_01_3].fTPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_01_3].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_SKILL_01_3].szHitEffectTag, TEXT("Hit_Effect_01"));
+
+	m_AttackInfos[ATK_SKILL_02].fDamageFactor = 2.6f;
+	m_AttackInfos[ATK_SKILL_02].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_SKILL_02].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_SKILL_02].fSPGain = 0.f;
+	m_AttackInfos[ATK_SKILL_02].fBPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_02].fTPGain = 1.5f;
+	m_AttackInfos[ATK_SKILL_02].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_SKILL_02].szHitEffectTag, TEXT("Hit_Effect_01"));
+
+	m_AttackInfos[ATK_SKILL_QTE].fDamageFactor = 1.6f;
+	m_AttackInfos[ATK_SKILL_QTE].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_SKILL_QTE].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_SKILL_QTE].fSPGain = 0.f;
 	m_AttackInfos[ATK_SKILL_QTE].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_QTE].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_QTE].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_SKILL_QTE].szHitEffectTag, TEXT("Hit_Effect_01"));
 
-	m_AttackInfos[ATK_BURST_01].fDamageFactor = 2.11f;
-	m_AttackInfos[ATK_BURST_01].eHitIntensity = HIT_NONE;
-	m_AttackInfos[ATK_BURST_01].eElementType = ELMT_SPECTRA;
-	m_AttackInfos[ATK_BURST_01].fSPGain = 1.5f;
-	m_AttackInfos[ATK_BURST_01].fBPGain = 1.5f;
-	m_AttackInfos[ATK_BURST_01].fTPGain = 1.5f;
-	m_AttackInfos[ATK_BURST_01].iHitEffectID = 1;
+	m_AttackInfos[ATK_BURST_1].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_BURST_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_BURST_1].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_BURST_1].fSPGain = 0.f;
+	m_AttackInfos[ATK_BURST_1].fBPGain = 1.5f;
+	m_AttackInfos[ATK_BURST_1].fTPGain = 1.5f;
+	m_AttackInfos[ATK_BURST_1].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_BURST_1].szHitEffectTag, TEXT("Hit_Effect_01"));
 
-	m_AttackInfos[ATK_BURST_02].fDamageFactor = 4.55f;
-	m_AttackInfos[ATK_BURST_02].eHitIntensity = HIT_FLY;
-	m_AttackInfos[ATK_BURST_02].eElementType = ELMT_SPECTRA;
-	m_AttackInfos[ATK_BURST_02].fSPGain = 1.5f;
-	m_AttackInfos[ATK_BURST_02].fBPGain = 1.5f;
-	m_AttackInfos[ATK_BURST_02].fTPGain = 1.5f;
-	m_AttackInfos[ATK_BURST_02].iHitEffectID = 1;
+	m_AttackInfos[ATK_BURST_2].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_BURST_2].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_BURST_2].fSPGain = 0.f;
+	m_AttackInfos[ATK_BURST_2].fBPGain = 1.5f;
+	m_AttackInfos[ATK_BURST_2].fTPGain = 1.5f;
+	m_AttackInfos[ATK_BURST_2].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_BURST_2].szHitEffectTag, TEXT("Hit_Effect_01"));
+
 }
 
 void CP_Yangyang::Init_Missiles()
 {
-	// Attack03
 	CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
-
-	tMissilePoolDesc.pMissilePoolTag = TEXT("Nvzhu_Attack_03_%d");
-	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-	tMissilePoolDesc.iNumMissiles = 3;
-
-
-	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-	tMissilePoolDesc.fVelocity = 10.f;
-	tMissilePoolDesc.StopTime = 0.20;
-	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_ONCOLLISIONENTER;
-
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Nvzhu_Attack_03"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 1; //PlayerGirl
-	tMissilePoolDesc.tMissileDesc.pOwner = this;
-	tMissilePoolDesc.tMissileDesc.HitInterval = 0.25;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 2.0;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_03;
-	tMissilePoolDesc.tMissileDesc.fExtents = 0.6f;
-
-	m_MissilePools[MISS_ATTACK_03] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
-	m_MissileRotAngles[MISS_ATTACK_03] = _float3(XMConvertToRadians(-45.f), XMConvertToRadians(90.f), 0.f);
-
-	// Attack09
-	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
-
-	tMissilePoolDesc.pMissilePoolTag = TEXT("Nvzhu_Attack_09_%d");
-	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-	tMissilePoolDesc.iNumMissiles = 3;
-
-	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-	tMissilePoolDesc.fVelocity = 10.f;
-	tMissilePoolDesc.StopTime = 0.25;
-	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_ONCOLLISIONENTER;
-
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Nvzhu_Attack_03"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 1; //PlayerGirl
-	tMissilePoolDesc.tMissileDesc.pOwner = this;
-	tMissilePoolDesc.tMissileDesc.HitInterval = 0.25;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 2.0;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_09;
-	tMissilePoolDesc.tMissileDesc.fExtents = 0.6f;
-
-	m_MissilePools[MISS_ATTACK_09] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
-	m_MissileRotAngles[MISS_ATTACK_09] = _float3(XMConvertToRadians(-60.f), XMConvertToRadians(-90.f), 0.f);
-
-	// MISS_ATTACK_PO_2
-	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
-
-	tMissilePoolDesc.pMissilePoolTag = TEXT("Nvzhu_Attack_Po_2_%d");
-	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
-	tMissilePoolDesc.iNumMissiles = 3;
-
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; //PlayerGirl
-	tMissilePoolDesc.tMissileDesc.pOwner = this;
-	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_PO_2;
-	tMissilePoolDesc.tMissileDesc.fExtents = 1.f;
-
-	m_MissilePools[MISS_ATTACK_PO_2] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.f, 1.5f, 0.f), &tMissilePoolDesc);
-	m_MissileRotAngles[MISS_ATTACK_PO_2] = _float3(0.f, 0.f, 0.f);
-
-	// MISS_ATTACK_PO_3
-	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
-
-	tMissilePoolDesc.pMissilePoolTag = TEXT("Nvzhu_Attack_Po_3_%d");
-	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
-	tMissilePoolDesc.iNumMissiles = 3;
-
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; //PlayerGirl
-	tMissilePoolDesc.tMissileDesc.pOwner = this;
-	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_PO_3;
-	tMissilePoolDesc.tMissileDesc.fExtents = 1.f;
-
-	m_MissilePools[MISS_ATTACK_PO_3] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.f, 1.5f, 0.f), &tMissilePoolDesc);
-	m_MissileRotAngles[MISS_ATTACK_PO_3] = _float3(0.f, 0.f, 0.f);
 
 	// MISS_AIRATTACK
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	tMissilePoolDesc.pMissilePoolTag = TEXT("Nvzhu_AirAttack_%d");
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Yangyang_AirAttack_1_%d");
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 3;
 
 	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; //PlayerGirl
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; 
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIRATTACK;
-	tMissilePoolDesc.tMissileDesc.fExtents = 3.f;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIRATTACK_1;
+	tMissilePoolDesc.tMissileDesc.fExtents = 4.f;
 
-	m_MissilePools[MISS_AIRATTACK] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
-	m_MissileRotAngles[MISS_AIRATTACK] = _float3(0.f, 0.f, 0.f);
+	m_MissilePools[MISS_AIRATTACK_1] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_AIRATTACK_1] = _float3(0.f, 0.f, 0.f);
 
-	// MISS_SKILL_02
+	// MISS_AIRATTACK_2_1
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	tMissilePoolDesc.pMissilePoolTag = TEXT("Nvzhu_Skill_02_Circle_%d");
-	tMissilePoolDesc.iMissileType = CMissilePool::MISS_ROTAROUND;
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Yangyang_AirAttack_2_1_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 8;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.15;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIRATTACK_2_1;
+	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
+
+	m_MissilePools[MISS_AIRATTACK_2_1] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 1.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_AIRATTACK_2_1] = _float3(0.f, 0.f, 0.f);
+
+	// MISS_AIRATTACK_2_2
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Yangyang_AirAttack_2_2_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 3;
 
-	tMissilePoolDesc.pTargetTransform = m_pMainTransform;
-	tMissilePoolDesc.pTargetBone = m_EffectBones[EBONE_SPINE2];
-	tMissilePoolDesc.vAxis = _float3(0.f, 1.f, 0.f);
-	tMissilePoolDesc.fDistance = 2.f;
-	tMissilePoolDesc.fInitAngle = 0.f;
-	tMissilePoolDesc.fRotSpeed = XMConvertToRadians(720.f);
-
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Nvzhu_Skill_02_Circle"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 1; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; 
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
-	tMissilePoolDesc.tMissileDesc.HitInterval = 0.25;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 1.5;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_SKILL_02_03;
-	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIRATTACK_2_2;
+	tMissilePoolDesc.tMissileDesc.fExtents = 4.f;
 
-	m_MissilePools[MISS_SKILL_02] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
-	m_MissileRotAngles[MISS_SKILL_02] = _float3(0.f, 0.f, 0.f);
+	m_MissilePools[MISS_AIRATTACK_2_2] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_AIRATTACK_2_2] = _float3(0.f, 0.f, 0.f);
+
+	// MISS_AIRATTACK_2_3
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Yangyang_AirAttack_2_3_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 3;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIRATTACK_2_3;
+	tMissilePoolDesc.tMissileDesc.fExtents = 4.5f;
+
+	m_MissilePools[MISS_AIRATTACK_2_3] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_AIRATTACK_2_3] = _float3(0.f, 0.f, 0.f);
+
+	// MISS_SKILL_01_1
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Yangyang_Skill_01_1_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 3;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("P_Yangyang_Skill_01_02"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 5;
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.15;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_SKILL_01_1;
+	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
+	tMissilePoolDesc.tMissileDesc.ppNextMissilePool = &m_MissilePools[MISS_SKILL_01_2];
+
+	m_MissilePools[MISS_SKILL_01_1] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 4.5f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_SKILL_01_1] = _float3(0.f, 0.f, 0.f);
+
+	// MISS_SKILL_01_2
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Yangyang_Skill_01_2_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 3;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0;
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.2;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.9;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_SKILL_01_2;
+	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
+	tMissilePoolDesc.tMissileDesc.ppNextMissilePool = &m_MissilePools[MISS_SKILL_01_3];
+
+	m_MissilePools[MISS_SKILL_01_2] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_SKILL_01_2] = _float3(0.f, 0.f, 0.f);
+
+	// MISS_SKILL_01_3
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Yangyang_Skill_01_3_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 3;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0;
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_SKILL_01_3;
+	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
+
+	m_MissilePools[MISS_SKILL_01_3] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_SKILL_01_3] = _float3(0.f, 0.f, 0.f);
+
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
 	// MISS_SKILL_QTE
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	tMissilePoolDesc.pMissilePoolTag = TEXT("Nvzhu_AirAttack_%d");
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Yangyang_Skill_QTE_%d");
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
-	tMissilePoolDesc.iNumMissiles = 3;
+	tMissilePoolDesc.iNumMissiles = 6;
 
 	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
 	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0; //PlayerGirl
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIRATTACK;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_SKILL_QTE;
 	tMissilePoolDesc.tMissileDesc.fExtents = 3.f;
 
-	m_MissilePools[MISS_SKILL_QTE] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissilePools[MISS_SKILL_QTE] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 1.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_SKILL_QTE] = _float3(0.f, 0.f, 0.f);
 
-	// MISS_BURST_01
+	// MISS_BURST_1
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	tMissilePoolDesc.pMissilePoolTag = TEXT("Nvzhu_Attack_Po_3_%d");
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Yangyang_Burst_1_%d");
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 3;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Burst_03"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 1; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("P_Yangyang_Burst_01"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 5; //PlayerGirl
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
-	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_BURST_01;
-	tMissilePoolDesc.tMissileDesc.fExtents = 7.f;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.3;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 1.5;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_BURST_1;
+	tMissilePoolDesc.tMissileDesc.fExtents = 5.5f;
+	tMissilePoolDesc.tMissileDesc.ppNextMissilePool = &m_MissilePools[MISS_BURST_2];
 
-	m_MissilePools[MISS_BURST_01] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 3.5f, 0.f), &tMissilePoolDesc);
-	m_MissileRotAngles[MISS_BURST_01] = _float3(0.f, 0.f, 0.f);
+	m_MissilePools[MISS_BURST_1] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 4.5f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_BURST_1] = _float3(0.f, 0.f, 0.f);
 
-	// MISS_BURST_02
+	// MISS_BURST_2
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	tMissilePoolDesc.pMissilePoolTag = TEXT("Nvzhu_Attack_Po_3_%d");
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Yangyang_Burst_2_%d");
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 3;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Burst_04"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 1; //PlayerGirl
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("P_Yangyang_Burst_02"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 5; //PlayerGirl
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_BURST_02;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_BURST_2;
 	tMissilePoolDesc.tMissileDesc.fExtents = 7.f;
 
-	m_MissilePools[MISS_BURST_02] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 3.5f, 0.f), &tMissilePoolDesc);
-	m_MissileRotAngles[MISS_BURST_02] = _float3(0.f, 0.f, 0.f);
+	m_MissilePools[MISS_BURST_2] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_BURST_2] = _float3(0.f, 0.f, 0.f);
 }
 
 HRESULT CP_Yangyang::Init_Parts()
@@ -2921,7 +2987,7 @@ void CP_Yangyang::OnCollisionEnter(CCollider * src, CCollider * dest)
 				// 플레이어 전용 : 카메라 쉐이크 / 블러 / 쉐이더 / 히트렉(혼자 1~2프레임 애니메이션 정지 or 느려지기) 등??
 
 				// SP BP TP 수치 회복 처리
-				m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] += m_AttackInfos[m_iCurAttackID].fSPGain;
+				/*m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] += m_AttackInfos[m_iCurAttackID].fSPGain;
 				if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL])
 					m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL];
 
@@ -2929,7 +2995,7 @@ void CP_Yangyang::OnCollisionEnter(CCollider * src, CCollider * dest)
 				if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST])
 					m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST];
 
-				m_pPlayerStateClass->Gain_QTEGauge(m_AttackInfos[m_iCurAttackID].fTPGain);
+				m_pPlayerStateClass->Gain_QTEGauge(m_AttackInfos[m_iCurAttackID].fTPGain);*/
 
 			}
 
@@ -3031,9 +3097,7 @@ void CP_Yangyang::OnCollisionStay(CCollider * src, CCollider * dest)
 				IS_ATTACK_02 == m_Scon.iCurState ||
 				IS_ATTACK_03 == m_Scon.iCurState ||
 				IS_ATTACK_04 == m_Scon.iCurState ||
-				IS_ATTACK_05 == m_Scon.iCurState ||
-				IS_SKILL_01 == m_Scon.iCurState ||
-				IS_SKILL_02 == m_Scon.iCurState)
+				IS_ATTACK_05 == m_Scon.iCurState)
 			{
 				m_tCurState.bRootMotion = false;
 				m_Scon.vMovement = _float3(0.f, 0.f, 0.f);

@@ -271,6 +271,9 @@ void CM_Crownless_P1::LateTick(_double TimeDelta)
 
 HRESULT CM_Crownless_P1::Render()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
@@ -310,8 +313,8 @@ HRESULT CM_Crownless_P1::Render()
 		}
 		else
 			m_pShaderCom->Begin(10);
-		m_pModelCom->Render(i);
 
+		m_pModelCom->Render(i);
 	}
 
 	// 여기부터 잔상 그리기
@@ -349,6 +352,9 @@ HRESULT CM_Crownless_P1::Render()
 
 HRESULT CM_Crownless_P1::RenderShadow()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::RenderShadow()))
 		return E_FAIL;
 
@@ -547,7 +553,7 @@ void CM_Crownless_P1::Shot_Trace(_double Duration, _double FadeInRate, _double F
 
 			for (_uint j = 0; j < m_pModelCom->Get_NumMeshes(); ++j)
 			{
-				m_pModelCom->Get_BoneMeatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
+				m_pModelCom->Get_BoneMatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
 			}
 
 			m_TraceArray[i].TraceTimeAcc = 0.0;
@@ -1361,7 +1367,7 @@ void CM_Crownless_P1::On_Cell()
 	}
 }
 
-void CM_Crownless_P1::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+void CM_Crownless_P1::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
 {
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
@@ -1371,6 +1377,9 @@ void CM_Crownless_P1::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo,
 		memcpy(EffectMatrix.m[3], pEffPos, sizeof(_float3));
 		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
 	}
+
+
+	pChar->Recover_Gauge(pAttackInfo->fSPGain, pAttackInfo->fBPGain, pAttackInfo->fTPGain);
 
 	CGameMode* pGM = CGameMode::GetInstance();
 
@@ -1451,9 +1460,7 @@ void CM_Crownless_P1::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo,
 
 	if (true == bHitCheck || m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
 	{
-		m_pMainTransform->Set_LookDir(XMVectorSetY(
-			static_cast<CTransform*>(pGameObject->Find_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION)
-			- this->Get_Position(), 0.f));
+		m_pMainTransform->Set_LookDir(XMVectorSetY(pChar->Get_Position() - this->Get_Position(), 0.f));
 		SetUp_State();
 		m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
 	}

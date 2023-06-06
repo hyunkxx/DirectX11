@@ -15,6 +15,11 @@ HRESULT CTraceKey::Initialize(BaseData* pData)
 	else
 		m_bTraceOn = false;
 
+	if (0 != pData->iInt1)
+		m_bOnce = true;
+	else
+		m_bOnce = false;
+
 	m_Duration = (_double)pData->fFloat0;
 
 	return S_OK;
@@ -22,7 +27,7 @@ HRESULT CTraceKey::Initialize(BaseData* pData)
 
 void CTraceKey::Shot(CCharacter * pMyCharacter)
 {
-	pMyCharacter->Shot_TraceKey(m_bTraceOn, m_Duration);
+	pMyCharacter->Shot_TraceKey(m_bTraceOn, m_bOnce, m_Duration);
 }
 
 CTraceKey * CTraceKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, BaseData* pData)

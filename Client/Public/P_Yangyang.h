@@ -50,17 +50,18 @@ public:
 		IS_ATTACK_01 = 160,
 		IS_ATTACK_02,
 		IS_ATTACK_03,
-		IS_ATTACK_04, // 4타 공격 마무리
-		IS_ATTACK_05, // 스킬2 발동 시 추가타
-		IS_ATTACK_06, // 차지 공격
-		IS_AIRATTACK_1_START,
-		IS_AIRATTACK_2_START,
-		IS_AIRATTACK_LOOP,
-		IS_AIRATTACK_1_END,
+		IS_ATTACK_04,			// 여기까지 평타
+		IS_ATTACK_05,			// 일반 찌르기
+		IS_ATTACK_06,			// 뒤돌아 베기  
+		IS_AIRATTACK_1_START,	
+		IS_AIRATTACK_1_LOOP,		
+		IS_AIRATTACK_1_END,		
+		IS_AIRATTACK_2_START,	
+		IS_AIRATTACK_2_LOOP,	
 		IS_AIRATTACK_2_END,
 		IS_SKILL_01,
 		IS_SKILL_02,
-		IS_SKILL_QTE,
+		IS_SKILL_QTE,			// 2단 올려베기
 		IS_BURST,
 		IS_END
 	};
@@ -112,39 +113,43 @@ public:
 	// 공격 종류
 	enum Attacks
 	{
-		ATK_NONE,		// 0은 OBB 예외처리용으로 NONE으로 넣어줘야 함
+		ATK_NONE,			// 0은 OBB 예외처리용으로 NONE으로 넣어줘야 함
 		ATK_ATTACK_01,
 		ATK_ATTACK_02,
-		ATK_ATTACK_03,
-		ATK_ATTACK_04,
-		ATK_ATTACK_05_01, // 스킬2 추가타 中 1타 
-		ATK_ATTACK_05_02, // 스킬2 추가타 中 2타
-		ATK_ATTACK_09,	// 차지 공격 투사체 다단 히트
-		ATK_ATTACK_PO_2, // 저스트 회피 후 공격 1타
-		ATK_ATTACK_PO_3, // 저스트 회피 후 공격 2타
-		ATK_AIRATTACK,
-		ATK_SKILL_01,
-		ATK_SKILL_02_01, // 스킬2 1타
-		ATK_SKILL_02_02, // 스킬2 2타
-		ATK_SKILL_02_03, // 스킬2 미사일
-		ATK_SKILL_QTE,	// 교체 QTE
-		ATK_BURST_01,	// 필살기
-		ATK_BURST_02,
+		ATK_ATTACK_03_1,
+		ATK_ATTACK_03_2,
+		ATK_ATTACK_04_1,
+		ATK_ATTACK_04_2,
+		ATK_ATTACK_04_3,
+		ATK_ATTACK_05,		// 일반 찌르기
+		ATK_ATTACK_06,		// 뒤돌아베기
+		ATK_AIRATTACK_1,	// 착지 공격 대미지
+		ATK_AIRATTACK_2_1,	// 올라가면서 다단히트 대미지
+		ATK_AIRATTACK_2_2,	// 착지 공격 대미지
+		ATK_AIRATTACK_2_3,	// 착지 공격 후속타 대미지
+		ATK_SKILL_01_1,		// E스킬 - 첫 히트
+		ATK_SKILL_01_2,		// E스킬 - 다단히트
+		ATK_SKILL_01_3,		// E스킬 - 폭발
+		ATK_SKILL_02,		// 강화 찌르기 OBB
+		ATK_SKILL_QTE,		// 2단 올려 베기 1,2타 공유
+		ATK_BURST_1,		// 필살기 - 다단히트a
+		ATK_BURST_2,		// 필살기 - 마무리 폭발
 		ATK_END
 	};
 
 	// 미사일 종류
 	enum Missiles
 	{
-		MISS_ATTACK_03,
-		MISS_ATTACK_09,
-		MISS_ATTACK_PO_2,
-		MISS_ATTACK_PO_3,
-		MISS_AIRATTACK,
-		MISS_SKILL_02,
+		MISS_AIRATTACK_1,	
+		MISS_AIRATTACK_2_1,	
+		MISS_AIRATTACK_2_2,	
+		MISS_AIRATTACK_2_3,	
+		MISS_SKILL_01_1,	// 
+		MISS_SKILL_01_2,
+		MISS_SKILL_01_3,
 		MISS_SKILL_QTE,
-		MISS_BURST_01,	// 필살기 1타
-		MISS_BURST_02,	// 필살기 2타
+		MISS_BURST_1,
+		MISS_BURST_2,
 		MISS_END
 	};
 
@@ -174,9 +179,20 @@ public:
 	virtual void Check_Nearst(CCharacter* pChar, _float fDist) override;
 	virtual void Check_TimeDelay(_double TimeDelta);
 
-	// 주변 몬스터 리스트
-	// 몬스터 쪽에서 플레이어랑의 거리가 일정값 이하일 때? 플레이어를 발견했을 때 부터
-	// 
+	virtual void Recover_Gauge(_float fSP, _float fBP, _float fTP)
+	{
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] += fSP;
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] += fBP;
+
+		if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL])
+			m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL];
+
+		if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST])
+			m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST];
+
+		m_pPlayerStateClass->Gain_QTEGauge(fTP);
+	}
+
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);

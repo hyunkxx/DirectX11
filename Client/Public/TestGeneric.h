@@ -122,7 +122,7 @@ public:
 		m_bTraceOn = false;
 	}
 
-	void Shot_Trace(_double Duration, _double FadeInRate = 0.15, _double FadeOutRate = 0.85);
+	void Shot_Trace(_double Duration, _double FadeInRate = 0.05, _double FadeOutRate = 0.15);
 	void Apply_Time(_double TimeDelta);
 
 	void Release_Traces();
@@ -130,10 +130,17 @@ public:
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _uint iEffectID, _bool bTracking);
-	virtual void Shot_TraceKey(_bool bTraceOn, _double TraceDuration)
+	virtual void Shot_TraceKey(_bool bTraceOn, _bool bOnce, _double TraceDuration)
 	{
-		m_bTraceOn = bTraceOn;
-		m_TraceDuration = TraceDuration;
+		if (false == bOnce)
+		{
+			m_bTraceOn = bTraceOn;
+			m_TraceDuration = TraceDuration;
+		}
+		else
+		{
+			Shot_Trace(TraceDuration);
+		}
 	}
 
 	

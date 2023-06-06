@@ -20,11 +20,11 @@ CCharacter::PHYSICMOVE CCharacter::StatePhysics[SP_END]
 	// 낙하, 직전 운동 상태 적용, xz감쇄율, y가속도 적용
 	{ false, false, _float3(0.f, 0.f, 0.f), 0.f, 0.5f, 20.f, 20.f, -20.f},
 	// PLAYERGIRL_AIRATTACK, 등속
-	{ true, true, _float3(0.f, 0.f, -1.f), 70.f, 0.f, 0.f, 0.f, 0.f  },
+	{ true, true, _float3(0.f, 0.f, -1.f), 35.f, 0.f, 0.f, 0.f, 0.f  },
 	// BEHIT_FLY_START, 
 	{ true, false, _float3(0.f, 0.2f, 1.f), 10.f, 0.5f, 20.f, 20.f, -20.f},
 	// BEHIT_HOVER, 
-	{ true, false, _float3(0.f, 0.2f, 1.f), 5.f, 0.5f, 20.f, 20.f, -20.f},
+	{ true, false, _float3(0.f, 0.1f, 1.f), 4.f, 0.5f, 20.f, 20.f, -20.f},
 	// BEHIT_PUSH, 
 	{ true, false, _float3(0.f, 1.f, 0.25f), 20.f, 0.5f, 20.f, 20.f, -20.f},
 	// BEHIT_FLY_PLAYER
@@ -39,6 +39,7 @@ void CCharacter::Shot_SlowKey(_float fTargetTime, _float fLerpSpeed)
 
 void CCharacter::Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed)
 {
+	m_bRender = true;
 	m_bDissolve = true;
 	m_fDissolveTimeAcc = 0.f;
 
@@ -88,6 +89,12 @@ void CCharacter::LateTick(_double TimeDelta)
 		{
 			m_bDissolve = false;
 			m_fDissolveTimeAcc = 0.f;
+
+			// Dissolve Out이 끝나면 Render를 끈다. 
+			if (false == m_bDissolveType)
+			{
+				m_bRender = false;
+			}
 		}
 
 		if (m_bDissolveType)

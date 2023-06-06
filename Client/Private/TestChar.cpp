@@ -190,6 +190,7 @@ CTestChar::CTestChar(const CTestChar & rhs)
 
 HRESULT CTestChar::Initialize_Prototype()
 {
+	__super::Initialize_Prototype();
 	return S_OK;
 }
 
@@ -201,28 +202,34 @@ HRESULT CTestChar::Initialize(void * pArg)
 
 void CTestChar::Start()
 {
+	__super::Start();
 }
 
 void CTestChar::Tick(_double TimeDelta)
 {
+	__super::Tick(TimeDelta);
 }
 
 void CTestChar::LateTick(_double TimeDelta)
 {
+	__super::LateTick(TimeDelta);
 }
 
 HRESULT CTestChar::Render()
 {
+	__super::Render();
 	return S_OK;
 }
 
 HRESULT CTestChar::RenderShadow()
 {
+	__super::RenderShadow();
 	return S_OK;
 }
 
 void CTestChar::RenderGUI()
 {
+	__super::RenderGUI();
 }
 
 void CTestChar::Free()

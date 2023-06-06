@@ -209,6 +209,9 @@ void CM_Anjin::LateTick(_double TimeDelta)
 
 HRESULT CM_Anjin::Render()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
@@ -256,6 +259,9 @@ HRESULT CM_Anjin::Render()
 
 HRESULT CM_Anjin::RenderShadow()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::RenderShadow()))
 		return E_FAIL;
 
@@ -987,7 +993,7 @@ void CM_Anjin::On_Cell()
 
 }
 
-void CM_Anjin::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+void CM_Anjin::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
 {
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
@@ -997,6 +1003,8 @@ void CM_Anjin::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float
 		memcpy(EffectMatrix.m[3], pEffPos, sizeof(_float3));
 		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
 	}
+
+	pChar->Recover_Gauge(pAttackInfo->fSPGain, pAttackInfo->fBPGain, pAttackInfo->fTPGain);
 
 	CGameMode* pGM = CGameMode::GetInstance();
 
@@ -1066,9 +1074,7 @@ void CM_Anjin::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float
 
 	if (1/*m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority*/)
 	{
-		m_pMainTransform->Set_LookDir(XMVectorSetY(
-			static_cast<CTransform*>(pGameObject->Find_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION)
-			- this->Get_Position(), 0.f));
+		m_pMainTransform->Set_LookDir(XMVectorSetY(pChar->Get_Position() - this->Get_Position(), 0.f));
 		SetUp_State();
 		m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
 	}

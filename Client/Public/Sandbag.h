@@ -205,7 +205,7 @@ private:
 	// 지형에 의한 예외 처리
 	void On_Cell();
 	// 
-	void On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos);
+	void On_Hit(CCharacter* pChar, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos);
 
 	// Effect
 	HRESULT	Init_EffectBones();

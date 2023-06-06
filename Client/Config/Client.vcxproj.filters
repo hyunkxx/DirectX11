@@ -353,9 +353,11 @@
     </ClCompile>
     <ClCompile Include="..\Private\CityObject.cpp" />
     <ClCompile Include="..\Private\TraceKey.cpp" />
-    <ClCompile Include="..\private\P_Yangyang.cpp" />
     <ClCompile Include="..\Private\UI_MerchantMen.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\P_Yangyang.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -688,9 +690,11 @@
     </ClInclude>
     <ClInclude Include="..\Public\CityObject.h" />
     <ClInclude Include="..\Public\TraceKey.h" />
-    <ClInclude Include="..\public\P_Yangyang.h" />
     <ClInclude Include="..\Public\UI_MerchantMen.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\P_Yangyang.h">
+      <Filter>src\02. GameObject\03. Character\00. Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -416,6 +416,9 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 
 HRESULT CP_PlayerGirl::Render()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
 	if (FAILED(__super::Render()))
@@ -542,6 +545,9 @@ HRESULT CP_PlayerGirl::Render()
 
 HRESULT CP_PlayerGirl::RenderShadow()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::RenderShadow()))
 		return E_FAIL;
 
@@ -2932,8 +2938,8 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 			{
 				// 플레이어 전용 : 카메라 쉐이크 / 블러 / 쉐이더 / 히트렉(혼자 1~2프레임 애니메이션 정지 or 느려지기) 등??
 
-				// SP BP TP 수치 회복 처리
-				m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] += m_AttackInfos[m_iCurAttackID].fSPGain;
+				// SP BP TP 수치 회복 처리 몬스터 쪽에서 처리
+			/*	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] += m_AttackInfos[m_iCurAttackID].fSPGain;
 				if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL])
 					m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL];
 				
@@ -2941,7 +2947,7 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 				if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST])
 					m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST];
 
-				m_pPlayerStateClass->Gain_QTEGauge(m_AttackInfos[m_iCurAttackID].fTPGain);
+				m_pPlayerStateClass->Gain_QTEGauge(m_AttackInfos[m_iCurAttackID].fTPGain);*/
 
 			}
 

@@ -176,10 +176,17 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
 	virtual void Shot_PriorityKey(_uint iLeavePriority);
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID);
-	virtual void Shot_TraceKey(_bool bTraceOn, _double TraceDuration)
+	virtual void Shot_TraceKey(_bool bTraceOn, _bool bOnce, _double TraceDuration)
 	{
-		m_bTraceOn = bTraceOn;
-		m_TraceDuration = TraceDuration;
+		if (false == bOnce)
+		{
+			m_bTraceOn = bTraceOn;
+			m_TraceDuration = TraceDuration;
+		}
+		else
+		{
+			Shot_Trace(TraceDuration);
+		}
 	}
 
 public:
@@ -300,7 +307,7 @@ private:
 	// 지형에 의한 예외 처리
 	void On_Cell();
 	// 
-	void On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos);
+	void On_Hit(CCharacter* pChar, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos);
 
 	// Effect
 	HRESULT	Init_EffectBones();

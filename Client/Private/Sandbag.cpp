@@ -190,8 +190,8 @@ void CSandbag::Tick(_double TimeDelta)
 		XMStoreFloat4(&Head, XMLoadFloat4x4(&m_EffectBoneMatrices[EBONE_HEAD]).r[3]);
 		Head.y += 0.5f;
 		m_pUIMon->Set_CharacterPos(XMLoadFloat4(&Head));
-		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
-		m_pUIIcon->SetRender(m_UIIndex, true);
+		//m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+		//m_pUIIcon->SetRender(m_UIIndex, true);
 	}
 }
 
@@ -209,6 +209,9 @@ void CSandbag::LateTick(_double TimeDelta)
 
 HRESULT CSandbag::Render()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
@@ -253,6 +256,9 @@ HRESULT CSandbag::Render()
 
 HRESULT CSandbag::RenderShadow()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::RenderShadow()))
 		return E_FAIL;
 
@@ -985,7 +991,7 @@ void CSandbag::On_Cell()
 
 }
 
-void CSandbag::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+void CSandbag::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
 {
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
@@ -995,6 +1001,8 @@ void CSandbag::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float
 		memcpy(EffectMatrix.m[3], pEffPos, sizeof(_float3));
 		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
 	}
+
+	pChar->Recover_Gauge(pAttackInfo->fSPGain, pAttackInfo->fBPGain, pAttackInfo->fTPGain);
 
 	CGameMode* pGM = CGameMode::GetInstance();
 
@@ -1064,9 +1072,7 @@ void CSandbag::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float
 
 	if (1/*m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority*/)
 	{
-		m_pMainTransform->Set_LookDir(XMVectorSetY(
-			static_cast<CTransform*>(pGameObject->Find_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION)
-			- this->Get_Position(), 0.f));
+		m_pMainTransform->Set_LookDir(XMVectorSetY(pChar->Get_Position() - this->Get_Position(), 0.f));
 		SetUp_State();
 		m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
 	}

@@ -171,6 +171,9 @@ void CTestGeneric::LateTick(_double TimeDelta)
 
 HRESULT CTestGeneric::Render()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
 	if (FAILED(__super::Render()))
@@ -249,6 +252,9 @@ HRESULT CTestGeneric::Render()
 
 HRESULT CTestGeneric::RenderShadow()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::RenderShadow()))
 		return E_FAIL;
 
@@ -289,7 +295,7 @@ void CTestGeneric::Shot_Trace(_double Duration, _double FadeInRate, _double Fade
 
 			for (_uint j = 0; j < m_pModelCom->Get_NumMeshes(); ++j)
 			{
-				m_pModelCom->Get_BoneMeatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
+				m_pModelCom->Get_BoneMatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
 			}
 
 			m_TraceArray[i].TraceTimeAcc = 0.0;

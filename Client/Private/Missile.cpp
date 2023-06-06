@@ -5,6 +5,7 @@
 #include "GameInstance.h"
 #include "Effect.h"
 #include "Character.h"
+#include "MissilePool.h"
 
 CMissile::CMissile(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -124,6 +125,10 @@ _bool CMissile::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotM
 
 void CMissile::End()
 {
+	if (nullptr != m_tMissileDesc.ppNextMissilePool)
+		(*m_tMissileDesc.ppNextMissilePool)->Shot(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 
+			m_pMainTransform->Get_State(CTransform::STATE_LOOK), XMMatrixIdentity());
+
 	m_pCollider->SetActive(false);
 	SetState(DISABLE);
 }

@@ -79,12 +79,12 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	{
 		m_pPlayerStateClass->AddPlayer();
 	}
-	if (m_pTerminalUI->IsActive())
+	/*if (m_pTerminalUI->IsActive())
 		m_bRender = false;
 	else if (m_pTip->IsActive())
 		m_bRender = false;
 	else
-		m_bRender = true;
+		m_bRender = true;*/
 
 	//OtherobjIsActive(TimeDelta); // 서서히 사라지고 나타나기 수정해야함
 	SetPlayer(); // 각 슬롯에 맞는 플레이어 색깔 설정, 스킬 텍스처 설정, 보유캐릭터

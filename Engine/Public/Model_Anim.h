@@ -90,7 +90,7 @@ public:
 
 public:
 	HRESULT	SetUp_BoneMatrices(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex);
-	void	Get_BoneMeatrices(_float4x4* pBoneMatrices, _uint iMeshIndex);
+	void	Get_BoneMatrices(_float4x4* pBoneMatrices, _uint iMeshIndex);
 
 	/* 재생할 애니메이션에 따라 AnimController를 초기화한다. */
 	HRESULT SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate, _bool bContinue = false);

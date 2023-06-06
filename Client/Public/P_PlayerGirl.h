@@ -174,10 +174,20 @@ public:
 	virtual void Check_Nearst(CCharacter* pChar, _float fDist) override;
 	virtual void Check_TimeDelay(_double TimeDelta);
 
-	// 주변 몬스터 리스트
-	// 몬스터 쪽에서 플레이어랑의 거리가 일정값 이하일 때? 플레이어를 발견했을 때 부터
-	// 
-	
+	virtual void Recover_Gauge(_float fSP, _float fBP, _float fTP)
+	{
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] += fSP;
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] += fBP;
+
+		if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL])
+			m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL];
+
+		if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST])
+			m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST];
+
+		m_pPlayerStateClass->Gain_QTEGauge(fTP);
+	}
+
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _float fDissSpeed);
 	virtual void Shot_PriorityKey(_uint iLeavePriority);

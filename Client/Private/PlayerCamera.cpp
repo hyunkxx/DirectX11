@@ -125,11 +125,11 @@ void CPlayerCamera::Tick(_double TimeDelta)
 		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
 		if (false == m_pTerminalUI->IsActive())
 		{
-			m_bFixMouse = m_pUITip->IsMouseActive() ? false : true;
+			//m_bFixMouse = m_pUITip->IsMouseActive() ? false : true;
 		}
 		else
 		{
-			m_pUITip->SetState(DISABLE);
+			//m_pUITip->SetState(DISABLE);
 		}
 
 		if (pGameInstance->InputKey(DIK_LALT) == KEY_STATE::HOLD)
@@ -298,9 +298,10 @@ void CPlayerCamera::Tick(_double TimeDelta)
 			_vector vTargetDirRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vTargetDirLook));
 			//_vector vTargetDirUp = XMVector3Normalize(XMVector3Cross(vTargetDirLook, vTargetDirRight));
 
+
 			_float fLookDist = -3.5f - fDistRate * 1.5f;
-			_float fUpDist = 1.3f;
-			_float fRightDist = 0.3f + fDistance * 0.12f;
+			_float fUpDist = 1.3f - min(max(XMVectorGetY(vTargetDir), -2.f), 0.f);
+			_float fRightDist = 1.2f + fDistance * 0.12f;
 
 			_vector vEyePos = vPlayerPos + vTargetDirLook * fLookDist + vTargetDirRight * fRightDist + XMVectorSet(0.f, fUpDist, 0.f, 0.f);
 
@@ -321,7 +322,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 			_vector vCurAt = XMVectorLerp(vPrevAt, vAtPos, (_float)TimeDelta * 5.f);
 
 			_vector vPrevEye = XMLoadFloat3(&m_CameraDesc.vEye);
-			_vector vCurEye = XMVectorLerp(vPrevEye, vEyePos, (_float)TimeDelta * 10.f);
+			_vector vCurEye = XMVectorLerp(vPrevEye, vEyePos, (_float)TimeDelta * 5.f);
 
 
 			XMStoreFloat3(&m_CameraDesc.vAt, vCurAt);
@@ -330,8 +331,6 @@ void CPlayerCamera::Tick(_double TimeDelta)
 			m_pMainTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));
 			m_pMainTransform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
 		}
-
-
 	}
 	// Camera Curve РћПы Сп
 	else

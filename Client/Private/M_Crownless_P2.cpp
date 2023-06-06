@@ -14,6 +14,7 @@
 #include "Missile_Constant.h"
 #include "OBBKey.h"
 #include "DissolveKey.h"
+#include "TraceKey.h"
 
 #include "CameraMovement.h"
 #include "Chest.h"
@@ -24,7 +25,7 @@
 #define DIST_MELEE 3.5f
 #define DIST_MIDRANGE 15.f
 
-const _double CM_Crownless_P2::m_TraceInterval = 0.18;
+const _double CM_Crownless_P2::m_TraceInterval = 0.09;
 
 CCharacter::SINGLESTATE CM_Crownless_P2::m_tStates[IS_END];
 CM_Crownless_P2::CM_Crownless_P2(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -287,6 +288,9 @@ void CM_Crownless_P2::LateTick(_double TimeDelta)
 
 HRESULT CM_Crownless_P2::Render()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
@@ -368,6 +372,9 @@ HRESULT CM_Crownless_P2::Render()
 
 HRESULT CM_Crownless_P2::RenderShadow()
 {
+	if (false == m_bRender)
+		return S_OK;
+
 	if (FAILED(__super::RenderShadow()))
 		return E_FAIL;
 
@@ -522,6 +529,9 @@ HRESULT CM_Crownless_P2::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext*
 				case CStateKey::TYPE_SLOW:
 					m_tStates[i].ppStateKeys[j] = CSlowKey::Create(pDevice, pContext, &tBaseData);
 					break;
+				case CStateKey::TYPE_TRACE:
+					m_tStates[i].ppStateKeys[j] = CTraceKey::Create(pDevice, pContext, &tBaseData);
+					break;
 				case CStateKey::TYPE_SOUND:
 
 					break;
@@ -613,7 +623,7 @@ void CM_Crownless_P2::Shot_Trace(_double Duration, _double FInRate, _double FOut
 
 			for (_uint j = 0; j < m_pModelCom->Get_NumMeshes(); ++j)
 			{
-				m_pModelCom->Get_BoneMeatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
+				m_pModelCom->Get_BoneMatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
 			}
 
 			m_TraceArray[i].TraceTimeAcc = 0.0;
@@ -621,6 +631,38 @@ void CM_Crownless_P2::Shot_Trace(_double Duration, _double FInRate, _double FOut
 			m_TraceArray[i].FadeInRate = FInRate;
 			m_TraceArray[i].FadeOutRate = FOutRate;
 			
+			bOK = m_TraceArray[i].bRendering = true;
+		}
+		if (bOK)
+			break;
+	}
+
+	// 모든 잔상이 사용 중이면 여기 떨어짐
+	if (false == bOK)
+	{
+		int a = 1;
+	}
+}
+
+void CM_Crownless_P2::Shot_Trace_Pose(_double Duration, _double FadeInRate, _double FadeOutRate)
+{
+	_bool bOK = false;
+	for (_uint i = 0; i < m_iTraceCount; ++i)
+	{
+		if (false == m_TraceArray[i].bRendering)
+		{
+			m_TraceArray[i].TraceWorldMatrix = m_pMainTransform->Get_WorldMatrix();
+
+			for (_uint j = 0; j < m_pModelCom->Get_NumMeshes(); ++j)
+			{
+				m_pModelCom->Get_BoneMatrices(m_TraceArray[i].ppTraceBoneMatrices[j], j);
+			}
+
+			m_TraceArray[i].TraceTimeAcc = 0.0;
+			m_TraceArray[i].TraceDuration = Duration;
+			m_TraceArray[i].FadeInRate = FadeInRate;
+			m_TraceArray[i].FadeOutRate = FadeOutRate;
+
 			bOK = m_TraceArray[i].bRendering = true;
 		}
 		if (bOK)
@@ -1504,7 +1546,7 @@ void CM_Crownless_P2::On_Cell()
 	}
 }
 
-void CM_Crownless_P2::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+void CM_Crownless_P2::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
 {
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
@@ -1514,6 +1556,8 @@ void CM_Crownless_P2::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo,
 		memcpy(EffectMatrix.m[3], pEffPos, sizeof(_float3));
 		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
 	}
+
+	pChar->Recover_Gauge(pAttackInfo->fSPGain, pAttackInfo->fBPGain, pAttackInfo->fTPGain);
 
 	CGameMode* pGM = CGameMode::GetInstance();
 
@@ -1599,9 +1643,7 @@ void CM_Crownless_P2::On_Hit(CGameObject * pGameObject, TAGATTACK * pAttackInfo,
 
 	if (true == bHitCheck || m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
 	{
-		m_pMainTransform->Set_LookDir(XMVectorSetY(
-			static_cast<CTransform*>(pGameObject->Find_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION)
-			- this->Get_Position(), 0.f));
+		m_pMainTransform->Set_LookDir(XMVectorSetY(pChar->Get_Position() - this->Get_Position(), 0.f));
 		SetUp_State();
 		m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
 	}
