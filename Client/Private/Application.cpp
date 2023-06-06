@@ -2231,6 +2231,21 @@ HRESULT CApplication::Ready_Static_Effect()
 #pragma region Page_03
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P3_Attack_01_01.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P3_Attack_01_02.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P3_Attack_01_03.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
 			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P3_Attack_07_01.bin"),
 			"../../Resource/Effect/B_Crownless/Attack/")))
 			return E_FAIL;
@@ -2317,6 +2332,21 @@ HRESULT CApplication::Ready_Static_Effect()
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
 			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P3_Attack_13_05.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P3_Attack_13_05_1.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P3_Attack_13_05_2.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P3_Attack_13_06.bin"),
 			"../../Resource/Effect/B_Crownless/Attack/")))
 			return E_FAIL;
 		
