@@ -7,6 +7,7 @@
 #include "Terrain.h"
 #include "TerminalUI.h"
 #include "UI_Tip.h"
+#include "UI_MerchantMen.h"
 
 CUI_Minimap::CUI_Minimap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -49,6 +50,7 @@ void CUI_Minimap::Start()
 	m_pPlayer = static_cast<CP_PlayerGirl*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
 	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
 	m_pTip = static_cast<CUI_Tip*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
+	m_pUIMen = static_cast<CUI_MerchantMen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MerchantMen"));
 }
 
 void CUI_Minimap::Tick(_double TimeDelta)
@@ -337,6 +339,8 @@ void CUI_Minimap::OtherobjIsActive()
 	if (m_pTerminalUI->IsActive())
 		m_bRender = false;
 	else if (m_pTip->IsActive())
+		m_bRender = false;
+	else if (m_pUIMen->IsActive())
 		m_bRender = false;
 	else
 		m_bRender = true;

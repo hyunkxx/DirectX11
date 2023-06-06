@@ -112,10 +112,12 @@ void CUI_TapT::Tick(_double TimeDelta)
 	m_pUIMouse->Set_Texchange(false);
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::TAP)
 	{
+		m_bMouseActive = true;
 		m_pUIMouse->Set_RenderMouse(true);
 	}
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::AWAY)
 	{
+		m_bMouseActive = false;
 		m_pUIMouse->Set_RenderMouse(false);
 	}
 }

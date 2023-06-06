@@ -316,7 +316,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;	
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UIMERCHANT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/MerchantMen/merchantmen%d.dds"), 130))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/MerchantMen/merchantmen%d.dds"), 135))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::EYE_BURST, 

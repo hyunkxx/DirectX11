@@ -146,6 +146,7 @@ private:
 	class CP_PlayerGirl*	m_pPlayer = { nullptr };
 	class CTerminalUI*	m_pTerminalUI = { nullptr };
 	class CUI_Tip*		m_pTip = { nullptr };
+	class CUI_MerchantMen*	m_pUIMen = { nullptr };
 private:
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };

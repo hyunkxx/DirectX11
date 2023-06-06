@@ -80,7 +80,7 @@ void CInventory::RenderGUI()
 		"INVEN_WEAPON",
 		"INVEN_COOK",
 		"INVEN_MATERIAL",
-		"INVEN_COIN"
+		"INVEN_COIN",
 	};
 
 	ImGui::Combo("Erase InvenType", (int*)&iCurItem, InvenTypes, 4);

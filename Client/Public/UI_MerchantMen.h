@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "Item.h"
 
 BEGIN(Engine)
 class CShader;
@@ -14,7 +15,7 @@ BEGIN(Client)
 class CUI_MerchantMen final : public CGameObject
 {
 public:
-	enum MENSITUINDEX { MEET, MENU, INMENU, MINUSLEVEL, ADDLEVEL, DELIVER, DELIVERCONFIRM, MENEND};
+	enum MENSITUINDEX { MEET, MENU, INMENU, BYE, MENEND};
 	
 	typedef struct tagMerchantMen
 	{
@@ -56,6 +57,8 @@ public:
 
 private:
 	HRESULT Add_Components();
+	HRESULT Setup_MerchantShader(_uint index);
+	HRESULT Setup_MenuShader(_uint index);
 	HRESULT Setup_CommonShader(_uint index);
 	HRESULT Setup_LevelShader(_uint index);
 	HRESULT Setup_CircleShader(_uint index);
@@ -70,10 +73,14 @@ private:
 	HRESULT Setup_3RewardShader(_uint index);
 	HRESULT Setup_4RewardShader(_uint index);
 	HRESULT Setup_5RewardShader(_uint index);
-	
+	HRESULT Setup_MessageShader(_uint index);
+	HRESULT Setup_FinalShader(_uint index);
+
 private:
-	_bool	AddAlpha(vector<MERMENDESC>* pDesc, _double TimeDelta);
-	_bool	MinusAlpha(vector<MERMENDESC>* pDesc, _double TimeDelta);
+	void	InMenuOpen(_double TimeDelta);
+	_bool	InMenuEnd(_double TimeDelta);
+	_bool	AddAlpha(MERMENDESC* pDesc, _double TimeDelta);
+	_bool	MinusAlpha(MERMENDESC* pDesc, _double TimeDelta);
 	_bool	AddAlphaW(vector<MERMENDESC>* pDesc, _double TimeDelta);
 	_bool	MinusAlphaW(vector<MERMENDESC>* pDesc, _double TimeDelta);
 	void	ColorP(MERMENDESC* pDesc, _float4 fcolor, _double TimeDelta);
@@ -84,43 +91,63 @@ private:
 
 public:
 	_bool	IsMouseActive() { return m_bMouseActive; }
-	
+	void	Set_SituMeet() { Situation = MENSITUINDEX::MEET; }
 private:
-	MENSITUINDEX Situation = { MENSITUINDEX::MENEND };
+	MENSITUINDEX Situation = { MENSITUINDEX::MEET };
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint		m_iPass = { 1 };
 	_int		m_Count = {0};
 	_bool		m_bMouseActive = { false };
+	_float		m_TimeAcc = { 0.f };
+	_bool		m_InMenuRnderStart = { true };
+	_bool		m_MenuRnderStart = { true };
+	_bool		m_CircleSTurntart = { true };
+	_bool		m_CircleLevDown = { false };
+	_bool		m_CircleSLevUp = { false };
+	_bool		m_bRewardReceived[5] = { false,false ,false ,false ,false };
+	_bool		m_MsgboxRender = { false };
+	_bool		m_RewardboxRender = { false };
+	_bool		m_CancelMsgbox = { false };
+	_float		Degree = { 0.f }; // 레벨 원 돌리는 각도
+	_float		SubDegree = { 0.f }; // 레벨 원 돌리는 각도
+	_int		SettingLevel = { 10 };
+	_int		m_PlayerMaxLevel = { 50 };
+	CItem::ITEM_DESC itemDesc[6];
 
-
-
+	// 플레이어state랑 연결시킬것
+	_int		m_PlayerCurrentLevel = { 50 };
+	// 임시 변수
+	_int		CurrentOwn = { 18 };
+	_int		NeddNum		= { 0 };
+	_int		ItemNum		= { 0 };
 
 	//툴
+	_int iSituation = { 0 };
 	_int m_Index = { 0 };
 	_bool bTexMod = { false };
 	_int bRender = { 1 };
 	_float magnification = { 0.f };
 	_int type = { 0 };
 	MERMENDESC* CurrentDesc = { nullptr };
-
 private:
-	vector<MERMENDESC>		  m_MerchantList; // 14
-	vector<MERMENDESC>		  m_MenuList; //15
-	vector<MERMENDESC>		  m_CommonList;  //0
-	vector<MERMENDESC>		  m_LevelList;	//1
-	vector<MERMENDESC>		  m_CircleList;	//2	
-	vector<MERMENDESC>		  m_LButtonList;//3
-	vector<MERMENDESC>		  m_RButtonList;//4
-	vector<MERMENDESC>		  m_CasketList;//5
-	vector<MERMENDESC>		  m_OwnList;//6
-	vector<MERMENDESC>		  m_DeliverList;//7
-	vector<MERMENDESC>		  m_0RewardList;//8
-	vector<MERMENDESC>		  m_1RewardList;//9
-	vector<MERMENDESC>		  m_2RewardList;//10
-	vector<MERMENDESC>		  m_3RewardList;//11
-	vector<MERMENDESC>		  m_4RewardList;//12
-	vector<MERMENDESC>		  m_5RewardList;//13
-
+	vector<MERMENDESC>		  m_CommonList;		//0
+	vector<MERMENDESC>		  m_LevelList;		//1
+	vector<MERMENDESC>		  m_CircleList;		//2	
+	vector<MERMENDESC>		  m_LButtonList;	//3
+	vector<MERMENDESC>		  m_RButtonList;	//4
+	vector<MERMENDESC>		  m_CasketList;		//5
+	vector<MERMENDESC>		  m_OwnList;		//6
+	vector<MERMENDESC>		  m_DeliverList;	//7
+	vector<MERMENDESC>		  m_0RewardList;	//8
+	vector<MERMENDESC>		  m_1RewardList;	//9
+	vector<MERMENDESC>		  m_2RewardList;	//10
+	vector<MERMENDESC>		  m_3RewardList;	//11
+	vector<MERMENDESC>		  m_4RewardList;	//12
+	vector<MERMENDESC>		  m_5RewardList;	//13
+	vector<MERMENDESC>		  m_MerchantList;	//14
+	vector<MERMENDESC>		  m_MenuList;		//15
+	vector<MERMENDESC>		  m_MessageList;	//16
+	vector<MERMENDESC>		  m_FinalList;		//17
 
 public:
 	static CUI_MerchantMen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -129,12 +156,15 @@ public:
 
 private:
 	class CUI_Mouse*		m_pUIMouse = { nullptr };
-
+	class CPlayerState*		m_pPlayerStateClass = { nullptr };
+	class CItemDB*			m_pDB = { nullptr };
+	class CInventory*		m_pInven = { nullptr };
+private:
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
 	CTexture*		m_pTexture = { nullptr };
 	CVIBuffer_Rect* m_pVIBuffer = { nullptr };
 
-};
+ };
 
 END
