@@ -278,14 +278,15 @@ HRESULT CUI_MainScreen::Add_Components()
 
 void CUI_MainScreen::OtherobjIsActive(_double TimeDelta)
 {
-	if (m_pTerminalUI->IsActive())
+	/*if (m_pTerminalUI->IsActive())
 		m_bRender = false;
 	else if (m_pTip->IsActive())
 		m_bRender = false;
 	else if (m_pUIMen->IsActive())
 		m_bRender = false;
 	else
-		m_bRender = true;
+		m_bRender = true;*/
+	m_bRender = true;
 	//if (m_pTerminalUI->IsActive())
 	//{
 	//	OffRender(TimeDelta);
