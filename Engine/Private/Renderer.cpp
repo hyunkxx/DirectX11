@@ -83,7 +83,7 @@ void CRenderer::Draw()
 
 	Render_NonLight();
 	Render_AlphaBlend();
-
+	
 #ifdef _DEBUG
 	if (m_pRenderSetting->IsDebug())
 		RenderDebugBundle();

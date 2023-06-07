@@ -19,7 +19,7 @@
 
 #include "Item.h"
 
-#include "CityObject.h"
+#include "Level_Loading.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -84,13 +84,6 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_MapObject_Statue(TEXT("layer_statue"))))
 		return E_FAIL;
-	
-#pragma region CITY_LEVEL
-	/*
-	if (FAILED(Ready_Layer_CityObject()))
-		return E_FAIL;
-		*/
-#pragma endregion CITY_LEVEL
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
@@ -171,6 +164,9 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 	if (pGameInstance->InputKey(DIK_K) == KEY_STATE::TAP)
 		pGameInstance->TimeSlowDown(0.5f, 0.1f);
 
+
+	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_TAB))
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CITY));
 }
 
 void CLevel_GamePlay::RenderLevelUI()
@@ -2034,145 +2030,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Statue(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STATUE_1");
 		return E_FAIL;
 	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_GamePlay::Ready_Layer_CityObject()
-{
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_0.data"), TEXT("CityObejct_Bui_0_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_1.data"), TEXT("CityObejct_Bui_1_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_2.data"), TEXT("CityObejct_Bui_2_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_3.data"), TEXT("CityObejct_Bui_3_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_4.data"), TEXT("CityObejct_Bui_4_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_5.data"), TEXT("CityObejct_Bui_5_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_6.data"), TEXT("CityObejct_Bui_6_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_7.data"), TEXT("CityObejct_Bui_7_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_8.data"), TEXT("CityObejct_Bui_8_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_9.data"), TEXT("CityObejct_Bui_9_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_10.data"), TEXT("CityObejct_Bui_10_%d"))))
-		return E_FAIL;
-
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_11.data"), TEXT("CityObejct_Bui_11_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_12.data"), TEXT("CityObejct_Bui_12_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_13.data"), TEXT("CityObejct_Bui_13_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_14.data"), TEXT("CityObejct_Bui_14_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_15.data"), TEXT("CityObejct_Bui_15_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_16.data"), TEXT("CityObejct_Bui_16_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bui_17.data"), TEXT("CityObejct_Bui_17_%d"))))
-		return E_FAIL;
-
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Ele_0.data"), TEXT("CityObejct_Ele_0_%d"))))
-		return E_FAIL;
-
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Rai_0.data"), TEXT("CityObejct_Rai_0_%d"))))
-		return E_FAIL;
-
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Gro_0.data"), TEXT("CityObejct_Gro_0_%d"))))
-		return E_FAIL;
-
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Sta_0.data"), TEXT("CityObejct_Sta_0_%d"))))
-		return E_FAIL;
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Sta_1.data"), TEXT("CityObejct_Sta_1_%d"))))
-		return E_FAIL;
-
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Des_0.data"), TEXT("CityObejct_Des_0_%d"))))
-		return E_FAIL;
-
-	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Sto_0.data"), TEXT("CityObejct_Sto_0_%d"))))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLevel_GamePlay::Load_CityObject(const _tchar* pDataFilePath, const _tchar* pCityObjectTag)
-{
-	CGameInstance*			pGameInstance = CGameInstance::GetInstance();
-	if (nullptr == pGameInstance)
-		return E_FAIL;
-
-	HANDLE		hFile = CreateFile(pDataFilePath, GENERIC_READ, 0, 0,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-
-	if (INVALID_HANDLE_VALUE == hFile)
-	{
-		MSG_BOX("Failed to Load Data in Level_GamePlay : City_Object");
-		return E_FAIL;
-	}
-
-	const _tchar*			pLayerTag = { TEXT("") };
-
-	const _tchar*			pCityObejctTag = pCityObjectTag;
-	_tchar					szCityObjectTag[MAX_PATH] = { TEXT("") };
-
-	DWORD		dwByte = 0;
-
-	SCITY_OBJECT_DESC		CityObject_Desc = {};
-
-	_uint			iTotalCount = { 0 };
-
-	ReadFile(hFile, &iTotalCount, sizeof(_uint), &dwByte, nullptr);
-
-	if (0 >= iTotalCount)
-		return S_OK;
-
-	for (_uint i = 0; i < iTotalCount; ++i)
-	{
-		ZeroMemory(&CityObject_Desc, sizeof(SCITY_OBJECT_DESC));
-
-		ReadFile(hFile, &CityObject_Desc.PSA.vP, sizeof(_float3), &dwByte, nullptr);
-		ReadFile(hFile, &CityObject_Desc.PSA.vS, sizeof(_float3), &dwByte, nullptr);
-		ReadFile(hFile, &CityObject_Desc.PSA.vA, sizeof(_float3), &dwByte, nullptr);
-
-		ReadFile(hFile, &CityObject_Desc.iSMD_ID, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, &CityObject_Desc.iType_ID, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, &CityObject_Desc.iOption_ID, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, &CityObject_Desc.iSelf_ID, sizeof(_uint), &dwByte, nullptr);
-
-		switch (CityObject_Desc.iOption_ID)
-		{
-		case Client::CCityObject::OP_DECO:
-			pLayerTag = TEXT("layer_city_deco");
-			break;
-		case Client::CCityObject::OP_FLOOR:
-			pLayerTag = TEXT("layer_city_floor");
-			break;
-		case Client::CCityObject::OP_INTERACT:
-			pLayerTag = TEXT("layer_city_interact");
-			break;
-		case Client::CCityObject::OP_END:
-			break;
-		default:
-			break;
-		}
-
-		wsprintf(szCityObjectTag, pCityObejctTag, i);
-
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CITY_OBJECT,
-			pLayerTag, szCityObjectTag, &CityObject_Desc)))
-		{
-			MSG_BOX("Failed to Add_GameObject In Level_GamePlay : City_Object");
-			return E_FAIL;
-		}
-	}
-
-	CloseHandle(hFile);
 
 	return S_OK;
 }

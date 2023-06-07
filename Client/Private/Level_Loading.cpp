@@ -8,10 +8,12 @@
 #include "Loader.h"
 #include "Level_Logo.h"
 #include "Level_GamePlay.h"
+#include "Level_City.h"
 #include "Level_Test.h"
 #include "Level_AnimTool.h"
 #include "BackGround.h"
 #include "Intro.h"
+
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -86,8 +88,10 @@ void CLevel_Loading::Tick(_double TimeDelta)
 		case LEVEL_GAMEPLAY:
 			pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
 			break;
+		case LEVEL_CITY:
+			pLevel = CLevel_City::Create(m_pDevice, m_pContext);
+			break;
 		case LEVEL_TEST:
-
 			pLevel = CLevel_Test::Create(m_pDevice, m_pContext);
 			break;
 		case LEVEL_ANIMTOOL:

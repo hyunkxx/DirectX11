@@ -14,6 +14,7 @@ public:
 	HRESULT Initialize(LEVEL_ID eNextLevel);
 	HRESULT Load_Level_Logo();
 	HRESULT Load_Level_GamePlay();
+	HRESULT Load_Level_City();
 	HRESULT Load_Level_AnimTool();
 	HRESULT Load_Level_Test();
 
