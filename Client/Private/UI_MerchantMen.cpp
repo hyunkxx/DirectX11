@@ -50,7 +50,7 @@ void CUI_MerchantMen::Start()
 	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
-	//m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel;
+	//m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel; // 나중에 주석 풀기
 	m_pDB = CItemDB::GetInstance();
 	SetState(DISABLE);
 
@@ -61,8 +61,8 @@ void CUI_MerchantMen::Start()
 	itemDesc[3] = m_pDB->GetItemData(ITEM::EXP2);
 	itemDesc[4] = m_pDB->GetItemData(ITEM::COMMEMORATIVE_COIN);
 	itemDesc[5] = m_pDB->GetItemData(ITEM::TACTREITE_VOUCHER);
-	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3);
-	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4);
+	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
+	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4); // 나중에 주석 풀기
 
 
 	_float3 color0 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[0].eItemGrade);
@@ -208,10 +208,9 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 	break;
 	}
 
-	//m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel;
-	//casket 수량 가져와야함 , 인벤에 내보내야함
-	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3);
-	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4);
+	//m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel; // 나중에 주석 풀기
+	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
+	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4); // 나중에 주석 풀기
 	_int num = ItemNum / 1;
 	m_CasketList[3].iTexNum = 67 + num;
 	_int Ten = CurrentOwn / 10;
@@ -505,6 +504,20 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 							m_RewardboxRender = false;
 							m_bRewardReceived[0] = true;
 							m_MessageList[0].bRender = false;
+
+							// 보상 인벤에 넣기
+							m_pInven->AddItem(ITEM::TACTITE_COIN, 26000);
+							m_pInven->AddItem(ITEM::EXP0, 3);
+							m_pInven->AddItem(ITEM::EXP1, 2);
+							m_pInven->AddItem(ITEM::EXP2, 1);
+							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 1);
+							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 1);
+							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
+							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
+							CurrentOwn = CurrentOwn - (ItemNum * NeedNum);
+
+
+
 						}
 					}
 					else
@@ -521,16 +534,6 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						if (MinusAlphaW(&m_FinalList, TimeDelta))
 						{
 							m_CancelMsgbox = true;
-							// 보상 인벤에 넣기
-							m_pInven->AddItem(ITEM::TACTITE_COIN, 26000);
-							m_pInven->AddItem(ITEM::EXP0, 3);
-							m_pInven->AddItem(ITEM::EXP1, 2);
-							m_pInven->AddItem(ITEM::EXP2, 1);
-							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 1);
-							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 1);
-							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
-							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
-							CurrentOwn = CurrentOwn - (ItemNum * NeedNum);
 						}
 					}
 
@@ -699,6 +702,17 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 							m_RewardboxRender = false;
 							m_bRewardReceived[1] = true;
 							m_MessageList[0].bRender = false;
+
+							// 보상 인벤에 넣기
+							m_pInven->AddItem(ITEM::TACTITE_COIN, 42000);
+							m_pInven->AddItem(ITEM::EXP0, 5);
+							m_pInven->AddItem(ITEM::EXP1, 2);
+							m_pInven->AddItem(ITEM::EXP2, 2);
+							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 1);
+							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 1);
+							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
+							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
+							CurrentOwn = CurrentOwn - (ItemNum * NeedNum);
 						}
 					}
 					else
@@ -714,17 +728,6 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						if (MinusAlphaW(&m_FinalList, TimeDelta))
 						{
 							m_CancelMsgbox = true;
-
-							// 보상 인벤에 넣기
-							m_pInven->AddItem(ITEM::TACTITE_COIN, 42000);
-							m_pInven->AddItem(ITEM::EXP0, 5);
-							m_pInven->AddItem(ITEM::EXP1, 2);
-							m_pInven->AddItem(ITEM::EXP2, 2);
-							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 1);
-							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 1);
-							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
-							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
-							CurrentOwn = CurrentOwn - (ItemNum * NeedNum);
 						}
 					}
 
@@ -780,7 +783,6 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			else // 미클릭
 			{
 				// 받을 수 있지만 아직 안 받은 상태
-				m_DeliverList[0].iTexNum = 55;
 				m_DeliverList[2].bRender = false;
 
 				m_0RewardList[3].bRender = false;
@@ -894,6 +896,17 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 							m_RewardboxRender = false;
 							m_bRewardReceived[2] = true;
 							m_MessageList[0].bRender = false;
+
+							// 보상 인벤에 넣기
+							m_pInven->AddItem(ITEM::TACTITE_COIN, 64000);
+							m_pInven->AddItem(ITEM::EXP0, 8);
+							m_pInven->AddItem(ITEM::EXP1, 3);
+							m_pInven->AddItem(ITEM::EXP2, 2);
+							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 2);
+							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 2);
+							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
+							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
+							CurrentOwn = CurrentOwn - (ItemNum * NeedNum);
 						}
 					}
 					else
@@ -909,16 +922,6 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						if (MinusAlphaW(&m_FinalList, TimeDelta))
 						{
 							m_CancelMsgbox = true;
-							// 보상 인벤에 넣기
-							m_pInven->AddItem(ITEM::TACTITE_COIN, 64000);
-							m_pInven->AddItem(ITEM::EXP0, 8);
-							m_pInven->AddItem(ITEM::EXP1, 3);
-							m_pInven->AddItem(ITEM::EXP2, 2);
-							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 2);
-							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 2);
-							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
-							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
-							CurrentOwn = CurrentOwn - (ItemNum * NeedNum);
 						}
 					}
 
@@ -973,7 +976,6 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			else // 미클릭
 			{
 				// 받을 수 있지만 아직 안 받은 상태
-				m_DeliverList[0].iTexNum = 55;
 				m_DeliverList[2].bRender = false;
 
 				m_0RewardList[3].bRender = false;
@@ -1087,6 +1089,17 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 							m_RewardboxRender = false;
 							m_bRewardReceived[3] = true;
 							m_MessageList[0].bRender = false;
+
+							// 보상 인벤에 넣기
+							m_pInven->AddItem(ITEM::TACTITE_COIN, 106000);
+							m_pInven->AddItem(ITEM::EXP0, 10);
+							m_pInven->AddItem(ITEM::EXP1, 6);
+							m_pInven->AddItem(ITEM::EXP2, 3);
+							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 3);
+							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 2);
+							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
+							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
+							CurrentOwn = CurrentOwn - (ItemNum * NeedNum); // 인벤토리 연결하고나면 지우기
 						}
 					}
 					else
@@ -1102,16 +1115,6 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						if (MinusAlphaW(&m_FinalList, TimeDelta))
 						{
 							m_CancelMsgbox = true;
-							// 보상 인벤에 넣기
-							m_pInven->AddItem(ITEM::TACTITE_COIN, 106000);
-							m_pInven->AddItem(ITEM::EXP0, 10);
-							m_pInven->AddItem(ITEM::EXP1, 6);
-							m_pInven->AddItem(ITEM::EXP2, 3);
-							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 3);
-							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 2);
-							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
-							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
-							CurrentOwn = CurrentOwn - (ItemNum * NeedNum); // 인벤토리 연결하고나면 지우기
 						}
 					}
 
@@ -1166,7 +1169,6 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			else // 미클릭
 			{
 				// 받을 수 있지만 아직 안 받은 상태
-				m_DeliverList[0].iTexNum = 55;
 				m_DeliverList[2].bRender = false;
 
 				m_0RewardList[3].bRender = false;
@@ -1282,6 +1284,17 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 							m_RewardboxRender = false;
 							m_bRewardReceived[4] = true;
 							m_MessageList[0].bRender = false;
+
+							// 보상 인벤에 넣기
+							m_pInven->AddItem(ITEM::TACTITE_COIN, 169000);
+							m_pInven->AddItem(ITEM::EXP0, 10);
+							m_pInven->AddItem(ITEM::EXP1, 8);
+							m_pInven->AddItem(ITEM::EXP2, 5);
+							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 5);
+							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 3);
+							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
+							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
+							CurrentOwn = CurrentOwn - (ItemNum * NeedNum);
 						}
 					}
 					else
@@ -1297,17 +1310,6 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						if (MinusAlphaW(&m_FinalList, TimeDelta))
 						{
 							m_CancelMsgbox = true;
-							// 보상 인벤에 넣기
-							m_pInven->AddItem(ITEM::TACTITE_COIN, 169000);
-							m_pInven->AddItem(ITEM::EXP0, 10);
-							m_pInven->AddItem(ITEM::EXP1, 8);
-							m_pInven->AddItem(ITEM::EXP2, 5);
-							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 5);
-							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 3);
-							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
-							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
-							CurrentOwn = CurrentOwn - (ItemNum * NeedNum);
-
 						}
 					}
 				}
@@ -1363,8 +1365,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			}
 			else // 미클릭
 			{
-				// 받을 수 있지만 아직 안 받은 상태
-				m_DeliverList[0].iTexNum = 55;
+				// 받을 수 있지만 아직 안 받은 상태	
 				m_DeliverList[2].bRender = false;
 
 				m_0RewardList[3].bRender = false;
@@ -1543,11 +1544,15 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		// 창 닫힐 때 전체 랜더off
 		if (SelectUI(&m_CommonList[10])) // 별 닫기
 		{
+			m_CommonList[10].iTexNum = 12;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
 				m_CommonList[10].OnRect = true;
 			}
 		}
+		else
+			m_CommonList[10].iTexNum = 11;
+
 		if (true == m_CommonList[10].OnRect)
 		{
 			if (InMenuEnd(TimeDelta))

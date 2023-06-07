@@ -117,7 +117,7 @@ private:
 	// 플레이어state랑 연결시킬것
 	_int		m_PlayerCurrentLevel = { 50 };
 	// 임시 변수
-	_int		CurrentOwn = { 18 };
+	_int		CurrentOwn =  { 2 };
 	_int		NeedNum		= { 0 };
 	_int		ItemNum		= { 0 };
 
