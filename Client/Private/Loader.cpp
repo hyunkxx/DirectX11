@@ -78,6 +78,9 @@ unsigned int APIENTRY ThreadEntry(void* pArg)
 	case LEVEL_GAMEPLAY:
 		pLoader->Load_Level_GamePlay();
 		break;
+	case LEVEL_CITY:
+		pLoader->Load_Level_City();
+		break;
 	case LEVEL_TEST:
 		pLoader->Load_Level_Test();
 		break;
@@ -342,15 +345,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::NAVIGATION,
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Navigation/Navigation.data")))))
 		return E_FAIL;
-	
-#pragma region CITY_LEVEL
-	/*
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::NAVIGATION,
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/City/Navigation/Navigation.data")))))
-		return E_FAIL;
-		*/
-#pragma endregion CITY_LEVEL
-
 
 
 	m_pApp->LoadRatio(0.2f);
@@ -1609,34 +1603,15 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 #pragma region TERRAIN
 
-	
-	// GamePlay
 	// Height7 Height7_1 
-	
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::VIBUFFER_TERRAIN,
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height7_1.bmp"), TEXT("../../Data/GamePlay/Terrain/Height_Map/Vertices.data")))))
 		return E_FAIL;
 		
-
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_FILTER,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Terrain/Filter_Map/Filter.dds")))))
 		return E_FAIL;
-	
-
-#pragma region CITY_LEVEL
-	/*
-	// Height_0
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::VIBUFFER_TERRAIN,
-		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height_0.bmp"), TEXT("../../Data/City/Terrain/Height_Map/Vertices.data")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_FILTER,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Data/City/Terrain/Filter_Map/Filter.dds")))))
-		return E_FAIL;
-	*/
-#pragma endregion CITY_LEVEL
 		
-
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_D_1,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_01_D.dds")))))
 		return E_FAIL;
@@ -1665,179 +1640,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 
 #pragma endregion TERRAIN
-
-
-#pragma region CITY_LEVEL 
-	// BUI
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_0,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/0/SM_Cit_Bui_06.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_0");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_1,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/1/SM_Cit_Bui_08AM.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_1");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_2,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/2/SM_Cit_Bui_08BM.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_2");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_3,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/3/SM_Cit_Bui_08CM.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_3");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_4,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/4/SM_Cit_Bui_08DL.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_4");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_5,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/5/SM_Cit_Bui_08EM.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_5");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_6,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/6/SM_Cit_Bui_09AH_CH_12AH_CH_DH.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_6");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_7,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/7/SM_Cit_Bui_09BH.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_7");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_8,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/8/SM_Cit_Bui_09DM.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_8");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_9,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/9/SM_Cit_Bui_10.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_9");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_10,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/10/SM_Cit_Bui_14.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_10");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_11,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/11/SM_Cit_Bui_16AM.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_11");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_12,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/12/SM_Cit_Bui_22.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_12");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_13,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/13/SM_Cit_Bui_23.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_13");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_14,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/14/SM_Cit_Bui_24.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_14");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_15,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/15/SM_Cit_Bui_25.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_15");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_16,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/16/SM_Cit_Bui_26.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_16");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_BUI_17,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/17/SM_Cit_Bui_27.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BUI_17");
-		return E_FAIL;
-	}
-
-	// ELE
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_ELE_0,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Ele/0/SM_Ele_01.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_ELE_0");
-		return E_FAIL;
-	}
-
-	// RAI
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_RAI_0,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Rai/0/SM_Cit_Rai_03AS.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_RAI_0");
-		return E_FAIL;
-	}
-
-	// GRO
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_GRO_0,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Gro/0/SM_Cit_Gro_03.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_GRO_0");
-		return E_FAIL;
-	}
-
-	// STA
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_STA_0,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Sta/0/SM_Cit_Sta_03AS.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_STA_0");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_STA_1,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Sta/1/SM_Cit_Sta_03BS.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_STA_1");
-		return E_FAIL;
-	}
-
-	// DES
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_DES_0,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Des/0/SM_Cit_Des_08AM.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_DES_0");
-		return E_FAIL;
-	}
-
-	// STO
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_CIT_STO_0,
-		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Sto/0/SM_Cit_Sto_14AM.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_STO_0");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CITY_OBJECT, CCityObject::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-#pragma endregion CITY_LEVEL
 
 	m_pApp->LoadRatio(0.9f);
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
@@ -1948,6 +1750,318 @@ HRESULT CLoader::Load_Level_GamePlay()
 	return S_OK;
 }
 
+HRESULT CLoader::Load_Level_City()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
+
+
+#pragma region COMPONENTS
+
+	m_pApp->LoadRatio(0.1f);
+	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+
+#pragma region TERRAIN
+	
+	// Height_0
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, COMPONENT::VIBUFFER_TERRAIN,
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height_0.bmp"), TEXT("../../Data/City/Terrain/Height_Map/Vertices.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : VIBUFFER_TERRAIN");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::TERRAIN_FILTER,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Data/City/Terrain/Filter_Map/Filter.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : TERRAIN_FILTER");
+		return E_FAIL;
+	}
+	
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::TERRAIN_D_1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_01_D.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : TERRAIN_D_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::TERRAIN_D_2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Roc_01A_D.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : TERRAIN_D_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::TERRAIN_D_3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_16_D.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : TERRAIN_D_3");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::TERRAIN_D_4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_02_D.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : TERRAIN_D_4");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::TERRAIN_N_1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_01_N.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : TERRAIN_N_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::TERRAIN_N_2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Roc_01A_N.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : TERRAIN_N_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::TERRAIN_N_3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_16_N.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::TERRAIN_N_4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_02_N.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : TERRAIN_N_4");
+		return E_FAIL;
+	}
+
+#pragma endregion TERRAIN
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, COMPONENT::NAVIGATION,
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/City/Navigation/Navigation.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : NAVIGATION");
+		return E_FAIL;
+	}
+	m_pApp->LoadRatio(0.2f);
+	m_szLoadingStateText = L"모델를 로딩중입니다.";
+
+#pragma region CITY_OBJECT 
+	// BUI
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_0,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/0/SM_Cit_Bui_06.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_1,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/1/SM_Cit_Bui_08AM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_2,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/2/SM_Cit_Bui_08BM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_3,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/3/SM_Cit_Bui_08CM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_3");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_4,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/4/SM_Cit_Bui_08DL.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_4");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_5,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/5/SM_Cit_Bui_08EM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_5");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_6,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/6/SM_Cit_Bui_09AH_CH_12AH_CH_DH.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_6");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_7,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/7/SM_Cit_Bui_09BH.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_7");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_8,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/8/SM_Cit_Bui_09DM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_8");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_9,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/9/SM_Cit_Bui_10.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_9");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_10,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/10/SM_Cit_Bui_14.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_10");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_11,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/11/SM_Cit_Bui_16AM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_11");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_12,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/12/SM_Cit_Bui_22.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_12");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_13,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/13/SM_Cit_Bui_23.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_13");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_14,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/14/SM_Cit_Bui_24.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_14");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_15,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/15/SM_Cit_Bui_25.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_15");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_16,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/16/SM_Cit_Bui_26.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_16");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BUI_17,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bui/17/SM_Cit_Bui_27.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_BUI_17");
+		return E_FAIL;
+	}
+
+	// ELE
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_ELE_0,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Ele/0/SM_Ele_01.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_ELE_0");
+		return E_FAIL;
+	}
+
+	// RAI
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_RAI_0,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Rai/0/SM_Cit_Rai_03AS.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_RAI_0");
+		return E_FAIL;
+	}
+
+	// GRO
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_GRO_0,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Gro/0/SM_Cit_Gro_03.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_GRO_0");
+		return E_FAIL;
+	}
+
+	// STA
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_STA_0,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Sta/0/SM_Cit_Sta_03AS.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_STA_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_STA_1,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Sta/1/SM_Cit_Sta_03BS.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_STA_1");
+		return E_FAIL;
+	}
+
+	// DES
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_DES_0,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Des/0/SM_Cit_Des_08AM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_DES_0");
+		return E_FAIL;
+	}
+
+	// STO
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_STO_0,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Sto/0/SM_Cit_Sto_14AM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_CIT_STO_0");
+		return E_FAIL;
+	}
+
+#pragma endregion CITY_OBJECT
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_SKY");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_SKY_LOBBY");
+		return E_FAIL;
+	}
+
+	m_pApp->LoadRatio(0.9f);
+	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+#pragma endregion COMPONENTS
+
+#pragma region GAMEOBJECTS
+
+	m_pApp->LoadRatio(1.f);
+	m_szLoadingStateText = L"객체원본을 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CITY_OBJECT, CCityObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion GAMEOBJECTS
+
+	m_Start = (_uint)time(nullptr);
+
+	while (true)
+	{
+		m_Wait = (_uint)time(nullptr);
+
+		if (m_Wait - m_Start >= 3)
+			break;
+	}
+
+	m_szLoadingStateText = L"Load Completed";
+	m_isFinish = true;
+
+
+	return S_OK;
+}
+
 HRESULT CLoader::Load_Level_AnimTool()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -2027,7 +2141,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Ribbon.dmdl")))))
 		return E_FAIL;
-
+	
 	//// chixia == 쌍권총녀 // AimAttack, AirAttack, HoldShot 더 있음
 	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia.dmdl")))))
 	//	return E_FAIL;

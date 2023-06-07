@@ -76,9 +76,12 @@ void CCityObject::LateTick(_double TimeDelta)
 	if (nullptr == pGameInstance)
 		return;
 
-	if (nullptr != m_pRendererCom && 0.0f < m_fCullingRatio 
-		&& true == pGameInstance->InWorldSpace(m_pMainTransform->Get_State(CTransform::STATE_POSITION), m_fCullingRatio))
+	if (0.0f < m_fCullingRatio && false == pGameInstance->InWorldSpace(m_pMainTransform->Get_State(CTransform::STATE_POSITION), m_fCullingRatio))
+		return;
+	
+	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
+		
 }
 
 HRESULT CCityObject::Render()

@@ -40,10 +40,6 @@ private:
 	HRESULT Ready_Layer_MapObject_Pil(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MapObject_Statue(const _tchar* pLayerTag);
 
-private:
-	HRESULT Ready_Layer_CityObject();
-	HRESULT Load_CityObject(const _tchar* pDataFilePath, const _tchar* pObjectTag);
-
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
