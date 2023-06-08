@@ -32,6 +32,7 @@ HRESULT CAcquireSystem::Initialize_Prototype()
 HRESULT CAcquireSystem::Initialize(void * pArg)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CGameMode* pGameMode = CGameMode::GetInstance();
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -39,17 +40,18 @@ HRESULT CAcquireSystem::Initialize(void * pArg)
 	m_pInteractionUI = static_cast<CInteractionUI*>(pGameInstance->Clone_GameObject(OBJECT::UI_INTERACTION));
 	m_pAcquireUI = static_cast<CAcquireUI*>(pGameInstance->Clone_GameObject(OBJECT::UI_ACQUIRE));
 
+	m_pInteractionUI->Start();
+	m_pAcquireUI->Start();
+	m_pInventory = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
+
+	pGameMode->SetupAcquireSystem(this);
+
 	return S_OK;
 }
 
 void CAcquireSystem::Start()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	m_pInteractionUI->Start();
-	m_pAcquireUI->Start();
-
-	m_pInventory = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 }
 
 void CAcquireSystem::Tick(_double TimeDelta)

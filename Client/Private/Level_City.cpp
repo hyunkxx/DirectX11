@@ -31,6 +31,9 @@ HRESULT CLevel_City::Initialize()
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+	// 몬스터들 상태 초기화 해놓기
+	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
 
@@ -207,7 +210,42 @@ HRESULT CLevel_City::Ready_Layer_Camera(const _tchar* pLayerTag)
 {
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	if (nullptr == pGameInstance || nullptr == pGM)
+
+	//Camera Setting
+	CCamera::CAMERA_DESC CameraDesc;
+	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERA_DESC));
+
+	CameraDesc.TransformDesc.fMoveSpeed = 5.f;
+	CameraDesc.TransformDesc.fRotationSpeed = XMConvertToRadians(45.f);
+
+	CameraDesc.vEye = _float3(0.f, 10.f, -10.f);
+	CameraDesc.vAt = _float3(10.f, 3.f, 10.f);
+	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
+
+	CameraDesc.fFovy = XMConvertToRadians(45.f);
+	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CameraDesc.fNear = 0.1f;
+	CameraDesc.fFar = 1000.f;
+
+	//Light Setting
+	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);
+	pGameInstance->SetLightMatrix(vLightProjMatrix, LIGHT_MATRIX::LIGHT_PROJ);
+
+	_vector vBakeLightPos = XMVectorSet(-80.f, 390.f, -80.f, 1.f);
+	_vector vBakeLightAt = XMVectorSet(200.f, 0.f, 200.f, 1.f);
+
+	pGameInstance->BakeShadowLight(vBakeLightPos, vBakeLightAt);
+
+	//PlayerCamera Setting
+	CPlayerCamera::PLAYERCAM_DESC PCamDesc;
+	ZeroMemory(&PCamDesc, sizeof CPlayerCamera::PLAYERCAM_DESC);
+	PCamDesc.CamDesc = CameraDesc;
+	// PCamDesc.pPlayerTransform  >> Start에서 채움
+	// PCamDesc.vDir Start에서 채움
+	PCamDesc.fDistance = 4.f;
+	PCamDesc.fXAngle = 20.f;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::PLAYER_CAMERA, pLayerTag, L"player_camera", &PCamDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -217,6 +255,9 @@ HRESULT CLevel_City::Ready_Layer_Player(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -233,8 +274,23 @@ HRESULT CLevel_City::Ready_Layer_Monster(const _tchar * pLayerTag)
 
 HRESULT CLevel_City::Ready_Layer_UI(const _tchar * pLayerTag)
 {
+	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	if (nullptr == pGameInstance)
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::UICharacter, pLayerTag, TEXT("UI_Character"))))
+		return E_FAIL;
+	
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::UI, pLayerTag, TEXT("UI_MainScreen"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::MOUSE, pLayerTag, TEXT("UI_Mouse"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::UITAPT, pLayerTag, TEXT("UI_TapT"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::UIMINIMAP, pLayerTag, TEXT("UI_Minimap"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::UITIP, pLayerTag, TEXT("UI_Tip"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::UIMERCHANTMEN, pLayerTag, TEXT("UI_MerchantMen"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -325,6 +381,7 @@ HRESULT CLevel_City::Load_CityObject(const _tchar* pDataFilePath, const _tchar* 
 
 	DWORD		dwByte = 0;
 
+
 	SCITY_OBJECT_DESC		CityObject_Desc = {};
 
 	_uint			iTotalCount = { 0 };
@@ -366,7 +423,7 @@ HRESULT CLevel_City::Load_CityObject(const _tchar* pDataFilePath, const _tchar* 
 
 		wsprintf(szCityObjectTag, pCityObejctTag, i);
 
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CITY_OBJECT,
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::CITY_OBJECT,
 			pLayerTag, szCityObjectTag, &CityObject_Desc)))
 		{
 			MSG_BOX("Failed to Add_GameObject In Level_GamePlay : City_Object");
@@ -396,4 +453,6 @@ CLevel_City* CLevel_City::Create(ID3D11Device * pDevice, ID3D11DeviceContext * p
 void CLevel_City::Free()
 {
 	__super::Free();
+
+	CP_PlayerGirl::Release_States();
 }

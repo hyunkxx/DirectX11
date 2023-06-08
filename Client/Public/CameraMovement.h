@@ -37,6 +37,7 @@ public:
 	HRESULT AddCamera(CAM_TYPE eCameraType, CCamera* pCamera);
 	void UseCamera(CAM_TYPE eCameraType);
 	void SetupBone(CAM_TYPE eCameraType, CBone* pBone);
+	void ResetPlayerCamera();
 
 public:
 	void StartWave();

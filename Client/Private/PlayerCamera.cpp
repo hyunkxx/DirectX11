@@ -100,7 +100,6 @@ void CPlayerCamera::Start()
 	pCamMovement->AddCamera(CCameraMovement::CAM_MAINPLAYER, this);
 	pCamMovement->BindCamera(CCameraMovement::CAM_MAINPLAYER, this);
 	pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
-	ShowCursor(false);
 
 	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
 	m_pUITap = static_cast<CUI_TapT*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_TapT"));

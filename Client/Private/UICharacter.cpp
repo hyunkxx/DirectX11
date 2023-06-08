@@ -58,7 +58,6 @@ void UICharacter::Start()
 	CGameInstance* pGI = CGameInstance::GetInstance();
 
 	m_pCamMovement = static_cast<CCameraMovement*>(pGI->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
-
 	static_cast<CResonatorUI*>(pGI->Find_GameObject(LEVEL_STATIC, L"Resonator"))->BindUIChracter(this);
 }
 
@@ -413,11 +412,11 @@ HRESULT UICharacter::addComponents()
 		TEXT("Com_Shader_ModelVTF"), (CComponent**)&m_pModel)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, DMODEL::DMD_UI_ROVER,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_UI_ROVER,
 		TEXT("Com_Shader_ModelAnimBase"), (CComponent**)&m_pAnimSetBase)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, DMODEL::DMD_UI_ROVER_RIBBON,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_UI_ROVER_RIBBON,
 		TEXT("Com_Shader_ModelAnimRibbon"), (CComponent**)&m_pAnimSetRibbon)))
 		return E_FAIL;
 

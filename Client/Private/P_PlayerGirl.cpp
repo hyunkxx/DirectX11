@@ -113,8 +113,20 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	// 요거 건들였어요.
 	//m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(137.131f, 25.745f, 196.163f, 1.f));
 	//m_pNaviCom->Set_CurrentIndex(1457);
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 30.776f, 1.f));
-	m_pNaviCom->Set_CurrentIndex(0);
+
+	CGameMode* pGameMode = CGameMode::GetInstance();
+
+	switch (pGameMode->GetCurrentLevel())
+	{
+	case LEVEL_GAMEPLAY:
+		m_pNaviCom->Set_CurrentIndex(0);
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 30.776f, 1.f));
+		break;
+	case LEVEL_CITY:
+		m_pNaviCom->Set_CurrentIndex(0);
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(70.f, 15.50f, 118.f, 1.f));
+		break;
+	}
 
 	//m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
 
@@ -151,7 +163,6 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	// 초기 상태 꺼놓음
 	m_pAttackCollider->SetActive(false);
 
-	CGameMode* pGameMode = CGameMode::GetInstance();
 	_uint iLevel = pGameMode->GetCurrentLevel();
 
 	if(iLevel == LEVEL_GAMEPLAY)
@@ -192,11 +203,8 @@ void CP_PlayerGirl::Start()
 
 	m_pInven->AddItem(ITEM::GEM, 100);
 
-	m_pInven->AddItem(ITEM::SWORD0, 8);
-	m_pInven->AddItem(ITEM::SWORD1, 3);
-	m_pInven->AddItem(ITEM::SWORD2, 3);
-	m_pInven->AddItem(ITEM::SWORD3, 3);
-	m_pInven->AddItem(ITEM::SWORD4, 3);
+	m_pInven->AddItem(ITEM::SWORD0, 1);
+	m_pInven->AddItem(ITEM::SWORD1, 1);
 
 }
 

@@ -263,7 +263,7 @@ HRESULT CUI_Tip::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UITIP,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UITIP,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 

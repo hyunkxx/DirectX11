@@ -14,6 +14,8 @@
 #include "BackGround.h"
 #include "Intro.h"
 
+#include "CameraMovement.h"
+
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -80,6 +82,10 @@ void CLevel_Loading::Tick(_double TimeDelta)
 
 		pGM->SetCurrentLevel(m_eNextLevel);
 		
+		CGameObject* pCamHandler = pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement");
+		if (pCamHandler)
+			static_cast<CCameraMovement*>(pCamHandler)->ResetPlayerCamera();
+
 		switch (m_eNextLevel)
 		{
 		case LEVEL_LOGO:

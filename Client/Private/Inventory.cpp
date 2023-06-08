@@ -297,6 +297,9 @@ _bool CInventory::addWeapon(CItem::ITEM_DESC tagItemDesc)
 	_uint iItemAmount = tagItemDesc.iAmount;
 	tagItemDesc.iAmount = 1;
 
+	if (m_Items[INVEN_WEAPON].size() >= m_iSlotLimit[INVEN_WEAPON])
+		return false;
+
 	_uint iPushCount = 0;
 
 	while (iPushCount < iItemAmount)

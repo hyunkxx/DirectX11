@@ -90,6 +90,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
 
 	pGM->ResetStaticShadowBake();
+	ShowCursor(false);
 
 	return S_OK;
 }
@@ -293,8 +294,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	PCamDesc.fDistance = 4.f;
 	PCamDesc.fXAngle = 20.f;
 
-	CGameObject* pObject = nullptr;
-	if (FAILED(pGameInstance->Add_GameObjectEx(&pObject, LEVEL_GAMEPLAY, OBJECT::PLAYER_CAMERA, pLayerTag, L"player_camera", &PCamDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYER_CAMERA, pLayerTag, L"player_camera", &PCamDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -359,11 +359,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UIMERCHANTMEN, pLayerTag, TEXT("UI_MerchantMen"))))
 		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_GameObjectEx(&m_pAcquireSystem, LEVEL_GAMEPLAY, OBJECT::ACQUIRE_SYSTEM, pLayerTag, TEXT("AcquireSystem"))))
-		return E_FAIL;
-
-	pGameMode->SetupAcquireSystem(static_cast<CAcquireSystem*>(m_pAcquireSystem));
 
 	return S_OK;
 }

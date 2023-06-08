@@ -1759,6 +1759,43 @@ HRESULT CLoader::Load_Level_City()
 
 	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::EYE_BURST,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::EYE_MASK,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeMask.dds"))))
+		return E_FAIL;
+
+
+	// ui
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Main/main%d.dds"), 255))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMOUSE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Mouse/CursorPre%d.dds"), 2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMAPDEFAULT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/DefaultIcon%d.dds"), 3))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMAPICON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Icon%d.dds"), 47))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIFIGHT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Fight/Fight%d.dds"), 90))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UITIP,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 29))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMERCHANT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/MerchantMen/merchantmen%d.dds"), 135))))
+		return E_FAIL;
+
 
 #pragma region COMPONENTS
 
@@ -1841,6 +1878,40 @@ HRESULT CLoader::Load_Level_City()
 	}
 	m_pApp->LoadRatio(0.2f);
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
+
+	// UIModel_Rover
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_UI_ROVER, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_UI_ROVER_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	// SMODEL
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sword.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SWORD_0_SCABBARD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Scabbard.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_HULU_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
+		return E_FAIL;
+
+	// DMODEL
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+	m_pApp->LoadRatio(0.6f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
+		return E_FAIL;
 
 #pragma region CITY_OBJECT 
 	// BUI
@@ -2058,7 +2129,6 @@ HRESULT CLoader::Load_Level_City()
 
 	m_szLoadingStateText = L"Load Completed";
 	m_isFinish = true;
-
 
 	return S_OK;
 }

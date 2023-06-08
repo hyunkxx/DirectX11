@@ -142,6 +142,12 @@ void CCameraMovement::SetupBone(CAM_TYPE eCameraType, CBone * pBone)
 	static_cast<CActionCam*>(m_pCams[eCameraType])->SetupBone(pBone);
 }
 
+void CCameraMovement::ResetPlayerCamera()
+{
+	if(m_pCams[CAM_MAINPLAYER])
+		m_pCams[CAM_MAINPLAYER] = nullptr;
+}
+
 void CCameraMovement::StartWave()
 {
 	if (m_eCurCamType != CAM_MAINPLAYER)

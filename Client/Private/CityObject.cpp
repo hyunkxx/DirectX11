@@ -143,7 +143,7 @@ HRESULT CCityObject::Render_Default()
 	{
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
 			return E_FAIL;
-
+		
 		// Model 중 NormalTextrue 가 없는 Model 은 m_IsNormalTex 이 false 가 되어서 노말맵 을 적용시키지 않음.
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsNormalTex)))
 			return E_FAIL;
@@ -193,8 +193,13 @@ HRESULT CCityObject::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pMainTransform, &TransformDesc)))
 		return E_FAIL;
 
+	CCollider::COLLIDER_DESC CollDesc;
+	CollDesc.owner = this;
+	CollDesc.vCenter = { 0.f, 0.f, 0.f };
+	CollDesc.vExtents = { 0.4f, 0.f, 0.4f };
+	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
-		TEXT("com_collider_sphere"), (CComponent**)&m_pCollider)))
+		TEXT("com_collider_sphere"), (CComponent**)&m_pCollider, &CollDesc)))
 		return E_FAIL;
 
 	/* For.Com_Model */

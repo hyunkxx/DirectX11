@@ -13,6 +13,7 @@
 #include "CameraMovement.h"
 
 #include "Lobby_Character.h"
+#include "AcquireSystem.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -199,6 +200,7 @@ HRESULT CLevel_Logo::Ready_Layer_Character(const _tchar * pLayerTag)
 HRESULT CLevel_Logo::Ready_StaticGameObject(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CGameMode* pGameMode = CGameMode::GetInstance();
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_SYSTEM, L"EchoSystem", L"Echo")))
 		return E_FAIL;
@@ -207,6 +209,9 @@ HRESULT CLevel_Logo::Ready_StaticGameObject(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::UI_TERMINAL, L"Terminal_UI", L"Terminal")))
+		return E_FAIL;
+	
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ACQUIRE_SYSTEM, pLayerTag, TEXT("AcquireSystem"))))
 		return E_FAIL;
 
 	return S_OK;

@@ -1946,7 +1946,7 @@ HRESULT CUI_MerchantMen::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UIMERCHANT,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UIMERCHANT,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
