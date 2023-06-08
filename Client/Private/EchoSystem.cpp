@@ -104,7 +104,7 @@ HRESULT CEchoSystem::Initialize(void * pArg)
 	m_Echos[EC_ELITE_STONE].bActive = true;
 	m_Echos[EC_ELITE_STONE].bBind = false;
 	m_Echos[EC_ELITE_STONE].iGrade = 4;
-	m_Echos[EC_ELITE_STONE].iLevel = 2;
+	m_Echos[EC_ELITE_STONE].iLevel = 1;
 	m_Echos[EC_ELITE_STONE].fAttack = 210.f;
 	m_Echos[EC_ELITE_STONE].iNameTextureID = STATIC_IMAGE::TEXT_EC_ELITE_STONE;
 	m_Echos[EC_ELITE_STONE].iIconTextureID = STATIC_IMAGE::ICON_EC_ELITE_STONE;
@@ -121,7 +121,7 @@ HRESULT CEchoSystem::Initialize(void * pArg)
 	m_Echos[EC_CROWNLESS].bActive = true;
 	m_Echos[EC_CROWNLESS].bBind = false;
 	m_Echos[EC_CROWNLESS].iGrade = 5;
-	m_Echos[EC_CROWNLESS].iLevel = 3;
+	m_Echos[EC_CROWNLESS].iLevel = 1;
 	m_Echos[EC_CROWNLESS].fAttack = 325.f;
 	m_Echos[EC_CROWNLESS].iNameTextureID = STATIC_IMAGE::TEXT_EC_CROWNLESS;
 	m_Echos[EC_CROWNLESS].iIconTextureID = STATIC_IMAGE::ICON_EC_CROWNLESS;
@@ -174,6 +174,21 @@ _float CEchoSystem::ComputeDamage(ECHO_SLOT eTargetCharacter)
 	m_BindEcho[eTargetCharacter]->fAttack *= (m_BindEcho[eTargetCharacter]->iLevel * 0.75f);
 
 	return m_BindEcho[eTargetCharacter]->fAttack;
+}
+
+_uint CEchoSystem::GetEchoLevel(ECHO_TYPE eEchoType)
+{
+	return m_Echos[eEchoType].iLevel;
+}
+
+_bool CEchoSystem::Levelup(ECHO_TYPE eEchoType)
+{
+	if (m_Echos[eEchoType].iLevel >= 3)
+		return false;
+
+	m_Echos[eEchoType].iLevel++;
+
+	return true;
 }
 
 _bool CEchoSystem::BindEcho(ECHO_SLOT eTargetCharacter, ECHO_TYPE eEchoIndex)

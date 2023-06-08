@@ -29,6 +29,9 @@ public:
 	virtual void RenderGUI() override;
 
 public:
+	void SetMove(_bool bValue) { m_bMove = bValue; }
+
+public:
 	_float GetCameraSpeed();
 
 public:
@@ -39,6 +42,9 @@ public:
 private:
 	CCameraMovement::CAM_TYPE m_eCamType;
 	CCameraMovement* m_pCamMovement = nullptr;
+
+private:
+	_bool m_bMove = false;
 
 };
 

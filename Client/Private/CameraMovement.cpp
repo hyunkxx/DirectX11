@@ -79,8 +79,6 @@ HRESULT CCameraMovement::BindTransform(CTransform * pTransform)
 	{
 		if (m_pCams[i] == nullptr)
 		{
-			wstring message = L"CCameraMovement::BindTransform continue Index " + to_wstring(i);
-			MESSAGE(message);
 			continue;
 		}
 

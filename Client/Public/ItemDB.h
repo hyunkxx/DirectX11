@@ -56,7 +56,12 @@ namespace ITEM
 		GUN3,
 		GUN4,
 
-		GEM
+		GEM,
+
+		DOGTAG0,
+		DOGTAG1,
+		DOGTAG2,
+		DOGTAG3,
 	};
 }
 

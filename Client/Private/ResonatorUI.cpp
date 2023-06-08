@@ -77,16 +77,16 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	// Character Icon
 	for (_uint i = 0; i < 3; ++i)
 	{
-		m_OrthoCharBack[i].fWidth = 90.f;
-		m_OrthoCharBack[i].fHeight = 90.f;
+		m_OrthoCharBack[i].fWidth = 70.f;
+		m_OrthoCharBack[i].fHeight = 70.f;
 		m_OrthoCharBack[i].fX = g_iWinSizeX - 90.f;
-		m_OrthoCharBack[i].fY = 100.f + (i * 100.f);
+		m_OrthoCharBack[i].fY = 70.f + (i * 80.f);
 		CAppManager::ComputeOrtho(&m_OrthoCharBack[i]);
 
-		m_OrthoCharIcon[i].fWidth = 70.f;
-		m_OrthoCharIcon[i].fHeight = 70.f;
+		m_OrthoCharIcon[i].fWidth = 60.f;
+		m_OrthoCharIcon[i].fHeight = 60.f;
 		m_OrthoCharIcon[i].fX = g_iWinSizeX - 90.f;
-		m_OrthoCharIcon[i].fY = 100.f + (i * 100.f);
+		m_OrthoCharIcon[i].fY = 70.f + (i * 80.f);
 		CAppManager::ComputeOrtho(&m_OrthoCharIcon[i]);
 	}
 
@@ -652,25 +652,155 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 
 	//에코 업그레이드 백그라운드
 	m_OrthoEchoUpgradeBack.fWidth = 340.f;
-	m_OrthoEchoUpgradeBack.fHeight = 100.f;
+	m_OrthoEchoUpgradeBack.fHeight = 120.f;
 	m_OrthoEchoUpgradeBack.fX = g_iWinSizeX >> 2;
 	m_OrthoEchoUpgradeBack.fY = g_iWinSizeY - 165.f;
 	CAppManager::ComputeOrtho(&m_OrthoEchoUpgradeBack);
 
 	// 등록버튼
-	m_OrthoRegisterButton.fWidth = 236.f;
+	m_OrthoRegisterButton.fWidth = 200.f;
 	m_OrthoRegisterButton.fHeight = 90.f;
-	m_OrthoRegisterButton.fX = (g_iWinSizeX >> 2) + 50.f;
-	m_OrthoRegisterButton.fY = g_iWinSizeY - 90.f;
+	m_OrthoRegisterButton.fX = (g_iWinSizeX >> 2) - 80.f;
+	m_OrthoRegisterButton.fY = g_iWinSizeY - 75.f;
 	CAppManager::ComputeOrtho(&m_OrthoRegisterButton);
+
 	m_OrthoRegisterText.fWidth = 256.f * 0.6f;
 	m_OrthoRegisterText.fHeight = 32.f * 0.6f;
-	m_OrthoRegisterText.fX = (g_iWinSizeX >> 2) + 50.F;
-	m_OrthoRegisterText.fY = g_iWinSizeY - 85.f;
+	m_OrthoRegisterText.fX = (g_iWinSizeX >> 2) - 80.f;
+	m_OrthoRegisterText.fY = g_iWinSizeY - 70.f;
 	CAppManager::ComputeOrtho(&m_OrthoRegisterText);
-	//흠 여기 수저ㅜㅇ
+
+	// 업그레이드 버튼
+	m_OrthoEchoUpgradeButton.fWidth = 200.f;
+	m_OrthoEchoUpgradeButton.fHeight = 90.f;
+	m_OrthoEchoUpgradeButton.fX = (g_iWinSizeX >> 2) + 80.f;
+	m_OrthoEchoUpgradeButton.fY = g_iWinSizeY - 75.f;
+	CAppManager::ComputeOrtho(&m_OrthoEchoUpgradeButton);
+
+	m_OrthoEchoUpgradeButtonText.fWidth = 256.f * 0.8f;
+	m_OrthoEchoUpgradeButtonText.fHeight = 32.f * 0.8f;
+	m_OrthoEchoUpgradeButtonText.fX = (g_iWinSizeX >> 2) + 80.f;
+	m_OrthoEchoUpgradeButtonText.fY = g_iWinSizeY - 70.f;
+	CAppManager::ComputeOrtho(&m_OrthoEchoUpgradeButtonText);
+
+	// 인식표 슬롯
+	m_OrthoDogTagSlot.fWidth = 80.f;
+	m_OrthoDogTagSlot.fHeight = 80.f;
+	m_OrthoDogTagSlot.fX = m_OrthoEchoUpgradeBack.fX - 80.f;
+	m_OrthoDogTagSlot.fY = m_OrthoEchoUpgradeBack.fY + 10.f;
+	CAppManager::ComputeOrtho(&m_OrthoDogTagSlot);
+
+	m_OrthoDogTagIcon.fWidth = 60.f;
+	m_OrthoDogTagIcon.fHeight = 60.f;
+	m_OrthoDogTagIcon.fX = m_OrthoEchoUpgradeBack.fX - 80.f;
+	m_OrthoDogTagIcon.fY = m_OrthoEchoUpgradeBack.fY + 10.f;
+	CAppManager::ComputeOrtho(&m_OrthoDogTagIcon);
+
+	// 인식표 코스트 텍스트
+	m_OrthoDogTagCostText.fWidth = 256.f * 0.8f;
+	m_OrthoDogTagCostText.fHeight = 32.f * 0.8f;
+	m_OrthoDogTagCostText.fX = m_OrthoDogTagSlot.fX  + 70;
+	m_OrthoDogTagCostText.fY = m_OrthoEchoUpgradeBack.fY - 40.f;
+	CAppManager::ComputeOrtho(&m_OrthoDogTagCostText);
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		m_OrthoDogTagCost[i].fWidth = 16.f * 0.7f;
+		m_OrthoDogTagCost[i].fHeight = 25.f * 0.7f;
+		m_OrthoDogTagCost[i].fX = m_OrthoDogTagSlot.fX + 50.f + (i * 14.f);
+		m_OrthoDogTagCost[i].fY = m_OrthoDogTagSlot.fY;
+		CAppManager::ComputeOrtho(&m_OrthoDogTagCost[i]);
+	}
+
+	// 인식표 보유 코스트 텍스트
+	m_OrthoDogTagCostOwnText.fWidth = 256.f * 0.8f;
+	m_OrthoDogTagCostOwnText.fHeight = 32.f * 0.8f;
+	m_OrthoDogTagCostOwnText.fX = m_OrthoDogTagSlot.fX + 225;
+	m_OrthoDogTagCostOwnText.fY = m_OrthoEchoUpgradeBack.fY - 40.f;
+	CAppManager::ComputeOrtho(&m_OrthoDogTagCostOwnText);
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		m_OrthoDogTagCostOwn[i].fWidth = 16.f * 0.7f;
+		m_OrthoDogTagCostOwn[i].fHeight = 25.f * 0.7f;
+		m_OrthoDogTagCostOwn[i].fX = m_OrthoDogTagSlot.fX + 140.f + (i * 14.f);
+		m_OrthoDogTagCostOwn[i].fY = m_OrthoDogTagSlot.fY;
+		CAppManager::ComputeOrtho(&m_OrthoDogTagCostOwn[i]);
+	}
+
 
 #pragma endregion
+	
+#pragma region RESONANCE
+	// Back 로고
+	m_OrthoActivateBack.fWidth = 688.f * 0.5f;
+	m_OrthoActivateBack.fHeight = 432.f * 0.5f;
+	m_OrthoActivateBack.fX = 320.f;
+	m_OrthoActivateBack.fY = g_iWinSizeY >> 2;
+	CAppManager::ComputeOrtho(&m_OrthoActivateBack);
+
+	// Back 로고
+	m_OrthoActivateText.fWidth = 512.f * 0.85f;
+	m_OrthoActivateText.fHeight = 64.f * 0.85f;
+	m_OrthoActivateText.fX = 320.f;
+	m_OrthoActivateText.fY = (g_iWinSizeY >> 2) + 64.f;
+	CAppManager::ComputeOrtho(&m_OrthoActivateText);
+
+	// 시퀀스 슬롯 (1 ~ 4)
+
+	//1
+	m_OrthoSequenceSlot1[0].fWidth = 200.f;
+	m_OrthoSequenceSlot1[0].fHeight = 200.f;
+	m_OrthoSequenceSlot1[0].fX = 320.f;
+	m_OrthoSequenceSlot1[0].fY = (g_iWinSizeY >> 1) + 40.f;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot1[0]);
+
+	m_OrthoSequenceSlot1[1].fWidth = 80.f;
+	m_OrthoSequenceSlot1[1].fHeight = 80.f;
+	m_OrthoSequenceSlot1[1].fX = 320.f;
+	m_OrthoSequenceSlot1[1].fY = (g_iWinSizeY >> 1) + 40.f;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot1[1]);
+
+	//2
+	m_OrthoSequenceSlot2[0].fWidth = 200.f;
+	m_OrthoSequenceSlot2[0].fHeight = 200.f;
+	m_OrthoSequenceSlot2[0].fX = 450.f;
+	m_OrthoSequenceSlot2[0].fY = (g_iWinSizeY >> 1) + 170.f;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot2[0]);
+	m_OrthoSequenceSlot2[1].fWidth = 80.f;
+	m_OrthoSequenceSlot2[1].fHeight = 80.f;
+	m_OrthoSequenceSlot2[1].fX = 450.f;
+	m_OrthoSequenceSlot2[1].fY = (g_iWinSizeY >> 1) + 170.f;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot2[1]);
+
+	//3
+	m_OrthoSequenceSlot3[0].fWidth = 200.f;
+	m_OrthoSequenceSlot3[0].fHeight = 200.f;
+	m_OrthoSequenceSlot3[0].fX = 870.f;
+	m_OrthoSequenceSlot3[0].fY = (g_iWinSizeY >> 1) - 170.F;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot3[0]);
+
+	m_OrthoSequenceSlot3[1].fWidth = 80.f;
+	m_OrthoSequenceSlot3[1].fHeight = 80.f;
+	m_OrthoSequenceSlot3[1].fX = 870.f;
+	m_OrthoSequenceSlot3[1].fY = (g_iWinSizeY >> 1) - 170.F;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot3[1]);
+
+	//4
+	m_OrthoSequenceSlot4[0].fWidth = 200.f;
+	m_OrthoSequenceSlot4[0].fHeight = 200.f;
+	m_OrthoSequenceSlot4[0].fX = 1000.f;
+	m_OrthoSequenceSlot4[0].fY = (g_iWinSizeY >> 1) - 40.f;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot4[0]);
+
+	m_OrthoSequenceSlot4[1].fWidth = 80.f;
+	m_OrthoSequenceSlot4[1].fHeight = 80.f;
+	m_OrthoSequenceSlot4[1].fX = 1000.f;
+	m_OrthoSequenceSlot4[1].fY = (g_iWinSizeY >> 1) - 40.f;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot4[1]);
+
+#pragma endregion
+
 	
 	// 기타 임시 디폴트 세팅
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -758,6 +888,9 @@ HRESULT CResonatorUI::Render()
 
 		break;
 	case CResonatorUI::BTN_RESONANCE:
+		if (FAILED(resonanceRender()))
+			return E_FAIL;
+
 		break;
 	case CResonatorUI::BTN_WUTERIDE:
 		break;
@@ -1767,7 +1900,7 @@ void CResonatorUI::echoKeyInput(_double TimeDelta)
 		}
 	}
 
-	//에코 등록
+	//에코 등록 버튼
 	if (pGameMode->OnMouse(m_OrthoRegisterText))
 	{
 		m_iRegisterBtnState = 1;
@@ -1782,6 +1915,116 @@ void CResonatorUI::echoKeyInput(_double TimeDelta)
 	{
 		m_iRegisterBtnState = 0;
 	}
+
+	//에코 업그레이드 버튼
+	_uint iEchoGrade = m_pEchoSystem->GetEcho((CEchoSystem::ECHO_TYPE)m_iCurSelectEcho).iGrade;
+	_uint iEchoLevel = m_pEchoSystem->GetEchoLevel((CEchoSystem::ECHO_TYPE)m_iCurSelectEcho);
+
+	_uint iOwnCost;
+	_uint iConsumeCost;
+
+	switch (iEchoGrade)
+	{
+	case 1:
+		iOwnCost = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::DOGTAG0);
+		break;
+	case 2:
+		iOwnCost = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::DOGTAG1);
+		break;
+	case 3:
+		iOwnCost = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::DOGTAG2);
+		break;
+	case 4:
+		iOwnCost = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::DOGTAG3);
+		break;
+	case 5:
+		iOwnCost = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::DOGTAG3);
+		break;
+	}
+
+	if (iEchoLevel < 2)
+		iConsumeCost = 10;
+	else
+		iConsumeCost = 2;
+
+	if (iEchoLevel < 3 && iOwnCost >= iConsumeCost)
+	{
+		m_bUpgradeLimit = false;
+	}
+	else
+	{
+		m_iUpgradeBtnState = 2;
+		m_bUpgradeLimit = true;
+	}
+
+	if (pGameMode->OnMouse(m_OrthoEchoUpgradeButtonText))
+	{
+		if (!m_bUpgradeLimit)
+		{
+			m_iUpgradeBtnState = 1;
+			if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+				m_iUpgradeBtnState = 2;
+
+			if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
+			{
+				// 업그레이드 처리
+				m_pEchoSystem->Levelup((CEchoSystem::ECHO_TYPE)m_iCurSelectEcho);
+				
+				switch (iEchoGrade)
+				{
+				case 1:
+					m_pInven->EraseItem(CInventory::INVEN_MATERIAL, ITEM::DOGTAG0, 10);
+					break;
+				case 2:
+					m_pInven->EraseItem(CInventory::INVEN_MATERIAL, ITEM::DOGTAG1, 2);
+					break;
+				case 3:
+					m_pInven->EraseItem(CInventory::INVEN_MATERIAL, ITEM::DOGTAG2, 2);
+					break;
+				case 4:
+					m_pInven->EraseItem(CInventory::INVEN_MATERIAL, ITEM::DOGTAG3, 2);
+					break;
+				case 5:
+					m_pInven->EraseItem(CInventory::INVEN_MATERIAL, ITEM::DOGTAG3, 2);
+					break;
+				}
+			}
+		}
+
+	}
+	else
+	{
+		if (!m_bUpgradeLimit)
+			m_iUpgradeBtnState = 0;
+		else
+			m_iUpgradeBtnState = 2;
+	}
+
+
+	switch (m_pEchoSystem->GetEcho((CEchoSystem::ECHO_TYPE)m_iCurSelectEcho).iGrade)
+	{
+	case 1:
+		iDogTagIcon = STATIC_IMAGE::ICON_DOGTAG0;
+		break;
+	case 2:
+		iDogTagIcon = STATIC_IMAGE::ICON_DOGTAG1;
+		break;
+	case 3:
+		iDogTagIcon = STATIC_IMAGE::ICON_DOGTAG2;
+		break;
+	case 4:
+		FALL_THROUGH;
+	case 5:
+		iDogTagIcon = STATIC_IMAGE::ICON_DOGTAG3;
+		break;
+	}
+
+}
+
+void CResonatorUI::resonanceInput(_double TimeDelta)
+{
+	selectCharacter(TimeDelta);
+
 
 }
 
@@ -2605,8 +2848,174 @@ HRESULT CResonatorUI::echoSlotRender()
 	m_pShader->Begin(9);
 	m_pVIBuffer->Render();
 
-	// 등록 버튼
+	// 인식표 코스트
+	vColor = { 0.6f, 0.6f, 0.6f };
+	if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDogTagCostText.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_UPGRADECOST, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(8);
+	m_pVIBuffer->Render();
+
+	// 에코 인식표
+	_uint iCurEchoGrade = m_pEchoSystem->GetEcho((CEchoSystem::ECHO_TYPE)m_iCurSelectEcho).iGrade;
+	vColor = GetEchoGradeColor3(iCurEchoGrade);
+	if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDogTagSlot.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_GLOWGARD, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(8);
+	m_pVIBuffer->Render();
+
+	// 에코 아이콘
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDogTagSlot.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(iDogTagIcon, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// 보유 독텍
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDogTagCostOwnText.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_OWN, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	_uint iOwnCost = 0;
+	switch (iDogTagIcon)
+	{
+	case STATIC_IMAGE::ICON_DOGTAG0:
+		iOwnCost = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::DOGTAG0);
+		break;
+	case STATIC_IMAGE::ICON_DOGTAG1:
+		iOwnCost = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::DOGTAG1);
+		break;
+	case STATIC_IMAGE::ICON_DOGTAG2:
+		iOwnCost = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::DOGTAG2);
+		break;
+	case STATIC_IMAGE::ICON_DOGTAG3:
+		iOwnCost = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::DOGTAG3);
+		break;
+	}
+	
+	string strCost = to_string(iOwnCost);
+	_uint iCostDigit = (_uint)strCost.size();
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDogTagCostOwn[0].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_X, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+	for (_uint i = 0; i < iCostDigit; ++i)
+	{
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDogTagCostOwn[i + 1].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(strCost[i] - '0', m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+	}
+
+	// 1렙만 코스트 10개
+	if (iCurEchoGrade < 2)
+	{
+		string strCost = to_string(10);
+		_uint iCostDigit = (_uint)strCost.size();
+
+		_bool bValue;
+
+		if (iOwnCost >= 10)
+			bValue = true;
+		else
+			bValue = false;
+
+		_float3 vColor = DEFAULT_COLOR;
+		if (!bValue)
+			vColor = { 0.8f, 0.2f, 0.2f };
+
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDogTagCost[0].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_X, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+
+		for (_uint i = 0; i < iCostDigit; ++i)
+		{
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDogTagCost[i + 1].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(strCost[i] - '0', m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(8);
+			m_pVIBuffer->Render();
+		}
+	}
+	else
+	{
+		string strCost = to_string(2);
+		_uint iCostDigit = (_uint)strCost.size();
+
+		_bool bValue;
+
+		if (iOwnCost >= 2)
+			bValue = true;
+		else
+			bValue = false;
+
+		_float3 vColor = DEFAULT_COLOR;
+		if (!bValue)
+			vColor = { 0.8f, 0.2f, 0.2f };
+
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDogTagCost[0].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_X, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+
+		for (_uint i = 0; i < iCostDigit; ++i)
+		{
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDogTagCost[i + 1].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(strCost[i] - '0', m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(8);
+			m_pVIBuffer->Render();
+		}
+	}
+
+	// 등록 버튼
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoRegisterButton.WorldMatrix)))
 		return E_FAIL;
@@ -2630,11 +3039,151 @@ HRESULT CResonatorUI::echoSlotRender()
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
 
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoRegisterText.WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_REGISTER, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// 업그레이드 버튼
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoUpgradeButton.WorldMatrix)))
+		return E_FAIL;
+
+	switch (m_iUpgradeBtnState)
+	{
+	case 0:
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_ON, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		break;
+	case 1:
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_NONE, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		break;
+	case 2:
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_CLICK, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		break;
+	}
+
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoUpgradeButtonText.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_UPGRADE, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	return S_OK;
+}
+
+HRESULT CResonatorUI::resonanceRender()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	chooseCharacter();
+
+	_float3 vColor;
+	_float4 vColor4;
+
+	_float fAlpha = m_fElemAlpha[1] * 0.5f;
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoActivateBack.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_BACK, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	vColor = SLOT_LEGEND_COLOR;
+	if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[2], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoActivateText.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_ACTIVATE, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(8);
+	m_pVIBuffer->Render();
+
+	// 시퀀스 슬롯 1
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[19], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot1[0].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_SLOT, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[19], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot1[1].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE1, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// 시퀀스 슬롯 2
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[17], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot2[0].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_SLOT, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[17], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot2[1].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE2, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// 시퀀스 슬롯 3
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[17], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot3[0].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_SLOT, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[17], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot3[1].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE3, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// 시퀀스 슬롯 4
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[19], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot4[0].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_SLOT, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[19], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot4[1].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE4, m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
@@ -2969,7 +3518,9 @@ void CResonatorUI::keyInput(_double TimeDelta)
 	case BTN_ECHO:
 		echoKeyInput(TimeDelta);
 		break;
-
+	case BTN_RESONANCE:
+		resonanceInput(TimeDelta);
+		break;
 	default:
 		break;
 	}
@@ -2992,7 +3543,7 @@ HRESULT CResonatorUI::chooseCharacter()
 		//선택된 아이콘색상 변경
 		if (m_iCurCharacter == i)
 		{
-			_float3 vColor = LEGEND_COLOR;
+			_float3 vColor = UNIQUE_COLOR;
 			if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
 				return E_FAIL;
 

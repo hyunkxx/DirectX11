@@ -1469,6 +1469,61 @@ HRESULT CApplication::Ready_Item_Image()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/GradeImage.dds")))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_DOGTAG0,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/DogTag0.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_DOGTAG1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/DogTag1.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_DOGTAG2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/DogTag2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_DOGTAG3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/DogTag3.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_DOGTAG,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextDogtag.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_ACTIVATE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Activate_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SEQUENCE1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Sequence1.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SEQUENCE2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Sequence2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SEQUENCE3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Sequence3.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SEQUENCE4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Sequence4.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SEQUENCE_BACK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SequenceBack.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SEQUENCE_SLOT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SequenceSlot.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_GLOWSPHERE1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/GlowSphere1.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SEQUENCE1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconSQ1.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SEQUENCE2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconSQ2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SEQUENCE3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconSQ3.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SEQUENCE4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconSQ4.dds")))))
+		return E_FAIL;
+	
+
 	//¿ÃπÃ¡ˆ
 	return S_OK;
 }

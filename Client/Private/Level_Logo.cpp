@@ -165,7 +165,7 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ACTION_CAM_BANGSUN, pLayerTag, L"ActionCam", &CameraDesc)))
 		return E_FAIL;
 
-	CameraDesc.vEye = _float3(-1000.5f, 1.2f, -999.7f);
+	CameraDesc.vEye = _float3(-1000.3f, 1.2f, -999.7f);
 	CameraDesc.vAt = _float3(-999.5f, 1.2f, -999.7f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 

@@ -250,6 +250,22 @@ PS_OUT PS_Gray(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_Nagative(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+
+	Out.vColor = vDiffuse;
+	Out.vColor.r = 1.f - Out.vColor.r;
+	Out.vColor.g = 1.f - Out.vColor.g;
+	Out.vColor.b = 1.f - Out.vColor.b;
+
+	Out.vColor.a = Out.vColor.a * g_fTimeAcc;
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass Default_Pass0
@@ -419,5 +435,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Gray();
+	}
+
+	pass NagativePss13
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Nagative();
 	}
 }

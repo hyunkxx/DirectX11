@@ -60,6 +60,33 @@ void CUICam::LateTick(_double TimeDelta)
 	if (false == m_bUse)
 		return;
 
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	if (pGI->InputKey(DIK_N) == KEY_STATE::TAP)
+		m_bMove = !m_bMove;
+
+	if (m_bMove)
+	{
+		//CameraDesc.vEye = _float3(-1000.5f, 1.2f, -999.7f);
+
+		_vector vCamRight = XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_RIGHT));
+
+		_vector vCurPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+		_vector vTargetPos = XMVectorSet(-1000.25f, 1.2f, -999.95f, 1.f);
+
+		vCurPos = XMVectorLerp(vCurPos, vTargetPos, (_float)TimeDelta * 2.f);
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
+	}
+	else
+	{
+		_vector vCamRight = XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_RIGHT));
+
+		_vector vCurPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+		_vector vTargetPos = XMVectorSet(-1000.3f, 1.2f, -999.7f, 1.f);
+
+		vCurPos = XMVectorLerp(vCurPos, vTargetPos, (_float)TimeDelta * 2.f);
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
+	}
+
 	__super::LateTick(TimeDelta);
 }
 

@@ -92,7 +92,7 @@ private:
 
 private:
 	class CCameraMovement* m_pCamMovement = nullptr;
-
+	class CUICam* m_pUICam = nullptr;
 };
 
 END

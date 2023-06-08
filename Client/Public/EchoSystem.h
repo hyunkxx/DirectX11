@@ -69,6 +69,9 @@ public:
 
 	const ECHO& GetEcho(ECHO_TYPE eEchoType) const { return m_Echos[eEchoType]; }
 
+	_uint GetEchoLevel(ECHO_TYPE eEchoType);
+	_bool Levelup(ECHO_TYPE eEchoType);
+
 public:
 	static CEchoSystem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject * Clone(void * pArg = nullptr) override;

@@ -59,6 +59,7 @@ void UICharacter::Start()
 
 	m_pCamMovement = static_cast<CCameraMovement*>(pGI->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 	static_cast<CResonatorUI*>(pGI->Find_GameObject(LEVEL_STATIC, L"Resonator"))->BindUIChracter(this);
+	m_pUICam = static_cast<CUICam*>(m_pCamMovement->GetCamera(CCameraMovement::CAM_UI));
 }
 
 void UICharacter::PreTick(_double TimeDelta)
@@ -86,6 +87,14 @@ void UICharacter::LateTick(_double TimeDelta)
 	if (curCamType != CCameraMovement::CAM_UI)
 		return;
 
+	if (m_iAnimID == UICHAR_RESONANT_START)
+		m_pUICam->SetMove(true);
+	else
+	{
+		if (m_iAnimID != UICHAR_RESONANT_LOOP)
+			m_pUICam->SetMove(false);
+	}
+	
 	if (m_pRenderer)
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 }

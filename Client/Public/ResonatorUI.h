@@ -71,6 +71,8 @@ private:
 	void selectCharacter(_double TimeDelta);
 	void stateKeyInput(_double TimeDelta);
 	void echoKeyInput(_double TimeDelta);
+	void resonanceInput(_double TimeDelta);
+
 	void upgradeCharacter(_uint iCharacterType);
 
 
@@ -86,6 +88,9 @@ private:
 
 	// Echos
 	HRESULT echoSlotRender();
+
+	// Resonance
+	HRESULT resonanceRender();
 
 public:
 	static CResonatorUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -113,7 +118,7 @@ private:
 	_float m_fBackgroundAlpha = 1.f;
 
 	// Smooth UI
-	enum { SMOOTH_MAX = 10 };
+	enum { SMOOTH_MAX = 20 };
 	_float m_fElemAlpha[SMOOTH_MAX];
 	_bool m_bElemAlphaStart[SMOOTH_MAX];
 
@@ -265,17 +270,47 @@ private:
 	ORTHO_DESC m_OrthoRegisterButton;
 	ORTHO_DESC m_OrthoRegisterText;
 	_uint m_iRegisterBtnState = 0;
+	_uint m_iUpgradeBtnState = 0;
 
 	_uint m_iCurSelectEcho = 0; // 선택(클릭)된 에코슬롯
 
 	//Echo Upgrade
 	ORTHO_DESC m_OrthoEchoUpgradeBack;
 
+	//Echo Upgrade Button
+	ORTHO_DESC m_OrthoEchoUpgradeButton;
+	ORTHO_DESC m_OrthoEchoUpgradeButtonText;
+	_bool m_bUpgradeLimit = false;
+
+	//Echo DogTag
+	ORTHO_DESC m_OrthoDogTagCostText;
+	ORTHO_DESC m_OrthoDogTagCostOwnText;
+	ORTHO_DESC m_OrthoDogTagSlot;
+	ORTHO_DESC m_OrthoDogTagIcon;
+	_uint iDogTagIcon = STATIC_IMAGE::ICON_DOGTAG0;
+
+	ORTHO_DESC m_OrthoDogTagCost[3];
+	ORTHO_DESC m_OrthoDogTagCostOwn[4];
+
 	//Tool Tip
 	_uint m_iOnMouseEchoSlot = 0;
 	_bool m_bToolTip[ECHO_SLOT_MAX] = { false, };
 	_float m_fToolTipAcc[ECHO_SLOT_MAX] = { 0.f, };
 
+
+#pragma endregion
+
+#pragma region RESONANCE
+	ORTHO_DESC m_OrthoActivateBack;
+	ORTHO_DESC m_OrthoActivateText;
+
+	ORTHO_DESC m_OrthoActivateCount[2];
+	ORTHO_DESC m_OrthoActivateLimit[3];
+
+	ORTHO_DESC m_OrthoSequenceSlot1[2];
+	ORTHO_DESC m_OrthoSequenceSlot2[2];
+	ORTHO_DESC m_OrthoSequenceSlot3[2];
+	ORTHO_DESC m_OrthoSequenceSlot4[2];
 
 #pragma endregion
 
