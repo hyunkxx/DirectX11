@@ -32,6 +32,11 @@ public:
 		XMStoreFloat4x4(&m_TransformationMatrix, matTransform);
 	}
 
+	void	Set_DefaultMatrix(_fmatrix matrix)
+	{
+		XMStoreFloat4x4(&m_DefaultTransformationMatrix, matrix);
+	}
+
 	CBone* Get_ParentBone() { return m_pParent; }
 
 	void Set_Position(const _float3& vPosition)

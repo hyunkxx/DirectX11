@@ -232,6 +232,7 @@
     <ClInclude Include="..\public\M_GAzizi.h" />
     <ClInclude Include="..\Public\Particle_Effect.h" />
     <ClInclude Include="..\public\PlayerState.h" />
+    <ClInclude Include="..\public\P_Chixia.h" />
     <ClInclude Include="..\public\P_Yangyang.h" />
     <ClInclude Include="..\Public\Rect_Effect.h" />
     <ClInclude Include="..\public\ResonatorUI.h" />
@@ -371,6 +372,7 @@
     <ClCompile Include="..\private\M_GAzizi.cpp" />
     <ClCompile Include="..\Private\Particle_Effect.cpp" />
     <ClCompile Include="..\private\PlayerState.cpp" />
+    <ClCompile Include="..\private\P_Chixia.cpp" />
     <ClCompile Include="..\private\P_Yangyang.cpp" />
     <ClCompile Include="..\Private\Rect_Effect.cpp" />
     <ClCompile Include="..\private\ResonatorUI.cpp" />

@@ -113,8 +113,14 @@ _bool CMissile::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotM
 	m_pMainTransform->Set_LookDir(XMVector3TransformNormal(vLookDir, vMissileRotMatrix));
 	m_bFirstColl = true;
 
-	if(lstrcmp(m_tMissileDesc.szLoopEffectTag, TEXT("")))
-		CGameInstance::GetInstance()->Get_Effect(m_tMissileDesc.szLoopEffectTag, (Engine::EFFECT_ID)m_tMissileDesc.iLoopEffectLayer)->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
+	if (lstrcmp(m_tMissileDesc.szLoopEffectTag, TEXT("")))
+	{
+		if(nullptr == m_pEffect)
+			m_pEffect = CGameInstance::GetInstance()->Get_Effect(m_tMissileDesc.szLoopEffectTag, (Engine::EFFECT_ID)m_tMissileDesc.iLoopEffectLayer);
+
+		m_pEffect->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
+	}
+		
 
 	m_pCollider->SetActive(true);
 
@@ -129,6 +135,7 @@ void CMissile::End()
 		(*m_tMissileDesc.ppNextMissilePool)->Shot(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 
 			m_pMainTransform->Get_State(CTransform::STATE_LOOK), XMMatrixIdentity());
 
+	m_pCollider->HitColliderReset();
 	m_pCollider->SetActive(false);
 	SetState(DISABLE);
 }
@@ -150,6 +157,14 @@ void CMissile::OnCollisionOnTarget(CCollider * src, CCollider * dest)
 	if (true == m_bFirstColl)
 	{
 		m_bFirstColl = false;
+
+		if (true == m_tMissileDesc.bDeleteOnHit)
+		{
+			//if (nullptr != m_pEffect)
+				//m_pEffect->SetState(CGameObject::DISABLE);
+
+			End();
+		}
 	}
 }
 

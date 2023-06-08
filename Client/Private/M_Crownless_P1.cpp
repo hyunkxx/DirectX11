@@ -161,26 +161,25 @@ void CM_Crownless_P1::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	_double TimeDelay = 1.0;
+	static _double TimeDelay1 = 1.0;
 
-	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::HOLD)
-	{
-		TimeDelay = 0.1;
-	}
-	else
-	{
-		TimeDelay = 1.0;
-	}
-
-	// 테스트
 	if (pGameInstance->InputKey(DIK_NUMPAD7) == KEY_STATE::TAP)
 	{
-		SetState(DISABLE);
+		if (TimeDelay1 == 1.0)
+			TimeDelay1 = 0.0;
+		else
+			TimeDelay1 = 1.0;
 	}
-	//
+
+	//// 테스트
+	//if (pGameInstance->InputKey(DIK_NUMPAD7) == KEY_STATE::TAP)
+	//{
+	//	SetState(DISABLE);
+	//}
+	////
 	__super::Tick(TimeDelta);
 
-	Apply_CoolTime(TimeDelta * TimeDelay); // 쿨타임 갱신
+	Apply_CoolTime(TimeDelta * TimeDelay1); // 쿨타임 갱신
 
 	if (0.f < m_fHitPoint ||
 		100.f > m_fHitPoint)
@@ -189,10 +188,10 @@ void CM_Crownless_P1::Tick(_double TimeDelta)
 
 	
 
-	Select_State(TimeDelta * TimeDelay); // 상태 확인
+	Select_State(TimeDelta * TimeDelay1); // 상태 확인
 	
 
-	Tick_State(TimeDelta * TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
+	Tick_State(TimeDelta * TimeDelay1); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 
 	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
 

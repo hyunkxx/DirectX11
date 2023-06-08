@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CRenderer;
 class CSphereCollider;
 class CNavigation;
+class CEffect;
 END
 
 BEGIN(Client)
@@ -27,6 +28,7 @@ public:
 		_double				LifeTime;		// 최대 유지 시간
 		_uint				iAttackInfoID;	// 히트 시 적용할 공격 정보
 		_float				fExtents;		// Collider 구체 반지름
+		_bool				bDeleteOnHit;
 
 		class CMissilePool**	ppNextMissilePool;	// 해당 미사일이 사라지면서 생성할 다음 미사일의 풀
 	}MISSILEDESC;
@@ -76,6 +78,8 @@ protected:
 	_double		m_LifeTimeTimer = { 0.0 };
 	_double		m_HitIntervalTimer = { 0.0 };
 	_bool		m_bFirstColl = true;
+
+	CEffect*	m_pEffect = nullptr;
 
 protected:
 	HRESULT Add_Components();

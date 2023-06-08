@@ -2489,7 +2489,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 5;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Hit_Effect_Y_02"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Hit_Effect_Y_02"));
 
 	m_AttackInfos[ATK_ATTACK_03_1].fDamageFactor = 0.75f;
 	m_AttackInfos[ATK_ATTACK_03_1].eHitIntensity = HIT_SMALL;

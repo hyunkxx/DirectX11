@@ -628,6 +628,7 @@ void CTestVTF::SetUp_Animation()
 
 void CTestVTF::Tick_State(_double TimeDelta)
 {
+	Safe_AnimID();
 	_bool bRibbonFinished = false;
 	_double BaseTrackPos = 0.0, RibbonTrackPos = 0.0;
 
@@ -781,6 +782,7 @@ void CTestVTF::Init_AnimSystem()
 		// Ribbon
 		for (auto& pBone : m_pAnimSetCom[ANIMSET_RIBBON]->Get_Bones())
 			pBone->Set_TargetBone(m_pModelCom->Get_BonePtr(pBone->Get_Name()));
+			
 
 		for (auto& pAnim : m_pAnimSetCom[ANIMSET_RIBBON]->Get_Animations())
 		{
@@ -919,6 +921,256 @@ void CTestVTF::Init_AnimSystem()
 				}
 			}
 		}
+	}
+	else if (DMODEL::DMD_CHIXIA_MODEL == m_tDesc.iModelID)
+	{
+		for (auto& pBone : m_pAnimSetCom[ANIMSET_BASE]->Get_Bones())
+			pBone->Set_TargetBone(m_pModelCom->Get_BonePtr(pBone->Get_Name()));
+			
+
+		for (auto& pAnim : m_pAnimSetCom[ANIMSET_BASE]->Get_Animations())
+		{
+			const _tchar* szAnimName = pAnim->Get_Name();
+
+			for (auto& pChannel : pAnim->Get_Channels())
+			{
+				const _tchar* szChannelName = pChannel->Get_Name();
+				CBone* pBone = m_pAnimSetCom[ANIMSET_BASE]->Get_BonePtr(pChannel->Get_TargetBoneID());
+
+				if (wcsncmp(szChannelName, TEXT("Bip001"), 6) &&
+					lstrcmp(szChannelName, TEXT("WeaponProp01")) &&
+					lstrcmp(szChannelName, TEXT("WeaponProp02")) &&
+					wcsncmp(szChannelName, TEXT("Root"), 4))
+					pChannel->Set_Apply(false);
+
+				if (true == pBone->Is_ChildOf(TEXT("Bip001Head")))
+				{
+					if (lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|AirAttack_End")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|AirAttack_Loop")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|AirAttack_Start")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack01")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack02")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack03")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack04")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack09")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack_po2_Temp")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack_po3_Temp")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Burst01")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Skill01")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Skill02")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|SkillQte")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Stand1_Action01")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Stand1_Action02")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Stand1_Action03")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Stand2")) &&
+						lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|StandChange")))
+					{
+						pChannel->Set_Apply(false);
+					}
+				}
+
+				if (!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Skill03_Derive")) && (!lstrcmp(szChannelName, TEXT("WeaponProp01")) || !lstrcmp(szChannelName, TEXT("WeaponProp02"))))
+					pChannel->Set_Apply(false);
+			}
+		}
+
+		// Ribbon
+		for (auto& pBone : m_pAnimSetCom[ANIMSET_RIBBON]->Get_Bones())
+		{
+			const _tchar* szBonename = pBone->Get_Name();
+			CBone* pTargetBone = m_pModelCom->Get_BonePtr(szBonename);
+			pBone->Set_TargetBone(pTargetBone);
+
+
+			if (!lstrcmp(szBonename, TEXT("Bone_Skirt001_L")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Skirt007_R")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Skirt011_L")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Skirt017_R")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Skirt022_M")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Piao001_M")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Piao011_R"))/* ||
+				!lstrcmp(szBonename, TEXT("Bone_Hair001_L")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Hair005_L")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Hair008_R")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Hair011_M")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Hair014_L")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Hair018_R")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Hair028_L")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Hair032_R")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Hair036_L")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Hair040_R")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Hair044_R")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Piao025_L")) ||
+				!lstrcmp(szBonename, TEXT("Bone_Piao032_R")*/)
+			{
+				_matrix matTemp = XMLoadFloat4x4(&pTargetBone->Get_DefaultTransformationMatrix());
+				_vector vAxis = matTemp.r[1];
+				matTemp = matTemp * XMMatrixRotationAxis(vAxis, XMConvertToRadians(-7.f));
+				matTemp.r[3] *= 1.15f;
+				matTemp.r[3] = XMVectorSetW(matTemp.r[3], 1.f);
+				pTargetBone->Set_DefaultMatrix(matTemp);
+			}
+		}
+			
+
+		for (auto& pAnim : m_pAnimSetCom[ANIMSET_RIBBON]->Get_Animations())
+		{
+			const _tchar* szAnimName = pAnim->Get_Name();
+
+			for (auto& pChannel : pAnim->Get_Channels())
+			{
+				const _tchar* szChannelName = pChannel->Get_Name();
+				CBone* pBone = m_pAnimSetCom[ANIMSET_RIBBON]->Get_BonePtr(pChannel->Get_TargetBoneID());
+
+				if (pChannel->Get_NumKeyFrames() <= 2)
+				{
+					pChannel->Set_Apply(false);
+					continue;
+				}
+					
+
+				if (!(true == pBone->Is_ChildOf(TEXT("Bone_Skirt001_L")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Skirt007_R")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Skirt011_L")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Skirt017_R")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Skirt022_M")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Piao001_M")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Piao011_R")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Hair001_L")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Hair005_L")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Hair008_R")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Hair011_M")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Hair014_L")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Hair018_R")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Hair028_L")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Hair032_R")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Hair036_L")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Hair040_R")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Hair044_R")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Piao025_L")) ||
+					true == pBone->Is_ChildOf(TEXT("Bone_Piao032_R")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Skirt001_L")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Skirt007_R")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Skirt011_L")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Skirt017_R")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Skirt022_M")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Piao001_M")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Piao011_R")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair001_L")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair005_L")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair008_R")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair011_M")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair014_L")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair018_R")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair028_L")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair032_R")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair036_L")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair040_R")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Hair044_R")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Piao025_L")) ||
+					!lstrcmp(szChannelName, TEXT("Bone_Piao032_R"))))
+				{
+					pChannel->Set_Apply(false);
+				}
+				//else
+				//{
+				//	if (true == pBone->Is_ChildOf(TEXT("Bone_Skirt002_L")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Skirt008_R")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Skirt012_L")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Skirt018_R")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Skirt023_M")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Piao001_M")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Piao011_R")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Hair001_L")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Hair005_L")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Hair008_R")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Hair011_M")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Hair014_L")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Hair018_R")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Hair028_L")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Hair032_R")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Hair036_L")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Hair040_R")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Hair044_R")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Piao025_L")) ||
+				//		true == pBone->Is_ChildOf(TEXT("Bone_Piao032_R")))
+				//	{
+				//		/*for (auto& KeyFrame : pChannel->Get_KeyFrames())
+				//		{
+				//			KeyFrame.vPosition.x *= 0.f;
+				//			KeyFrame.vPosition.y *= 0.f;
+				//			KeyFrame.vPosition.z *= 0.f;
+				//		}*/
+
+				//	}
+
+
+				//	if (!lstrcmp(szChannelName, TEXT("Bone_Skirt001_L")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Skirt007_R")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Skirt011_L")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Skirt017_R")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Skirt022_M")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Piao001_M")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Piao011_R")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Hair001_L")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Hair005_L")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Hair008_R")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Hair011_M")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Hair014_L")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Hair018_R")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Hair028_L")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Hair032_R")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Hair036_L")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Hair040_R")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Hair044_R")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Piao025_L")) ||
+				//		!lstrcmp(szChannelName, TEXT("Bone_Piao032_R")))
+				//	{
+				//		for (auto& KeyFrame : pChannel->Get_KeyFrames())
+				//		{
+
+				//			//_vector vAxis = XMLoadFloat3((_float3*)(pBone->Get_DefaultTransformationMatrix().m[2]));
+				//			//XMStoreFloat4(&KeyFrame.vRotation, XMQuaternionNormalize(XMQuaternionMultiply(XMLoadFloat4(&KeyFrame.vRotation), XMQuaternionRotationAxis(vAxis, XMConvertToRadians(-90.f)))));
+				//			////XMStoreFloat4(&KeyFrame.vRotation, XMQuaternionNormalize(XMLoadFloat4(&KeyFrame.vRotation)));
+				//			
+
+				//			//XMStoreFloat3(&KeyFrame.vPosition, XMVector3TransformCoord(XMLoadFloat3(&KeyFrame.vPosition), XMMatrixRotationX(XMConvertToRadians(-90.f))));
+				//			//KeyFrame.vPosition.z *= -3.f;
+
+				//			//XMStoreFloat3(&KeyFrame.vPosition, XMLoadFloat3(&KeyFrame.vPosition) * 250.f);
+				//			//_matrix matAffine = XMMatrixAffineTransformation(XMLoadFloat3(&pKeyFrame.vScale), XMVectorZero(), XMLoadFloat4(&pKeyFrame.vRotation), XMLoadFloat3(&pKeyFrame.vPosition));
+
+				//			//matAffine = matAffine * XMMatrixRotationX(XMConvertToRadians(90.f));
+
+				//			//_vector vScale, vRotation, vPosition;
+
+				//			//XMMatrixDecompose(&vScale, &vRotation, &vPosition, matAffine);
+
+				//			////XMStoreFloat3(&pKeyFrame.vScale, vScale);
+				//			//XMStoreFloat4(&pKeyFrame.vRotation, vRotation);
+				//			////XMStoreFloat3(&pKeyFrame.vPosition, vPosition);
+				//		}
+				//	}
+				//}
+
+				//true == pBone->Is_ChildOf(TEXT("Bone_Piao036_L")) ||
+				//true == pBone->Is_ChildOf(TEXT("Bone_Piao038_R")) ||
+				//true == pBone->Is_ChildOf(TEXT("Bone_Piao043_R")) ||
+				//true == pBone->Is_ChildOf(TEXT("Bone_Piao042_L")) ||
+				//true == pBone->Is_ChildOf(TEXT("Bone_Piao020_L")) ||
+				//true == pBone->Is_ChildOf(TEXT("Bone_Piao023_R")) ||
+				//!lstrcmp(szChannelName, TEXT("Bone_Piao036_L")) ||
+				//!lstrcmp(szChannelName, TEXT("Bone_Piao038_R")) ||
+				//!lstrcmp(szChannelName, TEXT("Bone_Piao043_R")) ||
+				//!lstrcmp(szChannelName, TEXT("Bone_Piao042_L")) ||
+				//!lstrcmp(szChannelName, TEXT("Bone_Piao020_L")) ||
+				//!lstrcmp(szChannelName, TEXT("Bone_Piao023_R")) ||
+
+
+			}
+		}
+
+
 	}
 }
 

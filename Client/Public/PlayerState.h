@@ -51,6 +51,9 @@ public:
 		_float		fFoodStat[STYPE_END];
 		_float		fFoodDuration;
 
+		// chixia 조준 공격 상태 제어용 변수
+		_bool		bAiming;
+
 		// 캠 락온 여부
 		_bool		bLockOn;
 		CCharacter* pLockOnTarget;
