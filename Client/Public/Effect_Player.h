@@ -26,13 +26,6 @@ public:
 	list<EFFECT_DESC*>*			Get_Effects();
 
 	_float						Get_LifeTime() { return m_LifeTime; }
-
-	void						Shut_Down()
-	{
-		m_bFinish = true;
-		m_bEffectUpdate = false;
-	}
-
 public:
 	void	Add_Effect(CEffect* pEffect);
 

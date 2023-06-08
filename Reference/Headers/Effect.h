@@ -29,6 +29,12 @@ public:
 	_bool Get_Finish() { return m_bFinish; }
 	void Set_Edit();
 
+	void Shut_Down()
+	{
+		m_bFinish = true;
+		m_bEffectUpdate = false;
+	}
+
 protected:
 	void Compute_CamDistance(_fvector vWorldPos);
 
