@@ -351,13 +351,26 @@
     <ClCompile Include="..\private\UICharacter.cpp">
       <Filter>src\02. GameObject\03. Character\00. Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CityObject.cpp" />
-    <ClCompile Include="..\Private\TraceKey.cpp" />
     <ClCompile Include="..\Private\UI_MerchantMen.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClCompile>
     <ClCompile Include="..\private\P_Yangyang.cpp">
       <Filter>src\02. GameObject\03. Character\00. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CityObject.cpp">
+      <Filter>src\04. MapObject\00. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EchoSystem.cpp">
+      <Filter>src\02. GameObject\99. UI\05. Echo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UICam.cpp">
+      <Filter>src\02. GameObject\01. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_City.cpp">
+      <Filter>src\01. Level\03. City</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TraceKey.cpp">
+      <Filter>src\05.AnimStateKeys</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -688,13 +701,26 @@
     <ClInclude Include="..\public\UICharacter.h">
       <Filter>src\02. GameObject\03. Character\00. Base</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CityObject.h" />
-    <ClInclude Include="..\Public\TraceKey.h" />
     <ClInclude Include="..\Public\UI_MerchantMen.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClInclude>
     <ClInclude Include="..\public\P_Yangyang.h">
       <Filter>src\02. GameObject\03. Character\00. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CityObject.h">
+      <Filter>src\04. MapObject\00. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EchoSystem.h">
+      <Filter>src\02. GameObject\99. UI\05. Echo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UICam.h">
+      <Filter>src\02. GameObject\01. Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_City.h">
+      <Filter>src\01. Level\03. City</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TraceKey.h">
+      <Filter>src\05.AnimStateKeys</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -839,6 +865,12 @@
     </Filter>
     <Filter Include="src\02. GameObject\03. Character\02. Crownless">
       <UniqueIdentifier>{10d46d23-d1c1-4c2f-98a4-620878fa2f7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\99. UI\05. Echo">
+      <UniqueIdentifier>{c5c14288-9c9c-4948-beaf-9939e62bd60e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\01. Level\03. City">
+      <UniqueIdentifier>{76965224-f77e-4605-a579-aea075cf3a27}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
