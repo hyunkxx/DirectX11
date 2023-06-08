@@ -39,6 +39,17 @@ HRESULT CUI_TapT::Initialize(void * pArg)
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+	
+	for (_uint i = 4; i < 10; ++i)
+	{
+		m_DescList[i]->fX = m_DescList[i]->PrePos.x = 0.f;
+		m_DescList[i]->fY = m_DescList[i]->PrePos.y = 0.f;
+		m_DescList[i]->fZ = 0.01f;
+	}
+	
+	
+	
+	
 	return S_OK;
 }
 
@@ -260,6 +271,10 @@ HRESULT CUI_TapT::Setup_ShaderResources(_uint Bufferindex)
 
 	if (nullptr != (*Desciter))
 	{
+		XMStoreFloat4x4(&((*Desciter)->WorldMatrix), XMMatrixScaling((*Desciter)->fWidth, (*Desciter)->fHeight, 1.f) *
+			XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians((*Desciter)->fDegree))
+			* XMMatrixTranslation((*Desciter)->fX, (*Desciter)->fY, (*Desciter)->fZ));
+
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &((*Desciter)->WorldMatrix))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -439,14 +454,14 @@ void CUI_TapT::Start_Move(_uint indexstart, _uint indexend, _double TimeDelta)
 {
 	for (_uint i = indexstart; i < indexend; ++i)
 	{
-		_vector OriPos = XMVectorSet(m_DescList[i]->OriPos.x, m_DescList[i]->OriPos.y, 0.01f, 1.f);
-		_vector PrePos = XMVectorSet(m_DescList[i]->PrePos.x, m_DescList[i]->PrePos.y, 0.01f, 1.f);
+		_vector OriPos = XMVectorSet(m_DescList[i]->OriPos.x, m_DescList[i]->OriPos.y, m_DescList[i]->fZ, 1.f);
+		_vector PrePos = XMVectorSet(m_DescList[i]->PrePos.x, m_DescList[i]->PrePos.y, m_DescList[i]->fZ, 1.f);
 		_vector vDir = OriPos - PrePos;
-		_vector CurrentPos = XMVectorSet(m_DescList[i]->fX, m_DescList[i]->fY, 0.01f, 1.f);
+		_vector CurrentPos = XMVectorSet(m_DescList[i]->fX, m_DescList[i]->fY, m_DescList[i]->fZ, 1.f);
 		CurrentPos += XMVector4Normalize(vDir) * (_float)TimeDelta*30.f;
 		_vector pos = CurrentPos;
 			pos += (OriPos - CurrentPos) * (_float)TimeDelta * 3.f;
-			_float Dist = Distance(XMVectorSet(m_DescList[i+6]->fX, m_DescList[i+6]->fY, 0.01f, 1.f), CurrentPos);
+			_float Dist = Distance(XMVectorSet(m_DescList[i+6]->fX, m_DescList[i+6]->fY, m_DescList[i]->fZ, 1.f), CurrentPos);
 			if (2.f < Dist)
 			{
 				m_DescList[i]->fX = XMVectorGetX(pos);
@@ -458,10 +473,10 @@ void CUI_TapT::End_Move(_uint indexstart, _uint indexend, _double TimeDelta)
 {
 	for (_uint i = indexstart; i < indexend; ++i)
 	{
-		_vector OriPos = XMVectorSet(m_DescList[i]->OriPos.x, m_DescList[i]->OriPos.y, 0.01f, 1.f);
-		_vector PrePos = XMVectorSet(m_DescList[i]->PrePos.x, m_DescList[i]->PrePos.y, 0.01f, 1.f);
+		_vector OriPos = XMVectorSet(m_DescList[i]->OriPos.x, m_DescList[i]->OriPos.y, m_DescList[i]->fZ, 1.f);
+		_vector PrePos = XMVectorSet(m_DescList[i]->PrePos.x, m_DescList[i]->PrePos.y, m_DescList[i]->fZ, 1.f);
 		_vector vDir = OriPos - PrePos;
-		_vector CurrentPos = XMVectorSet(m_DescList[i]->fX, m_DescList[i]->fY, 0.01f, 1.f);
+		_vector CurrentPos = XMVectorSet(m_DescList[i]->fX, m_DescList[i]->fY, m_DescList[i]->fZ, 1.f);
 		CurrentPos -= XMVector4Normalize(vDir) * (_float)TimeDelta*30.f;
 		_vector pos = CurrentPos;
 		pos += (PrePos - CurrentPos) * (_float)TimeDelta;
@@ -479,10 +494,10 @@ void CUI_TapT::Middle_Move(_uint indexstart, _uint indexend, _double TimeDelta)
 {
 	for (_uint i = indexstart; i < indexend; ++i)
 	{
-		_vector OriPos = XMVectorSet(m_DescList[i]->OriPos.x, m_DescList[i]->OriPos.y, 0.01f, 1.f);
-		_vector PrePos = XMVectorSet(m_DescList[i]->PrePos.x, m_DescList[i]->PrePos.y, 0.01f, 1.f);
+		_vector OriPos = XMVectorSet(m_DescList[i]->OriPos.x, m_DescList[i]->OriPos.y, m_DescList[i]->fZ, 1.f);
+		_vector PrePos = XMVectorSet(m_DescList[i]->PrePos.x, m_DescList[i]->PrePos.y, m_DescList[i]->fZ, 1.f);
 		_vector vDir = OriPos - PrePos;
-		_vector CurrentPos = XMVectorSet(m_DescList[i]->fX, m_DescList[i]->fY, 0.01f, 1.f);
+		_vector CurrentPos = XMVectorSet(m_DescList[i]->fX, m_DescList[i]->fY, m_DescList[i]->fZ, 1.f);
 		CurrentPos += XMVector4Normalize(vDir) * (_float)TimeDelta*100.f;
 		_vector pos = CurrentPos;
 		pos += (OriPos - CurrentPos) * (_float)TimeDelta;
