@@ -5,11 +5,15 @@
 #include "AppManager.h"
 #include "GameInstance.h"
 
+#include "CameraMovement.h"
 #include "PlayerState.h"
 #include "Inventory.h"
+#include "UICharacter.h"
 
 #include "TerminalUI.h"
 #include "ItemDB.h"
+
+#include "EchoSystem.h"
 
 CResonatorUI::CResonatorUI(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -265,7 +269,7 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 
 #pragma endregion
 
-#pragma region Weapon
+#pragma region WEAPON_ORGHO
 	// WeaponName
 	m_OrthoWeaponName.fWidth = 512.f * 0.6f;
 	m_OrthoWeaponName.fHeight = 64.f * 0.6f;
@@ -410,15 +414,271 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 		CAppManager::ComputeOrtho(&m_OrthoOwnGemCost[i]);
 	}
 
+	m_OrthoWeaponInvenBack.fWidth = 1080.f;
+	m_OrthoWeaponInvenBack.fHeight = 620.f;
+	m_OrthoWeaponInvenBack.fX = g_iWinSizeX >> 1;
+	m_OrthoWeaponInvenBack.fY = g_iWinSizeY >> 1;
+	CAppManager::ComputeOrtho(&m_OrthoWeaponInvenBack);
+
+	m_OrthoSwitchBackpage.fWidth = 70.f;
+	m_OrthoSwitchBackpage.fHeight = 70.f;
+	m_OrthoSwitchBackpage.fX = (g_iWinSizeX >> 1) + (m_OrthoWeaponInvenBack.fWidth * 0.5f) - m_OrthoSwitchBackpage.fWidth;
+	m_OrthoSwitchBackpage.fY = (g_iWinSizeY >> 1) - (m_OrthoWeaponInvenBack.fHeight * 0.5f) + m_OrthoSwitchBackpage.fHeight;
+	CAppManager::ComputeOrtho(&m_OrthoSwitchBackpage);
+	
+	//Select Weapon Text
+	m_OrthoSelectWeaponText.fWidth = 512.f * 0.75f;
+	m_OrthoSelectWeaponText.fHeight = 64.f * 0.75f;
+	m_OrthoSelectWeaponText.fX = (g_iWinSizeX >> 1) - (m_OrthoWeaponInvenBack.fWidth * 0.5f) + 256.f;
+	m_OrthoSelectWeaponText.fY = (g_iWinSizeY >> 1) - (m_OrthoWeaponInvenBack.fHeight * 0.5f) + m_OrthoSelectWeaponText.fHeight + 70.f;
+	CAppManager::ComputeOrtho(&m_OrthoSelectWeaponText);
+
+	// Weapon Slot
+	for (_uint i = 0; i < 20; ++i)
+	{
+		m_OrthoWeaponSlot[i].fWidth = 100.f;
+		m_OrthoWeaponSlot[i].fHeight = 100.f;
+		m_OrthoWeaponSlot[i].fX = (g_iWinSizeX >> 1) - (m_OrthoWeaponInvenBack.fWidth * 0.5f) + 100.f + ((i % 5) * 100.f);
+		m_OrthoWeaponSlot[i].fY = 250 + ((i/5) * 100.f);
+		CAppManager::ComputeOrtho(&m_OrthoWeaponSlot[i]);
+
+		m_OrthoWeaponIcon[i].fWidth = 70.f;
+		m_OrthoWeaponIcon[i].fHeight = 70.f;
+		m_OrthoWeaponIcon[i].fX = (g_iWinSizeX >> 1) - (m_OrthoWeaponInvenBack.fWidth * 0.5f) + 100.f + ((i % 5) * 100.f);
+		m_OrthoWeaponIcon[i].fY = 250 + ((i / 5) * 100.f);
+		CAppManager::ComputeOrtho(&m_OrthoWeaponIcon[i]);
+
+		// 아이템 별 강화 횟수
+		m_OrthoWeaponUpgradeCount[i].fWidth = 16.f * 0.7f;
+		m_OrthoWeaponUpgradeCount[i].fHeight = 25.f * 0.7f;
+		m_OrthoWeaponUpgradeCount[i].fX = m_OrthoWeaponSlot[i].fX + 25.f;
+		m_OrthoWeaponUpgradeCount[i].fY = m_OrthoWeaponSlot[i].fY + 25.f;
+		CAppManager::ComputeOrtho(&m_OrthoWeaponUpgradeCount[i]);
+
+		// 아이템 별 강화 횟수 + 이미지
+		m_OrthoWeaponUpgradePlus[i].fWidth = 16.f * 0.7f;
+		m_OrthoWeaponUpgradePlus[i].fHeight = 25.f * 0.7f;
+		m_OrthoWeaponUpgradePlus[i].fX = m_OrthoWeaponSlot[i].fX + 25.f - (16.f * 0.7f);
+		m_OrthoWeaponUpgradePlus[i].fY = m_OrthoWeaponSlot[i].fY + 25.f;
+		CAppManager::ComputeOrtho(&m_OrthoWeaponUpgradePlus[i]);
+	}
+
+	//Select Weapon Slot
+	m_OrthoSelectWeaponSlot.fWidth = 240.f;
+	m_OrthoSelectWeaponSlot.fHeight = 240.f;
+	m_OrthoSelectWeaponSlot.fX = (g_iWinSizeX >> 1) + (m_OrthoWeaponInvenBack.fWidth * 0.25f);
+	m_OrthoSelectWeaponSlot.fY = (g_iWinSizeY >> 1) - 130.f;
+	CAppManager::ComputeOrtho(&m_OrthoSelectWeaponSlot);
+
+	//Select Weapon Icon
+	m_OrthoSelectWeapon.fWidth = 180.f;
+	m_OrthoSelectWeapon.fHeight = 180.f;
+	m_OrthoSelectWeapon.fX = (g_iWinSizeX >> 1) + (m_OrthoWeaponInvenBack.fWidth * 0.25f);
+	m_OrthoSelectWeapon.fY = (g_iWinSizeY >> 1) - 130.f;
+	CAppManager::ComputeOrtho(&m_OrthoSelectWeapon);
+
+	//Select Weapon Text
+	m_OrthoSelectWeaponName.fWidth = 512.f * 0.6f;
+	m_OrthoSelectWeaponName.fHeight = 64.f * 0.6f;
+	m_OrthoSelectWeaponName.fX = m_OrthoSelectWeapon.fX;
+	m_OrthoSelectWeaponName.fY = m_OrthoSelectWeapon.fY + 130.f;
+	CAppManager::ComputeOrtho(&m_OrthoSelectWeaponName);
+
+	// Select Weapon 강화 횟수
+	for (_uint i = 0; i < MAX_WEAPON_UPGRADE; ++i)
+	{
+		m_OrthoSelectWeaponUpgrade[i].fWidth = 50.f;
+		m_OrthoSelectWeaponUpgrade[i].fHeight = 50.f;
+		m_OrthoSelectWeaponUpgrade[i].fX = m_OrthoSelectWeaponName.fX - 100.f + (i * 50.f);
+		m_OrthoSelectWeaponUpgrade[i].fY = m_OrthoSelectWeaponName.fY + 40.f;
+		CAppManager::ComputeOrtho(&m_OrthoSelectWeaponUpgrade[i]);
+	}
+
+	// Select Weapon 공격력 백그라운드
+	m_OrthoSelectWeaponCriBack.fWidth = 512.f * 0.6f;
+	m_OrthoSelectWeaponCriBack.fHeight = 64.f * 0.6f;
+	m_OrthoSelectWeaponCriBack.fX = m_OrthoSelectWeaponName.fX;
+	m_OrthoSelectWeaponCriBack.fY = m_OrthoSelectWeaponUpgrade[0].fY + (m_OrthoSelectWeaponUpgrade[0].fHeight * 0.5f) + (m_OrthoSelectWeaponCriBack.fHeight * 0.5f) + 10.f;
+	CAppManager::ComputeOrtho(&m_OrthoSelectWeaponCriBack);
+
+	// Select Weapon 치명타확률 백그라운드
+	m_OrthoSelectWeaponAtkBack.fWidth = 512.f * 0.6f;
+	m_OrthoSelectWeaponAtkBack.fHeight = 64.f * 0.6f;
+	m_OrthoSelectWeaponAtkBack.fX = m_OrthoSelectWeaponName.fX;
+	m_OrthoSelectWeaponAtkBack.fY = m_OrthoSelectWeaponCriBack.fY + m_OrthoSelectWeaponAtkBack.fHeight + 10.f;
+	CAppManager::ComputeOrtho(&m_OrthoSelectWeaponAtkBack);
+
+	for (_uint i = 0; i < 6; ++i)
+	{
+		m_OrthoSelectWeaponAttack[i].fWidth = 16.f * 0.8f;
+		m_OrthoSelectWeaponAttack[i].fHeight = 25.f * 0.8f;
+		m_OrthoSelectWeaponAttack[i].fX = m_OrthoSelectWeaponName.fX + 50.f + (i * (16.f * 0.8f));
+		m_OrthoSelectWeaponAttack[i].fY = m_OrthoSelectWeaponCriBack.fY;
+		CAppManager::ComputeOrtho(&m_OrthoSelectWeaponAttack[i]);
+	}
+
+	for (_uint i = 0; i < 4; ++i)
+	{
+		m_OrthoSelectWeaponCri[i].fWidth = 16.f * 0.8f;
+		m_OrthoSelectWeaponCri[i].fHeight = 25.f * 0.8f;
+		m_OrthoSelectWeaponCri[i].fX = m_OrthoSelectWeaponName.fX + 50.f + (i * (16.f * 0.8f));
+		m_OrthoSelectWeaponCri[i].fY = m_OrthoSelectWeaponAtkBack.fY;
+		CAppManager::ComputeOrtho(&m_OrthoSelectWeaponCri[i]);
+	}
+
+	m_OrthoWeaponConfirmButton.fWidth = 362.f * 0.8f;
+	m_OrthoWeaponConfirmButton.fHeight = 214.f * 0.5f;
+	m_OrthoWeaponConfirmButton.fX = m_OrthoSelectWeaponName.fX;
+	m_OrthoWeaponConfirmButton.fY = m_OrthoSelectWeaponAtkBack.fY + 60.f;
+	CAppManager::ComputeOrtho(&m_OrthoWeaponConfirmButton);
+
+	m_OrthoWeaponConfirmText.fWidth = 512.f * 0.7f;
+	m_OrthoWeaponConfirmText.fHeight = 64.f * 0.7f;
+	m_OrthoWeaponConfirmText.fX = m_OrthoSelectWeaponName.fX;
+	m_OrthoWeaponConfirmText.fY = m_OrthoSelectWeaponAtkBack.fY + 65.f;
+	CAppManager::ComputeOrtho(&m_OrthoWeaponConfirmText);
+
+
 #pragma endregion
 
+#pragma region ECHO_ORGHO
 
+	// 바인딩된 에코슬롯
+	m_OrthoBindEcho.fWidth = 100.f;
+	m_OrthoBindEcho.fHeight = 100.f;
+	m_OrthoBindEcho.fX = 200.f;
+	m_OrthoBindEcho.fY = 200.f;
+	CAppManager::ComputeOrtho(&m_OrthoBindEcho);
 
+	m_OrthoBindEchoIcon.fWidth = 60.f;
+	m_OrthoBindEchoIcon.fHeight = 60.f;
+	m_OrthoBindEchoIcon.fX = 200.f;
+	m_OrthoBindEchoIcon.fY = 200.f;
+	CAppManager::ComputeOrtho(&m_OrthoBindEchoIcon);
+
+	m_OrthoBindEchoEmpty.fWidth = 73.f;
+	m_OrthoBindEchoEmpty.fHeight = 73.f;
+	m_OrthoBindEchoEmpty.fX = 201.f;
+	m_OrthoBindEchoEmpty.fY = 201.f;
+	CAppManager::ComputeOrtho(&m_OrthoBindEchoEmpty);
+
+	// 바인딩 에코 이름
+	m_OrthoEchoBack[0].fWidth = 256;
+	m_OrthoEchoBack[0].fHeight = 32.f;
+	m_OrthoEchoBack[0].fX = 360.f;
+	m_OrthoEchoBack[0].fY = 182.f;
+	CAppManager::ComputeOrtho(&m_OrthoEchoBack[0]);
+
+	m_OrthoEchoBack[1].fWidth = 256;
+	m_OrthoEchoBack[1].fHeight = 32.f;
+	m_OrthoEchoBack[1].fX = 360.f;
+	m_OrthoEchoBack[1].fY = 222.f;
+	CAppManager::ComputeOrtho(&m_OrthoEchoBack[1]);
+
+	m_OrthoEchoInfo[0].fWidth = 256 * 0.8f;
+	m_OrthoEchoInfo[0].fHeight = 32.f * 0.8f;
+	m_OrthoEchoInfo[0].fX = 370.f;
+	m_OrthoEchoInfo[0].fY = 182.f;
+	CAppManager::ComputeOrtho(&m_OrthoEchoInfo[0]);
+
+	m_OrthoEchoInfo[1].fWidth = 256;
+	m_OrthoEchoInfo[1].fHeight = 32.f;
+	m_OrthoEchoInfo[1].fX = 395.f;
+	m_OrthoEchoInfo[1].fY = 223.f;
+	CAppManager::ComputeOrtho(&m_OrthoEchoInfo[1]);
+
+	// 바인딩 에코 공격력
+	for (_uint i = 0; i < 3; ++i)
+	{
+		m_OrthoEchoDamage[i].fWidth = 16.f * 0.7f;
+		m_OrthoEchoDamage[i].fHeight = 25.f * 0.7f;
+		m_OrthoEchoDamage[i].fX = 335.f + (i * (15.f * 0.7f));
+		m_OrthoEchoDamage[i].fY = 222.f;
+		CAppManager::ComputeOrtho(&m_OrthoEchoDamage[i]);
+	}
+
+	// 에코 슬롯
+	for (_uint i = 0; i < ECHO_SLOT_MAX; ++i)
+	{
+		m_OrthoEchoSlot[i].fWidth = 74.f;
+		m_OrthoEchoSlot[i].fHeight = 74.f;
+		m_OrthoEchoSlot[i].fX = 200.f + ((i % 4) * 74.f);
+		m_OrthoEchoSlot[i].fY = 300.f + ((i / 4) * 74.f);
+		CAppManager::ComputeOrtho(&m_OrthoEchoSlot[i]);
+
+		// 그레이드 3단계
+		for (_uint iGrade = 0; iGrade < 3; ++iGrade)
+		{
+			m_OrthoGradeImage[i][iGrade].fWidth  = 16.f;
+			m_OrthoGradeImage[i][iGrade].fHeight = 4.f;
+			m_OrthoGradeImage[i][iGrade].fX = m_OrthoEchoSlot[i].fX - 22.f;
+			m_OrthoGradeImage[i][iGrade].fY = m_OrthoEchoSlot[i].fY + 29.f - (5.f * iGrade);
+			CAppManager::ComputeOrtho(&m_OrthoGradeImage[i][iGrade]);
+		}
+
+		m_OrthoEchoIcon[i].fWidth = 64.f;
+		m_OrthoEchoIcon[i].fHeight = 64.f;
+		m_OrthoEchoIcon[i].fX = 200.f + ((i % 4) * 74.f);
+		m_OrthoEchoIcon[i].fY = 300.f + ((i / 4) * 74.f);
+		CAppManager::ComputeOrtho(&m_OrthoEchoIcon[i]);
+
+		m_OrthoEchoToolTip[i].fWidth = 256.f * 0.8f;
+		m_OrthoEchoToolTip[i].fHeight = 129.f * 0.8f;
+		m_OrthoEchoToolTip[i].fX = m_OrthoEchoSlot[i].fX + (256.f * 0.8f) * 0.5f + 35.f;
+		m_OrthoEchoToolTip[i].fY = m_OrthoEchoIcon[i].fY + 10.f;
+		CAppManager::ComputeOrtho(&m_OrthoEchoToolTip[i]);
+
+		m_OrthoEchoToolTipName[i].fWidth = 256.f * 0.7f;
+		m_OrthoEchoToolTipName[i].fHeight = 32.f * 0.7f;
+		m_OrthoEchoToolTipName[i].fX = m_OrthoEchoSlot[i].fX + (256.f * 0.8f) * 0.5f + 38.f;
+		m_OrthoEchoToolTipName[i].fY = m_OrthoEchoIcon[i].fY - (32.f * 0.8f) * 0.5f;
+		CAppManager::ComputeOrtho(&m_OrthoEchoToolTipName[i]);
+
+		m_OrthoEchoToolTipAttack[i].fWidth = 256.f * 0.8f;
+		m_OrthoEchoToolTipAttack[i].fHeight = 32.f * 0.8f;
+		m_OrthoEchoToolTipAttack[i].fX = m_OrthoEchoSlot[i].fX + (256.f * 0.8f) * 0.5f + 52.f;
+		m_OrthoEchoToolTipAttack[i].fY = m_OrthoEchoIcon[i].fY + (32.f * 0.8f) * 0.5f;
+		CAppManager::ComputeOrtho(&m_OrthoEchoToolTipAttack[i]);
+
+		for (_uint iDigit = 0; iDigit < 3; ++iDigit)
+		{
+			m_OrthoEchoToolTipDamage[i][iDigit].fWidth = 16.f * 0.5f;
+			m_OrthoEchoToolTipDamage[i][iDigit].fHeight = 25.f * 0.5f;
+			m_OrthoEchoToolTipDamage[i][iDigit].fX = m_OrthoEchoSlot[i].fX + (256.f * 0.8f) * 0.5f + (iDigit * (15.f * 0.5f));
+			m_OrthoEchoToolTipDamage[i][iDigit].fY = m_OrthoEchoToolTipAttack[i].fY - 1.f;
+			CAppManager::ComputeOrtho(&m_OrthoEchoToolTipDamage[i][iDigit]);
+		}
+	}
+
+	//에코 업그레이드 백그라운드
+	m_OrthoEchoUpgradeBack.fWidth = 340.f;
+	m_OrthoEchoUpgradeBack.fHeight = 100.f;
+	m_OrthoEchoUpgradeBack.fX = g_iWinSizeX >> 2;
+	m_OrthoEchoUpgradeBack.fY = g_iWinSizeY - 165.f;
+	CAppManager::ComputeOrtho(&m_OrthoEchoUpgradeBack);
+
+	// 등록버튼
+	m_OrthoRegisterButton.fWidth = 236.f;
+	m_OrthoRegisterButton.fHeight = 90.f;
+	m_OrthoRegisterButton.fX = (g_iWinSizeX >> 2) + 50.f;
+	m_OrthoRegisterButton.fY = g_iWinSizeY - 90.f;
+	CAppManager::ComputeOrtho(&m_OrthoRegisterButton);
+	m_OrthoRegisterText.fWidth = 256.f * 0.6f;
+	m_OrthoRegisterText.fHeight = 32.f * 0.6f;
+	m_OrthoRegisterText.fX = (g_iWinSizeX >> 2) + 50.F;
+	m_OrthoRegisterText.fY = g_iWinSizeY - 85.f;
+	CAppManager::ComputeOrtho(&m_OrthoRegisterText);
+	//흠 여기 수저ㅜㅇ
+
+#pragma endregion
+	
 	// 기타 임시 디폴트 세팅
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	m_pPlayerState = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
-	
+	m_pCamMovement = static_cast<CCameraMovement*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
+	m_pEchoSystem = static_cast<CEchoSystem*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Echo"));
+
 	CItemDB* pDB = CItemDB::GetInstance();
 	CItem::ITEM_DESC itemDesc = pDB->GetItemData(ITEM::EXP0);
 	itemDesc.iAmount = 10;
@@ -488,8 +748,14 @@ HRESULT CResonatorUI::Render()
 		if (FAILED(weaponStateRender()))
 			return E_FAIL;
 
+		if (FAILED(weaponSwitchRender()))
+			return E_FAIL;
+
 		break;
 	case CResonatorUI::BTN_ECHO:
+		if (FAILED(echoSlotRender()))
+			return E_FAIL;
+
 		break;
 	case CResonatorUI::BTN_RESONANCE:
 		break;
@@ -549,7 +815,7 @@ HRESULT CResonatorUI::addComponents()
 
 void CResonatorUI::elemAlphaUpdate(_double TimeDelta)
 {
-	// 개별 요소 알파 올리기 8개는 임의 지정
+	// 개별 요소 알파 올리기 10개는 임의 지정
 	for (_uint i = 0; i < SMOOTH_MAX; ++i)
 	{
 		if (m_bElemAlphaStart[i])
@@ -607,9 +873,14 @@ void CResonatorUI::elemAlphaReset(_uint iStartIndex)
 	ZeroMemory(m_fFlashCount, sizeof m_fFlashCount);
 	ZeroMemory(m_bFlashStart, sizeof m_bFlashStart);
 	ZeroMemory(m_fFlashAcc, sizeof m_fFlashAcc);
+	ZeroMemory(m_fToolTipAcc, sizeof m_fToolTipAcc);
+	ZeroMemory(m_bToolTip, sizeof m_bToolTip);
 
+	m_iOnMouseEchoSlot = 0;
+	m_bSwitchButton = false;
 	m_bElemAlphaStart[0] = true;
 	m_bSlotRenderFinish = false;
+	m_iSelectSlot = 0;
 }
 
 void CResonatorUI::stateActive()
@@ -620,18 +891,27 @@ void CResonatorUI::stateActive()
 	m_bButtonActive[0] = true;
 	m_eCurButton = BTN_STATE;
 	m_bSlotRenderFinish = false;
+	m_bSwitchButton = false;
 
 	ZeroMemory(m_iUseAmount, sizeof m_iUseAmount);
 	ZeroMemory(m_fFlashCount, sizeof m_fFlashCount);
 	ZeroMemory(m_bFlashStart, sizeof m_bFlashStart);
 	ZeroMemory(m_fFlashAcc, sizeof m_fFlashAcc);
+	m_iSelectSlot = 0;
+
+	ZeroMemory(m_fToolTipAcc, sizeof m_fToolTipAcc);
+	ZeroMemory(m_bToolTip, sizeof m_bToolTip);
+	m_iOnMouseEchoSlot = 0;
 
 	elemAlphaReset();
+
+	m_pUICharacter->ExitAnimation(UICharacter::UI_STATE);
+	m_pCamMovement->UseCamera(CCameraMovement::CAM_UI);
 }
 
 void CResonatorUI::stateDisable()
 {
-
+	m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
 }
 
 void CResonatorUI::stateUpdate(_double TimeDelta)
@@ -651,7 +931,10 @@ void CResonatorUI::stateUpdate(_double TimeDelta)
 					&& pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 				{
 					if (m_eCurButton != (RESONATOR_BTN)i)
+					{
 						elemAlphaReset();
+						m_pUICharacter->SetAnimation((UICharacter::UIANIMATION)i);
+					}
 
 					m_eCurButton = (RESONATOR_BTN)i;
 				}
@@ -817,17 +1100,17 @@ HRESULT CResonatorUI::defaultSlotRender()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	// Background
-	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoBackground.WorldMatrix)))
-		return E_FAIL;
+	//if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoBackground.WorldMatrix)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fBackgroundAlpha, sizeof(_float))))
-		return E_FAIL;
+	//if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fBackgroundAlpha, sizeof(_float))))
+	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_DETAILPANEL, m_pShader, "g_DiffuseTexture")))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_DETAILPANEL, m_pShader, "g_DiffuseTexture")))
+	//	return E_FAIL;
 
-	m_pShader->Begin(10);
-	m_pVIBuffer->Render();
+	//m_pShader->Begin(10);
+	//m_pVIBuffer->Render();
 
 	// ButtonTitleText
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoTitleText.WorldMatrix)))
@@ -1337,67 +1620,75 @@ void CResonatorUI::stateKeyInput(_double TimeDelta)
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	selectCharacter(TimeDelta);
-
-	// 경험치 증가 임시
-	if (pGameInstance->InputKey(DIK_B) == KEY_STATE::TAP)
-		m_pPlayerState->AddExp((CPlayerState::CHARACTERS)m_iCurCharacter, 10.f);
-
-	//사용할 경험치 캡슐 추가/감소
-	for (_uint iCapsule = 0; iCapsule < 4; ++iCapsule)
+	if (!m_bSwitchButton)
 	{
-		_uint iItemAmount = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::EXP0 + iCapsule);
-		if (pGM->OnMouse(m_OrthoUpgradeSlot[iCapsule]))
+		selectCharacter(TimeDelta);
+
+		// 경험치 증가 임시
+		if (pGameInstance->InputKey(DIK_B) == KEY_STATE::TAP)
+			m_pPlayerState->AddExp((CPlayerState::CHARACTERS)m_iCurCharacter, 10.f);
+
+		//사용할 경험치 캡슐 추가/감소
+		for (_uint iCapsule = 0; iCapsule < 4; ++iCapsule)
 		{
-			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			_uint iItemAmount = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::EXP0 + iCapsule);
+			if (pGM->OnMouse(m_OrthoUpgradeSlot[iCapsule]))
 			{
-				if (iItemAmount > m_iUseAmount[iCapsule])
+				if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 				{
-					//재클릭시 리셋
-					m_fFlashCount[iCapsule] = 0.f;
-					m_fFlashAcc[iCapsule] = 0.f;
+					if (iItemAmount > m_iUseAmount[iCapsule])
+					{
+						//재클릭시 리셋
+						m_fFlashCount[iCapsule] = 0.f;
+						m_fFlashAcc[iCapsule] = 0.f;
 
-					m_bFlashStart[iCapsule] = true;
-					m_iUseAmount[iCapsule]++;
+						m_bFlashStart[iCapsule] = true;
+						m_iUseAmount[iCapsule]++;
+					}
 				}
-			}
 
-			if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::TAP)
-			{
-				if (0 < m_iUseAmount[iCapsule])
+				if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::TAP)
 				{
-					//재클릭시 리셋
-					m_fFlashCount[iCapsule] = 0.f;
-					m_fFlashAcc[iCapsule] = 0.f;
+					if (0 < m_iUseAmount[iCapsule])
+					{
+						//재클릭시 리셋
+						m_fFlashCount[iCapsule] = 0.f;
+						m_fFlashAcc[iCapsule] = 0.f;
 
-					m_bFlashStart[iCapsule] = true;
-					m_iUseAmount[iCapsule]--;
+						m_bFlashStart[iCapsule] = true;
+						m_iUseAmount[iCapsule]--;
+					}
 				}
 			}
 		}
-	}
 
-	m_fTotalExp = 0.f;
-	m_iTotalConsume = 0;
-	m_iCurCoin = m_pInven->GetCoin();
-	CItemDB* pDB = CItemDB::GetInstance();
-	for (_uint i = 0; i < 4; ++i)
-	{
-		CItem::ITEM_DESC itemDesc = pDB->GetItemData(ITEM::EXP0 + i);
-		m_fTotalExp += itemDesc.iData[0] * m_iUseAmount[i];
-		m_iTotalConsume += itemDesc.iData[1] * m_iUseAmount[i];
-	}
-
-	if (pGM->OnMouse(m_OrthoUpgradeBtn))
-	{
-		if (m_iTotalConsume > 0 && m_iTotalConsume <= m_iCurCoin &&
-			pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+		m_fTotalExp = 0.f;
+		m_iTotalConsume = 0;
+		m_iCurCoin = m_pInven->GetCoin();
+		CItemDB* pDB = CItemDB::GetInstance();
+		for (_uint i = 0; i < 4; ++i)
 		{
-			m_fPushAcc += (_float)TimeDelta;
-			if (m_fPushAcc > 1.f)
+			CItem::ITEM_DESC itemDesc = pDB->GetItemData(ITEM::EXP0 + i);
+			m_fTotalExp += itemDesc.iData[0] * m_iUseAmount[i];
+			m_iTotalConsume += itemDesc.iData[1] * m_iUseAmount[i];
+		}
+
+		if (pGM->OnMouse(m_OrthoUpgradeBtn))
+		{
+			if (m_iTotalConsume > 0 && m_iTotalConsume <= m_iCurCoin &&
+				pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
 			{
-				m_fPushAcc = 1.f;
-				m_bUpgradeConfirm = true;
+				m_fPushAcc += (_float)TimeDelta;
+				if (m_fPushAcc > 1.f)
+				{
+					m_fPushAcc = 1.f;
+					m_bUpgradeConfirm = true;
+				}
+			}
+			else
+			{
+				m_fPushAcc = 0.f;	
+				m_bUpgradeConfirm = false;
 			}
 		}
 		else
@@ -1405,19 +1696,14 @@ void CResonatorUI::stateKeyInput(_double TimeDelta)
 			m_fPushAcc = 0.f;
 			m_bUpgradeConfirm = false;
 		}
-	}
-	else
-	{
-		m_fPushAcc = 0.f;
-		m_bUpgradeConfirm = false;
-	}
 
-	if (m_bUpgradeConfirm)
-	{
-		m_fPushAcc = 0.f;
-		m_bUpgradeConfirm = false;
-		upgradeCharacter(m_iCurCharacter);
-		ZeroMemory(m_iUseAmount, sizeof(_int) * 4);
+		if (m_bUpgradeConfirm)
+		{
+			m_fPushAcc = 0.f;
+			m_bUpgradeConfirm = false;
+			upgradeCharacter(m_iCurCharacter);
+			ZeroMemory(m_iUseAmount, sizeof(_int) * 4);
+		}
 	}
 
 	//Capsule FlashSlot
@@ -1441,10 +1727,119 @@ void CResonatorUI::stateKeyInput(_double TimeDelta)
 	}
 }
 
+void CResonatorUI::echoKeyInput(_double TimeDelta)
+{
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstnace = CGameInstance::GetInstance();
+
+	selectCharacter(TimeDelta);
+
+	// Tooltip Alpha 세팅
+	for (_uint i = 0; i < ECHO_SLOT_MAX; ++i)
+	{
+		CEchoSystem::ECHO EchoData = m_pEchoSystem->GetEcho((CEchoSystem::ECHO_TYPE)i);
+		if (pGameMode->OnMouse(m_OrthoEchoIcon[i]) && EchoData.bActive)
+		{
+			if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+				m_iCurSelectEcho = i;
+
+			m_bToolTip[i] = true;
+			m_iOnMouseEchoSlot = i;
+			m_fToolTipAcc[i] += (_float)TimeDelta * 4.f;
+			if (m_fToolTipAcc[i] > 8.f)
+				m_fToolTipAcc[i] = 8.f;
+		}
+		else
+		{
+			m_bToolTip[i] = false;
+			m_fToolTipAcc[i] = 0.f;
+		}
+	}
+
+	//에코 해제
+	const CEchoSystem::ECHO* pBindEcho = m_pEchoSystem->GetRegisteredEcho((CEchoSystem::ECHO_SLOT)m_iCurCharacter);
+	if (pBindEcho)
+	{
+		if (pGameMode->OnMouse(m_OrthoBindEcho))
+		{
+			if (pGameInstnace->InputMouse(DIMK_RB) == KEY_STATE::TAP)
+				m_pEchoSystem->ReleaseEcho((CEchoSystem::ECHO_SLOT)m_iCurCharacter);
+		}
+	}
+
+	//에코 등록
+	if (pGameMode->OnMouse(m_OrthoRegisterText))
+	{
+		m_iRegisterBtnState = 1;
+		if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+			m_iRegisterBtnState = 2;
+
+		if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
+			m_pEchoSystem->BindEcho((CEchoSystem::ECHO_SLOT)m_iCurCharacter, (CEchoSystem::ECHO_TYPE)m_iCurSelectEcho);
+
+	}
+	else
+	{
+		m_iRegisterBtnState = 0;
+	}
+
+}
+
 void CResonatorUI::weaponKeyInput(_double TimeDelta)
 {
-	selectCharacter(TimeDelta);
-	pushUpgradeButton(TimeDelta);
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstnace = CGameInstance::GetInstance();
+
+	if (!m_bSwitchButton)
+	{
+		selectCharacter(TimeDelta);
+		pushUpgradeButton(TimeDelta);
+		upshSwitchButton(TimeDelta);
+	}
+	else
+	{
+		// Select Weapon 페이지 닫기
+		if (m_bSwitchButton)
+		{
+			if (pGameMode->OnMouse(m_OrthoSwitchBackpage))
+			{
+				if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+					m_bSwitchButton = false;
+			}
+
+			//슬롯 체크
+			for (_uint i = 0; i < 20; ++i)
+			{
+				if (pGameMode->OnMouse(m_OrthoWeaponIcon[i]))
+				{
+					if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+						m_iSelectSlot = i;
+				}
+			}
+
+			// WeaponChange Confirm
+			if (pGameMode->OnMouse(m_OrthoWeaponConfirmText))
+			{
+				if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+					m_iConfirmButtonState = BTN_CLICK;
+				else
+				{
+					if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::AWAY && m_iConfirmButtonState == BTN_CLICK)
+					{
+						m_bWeaponChangeConfirm = true;
+						m_iConfirmButtonState = BTN_ON;
+						m_pInven->SwapWeapon(m_iCurCharacter, m_iSelectSlot);
+						//무기변경
+					}
+				}
+			}
+			else
+			{
+				m_iConfirmButtonState = BTN_NONE;
+			}
+		}
+	}
+
 	flashGemSlot(TimeDelta);
 }
 
@@ -1453,6 +1848,7 @@ void CResonatorUI::pushUpgradeButton(_double TimeDelta)
 	// 업그레이드 버튼 꾹
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstnace = CGameInstance::GetInstance();
+
 	CItem::ITEM_DESC* pWeapon = m_pPlayerState->GetCurWeaponDesc((CPlayerState::CHARACTERS)m_iCurCharacter);
 	m_iOwnGem = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::GEM);
 	m_iGemCost = (pWeapon->eItemGrade + 1) * 10;
@@ -1490,6 +1886,43 @@ void CResonatorUI::pushUpgradeButton(_double TimeDelta)
 	else
 	{
 		m_fPushAcc = 0.f;
+	}
+}
+
+void CResonatorUI::upshSwitchButton(_double TimeDelta)
+{
+	// 스위치 버튼 꾹
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstnace = CGameInstance::GetInstance();
+
+	if (!m_bSwitchButton)
+	{
+		if (pGameMode->OnMouse(m_OrthoWeaponSwitchButton))
+		{
+			if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+			{
+				m_fSwitchWeaponAcc += (_float)TimeDelta;
+				if (m_fSwitchWeaponAcc >= 1.f)
+				{
+					m_fSwitchWeaponAcc = 0.f;
+					m_bSwitchButton = true;
+				}
+			}
+			else
+			{
+				m_fSwitchWeaponAcc = 0.f;
+				m_bSwitchButton = false;
+			}
+
+		}
+		else
+		{
+			m_fSwitchWeaponAcc = 0.f;
+		}
+	}
+	else
+	{
+		m_fSwitchWeaponAcc = 0.f;
 	}
 }
 
@@ -1848,7 +2281,7 @@ HRESULT CResonatorUI::weaponStateRender()
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponSwitchButton.WorldMatrix)))
 		return E_FAIL;
-	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_WEAPON_UPGRADE_BUTTON, m_pShader, "g_DiffuseTexture")))
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_WEAPON_SWITCH_BUTTON, m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
 	m_pShader->Begin(3);
 	m_pVIBuffer->Render();
@@ -1873,6 +2306,656 @@ void CResonatorUI::upgradeWeapon()
 	m_pInven->EraseItem(CInventory::INVEN_MATERIAL, ITEM::GEM, m_iGemCost);
 }
 
+HRESULT CResonatorUI::echoSlotRender()
+{
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	//우상단 캐릭터 선택
+	chooseCharacter();
+
+	// 바인딩된 에코
+	const CEchoSystem::ECHO* pBindEcho = m_pEchoSystem->GetRegisteredEcho((CEchoSystem::ECHO_SLOT)m_iCurCharacter);
+
+	_float3 vColor;
+	if (pBindEcho)
+		vColor = GetEchoGradeColor3(pBindEcho->iGrade);
+	else
+		vColor = DEFAULT_COLOR;
+
+	_float4 vColor4 = { vColor.x, vColor.y, vColor.z, m_fElemAlpha[1] };
+	if (FAILED(m_pShader->SetRawValue("g_vColor4", &vColor4, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoBindEcho.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_GLOWGARD, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(11);
+	m_pVIBuffer->Render();	
+
+	if (pBindEcho)
+	{
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[1], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoBindEchoIcon.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(pBindEcho->iIconTextureID, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+	}
+	else
+	{
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[1], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoBindEchoEmpty.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::EMPTY_PLUS_SLOT, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+	}
+
+	// 바인딩에코 이름
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[1], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoBack[0].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SIDEALPHA, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(9);
+	m_pVIBuffer->Render();
+
+	if (pBindEcho)
+	{
+		vColor = GetEchoGradeColor3(pBindEcho->iGrade);
+		_float4 vColor4 = { vColor.x, vColor.y, vColor.z, m_fElemAlpha[1] };
+		if (FAILED(m_pShader->SetRawValue("g_vColor4", &vColor4, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[1], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoInfo[0].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(pBindEcho->iNameTextureID, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(11);
+		m_pVIBuffer->Render();
+	}
+
+	// 바인딩에코 공격력
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[1], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoBack[1].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SIDEALPHA, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(9);
+	m_pVIBuffer->Render();
+
+	if (pBindEcho)
+	{
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[1], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoInfo[1].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_ATTACK, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		// 바인딩 공격력 수치
+		string strDamage = to_string((_int)pBindEcho->fAttack);
+		_uint iDigit = (_uint)strDamage.size();
+
+		for (_uint i = 0; i < iDigit; ++i)
+		{
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[1], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoDamage[i].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(strDamage[i] - '0', m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+		}
+
+	}
+
+	//에코 슬롯
+	for (_uint i = 0; i < ECHO_SLOT_MAX; ++i)
+	{
+		CEchoSystem::ECHO EchoData = m_pEchoSystem->GetEcho((CEchoSystem::ECHO_TYPE)i);
+		_float3 vColor = DEFAULT_COLOR;
+		switch (EchoData.iGrade)
+		{
+		case 1:
+			vColor = SLOT_ADVANCED_COLOR;
+			break;
+		case 2:
+			vColor = SLOT_RARE_COLOR;
+			break;
+		case 3:
+			vColor = SLOT_UNIQUE_COLOR;
+			break;
+		case 4:
+			vColor = SLOT_LEGEND_COLOR;
+			break;
+		case 5:
+			vColor = SLOT_RED_COLOR;
+			break;
+		}
+
+		vColor4 = { vColor.x, vColor.y, vColor.z, m_fElemAlpha[2] };
+		if (FAILED(m_pShader->SetRawValue("g_vColor4", &vColor4, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoSlot[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::SLOT74, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(11);
+		m_pVIBuffer->Render();
+
+		if (EchoData.bActive)
+		{
+			//에코 아이콘
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[3], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(EchoData.iIconTextureID, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoIcon[i].WorldMatrix)))
+				return E_FAIL;
+
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+
+			for (_uint iLevel = 0; iLevel < EchoData.iLevel; ++iLevel)
+			{
+				/*vColor = GetEchoGradeColor3(4);
+				if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+					return E_FAIL;*/
+				if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[3], sizeof(_float))))
+					return E_FAIL;
+				if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_GRADE_IMAGE, m_pShader, "g_DiffuseTexture")))
+					return E_FAIL;
+				if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoGradeImage[i][iLevel].WorldMatrix)))
+					return E_FAIL;
+
+				m_pShader->Begin(10);
+				m_pVIBuffer->Render();
+			}
+		}
+		else
+		{
+			// 에코 회색 아이콘
+			vColor4 = { m_fElemAlpha[3], m_fElemAlpha[3] , m_fElemAlpha[3] , m_fElemAlpha[3] };
+			if (FAILED(m_pShader->SetRawValue("g_vColor4", &vColor4, sizeof(_float4))))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(EchoData.iIconTextureID, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoIcon[i].WorldMatrix)))
+				return E_FAIL;
+
+			m_pShader->Begin(12);
+			m_pVIBuffer->Render();
+
+			// 임시 가리기 (UnkownSlot)
+			_float fAlpha = m_fElemAlpha[3] * 0.5f;
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoSlot[i].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_ECHO_UNKNOWN, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+
+		}
+
+		if (EchoData.bBind)
+		{
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[3], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoSlot[i].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_USE, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+		}
+	}
+
+	// 툴팁
+	if (m_bToolTip[m_iOnMouseEchoSlot])
+	{
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fToolTipAcc[m_iOnMouseEchoSlot], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoToolTip[m_iOnMouseEchoSlot].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_PANEL, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		//에코 정보
+		CEchoSystem::ECHO EchoData = m_pEchoSystem->GetEcho((CEchoSystem::ECHO_TYPE)m_iOnMouseEchoSlot);
+		_float fTextAlpha = m_fToolTipAcc[m_iOnMouseEchoSlot] / 8.f;
+		
+		_float3 vEchoColor = GetEchoGradeColor3(EchoData.iGrade);
+		_float4 vEchoNameColor = { vEchoColor.x, vEchoColor.y, vEchoColor.z, fTextAlpha };
+
+		if (FAILED(m_pShader->SetRawValue("g_vColor4", &vEchoNameColor, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fTextAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoToolTipName[m_iOnMouseEchoSlot].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(EchoData.iNameTextureID, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(11);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fTextAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoToolTipAttack[m_iOnMouseEchoSlot].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_ATTACK, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		// 툴팁 데미지
+		string strDamage = to_string((_int)EchoData.fAttack);
+		_uint iDigitCount = (_uint)strDamage.size();
+
+		for (_uint iDigit = 0; iDigit < iDigitCount; ++iDigit)
+		{
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fTextAlpha, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoToolTipDamage[m_iOnMouseEchoSlot][iDigit].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(strDamage[iDigit] - '0', m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+		}
+
+	}
+
+	// 선택 Glow
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[4], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoSlot[m_iCurSelectEcho].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTON, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// 에코 업그레이드 백그라운드
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[5], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoEchoUpgradeBack.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SIDEALPHA, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(9);
+	m_pVIBuffer->Render();
+
+	// 등록 버튼
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoRegisterButton.WorldMatrix)))
+		return E_FAIL;
+
+	switch (m_iRegisterBtnState)
+	{
+	case 0:
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_ON, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		break;
+	case 1:
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_NONE, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		break;
+	case 2:
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_CLICK, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		break;
+	}
+
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[6], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoRegisterText.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_REGISTER, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	return S_OK;
+}
+
+HRESULT CResonatorUI::weaponSwitchRender()
+{
+	if (!m_bSwitchButton)
+		return S_OK;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponInvenBack.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_GRADBACKGROUND, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[8], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeaponText.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SELECTWEAPON, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[8], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSwitchBackpage.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_BACKPAGE, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// Select Weapon Text
+	_uint iSlotCount = m_pInven->GetInvenTotalCount(CInventory::INVEN_WEAPON);
+	for (_uint i = 0; i < iSlotCount; ++i)
+	{
+		CItem::ITEM_DESC pSlotItem = m_pInven->GetSlotData(CInventory::INVEN_WEAPON, i);
+	
+		if (i == m_iSelectSlot)
+		{
+			/*if (FAILED(m_pShader->SetRawValue("g_vColor", &vItemSlotColor, sizeof(_float3))))
+				return E_FAIL;*/
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponSlot[i].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTON, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+		}
+
+		// Weapon Slot
+		_float3 vItemSlotColor = CItemDB::GetItemSlotColor(pSlotItem.eItemGrade);
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vItemSlotColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponSlot[i].WorldMatrix)))
+			return E_FAIL;
+		/*if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_GLOWGARD, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;*/
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::SLOT74, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+
+		// Weapon Icon
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponIcon[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(pSlotItem.iImageIndex, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (pSlotItem.iData[2] > 0)
+		{
+			// Weapon Upgrade Count +
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponUpgradePlus[i].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_PLUS, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+
+			// Weapon Upgrade Count
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponUpgradeCount[i].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(pSlotItem.iData[2], m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+		}
+	}
+
+	// Select Weapon Slot
+	CItem::ITEM_DESC pSlotItem = m_pInven->GetSlotData(CInventory::INVEN_WEAPON, m_iSelectSlot);
+
+	_float3 vItemSlotColor = CItemDB::GetItemSlotColor(pSlotItem.eItemGrade);
+	if (FAILED(m_pShader->SetRawValue("g_vColor", &vItemSlotColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeaponSlot.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_GLOWGARD, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(8);
+	m_pVIBuffer->Render();
+
+	// Select Weapon Icon
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeapon.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(pSlotItem.iImageIndex, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// Select Weapon Text
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeaponName.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(pSlotItem.iImageTextIndex, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// 선택된 무기 강화 횟수
+	for (_uint i = 0; i < MAX_WEAPON_UPGRADE; ++i)
+	{
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeaponUpgrade[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_UPGRADE_SIGN, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		//무기의 강화 횟수
+		_float3 vSignColor = LEGEND_COLOR;
+		if (i < (_uint)pSlotItem.iData[2])
+		{
+			if (FAILED(m_pShader->SetRawValue("g_vColor", &vSignColor, sizeof(_float3))))
+				return E_FAIL;
+		}
+		else
+		{
+			vSignColor = { 0.5f, 0.5f, 0.5f };
+			if (FAILED(m_pShader->SetRawValue("g_vColor", &vSignColor, sizeof(_float3))))
+				return E_FAIL;
+		}
+
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+	}
+
+	// Info Back 0
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeaponCriBack.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SIDEALPHA, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(8);
+	m_pVIBuffer->Render();
+
+
+	// Info Back 1
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeaponAtkBack.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SIDEALPHA, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(8);
+	m_pVIBuffer->Render();
+
+	//// 수치 (직교 반대로 되있는듯)
+	// Phisical Damage Text
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[5], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeaponAtkBack.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_CRITICAL_DAMAGE, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// Critical Rate Text
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[5], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeaponCriBack.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_PHISICAL_RATE, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	//// 데미지
+	_uint iDamage = CItemDB::ComputeWeaponDamage(pSlotItem);
+	string strDamage = to_string(iDamage);
+	_uint iDamageDigit = (_uint)strDamage.size();
+
+	for (_uint iDamageIndex = 0; iDamageIndex < iDamageDigit; ++iDamageIndex)
+	{
+		_float3 vWeaponDMGColor;
+		if (iDamage < (_uint)m_pPlayerState->GetCurWeaponDesc((CPlayerState::CHARACTERS)m_iCurCharacter)->iData[0])
+			vWeaponDMGColor = _float3(0.8f, 0.2f, 0.2f);
+		else if (iDamage == (_uint)m_pPlayerState->GetCurWeaponDesc((CPlayerState::CHARACTERS)m_iCurCharacter)->iData[0])
+			vWeaponDMGColor = DEFAULT_COLOR;
+		else
+			vWeaponDMGColor = ADVANCED_COLOR;
+
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vWeaponDMGColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[5], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeaponAttack[iDamageIndex].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(strDamage[iDamageIndex] - '0', m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+	}
+
+	//// 크리티컬 확률
+	iDamage = CItemDB::ComputeWeaponCriticalRate(pSlotItem);
+	strDamage = to_string(iDamage);
+	iDamageDigit = (_uint)strDamage.size();
+
+	_float3 vWeaponDMGColor;
+	if (iDamage < (_uint)m_pPlayerState->GetCurWeaponDesc((CPlayerState::CHARACTERS)m_iCurCharacter)->iData[1])
+		vWeaponDMGColor = _float3(0.8f, 0.2f, 0.2f);
+	else if (iDamage == (_uint)m_pPlayerState->GetCurWeaponDesc((CPlayerState::CHARACTERS)m_iCurCharacter)->iData[1])
+		vWeaponDMGColor = DEFAULT_COLOR;
+	else
+		vWeaponDMGColor = ADVANCED_COLOR;
+
+	if (FAILED(m_pShader->SetRawValue("g_vColor", &vWeaponDMGColor, sizeof(_float3))))
+		return E_FAIL;
+
+	for (_uint iDamageIndex = 0; iDamageIndex < iDamageDigit; ++iDamageIndex)
+	{
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[5], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeaponCri[iDamageIndex].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(strDamage[iDamageIndex] - '0', m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+	}
+
+	// 퍼센트
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[5], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeaponCri[iDamageDigit].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_PER, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(8);
+	m_pVIBuffer->Render();
+
+	// Confirm 버튼
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponConfirmButton.WorldMatrix)))
+		return E_FAIL;
+	switch (m_iConfirmButtonState)
+	{
+	case BTN_NONE:
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_NONE, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		break;
+	case BTN_ON:
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_ON, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		break;
+	case BTN_CLICK:
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_CLICK, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		break;
+	}
+
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	// Confirm Text
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponConfirmText.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_CONFIRM, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	return S_OK;
+}
+
 void CResonatorUI::keyInput(_double TimeDelta)
 {
 	switch (m_eCurButton)
@@ -1882,8 +2965,11 @@ void CResonatorUI::keyInput(_double TimeDelta)
 		break;
 	case BTN_WEAPON:
 		weaponKeyInput(TimeDelta);
-		
 		break;
+	case BTN_ECHO:
+		echoKeyInput(TimeDelta);
+		break;
+
 	default:
 		break;
 	}
@@ -1978,4 +3064,29 @@ void CResonatorUI::Free()
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pShader);
 
+}
+
+_float3 CResonatorUI::GetEchoGradeColor3(_uint iGrade)
+{
+	_float3 vColor;
+	switch (iGrade)
+	{
+	case 1:
+		vColor = SLOT_ADVANCED_COLOR;
+		break;
+	case 2:
+		vColor = SLOT_RARE_COLOR;
+		break;
+	case 3:
+		vColor = SLOT_UNIQUE_COLOR;
+		break;
+	case 4:
+		vColor = SLOT_LEGEND_COLOR;
+		break;
+	case 5:
+		vColor = SLOT_RED_COLOR;
+		break;
+	}
+
+	return vColor;
 }

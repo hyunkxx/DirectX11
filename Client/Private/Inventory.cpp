@@ -3,6 +3,7 @@
 
 #include "Item.h"
 #include "GameInstance.h"
+#include "PlayerState.h"
 
 CInventory::CInventory(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -32,6 +33,9 @@ HRESULT CInventory::Initialize(void * pArg)
 		m_iSlotLimit[i] = 20;
 		m_Items[i].reserve(100);
 	}
+
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	m_pPlayerState = static_cast<CPlayerState*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 
 	return S_OK;
 }
@@ -241,15 +245,70 @@ _uint CInventory::GetTotalAmount(INVEN_TYPE eInvenType, _uint iItemID)
 	return iAmount;
 }
 
+_uint CInventory::GetInvenTotalCount(INVEN_TYPE eInvenType) const
+{
+	return (_uint)m_Items[eInvenType].size();
+}
+
+void CInventory::SwapWeapon(_uint iCharacter, _uint iSlotIndex)
+{
+	CItem::ITEM_DESC* pPlayerWeapon = m_pPlayerState->GetCurWeaponDesc((CPlayerState::CHARACTERS)iCharacter);
+
+	//슬롯의 아이템 데이터 임시저장
+	CItem::ITEM_DESC pSlotItem = m_Items[INVEN_WEAPON][iSlotIndex];
+	DiscardItem(INVEN_WEAPON, iSlotIndex, 1);
+
+	m_Items[INVEN_WEAPON].push_back(*pPlayerWeapon);
+	m_pPlayerState->SetEquitWeapon((CPlayerState::CHARACTERS)iCharacter, pSlotItem);
+
+	sort(m_Items[INVEN_WEAPON].begin(), m_Items[INVEN_WEAPON].end(), CompareItemGrade());
+
+	//강화순으로도 정렬 하고싶은데
+	//_uint iTarget = pSlotItem.eItemGrade;
+	//_bool m_bFindTarget = false;
+	//vector<CItem::ITEM_DESC>::iterator iTargetGradeBegin;
+	//vector<CItem::ITEM_DESC>::iterator iTargetGradeEnd;
+
+	//for (auto iter = m_Items[INVEN_WEAPON].begin(); iter != m_Items[INVEN_WEAPON].end(); ++iter)
+	//{
+	//	if (!m_bFindTarget)
+	//	{
+	//		if (iTarget == iter->eItemGrade)
+	//		{
+	//			m_bFindTarget = true;
+	//			iTargetGradeBegin = iter;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		if (iTarget != iter->eItemGrade)
+	//		{
+	//			m_bFindTarget = false;
+	//			iTargetGradeEnd = iter;
+	//		}
+	//	}
+	//}
+
+	//sort(iTargetGradeBegin, iTargetGradeEnd, CompareWeaponUpgradeCount());
+}
+
 _bool CInventory::addWeapon(CItem::ITEM_DESC tagItemDesc)
 {
-	if (m_Items[INVEN_WEAPON].size() < m_iSlotLimit[INVEN_WEAPON])
+	_uint iItemAmount = tagItemDesc.iAmount;
+	tagItemDesc.iAmount = 1;
+
+	_uint iPushCount = 0;
+
+	while (iPushCount < iItemAmount)
 	{
-		m_Items[INVEN_WEAPON].push_back(tagItemDesc);
-		return true;
+		if (m_Items[INVEN_WEAPON].size() < m_iSlotLimit[INVEN_WEAPON])
+		{
+			iPushCount++;
+			m_Items[INVEN_WEAPON].push_back(tagItemDesc);
+		}
 	}
 
-	return false;
+	return true;
 }
 
 _bool CInventory::addItem(INVEN_TYPE eInvenType, CItem::ITEM_DESC tagItemDesc)

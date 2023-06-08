@@ -4,7 +4,8 @@
 #include "GameMode.h"
 #include "AppManager.h"
 #include "GameInstance.h"
-
+#include "ResonatorUI.h"
+#include "UICam.h"
 
 UICharacter::UICharacter(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -41,11 +42,24 @@ HRESULT UICharacter::Initialize(void * pArg)
 	m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
 	m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
 
+	m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(270.f));
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(-999.f, 0.f, -1000.f, 1.f));
+
+	m_pStudioTransform->Set_WorldMatrix(m_pMainTransform->Get_WorldMatrix());
+	_vector vStudioPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION) - m_pMainTransform->Get_State(CTransform::STATE_LOOK) * 1.5f;
+	m_pStudioTransform->Set_State(CTransform::STATE_POSITION, vStudioPos);
+	m_pStudioTransform->Set_Scale(_float3(20.f, 10.f, 20.f));
+
 	return S_OK;
 }
 
 void UICharacter::Start()
 {
+	CGameInstance* pGI = CGameInstance::GetInstance();
+
+	m_pCamMovement = static_cast<CCameraMovement*>(pGI->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
+
+	static_cast<CResonatorUI*>(pGI->Find_GameObject(LEVEL_STATIC, L"Resonator"))->BindUIChracter(this);
 }
 
 void UICharacter::PreTick(_double TimeDelta)
@@ -54,7 +68,13 @@ void UICharacter::PreTick(_double TimeDelta)
 
 void UICharacter::Tick(_double TimeDelta)
 {
+	CGameInstance* pGI = CGameInstance::GetInstance();
+
 	__super::Tick(TimeDelta);
+
+	CCameraMovement::CAM_TYPE curCamType = m_pCamMovement->GetCurrentCamType();
+	if (curCamType != CCameraMovement::CAM_UI)
+		return;
 
 	updateAnimationState(TimeDelta);
 }
@@ -62,6 +82,10 @@ void UICharacter::Tick(_double TimeDelta)
 void UICharacter::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
+	
+	CCameraMovement::CAM_TYPE curCamType = m_pCamMovement->GetCurrentCamType();
+	if (curCamType != CCameraMovement::CAM_UI)
+		return;
 
 	if (m_pRenderer)
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
@@ -69,8 +93,27 @@ void UICharacter::LateTick(_double TimeDelta)
 
 HRESULT UICharacter::Render()
 {
+	CGameInstance* pGI = CGameInstance::GetInstance();
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
+
+	// Studio
+	if (FAILED(m_pUIShader->SetMatrix("g_WorldMatrix", &m_pStudioTransform->Get_WorldMatrix())))
+		return E_FAIL;
+	if (FAILED(m_pUIShader->SetMatrix("g_ViewMatrix", &pGI->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pUIShader->SetMatrix("g_ProjMatrix", &pGI->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
+		return E_FAIL;
+	
+	_float fValue = 1.f;
+	if (FAILED(m_pUIShader->SetRawValue("g_fTimeAcc", &fValue, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(pGI->SetupSRV(STATIC_IMAGE::UI_DETAILPANEL, m_pUIShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pUIShader->Begin(10);
+	m_pVIBuffer->Render();
 
 	if (FAILED(setupShaderResource()))
 		return E_FAIL;
@@ -97,7 +140,7 @@ HRESULT UICharacter::Render()
 		}
 		else
 		{
-			m_pShader->Begin(3);
+			m_pShader->Begin(4);
 		}
 
 		m_pModel->Render(i);
@@ -114,6 +157,113 @@ HRESULT UICharacter::RenderShadow()
 
 void UICharacter::RenderGUI()
 {
+}
+
+void UICharacter::SetAnimation(UIANIMATION eCurUI)
+{
+	if (m_iAnimID == UICHAR_IDLE)
+	{
+		m_bStateBase = true;
+		switch (eCurUI)
+		{
+		case UI_STATE:
+			m_iAnimID = UICHAR_IDLE;
+			m_eUIState = UI_STATE;
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			break;
+		case UI_WEAPON:
+			m_iAnimID = UICHAR_WEAPON_START;
+			m_eUIState = UI_WEAPON;
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			break;
+		case UI_ECHO:
+			m_iAnimID = UICHAR_CHIP_START;
+			m_eUIState = UI_ECHO;
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			break;
+		case UI_RESONANCE:
+			m_iAnimID = UICHAR_RESONANT_START;
+			m_eUIState = UI_RESONANCE;
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			break;
+		case UI_WUTHERIDE:
+			m_iAnimID = UICHAR_INTEN_START;
+			m_eUIState = UI_WUTHERIDE;
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			break;
+		}
+	}
+	else
+	{
+		m_bStateBase = false;
+		switch (m_eUIState)
+		{
+		case UI_STATE:
+			m_iAnimID = UICHAR_IDLE;
+			m_eUIState = eCurUI;
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			break;
+		case UI_WEAPON:
+			m_iAnimID = UICHAR_WEAPON_END;
+			m_eUIState = eCurUI;
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			break;
+		case UI_ECHO:
+			m_iAnimID = UICHAR_CHIP_END;
+			m_eUIState = eCurUI;
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			break;
+		case UI_RESONANCE:
+			m_iAnimID = UICHAR_RESONANT_END;
+			m_eUIState = eCurUI;
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			break;
+		case UI_WUTHERIDE:
+			m_iAnimID = UICHAR_INTEN_END;
+			m_eUIState = eCurUI;
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			break;
+		}
+
+		//ExitAnimation(eCurUI);
+	}
+}
+
+void UICharacter::ExitAnimation(UIANIMATION eCurUI)
+{
+	if (m_iAnimID == UICHAR_CHIP_LOOP ||
+		m_iAnimID == UICHAR_INTEN_LOOP ||
+		m_iAnimID == UICHAR_INTO1_LOOP ||
+		m_iAnimID == UICHAR_RESONANT_LOOP ||
+		m_iAnimID == UICHAR_WEAPON_LOOP)
+	{
+		m_iAnimID--;
+		m_eUIState = eCurUI;
+		m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+		m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+	}
+	else if (
+		m_iAnimID == UICHAR_CHIP_START ||
+		m_iAnimID == UICHAR_INTEN_START ||
+		m_iAnimID == UICHAR_INTO1_START ||
+		m_iAnimID == UICHAR_RESONANT_START ||
+		m_iAnimID == UICHAR_WEAPON_START)
+	{
+		m_iAnimID -= 2; // >> 재생중에 연속으로 클릭하니까 밀림 일단 보류
+		m_eUIState = eCurUI;
+		m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+		m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+	}
 }
 
 void UICharacter::initAnimation()
@@ -169,6 +319,7 @@ void UICharacter::initAnimation()
 void UICharacter::updateAnimationState(_double TimeDelta)
 {
 	_bool bFinished = false;
+
 	m_pAnimSetBase->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, &bFinished);
 	m_pAnimSetBase->Update_TargetBones();
 
@@ -177,23 +328,62 @@ void UICharacter::updateAnimationState(_double TimeDelta)
 
 	m_pModel->Invalidate_CombinedMatrices();
 
-	if (bFinished)
+	if (m_bStateBase)
 	{
-		// 현재 UI 상태에 따라 다음 애니메이션 결정,
-		switch (m_iUIState)
+		if (bFinished)
 		{
-		// ex) Weapon 탭이 선택된 상태라면 다음 애니메이션을 WEAPON LOOP로 함?
-		case 2:
-			m_iAnimID = UICHAR_WEAPON_LOOP;
-			break;
-		default:
-			break;
+			switch (m_eUIState)
+			{
+			case UI_STATE:
+				m_iAnimID = UICHAR_IDLE;
+				break;
+			case UI_WEAPON:
+				m_iAnimID = UICHAR_WEAPON_LOOP;
+				break;
+			case UI_ECHO:
+				m_iAnimID = UICHAR_CHIP_LOOP;
+				break;
+			case UI_RESONANCE:
+				m_iAnimID = UICHAR_RESONANT_LOOP;
+				break;
+			case UI_WUTHERIDE:
+				m_iAnimID = UICHAR_INTEN_LOOP;
+				break;
+			}
+
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
 		}
-
-
-		m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-		m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
 	}
+	else
+	{
+		if (bFinished)
+		{
+			m_bStateBase = true;
+			switch (m_eUIState)
+			{
+			case UI_STATE:
+				m_iAnimID = UICHAR_IDLE;
+				break;
+			case UI_WEAPON:
+				m_iAnimID = UICHAR_WEAPON_START;
+				break;
+			case UI_ECHO:
+				m_iAnimID = UICHAR_CHIP_START;
+				break;
+			case UI_RESONANCE:
+				m_iAnimID = UICHAR_RESONANT_START;
+				break;
+			case UI_WUTHERIDE:
+				m_iAnimID = UICHAR_INTEN_START;
+				break;
+			}
+
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+		}
+	}
+
 }
 
 HRESULT UICharacter::addComponents()
@@ -229,6 +419,23 @@ HRESULT UICharacter::addComponents()
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, DMODEL::DMD_UI_ROVER_RIBBON,
 		TEXT("Com_Shader_ModelAnimRibbon"), (CComponent**)&m_pAnimSetRibbon)))
+		return E_FAIL;
+
+	// Studio
+	ZeroMemory(&TransformDesc, sizeof TransformDesc);
+	TransformDesc.fMoveSpeed = 15.f;
+	TransformDesc.fRotationSpeed = XMConvertToRadians(540.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
+		TEXT("com_buffer_transform"), (CComponent**)&m_pStudioTransform, &TransformDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::VIBUFFER_RECT,
+		TEXT("com_vibuffer"), (CComponent**)&m_pVIBuffer)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI_SUB,
+		TEXT("com_shader"), (CComponent**)&m_pUIShader)))
 		return E_FAIL;
 
 	return S_OK;
@@ -285,5 +492,15 @@ void UICharacter::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pRenderer);
+	Safe_Release(m_pShader);
+	Safe_Release(m_pModel);
+	Safe_Release(m_pAnimSetBase);
+	Safe_Release(m_pAnimSetRibbon);
+	Safe_Release(m_pMainTransform);
+
+	Safe_Release(m_pUIShader);
+	Safe_Release(m_pVIBuffer);
+	Safe_Release(m_pStudioTransform);
 
 }

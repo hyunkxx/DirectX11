@@ -16,6 +16,7 @@ public:
 	virtual void Free() override;
 
 public:
+	static _float3 GetItemSlotColor(CItem::ITEM_GRADE eItemGrade);
 	static _float3 GetItemColor(CItem::ITEM_GRADE eItemGrade);
 	static _uint ComputeWeaponDamage(CItem::ITEM_DESC tagItemDesc);
 	static _uint ComputeWeaponCriticalRate(CItem::ITEM_DESC tagItemDesc);
@@ -66,6 +67,15 @@ struct CompareItemGrade
 		return src.eItemGrade > dest.eItemGrade;
 	}
 };
+
+struct CompareWeaponUpgradeCount
+{
+	bool operator()(CItem::ITEM_DESC src, CItem::ITEM_DESC dest)
+	{
+		return src.iData[2] > dest.iData[2];
+	}
+};
+
 
 END
 

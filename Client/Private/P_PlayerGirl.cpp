@@ -191,6 +191,13 @@ void CP_PlayerGirl::Start()
 	m_pUIMain = static_cast<CUI_MainScreen*>(pGame->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));
 
 	m_pInven->AddItem(ITEM::GEM, 100);
+
+	m_pInven->AddItem(ITEM::SWORD0, 8);
+	m_pInven->AddItem(ITEM::SWORD1, 3);
+	m_pInven->AddItem(ITEM::SWORD2, 3);
+	m_pInven->AddItem(ITEM::SWORD3, 3);
+	m_pInven->AddItem(ITEM::SWORD4, 3);
+
 }
 
 void CP_PlayerGirl::PreTick(_double TimeDelta)

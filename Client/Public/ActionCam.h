@@ -52,6 +52,7 @@ private:
 
 private:
 	CCameraMovement::CAM_TYPE m_eCamType;
+	CCameraMovement* m_pCamMovement = nullptr;
 
 private:
 	// ¿¢¼ÇÄ· »óÅÂ
@@ -61,8 +62,6 @@ private:
 	// Revert
 	_float m_fRevertAcc = 0.f;
 
-private:
-	CCameraMovement* m_pCamMovement = nullptr;
 };
 
 END

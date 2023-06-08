@@ -208,6 +208,7 @@
     <ClInclude Include="..\Public\Client_ObjectEnum.h" />
     <ClInclude Include="..\Public\Client_ShaderEnum.h" />
     <ClInclude Include="..\Public\Client_TextureEnum.h" />
+    <ClInclude Include="..\public\EchoSystem.h" />
     <ClInclude Include="..\Public\Efffect_Tool.h" />
     <ClInclude Include="..\public\Inventory.h" />
     <ClInclude Include="..\public\Level_City.h" />
@@ -276,6 +277,7 @@
     <ClInclude Include="..\public\TestGeneric.h" />
     <ClInclude Include="..\Public\TestVTF.h" />
     <ClInclude Include="..\Public\TraceKey.h" />
+    <ClInclude Include="..\public\UICam.h" />
     <ClInclude Include="..\public\UICharacter.h" />
     <ClInclude Include="..\Public\UI_MainScreen.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -345,6 +347,7 @@
     <ClCompile Include="..\private\CharacterSelect_Terrain.cpp" />
     <ClCompile Include="..\private\Chest.cpp" />
     <ClCompile Include="..\Private\CityObject.cpp" />
+    <ClCompile Include="..\private\EchoSystem.cpp" />
     <ClCompile Include="..\Private\Efffect_Tool.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />
     <ClCompile Include="..\private\Level_City.cpp" />
@@ -415,6 +418,7 @@
     <ClCompile Include="..\private\TestGeneric.cpp" />
     <ClCompile Include="..\Private\TestVTF.cpp" />
     <ClCompile Include="..\Private\TraceKey.cpp" />
+    <ClCompile Include="..\private\UICam.cpp" />
     <ClCompile Include="..\private\UICharacter.cpp" />
     <ClCompile Include="..\Private\UI_MainScreen.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

@@ -51,6 +51,9 @@ public:
 	// 검색할 아이템의 전체 갯수 (슬롯 상관 x)
 	_uint GetTotalAmount(INVEN_TYPE eInvenType, _uint iItemID);
 
+	_uint GetInvenTotalCount(INVEN_TYPE eInvenType) const;
+	void SwapWeapon(_uint iCharacter, _uint iSlotIndex);
+
 private:
 	_bool addWeapon(CItem::ITEM_DESC tagItemDesc);
 	_bool addItem(INVEN_TYPE eInvenType, CItem::ITEM_DESC tagItemDesc);
@@ -68,6 +71,8 @@ private:
 	_uint m_iCoin = 100000; // 기본 메인 재화
 	vector<CItem::ITEM_DESC> m_Items[INVEN_MAX];
 
+
+	class CPlayerState* m_pPlayerState = nullptr;
 };
 
 END

@@ -298,8 +298,8 @@ void CTerminalUI::inputKey(_double TimeDelta)
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	_bool isMainCam = CCameraMovement::CAM_MAINPLAYER == m_pCamMovement->GetCurrentCamType();
-	if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP && isMainCam)
+	//_bool isMainCam = CCameraMovement::CAM_UI == m_pCamMovement->GetCurrentCamType();
+	if (pGameInstance->InputKey(DIK_ESCAPE) == KEY_STATE::TAP /*&& isMainCam*/)
 	{
 		// 최상위 UI가 터미널이 아닐경우 터미널 On 아니면 최상위 UI만 끈다.
 		if (!m_pActivateList.empty())

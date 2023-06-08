@@ -57,6 +57,34 @@ CItem::ITEM_DESC CItemDB::GetItemData(_uint iKey)
 	return itemDesc;
 }
 
+_float3 CItemDB::GetItemSlotColor(CItem::ITEM_GRADE eItemGrade)
+{
+	_float3 vColor = { 0.f, 0.f, 0.f };
+	switch (eItemGrade)
+	{
+	case Client::CItem::NORMAL:
+		vColor = SLOT_COLOR; //회색
+		break;
+	case Client::CItem::ADVANCED:
+		vColor = SLOT_ADVANCED_COLOR; //초록
+		break;
+	case Client::CItem::RARE:
+		vColor = SLOT_RARE_COLOR; //파랑
+		break;
+	case Client::CItem::UNIQUE:
+		vColor = SLOT_UNIQUE_COLOR; //보라
+		break;
+	case Client::CItem::LEGEND:
+		vColor = SLOT_LEGEND_COLOR; //노랑
+		break;
+	default:
+		vColor = { 1.f, 1.f, 1.f };
+		break;
+	}
+
+	return vColor;
+}
+
 _float3 CItemDB::GetItemColor(CItem::ITEM_GRADE eItemGrade)
 {
 	// 좀 더 어두움

@@ -120,7 +120,7 @@ void CCameraMovement::UseCamera(CAM_TYPE eCameraType)
 			m_pCams[i]->Set_Use(true);
 			m_eCurCamType = eCameraType;
 
-			if (eCameraType > CAM_MAINPLAYER || eCameraType < CAM_END)
+			if (eCameraType > CAM_UI && eCameraType < CAM_END)
 				static_cast<CActionCam*>(m_pCams[eCameraType])->ActionInit();
 		}
 		else
@@ -136,7 +136,7 @@ void CCameraMovement::SetupBone(CAM_TYPE eCameraType, CBone * pBone)
 	if (!pBone)
 		return;
 
-	if (eCameraType <= CAM_MAINPLAYER || eCameraType >= CAM_END)
+	if (eCameraType <= CAM_UI || eCameraType >= CAM_END)
 		return;
 
 	static_cast<CActionCam*>(m_pCams[eCameraType])->SetupBone(pBone);

@@ -40,6 +40,10 @@ public://Interface
 
 	virtual void SetActive(_bool bValue) override;
 	virtual void SetRender(_bool bValue) override;
+
+public:
+	void BindUIChracter(class UICharacter* pUIChar) { m_pUICharacter = pUIChar; };
+
 private:
 	HRESULT addComponents();
 
@@ -66,16 +70,22 @@ private:
 	
 	void selectCharacter(_double TimeDelta);
 	void stateKeyInput(_double TimeDelta);
+	void echoKeyInput(_double TimeDelta);
 	void upgradeCharacter(_uint iCharacterType);
 
 
 	void weaponKeyInput(_double TimeDelta);
 	void pushUpgradeButton(_double TimeDelta);
+	void upshSwitchButton(_double TimeDelta);
 	void flashGemSlot(_double TimeDelta);
 
 	// Weapon
 	HRESULT weaponStateRender();
+	HRESULT weaponSwitchRender();
 	void upgradeWeapon();
+
+	// Echos
+	HRESULT echoSlotRender();
 
 public:
 	static CResonatorUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -91,6 +101,10 @@ private:
 	class CPlayerState* m_pPlayerState = nullptr;
 	class CTerminalUI* m_pTerminal = nullptr;
 	class CInventory* m_pInven = nullptr;
+	class CCameraMovement* m_pCamMovement = nullptr;
+	class UICharacter* m_pUICharacter = nullptr;
+	class CEchoSystem* m_pEchoSystem = nullptr;
+
 private: //Ortho Desc
 	_float4x4 m_ViewMatrix, m_ProjMatrix;
 
@@ -197,6 +211,72 @@ private:
 	_uint m_iOwnGem = 0;
 	_uint m_iGemCost = 0;
 	_float m_fSwitchWeaponAcc = 0.f;
+
+	// Select Weapon
+	ORTHO_DESC m_OrthoWeaponInvenBack;
+	ORTHO_DESC m_OrthoSwitchBackpage;
+	ORTHO_DESC m_OrthoSelectWeaponText;
+	ORTHO_DESC m_OrthoWeaponSlot[20];
+	ORTHO_DESC m_OrthoWeaponIcon[20];
+	ORTHO_DESC m_OrthoWeaponUpgradePlus[20];
+	ORTHO_DESC m_OrthoWeaponUpgradeCount[20];
+
+	ORTHO_DESC m_OrthoSelectWeaponSlot;
+	ORTHO_DESC m_OrthoSelectWeapon;
+	ORTHO_DESC m_OrthoSelectWeaponName;
+	ORTHO_DESC m_OrthoSelectWeaponUpgrade[MAX_WEAPON_UPGRADE];
+	ORTHO_DESC m_OrthoSelectWeaponCriBack;
+	ORTHO_DESC m_OrthoSelectWeaponAtkBack;
+	ORTHO_DESC m_OrthoSelectWeaponAttack[6];
+	ORTHO_DESC m_OrthoSelectWeaponCri[4];
+
+	enum { BTN_NONE, BTN_ON, BTN_CLICK };
+	ORTHO_DESC m_OrthoWeaponConfirmButton;
+	ORTHO_DESC m_OrthoWeaponConfirmText;
+
+	_bool m_bSwitchButton = false;
+	_uint m_iSelectSlot = 0;
+	_uint m_iConfirmButtonState = 0;
+	_bool m_bWeaponChangeConfirm = false;
+#pragma endregion
+
+#pragma region Echos
+	_float3 GetEchoGradeColor3(_uint iGrade);
+
+	enum { ECHO_SLOT_MAX = 12 };
+	ORTHO_DESC m_OrthoBindEcho;
+	ORTHO_DESC m_OrthoBindEchoEmpty;
+	ORTHO_DESC m_OrthoBindEchoIcon;
+	ORTHO_DESC m_OrthoEchoSlot[ECHO_SLOT_MAX];
+	ORTHO_DESC m_OrthoEchoIcon[ECHO_SLOT_MAX];
+	ORTHO_DESC m_OrthoGradeImage[ECHO_SLOT_MAX][3];
+
+	ORTHO_DESC m_OrthoEchoToolTip[ECHO_SLOT_MAX];
+	ORTHO_DESC m_OrthoEchoToolTipName[ECHO_SLOT_MAX];
+	ORTHO_DESC m_OrthoEchoToolTipAttack[ECHO_SLOT_MAX];
+	ORTHO_DESC m_OrthoEchoToolTipDamage[ECHO_SLOT_MAX][3];
+
+	ORTHO_DESC m_OrthoEchoBack[2]; // Back이미지
+	ORTHO_DESC m_OrthoEchoInfo[2]; // 정보
+	ORTHO_DESC m_OrthoEchoDamage[3];
+
+	ORTHO_DESC m_OrthoUpgradeButton;// 업그레이드 버튼처리아직안함
+
+	ORTHO_DESC m_OrthoRegisterButton;
+	ORTHO_DESC m_OrthoRegisterText;
+	_uint m_iRegisterBtnState = 0;
+
+	_uint m_iCurSelectEcho = 0; // 선택(클릭)된 에코슬롯
+
+	//Echo Upgrade
+	ORTHO_DESC m_OrthoEchoUpgradeBack;
+
+	//Tool Tip
+	_uint m_iOnMouseEchoSlot = 0;
+	_bool m_bToolTip[ECHO_SLOT_MAX] = { false, };
+	_float m_fToolTipAcc[ECHO_SLOT_MAX] = { 0.f, };
+
+
 #pragma endregion
 
 private:

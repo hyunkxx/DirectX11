@@ -140,11 +140,14 @@ void CPlayerState::PreTick(_double TimeDelta)
 	// 캐릭터 스탯 계산해놓기
 	for (_uint i = 0; i < CHARACTER_END; ++i)
 	{
+		m_CharacterState[i].fAttack[STAT_EQUIP] = (_float)CItemDB::ComputeWeaponDamage(m_EquipWeapons[i]);
 		m_CharacterState[i].fAttack[STAT_TOTAL] = (m_CharacterState[i].fAttack[STAT_BASE] + m_CharacterState[i].fAttack[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_ATK])
 													* (1 + (m_CharacterState[i].fAttack[STAT_BUFF] - m_CharacterState[i].fAttack[STAT_DEBUFF]));
 
 		m_CharacterState[i].fDefense[STAT_TOTAL] = (m_CharacterState[i].fDefense[STAT_BASE] + m_CharacterState[i].fDefense[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_DEF])
 			* (1 + (m_CharacterState[i].fDefense[STAT_BUFF] - m_CharacterState[i].fDefense[STAT_DEBUFF]));
+		
+		m_CharacterState[i].fCriticalRate[STAT_EQUIP] = (_float)CItemDB::ComputeWeaponCriticalRate(m_EquipWeapons[i]);
 
 		m_CharacterState[i].fCriticalRate[STAT_TOTAL] = (m_CharacterState[i].fCriticalRate[STAT_BASE] + m_CharacterState[i].fCriticalRate[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_CRITRATE])
 			* (1 + (m_CharacterState[i].fCriticalRate[STAT_BUFF] - m_CharacterState[i].fCriticalRate[STAT_DEBUFF]));
@@ -152,6 +155,8 @@ void CPlayerState::PreTick(_double TimeDelta)
 		m_CharacterState[i].fCriticalDamage[STAT_TOTAL] = (m_CharacterState[i].fCriticalDamage[STAT_BASE] + m_CharacterState[i].fCriticalDamage[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_CRITDMG])
 			* (1 + (m_CharacterState[i].fCriticalDamage[STAT_BUFF] - m_CharacterState[i].fCriticalDamage[STAT_DEBUFF]));
 	}
+
+
 #pragma endregion
 }
 
@@ -165,6 +170,12 @@ void CPlayerState::LateTick(_double TimeDelta)
 
 void CPlayerState::RenderGUI()
 {
+}
+
+void CPlayerState::SetEquitWeapon(CHARACTERS eCharType, CItem::ITEM_DESC eWeapon)
+{
+	assert(eWeapon.eItemType == CItem::ITEN_WEAPON);
+	m_EquipWeapons[eCharType] = eWeapon;
 }
 
 void CPlayerState::AddExp(CHARACTERS eCharater, _float fExp)

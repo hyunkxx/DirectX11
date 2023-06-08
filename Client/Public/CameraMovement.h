@@ -14,7 +14,7 @@ BEGIN(Client)
 class CCameraMovement final : public CGameObject
 {
 public:
-	enum CAM_TYPE { CAM_DYNAMIC, CAM_MAINPLAYER, CAM_BANGSUN, CAM_END };
+	enum CAM_TYPE { CAM_DYNAMIC, CAM_MAINPLAYER, CAM_UI, CAM_BANGSUN, CAM_END };
 
 private:
 	CCameraMovement(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

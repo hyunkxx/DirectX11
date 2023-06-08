@@ -148,6 +148,7 @@ public: // Get
 	}
 	
 	CItem::ITEM_DESC* GetCurWeaponDesc(CHARACTERS eCharType) { return &m_EquipWeapons[eCharType]; }
+	void SetEquitWeapon(CHARACTERS eCharType, CItem::ITEM_DESC eWeapon);
 
 public: // Set
 	void Set_ToolUsed(_uint iToolID)

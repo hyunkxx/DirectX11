@@ -43,5 +43,7 @@ extern int g_iGUIID;
 #define SLOT_ADVANCED_COLOR  { 102.f / 255.f, 128.f / 255.f, 78.f / 255.f }
 #define SLOT_RARE_COLOR  { 74.f / 255.f, 105.f / 255.f, 124.f / 255.f }
 #define SLOT_UNIQUE_COLOR  { 98.f / 255.f, 73.f / 255.f, 129.f / 255.f }
+#define SLOT_LEGEND_COLOR  { 180.f / 255.f, 160.f / 255.f, 78.f / 255.f }
+#define SLOT_RED_COLOR  { 220.f / 255.f, 50.f / 255.f, 50.f / 255.f }
 
 #define FALL_THROUGH

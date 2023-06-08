@@ -29,12 +29,15 @@ HRESULT CLevel_Logo::Initialize()
 	ZeroMemory(&LightDesc, sizeof LightDesc);
 	LightDesc.eLightType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(2.f, -0.3f, 1.f, 0.f);
-	//LightDesc.vDiffuse = _float4(0.85f, 0.95f, 0.85f, 1.f);
-	LightDesc.vDiffuse = _float4(0.8f, 0.9f, 0.8f, 1.f);
-
-	LightDesc.vAmbient = _float4(0.65f, 0.65f, 0.65f, 1.f); //0.65f
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	
+	//LightDesc.vDiffuse = _float4(0.8f, 0.9f, 0.8f, 1.f);
+	//LightDesc.vAmbient = _float4(0.65f, 0.65f, 0.65f, 1.f); //0.65f
+	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	
+	LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
 	pGameInstance->SetLUT(CRenderer::LUT_FUJI);
 	pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)SHADOW_LEVEL::SHADOW_HIGH);
 	pGameInstance->OutlineToggle();
@@ -161,6 +164,19 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ACTION_CAM_BANGSUN, pLayerTag, L"ActionCam", &CameraDesc)))
 		return E_FAIL;
 
+	CameraDesc.vEye = _float3(-1000.5f, 1.2f, -999.7f);
+	CameraDesc.vAt = _float3(-999.5f, 1.2f, -999.7f);
+	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
+
+	CameraDesc.fFovy = XMConvertToRadians(45.f);
+	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CameraDesc.fNear = 0.1f;
+	CameraDesc.fFar = 1000.f;
+
+	// UI Ä· »ý¼º , µî·Ï
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::UI_CAM, pLayerTag, L"UICam", &CameraDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -183,6 +199,9 @@ HRESULT CLevel_Logo::Ready_Layer_Character(const _tchar * pLayerTag)
 HRESULT CLevel_Logo::Ready_StaticGameObject(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_SYSTEM, L"EchoSystem", L"Echo")))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::INVENTORY, pLayerTag, L"Inventory")))
 		return E_FAIL;

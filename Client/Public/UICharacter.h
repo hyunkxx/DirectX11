@@ -9,6 +9,7 @@ class CShader;
 
 class CModel_Anim;
 class CModel_VTF;
+class CVIBuffer_Rect;
 
 END
 
@@ -55,6 +56,12 @@ public:
 	virtual HRESULT RenderShadow();
 	virtual void RenderGUI();
 
+public:
+	enum UIANIMATION { UI_STATE, UI_WEAPON, UI_ECHO, UI_RESONANCE, UI_WUTHERIDE };
+	void SetAnimation(UIANIMATION eCurUI);
+
+	void ExitAnimation(UIANIMATION eCurUI);
+
 private:
 	void initAnimation();
 	void updateAnimationState(_double TimeDelta);
@@ -74,10 +81,17 @@ private:
 	CModel_Anim* m_pAnimSetBase = nullptr;
 	CModel_Anim* m_pAnimSetRibbon = nullptr;
 
-	_uint		m_iAnimID = { 0 };
+	_uint m_iAnimID = { 0 };
+	UIANIMATION m_eUIState = UI_STATE;
 
-	// 현재 선택된 탭 Index를 저장 (or 매 프레임 가져와서 조건 체크?)
-	_uint		m_iUIState = { 0 };
+	// Studio
+	_bool m_bStateBase = false;
+	CShader* m_pUIShader = nullptr;
+	CTransform* m_pStudioTransform = nullptr;
+	CVIBuffer_Rect* m_pVIBuffer = nullptr;
+
+private:
+	class CCameraMovement* m_pCamMovement = nullptr;
 
 };
 
