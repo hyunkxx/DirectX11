@@ -78,7 +78,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성A
@@ -1763,7 +1763,17 @@ HRESULT CApplication::Ready_Static_Effect()
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Attack_02_Test.bin"),
+			"../../Resource/Effect/Player_Yangyang/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
 			TEXT("../../Resource/Effect/Player_Yangyang/P_YangYang_Attack_03.bin"),
+			"../../Resource/Effect/Player_Yangyang/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Attack_03_01.bin"),
 			"../../Resource/Effect/Player_Yangyang/Attack/")))
 			return E_FAIL;
 
@@ -1774,6 +1784,11 @@ HRESULT CApplication::Ready_Static_Effect()
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
 			TEXT("../../Resource/Effect/Player_Yangyang/P_YangYang_Attack_04_2.bin"),
+			"../../Resource/Effect/Player_Yangyang/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Attack_04_3.bin"),
 			"../../Resource/Effect/Player_Yangyang/Attack/")))
 			return E_FAIL;
 
@@ -1840,6 +1855,11 @@ HRESULT CApplication::Ready_Static_Effect()
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
 			TEXT("../../Resource/Effect/Comon/P_Evasion_Effect_Y.bin"),
 			"../../Resource/Effect/Comon/P_Evasion_Effect/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Sheath_Effect.bin"),
+			"../../Resource/Effect/Player_Yangyang/Prop/")))
 			return E_FAIL;
 
 	}
