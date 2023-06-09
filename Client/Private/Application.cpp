@@ -1931,6 +1931,11 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/Player_Yangyang/Attack/")))
 			return E_FAIL;
 
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Attack_QTE.bin"),
+			"../../Resource/Effect/Player_Yangyang/Attack/")))
+			return E_FAIL;
+
 		// 공중 공격 후 착지할때 나오는 이펙트
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
 			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_AirAttack_End_1.bin"),
@@ -1961,6 +1966,16 @@ HRESULT CApplication::Ready_Static_Effect()
 		//Burst 회오리 끝나고 터지는 이펙트 블러 처리 해줘야함. 높이 높여줄 필요 없음. Burst_01 높이 그대로
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
 			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Burst_02.bin"),
+			"../../Resource/Effect/Player_Yangyang/Burst/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Burst_04.bin"),
+			"../../Resource/Effect/Player_Yangyang/Burst/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Burst_05.bin"),
 			"../../Resource/Effect/Player_Yangyang/Burst/")))
 			return E_FAIL;
 
@@ -2517,6 +2532,11 @@ HRESULT CApplication::Ready_Static_Effect()
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_18_01.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
 			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P2_Attack_18_02.bin"),
 			"../../Resource/Effect/B_Crownless/Attack/")))
 			return E_FAIL;
@@ -2794,6 +2814,16 @@ HRESULT CApplication::Ready_Static_Effect()
 	}
 	for (_int i = 0; 5 > i; i++)
 	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/P_Crownless_P3_Wing.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_Hit_Boom.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
 			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_Hit_0.bin"),
 			"../../Resource/Effect/B_Crownless/Attack/")))

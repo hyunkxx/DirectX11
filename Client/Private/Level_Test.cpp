@@ -274,8 +274,8 @@ HRESULT CLevel_Test::Ready_Layer_Player(const _tchar * pLayerTag)
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
 	//	return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_YANGYANG, pLayerTag, TEXT("Player"))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_YANGYANG, pLayerTag, TEXT("Player"))))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_CHIXIA, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
