@@ -40,7 +40,14 @@ HRESULT CUI_MerchantMen::Initialize(void * pArg)
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	Load();
-
+	m_pDB = CItemDB::GetInstance();
+	// 고정 박스, 보상메세지 박스 색상
+	itemDesc[0] = m_pDB->GetItemData(ITEM::TACTITE_COIN);
+	itemDesc[1] = m_pDB->GetItemData(ITEM::EXP0);
+	itemDesc[2] = m_pDB->GetItemData(ITEM::EXP1);
+	itemDesc[3] = m_pDB->GetItemData(ITEM::EXP2);
+	itemDesc[4] = m_pDB->GetItemData(ITEM::COMMEMORATIVE_COIN);
+	itemDesc[5] = m_pDB->GetItemData(ITEM::TACTREITE_VOUCHER);
 	return S_OK;
 }
 
@@ -51,16 +58,10 @@ void CUI_MerchantMen::Start()
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	//m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel; // 나중에 주석 풀기
-	m_pDB = CItemDB::GetInstance();
+	
 	SetState(DISABLE);
 
-	// 고정 박스, 보상메세지 박스 색상
-	itemDesc[0] = m_pDB->GetItemData(ITEM::TACTITE_COIN);
-	itemDesc[1] = m_pDB->GetItemData(ITEM::EXP0);
-	itemDesc[2] = m_pDB->GetItemData(ITEM::EXP1);
-	itemDesc[3] = m_pDB->GetItemData(ITEM::EXP2);
-	itemDesc[4] = m_pDB->GetItemData(ITEM::COMMEMORATIVE_COIN);
-	itemDesc[5] = m_pDB->GetItemData(ITEM::TACTREITE_VOUCHER);
+	
 	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
 	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4); // 나중에 주석 풀기
 

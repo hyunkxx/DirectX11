@@ -10,6 +10,7 @@
 #include "TerminalUI.h"
 #include "UI_Tip.h"
 #include "UI_MerchantMen.h"
+#include "UI_Souvenir.h"
 
 CUI_MainScreen::CUI_MainScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -65,7 +66,7 @@ void CUI_MainScreen::Start()
 	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
 	m_pTip = static_cast<CUI_Tip*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
 	m_pUIMen = static_cast<CUI_MerchantMen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MerchantMen"));
-	
+	m_pUISovi = static_cast<CUI_Souvenir*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Souvenir"));
 	SetPlayer();
 	SetHP();
 	SetStaticSkillCoolTime(); // 메인캐릭터로 전체 쿨타임 설정
@@ -81,6 +82,12 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	{
 		m_pUIMen->SetState(ACTIVE);
 		m_pUIMen->Set_SituMeet();
+		//m_pPlayerStateClass->AddPlayer();
+	}
+	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::TAP) // 임시
+	{
+		m_pUISovi->SetState(ACTIVE);
+		m_pUISovi->Set_SituMeet();
 		//m_pPlayerStateClass->AddPlayer();
 	}
 	OtherobjIsActive(TimeDelta);
@@ -278,16 +285,18 @@ HRESULT CUI_MainScreen::Add_Components()
 
 void CUI_MainScreen::OtherobjIsActive(_double TimeDelta)
 {
-	/*if (m_pTerminalUI->IsActive())
+	if ((nullptr == m_pTerminalUI) || (nullptr == m_pTip) || (nullptr == m_pUIMen)||(nullptr == m_pUISovi))
+		return;
+	if (m_pTerminalUI->IsActive())
 		m_bRender = false;
 	else if (m_pTip->IsActive())
 		m_bRender = false;
 	else if (m_pUIMen->IsActive())
 		m_bRender = false;
+	else if(m_pUISovi->IsActive())
+		m_bRender = false;
 	else
-		m_bRender = true;*/
-
-	m_bRender = true;
+		m_bRender = true;
 	//if (m_pTerminalUI->IsActive())
 	//{
 	//	OffRender(TimeDelta);

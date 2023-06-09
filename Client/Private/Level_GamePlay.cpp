@@ -359,7 +359,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UIMERCHANTMEN, pLayerTag, TEXT("UI_MerchantMen"))))
 		return E_FAIL;
-
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UISOUVI, pLayerTag, TEXT("UI_Souvenir"))))
+		return E_FAIL;
 	return S_OK;
 }
 

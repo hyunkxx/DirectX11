@@ -217,16 +217,17 @@ public:
 	virtual void Free() override;
 
 private:
-	class CP_PlayerGirl*  m_pPlayer = { nullptr };
-	class CPlayerState*   m_pPlayerStateClass = { nullptr };
-	class CTerminalUI*	m_pTerminalUI = { nullptr };
-	class CUI_Tip*		m_pTip = { nullptr };
-	class CUI_MerchantMen*	m_pUIMen = { nullptr };
+	class CP_PlayerGirl*		m_pPlayer = { nullptr };
+	class CPlayerState*			m_pPlayerStateClass = { nullptr };
+	class CTerminalUI*			m_pTerminalUI = { nullptr };
+	class CUI_Tip*				m_pTip = { nullptr };
+	class CUI_MerchantMen*		m_pUIMen = { nullptr };
+	class CUI_Souvenir*			m_pUISovi = { nullptr };
 private:
-	CRenderer*		m_pRenderer = { nullptr };
-	CShader*		m_pShader = { nullptr };
-	CTexture*		m_pTexFunc = { nullptr };
-	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; 
+	CRenderer*					m_pRenderer = { nullptr };
+	CShader*					m_pShader = { nullptr };
+	CTexture*					m_pTexFunc = { nullptr };
+	CVIBuffer_Rect*				m_pVIBuffer = { nullptr }; 
 
 	vector<CUTRECT*>	  m_CutDescList;
 	list<DAMAGEDESC>	  DamageList;

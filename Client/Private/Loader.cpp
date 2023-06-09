@@ -47,6 +47,7 @@
 #include "UI_Monster.h"
 #include "UI_Tip.h"
 #include "UI_MerchantMen.h"
+#include "UI_Souvenir.h"
 
 #include "Missile.h"
 #include "Missile_Constant.h"
@@ -321,6 +322,9 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UIMERCHANT,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/MerchantMen/merchantmen%d.dds"), 135))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UISOUVI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::EYE_BURST, 
@@ -1731,6 +1735,8 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITIP, CUI_Tip::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMERCHANTMEN, CUI_MerchantMen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UISOUVI, CUI_Souvenir::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion

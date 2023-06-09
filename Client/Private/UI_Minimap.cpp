@@ -8,6 +8,7 @@
 #include "TerminalUI.h"
 #include "UI_Tip.h"
 #include "UI_MerchantMen.h"
+#include "UI_Souvenir.h"
 
 CUI_Minimap::CUI_Minimap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -51,6 +52,8 @@ void CUI_Minimap::Start()
 	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
 	m_pTip = static_cast<CUI_Tip*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
 	m_pUIMen = static_cast<CUI_MerchantMen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MerchantMen"));
+	m_pUISovi = static_cast<CUI_Souvenir*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Souvenir"));
+
 }
 
 void CUI_Minimap::Tick(_double TimeDelta)
@@ -336,11 +339,15 @@ HRESULT CUI_Minimap::Add_Components()
 
 void CUI_Minimap::OtherobjIsActive()
 {
+	if ((nullptr == m_pTerminalUI) || (nullptr == m_pTip) || (nullptr == m_pUIMen) || (nullptr == m_pUISovi))
+		return;
 	if (m_pTerminalUI->IsActive())
 		m_bRender = false;
 	else if (m_pTip->IsActive())
 		m_bRender = false;
 	else if (m_pUIMen->IsActive())
+		m_bRender = false;
+	else if (m_pUISovi->IsActive())
 		m_bRender = false;
 	else
 		m_bRender = true;

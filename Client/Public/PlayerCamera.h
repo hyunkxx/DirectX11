@@ -123,6 +123,7 @@ private:
 	class CUI_TapT*	   m_pUITap = { nullptr };
 	class CUI_Tip*	   m_pUITip = { nullptr };
 	class CUI_MerchantMen*	m_pUIMen = { nullptr };
+	class CUI_Souvenir*			m_pUISovi = { nullptr };
 };
 
 END

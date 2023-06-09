@@ -45,6 +45,7 @@ namespace TEXTURE
 		UIFIGHT,
 		UITIP,
 		UIMERCHANT,
+		UISOUVI,
 
 		EYE_BURST,
 		EYE_MASK,

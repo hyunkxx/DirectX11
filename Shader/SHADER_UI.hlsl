@@ -150,7 +150,30 @@ PS_OUT PS_MAIN2(PS_IN In)
 
 	return Out;
 }
+PS_OUT PS_MAIN2Scroll(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+	Out.vColor = g_MyTexture.Sample(LinearSampler, In.vTexUV);
+	if( 126.f > In.vPosition.y)
+	{
+		//discard;
+		float Dest = abs(In.vPosition.y - 126.f);
+		Out.vColor.a -= Dest/50.f;
+	}
+	if( 617.f < In.vPosition.y)
+	{
+		//discard;
+		float Dest = abs(In.vPosition.y - 617.f);
+		Out.vColor.a -= Dest/10.f;
+	}
+	
+	Out.vColor.r += g_fColorR/255.f;
+	Out.vColor.g += g_fColorG/255.f;
+	Out.vColor.b += g_fColorB/255.f;
+	Out.vColor.a += g_fColorA/255.f;
 
+	return Out;
+}
 PS_OUT PS_LinearDiscard(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
@@ -780,6 +803,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN2();
+	}
+
+			pass UI_NoZScroll //22
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN2Scroll();
 	}
 }
 	
