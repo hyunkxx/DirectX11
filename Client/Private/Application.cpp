@@ -1733,23 +1733,24 @@ HRESULT CApplication::Ready_Static_Effect()
 
 #pragma region Player_Chixia
 
-	for (_int i = 0; 3 > i; i++)
+	for (int i = 0; 30 > i; i++)
 	{
-		// 강공격 중공격 약공격 이펙트
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
-			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Shoot_B.bin"),
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_Awakening_Shoot.bin"),
 			"../../Resource/Effect/Player_Chixia/Shoot/")))
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
-			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Shoot_M.bin"),
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_Awakening_Shoot_02.bin"),
 			"../../Resource/Effect/Player_Chixia/Shoot/")))
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
-			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Shoot_S.bin"),
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_Awakening_Shoot_03.bin"),
 			"../../Resource/Effect/Player_Chixia/Shoot/")))
 			return E_FAIL;
+
+
 		// 강공격 히트 이펙트 , 일반 히트 이펙트 , 일반 히트 크리티컬 이펙트
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
 			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Hit_Effect_B.bin"),
@@ -1764,17 +1765,6 @@ HRESULT CApplication::Ready_Static_Effect()
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
 			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Hit_Effect_SC.bin"),
 			"../../Resource/Effect/Player_Chixia/Hit/")))
-			return E_FAIL;
-
-		//차지 샷 이펙트
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
-			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Charge_Shoot.bin"),
-			"../../Resource/Effect/Player_Chixia/Charge/")))
-			return E_FAIL;
-
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
-			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Charge_Hit.bin"),
-			"../../Resource/Effect/Player_Chixia/Charge/")))
 			return E_FAIL;
 
 		//기본 총알
@@ -1795,12 +1785,82 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/Player_Chixia/Bullet/")))
 			return E_FAIL;
 
+	}
+	for (_int i = 0; 10 > i; i++)
+	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_Attack_01.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_Attack_02.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_Attack_03_Left.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_Attack_03_Right.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_Attack_04.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_Attack_Skill_01.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_Attack_Skill_03.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_Attack_QTE.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+
+		// 강공격 중공격 약공격 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Shoot_B.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Shoot_M.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Shoot_S.bin"),
+			"../../Resource/Effect/Player_Chixia/Shoot/")))
+			return E_FAIL;
+	
+
+		//차지 샷 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Charge_Shoot.bin"),
+			"../../Resource/Effect/Player_Chixia/Charge/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Charge_Hit.bin"),
+			"../../Resource/Effect/Player_Chixia/Charge/")))
+			return E_FAIL;
+
 		// 회피 이펙트
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
 			TEXT("../../Resource/Effect/Comon/P_Evasion_Effect_C.bin"),
 			"../../Resource/Effect/Comon/P_Evasion_Effect/")))
 			return E_FAIL;
-
 	}
 #pragma endregion
 
