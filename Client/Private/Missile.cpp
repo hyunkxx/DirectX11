@@ -134,6 +134,12 @@ void CMissile::End()
 		(*m_tMissileDesc.ppNextMissilePool)->Shot(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 
 			m_pMainTransform->Get_State(CTransform::STATE_LOOK), XMMatrixIdentity());
 
+	if (nullptr != m_pEffect)
+	{
+		m_pEffect->Shut_Down();
+		m_pEffect = nullptr;
+	}
+		
 	
 	m_pCollider->SetActive(false);
 

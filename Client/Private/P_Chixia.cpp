@@ -161,10 +161,10 @@ void CP_Chixia::Start()
 
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = (_float)m_tStates[IS_SKILL_01_F].CoolTime;
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST] = (_float)m_tStates[IS_BURST].CoolTime;
-	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 3.f;
+	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 60.f;
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
-	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 0.f;
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 60.f;
 	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
 
@@ -256,7 +256,8 @@ void CP_Chixia::Tick(_double TimeDelta)
 
 	if (m_bHolding)
 	{
-		if (pGameInstance->InputKey(DIK_NUMPAD2) == KEY_STATE::TAP)
+		if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] == 0.f &&
+			m_Scon.iCurState != IS_HOLDSHOT_UPPER_END)
 		{
 			m_Scon.iNextState = IS_HOLDSHOT_UPPER_END;
 			SetUp_State();
@@ -863,9 +864,6 @@ void CP_Chixia::Shot_PartsKey(_uint iParts/*int0*/, _uint iState/*int1*/, _uint 
 void CP_Chixia::Shot_PriorityKey(_uint iLeavePriority)
 {
 	m_tCurState.iLeavePriority = iLeavePriority;
-
-	if (00 == m_Scon.iCurState)
-		m_pMoveCollider->SetActive(true);
 }
 
 void CP_Chixia::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _uint iEffectTypeID, _bool bTracking/*iInt1*/)
@@ -881,6 +879,17 @@ void CP_Chixia::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 {
 	if (MISS_END <= iMissilePoolID || EBONE_END <= iEffectBoneID)
 		return;
+
+	if (iMissilePoolID == MISS_SKILL_03)
+	{
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] -= 1.f;
+		if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] < 0.f)
+		{
+			m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 0.f;
+			return;
+		}
+			
+	}
 
 	m_bAttack = true;
 
@@ -1001,9 +1010,7 @@ void CP_Chixia::SetUp_State()
 		SS_LAND_ROLL == m_Scon.iCurState ||
 		SS_CLIMB_ONTOP == m_Scon.iCurState ||
 		SS_CLIMB_BOOST_ONTOP == m_Scon.iCurState ||
-		SS_BEHIT_FLY_FALL == m_Scon.iCurState ||
-		00 == m_Scon.iCurState ||
-		00 == m_Scon.iCurState)
+		SS_BEHIT_FLY_FALL == m_Scon.iCurState)
 	{
 		m_Scon.ePositionState = PS_GROUND;
 		m_bAirRecentFireL = false;
@@ -1017,12 +1024,6 @@ void CP_Chixia::SetUp_State()
 	{
 		m_Scon.ePositionState = PS_CLIMB;
 	}
-
-	// Move 끄기
-	if (00 == m_Scon.iCurState)
-		m_pMoveCollider->SetActive(false);
-	else
-		m_pMoveCollider->SetActive(true);
 
 	// Climb 종료 시 Look 방향 되돌리기
 	if (SS_CLIMB_ONTOP == m_Scon.iCurState ||
@@ -1047,8 +1048,10 @@ void CP_Chixia::SetUp_State()
 	// 쿨타임, 게이지 적용
 	if (true == m_tCurState.bApplyCoolTime)
 	{
-		if (00 == m_Scon.iCurState ||
-			00 == m_Scon.iCurState)
+		if (IS_SKILL_01_B == m_Scon.iCurState ||
+			IS_SKILL_01_F == m_Scon.iCurState ||
+			IS_SKILL_03_B == m_Scon.iCurState ||
+			IS_SKILL_03_F == m_Scon.iCurState)
 			m_pCharacterState->fCurCooltime[CPlayerState::COOL_SKILL] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL];
 		else if (IS_BURST == m_Scon.iCurState)
 			m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST];
@@ -1060,14 +1063,8 @@ void CP_Chixia::SetUp_State()
 			m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_LAVITATION);
 	}
 
-	if (false == m_bRender)
-		if (99 == m_Scon.iCurState)
-			m_bRender = true;
-
 	// 게이지 차감
-	if (99 == m_Scon.iCurState)
-		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 0.f;
-	else if (IS_BURST == m_Scon.iCurState)
+	if (IS_BURST == m_Scon.iCurState)
 		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] -= 10.f;
 
 	if (IS_SKILL_01_B == m_Scon.iCurState ||
@@ -2849,8 +2846,8 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].fSPGain = 1.f;
 	m_AttackInfos[ATK_ATTACK_01].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 5;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Hit_Effect_Y_01"));
+	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
 
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 0.6f;
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
@@ -2858,8 +2855,8 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].fSPGain = 1.f;
 	m_AttackInfos[ATK_ATTACK_02].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 5;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Hit_Effect_Y_02"));
+	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
 
 	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 0.45f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_SMALL;
@@ -2867,8 +2864,8 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_03].fSPGain = 1.f;
 	m_AttackInfos[ATK_ATTACK_03].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_03].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 5;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Hit_Effect_Y_02"));
+	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
 
 	m_AttackInfos[ATK_ATTACK_04].fDamageFactor = 2.1f;
 	m_AttackInfos[ATK_ATTACK_04].eHitIntensity = HIT_BIG;
@@ -2876,8 +2873,8 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_04].fSPGain = 5.f;
 	m_AttackInfos[ATK_ATTACK_04].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_04].fTPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_04].iHitEffectID = 5;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_04].szHitEffectTag, TEXT("Hit_Effect_Y_02"));
+	m_AttackInfos[ATK_ATTACK_04].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04].szHitEffectTag, TEXT("Chixia_Hit_Effect_B"));
 
 	m_AttackInfos[ATK_SKILL_01].fDamageFactor = 0.8f;
 	m_AttackInfos[ATK_SKILL_01].eHitIntensity = HIT_SMALL;
@@ -2885,8 +2882,8 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_01].fSPGain = 2.f;
 	m_AttackInfos[ATK_SKILL_01].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_01].fTPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_01].iHitEffectID = 5;
-	lstrcpy(m_AttackInfos[ATK_SKILL_01].szHitEffectTag, TEXT("Hit_Effect_Y_02"));
+	m_AttackInfos[ATK_SKILL_01].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
+	lstrcpy(m_AttackInfos[ATK_SKILL_01].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
 
 	m_AttackInfos[ATK_SKILL_QTE].fDamageFactor = 0.8f;
 	m_AttackInfos[ATK_SKILL_QTE].eHitIntensity = HIT_SMALL;
@@ -2894,8 +2891,8 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_QTE].fSPGain = 2.f;
 	m_AttackInfos[ATK_SKILL_QTE].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_QTE].fTPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_QTE].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_SKILL_QTE].szHitEffectTag, TEXT("Hit_Effect_01"));
+	m_AttackInfos[ATK_SKILL_QTE].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
+	lstrcpy(m_AttackInfos[ATK_SKILL_QTE].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
 
 	m_AttackInfos[ATK_BURST_1].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_BURST_1].eHitIntensity = HIT_BIG;
@@ -2903,8 +2900,8 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_BURST_1].fSPGain = 1.f;
 	m_AttackInfos[ATK_BURST_1].fBPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_1].fTPGain = 1.5f;
-	m_AttackInfos[ATK_BURST_1].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_BURST_1].szHitEffectTag, TEXT("Hit_Effect_01"));
+	m_AttackInfos[ATK_BURST_1].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
+	lstrcpy(m_AttackInfos[ATK_BURST_1].szHitEffectTag, TEXT("Chixia_Hit_Effect_B"));
 
 	m_AttackInfos[ATK_BURST_2].fDamageFactor = 2.9f;
 	m_AttackInfos[ATK_BURST_2].eHitIntensity = HIT_FLY;
@@ -2912,8 +2909,8 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_BURST_2].fSPGain = 10.f;
 	m_AttackInfos[ATK_BURST_2].fBPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_2].fTPGain = 1.5f;
-	m_AttackInfos[ATK_BURST_2].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_BURST_2].szHitEffectTag, TEXT("Hit_Effect_01"));
+	m_AttackInfos[ATK_BURST_2].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
+	lstrcpy(m_AttackInfos[ATK_BURST_2].szHitEffectTag, TEXT("Chixia_Hit_Effect_B"));
 
 	m_AttackInfos[ATK_AIMATTACK_S].fDamageFactor = 1.2f;
 	m_AttackInfos[ATK_AIMATTACK_S].eHitIntensity = HIT_SMALL;
@@ -2921,8 +2918,8 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_AIMATTACK_S].fSPGain = 1.f;
 	m_AttackInfos[ATK_AIMATTACK_S].fBPGain = 1.5f;
 	m_AttackInfos[ATK_AIMATTACK_S].fTPGain = 1.5f;
-	m_AttackInfos[ATK_AIMATTACK_S].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_AIMATTACK_S].szHitEffectTag, TEXT("Hit_Effect_01"));
+	m_AttackInfos[ATK_AIMATTACK_S].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
+	lstrcpy(m_AttackInfos[ATK_AIMATTACK_S].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
 
 	m_AttackInfos[ATK_AIMATTACK_B].fDamageFactor = 2.5f;
 	m_AttackInfos[ATK_AIMATTACK_B].eHitIntensity = HIT_BIG;
@@ -2930,8 +2927,8 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_AIMATTACK_B].fSPGain = 5.f;
 	m_AttackInfos[ATK_AIMATTACK_B].fBPGain = 1.5f;
 	m_AttackInfos[ATK_AIMATTACK_B].fTPGain = 1.5f;
-	m_AttackInfos[ATK_AIMATTACK_B].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitEffectTag, TEXT("Hit_Effect_01"));
+	m_AttackInfos[ATK_AIMATTACK_B].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
+	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitEffectTag, TEXT("Chixia_Hit_Effect_B"));
 
 	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 0.6f;
 	m_AttackInfos[ATK_AIRATTACK].eHitIntensity = HIT_SMALL;
@@ -2939,8 +2936,8 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_AIRATTACK].fSPGain = 1.f;
 	m_AttackInfos[ATK_AIRATTACK].fBPGain = 1.5f;
 	m_AttackInfos[ATK_AIRATTACK].fTPGain = 1.5f;
-	m_AttackInfos[ATK_AIRATTACK].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_AIRATTACK].szHitEffectTag, TEXT("Hit_Effect_01"));
+	m_AttackInfos[ATK_AIRATTACK].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
+	lstrcpy(m_AttackInfos[ATK_AIRATTACK].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
 
 	m_AttackInfos[ATK_SKILL_03].fDamageFactor = 0.33f;
 	m_AttackInfos[ATK_SKILL_03].eHitIntensity = HIT_SMALL;
@@ -2948,8 +2945,8 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_03].fSPGain = 0.f;
 	m_AttackInfos[ATK_SKILL_03].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_03].fTPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_03].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_SKILL_03].szHitEffectTag, TEXT("Hit_Effect_01"));
+	m_AttackInfos[ATK_SKILL_03].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
+	lstrcpy(m_AttackInfos[ATK_SKILL_03].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
 
 }
 
@@ -2965,8 +2962,8 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 5;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 4;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Bullet"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
@@ -2990,8 +2987,8 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 5;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 4;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Bullet"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
@@ -3015,8 +3012,8 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 5;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Bullet"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
@@ -3040,8 +3037,8 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 5;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Skill_Bullet_B"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
@@ -3065,8 +3062,8 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 10;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Skill_Bullet_S"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
@@ -3090,8 +3087,8 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 10;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Bullet"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
@@ -3116,7 +3113,7 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.iNumMissiles = 20;
 
 	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.15;
@@ -3133,8 +3130,8 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 1;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Boom"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.15;
@@ -3151,8 +3148,8 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 10;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Bullet"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
@@ -3176,8 +3173,8 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 10;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Skill_Bullet_B"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 1.0;
@@ -3201,8 +3198,8 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 10;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Bullet"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
@@ -3226,8 +3223,8 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 30;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Skill_Bullet_S"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
