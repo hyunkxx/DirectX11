@@ -148,6 +148,15 @@ HRESULT CMapObject::Render()
 			return E_FAIL;
 		break;
 
+	case CMapObject::MAPOBJECT_TYPEID::ID_NOIROCK:
+		if (FAILED(Render_Default_SelfShadow()))
+			return E_FAIL;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_TOF_GRASS:
+		if (FAILED(Render_Default_SelfShadow()))
+			return E_FAIL;
+		break;
+
 	default:
 		break;
 	}
@@ -383,6 +392,11 @@ HRESULT CMapObject::Load_Edition()
 	case CMapObject::MAPOBJECT_TYPEID::ID_PIL:
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_STATUE:
+		break;
+
+	case CMapObject::MAPOBJECT_TYPEID::ID_NOIROCK:
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_TOF_GRASS:
 		break;
 
 	default:

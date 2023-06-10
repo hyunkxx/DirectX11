@@ -40,6 +40,14 @@ private:
 	HRESULT Ready_Layer_MapObject_Pil(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MapObject_Statue(const _tchar* pLayerTag);
 
+
+#pragma region FOREST_LEVEL
+private:
+	HRESULT Ready_Layer_MapObject_NoiRock(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_MapObject_Tof_Grass(const _tchar* pLayerTag);
+#pragma endregion FOREST_LEVEL
+
+
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

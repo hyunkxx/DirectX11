@@ -111,6 +111,9 @@ private:
 	CCamera::SHAKE_DESC m_ShakeDesc;
 	_float m_fVibeRange = 5.f;
 	_float m_fVibeDuration = 0.8f;
+
+private: /* 임시 마우스 고정 헤지용 변수 */
+	_bool m_IsMouse_UnLock = { false };
 #endif
 
 public:

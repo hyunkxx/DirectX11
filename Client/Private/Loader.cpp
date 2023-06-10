@@ -347,9 +347,20 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_pApp->LoadRatio(0.1f);
 	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
 
+	
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::NAVIGATION,
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Navigation/Navigation.data")))))
 		return E_FAIL;
+		
+
+#pragma region FOREST_LEVEL
+	/*
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::NAVIGATION,
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Forest/Navigation/Navigation.data")))))
+		return E_FAIL;
+		*/
+#pragma endregion FOREST_LEVEL
+
 
 
 	m_pApp->LoadRatio(0.2f);
@@ -1600,6 +1611,158 @@ HRESULT CLoader::Load_Level_GamePlay()
 	}
 #pragma endregion STATUE
 
+#pragma region FOREST_LEVEL
+
+#pragma region NOR_ROCK
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_NOIROCK_0, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Noi_Rock/0/SM_Noi_Roc_08AS.smdl"), TEXT("../../Data/Forest/MapObject/Noi_Rock/Noi_Rock_0.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_NOIROCK_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_NOIROCK_1, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Noi_Rock/1/SM_Noi_Roc_09AS.smdl"), TEXT("../../Data/Forest/MapObject/Noi_Rock/Noi_Rock_1.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_NOIROCK_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_NOIROCK_2, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Noi_Rock/2/SM_Noi_Roc_10AS.smdl"), TEXT("../../Data/Forest/MapObject/Noi_Rock/Noi_Rock_2.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_NOIROCK_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_NOIROCK_3, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Noi_Rock/3/SM_Noi_Roc_14AS.smdl"), TEXT("../../Data/Forest/MapObject/Noi_Rock/Noi_Rock_3.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_NOIROCK_3");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_NOIROCK_4, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Noi_Rock/4/SM_Noi_Roc_17AS.smdl"), TEXT("../../Data/Forest/MapObject/Noi_Rock/Noi_Rock_4.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_NOIROCK_4");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_NOIROCK_5, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Noi_Rock/5/SM_Noi_Roc_28AS.smdl"), TEXT("../../Data/Forest/MapObject/Noi_Rock/Noi_Rock_5.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_NOIROCK_5");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_NOIROCK_6, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Noi_Rock/6/SM_Noi_Roc_27AS.smdl"), TEXT("../../Data/Forest/MapObject/Noi_Rock/Noi_Rock_6.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_NOIROCK_6");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_NOIROCK_7, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Noi_Rock/7/SM_Noi_Roc_31AS.smdl"), TEXT("../../Data/Forest/MapObject/Noi_Rock/Noi_Rock_7.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_NOIROCK_7");
+		return E_FAIL;
+	}
+#pragma endregion NOR_ROCK
+
+#pragma region TOF_GRASS
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_0, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/0/SM_cao01_ZYF.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_0.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_1, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/1/SM_cao02_ZYF.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_1.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_2, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/2/SM_cao02_ZYF_2.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_2.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_3, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/3/SM_cao02_ZYF_zone2.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_3.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_3");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_4, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/4/SM_cao04_ZYF.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_4.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_4");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_5, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/5/SM_cao05_ZYF.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_5.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_5");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_6, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/6/SM_cao07_home.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_6.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_6");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_7, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/7/SM_cao07_ZYF.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_7.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_7");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_8, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/8/SM_cao14_znj.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_8.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_8");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_9, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/9/SM_cao14_znj_home.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_9.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_9");
+		return E_FAIL;
+	}
+
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_10, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/10/SM_Demo_Xiaohua_zone2.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_10.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_10");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_11, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/11/SM_Demo_Xiaohua_zone2_chiji.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_11.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_11");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_12, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/12/SM_grass_base_05_ZYF.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_12.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_12");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_13, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/13/SM_grass_base_05_ZYF_home.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_13.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_13");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TOF_GRASS_14, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Tof_Grass/14/SM_grass_base02.smdl"), TEXT("../../Data/Forest/MapObject/Tof_Grass/Tof_Grass_14.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TOF_GRASS_14");
+		return E_FAIL;
+	}
+#pragma endregion TOF_GRASS  
+
+#pragma endregion FOREST_LEVEL
+
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
 		return E_FAIL;
 
@@ -1612,6 +1775,16 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::VIBUFFER_TERRAIN,
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height7_1.bmp"), TEXT("../../Data/GamePlay/Terrain/Height_Map/Vertices.data")))))
 		return E_FAIL;
+		
+
+#pragma region FOREST_LEVEL
+	/*
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::VIBUFFER_TERRAIN,
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height_1.bmp"), TEXT("../../Data/Forest/Terrain/Height_Map/Vertices.data")))))
+		return E_FAIL;
+		*/
+#pragma endregion FOREST_LEVEL
+
 		
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_FILTER,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Terrain/Filter_Map/Filter.dds")))))
