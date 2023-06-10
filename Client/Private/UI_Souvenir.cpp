@@ -204,34 +204,34 @@ void CUI_Souvenir::Start()
 
 
 	_float3 color0 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[0].eItemGrade);
-	m_0Slot[0].fColorR = -(255.f - (color0.x * 255.f));
-	m_0Slot[0].fColorG = -(255.f - (color0.y * 255.f));
-	m_0Slot[0].fColorB = -(255.f - (color0.z * 255.f));
+	m_0Slot[1].fColorR = -(255.f - (color0.x * 255.f));
+	m_0Slot[1].fColorG = -(255.f - (color0.y * 255.f));
+	m_0Slot[1].fColorB = -(255.f - (color0.z * 255.f));
 
 	_float3 color1 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[1].eItemGrade);
-	m_1Slot[0].fColorR = -(255.f - (color1.x * 255.f));
-	m_1Slot[0].fColorG = -(255.f - (color1.y * 255.f));
-	m_1Slot[0].fColorB = -(255.f - (color1.z * 255.f));
+	m_1Slot[1].fColorR = -(255.f - (color1.x * 255.f));
+	m_1Slot[1].fColorG = -(255.f - (color1.y * 255.f));
+	m_1Slot[1].fColorB = -(255.f - (color1.z * 255.f));
 
 	_float3 color2 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[2].eItemGrade);
-	m_2Slot[0].fColorR = -(255.f - (color2.x * 255.f));
-	m_2Slot[0].fColorG = -(255.f - (color2.y * 255.f));
-	m_2Slot[0].fColorB = -(255.f - (color2.z * 255.f));
+	m_2Slot[1].fColorR = -(255.f - (color2.x * 255.f));
+	m_2Slot[1].fColorG = -(255.f - (color2.y * 255.f));
+	m_2Slot[1].fColorB = -(255.f - (color2.z * 255.f));
 
 	_float3 color3 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[3].eItemGrade);
-	m_3Slot[0].fColorR = -(255.f - (color3.x * 255.f));
-	m_3Slot[0].fColorG = -(255.f - (color3.y * 255.f));
-	m_3Slot[0].fColorB = -(255.f - (color3.z * 255.f));
+	m_3Slot[1].fColorR = -(255.f - (color3.x * 255.f));
+	m_3Slot[1].fColorG = -(255.f - (color3.y * 255.f));
+	m_3Slot[1].fColorB = -(255.f - (color3.z * 255.f));
 
 	_float3 color4 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[4].eItemGrade);
-	m_4Slot[0].fColorR = -(255.f - (color4.x * 255.f));
-	m_4Slot[0].fColorG = -(255.f - (color4.y * 255.f));
-	m_4Slot[0].fColorB = -(255.f - (color4.z * 255.f));
+	m_4Slot[1].fColorR = -(255.f - (color4.x * 255.f));
+	m_4Slot[1].fColorG = -(255.f - (color4.y * 255.f));
+	m_4Slot[1].fColorB = -(255.f - (color4.z * 255.f));
 
 	_float3 color5 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[5].eItemGrade);
-	m_5Slot[0].fColorR = -(255.f - (color5.x * 255.f));
-	m_5Slot[0].fColorG = -(255.f - (color5.y * 255.f));
-	m_5Slot[0].fColorB = -(255.f - (color5.z * 255.f));
+	m_5Slot[1].fColorR = -(255.f - (color5.x * 255.f));
+	m_5Slot[1].fColorG = -(255.f - (color5.y * 255.f));
+	m_5Slot[1].fColorB = -(255.f - (color5.z * 255.f));
 
 	// 들어오기, 나가기 
 	/* NPC랑 플레이어랑 충돌하면 Setstate()로 활성화 , 비활성화*/
@@ -909,7 +909,7 @@ HRESULT CUI_Souvenir::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXTURE::UISOUVI,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UISOUVI,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
@@ -2172,8 +2172,18 @@ HRESULT CUI_Souvenir::Setup_DetailsShader(_uint index)
 }
 HRESULT CUI_Souvenir::Setup_0SlotShader(_uint index)
 {
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_0Slot[index].iTexNum)))
-		return E_FAIL;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (2 == index)
+	{
+		
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SWORD_0, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_0Slot[index].iTexNum)))
+			return E_FAIL;
+	}
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_0Slot[index].WorldMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -2196,8 +2206,17 @@ HRESULT CUI_Souvenir::Setup_0SlotShader(_uint index)
 
 HRESULT CUI_Souvenir::Setup_1SlotShader(_uint index)
 {
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_1Slot[index].iTexNum)))
-		return E_FAIL;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (2 == index)
+	{
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SWORD_1, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_1Slot[index].iTexNum)))
+			return E_FAIL;
+	}
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_1Slot[index].WorldMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -2220,8 +2239,17 @@ HRESULT CUI_Souvenir::Setup_1SlotShader(_uint index)
 
 HRESULT CUI_Souvenir::Setup_2SlotShader(_uint index)
 {
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_2Slot[index].iTexNum)))
-		return E_FAIL;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (2 == index)
+	{
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SWORD_2, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_2Slot[index].iTexNum)))
+			return E_FAIL;
+	}
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_2Slot[index].WorldMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -2244,8 +2272,17 @@ HRESULT CUI_Souvenir::Setup_2SlotShader(_uint index)
 
 HRESULT CUI_Souvenir::Setup_3SlotShader(_uint index)
 {
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_3Slot[index].iTexNum)))
-		return E_FAIL;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (2 == index)
+	{
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SWORD_3, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_3Slot[index].iTexNum)))
+			return E_FAIL;
+	}
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_3Slot[index].WorldMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -2268,8 +2305,17 @@ HRESULT CUI_Souvenir::Setup_3SlotShader(_uint index)
 
 HRESULT CUI_Souvenir::Setup_4SlotShader(_uint index)
 {
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_4Slot[index].iTexNum)))
-		return E_FAIL;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (2 == index)
+	{
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SWORD_4, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_4Slot[index].iTexNum)))
+			return E_FAIL;
+	}
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_4Slot[index].WorldMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -2292,8 +2338,17 @@ HRESULT CUI_Souvenir::Setup_4SlotShader(_uint index)
 
 HRESULT CUI_Souvenir::Setup_5SlotShader(_uint index)
 {
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_5Slot[index].iTexNum)))
-		return E_FAIL;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (2 == index)
+	{
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_GUN_0, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_5Slot[index].iTexNum)))
+			return E_FAIL;
+	}
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_5Slot[index].WorldMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -2316,8 +2371,17 @@ HRESULT CUI_Souvenir::Setup_5SlotShader(_uint index)
 
 HRESULT CUI_Souvenir::Setup_6SlotShader(_uint index)
 {
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_6Slot[index].iTexNum)))
-		return E_FAIL;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (2 == index)
+	{
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_GUN_1, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_6Slot[index].iTexNum)))
+			return E_FAIL;
+	}
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_6Slot[index].WorldMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -2340,8 +2404,17 @@ HRESULT CUI_Souvenir::Setup_6SlotShader(_uint index)
 
 HRESULT CUI_Souvenir::Setup_7SlotShader(_uint index)
 {
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_7Slot[index].iTexNum)))
-		return E_FAIL;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (2 == index)
+	{
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_GUN_2, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_7Slot[index].iTexNum)))
+			return E_FAIL;
+	}
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_7Slot[index].WorldMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
@@ -2365,6 +2438,7 @@ HRESULT CUI_Souvenir::Setup_7SlotShader(_uint index)
 
 HRESULT CUI_Souvenir::Setup_FinalShader(_uint index)
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_FinalList[index].iTexNum)))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_FinalList[index].WorldMatrix))))
