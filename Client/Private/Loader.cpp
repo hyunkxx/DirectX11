@@ -2446,8 +2446,8 @@ HRESULT CLoader::Load_Level_AnimTool()
 	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_LEIFA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leifa.dmdl")))))
 	//	return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_QUNJING, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Qunjing.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_QUNJING, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Qunjing.dmdl")))))
+		return E_FAIL;
 
 	//// ´Á´ë ¸÷µé
 	//// Binlang1~2 == ÂÌ ´Á´ë(»ö±ò³îÀÌ), Binlang Elite == ´ëÀå ´Á´ë
@@ -2665,13 +2665,13 @@ HRESULT CLoader::Load_Level_AnimTool()
 	//	return E_FAIL;
 	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_LEIFA), TEXT("Leifa"));
 
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_QUNJING;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Qunjing/Qunjing_%d.state"));
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_QUNJING;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Qunjing/Qunjing_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_QUNJING, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_QUNJING), TEXT("Qunjing"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_QUNJING, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_QUNJING), TEXT("Qunjing"));
 
 	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
 	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_BINLANG_01;

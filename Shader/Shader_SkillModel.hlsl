@@ -155,6 +155,13 @@ struct PS_OUT
 	float4 vDistortion : SV_TARGET1;
 };
 
+struct PS_OUT_STONE
+{
+	float4 vDiffuse : SV_TARGET0;
+	float4 vNormal : SV_TARGET1;
+	float4 vDepth : SV_TARGET2;
+};
+
 PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;;
@@ -382,6 +389,27 @@ PS_OUT	PS_MAIN_MIX_DISTORTION(PS_IN_DISTORTION In)
 	return Out;
 }
 
+PS_OUT_STONE PS_MAIN_NO_COLOR(PS_IN In)
+{
+	PS_OUT_STONE Out = (PS_OUT_STONE)0;;
+
+	float2 vUV = In.vTexUV + g_vUV;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vUV);
+
+	if (vMtrlDiffuse.a < 0.1f)
+		discard;
+
+	Out.vDiffuse.rgb = vMtrlDiffuse.rgb;
+
+	Out.vDiffuse.a = saturate(vMtrlDiffuse.a - (1.f - g_fAlpha));
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+
+	return Out;
+}
+
+
 technique11 DefaultTechnique
 {
 	pass Default
@@ -485,5 +513,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MIX_DISTORTION();
+	}
+
+	pass NO_COLOR_SET
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_NO_COLOR();
 	}
 }

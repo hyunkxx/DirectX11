@@ -244,10 +244,13 @@ void CMesh_Effect::RenderGUI()
 
 	if (1 > m_EffectDesc.iRenderGroup)
 		m_EffectDesc.iRenderGroup = 1;
-	else if (5 < m_EffectDesc.iRenderGroup)
-		m_EffectDesc.iRenderGroup = 5;
+	else if (6 == m_EffectDesc.iRenderGroup)
+		m_EffectDesc.iRenderGroup = 7;
+	else if (7 < m_EffectDesc.iRenderGroup)
+		m_EffectDesc.iRenderGroup = 0;
+
 	if (1 == m_EffectDesc.iRenderGroup)
-		ImGui::Text("Render_Group: NONALPHA");
+		ImGui::Text("Render_Group: DYNAMIC");
 	else if (2 == m_EffectDesc.iRenderGroup)
 		ImGui::Text("Render_Group: NONLIGHT");
 	else if (3 == m_EffectDesc.iRenderGroup)
@@ -256,13 +259,16 @@ void CMesh_Effect::RenderGUI()
 		ImGui::Text("Render_Group: ALPHABLEND");
 	else if (5 == m_EffectDesc.iRenderGroup)
 		ImGui::Text("Render_Group: DISTORTION");
+	else if (7 == m_EffectDesc.iRenderGroup)
+		ImGui::Text("Render_Group: STATIC");
 
 	ImGui::InputInt("RederGroup", &m_EffectDesc.iRenderGroup);
 
 	if (0 > m_EffectDesc.iPass)
+		m_EffectDesc.iPass = 8;
+	else if (8 < m_EffectDesc.iPass)
 		m_EffectDesc.iPass = 0;
-	else if (7 < m_EffectDesc.iPass)
-		m_EffectDesc.iPass = 7;
+
 	if (0 == m_EffectDesc.iPass)
 		ImGui::Text("Pass: Default");
 	else if (1 == m_EffectDesc.iPass)
@@ -279,6 +285,8 @@ void CMesh_Effect::RenderGUI()
 		ImGui::Text("Pass: Distortion_NoDepth");
 	else if (7 == m_EffectDesc.iPass)
 		ImGui::Text("Pass: Mix_Distortion");
+	else if (8 == m_EffectDesc.iPass)
+		ImGui::Text("Pass: NO_COLOR_SET");
 
 	ImGui::InputInt("Pass", &m_EffectDesc.iPass);
 
@@ -600,6 +608,8 @@ HRESULT CMesh_Effect::Add_Component(const EFFECT_DESC & ParticleDesc)
 	if (FAILED(Load_Effect(L"../../Resource/Model/Static/Ice/")))
 		return E_FAIL;
 
+	if (FAILED(Load_Effect(L"../../Resource/Model/Static/Stone/")))
+		return E_FAIL;
 #pragma endregion
 
 #endif // _DEBUG

@@ -78,7 +78,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성A
@@ -102,7 +102,7 @@ void CApplication::Tick(_double TimeDelta)
 		return;
 
 	m_pGameInstance->Engine_Tick(TimeDelta);
-
+	 
 }
 
 HRESULT CApplication::Render()
@@ -2814,6 +2814,12 @@ HRESULT CApplication::Ready_Static_Effect()
 	}
 	for (_int i = 0; 5 > i; i++)
 	{
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P3_Bullet.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
 			TEXT("../../Resource/Effect/B_Crownless/P_Crownless_P3_Wing.bin"),
 			"../../Resource/Effect/B_Crownless/Attack/")))
@@ -2905,6 +2911,51 @@ HRESULT CApplication::Ready_Static_Effect()
 			return E_FAIL;
 	}
 
+
+#pragma region Qunjing
+
+	for (_int i = 0; 3 > i; i++)
+	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_01_01.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_01_02.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_01_03.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_01_04.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_01_05.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_01_Flare.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_02_04.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+		
+	}
+
+#pragma endregion
+
+	
 	return S_OK;
 }
 
