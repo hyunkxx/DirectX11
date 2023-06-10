@@ -372,6 +372,10 @@
     <ClCompile Include="..\Private\TraceKey.cpp">
       <Filter>src\05.AnimStateKeys</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\P_Chixia.cpp" />
+    <ClCompile Include="..\Private\UI_Souvenir.cpp">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -721,6 +725,10 @@
     </ClInclude>
     <ClInclude Include="..\Public\TraceKey.h">
       <Filter>src\05.AnimStateKeys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\P_Chixia.h" />
+    <ClInclude Include="..\Public\UI_Souvenir.h">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

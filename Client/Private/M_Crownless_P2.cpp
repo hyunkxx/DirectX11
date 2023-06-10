@@ -1458,9 +1458,8 @@ void CM_Crownless_P2::Tick_State(_double TimeDelta)
 		{
 			//SetState(DISABLE);
 			/*m_pUIMon->SetState(DISABLE);
-			m_pUIMon = nullptr;
 			m_pUIIcon->SetRender(m_UIIndex, false);
-			m_pUIIcon = nullptr;*/
+			*/
 		}
 
 

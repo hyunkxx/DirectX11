@@ -184,25 +184,6 @@ HRESULT CUI_Souvenir::Initialize(void * pArg)
 	itemDesc[12] = m_pDB->GetItemData(ITEM::GEM);
 
 
-
-
-	return S_OK;
-}
-
-void CUI_Souvenir::Start()
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
-	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
-	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
-	
-	SetState(DISABLE);
-
-	
-	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
-	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4); // 나중에 주석 풀기
-
-
 	_float3 color0 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[0].eItemGrade);
 	m_0Slot[1].fColorR = -(255.f - (color0.x * 255.f));
 	m_0Slot[1].fColorG = -(255.f - (color0.y * 255.f));
@@ -232,6 +213,25 @@ void CUI_Souvenir::Start()
 	m_5Slot[1].fColorR = -(255.f - (color5.x * 255.f));
 	m_5Slot[1].fColorG = -(255.f - (color5.y * 255.f));
 	m_5Slot[1].fColorB = -(255.f - (color5.z * 255.f));
+
+	return S_OK;
+}
+
+void CUI_Souvenir::Start()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
+	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
+	
+	SetState(DISABLE);
+
+	
+	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
+	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4); // 나중에 주석 풀기
+
+
+	
 
 	// 들어오기, 나가기 
 	/* NPC랑 플레이어랑 충돌하면 Setstate()로 활성화 , 비활성화*/

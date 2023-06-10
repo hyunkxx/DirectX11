@@ -841,9 +841,7 @@ void CM_GAzizi::Tick_State(_double TimeDelta)
 		{
 			SetState(DISABLE);
 			m_pUIMon->SetState(DISABLE);
-			m_pUIMon = nullptr;
 			m_pUIIcon->Set_Disable(m_UIIndex);
-			m_pUIIcon = nullptr;
 		}
 
 		// 공격 행동 시

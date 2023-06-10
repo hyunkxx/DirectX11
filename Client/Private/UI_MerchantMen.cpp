@@ -48,22 +48,7 @@ HRESULT CUI_MerchantMen::Initialize(void * pArg)
 	itemDesc[3] = m_pDB->GetItemData(ITEM::EXP2);
 	itemDesc[4] = m_pDB->GetItemData(ITEM::COMMEMORATIVE_COIN);
 	itemDesc[5] = m_pDB->GetItemData(ITEM::TACTREITE_VOUCHER);
-	return S_OK;
-}
 
-void CUI_MerchantMen::Start()
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
-	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
-	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
-	//m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel; // 나중에 주석 풀기
-	
-	SetState(DISABLE);
-
-	
-	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
-	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4); // 나중에 주석 풀기
 
 
 	_float3 color0 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[0].eItemGrade);
@@ -95,6 +80,27 @@ void CUI_MerchantMen::Start()
 	m_FinalList[7].fColorR = m_5RewardList[0].fColorR = -(255.f - (color5.x * 255.f));
 	m_FinalList[7].fColorG = m_5RewardList[0].fColorG = -(255.f - (color5.y * 255.f));
 	m_FinalList[7].fColorB = m_5RewardList[0].fColorB = -(255.f - (color5.z * 255.f));
+
+
+
+	return S_OK;
+}
+
+void CUI_MerchantMen::Start()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
+	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
+	//m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel; // 나중에 주석 풀기
+	
+	SetState(DISABLE);
+
+	
+	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
+	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4); // 나중에 주석 풀기
+
+
 
 	// 들어오기, 나가기 
 	/* NPC랑 플레이어랑 충돌하면 Setstate()로 활성화 , 비활성화*/
