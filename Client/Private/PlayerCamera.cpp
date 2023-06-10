@@ -125,7 +125,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 	{
 
 		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
-		/*if (false == m_pTerminalUI->IsActive())
+		if (false == m_pTerminalUI->IsActive())
 		{
 			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi)
 				return;
@@ -134,8 +134,10 @@ void CPlayerCamera::Tick(_double TimeDelta)
 		}
 		else
 		{
+			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi)
+				return;
 			m_pUITip->SetState(DISABLE);
-		}*/
+		}
 
 		if (pGameInstance->InputKey(DIK_LALT) == KEY_STATE::HOLD)
 		{
