@@ -21,6 +21,8 @@
 
 #include "CityObject.h"
 
+#include "Level_Loading.h"
+
 CLevel_City::CLevel_City(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
 {
@@ -131,6 +133,8 @@ void CLevel_City::Tick(_double TimeDelta)
 	if (pGameInstance->InputKey(DIK_K) == KEY_STATE::TAP)
 		pGameInstance->TimeSlowDown(0.5f, 0.1f);
 
+	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_TAB))
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FOREST));
 }
 
 void CLevel_City::RenderLevelUI()
@@ -199,7 +203,7 @@ HRESULT CLevel_City::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	EditionDesc.pEditionFilePath = TEXT("Terrain/UVSamplerRatio.data");
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::TERRAIN, pLayerTag, L"terrain", &EditionDesc)))
 		return E_FAIL;
-	
+
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::SKY, pLayerTag, L"sky")))
 		return E_FAIL;
 

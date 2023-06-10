@@ -122,6 +122,12 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 		m_pNaviCom->Set_CurrentIndex(0);
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(70.f, 15.50f, 118.f, 1.f));
 		break;
+
+		// 추가됨
+	case LEVEL_FOREST:
+		m_pNaviCom->Set_CurrentIndex(0);
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(271.8380f, 5.9810f, 201.0880f, 1.f));
+		break;
 	}
 
 	// 요거 건들였어요.

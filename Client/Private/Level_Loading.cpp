@@ -9,6 +9,7 @@
 #include "Level_Logo.h"
 #include "Level_GamePlay.h"
 #include "Level_City.h"
+#include "Level_Forest.h"
 #include "Level_Test.h"
 #include "Level_AnimTool.h"
 #include "BackGround.h"
@@ -96,6 +97,9 @@ void CLevel_Loading::Tick(_double TimeDelta)
 			break;
 		case LEVEL_CITY:
 			pLevel = CLevel_City::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_FOREST:
+			pLevel = CLevel_Forest::Create(m_pDevice, m_pContext);
 			break;
 		case LEVEL_TEST:
 			pLevel = CLevel_Test::Create(m_pDevice, m_pContext);

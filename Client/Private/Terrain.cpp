@@ -130,7 +130,10 @@ void CTerrain::SetUp_LevelFilePath(_uint iLevelID, const _tchar * pFilePath, _tc
 	case LEVEL_ID::LEVEL_CITY:
 		lstrcat(szLevelFilePath, TEXT("City/"));
 		break;
-		
+	case LEVEL_ID::LEVEL_FOREST:
+		lstrcat(szLevelFilePath, TEXT("Forest/"));
+		break;
+
 	default:
 		break;
 	}
