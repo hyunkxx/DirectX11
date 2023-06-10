@@ -1846,7 +1846,7 @@ HRESULT CApplication::Ready_Static_Effect()
 	
 		//Â÷Áö ¼¦ ÀÌÆåÆ®
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
-			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Charge_Shoot.bin"),
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_Charge_Shoot_Start.bin"),
 			"../../Resource/Effect/Player_Chixia/Charge/")))
 			return E_FAIL;
 
