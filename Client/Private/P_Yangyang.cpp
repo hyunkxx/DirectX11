@@ -212,6 +212,8 @@ void CP_Yangyang::Tick(_double TimeDelta)
 
 	pGameInstance->ShadowUpdate(80.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 
+	updateAttackDesc();
+
 	__super::Tick(TimeDelta * m_TimeDelay);
 
 	if (pGameInstance->InputKey(DIK_NUMPAD1) == KEY_STATE::TAP)
@@ -945,6 +947,30 @@ void CP_Yangyang::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_LOOK), m_MissileRotAngles[iMissilePoolID].z);
 
 	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot);
+}
+
+void CP_Yangyang::updateAttackDesc()
+{
+	const CPlayerState::ATTACK_DESC* AttackDesc = m_pPlayerStateClass->GetAttackDesc(CPlayerState::CHARACTER_YANGYANG);
+
+	static float fOriginDamageFactor[4];
+	fOriginDamageFactor[0] = m_AttackInfos[ATK_ATTACK_01].fDamageFactor;
+	fOriginDamageFactor[1] = m_AttackInfos[ATK_ATTACK_02].fDamageFactor;
+	fOriginDamageFactor[2] = m_AttackInfos[ATK_ATTACK_03_2].fDamageFactor;
+	fOriginDamageFactor[3] = m_AttackInfos[ATK_ATTACK_04_3].fDamageFactor;
+
+	static float fOriginBurstFactor = m_AttackInfos[ATK_BURST_2].fDamageFactor;
+
+	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = fOriginDamageFactor[0] * AttackDesc->fDamageFactor[0];
+	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = fOriginDamageFactor[1] * AttackDesc->fDamageFactor[1];
+	m_AttackInfos[ATK_ATTACK_03_2].fDamageFactor = fOriginDamageFactor[2] * AttackDesc->fDamageFactor[2];
+	m_AttackInfos[ATK_ATTACK_04_3].fDamageFactor = fOriginDamageFactor[3] * AttackDesc->fDamageFactor[3];
+	m_AttackInfos[ATK_BURST_2].fDamageFactor = fOriginBurstFactor * AttackDesc->fBurstFactor;
+
+	if (AttackDesc->bAirboneQTE)
+		m_AttackInfos[ATK_SKILL_QTE].eHitIntensity = HIT_FLY;
+	else
+		m_AttackInfos[ATK_SKILL_QTE].eHitIntensity = HIT_BIG;
 }
 
 void CP_Yangyang::SetUp_State()

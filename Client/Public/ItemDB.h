@@ -62,6 +62,8 @@ namespace ITEM
 		DOGTAG1,
 		DOGTAG2,
 		DOGTAG3,
+
+		SEQUENCE_GEM
 	};
 }
 

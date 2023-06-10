@@ -1523,6 +1523,126 @@ HRESULT CApplication::Ready_Item_Image()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconSQ4.dds")))))
 		return E_FAIL;
 	
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SEQUENCE_SOCKET,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SQSocket.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SEQUENCE_GEM,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SQCost.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SEQUENCE_GEM,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SQGemText.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SQTEXT1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SQ1_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SQTEXT2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SQ2_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SQTEXT3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SQ3_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SQTEXT4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SQ4_.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_ATTACKDESC_BACK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/AttackDescBack.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_DRAGON_BACK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/DragonBack.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_GLOWCIRCLE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/GlowCircle2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_GLOWLENS,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/GlowLens.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_MOON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Moon.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_ATTACK1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Attack1.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_ATTACK2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Attack2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_ATTACK3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Attack3.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_ATTACK4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Attack4.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_QTE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/AttackQTE.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_BURST,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/AttackBurst.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SKILLPOINT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SkillPoint_.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_ATTACK1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Attack1_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_ATTACK2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Attack2_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_ATTACK3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Attack3_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_ATTACK4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Attack4_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_QTE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/QTE_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_BURST,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Burst_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_LOCK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/IconLock.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LOCKED,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Locked_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_DISABLED,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Disabled_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LEFT_ACTIVATED,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/LeftActivated_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_NEED_FIRSTATTACK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/NeedFirstAttack_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_NEED_LASTATTACK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/NeedLastAttack_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTOM_SMALL,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SmallSelectBtn.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_BACK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TextBack.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LV5,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/lv5_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LV10,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/lv10_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LV15,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/lv15.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LV20,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/lv20_.dds")))))
+		return E_FAIL;
 
 	//¿ÃπÃ¡ˆ
 	return S_OK;

@@ -51,7 +51,13 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 
 	ZeroMemory(m_OrthoButtons, sizeof(ORTHO_DESC) * BTN_END);
 	ZeroMemory(m_fButtonAlpha, sizeof(_float) * BTN_END);
+	ZeroMemory(iResonanceSocket, sizeof(iResonanceSocket));
+	ZeroMemory(m_eSkillState, sizeof(m_eSkillState));
 
+	for(_uint Char = 0 ; Char < 3 ; ++Char)
+	for (_uint i = 0; i < SKILL_TYPE::NONE; ++i)
+		m_eSkillState[Char][i] = SKILL_STATE::LOCK;
+	
 	// Ortho Settings
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
@@ -739,18 +745,36 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_OrthoActivateBack.fY = g_iWinSizeY >> 2;
 	CAppManager::ComputeOrtho(&m_OrthoActivateBack);
 
-	// Back ·Î°í
+	// Activate Text
 	m_OrthoActivateText.fWidth = 512.f * 0.85f;
 	m_OrthoActivateText.fHeight = 64.f * 0.85f;
 	m_OrthoActivateText.fX = 320.f;
 	m_OrthoActivateText.fY = (g_iWinSizeY >> 2) + 64.f;
 	CAppManager::ComputeOrtho(&m_OrthoActivateText);
 
+	for (_uint i = 0; i < 2; ++i)
+	{
+		m_OrthoActivateCount[i].fWidth = 16.f * 0.8f;
+		m_OrthoActivateCount[i].fHeight = 25.f * 0.8f;
+		m_OrthoActivateCount[i].fX = 300.f + ( i * (15.f * 0.8f));
+		m_OrthoActivateCount[i].fY = m_OrthoActivateText.fY + 20.f;
+		CAppManager::ComputeOrtho(&m_OrthoActivateCount[i]);
+	}
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		m_OrthoActivateLimit[i].fWidth = 16.f * 0.8f;
+		m_OrthoActivateLimit[i].fHeight = 25.f * 0.8f;
+		m_OrthoActivateLimit[i].fX = 300.f + ((16.f * 0.8f) * 2.F) + (i * (15.f * 0.8f));
+		m_OrthoActivateLimit[i].fY = m_OrthoActivateText.fY + 20.f;
+		CAppManager::ComputeOrtho(&m_OrthoActivateLimit[i]);
+	}
+
 	// ½ÃÄö½º ½½·Ô (1 ~ 4)
 
 	//1
-	m_OrthoSequenceSlot1[0].fWidth = 200.f;
-	m_OrthoSequenceSlot1[0].fHeight = 200.f;
+	m_OrthoSequenceSlot1[0].fWidth = 100.f;
+	m_OrthoSequenceSlot1[0].fHeight = 100.f;
 	m_OrthoSequenceSlot1[0].fX = 320.f;
 	m_OrthoSequenceSlot1[0].fY = (g_iWinSizeY >> 1) + 40.f;
 	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot1[0]);
@@ -761,9 +785,24 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_OrthoSequenceSlot1[1].fY = (g_iWinSizeY >> 1) + 40.f;
 	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot1[1]);
 
+	m_OrthoSequenceText[0].fWidth = 512.f * 0.6f;
+	m_OrthoSequenceText[0].fHeight = 64.f * 0.6f;
+	m_OrthoSequenceText[0].fX = 400.f;
+	m_OrthoSequenceText[0].fY = (g_iWinSizeY >> 1) + 60.f;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceText[0]);
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		m_OrthoSequenceSlotSocket1[i].fWidth = 30.f;
+		m_OrthoSequenceSlotSocket1[i].fHeight = 30.f;
+		m_OrthoSequenceSlotSocket1[i].fX = 290.f + (i * 30.f);
+		m_OrthoSequenceSlotSocket1[i].fY = m_OrthoSequenceSlot1[0].fY + 50.f;
+		CAppManager::ComputeOrtho(&m_OrthoSequenceSlotSocket1[i]);
+	}
+
 	//2
-	m_OrthoSequenceSlot2[0].fWidth = 200.f;
-	m_OrthoSequenceSlot2[0].fHeight = 200.f;
+	m_OrthoSequenceSlot2[0].fWidth = 100.f;
+	m_OrthoSequenceSlot2[0].fHeight = 100.f;
 	m_OrthoSequenceSlot2[0].fX = 450.f;
 	m_OrthoSequenceSlot2[0].fY = (g_iWinSizeY >> 1) + 170.f;
 	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot2[0]);
@@ -773,9 +812,24 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_OrthoSequenceSlot2[1].fY = (g_iWinSizeY >> 1) + 170.f;
 	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot2[1]);
 
+	m_OrthoSequenceText[1].fWidth = 512.f * 0.6f;
+	m_OrthoSequenceText[1].fHeight = 64.f * 0.6f;
+	m_OrthoSequenceText[1].fX = 530.f;
+	m_OrthoSequenceText[1].fY = (g_iWinSizeY >> 1) + 190.f;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceText[1]);
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		m_OrthoSequenceSlotSocket2[i].fWidth = 30.f;
+		m_OrthoSequenceSlotSocket2[i].fHeight = 30.f;
+		m_OrthoSequenceSlotSocket2[i].fX = 420.f + (i * 30.f);
+		m_OrthoSequenceSlotSocket2[i].fY = m_OrthoSequenceSlot2[0].fY + 50.f;
+		CAppManager::ComputeOrtho(&m_OrthoSequenceSlotSocket2[i]);
+	}
+
 	//3
-	m_OrthoSequenceSlot3[0].fWidth = 200.f;
-	m_OrthoSequenceSlot3[0].fHeight = 200.f;
+	m_OrthoSequenceSlot3[0].fWidth = 100.f;
+	m_OrthoSequenceSlot3[0].fHeight = 100.f;
 	m_OrthoSequenceSlot3[0].fX = 870.f;
 	m_OrthoSequenceSlot3[0].fY = (g_iWinSizeY >> 1) - 170.F;
 	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot3[0]);
@@ -786,9 +840,24 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_OrthoSequenceSlot3[1].fY = (g_iWinSizeY >> 1) - 170.F;
 	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot3[1]);
 
+	m_OrthoSequenceText[2].fWidth = 512.f * 0.6f;
+	m_OrthoSequenceText[2].fHeight = 64.f * 0.6f;
+	m_OrthoSequenceText[2].fX = 950.f;
+	m_OrthoSequenceText[2].fY = (g_iWinSizeY >> 1) - 150.;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceText[2]);
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		m_OrthoSequenceSlotSocket3[i].fWidth = 30.f;
+		m_OrthoSequenceSlotSocket3[i].fHeight = 30.f;
+		m_OrthoSequenceSlotSocket3[i].fX = 840.f + (i * 30.f);
+		m_OrthoSequenceSlotSocket3[i].fY = m_OrthoSequenceSlot3[0].fY + 50.f;
+		CAppManager::ComputeOrtho(&m_OrthoSequenceSlotSocket3[i]);
+	}
+
 	//4
-	m_OrthoSequenceSlot4[0].fWidth = 200.f;
-	m_OrthoSequenceSlot4[0].fHeight = 200.f;
+	m_OrthoSequenceSlot4[0].fWidth = 100.f;
+	m_OrthoSequenceSlot4[0].fHeight = 100.f;
 	m_OrthoSequenceSlot4[0].fX = 1000.f;
 	m_OrthoSequenceSlot4[0].fY = (g_iWinSizeY >> 1) - 40.f;
 	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot4[0]);
@@ -799,9 +868,182 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_OrthoSequenceSlot4[1].fY = (g_iWinSizeY >> 1) - 40.f;
 	CAppManager::ComputeOrtho(&m_OrthoSequenceSlot4[1]);
 
+	m_OrthoSequenceText[3].fWidth = 512.f * 0.6f;
+	m_OrthoSequenceText[3].fHeight = 64.f * 0.6f;
+	m_OrthoSequenceText[3].fX = 1080.f;
+	m_OrthoSequenceText[3].fY = (g_iWinSizeY >> 1) - 20.f;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceText[3]);
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		m_OrthoSequenceSlotSocket4[i].fWidth = 30.f;
+		m_OrthoSequenceSlotSocket4[i].fHeight = 30.f;
+		m_OrthoSequenceSlotSocket4[i].fX = 970.f + (i * 30.f);
+		m_OrthoSequenceSlotSocket4[i].fY = m_OrthoSequenceSlot4[0].fY + 50.f;
+		CAppManager::ComputeOrtho(&m_OrthoSequenceSlotSocket4[i]);
+	}
+
+	m_OrthoSequenceUpgradeBack.fWidth = 400.f;
+	m_OrthoSequenceUpgradeBack.fHeight = 200.f;
+	m_OrthoSequenceUpgradeBack.fX = g_iWinSizeX - 210.f;
+	m_OrthoSequenceUpgradeBack.fY = g_iWinSizeY  - 110.f;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceUpgradeBack);
+
+	m_OrthoSequenceCurSequenceText.fWidth = 512.f * 0.7f;
+	m_OrthoSequenceCurSequenceText.fHeight = 128.f * 0.7f;
+	m_OrthoSequenceCurSequenceText.fX = m_OrthoSequenceUpgradeBack.fX + 30.f;
+	m_OrthoSequenceCurSequenceText.fY = m_OrthoSequenceUpgradeBack.fY - 35.f;
+	CAppManager::ComputeOrtho(&m_OrthoSequenceCurSequenceText);
+
+	m_OrthoSQCostSlot.fWidth = 70.f;
+	m_OrthoSQCostSlot.fHeight = 70.f;
+	m_OrthoSQCostSlot.fX = g_iWinSizeX - 210.f - 100.f;
+	m_OrthoSQCostSlot.fY = g_iWinSizeY - 80.f;
+	CAppManager::ComputeOrtho(&m_OrthoSQCostSlot);
+
+	for (_uint i = 0; i < 2; ++i)
+	{
+		m_OrthoSQCost[i].fWidth = 16.f * 0.8f;
+		m_OrthoSQCost[i].fHeight = 25.f * 0.8f;
+		m_OrthoSQCost[i].fX = (g_iWinSizeX - 210.f - 120.f + 60.f) + (i * (14.f * 0.8f));
+		m_OrthoSQCost[i].fY = g_iWinSizeY - 80.f;
+		CAppManager::ComputeOrtho(&m_OrthoSQCost[i]);
+	}
+
+	for (_uint i = 0; i < 4; ++i)
+	{
+		m_OrthoSQOwn[i].fWidth = 16.f * 0.8f;
+		m_OrthoSQOwn[i].fHeight = 25.f * 0.8f;
+		m_OrthoSQOwn[i].fX = (g_iWinSizeX - 210.f - 120.f + 180.f) + (i * (14.f * 0.8f));
+		m_OrthoSQOwn[i].fY = g_iWinSizeY - 80.f;
+		CAppManager::ComputeOrtho(&m_OrthoSQOwn[i]);
+	}
+
+	m_OrthoSQCostIcon.fWidth = 40.f;
+	m_OrthoSQCostIcon.fHeight = 40.f;
+	m_OrthoSQCostIcon.fX = g_iWinSizeX - 210.f - 100.f;
+	m_OrthoSQCostIcon.fY = g_iWinSizeY - 80.f;
+	CAppManager::ComputeOrtho(&m_OrthoSQCostIcon);
+
+	m_OrthoSQUpgradeButton.fWidth = 150.f;
+	m_OrthoSQUpgradeButton.fHeight = 70.f;
+	m_OrthoSQUpgradeButton.fX = g_iWinSizeX - 200.f;
+	m_OrthoSQUpgradeButton.fY = g_iWinSizeY - 40.f;
+	CAppManager::ComputeOrtho(&m_OrthoSQUpgradeButton);
+
+	m_OrthoSQUpgradeButtonText.fWidth = 512.f * 0.5f;
+	m_OrthoSQUpgradeButtonText.fHeight = 64.f * 0.5f;
+	m_OrthoSQUpgradeButtonText.fX = g_iWinSizeX - 200.f;
+	m_OrthoSQUpgradeButtonText.fY = g_iWinSizeY - 37.f;
+	CAppManager::ComputeOrtho(&m_OrthoSQUpgradeButtonText);
+
 #pragma endregion
 
+#pragma region FORTE
+	// Back ·Î°í
+	m_OrthoForteBack.fWidth = 2560.f * 0.5f;
+	m_OrthoForteBack.fHeight = 1280.f * 0.5f;
+	m_OrthoForteBack.fX = (g_iWinSizeX >> 2) + 125.f;
+	m_OrthoForteBack.fY = (g_iWinSizeY >> 1) + 50.f;
+	CAppManager::ComputeOrtho(&m_OrthoForteBack);
+
+	for (_uint i = 0; i < 4; ++i)
+	{
+		m_OrthoAttackSlot[i].fWidth = 100.f;
+		m_OrthoAttackSlot[i].fHeight = 100.f;
+		m_OrthoAttackSlot[i].fX = m_OrthoForteBack.fX;
+		m_OrthoAttackSlot[i].fY = g_iWinSizeY - 150.f - ( i * 115.f);
+		CAppManager::ComputeOrtho(&m_OrthoAttackSlot[i]);
+
+	}
+
+	m_OrthoQTESlot.fWidth = 100.f;
+	m_OrthoQTESlot.fHeight = 100.f;
+	m_OrthoQTESlot.fX = m_OrthoForteBack.fX - 110.f;
+	m_OrthoQTESlot.fY = m_OrthoAttackSlot[1].fY + 55.f;
+	CAppManager::ComputeOrtho(&m_OrthoQTESlot);
+
+	m_OrthoBurstSlot.fWidth = 100.f;
+	m_OrthoBurstSlot.fHeight = 100.f;
+	m_OrthoBurstSlot.fX = m_OrthoForteBack.fX + 110.f;
+	m_OrthoBurstSlot.fY = m_OrthoAttackSlot[2].fY - 55.f;
+	CAppManager::ComputeOrtho(&m_OrthoBurstSlot);
+
+	//ICon
+	for (_uint i = 0; i < 4; ++i)
+	{
+		m_OrthoAttackIcon[i].fWidth = 70.f;
+		m_OrthoAttackIcon[i].fHeight = 70.f;
+		m_OrthoAttackIcon[i].fX = m_OrthoForteBack.fX;
+		m_OrthoAttackIcon[i].fY = g_iWinSizeY - 150.f - (i * 115.f);
+		CAppManager::ComputeOrtho(&m_OrthoAttackIcon[i]);
+
+		m_OrthoAttackNeedLevel[i].fWidth = 512.f * 0.4f;
+		m_OrthoAttackNeedLevel[i].fHeight = 64.f * 0.4f;
+		m_OrthoAttackNeedLevel[i].fX = m_OrthoForteBack.fX;
+		m_OrthoAttackNeedLevel[i].fY = g_iWinSizeY - 100.f - (i * 115.f);
+		CAppManager::ComputeOrtho(&m_OrthoAttackNeedLevel[i]);
+
+	}
+
+	m_OrthoQTEIcon.fWidth = 70.f;
+	m_OrthoQTEIcon.fHeight = 70.f;
+	m_OrthoQTEIcon.fX = m_OrthoForteBack.fX - 110.f;
+	m_OrthoQTEIcon.fY = m_OrthoAttackSlot[1].fY + 55.f;
+	CAppManager::ComputeOrtho(&m_OrthoQTEIcon);
+
+	m_OrthoBurstIcon.fWidth = 70.f;
+	m_OrthoBurstIcon.fHeight = 70.f;
+	m_OrthoBurstIcon.fX = m_OrthoForteBack.fX + 110.f;
+	m_OrthoBurstIcon.fY = m_OrthoAttackSlot[2].fY - 55.f;
+	CAppManager::ComputeOrtho(&m_OrthoBurstIcon);
+
+	m_OrthoSkillPointText.fWidth = 512.f * 0.6f;
+	m_OrthoSkillPointText.fHeight = 64.f * 0.6f;
+	m_OrthoSkillPointText.fX = m_OrthoForteBack.fX - 16.f;
+	m_OrthoSkillPointText.fY = g_iWinSizeY - 78.f;
+	CAppManager::ComputeOrtho(&m_OrthoSkillPointText);
+
+	for (_uint i = 0; i < 2; ++i)
+	{
+		m_OrthoSkillPoint[i].fWidth = 16.f * 0.9f;
+		m_OrthoSkillPoint[i].fHeight = 25.f * 0.9f;
+		m_OrthoSkillPoint[i].fX = m_OrthoForteBack.fX + 52 + (i * (14.f * 0.8f));
+		m_OrthoSkillPoint[i].fY = g_iWinSizeY - 82.f;
+		CAppManager::ComputeOrtho(&m_OrthoSkillPoint[i]);
+	}
+
+	m_OrthoSkillDesc.fWidth = 512.f * 0.7f;
+	m_OrthoSkillDesc.fHeight = 128.f * 0.7f;
+	m_OrthoSkillDesc.fX = 330.f;
+	m_OrthoSkillDesc.fY = (g_iWinSizeY >> 2) + 30.f;
+	CAppManager::ComputeOrtho(&m_OrthoSkillDesc);
+
+	m_OrthoSkillState.fWidth = 512.f * 0.5f;
+	m_OrthoSkillState.fHeight = 64.f * 0.5f;
+	m_OrthoSkillState.fX = 400.f;
+	m_OrthoSkillState.fY = (g_iWinSizeY >> 2) - 5.f;
+	CAppManager::ComputeOrtho(&m_OrthoSkillState);
 	
+	m_OrthoSkillNeedDesc.fWidth = 512.f * 0.5f;
+	m_OrthoSkillNeedDesc.fHeight = 64.f * 0.5f;
+	m_OrthoSkillNeedDesc.fX = 278.f;
+	m_OrthoSkillNeedDesc.fY = (g_iWinSizeY >> 2) + 70.f;
+	CAppManager::ComputeOrtho(&m_OrthoSkillNeedDesc);
+
+	m_OrthoSkillUpgradeBtn.fWidth = 170.f;
+	m_OrthoSkillUpgradeBtn.fHeight = 70.f;
+	m_OrthoSkillUpgradeBtn.fX = m_OrthoForteBack.fX;
+	m_OrthoSkillUpgradeBtn.fY = g_iWinSizeY - 45.f;
+	CAppManager::ComputeOrtho(&m_OrthoSkillUpgradeBtn);
+
+	m_OrthoSkillUpgradeText.fWidth = 512.f * 0.6f;
+	m_OrthoSkillUpgradeText.fHeight = 64.f * 0.6f;
+	m_OrthoSkillUpgradeText.fX = m_OrthoForteBack.fX;
+	m_OrthoSkillUpgradeText.fY = g_iWinSizeY - 40.f;
+	CAppManager::ComputeOrtho(&m_OrthoSkillUpgradeText);
+#pragma endregion
+
 	// ±âÅ¸ ÀÓ½Ã µðÆúÆ® ¼¼ÆÃ
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	m_pPlayerState = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
@@ -819,7 +1061,7 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_pInven->PushItemDesc(itemDesc);
 
 	itemDesc = pDB->GetItemData(ITEM::EXP2);
-	itemDesc.iAmount = 5;
+	itemDesc.iAmount = 20;
 	m_pInven->PushItemDesc(itemDesc);
 	
 	return S_OK;
@@ -893,6 +1135,9 @@ HRESULT CResonatorUI::Render()
 
 		break;
 	case CResonatorUI::BTN_WUTERIDE:
+		if (FAILED(forteRender()))
+			return E_FAIL;
+
 		break;
 	case CResonatorUI::BTN_END:
 		break;
@@ -2024,8 +2269,105 @@ void CResonatorUI::echoKeyInput(_double TimeDelta)
 void CResonatorUI::resonanceInput(_double TimeDelta)
 {
 	selectCharacter(TimeDelta);
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstnance = CGameInstance::GetInstance();
+	
+	// SQ ¼±ÅÃ
+	if (pGameMode->OnMouse(m_OrthoSequenceSlot1[1]))
+	{
+		if(pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			m_iSelectSQ = SQ_1;
+	}
+	else if (pGameMode->OnMouse(m_OrthoSequenceSlot2[1]))
+	{
+		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			m_iSelectSQ = SQ_2;
+	}
+	else if (pGameMode->OnMouse(m_OrthoSequenceSlot3[1]))
+	{
+		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			m_iSelectSQ = SQ_3;
+	}
+	else if (pGameMode->OnMouse(m_OrthoSequenceSlot4[1]))
+	{
+		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			m_iSelectSQ = SQ_4;
+	}
+	else
+	{
+		if (!pGameMode->OnMouse(m_OrthoSequenceUpgradeBack))
+		{
+			if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+				m_iSelectSQ = SQ_NONE;
+		}
+	}
 
+	if (pGameMode->OnMouse(m_OrthoSQUpgradeButtonText))
+	{
+		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+			m_bSQUpgradeClick = true;
+		else
+		{
+			m_bSQUpgradeClick = false;
+		}
 
+		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
+		{
+			_uint iAmount = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::SEQUENCE_GEM);
+			if (iAmount > 0 && iResonanceSocket[m_iSelectSQ] < 3)
+			{
+				iResonanceSocket[m_iSelectSQ]++;
+				m_pInven->EraseItem(CInventory::INVEN_MATERIAL, ITEM::SEQUENCE_GEM, 1);
+				m_pPlayerState->SetSequenceLevel((CPlayerState::SQ_TYPE)m_iSelectSQ, iResonanceSocket[m_iSelectSQ]);
+			}
+		}
+
+	}
+	else
+	{
+		m_bSQUpgradeClick = false;
+	}
+
+}
+
+void CResonatorUI::forteInput(_double TimeDelta)
+{
+	selectCharacter(TimeDelta);
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstnance = CGameInstance::GetInstance();
+
+	if (pGameMode->OnMouse(m_OrthoAttackIcon[0]))
+	{
+		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			m_iCurSelectSkill = ATTACK1;
+	}
+	else if (pGameMode->OnMouse(m_OrthoAttackIcon[1]))
+	{
+		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			m_iCurSelectSkill = ATTACK2;
+	}
+	else if (pGameMode->OnMouse(m_OrthoAttackIcon[2]))
+	{
+		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			m_iCurSelectSkill = ATTACK3;
+	}
+	else if (pGameMode->OnMouse(m_OrthoAttackIcon[3]))
+	{
+		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			m_iCurSelectSkill = ATTACK4;
+	}
+	else if (pGameMode->OnMouse(m_OrthoQTESlot))
+	{
+		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			m_iCurSelectSkill = QTE;
+	}
+	else if (pGameMode->OnMouse(m_OrthoBurstSlot))
+	{
+		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			m_iCurSelectSkill = BURST;
+	}
+
+	upgradeSkill(TimeDelta);
 }
 
 void CResonatorUI::weaponKeyInput(_double TimeDelta)
@@ -3091,6 +3433,8 @@ HRESULT CResonatorUI::resonanceRender()
 
 	chooseCharacter();
 
+	_uint iTotalActivate = iResonanceSocket[0] + iResonanceSocket[1] + iResonanceSocket[2] + iResonanceSocket[3];
+
 	_float3 vColor;
 	_float4 vColor4;
 
@@ -3116,16 +3460,69 @@ HRESULT CResonatorUI::resonanceRender()
 	m_pShader->Begin(8);
 	m_pVIBuffer->Render();
 
-	// ½ÃÄö½º ½½·Ô 1
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[19], sizeof(_float))))
+	string strActivateCount = to_string(iTotalActivate);
+	_uint iDigit = (_uint)strActivateCount.size();
+
+	for (_uint i = 0; i < iDigit; ++i)
+	{
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[2], sizeof(_float))))
+			return E_FAIL;
+
+		if (iDigit < 2)
+		{
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoActivateCount[1].WorldMatrix)))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoActivateCount[i].WorldMatrix)))
+				return E_FAIL;
+		}
+
+
+		if (FAILED(pGameInstance->SetupSRV(strActivateCount[i] - '0', m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+	}
+
+	fAlpha = m_fElemAlpha[19] * 2.f;
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[2], sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot1[0].WorldMatrix)))
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoActivateLimit[0].WorldMatrix)))
 		return E_FAIL;
-	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_SLOT, m_pShader, "g_DiffuseTexture")))
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SLASH, m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[19], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[2], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoActivateLimit[1].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_1, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[2], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoActivateLimit[2].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_2, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+
+	// ½ÃÄö½º ½½·Ô 1
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot1[0].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_GLOWCIRCLE, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot1[1].WorldMatrix)))
 		return E_FAIL;
@@ -3134,16 +3531,48 @@ HRESULT CResonatorUI::resonanceRender()
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
 
-	// ½ÃÄö½º ½½·Ô 2
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[17], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[19], sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot2[0].WorldMatrix)))
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceText[0].WorldMatrix)))
 		return E_FAIL;
-	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_SLOT, m_pShader, "g_DiffuseTexture")))
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SEQUENCE1, m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[17], sizeof(_float))))
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		fAlpha = m_fElemAlpha[19] * 2.f;
+
+		if (i < iResonanceSocket[0])
+			vColor = { 1.f, 1.f, 1.f };
+		else
+			vColor = { 0.2f, 0.2f, 0.2f };
+
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlotSocket1[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_SOCKET, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+	}
+
+
+	// ½ÃÄö½º ½½·Ô 2
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[16], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot2[0].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_GLOWCIRCLE, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[16], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot2[1].WorldMatrix)))
 		return E_FAIL;
@@ -3152,16 +3581,46 @@ HRESULT CResonatorUI::resonanceRender()
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
 
-	// ½ÃÄö½º ½½·Ô 3
 	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[17], sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot3[0].WorldMatrix)))
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceText[1].WorldMatrix)))
 		return E_FAIL;
-	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_SLOT, m_pShader, "g_DiffuseTexture")))
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SEQUENCE2, m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[17], sizeof(_float))))
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		fAlpha = m_fElemAlpha[17] * 2.f;
+
+		if (i < iResonanceSocket[1])
+			vColor = { 1.f, 1.f, 1.f };
+		else
+			vColor = { 0.2f, 0.2f, 0.2f };
+
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlotSocket2[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_SOCKET, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+	}
+
+	// ½ÃÄö½º ½½·Ô 3
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[16], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot3[0].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_GLOWCIRCLE, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[16], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot3[1].WorldMatrix)))
 		return E_FAIL;
@@ -3170,16 +3629,45 @@ HRESULT CResonatorUI::resonanceRender()
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
 
-	// ½ÃÄö½º ½½·Ô 4
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[19], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[17], sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot4[0].WorldMatrix)))
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceText[2].WorldMatrix)))
 		return E_FAIL;
-	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_SLOT, m_pShader, "g_DiffuseTexture")))
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SEQUENCE3, m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[19], sizeof(_float))))
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		fAlpha = m_fElemAlpha[17] * 2.f;
+		if (i < iResonanceSocket[2])
+			vColor = { 1.f, 1.f, 1.f };
+		else
+			vColor = { 0.2f, 0.2f, 0.2f };
+
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlotSocket3[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_SOCKET, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+	}
+
+	// ½ÃÄö½º ½½·Ô 4
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot4[0].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_GLOWCIRCLE, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot4[1].WorldMatrix)))
 		return E_FAIL;
@@ -3188,7 +3676,736 @@ HRESULT CResonatorUI::resonanceRender()
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
 
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[19], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceText[3].WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SEQUENCE4, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		fAlpha = m_fElemAlpha[19] * 2.f;
+		if (i < iResonanceSocket[3])
+			vColor = { 1.f, 1.f, 1.f };
+		else
+			vColor = { 0.2f, 0.2f, 0.2f };
+
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlotSocket4[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_SOCKET, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+	}
+
+	if (m_iSelectSQ != SQ_NONE)
+	{
+		fAlpha = m_fElemAlpha[17] * 0.5f;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceUpgradeBack.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SIDEALPHA, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+
+		vColor = UNIQUE_COLOR;
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQCostSlot.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_GLOWGARD, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQCostIcon.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_SEQUENCE_GEM, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		//ºñ¿ë
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQCost[0].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_X, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQCost[1].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_1, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		//º¸À¯
+		_uint iAmount = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::SEQUENCE_GEM);
+		string strOwnGemAmount = to_string(iAmount);
+		_uint iDigit = (_uint)strOwnGemAmount.size();
+
+
+		if (iAmount < 1)
+			vColor = { 0.8f, 0.2f, 0.2f };
+		else
+			vColor = DEFAULT_COLOR;
+
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQOwn[0].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_X, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+
+		for (_uint i = 0; i < iDigit; ++i)
+		{
+			if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQOwn[i + 1].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(strOwnGemAmount[i] - '0', m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(8);
+			m_pVIBuffer->Render();
+		}
+
+		if (m_bSQUpgradeClick)
+		{
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_CLICK, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_NONE, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+		}
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQUpgradeButton.WorldMatrix)))
+			return E_FAIL;
+
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQUpgradeButtonText.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_UPGRADE, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+	}
+
+	// SQ
+	switch (m_iSelectSQ)
+	{
+	case SQ_1:
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot1[1].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTON, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceCurSequenceText.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SQTEXT1, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		break;
+	case SQ_2:
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot2[1].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTON, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceCurSequenceText.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SQTEXT2, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		break;
+	case SQ_3:
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot3[1].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTON, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceCurSequenceText.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SQTEXT3, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		break;
+	case SQ_4:
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot4[1].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTON, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceCurSequenceText.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SQTEXT4, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		break;
+	case SQ_NONE:
+		break;
+	}
+
+
 	return S_OK;
+}
+
+HRESULT CResonatorUI::forteRender()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	chooseCharacter();
+	
+	_float3 vColor;
+	_float4 vColor4;
+
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[2], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoForteBack.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_ATTACKDESC_BACK, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	//±â°ø 4Å¸
+	for (_uint i = 0; i < 4; ++i)
+	{
+		if (m_eSkillState[m_iCurCharacter][i] == ACTIVATE)
+			vColor = LEGEND_COLOR;
+		else
+			vColor = DEFAULT_COLOR;
+
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[3 + i], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoAttackSlot[i].WorldMatrix)))
+			return E_FAIL;
+
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_GLOWCIRCLE, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoAttackIcon[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_MOON, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		//¶ô ¾ð¶ô Ã³¸®
+		if (m_eSkillState[m_iCurCharacter][i] == LOCK)
+		{
+			if (FAILED(m_pShader->SetRawValue("g_vColor", &m_fElemAlpha[4 + i], sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_LOCK, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(8);
+			m_pVIBuffer->Render();
+		}
+		else if (m_eSkillState[m_iCurCharacter][i] == UNLOCK)
+		{
+			vColor = { m_fElemAlpha[4 + i] * 0.5f , m_fElemAlpha[4 + i] * 0.5f, m_fElemAlpha[4 + i] * 0.5f };
+			if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_ATTACK1 + i, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(8);
+			m_pVIBuffer->Render();
+		}
+		else if (m_eSkillState[m_iCurCharacter][i] == ACTIVATE)
+		{
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_ATTACK1 + i, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+		}
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoAttackNeedLevel[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_LV5 + i, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+	}
+
+	// QTE
+	if (m_eSkillState[m_iCurCharacter][QTE] == ACTIVATE)
+		vColor = LEGEND_COLOR;
+	else
+		vColor = DEFAULT_COLOR;
+
+	if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[8], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoQTESlot.WorldMatrix)))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_GLOWCIRCLE, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(8);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoQTEIcon.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_MOON, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	//¶ô ¾ð¶ô Ã³¸®
+	switch (m_eSkillState[m_iCurCharacter][QTE])
+	{
+	case LOCK:
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &m_fElemAlpha[9], sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_LOCK, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+		break;
+	case UNLOCK:
+		vColor = { m_fElemAlpha[9] * 0.5f , m_fElemAlpha[9] * 0.5f, m_fElemAlpha[9] * 0.5f };
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_QTE, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+		break;
+	case ACTIVATE:
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_QTE, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+		break;
+	}
+
+	// ¹ö½ºÆ®
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoBurstSlot.WorldMatrix)))
+		return E_FAIL;
+
+	if (m_eSkillState[m_iCurCharacter][BURST] == ACTIVATE)
+		vColor = LEGEND_COLOR;
+	else
+		vColor = DEFAULT_COLOR;
+
+	if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoBurstSlot.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_GLOWCIRCLE, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(8);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoBurstIcon.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_MOON, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	//¶ô ¾ð¶ô Ã³¸®
+	switch (m_eSkillState[m_iCurCharacter][BURST])
+	{
+	case LOCK:
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &m_fElemAlpha[10], sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_LOCK, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+		break;
+	case UNLOCK:
+		vColor = { m_fElemAlpha[10] * 0.5f , m_fElemAlpha[10] * 0.5f, m_fElemAlpha[10] * 0.5f };
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_BURST, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+		break;
+	case ACTIVATE:
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_BURST, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+		break;
+	}
+
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSkillPointText.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_BACK, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(8);
+	m_pVIBuffer->Render();
+
+	vColor = SLOT_LEGEND_COLOR;
+	if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[10], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSkillPointText.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SKILLPOINT, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	m_pShader->Begin(8);
+	m_pVIBuffer->Render();
+
+	_uint iCharacterSP = m_pPlayerState->GetCharacterSP((CPlayerState::CHARACTERS)m_iCurCharacter);
+	string strNumber = to_string(iCharacterSP);
+	_uint iDigit = (_uint)strNumber.size();
+
+	for (_uint i = 0; i < iDigit; ++i)
+	{
+		vColor = SLOT_LEGEND_COLOR;
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[10], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSkillPoint[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(strNumber[i] - '0', m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+	}
+
+	_float fValue = 1.f;
+	switch (m_iCurSelectSkill)
+	{
+	case ATTACK1:
+	case ATTACK2:
+	case ATTACK3:
+	case ATTACK4:
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[10], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoAttackSlot[m_iCurSelectSkill].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTOM_SMALL, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[10], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSkillDesc.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_ATTACK1 + m_iCurSelectSkill, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+		break;
+	case QTE:
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[10], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSkillDesc.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_QTE, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[10], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoQTESlot.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTOM_SMALL, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		break;
+
+	case BURST:
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[10], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSkillDesc.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_BURST, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[10], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoBurstSlot.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTOM_SMALL, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+		break;
+	}
+
+	// Lock, Disable, Activate Text
+	if (m_iCurSelectSkill != NONE)
+	{
+		switch (m_eSkillState[m_iCurCharacter][m_iCurSelectSkill])
+		{
+		case LOCK:
+			vColor = { 0.6f, 0.2f, 0.2f };
+			if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[11], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSkillState.WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_LOCKED, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(8);
+			m_pVIBuffer->Render();
+
+			if (m_iCurSelectSkill == QTE)
+			{
+				vColor = { 0.3f, 0.3f, 0.3f };
+				if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+					return E_FAIL;
+				if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[12], sizeof(_float))))
+					return E_FAIL;
+				if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSkillNeedDesc.WorldMatrix)))
+					return E_FAIL;
+				if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_NEED_FIRSTATTACK, m_pShader, "g_DiffuseTexture")))
+					return E_FAIL;
+				m_pShader->Begin(8);
+				m_pVIBuffer->Render();
+			}
+			else if (m_iCurSelectSkill == BURST)
+			{
+				ORTHO_DESC BurstDesc = m_OrthoSkillNeedDesc;
+				BurstDesc.fY -= 25.f;
+				CAppManager::ComputeOrtho(&BurstDesc);
+
+				vColor = { 0.3f, 0.3f, 0.3f };
+				if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+					return E_FAIL;
+				if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[12], sizeof(_float))))
+					return E_FAIL;
+				if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &BurstDesc.WorldMatrix)))
+					return E_FAIL;
+				if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_NEED_LASTATTACK, m_pShader, "g_DiffuseTexture")))
+					return E_FAIL;
+				m_pShader->Begin(8);
+				m_pVIBuffer->Render();
+			}
+
+			break;
+		case UNLOCK:
+			vColor = { 0.5f, 0.5f, 0.5f };
+			if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[11], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSkillState.WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_DISABLED, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(8);
+			m_pVIBuffer->Render();
+			break;
+		case ACTIVATE:
+			vColor = SLOT_LEGEND_COLOR;
+			if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[11], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSkillState.WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_LEFT_ACTIVATED, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(8);
+			m_pVIBuffer->Render();
+			break;
+		}
+	}
+
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[12], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSkillUpgradeBtn.WorldMatrix)))
+		return E_FAIL;
+
+	if (m_bUpgradeButtonClick)
+	{
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_CLICK, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_ON, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+	}
+
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[12], sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSkillUpgradeText.WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_ACTIVATE, m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(10);
+	m_pVIBuffer->Render();
+
+	return S_OK;
+}
+
+void CResonatorUI::upgradeSkill(_double TimeDelta)
+{
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	CPlayerState::CHARACTER_STATE* playerState = m_pPlayerState->Get_CharState_byChar((CPlayerState::CHARACTERS)m_iCurCharacter);
+	_uint iCurLevel = playerState->iCurLevel;
+
+	if (iCurLevel >= 5)
+	{
+		if (m_eSkillState[m_iCurCharacter][ATTACK1] == LOCK)
+			m_eSkillState[m_iCurCharacter][ATTACK1] = UNLOCK;
+	}
+
+	if (iCurLevel >= 10 && m_eSkillState[m_iCurCharacter][ATTACK1] == ACTIVATE)
+	{
+		if (m_eSkillState[m_iCurCharacter][ATTACK2] == LOCK)
+			m_eSkillState[m_iCurCharacter][ATTACK2] = UNLOCK;
+	}
+
+	if (iCurLevel >= 15 && m_eSkillState[m_iCurCharacter][ATTACK2] == ACTIVATE)
+	{
+		if (m_eSkillState[m_iCurCharacter][ATTACK3] == LOCK)
+			m_eSkillState[m_iCurCharacter][ATTACK3] = UNLOCK;
+	}
+	if (iCurLevel >= 20 && m_eSkillState[ATTACK3][m_iCurCharacter] == ACTIVATE)
+	{
+		if (m_eSkillState[m_iCurCharacter][ATTACK4] == LOCK)
+			m_eSkillState[m_iCurCharacter][ATTACK4] = UNLOCK;
+	}
+
+	if (m_eSkillState[m_iCurCharacter][ATTACK1] == ACTIVATE && m_eSkillState[m_iCurCharacter][QTE] != ACTIVATE)
+	{
+		m_eSkillState[m_iCurCharacter][QTE] = UNLOCK;
+	}
+
+	if (m_eSkillState[m_iCurCharacter][ATTACK4] == ACTIVATE && m_eSkillState[m_iCurCharacter][BURST] != ACTIVATE)
+	{
+		m_eSkillState[m_iCurCharacter][BURST] = UNLOCK;
+	}
+
+	if (pGameMode->OnMouse(m_OrthoSkillUpgradeBtn))
+	{
+		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			m_bUpgradeButtonClick = true;
+		else if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+			m_bUpgradeButtonClick = true;
+		else if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
+		{
+			m_bUpgradeButtonClick = false;
+
+			_uint iSkillPoint = m_pPlayerState->GetCharacterSP((CPlayerState::CHARACTERS)m_iCurCharacter);
+
+			if (iSkillPoint >= 1)
+			{
+				switch (m_iCurSelectSkill)
+				{
+				case ATTACK1:
+				case ATTACK2:
+				case ATTACK3:
+				case ATTACK4:
+					if (m_eSkillState[m_iCurCharacter][m_iCurSelectSkill] == UNLOCK)
+						m_pPlayerState->SetAttackFactor((CPlayerState::CHARACTERS)m_iCurCharacter, m_iCurSelectSkill, 1.1f);
+					
+					break;
+				case QTE:
+					if (m_eSkillState[m_iCurCharacter][m_iCurSelectSkill] == UNLOCK)
+						m_pPlayerState->SetAirboneQTE((CPlayerState::CHARACTERS)m_iCurCharacter, true);
+
+					break;
+				case BURST:
+					if (m_eSkillState[m_iCurCharacter][m_iCurSelectSkill] == UNLOCK)
+						m_pPlayerState->SeBurstFactor((CPlayerState::CHARACTERS)m_iCurCharacter, 1.5f);
+
+					break;
+				}
+
+				m_eSkillState[m_iCurCharacter][m_iCurSelectSkill] = ACTIVATE;
+			}
+			else
+			{
+				m_bUpgradeButtonClick = false;
+			}
+		}
+	}
 }
 
 HRESULT CResonatorUI::weaponSwitchRender()
@@ -3520,6 +4737,9 @@ void CResonatorUI::keyInput(_double TimeDelta)
 		break;
 	case BTN_RESONANCE:
 		resonanceInput(TimeDelta);
+		break;
+	case BTN_WUTERIDE:
+		forteInput(TimeDelta);
 		break;
 	default:
 		break;

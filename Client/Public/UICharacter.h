@@ -40,6 +40,24 @@ public:
 		UICHAR_END
 	};
 
+	enum RIB_Animations
+	{
+		UICHAR_RIB_IDLE,
+		UICHAR_RIB_CHIP_END,
+		UICHAR_RIB_CHIP_LOOP,
+		UICHAR_RIB_CHIP_START,
+		UICHAR_RIB_INTO1_END,
+		UICHAR_RIB_INTO1_LOOP,
+		UICHAR_RIB_INTO1_START,
+		UICHAR_RIB_RESONANT_END,
+		UICHAR_RIB_RESONANT_LOOP,
+		UICHAR_RIB_RESONANT_START,
+		UICHAR_RIB_WEAPON_END,
+		UICHAR_RIB_WEAPON_LOOP,
+		UICHAR_RIB_WEAPON_START,
+		UICHAR_RIB_END
+	};
+
 private:
 	explicit UICharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit UICharacter(const UICharacter& rhs);
@@ -82,6 +100,7 @@ private:
 	CModel_Anim* m_pAnimSetRibbon = nullptr;
 
 	_uint m_iAnimID = { 0 };
+	_uint m_iRibbonID = { 0 };
 	UIANIMATION m_eUIState = UI_STATE;
 
 	// Studio

@@ -59,11 +59,7 @@ void CUICam::LateTick(_double TimeDelta)
 {
 	if (false == m_bUse)
 		return;
-
-	CGameInstance* pGI = CGameInstance::GetInstance();
-	if (pGI->InputKey(DIK_N) == KEY_STATE::TAP)
-		m_bMove = !m_bMove;
-
+	
 	if (m_bMove)
 	{
 		//CameraDesc.vEye = _float3(-1000.5f, 1.2f, -999.7f);

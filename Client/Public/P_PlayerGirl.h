@@ -222,6 +222,7 @@ public:
 		m_DelayDuration = DelayDuration;
 	}
 
+	void updateAttackDesc();
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };

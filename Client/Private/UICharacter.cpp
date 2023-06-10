@@ -44,12 +44,7 @@ HRESULT UICharacter::Initialize(void * pArg)
 
 	m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(270.f));
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(-999.f, 0.f, -1000.f, 1.f));
-
-	m_pStudioTransform->Set_WorldMatrix(m_pMainTransform->Get_WorldMatrix());
-	_vector vStudioPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION) - m_pMainTransform->Get_State(CTransform::STATE_LOOK) * 1.5f;
-	m_pStudioTransform->Set_State(CTransform::STATE_POSITION, vStudioPos);
-	m_pStudioTransform->Set_Scale(_float3(20.f, 10.f, 20.f));
-
+	
 	return S_OK;
 }
 
@@ -94,6 +89,14 @@ void UICharacter::LateTick(_double TimeDelta)
 		if (m_iAnimID != UICHAR_RESONANT_LOOP)
 			m_pUICam->SetMove(false);
 	}
+
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	_float4x4 vViewInv = pGI->Get_Transform_float4x4_Inverse(CPipeLine::TS_VIEW);
+	m_pStudioTransform->Set_WorldMatrix(vViewInv);
+	_vector vStudioPos = m_pStudioTransform->Get_State(CTransform::STATE_POSITION) + m_pStudioTransform->Get_State(CTransform::STATE_LOOK) * 2.5f;
+
+	m_pStudioTransform->Set_Scale(_float3(2.1f, 2.1f, 3.8f));
+	m_pStudioTransform->Set_State(CTransform::STATE_POSITION, vStudioPos);
 	
 	if (m_pRenderer)
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
@@ -118,7 +121,9 @@ HRESULT UICharacter::Render()
 	if (FAILED(m_pUIShader->SetRawValue("g_fTimeAcc", &fValue, sizeof(_float))))
 		return E_FAIL;
 
-	if (FAILED(pGI->SetupSRV(STATIC_IMAGE::UI_DETAILPANEL, m_pUIShader, "g_DiffuseTexture")))
+	//if (FAILED(pGI->SetupSRV(STATIC_IMAGE::UI_DETAILPANEL, m_pUIShader, "g_DiffuseTexture")))
+	//	return E_FAIL;
+	if (FAILED(pGI->SetupSRV(STATIC_IMAGE::UI_DRAGON_BACK, m_pUIShader, "g_DiffuseTexture")))
 		return E_FAIL;
 	m_pUIShader->Begin(10);
 	m_pVIBuffer->Render();
@@ -176,33 +181,38 @@ void UICharacter::SetAnimation(UIANIMATION eCurUI)
 		{
 		case UI_STATE:
 			m_iAnimID = UICHAR_IDLE;
+			m_iRibbonID = UICHAR_RIB_IDLE;
 			m_eUIState = UI_STATE;
 			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
 			break;
 		case UI_WEAPON:
 			m_iAnimID = UICHAR_WEAPON_START;
+			m_iRibbonID = UICHAR_RIB_WEAPON_START;
 			m_eUIState = UI_WEAPON;
 			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
 			break;
 		case UI_ECHO:
 			m_iAnimID = UICHAR_CHIP_START;
+			m_iRibbonID = UICHAR_RIB_CHIP_START;
 			m_eUIState = UI_ECHO;
 			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
 			break;
 		case UI_RESONANCE:
 			m_iAnimID = UICHAR_RESONANT_START;
+			m_iRibbonID = UICHAR_RIB_RESONANT_START;
 			m_eUIState = UI_RESONANCE;
 			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
 			break;
 		case UI_WUTHERIDE:
-			m_iAnimID = UICHAR_INTEN_START;
+			m_iAnimID = UICHAR_INTO1_START;
+			m_iRibbonID = UICHAR_RIB_INTO1_START;
 			m_eUIState = UI_WUTHERIDE;
 			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
 			break;
 		}
 	}
@@ -213,33 +223,38 @@ void UICharacter::SetAnimation(UIANIMATION eCurUI)
 		{
 		case UI_STATE:
 			m_iAnimID = UICHAR_IDLE;
+			m_iRibbonID = UICHAR_RIB_IDLE;
 			m_eUIState = eCurUI;
 			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
 			break;
 		case UI_WEAPON:
 			m_iAnimID = UICHAR_WEAPON_END;
+			m_iRibbonID = UICHAR_RIB_WEAPON_END;
 			m_eUIState = eCurUI;
 			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
 			break;
 		case UI_ECHO:
 			m_iAnimID = UICHAR_CHIP_END;
+			m_iRibbonID = UICHAR_RIB_CHIP_END;
 			m_eUIState = eCurUI;
 			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
 			break;
 		case UI_RESONANCE:
 			m_iAnimID = UICHAR_RESONANT_END;
+			m_iRibbonID = UICHAR_RIB_RESONANT_END;
 			m_eUIState = eCurUI;
 			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
 			break;
 		case UI_WUTHERIDE:
-			m_iAnimID = UICHAR_INTEN_END;
+			m_iAnimID = UICHAR_INTO1_END;
+			m_iRibbonID = UICHAR_RIB_INTO1_END;
 			m_eUIState = eCurUI;
 			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
 			break;
 		}
 
@@ -331,7 +346,7 @@ void UICharacter::updateAnimationState(_double TimeDelta)
 	m_pAnimSetBase->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, &bFinished);
 	m_pAnimSetBase->Update_TargetBones();
 
-	m_pAnimSetRibbon->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, &bFinished);
+	m_pAnimSetRibbon->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, nullptr);
 	m_pAnimSetRibbon->Ribbon_TargetBones();
 
 	m_pModel->Invalidate_CombinedMatrices();
@@ -344,23 +359,28 @@ void UICharacter::updateAnimationState(_double TimeDelta)
 			{
 			case UI_STATE:
 				m_iAnimID = UICHAR_IDLE;
+				m_iRibbonID = UICHAR_RIB_IDLE;
 				break;
 			case UI_WEAPON:
 				m_iAnimID = UICHAR_WEAPON_LOOP;
+				m_iRibbonID = UICHAR_RIB_WEAPON_LOOP;
 				break;
 			case UI_ECHO:
 				m_iAnimID = UICHAR_CHIP_LOOP;
+				m_iRibbonID = UICHAR_RIB_CHIP_LOOP;
 				break;
 			case UI_RESONANCE:
 				m_iAnimID = UICHAR_RESONANT_LOOP;
+				m_iRibbonID = UICHAR_RIB_RESONANT_LOOP;
 				break;
 			case UI_WUTHERIDE:
-				m_iAnimID = UICHAR_INTEN_LOOP;
+				m_iAnimID = UICHAR_INTO1_LOOP;
+				m_iRibbonID = UICHAR_RIB_INTO1_LOOP;
 				break;
 			}
 
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetBase->SetUp_Animation(m_iAnimID, false);
+			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, false);
 		}
 	}
 	else
@@ -372,23 +392,28 @@ void UICharacter::updateAnimationState(_double TimeDelta)
 			{
 			case UI_STATE:
 				m_iAnimID = UICHAR_IDLE;
+				m_iRibbonID = UICHAR_RIB_IDLE;
 				break;
 			case UI_WEAPON:
 				m_iAnimID = UICHAR_WEAPON_START;
+				m_iRibbonID = UICHAR_RIB_WEAPON_START;
 				break;
 			case UI_ECHO:
 				m_iAnimID = UICHAR_CHIP_START;
+				m_iRibbonID = UICHAR_RIB_CHIP_START;
 				break;
 			case UI_RESONANCE:
 				m_iAnimID = UICHAR_RESONANT_START;
+				m_iRibbonID = UICHAR_RIB_RESONANT_START;
 				break;
 			case UI_WUTHERIDE:
-				m_iAnimID = UICHAR_INTEN_START;
+				m_iAnimID = UICHAR_INTO1_START;
+				m_iRibbonID = UICHAR_RIB_INTO1_START;
 				break;
 			}
 
 			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
 		}
 	}
 

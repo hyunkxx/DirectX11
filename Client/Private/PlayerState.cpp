@@ -73,11 +73,33 @@ HRESULT CPlayerState::Initialize(void * pArg)
 {
 	CItemDB* pDB = CItemDB::GetInstance();
 	m_EquipWeapons[CHARACTER_ROVER] = pDB->GetItemData(ITEM::SWORD0);
-	m_EquipWeapons[CHARACTER_ROVER].iData[2] = 2; //임시 강화 횟수
-
 	m_EquipWeapons[CHARACTER_YANGYANG] = pDB->GetItemData(ITEM::SWORD0);
 	m_EquipWeapons[CHARACTER_CHIXIA] = pDB->GetItemData(ITEM::GUN0);
 	
+	ZeroMemory(m_fSequenceValue, sizeof m_fSequenceValue);
+	ZeroMemory(m_AttackDesc, sizeof m_AttackDesc);
+
+	m_AttackDesc[CHARACTER_ROVER].fDamageFactor[0] = 1.f;
+	m_AttackDesc[CHARACTER_ROVER].fDamageFactor[1] = 1.f;
+	m_AttackDesc[CHARACTER_ROVER].fDamageFactor[2] = 1.f;
+	m_AttackDesc[CHARACTER_ROVER].fDamageFactor[3] = 1.f;
+	m_AttackDesc[CHARACTER_ROVER].fBurstFactor = 1.f;
+	m_AttackDesc[CHARACTER_ROVER].bAirboneQTE = false;
+
+	m_AttackDesc[CHARACTER_YANGYANG].fDamageFactor[0] = 1.f;
+	m_AttackDesc[CHARACTER_YANGYANG].fDamageFactor[1] = 1.f;
+	m_AttackDesc[CHARACTER_YANGYANG].fDamageFactor[2] = 1.f;
+	m_AttackDesc[CHARACTER_YANGYANG].fDamageFactor[3] = 1.f;
+	m_AttackDesc[CHARACTER_YANGYANG].fBurstFactor = 1.f;
+	m_AttackDesc[CHARACTER_YANGYANG].bAirboneQTE = false;
+
+	m_AttackDesc[CHARACTER_CHIXIA].fDamageFactor[0] = 1.f;
+	m_AttackDesc[CHARACTER_CHIXIA].fDamageFactor[1] = 1.f;
+	m_AttackDesc[CHARACTER_CHIXIA].fDamageFactor[2] = 1.f;
+	m_AttackDesc[CHARACTER_CHIXIA].fDamageFactor[3] = 1.f;
+	m_AttackDesc[CHARACTER_CHIXIA].fBurstFactor = 1.f;
+	m_AttackDesc[CHARACTER_CHIXIA].bAirboneQTE = false;
+
 	return S_OK;
 }
 
@@ -137,19 +159,26 @@ void CPlayerState::PreTick(_double TimeDelta)
 			
 	}
 	
-	// 캐릭터 스탯 계산해놓기
+	// 캐릭터 스탯 계산해놓기 ( 시퀀스체인, 무기착용 추가 )
 	for (_uint i = 0; i < CHARACTER_END; ++i)
 	{
+		_float fAttack = m_CharacterState[i].fAttack[STAT_BASE];
+		_float fCriRate = m_CharacterState[i].fCriticalRate[STAT_BASE];
+		_float fDefense = m_CharacterState[i].fDefense[STAT_BASE];
+		
+		fAttack += m_CharacterState[i].fAttack[STAT_BASE] * m_fSequenceValue[SQUENCE1];
+		fCriRate += m_fSequenceValue[SQUENCE2];
+		fDefense += m_CharacterState[i].fDefense[STAT_BASE] * m_fSequenceValue[SQUENCE3];
+
 		m_CharacterState[i].fAttack[STAT_EQUIP] = (_float)CItemDB::ComputeWeaponDamage(m_EquipWeapons[i]);
-		m_CharacterState[i].fAttack[STAT_TOTAL] = (m_CharacterState[i].fAttack[STAT_BASE] + m_CharacterState[i].fAttack[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_ATK])
+		m_CharacterState[i].fAttack[STAT_TOTAL] = (fAttack + m_CharacterState[i].fAttack[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_ATK])
 													* (1 + (m_CharacterState[i].fAttack[STAT_BUFF] - m_CharacterState[i].fAttack[STAT_DEBUFF]));
 
-		m_CharacterState[i].fDefense[STAT_TOTAL] = (m_CharacterState[i].fDefense[STAT_BASE] + m_CharacterState[i].fDefense[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_DEF])
+		m_CharacterState[i].fDefense[STAT_TOTAL] = (fDefense + m_CharacterState[i].fDefense[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_DEF])
 			* (1 + (m_CharacterState[i].fDefense[STAT_BUFF] - m_CharacterState[i].fDefense[STAT_DEBUFF]));
 		
 		m_CharacterState[i].fCriticalRate[STAT_EQUIP] = (_float)CItemDB::ComputeWeaponCriticalRate(m_EquipWeapons[i]);
-
-		m_CharacterState[i].fCriticalRate[STAT_TOTAL] = (m_CharacterState[i].fCriticalRate[STAT_BASE] + m_CharacterState[i].fCriticalRate[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_CRITRATE])
+		m_CharacterState[i].fCriticalRate[STAT_TOTAL] = (fCriRate + m_CharacterState[i].fCriticalRate[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_CRITRATE])
 			* (1 + (m_CharacterState[i].fCriticalRate[STAT_BUFF] - m_CharacterState[i].fCriticalRate[STAT_DEBUFF]));
 
 		m_CharacterState[i].fCriticalDamage[STAT_TOTAL] = (m_CharacterState[i].fCriticalDamage[STAT_BASE] + m_CharacterState[i].fCriticalDamage[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_CRITDMG])
@@ -216,12 +245,86 @@ void CPlayerState::AddExp(CHARACTERS eCharater, _float fExp)
 
 }
 
+void CPlayerState::SetSequenceLevel(SQ_TYPE eType, _uint iGrade)
+{
+	switch (eType)
+	{
+	case CPlayerState::SQUENCE1:
+		if (iGrade == 1)
+			m_fSequenceValue[SQUENCE1] = 0.2f;
+		else if (iGrade == 2)
+			m_fSequenceValue[SQUENCE1] = 0.3f;
+		else if (iGrade == 3)
+			m_fSequenceValue[SQUENCE1] = 0.5f;
+
+		break;
+	case CPlayerState::SQUENCE2:
+		if (iGrade == 1)
+			m_fSequenceValue[SQUENCE2] = 2.f;
+		else if (iGrade == 2)
+			m_fSequenceValue[SQUENCE2] = 3.f;
+		else if (iGrade == 3)
+			m_fSequenceValue[SQUENCE2] = 5.f;
+
+		break;
+	case CPlayerState::SQUENCE3:
+		if (iGrade == 1)
+			m_fSequenceValue[SQUENCE3] = 0.2f;
+		else if (iGrade == 2)
+			m_fSequenceValue[SQUENCE3] = 0.3f;
+		else if (iGrade == 3)
+			m_fSequenceValue[SQUENCE3] = 0.5f;
+
+		break;
+	case CPlayerState::SQUENCE4:
+		if (iGrade == 1)
+			m_fSequenceValue[SQUENCE4] = 0.2f;
+		else if (iGrade == 2)
+			m_fSequenceValue[SQUENCE4] = 0.3f;
+		else if (iGrade == 3)
+			m_fSequenceValue[SQUENCE4] = 0.5f;
+
+		break;
+	default:
+		break;
+	}
+
+	for (_uint i = 0; i < 3; ++i)
+		m_CharacterState[i].fMaxHP += m_CharacterState[i].fMaxHP * m_fSequenceValue[SQUENCE4];
+}
+
+void CPlayerState::SetAttackFactor(CHARACTERS eCharacter, _uint iAttack, _float fFactor)
+{
+	assert(eCharacter < 3);
+	assert(iAttack < 4);
+
+	m_AttackDesc[eCharacter].fDamageFactor[iAttack] = fFactor;
+	m_iSkillPoint[eCharacter]--;
+}
+
+void CPlayerState::SeBurstFactor(CHARACTERS eCharacter, _float fFactor)
+{
+	assert(eCharacter < 3);
+	m_AttackDesc[eCharacter].fBurstFactor = fFactor;
+	m_iSkillPoint[eCharacter]--;
+}
+
+void CPlayerState::SetAirboneQTE(CHARACTERS eCharacter, _bool bAirbone)
+{
+	assert(eCharacter < 3);
+	m_AttackDesc[eCharacter].bAirboneQTE = bAirbone;
+	m_iSkillPoint[eCharacter]--;
+}
+
 void CPlayerState::levelUp(CHARACTERS eCharater)
 {
+	if (m_CharacterState[eCharater].iCurLevel % 4 == 0)
+		m_iSkillPoint[eCharater]++;
+
 	m_CharacterState[eCharater].iCurLevel++;
 	m_CharacterState[eCharater].fMaxExp *= 1.1f;
 
-	m_CharacterState[eCharater].fMaxHP += 30.f;
+	m_CharacterState[eCharater].fMaxHP *= 1.1f;
 
 	m_CharacterState[eCharater].fAttack[STAT_BASE] += 2.5f;
 	m_CharacterState[eCharater].fDefense[STAT_BASE] += 1.5f;
@@ -229,6 +332,7 @@ void CPlayerState::levelUp(CHARACTERS eCharater)
 	m_CharacterState[eCharater].fCriticalRate[STAT_BASE] += 0.25f;
 	if (m_CharacterState[eCharater].fCriticalRate[STAT_BASE] > 100.f)
 		m_CharacterState[eCharater].fCriticalRate[STAT_BASE] = 100.f;
+
 }
 
 CPlayerState * CPlayerState::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

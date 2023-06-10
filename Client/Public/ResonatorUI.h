@@ -72,6 +72,7 @@ private:
 	void stateKeyInput(_double TimeDelta);
 	void echoKeyInput(_double TimeDelta);
 	void resonanceInput(_double TimeDelta);
+	void forteInput(_double TimeDelta);
 
 	void upgradeCharacter(_uint iCharacterType);
 
@@ -86,12 +87,11 @@ private:
 	HRESULT weaponSwitchRender();
 	void upgradeWeapon();
 
-	// Echos
 	HRESULT echoSlotRender();
-
-	// Resonance
 	HRESULT resonanceRender();
+	HRESULT forteRender();
 
+	void upgradeSkill(_double TimeDelta);
 public:
 	static CResonatorUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject * Clone(void * pArg = nullptr) override;
@@ -312,11 +312,65 @@ private:
 	ORTHO_DESC m_OrthoSequenceSlot3[2];
 	ORTHO_DESC m_OrthoSequenceSlot4[2];
 
+	ORTHO_DESC m_OrthoSequenceText[4];
+
+	ORTHO_DESC m_OrthoSequenceSlotSocket1[3];
+	ORTHO_DESC m_OrthoSequenceSlotSocket2[3];
+	ORTHO_DESC m_OrthoSequenceSlotSocket3[3];
+	ORTHO_DESC m_OrthoSequenceSlotSocket4[3];
+
+	ORTHO_DESC m_OrthoSequenceUpgradeBack;
+	ORTHO_DESC m_OrthoSequenceCurSequenceText;
+	ORTHO_DESC m_OrthoSQCostSlot;
+	ORTHO_DESC m_OrthoSQCostIcon;
+	ORTHO_DESC m_OrthoSQCost[2];
+	ORTHO_DESC m_OrthoSQOwn[4];
+
+	ORTHO_DESC m_OrthoSQUpgradeButton;
+	ORTHO_DESC m_OrthoSQUpgradeButtonText;
+
+	_bool m_bSQUpgradeClick = false;
+	_uint iResonanceSocket[4] = { 0, };
+
+	enum {SQ_1, SQ_2, SQ_3, SQ_4, SQ_NONE};
+	_uint m_iSelectSQ = SQ_NONE;
+
 #pragma endregion
+
+#pragma region FORTE
+	ORTHO_DESC m_OrthoForteBack;
+	ORTHO_DESC m_OrthoAttackSlot[4];
+	ORTHO_DESC m_OrthoBurstSlot;
+	ORTHO_DESC m_OrthoQTESlot;
+
+	ORTHO_DESC m_OrthoAttackIcon[4];
+	ORTHO_DESC m_OrthoAttackNeedLevel[4];
+	ORTHO_DESC m_OrthoBurstIcon;
+	ORTHO_DESC m_OrthoQTEIcon;
+
+	ORTHO_DESC m_OrthoSkillPointText;
+	ORTHO_DESC m_OrthoSkillPoint[2];
+	ORTHO_DESC m_OrthoSkillDesc;
+	ORTHO_DESC m_OrthoSkillState;
+	ORTHO_DESC m_OrthoSkillNeedDesc;
+
+	ORTHO_DESC m_OrthoSkillUpgradeBtn;
+	ORTHO_DESC m_OrthoSkillUpgradeText;
+
+	enum SKILL_TYPE { ATTACK1, ATTACK2, ATTACK3, ATTACK4 , QTE, BURST, NONE};
+	_uint m_iCurSelectSkill = ATTACK1;
+
+	enum SKILL_STATE { LOCK, UNLOCK, ACTIVATE };
+	SKILL_STATE m_eSkillState[3][NONE];
+
+	_bool m_bUpgradeButtonClick = false;
+#pragma endregion
+
 
 private:
 	_bool m_bActive = false;
 	_bool m_bRender = false;
+
 
 };
 

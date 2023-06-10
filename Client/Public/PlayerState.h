@@ -91,6 +91,14 @@ public:
 
 	}CHARACTER_STATE;
 
+	typedef struct tagAttackDesc
+	{
+		_float fDamageFactor[4];	//기본공격 1타~4타 계수
+		_float fBurstFactor;		//궁극기 계수
+		_bool  bAirboneQTE;			//QTE Big->Airbone
+
+	}ATTACK_DESC;
+
 private:
 	CPlayerState(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPlayerState(const CPlayerState& rhs);
@@ -183,6 +191,17 @@ public:
 	CHARACTER_STATE* Get_ThirdCharacterState() { return &(m_CharacterState[m_CharSlot[SLOT_SUB2]]); }
 	PLAYER_STATE* Get_PlayerState() { return &(m_PlayerState); }
 	void AddPlayer() { if (4 > m_PlayerState.iCharCount) { ++m_PlayerState.iCharCount; } }
+
+	//Resonance Chain
+	enum SQ_TYPE { SQUENCE1, SQUENCE2, SQUENCE3, SQUENCE4, SQUENCE_END };
+	void SetSequenceLevel(SQ_TYPE eType, _uint iGrade);
+
+	const ATTACK_DESC* GetAttackDesc(CHARACTERS eCharacter) const { return &m_AttackDesc[eCharacter]; };
+	void SetAttackFactor(CHARACTERS eCharacter, _uint iAttack, _float fFactor);
+	void SeBurstFactor(CHARACTERS eCharacter, _float fFactor);
+	void SetAirboneQTE(CHARACTERS eCharacter, _bool bAirbone);
+	_uint GetCharacterSP(CHARACTERS eCharacter) { return m_iSkillPoint[eCharacter]; }
+
 private:
 	void levelUp(CHARACTERS eCharater);
 
@@ -201,6 +220,12 @@ private:
 
 	// 착용된 무기
 	CItem::ITEM_DESC	m_EquipWeapons[CHARACTER_END];
+
+	// 공격력, 치명타, 방어력, 체력 : 공명 계수(0/3)
+	_float m_fSequenceValue[SQUENCE_END] = { 1.f, 1.f, 1.f, 1.f };
+	
+	_uint m_iSkillPoint[CHARACTER_END] = { 0, };
+	ATTACK_DESC m_AttackDesc[CHARACTER_END];
 };
 
 END

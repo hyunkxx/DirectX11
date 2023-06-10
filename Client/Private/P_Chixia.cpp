@@ -204,6 +204,8 @@ void CP_Chixia::Tick(_double TimeDelta)
 
 	pGameInstance->ShadowUpdate(80.f, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 
+	updateAttackDesc();
+
 	__super::Tick(TimeDelta * m_TimeDelay);
 
 	if (pGameInstance->InputKey(DIK_NUMPAD1) == KEY_STATE::TAP)
@@ -929,6 +931,30 @@ void CP_Chixia::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	}
 
 	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot, vTargetPos);
+}
+
+void CP_Chixia::updateAttackDesc()
+{
+	const CPlayerState::ATTACK_DESC* AttackDesc = m_pPlayerStateClass->GetAttackDesc(CPlayerState::CHARACTER_CHIXIA);
+
+	static float fOriginDamageFactor[4];
+	fOriginDamageFactor[0] = m_AttackInfos[ATK_ATTACK_01].fDamageFactor;
+	fOriginDamageFactor[1] = m_AttackInfos[ATK_ATTACK_02].fDamageFactor;
+	fOriginDamageFactor[2] = m_AttackInfos[ATK_ATTACK_03].fDamageFactor;
+	fOriginDamageFactor[3] = m_AttackInfos[ATK_ATTACK_04].fDamageFactor;
+
+	static float fOriginBurstFactor = m_AttackInfos[MISS_BURST_2].fDamageFactor;
+
+	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = fOriginDamageFactor[0] * AttackDesc->fDamageFactor[0];
+	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = fOriginDamageFactor[1] * AttackDesc->fDamageFactor[1];
+	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = fOriginDamageFactor[2] * AttackDesc->fDamageFactor[2];
+	m_AttackInfos[ATK_ATTACK_04].fDamageFactor = fOriginDamageFactor[3] * AttackDesc->fDamageFactor[3];
+	m_AttackInfos[MISS_BURST_2].fDamageFactor = fOriginBurstFactor * AttackDesc->fBurstFactor;
+
+	if (AttackDesc->bAirboneQTE)
+		m_AttackInfos[ATK_SKILL_QTE].eHitIntensity = HIT_FLY;
+	else
+		m_AttackInfos[ATK_SKILL_QTE].eHitIntensity = HIT_BIG;
 }
 
 void CP_Chixia::SetUp_State()
