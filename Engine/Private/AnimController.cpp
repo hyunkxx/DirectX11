@@ -112,6 +112,54 @@ void CAnimController::Play_Animation(_double TimeDelta, CModel_Anim * pModel, _f
 	return ;
 }
 
+void CAnimController::Play_Animation_Blending(_double TimeDelta, CModel_Anim * pModel, _float4 * pRotOut, _float3 * pMoveOut, _double * pFrameAccOut, _double * pProgressRatio, _bool * pFinishedOut)
+{
+	if (true == m_tAnimState.isFinished)
+		return;
+
+	CAnimation* pAnim = pModel->Get_Animation(m_iCurAnimation);
+
+	pAnim->Play_Animation_Blending(TimeDelta, m_tAnimState, pModel);
+
+	if (nullptr != pFrameAccOut)
+	{
+		*pFrameAccOut = m_tAnimState.FrameAcc;
+	}
+
+	if (nullptr != pProgressRatio)
+	{
+		*pProgressRatio = m_tAnimState.FrameAcc / pAnim->Get_Duration();
+	}
+
+	if (nullptr != pFinishedOut)
+	{
+		*pFinishedOut = m_tAnimState.isFinished;
+	}
+
+	CBone* pRootBone = pModel->Get_RootBone();
+	if (nullptr != pRootBone)
+	{
+		_vector vScale, vRot, vTrans;
+		XMMatrixDecompose(&vScale, &vRot, &vTrans, XMLoadFloat4x4(&pRootBone->Get_TransformationMatrix()));
+		vRot = XMQuaternionIdentity();
+		vTrans = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		pRootBone->Set_TransformationMatrix(XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRot, vTrans));
+	}
+
+
+
+	if (nullptr != pMoveOut)
+	{
+		if (nullptr != pRotOut)
+		{
+			*pRotOut = m_tAnimState.vCurRootBoneRot;
+			XMStoreFloat3(pMoveOut, XMVector3TransformNormal(XMLoadFloat3(&m_tAnimState.vCurRootBoneMove), XMMatrixRotationQuaternion(XMQuaternionMultiply(XMLoadFloat4(&m_tAnimState.vCurRootBoneRot), XMLoadFloat4(&m_tAnimState.vPrevRootBoneRot)))));
+		}
+		else
+			*pMoveOut = m_tAnimState.vCurRootBoneMove;
+	}
+}
+
 void CAnimController::Update_RibbonAnimation(_double BaseAnimTrackRatio, CModel_Anim * pModel)
 {
 	CAnimation* pAnim = pModel->Get_Animation(m_iCurAnimation);

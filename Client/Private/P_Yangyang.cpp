@@ -1284,7 +1284,7 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 
 		if (pGame->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
 		{
-			if (m_ChargeAcc > 0.5)
+			if (m_AimChargeAcc > 0.5)
 			{
 				eCurFrameInput = INPUT_ATTACK_RELEASE;
 			}
@@ -1292,12 +1292,12 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 
 		if (pGame->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
 		{
-			m_ChargeAcc += TimeDelta;
-			if (m_ChargeAcc > 0.5)
+			m_AimChargeAcc += TimeDelta;
+			if (m_AimChargeAcc > 0.5)
 				eCurFrameInput = INPUT_ATTACK_CHARGE;
 		}
 		else
-			m_ChargeAcc = 0.0;
+			m_AimChargeAcc = 0.0;
 
 		if (!pGM->IsActiveUI())
 		{

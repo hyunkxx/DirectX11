@@ -13,7 +13,7 @@ END
 
 BEGIN(Client)
 
-class CPlayerCamera final 
+class CPlayerCamera final
 	: public CCamera
 	, public IAttachTargetTransform
 {
@@ -63,8 +63,9 @@ public:
 		m_fTargetDistance = m_fCurDistance;
 
 		XMStoreFloat3(&m_vDir, m_pPlayerTransform->Get_State(CTransform::STATE_LOOK));
-
 	}
+
+	void SoftLerp();
 
 private:
 	_bool		m_bFixMouse = { false };
@@ -87,7 +88,13 @@ private:
 
 	// 전 프레임에 타겟 카메라 였는지
 	_bool	m_bPreLockOn = { false };
+	_bool	m_bPreAiming = { false };
 	_double	m_SoftLerpDuration = { 0.0 };
+	_float3 m_SoftLerpAt = {};
+	_float3 m_SoftLerpEye = {};
+	_float	m_fOldFov = {};
+	_float	m_fTargetFov = {};
+
 
 	// 카메라 커브용 변수
 	class CCameraCurve* m_pCamCurve = { nullptr };
@@ -104,6 +111,7 @@ private:
 	const _float m_fXAngleMax = { 80.f };
 
 	CPlayerState* m_pPlayerStateClass;
+	
 
 #ifdef _DEBUG
 private:

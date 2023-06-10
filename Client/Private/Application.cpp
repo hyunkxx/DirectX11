@@ -68,7 +68,7 @@ HRESULT CApplication::Initialize()
 	m_pDSV->Release();
 	m_pGUIManager->Initialize(m_pDevice, m_pContext, g_hWnd);
 #endif
-
+	
 	if (FAILED(InitializeManager()))
 		return E_FAIL;
 

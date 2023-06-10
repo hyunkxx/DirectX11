@@ -75,6 +75,11 @@ public:
 
 	void Set_TrackPos(_float fTrackPos);
 
+	void Set_SplitBone(_tchar* pBoneTag)
+	{
+		m_pSplitBone = Get_BonePtr(pBoneTag);
+	}
+
 
 	_uint	Get_AnimCount()
 	{
@@ -82,6 +87,19 @@ public:
 	}
 
 	vector<class CAnimation*>& Get_Animations();
+
+	void Set_PoseAnim(_uint iAnimID);
+
+	void Blend_PoseAnim(_uint iAnimID, _float fRatio);
+
+	void Split_UpperLower();
+
+	void Init_SubAnimController();
+	/* 재생할 애니메이션에 따라 AnimController를 초기화한다. */
+	HRESULT SetUp_SubAnimation(_uint iAnimationIndex, _bool bInterpolate, _bool bContinue = false);
+	/* 애니메이션 재생한다.(안에서 Invalidate_CombinedMatrices 호출 안함) */
+	void	Play_SubAnimation(_double TimeDelta, _float4* pRotOut = nullptr, _float3* pMoveOut = nullptr, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr, _double* pProgressRatio = nullptr);
+	void	Play_SubAnimation_Blending(_double TimeDelta, _float4* pRotOut = nullptr, _float3* pMoveOut = nullptr, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr, _double* pProgressRatio = nullptr);
 
 
 public:
@@ -96,28 +114,34 @@ public:
 	HRESULT SetUp_Animation(_uint iAnimationIndex, _bool bInterpolate, _bool bContinue = false);
 	/* 애니메이션 재생한다.(안에서 Invalidate_CombinedMatrices 호출 안함) */
 	void	Play_Animation(_double TimeDelta, _float4* pRotOut = nullptr, _float3* pMoveOut = nullptr, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr, _double* pProgressRatio = nullptr);
+	void	Play_Animation_Blending(_double TimeDelta, _float4* pRotOut = nullptr, _float3* pMoveOut = nullptr, _double* pFrameAccOut = nullptr, _bool* pFinishedOut = nullptr, _double* pProgressRatio = nullptr);
 
 	void	Update_RibbonAnimation(_double BaseAnimTrackRatio);
+	void	Update_SubRibbonAnimation(_double BaseAnimTrackRatio);
 
 	void	Update_TargetBones();
+	void	Update_TargetUpperBones();
+	void	Update_TargetLowerBones();
 	void	Ribbon_TargetBones();
+	void	Ribbon_TargetUpperBones();
+	void	Ribbon_TargetLowerBones();
 	
 
 	void	Invalidate_CombinedMatrices();
+	void	Invalidate_CombinedMatrices_Split();
 	void	Reset_Pose();
 protected:
 	_uint					m_iNumBones = { 0 };
 	vector<class CBone*>	m_Bones;
+	vector<class CBone*>	m_UpperBones;
+	vector<class CBone*>	m_LowerBones;
 	CBone*					m_pRootBone = { nullptr };
+	CBone*					m_pSplitBone = { nullptr };
 	CBone*					m_pTopBones[3] = { nullptr, };
-	//CBone*				m_pShotBone = { nullptr };
-	//CBone*				m_pTopBone = { nullptr };
-	//CBone*				m_pRightBottom = { nullptr };
-	//CBone*				m_pLeftBottom = { nullptr };
-
 
 protected:
 	class CAnimController*		m_pAnimController = { nullptr };
+	class CAnimController*		m_pSubAnimController = { nullptr };
 	_uint						m_iNumAnimations = { 0 };
 	vector<class CAnimation*>	m_Animations;
 

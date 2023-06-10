@@ -34,8 +34,7 @@ public:
 		INPUT_BACKSTEP,
 		INPUT_SPACE,
 		INPUT_ATTACK,
-		INPUT_ATTACK_CHARGE,
-		INPUT_ATTACK_RELEASE,
+		INPUT_AIM,
 		INPUT_SKILL,	// E : 캐릭터 스킬
 		INPUT_SKILL_CHARGE,
 		INPUT_BURST,	// R : 캐릭터 필살기
@@ -63,20 +62,18 @@ public:
 		//
 		IS_AIMATTACK_START,
 		IS_AIMATTACK_STAND,
-		IS_AIMATTACK_FIRE,
+		IS_AIMATTACK_FIRE_S,
+		IS_AIMATTACK_FIRE_B,
 		IS_AIMATTACK_END,
 		
 		//
-		IS_AIRATTACK_STAND,
-		IS_AIRATTACK_DROP,
 		IS_AIRATTACK_FIRE_L,
 		IS_AIRATTACK_FIRE_R,
+		IS_AIRATTACK_DROP,
 		
 		//
 		IS_HOLDSHOT_UPPER_LOOP_F,
 		IS_HOLDSHOT_UPPER_LOOP_B,
-		IS_HOLDSHOT_UPPER_LOOP_L,
-		IS_HOLDSHOT_UPPER_LOOP_R,
 		IS_HOLDSHOT_UPPER_END,
 		IS_HOLDSHOT_LOWER_LOOP,
 		IS_HOLDSHOT_LOWER_END,
@@ -140,9 +137,9 @@ public:
 		ATK_SKILL_QTE,
 		ATK_BURST_1,
 		ATK_BURST_2,
-		ATK_AIRATTACK,
 		ATK_AIMATTACK_S,
 		ATK_AIMATTACK_B,
+		ATK_AIRATTACK,
 		ATK_SKILL_03,
 		ATK_END
 	};
@@ -158,9 +155,9 @@ public:
 		MISS_SKILL_QTE,
 		MISS_BURST_1,
 		MISS_BURST_2,
-		MISS_AIRATTACK,
 		MISS_AIMATTACK_S,
 		MISS_AIMATTACK_B,
+		MISS_AIRATTACK,
 		MISS_SKILL_03,
 		MISS_END
 	};
@@ -210,7 +207,6 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);
 	virtual void Shot_PriorityKey(_uint iLeavePriority);
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _uint iEffectTypeID, _bool bTracking);
-	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID);
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
 
 public:
@@ -284,7 +280,9 @@ private:
 	// 스킬 강화 여부 체크
 	_float				m_fSkillGauge = { 100.f };
 
-	_double				m_ChargeAcc = { 0.0 };
+	//
+	_double				m_AimChargeAcc = { 0.0 };
+	_double				m_SkillChargeAcc = { 0.0 };
 
 	// 이펙트 재생용 임시
 	_float4x4			m_WorldMatrix;
@@ -321,6 +319,25 @@ private:
 	_float m_fBurstRim = 1.f;
 	_float m_fRimAlpha = 0.f;
 
+	// Chixia 특수 상태 제어용 변수들
+	// AimAttack
+	_bool				m_bAiming = { false };
+	_bool				m_bAimingUp = { false };
+	_float				m_fYAimingAngle = { 0.f };
+	
+	// AirAttack
+	_bool				m_bAirRecentFireL = { false };
+
+	//
+	_bool				m_bHolding = { false };
+	_bool				m_bHoldRecentFireL = { false };
+
+	// 분할 애니메이션 이동 체크용 변수(AimAttack // HoldShot)
+	MULTISTATE			m_tSubState;
+	_uint				m_iSubState = { 0 };
+	_double				m_SubTrackPos = { 0.0 };
+	_bool				m_SubAnimFinished = { false };
+
 private:
 	HRESULT Add_Components();
 	void Init_AnimSystem();
@@ -330,6 +347,9 @@ private:
 	void SetUp_State();
 	// bContinue == 잔여 프레임을 사용하는 애니메이션인지?
 	void SetUp_Animations(_bool bContinue);
+
+	void SetUp_SubState();
+	void SetUp_SubAnimations(_bool bContinue);
 
 	// 적용 중인 쿨타임 TimeDelta 만큼 줄여주는 함수
 	void Apply_CoolTime(_double TimeDelta);
@@ -379,8 +399,8 @@ public:
 
 	CGameObject* pStaticObject = nullptr;
 
-	CPlayerState* m_pPlayerStateClass;
-	CPlayerState::CHARACTER_STATE* m_pCharacterState;
+	CPlayerState* m_pPlayerStateClass = { nullptr };
+	CPlayerState::CHARACTER_STATE* m_pCharacterState = { nullptr };
 	class CInventory* m_pInven = nullptr;
 	class CCameraMovement* m_pCamMovement = nullptr;
 	class CUI_MainScreen* m_pUIMain = { nullptr };

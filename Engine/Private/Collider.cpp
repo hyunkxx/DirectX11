@@ -60,7 +60,8 @@ void CCollider::EraseHitCollider(CCollider * collider)
 
 void CCollider::AddHitCollider(CCollider * collider)
 {
-	hitCollider.push_back(collider);
+	if(true == m_isActive && true == collider->IsActive())
+		hitCollider.push_back(collider);
 }
 
 _bool CCollider::IsHitCollider(CCollider * collider)

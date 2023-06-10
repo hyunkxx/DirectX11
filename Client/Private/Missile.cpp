@@ -120,10 +120,9 @@ _bool CMissile::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotM
 
 		m_pEffect->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
 	}
-		
-
+	
 	m_pCollider->SetActive(true);
-
+	
 	m_pCollider->Update(XMLoadFloat4x4(m_pMainTransform->Get_WorldMatrixPtr()));
 	
 	return true; 
@@ -135,8 +134,9 @@ void CMissile::End()
 		(*m_tMissileDesc.ppNextMissilePool)->Shot(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 
 			m_pMainTransform->Get_State(CTransform::STATE_LOOK), XMMatrixIdentity());
 
-	m_pCollider->HitColliderReset();
+	
 	m_pCollider->SetActive(false);
+
 	SetState(DISABLE);
 }
 

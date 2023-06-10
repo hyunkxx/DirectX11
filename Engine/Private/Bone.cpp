@@ -52,6 +52,20 @@ void CBone::Invalidate_CombinedMatrix()
 	XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMLoadFloat4x4(&m_TransformationMatrix) * XMLoadFloat4x4(&m_pParent->Get_CombinedTransfromationMatrix()));
 }
 
+void CBone::Invalidate_CombinedMatrix_Split()
+{
+	_matrix matParentCombined = XMLoadFloat4x4(&m_pParent->Get_CombinedTransfromationMatrix());
+
+	_vector vScale, vRotation, vPosition;
+
+	XMMatrixDecompose(&vScale, &vRotation, &vPosition, matParentCombined);
+
+	_matrix matUse = XMMatrixAffineTransformation(XMVectorSet(1.f, 1.f, 1.f, 0.f), XMVectorZero(), XMQuaternionRotationRollPitchYaw(0.f, XMConvertToRadians(-90.f), XMConvertToRadians(90.f)), vPosition);
+
+
+	XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMLoadFloat4x4(&m_TransformationMatrix) * matUse);
+}
+
 void CBone::Update_TargetBone()
 {
 	if (nullptr != m_pTargetBone)

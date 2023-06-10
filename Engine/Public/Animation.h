@@ -14,7 +14,11 @@ private:
 public:
 	HRESULT Initialize(ANIMINFO* pAnimInfo, class CModel_Anim* pModel);
 	void Play_Animation(_double TimeDelta, CAnimController::ANIMSTATE& tState, CModel_Anim* pModel);
+	void Play_Animation_Blending(_double TimeDelta, CAnimController::ANIMSTATE& tState, CModel_Anim* pModel);
 	void Update_RibbonAnimation(_double BaseAnimTrackRatio, CAnimController::ANIMSTATE& tState, CModel_Anim* pModel);
+
+	void Set_PoseAnim(CModel_Anim* pModel);
+	void Blend_PoseAnim(CModel_Anim* pModel, _float fRatio);
 
 	const _tchar* Get_Name()
 	{

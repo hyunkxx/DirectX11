@@ -14,7 +14,11 @@ private:
 
 public:
 	HRESULT Initialize(CHANNELINFO* pChannelInfo, class CModel_Anim* pModel);
-	void CChannel::Invalidate_Transform(_uint ChannelID, CAnimController::ANIMSTATE& tState, class CModel_Anim* pModel);
+	void Invalidate_Transform(_uint ChannelID, CAnimController::ANIMSTATE& tState, class CModel_Anim* pModel);
+	void Invalidate_Transform_Blending(_uint ChannelID, CAnimController::ANIMSTATE& tState, class CModel_Anim* pModel);
+
+	void Set_PoseAnim(class CModel_Anim* pModel);
+	void Blend_PoseAnim(class CModel_Anim* pModel, _float fRatio);
 
 	_uint Get_NumKeyFrames()
 	{

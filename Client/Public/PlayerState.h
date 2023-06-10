@@ -138,6 +138,11 @@ public: // Get
 		return m_PlayerState.bLockOn;
 	}
 
+	_bool Get_Aiming()
+	{
+		return m_PlayerState.bAiming;
+	}
+
 	CCharacter* Get_LockOnTarget()
 	{
 		return m_PlayerState.pLockOnTarget;
@@ -163,6 +168,11 @@ public: // Set
 	{
 		m_PlayerState.bLockOn = bLockOn;
 		m_PlayerState.pLockOnTarget = pTarget;
+	}
+
+	void Set_Aiming(_bool bAiming)
+	{
+		m_PlayerState.bAiming = bAiming;
 	}
 
 

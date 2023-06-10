@@ -100,6 +100,55 @@ vector<class CAnimation*>& CModel_Anim::Get_Animations()
 	return m_Animations;
 }
 
+void CModel_Anim::Set_PoseAnim(_uint iAnimID)
+{
+	m_Animations[iAnimID]->Set_PoseAnim(this);
+}
+
+void CModel_Anim::Blend_PoseAnim(_uint iAnimID, _float fRatio)
+{
+	m_Animations[iAnimID]->Blend_PoseAnim(this, fRatio);
+}
+
+void CModel_Anim::Split_UpperLower()
+{
+	if (nullptr == m_pSplitBone)
+		return;
+
+	for (auto& pBone : m_Bones)
+	{
+		if ((pBone == m_pSplitBone) || pBone->Is_ChildOf(m_pSplitBone))
+			m_UpperBones.push_back(pBone);
+		else
+			m_LowerBones.push_back(pBone);
+	}
+}
+
+void CModel_Anim::Init_SubAnimController()
+{
+	m_pSubAnimController = CAnimController::Create(m_iNumBones);
+}
+
+HRESULT CModel_Anim::SetUp_SubAnimation(_uint iAnimationIndex, _bool bInterpolate, _bool bContinue)
+{
+	if (iAnimationIndex >= m_iNumAnimations)
+		return E_FAIL;
+
+	m_pSubAnimController->SetUp_Animation(iAnimationIndex, this, bInterpolate, bContinue);
+
+	return S_OK;
+}
+
+void CModel_Anim::Play_SubAnimation(_double TimeDelta, _float4 * pRotOut, _float3 * pMoveOut, _double * pFrameAccOut, _bool * pFinishedOut, _double * pProgressRatio)
+{
+	m_pSubAnimController->Play_Animation(TimeDelta, this, pRotOut, pMoveOut, pFrameAccOut, pProgressRatio, pFinishedOut);
+}
+
+void CModel_Anim::Play_SubAnimation_Blending(_double TimeDelta, _float4 * pRotOut, _float3 * pMoveOut, _double * pFrameAccOut, _bool * pFinishedOut, _double * pProgressRatio)
+{
+	m_pSubAnimController->Play_Animation_Blending(TimeDelta, this, pRotOut, pMoveOut, pFrameAccOut, pProgressRatio, pFinishedOut);
+}
+
 HRESULT CModel_Anim::Initialize_Prototype(const _tchar * pModelFilePath)
 {
 	HANDLE		hFile = CreateFile(pModelFilePath,		// 파일 경로와 이름을 명시
@@ -301,9 +350,19 @@ void CModel_Anim::Play_Animation(_double TimeDelta, _float4* pRotOut, _float3* p
 	m_pAnimController->Play_Animation(TimeDelta, this, pRotOut, pMoveOut, pFrameAccOut, pProgressRatio, pFinishedOut);
 }
 
+void CModel_Anim::Play_Animation_Blending(_double TimeDelta, _float4 * pRotOut, _float3 * pMoveOut, _double * pFrameAccOut, _bool * pFinishedOut, _double * pProgressRatio)
+{
+	m_pAnimController->Play_Animation_Blending(TimeDelta, this, pRotOut, pMoveOut, pFrameAccOut, pProgressRatio, pFinishedOut);
+}
+
 void CModel_Anim::Update_RibbonAnimation(_double BaseAnimTrackRatio)
 {
 	m_pAnimController->Update_RibbonAnimation(BaseAnimTrackRatio, this);
+}
+
+void CModel_Anim::Update_SubRibbonAnimation(_double BaseAnimTrackRatio)
+{
+	m_pSubAnimController->Update_RibbonAnimation(BaseAnimTrackRatio, this);
 }
 
 void CModel_Anim::Invalidate_CombinedMatrices()
@@ -311,6 +370,17 @@ void CModel_Anim::Invalidate_CombinedMatrices()
 	for (auto& pBone : m_Bones)
 	{
 		pBone->Invalidate_CombinedMatrix();
+	}
+}
+
+void CModel_Anim::Invalidate_CombinedMatrices_Split()
+{
+	for (auto& pBone : m_Bones)
+	{
+		if (pBone == m_pSplitBone)
+			pBone->Invalidate_CombinedMatrix_Split();
+		else 
+			pBone->Invalidate_CombinedMatrix();
 	}
 }
 
@@ -330,9 +400,41 @@ void CModel_Anim::Update_TargetBones()
 	}
 }
 
+void CModel_Anim::Update_TargetUpperBones()
+{
+	for (auto& pBone : m_UpperBones)
+	{
+		pBone->Update_TargetBone();
+	}
+}
+
+void CModel_Anim::Update_TargetLowerBones()
+{
+	for (auto& pBone : m_LowerBones)
+	{
+		pBone->Update_TargetBone();
+	}
+}
+
 void CModel_Anim::Ribbon_TargetBones()
 {
 	for (auto& pBone : m_Bones)
+	{
+		pBone->Ribbon_TargetBone();
+	}
+}
+
+void CModel_Anim::Ribbon_TargetUpperBones()
+{
+	for (auto& pBone : m_UpperBones)
+	{
+		pBone->Ribbon_TargetBone();
+	}
+}
+
+void CModel_Anim::Ribbon_TargetLowerBones()
+{
+	for (auto& pBone : m_LowerBones)
 	{
 		pBone->Ribbon_TargetBone();
 	}
@@ -469,6 +571,9 @@ CComponent * CModel_Anim::Clone(void * pArg)
 void CModel_Anim::Free()
 {
 	__super::Free();
+
+	if (nullptr != m_pSubAnimController)
+		Safe_Release(m_pSubAnimController);
 
 	if (nullptr != m_pAnimController)
 		Safe_Release(m_pAnimController);

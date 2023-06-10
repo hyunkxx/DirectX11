@@ -29,6 +29,9 @@ CCharacter::PHYSICMOVE CCharacter::StatePhysics[SP_END]
 	{ true, false, _float3(0.f, 1.f, 0.25f), 20.f, 0.5f, 20.f, 20.f, -20.f},
 	// BEHIT_FLY_PLAYER
 	{ true, false, _float3(0.f, 0.45f, 0.55f), 13.5f, 0.5f, 20.f, 20.f, -20.f },
+	// CHIIXA_AIRATTACK_FIRE 낙하, 직전 운동 상태 적용 안함(정지 상태로 초기화), xz감쇄율, y가속도 적용
+	{ true, false, _float3(0.f, -1.f, 0.f),	0.f, 0.5f, 20.f, 20.f, -20.f },
+
 };
 
 void CCharacter::Shot_SlowKey(_float fTargetTime, _float fLerpSpeed)

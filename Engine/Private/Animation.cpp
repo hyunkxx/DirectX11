@@ -44,6 +44,23 @@ void CAnimation::Play_Animation(_double TimeDelta, CAnimController::ANIMSTATE& t
 	}
 }
 
+void CAnimation::Play_Animation_Blending(_double TimeDelta, CAnimController::ANIMSTATE & tState, CModel_Anim * pModel)
+{
+	tState.FrameAcc += m_TicksPerSecond * TimeDelta;
+
+	if (tState.FrameAcc > m_Duration)
+	{
+		tState.isFinished = true;
+		tState.FrameRemain = tState.FrameAcc - m_Duration;
+	}
+
+	_uint iChannelID = 0;
+	for (auto& pChannel : m_Channels)
+	{
+		pChannel->Invalidate_Transform_Blending(iChannelID++, tState, pModel);
+	}
+}
+
 void CAnimation::Update_RibbonAnimation(_double BaseAnimTrackRatio, CAnimController::ANIMSTATE & tState, CModel_Anim * pModel)
 {
 	
@@ -53,6 +70,22 @@ void CAnimation::Update_RibbonAnimation(_double BaseAnimTrackRatio, CAnimControl
 	for (auto& pChannel : m_Channels)
 	{
 		pChannel->Invalidate_Transform(iChannelID++, tState, pModel);
+	}
+}
+
+void CAnimation::Set_PoseAnim(CModel_Anim* pModel)
+{
+	for (auto& pChannel : m_Channels)
+	{
+		pChannel->Set_PoseAnim(pModel);
+	}
+}
+
+void CAnimation::Blend_PoseAnim(CModel_Anim * pModel, _float fRatio)
+{
+	for (auto& pChannel : m_Channels)
+	{
+		pChannel->Blend_PoseAnim(pModel, fRatio);
 	}
 }
 

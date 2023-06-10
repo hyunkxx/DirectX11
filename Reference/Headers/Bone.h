@@ -75,6 +75,17 @@ public:
 			return m_pParent->Is_ChildOf(pBoneName);
 	}
 
+	_bool Is_ChildOf(CBone* pBone)
+	{
+		if (nullptr == m_pParent)
+			return false;
+
+		if (m_pParent == pBone)
+			return true;
+		else
+			return m_pParent->Is_ChildOf(pBone);
+	}
+
 	void Set_Apply(_bool bApply)
 	{
 		m_bApply = bApply;
@@ -84,6 +95,7 @@ public:
 	HRESULT Initialize(BONEINFO* pBoneInfo);
 	HRESULT	Set_ParentBone(CBone*	pParent);
 	void	Invalidate_CombinedMatrix();
+	void	Invalidate_CombinedMatrix_Split();
 
 	void Update_TargetBone();
 	void Ribbon_TargetBone();

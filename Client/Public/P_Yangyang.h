@@ -272,7 +272,7 @@ private:
 	// 스킬 강화 여부 체크
 	_float				m_fSkillGauge = { 100.f };
 
-	_double				m_ChargeAcc = { 0.0 };
+	_double				m_AimChargeAcc = { 0.0 };
 
 	// 이펙트 재생용 임시
 	_float4x4			m_WorldMatrix;

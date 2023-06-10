@@ -222,6 +222,8 @@ public:
 		SP_BEHIT_PUSH,
 		// BEHIT_FLY 플레이어 버전
 		SP_BEHIT_FLY_PLAYER,
+		// 치하 공중 공격 시 낙하 운동량 초기화
+		SP_CHIXIA_AIRATTACK_FIRE,
 		SP_END,
 
 	};

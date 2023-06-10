@@ -123,10 +123,9 @@ void CPlayerCamera::Tick(_double TimeDelta)
 	// CameraCurve
 	if (false == m_bApplyCurve)
 	{
-#pragma region Input
 
 		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
-		if (false == m_pTerminalUI->IsActive())
+		/*if (false == m_pTerminalUI->IsActive())
 		{
 			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi)
 				return;
@@ -136,7 +135,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 		else
 		{
 			m_pUITip->SetState(DISABLE);
-		}
+		}*/
 
 		if (pGameInstance->InputKey(DIK_LALT) == KEY_STATE::HOLD)
 		{
@@ -155,7 +154,210 @@ void CPlayerCamera::Tick(_double TimeDelta)
 			m_bFixMouse = false;
 
 
-		if (false == m_pPlayerStateClass->Get_LockOn())
+
+		if (true == m_pPlayerStateClass->Get_Aiming())
+		{
+			if (false == m_bPreAiming)
+			{
+				//_vector vLookMinus = m_pPlayerTransform->Get_State()
+				_vector vPreAt = XMLoadFloat3(&m_CameraDesc.vAt);
+				_vector vPreEye = XMLoadFloat3(&m_CameraDesc.vEye);
+
+				_vector vPreCamDir = vPreEye - vPreAt;
+
+				_vector vDefaultDir = XMLoadFloat3(&m_vDir);
+
+				m_fCurDistance = XMVectorGetX(XMVector3Length(vPreCamDir));
+
+				if (0.f > XMVectorGetY(XMVector3Cross(vDefaultDir, XMVectorSetY(vPreCamDir, 0.f))))
+					m_fYCurAngle = -XMConvertToDegrees(acosf(XMVectorGetX(XMVector3Dot(vDefaultDir, XMVector3Normalize(XMVectorSetY(vPreCamDir, 0.f))))));
+				else
+					m_fYCurAngle = XMConvertToDegrees(acosf(XMVectorGetX(XMVector3Dot(vDefaultDir, XMVector3Normalize(XMVectorSetY(vPreCamDir, 0.f))))));
+
+
+				m_fXCurAngle = XMConvertToDegrees(acosf(XMVectorGetX(XMVector3Dot(vDefaultDir, XMVector3Normalize(XMVectorSetX(vPreCamDir, 0.f))))));
+				if (m_fXCurAngle > 90.f)
+					m_fXCurAngle = 180 - m_fXCurAngle;
+
+				m_fTargetDistance = 4.f;
+				m_fXTargetAngle = m_fXCurAngle * 0.5f;
+				m_fYTargetAngle = m_fYCurAngle;
+
+				m_fOldFov = m_CameraDesc.fFovy;
+				m_fTargetFov = XMConvertToRadians(45.f);
+				m_SoftLerpDuration = 0.3;
+			}
+
+			if (m_bFixMouse)
+			{
+				_long MouseMove = 0;
+
+				// 플레이어 기준 x축 회전
+				if (MouseMove = pGameInstance->InputMouseMove(Engine::MOUSE_MOVESTATE::DIMM_Y))
+				{
+					m_fXTargetAngle += (_float)TimeDelta * MouseMove * 4.f * 2.f;
+
+					// x축 회전각 제한
+					if (m_fXTargetAngle > m_fXAngleMax)
+						m_fXTargetAngle = m_fXAngleMax;
+					else if (m_fXTargetAngle < m_fXAngleMin)
+						m_fXTargetAngle = m_fXAngleMin;
+				}
+				// 현재 각도, 목표 각도 값 보간
+				if (m_fXCurAngle != m_fXTargetAngle)
+				{
+					_float fGap = m_fXTargetAngle - m_fXCurAngle;
+
+					if (fabs(fGap) < 0.1f)
+						m_fXCurAngle = m_fXTargetAngle;
+					else
+						m_fXCurAngle += fGap * (_float)TimeDelta * 20.f;
+
+				}
+
+				// 플레이어 기준 Y축 회전
+				if (MouseMove = pGameInstance->InputMouseMove(Engine::MOUSE_MOVESTATE::DIMM_X))
+					m_fYTargetAngle += (_float)TimeDelta * MouseMove * 4.f * 2.f;
+				// 현재 각도, 목표 각도 값 보간
+				if (m_fYCurAngle != m_fYTargetAngle)
+				{
+					_float fGap = m_fYTargetAngle - m_fYCurAngle;
+
+					if (fabs(fGap) < 0.1f)
+						m_fYCurAngle = m_fYTargetAngle;
+					else
+						m_fYCurAngle += fGap * (_float)TimeDelta * 20.f;
+				}
+
+				// 줌 인/아웃
+				if (MouseMove = pGameInstance->InputMouseMove(Engine::MOUSE_MOVESTATE::DIMM_WHEEL))
+				{
+					m_fTargetDistance -= (_float)TimeDelta * MouseMove * 0.4f;
+				}
+
+				// 거리 제한
+				if (m_fTargetDistance > m_fDistanceMax)
+					m_fTargetDistance = m_fDistanceMax;
+				else if (m_fTargetDistance < m_fDistanceMin)
+					m_fTargetDistance = m_fDistanceMin;
+
+				// 현재 거리, 목표 거리 값 보간
+
+				if (m_fCurDistance != m_fTargetDistance)
+				{
+					_float fGap = m_fTargetDistance - m_fCurDistance;
+
+					if (fabs(fGap) < 0.05f)
+						m_fCurDistance = m_fTargetDistance;
+					else
+					{
+						m_fCurDistance += fGap * (_float)TimeDelta * 20.f;
+					}
+				}
+
+				POINT	Center = { g_iWinSizeX / 2, g_iWinSizeY / 2 };
+				ClientToScreen(g_hWnd, &Center);
+				SetCursorPos(Center.x, Center.y);
+			}
+
+			_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+
+
+			_vector vAxisRight = XMVector3Cross(XMLoadFloat3(&m_vDir), XMVectorSet(0.f, 1.f, 0.f, 0.f));
+			_matrix matRotX = XMMatrixRotationAxis(vAxisRight, XMConvertToRadians(m_fXCurAngle));
+			_matrix matRotY = XMMatrixRotationY(XMConvertToRadians(m_fYCurAngle));
+			_vector vCamLook = XMVector3Normalize(-XMVector3TransformNormal(XMVector3TransformNormal(XMLoadFloat3(&m_vDir), matRotX), matRotY));
+			_vector vCamRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vCamLook));
+
+
+			_vector vEyePosTemp = vPlayerPos + vCamRight * (1.f) + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
+
+			
+			_vector vEyePos = vEyePosTemp - vCamLook * 2.5f;
+			_vector vAtPos = vEyePos + vCamLook * 4.f;
+			
+			_vector vCurAt, vCurEye;
+
+			if (0.0 == m_SoftLerpDuration)
+			{
+				vCurAt = vAtPos;
+				vCurEye = vEyePos;
+				m_CameraDesc.fFovy = m_fTargetFov;
+			}
+			else
+			{
+				_float fRatio = _float(m_SoftLerpDuration / 0.5);
+
+				_vector vPrevAt = XMLoadFloat3(&m_CameraDesc.vAt);
+				_vector vPrevEye = XMLoadFloat3(&m_CameraDesc.vEye);
+
+				vCurAt = XMVectorLerp(vPrevAt, vAtPos, fRatio);
+				vCurEye = XMVectorLerp(vPrevEye, vEyePos, fRatio);
+				m_CameraDesc.fFovy = m_fOldFov * fRatio + m_fTargetFov * (1 - fRatio);
+			}
+
+			XMStoreFloat3(&m_CameraDesc.vAt, vCurAt);
+			XMStoreFloat3(&m_CameraDesc.vEye, vCurEye);
+
+			m_pMainTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));
+			m_pMainTransform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
+
+		}
+		else if (true == m_pPlayerStateClass->Get_LockOn())
+		{
+			if (m_bFixMouse)
+			{
+				POINT	Center = { g_iWinSizeX / 2, g_iWinSizeY / 2 };
+				ClientToScreen(g_hWnd, &Center);
+				SetCursorPos(Center.x, Center.y);
+			}
+
+			CCharacter* pTarget = m_pPlayerStateClass->Get_LockOnTarget();
+			_vector vTargetPos = pTarget->Get_Position();
+			_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+			_float fDistance = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos));
+			_float fDistRate = fDistance / 25.f;
+
+			_vector vTargetDir = vTargetPos - vPlayerPos;
+
+			_vector vTargetDirLook = XMVector3Normalize(XMVectorSetY(vTargetDir, 0.f));
+			_vector vTargetDirRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vTargetDirLook));
+			//_vector vTargetDirUp = XMVector3Normalize(XMVector3Cross(vTargetDirLook, vTargetDirRight));
+
+
+			_float fLookDist = -3.5f - fDistRate * 1.5f;
+			_float fUpDist = 1.3f - min(max(XMVectorGetY(vTargetDir), -2.f), 0.f);
+			_float fRightDist = 1.2f + fDistance * 0.12f;
+
+			_vector vEyePos = vPlayerPos + vTargetDirLook * fLookDist + vTargetDirRight * fRightDist + XMVectorSet(0.f, fUpDist, 0.f, 0.f);
+
+			// 거리가 0.f일 때 7:3 위치
+			_float fRatio = 0.5f + fDistance * 0.02f;
+
+			// 타겟 쪽 Y값이 너무 높다면 플레이어 y 좌표 + 1로 고정
+			_vector vAtPosTemp = vPlayerPos * (1 - fRatio) + vTargetPos * fRatio - vTargetDirRight * fDistance * 0.1f;
+
+			_float fAtY = min(XMVectorGetY(vAtPosTemp) + 1.2f - fDistRate  * 0.8f, XMVectorGetY(vEyePos) * 1.2f + fDistRate * 3.f);
+			//AtY = max(XMVectorGetY(vPlayerPos) - 3.f , AtY);
+			vAtPosTemp = XMVectorSetY(vAtPosTemp, fAtY);
+
+			_vector vAtPos = vEyePos + XMVector3Normalize(vAtPosTemp - vEyePos) * 4.f;
+
+			_vector vCurAt, vCurEye;
+
+			_vector vPrevAt = XMLoadFloat3(&m_CameraDesc.vAt);
+			vCurAt = XMVectorLerp(vPrevAt, vAtPos, (_float)TimeDelta * 5.f);
+			_vector vPrevEye = XMLoadFloat3(&m_CameraDesc.vEye);
+			vCurEye = XMVectorLerp(vPrevEye, vEyePos, (_float)TimeDelta * 5.f);
+			
+			XMStoreFloat3(&m_CameraDesc.vAt, vCurAt);
+			XMStoreFloat3(&m_CameraDesc.vEye, vCurEye);
+			m_CameraDesc.fFovy = XMConvertToRadians(45.f);
+
+			m_pMainTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));
+			m_pMainTransform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
+		}
+		else
 		{
 			if (true == m_bPreLockOn)
 			{
@@ -168,21 +370,21 @@ void CPlayerCamera::Tick(_double TimeDelta)
 				_vector vDefaultDir = XMLoadFloat3(&m_vDir);
 
 				m_fCurDistance = XMVectorGetX(XMVector3Length(vPreCamDir));
-				
-				if(0.f > XMVectorGetY(XMVector3Cross(vDefaultDir, XMVectorSetY(vPreCamDir, 0.f))))
+
+				if (0.f > XMVectorGetY(XMVector3Cross(vDefaultDir, XMVectorSetY(vPreCamDir, 0.f))))
 					m_fYCurAngle = -XMConvertToDegrees(acosf(XMVectorGetX(XMVector3Dot(vDefaultDir, XMVector3Normalize(XMVectorSetY(vPreCamDir, 0.f))))));
 				else
 					m_fYCurAngle = XMConvertToDegrees(acosf(XMVectorGetX(XMVector3Dot(vDefaultDir, XMVector3Normalize(XMVectorSetY(vPreCamDir, 0.f))))));
 
 
 				m_fXCurAngle = XMConvertToDegrees(acosf(XMVectorGetX(XMVector3Dot(vDefaultDir, XMVector3Normalize(XMVectorSetX(vPreCamDir, 0.f))))));
-				if(m_fXCurAngle > 90.f)
+				if (m_fXCurAngle > 90.f)
 					m_fXCurAngle = 180 - m_fXCurAngle;
 
 				m_fTargetDistance = 4.f;
 				m_fXTargetAngle = m_fXCurAngle;
 				m_fYTargetAngle = m_fYCurAngle;
-				
+
 				m_SoftLerpDuration = 0.3;
 			}
 
@@ -242,7 +444,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 					m_fTargetDistance = m_fDistanceMin;
 
 				// 현재 거리, 목표 거리 값 보간
-				
+
 				if (m_fCurDistance != m_fTargetDistance)
 				{
 					_float fGap = m_fTargetDistance - m_fCurDistance;
@@ -254,8 +456,8 @@ void CPlayerCamera::Tick(_double TimeDelta)
 						m_fCurDistance += fGap * (_float)TimeDelta * 20.f;
 					}
 				}
-				
-				
+
+
 
 				POINT	Center = { g_iWinSizeX / 2, g_iWinSizeY / 2 };
 				ClientToScreen(g_hWnd, &Center);
@@ -291,60 +493,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 
 			XMStoreFloat3(&m_CameraDesc.vAt, vCurAt);
 			XMStoreFloat3(&m_CameraDesc.vEye, vCurAt - vCamLook * m_fCurDistance);
-
-			m_pMainTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));
-			m_pMainTransform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
-		}
-		else
-		{
-			if (m_bFixMouse)
-			{
-				POINT	Center = { g_iWinSizeX / 2, g_iWinSizeY / 2 };
-				ClientToScreen(g_hWnd, &Center);
-				SetCursorPos(Center.x, Center.y);
-			}
-
-			CCharacter* pTarget = m_pPlayerStateClass->Get_LockOnTarget();
-			_vector vTargetPos = pTarget->Get_Position();
-			_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-			_float fDistance = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos));
-			_float fDistRate = fDistance / 25.f;
-
-			_vector vTargetDir = vTargetPos - vPlayerPos;
-			
-			_vector vTargetDirLook = XMVector3Normalize(XMVectorSetY(vTargetDir, 0.f));
-			_vector vTargetDirRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vTargetDirLook));
-			//_vector vTargetDirUp = XMVector3Normalize(XMVector3Cross(vTargetDirLook, vTargetDirRight));
-
-
-			_float fLookDist = -3.5f - fDistRate * 1.5f;
-			_float fUpDist = 1.3f - min(max(XMVectorGetY(vTargetDir), -2.f), 0.f);
-			_float fRightDist = 1.2f + fDistance * 0.12f;
-
-			_vector vEyePos = vPlayerPos + vTargetDirLook * fLookDist + vTargetDirRight * fRightDist + XMVectorSet(0.f, fUpDist, 0.f, 0.f);
-
-			// 거리가 0.f일 때 7:3 위치
-			_float fRatio = 0.5f + fDistance * 0.02f;
-
-			// 타겟 쪽 Y값이 너무 높다면 플레이어 y 좌표 + 1로 고정
-			_vector vAtPosTemp = vPlayerPos * (1 - fRatio) + vTargetPos * fRatio - vTargetDirRight * fDistance * 0.1f;
-		
-			_float fAtY = min(XMVectorGetY(vAtPosTemp) + 1.2f - fDistRate  * 0.8f, XMVectorGetY(vEyePos) * 1.2f + fDistRate * 3.f);
-			//AtY = max(XMVectorGetY(vPlayerPos) - 3.f , AtY);
-			vAtPosTemp = XMVectorSetY(vAtPosTemp, fAtY);
-			
-			_vector vAtPos = vEyePos + XMVector3Normalize(vAtPosTemp - vEyePos) * 4.f;
-
-			_vector vPrevAt = XMLoadFloat3(&m_CameraDesc.vAt);
-
-			_vector vCurAt = XMVectorLerp(vPrevAt, vAtPos, (_float)TimeDelta * 5.f);
-
-			_vector vPrevEye = XMLoadFloat3(&m_CameraDesc.vEye);
-			_vector vCurEye = XMVectorLerp(vPrevEye, vEyePos, (_float)TimeDelta * 5.f);
-
-
-			XMStoreFloat3(&m_CameraDesc.vAt, vCurAt);
-			XMStoreFloat3(&m_CameraDesc.vEye, vCurEye);
+			m_CameraDesc.fFovy = XMConvertToRadians(45.f);
 
 			m_pMainTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));
 			m_pMainTransform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
@@ -380,6 +529,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 
 		XMStoreFloat3(&m_CameraDesc.vAt, vPlayerPos);
 		XMStoreFloat3(&m_CameraDesc.vEye, vPlayerPos - vCamLook * m_fCurDistance);
+		m_CameraDesc.fFovy = XMConvertToRadians(45.f);
 
 		m_pMainTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));
 		m_pMainTransform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
@@ -388,6 +538,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 
 	//
 	m_bPreLockOn = m_pPlayerStateClass->Get_LockOn();
+	m_bPreAiming = m_pPlayerStateClass->Get_Aiming();
 
 	//여기서 월드매트릭스랑 원하는 상태를 보간
 
@@ -499,4 +650,9 @@ void CPlayerCamera::AttachTargetTransform(CTransform * pTransform)
 		return;
 
 	m_pPlayerTransform = pTransform;
+}
+
+void CPlayerCamera::SoftLerp()
+{
+
 }

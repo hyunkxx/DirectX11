@@ -67,6 +67,17 @@ HRESULT CP_Chixia::Initialize(void * pArg)
 	if (FAILED(Init_EffectBones()))
 		return E_FAIL;
 
+	// 상하체 본 분리 밑작업
+	m_pAnimSetCom[ANIMSET_BASE]->Init_SubAnimController();
+	m_pAnimSetCom[ANIMSET_BASE]->Set_SplitBone(TEXT("Bip001Spine"));
+	m_pAnimSetCom[ANIMSET_BASE]->Split_UpperLower();
+
+	m_pAnimSetCom[ANIMSET_RIBBON]->Init_SubAnimController();
+	m_pAnimSetCom[ANIMSET_RIBBON]->Set_SplitBone(TEXT("Bip001Spine"));
+	m_pAnimSetCom[ANIMSET_RIBBON]->Split_UpperLower();
+
+	m_pModelCom->Set_SplitBone(TEXT("Bip001Spine"));
+
 	// 공격 정보 세팅
 	Init_AttackInfos();
 	m_iCurAttackID = ATK_NONE;
@@ -240,6 +251,21 @@ void CP_Chixia::Tick(_double TimeDelta)
 
 
 	Key_Input(TimeDelta * m_TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
+
+	if (m_bHolding)
+	{
+		if (pGameInstance->InputKey(DIK_NUMPAD2) == KEY_STATE::TAP)
+		{
+			m_Scon.iNextState = IS_HOLDSHOT_UPPER_END;
+			SetUp_State();
+			SetUp_Animations(false);
+			
+			m_Scon.iNextState = IS_HOLDSHOT_LOWER_END;
+			SetUp_SubState();
+			SetUp_SubAnimations(false);
+		}
+	}
+
 
 	Tick_State(TimeDelta * m_TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 
@@ -849,12 +875,6 @@ void CP_Chixia::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBone
 	pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
 }
 
-void CP_Chixia::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
-{
-	m_bAttack = true;
-	m_iCurAttackID = iAttackInfoID;
-}
-
 void CP_Chixia::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 {
 	if (MISS_END <= iMissilePoolID || EBONE_END <= iEffectBoneID)
@@ -862,9 +882,10 @@ void CP_Chixia::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 
 	m_bAttack = true;
 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 	if (0/*iMissilePoolID == MISS_BURST_1*/)
 	{
-		CGameInstance* pGameInstance = CGameInstance::GetInstance();
 		pGameInstance->StartBlackWhite(0.25f);
 
 		CRenderSetting::RGB_SPLIT_DESC Split;
@@ -879,7 +900,7 @@ void CP_Chixia::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	if (0 != iEffectBoneID)
 	{
 		vInitPos = XMVector3TransformCoord(
-			XMVector3TransformCoord(m_EffectBones[iEffectBoneID]->Get_CombinedPosition(), XMMatrixRotationY(180.f)),
+			XMVector3TransformCoord(m_EffectBones[iEffectBoneID]->Get_CombinedPosition(), XMMatrixRotationY(XMConvertToRadians(180.f))),
 			XMLoadFloat4x4(m_pMainTransform->Get_WorldMatrixPtr()));
 	}
 	else
@@ -891,18 +912,28 @@ void CP_Chixia::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_LOOK), m_MissileRotAngles[iMissilePoolID].z);
 	
 	_vector vTargetPos;
-	if (nullptr != m_pFixedTarget)
-		vTargetPos = m_pFixedTarget->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	else if (nullptr != m_pNearst)
-		vTargetPos = m_pNearst->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	if (true == m_bAiming)
+	{
+		_matrix matCam = pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
+
+		vTargetPos = (matCam.r[3] + XMVector3Normalize(matCam.r[2]) * 15.f);
+	}
 	else
-		vTargetPos = Get_Position() + XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_LOOK)) * 10.f + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	{
+		if (nullptr != m_pFixedTarget)
+			vTargetPos = m_pFixedTarget->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+		else if (nullptr != m_pNearst && false == m_bHolding)
+			vTargetPos = m_pNearst->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+		else
+			vTargetPos = Get_Position() + XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_LOOK)) * 10.f + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	}
 
 	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot, vTargetPos);
 }
 
 void CP_Chixia::SetUp_State()
 {
+	_uint iPrevState = m_Scon.iCurState;
 	// 키 리셋
 	for (_uint i = 0; i < m_tCurState.iKeyCount; ++i)
 	{
@@ -949,6 +980,7 @@ void CP_Chixia::SetUp_State()
 		00 == m_Scon.iCurState)
 	{
 		m_Scon.ePositionState = PS_GROUND;
+		m_bAirRecentFireL = false;
 	}
 
 	if ((SS_CLIMB_START_UP == m_Scon.iCurState ||
@@ -1031,6 +1063,137 @@ void CP_Chixia::SetUp_State()
 			XMStoreFloat3(&m_Scon.vPrevMovement, XMVector3Normalize(XMLoadFloat3(&tPhysicMove.vInitDir)) * tPhysicMove.fInitForce);
 		}
 	}
+
+	//
+	if (IS_AIMATTACK_START == m_Scon.iCurState ||
+		IS_AIMATTACK_STAND == m_Scon.iCurState ||
+		IS_AIMATTACK_FIRE_S == m_Scon.iCurState ||
+		IS_AIMATTACK_FIRE_B == m_Scon.iCurState ||
+		IS_AIMATTACK_END == m_Scon.iCurState)
+	{
+		m_bAiming = true;
+		if(nullptr != m_pPlayerStateClass)
+			m_pPlayerStateClass->Set_Aiming(m_bAiming);
+		m_Scon.iNextState = SS_STAND1;
+		SetUp_SubState();
+		SetUp_SubAnimations(false);
+	}
+	else
+	{
+		m_bAiming = false;
+		if (nullptr != m_pPlayerStateClass)
+			m_pPlayerStateClass->Set_Aiming(m_bAiming);
+		m_Scon.bWalk = false;
+	}
+
+	if (IS_AIRATTACK_FIRE_L == m_Scon.iCurState)
+		m_bAirRecentFireL = true;
+	else
+		m_bAirRecentFireL = false;
+
+	if (IS_HOLDSHOT_UPPER_LOOP_F <= m_Scon.iCurState)
+	{
+		m_bHolding = true;
+
+		m_Scon.iNextState = SS_STAND1;
+		SetUp_SubState();
+		SetUp_SubAnimations(false);
+	}
+	else
+	{
+		m_bHolding = false;
+	}
+
+	if (IS_HOLDSHOT_UPPER_END == iPrevState)
+		m_tCurState.bLerp = false;
+
+}
+
+void CP_Chixia::SetUp_SubState()
+{
+	m_iSubState = m_Scon.iNextState;
+
+	if (true == m_bHolding)
+	{
+		if (IS_HOLDSHOT_LOWER_LOOP == m_iSubState)
+		{
+			if (m_Scon.iCurState != IS_HOLDSHOT_UPPER_LOOP_B)
+			{
+				m_Scon.iNextState = IS_HOLDSHOT_UPPER_LOOP_B;
+				SetUp_State();
+				SetUp_Animations(false);
+			}
+		}
+		else if (SS_RUN_B == m_iSubState ||
+			SS_RUN_LB == m_iSubState ||
+			SS_RUN_RB == m_iSubState ||
+			SS_WALK_LB == m_iSubState ||
+			SS_WALK_RB == m_iSubState ||
+			SS_WALK_B == m_iSubState)
+		{
+			if (m_Scon.iCurState != IS_HOLDSHOT_UPPER_LOOP_B)
+			{
+				m_Scon.iNextState = IS_HOLDSHOT_UPPER_LOOP_B;
+				SetUp_State();
+				SetUp_Animations(false);
+			}
+		}
+		else if (SS_RUN_F == m_iSubState ||
+			SS_RUN_LF == m_iSubState ||
+			SS_RUN_RF == m_iSubState ||
+			SS_WALK_LF == m_iSubState ||
+			SS_WALK_RF == m_iSubState ||
+			SS_WALK_F == m_iSubState)
+		{
+			if (m_Scon.iCurState != IS_HOLDSHOT_UPPER_LOOP_F)
+			{
+				m_Scon.iNextState = IS_HOLDSHOT_UPPER_LOOP_F;
+				SetUp_State();
+				SetUp_Animations(false);
+			}
+		}
+	
+	}
+
+	m_tSubState = m_tStates[m_iSubState];
+
+	m_SubTrackPos = 0.0;
+	m_SubAnimFinished = false;
+
+	if (true == m_bAiming)
+	{
+		m_Scon.bWalk = true;
+		m_bInputDirMove = true;
+
+		if (SS_STAND1 == m_iSubState)
+		{
+			m_tSubState.iAnimID[ANIMSET_BASE] = 173;
+			m_tSubState.iAnimID[ANIMSET_RIBBON] = 175;
+			m_tSubState.iPhysicMoveID = 0;
+			m_Scon.vMovement = _float3(0.f, 0.f, 0.f);
+			m_Scon.vPrevMovement = _float3(0.f, 0.f, 0.f);
+		}
+		else
+			m_tSubState.iPhysicMoveID = 1;
+	}
+
+	//PhysicMove
+	if (false == m_tSubState.bRootMotion)
+	{
+		PHYSICMOVE tPhysicMove = StatePhysics[m_tSubState.iPhysicMoveID];
+
+		if (true == tPhysicMove.bInitMovement)
+		{
+			XMStoreFloat3(&m_Scon.vMovement, XMVector3Normalize(XMLoadFloat3(&tPhysicMove.vInitDir)) * tPhysicMove.fInitForce);
+			XMStoreFloat3(&m_Scon.vPrevMovement, XMVector3Normalize(XMLoadFloat3(&tPhysicMove.vInitDir)) * tPhysicMove.fInitForce);
+		}
+	}
+}
+
+void CP_Chixia::SetUp_SubAnimations(_bool bContinue)
+{
+	m_pAnimSetCom[ANIMSET_BASE]->SetUp_SubAnimation(m_tSubState.iAnimID[ANIMSET_BASE], m_tSubState.bLerp, bContinue);
+	m_pAnimSetCom[ANIMSET_RIBBON]->SetUp_SubAnimation(m_tSubState.iAnimID[ANIMSET_RIBBON], m_tSubState.bLerp, bContinue);
 }
 
 HRESULT CP_Chixia::SetUp_ShaderResources()
@@ -1107,6 +1270,11 @@ void CP_Chixia::Apply_CoolTime(_double TimeDelta)
 				m_StateCoolTimes[i] = 0.0;
 		}
 	}
+
+	if (true == m_bAiming)
+		m_AimChargeAcc += TimeDelta;
+	else
+		m_AimChargeAcc = 0.0;
 }
 
 void CP_Chixia::Key_Input(_double TimeDelta)
@@ -1171,7 +1339,6 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 			vInputDir += vCamRight;
 		}
 
-
 		if (bInputDir[0] ||
 			bInputDir[1] ||
 			bInputDir[2] ||
@@ -1179,7 +1346,7 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 			eCurFrameInput = INPUT_MOVE;
 		else
 			eCurFrameInput = INPUT_NONE;
-
+			
 		// Shift 입력 시 회피
 		if (pGame->InputKey(DIK_LSHIFT) == KEY_STATE::TAP)
 		{
@@ -1195,10 +1362,21 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 		}
 
 		// Skill
-		if (pGame->InputKey(DIK_E) == KEY_STATE::TAP)
+
+		if (pGame->InputKey(DIK_E) == KEY_STATE::AWAY)
 		{
-			eCurFrameInput = INPUT_SKILL;
+			if(m_SkillChargeAcc < 0.5)
+				eCurFrameInput = INPUT_SKILL;
 		}
+
+		if (pGame->InputKey(DIK_E) == KEY_STATE::HOLD)
+		{
+			m_SkillChargeAcc += TimeDelta;
+			if (m_SkillChargeAcc > 0.5)
+				eCurFrameInput = INPUT_SKILL_CHARGE;
+		}
+		else
+			m_SkillChargeAcc = 0.0;
 
 		// Burst
 		if (pGame->InputKey(DIK_R) == KEY_STATE::TAP)
@@ -1218,22 +1396,12 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 			eCurFrameInput = INPUT_ATTACK;
 		}
 
-		if (pGame->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
+
+		if (pGame->InputMouse(DIMK_RB) == KEY_STATE::TAP)
 		{
-			if (m_ChargeAcc > 0.5)
-			{
-				eCurFrameInput = INPUT_ATTACK_RELEASE;
-			}
+			eCurFrameInput = INPUT_AIM;
 		}
 
-		if (pGame->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
-		{
-			m_ChargeAcc += TimeDelta;
-			if (m_ChargeAcc > 0.5)
-				eCurFrameInput = INPUT_ATTACK_CHARGE;
-		}
-		else
-			m_ChargeAcc = 0.0;
 
 		if (!pGM->IsActiveUI())
 		{
@@ -1255,10 +1423,19 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 	}
 
 
+	// Echo Summon
+	if (pGame->InputKey(DIK_NUMPAD6) == KEY_STATE::TAP)
+	{
+		eCurFrameInput = INPUT_AIM;
+	}
 
 	// 타겟 방향
 	_vector vTargetDir;
-	if (nullptr != m_pFixedTarget)
+	if (true == m_bAiming)
+	{
+		vTargetDir = XMVector3TransformNormal(vCamLook, XMMatrixRotationY(XMConvertToRadians(22.5f)));
+	}
+	else if (nullptr != m_pFixedTarget)
 		vTargetDir = XMVector3Normalize(XMVectorSetY(m_pFixedTarget->Get_Position() - this->Get_Position(), 0.f));
 	else if (nullptr != m_pNearst)
 		vTargetDir = XMVector3Normalize(XMVectorSetY(m_pNearst->Get_Position() - this->Get_Position(), 0.f));
@@ -1267,7 +1444,7 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 
 	// 입력 방향
 	if (0.f != XMVectorGetX(XMVector3Length(vInputDir)))
-		XMVector3Normalize(vInputDir);
+		vInputDir = XMVector3Normalize(vInputDir);
 
 	// 임시 이펙트 재생용
 	CEffect* pEffect = nullptr;
@@ -1314,7 +1491,7 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 
 		case Client::CP_Chixia::INPUT_MOVE:
 
-			if (nullptr != m_pFixedTarget)
+			if (nullptr != m_pFixedTarget || true == m_bAiming)
 			{
 				if (m_Scon.bWalk)
 				{
@@ -1326,14 +1503,14 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 						m_Scon.iNextState = SS_WALK_B;
 					else if (bLeft == true)
 					{
-						if (fScalar >= 0.f)
+						if (fScalar >= -0.1f)
 							m_Scon.iNextState = SS_WALK_LF;
 						else
 							m_Scon.iNextState = SS_WALK_LB;
 					}
 					else if (bLeft == false)
 					{
-						if (fScalar >= 0.f)
+						if (fScalar >= -0.1f)
 							m_Scon.iNextState = SS_WALK_RF;
 						else
 							m_Scon.iNextState = SS_WALK_RB;
@@ -1349,20 +1526,20 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 						m_Scon.iNextState = SS_RUN_B;
 					else if (bLeft == true)
 					{
-						if (fScalar >= 0.f)
+						if (fScalar >= -0.1f)
 							m_Scon.iNextState = SS_RUN_LF;
 						else
 							m_Scon.iNextState = SS_RUN_LB;
 					}
 					else if (bLeft == false)
 					{
-						if (fScalar >= 0.f)
+						if (fScalar >= -0.1f)
 							m_Scon.iNextState = SS_RUN_RF;
 						else
 							m_Scon.iNextState = SS_RUN_RB;
 					}
 				}
-				if (m_tCurState.iLeavePriority == 0)
+				if (m_tCurState.iLeavePriority == 0 || true == m_bAiming || true == m_bHolding)
 				{
 					m_bInputDirMove = true;
 					XMStoreFloat3(&m_vInputDir, vInputDir);
@@ -1431,22 +1608,48 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 			case SS_MOVE_LIMIT_F:
 				m_Scon.iNextState = IS_ATTACK_04;
 				break;
-
+			case IS_AIMATTACK_START:
+			case IS_AIMATTACK_STAND:
+				if (m_AimChargeAcc > 1.5)
+					m_Scon.iNextState = IS_AIMATTACK_FIRE_B;
+				else
+					m_Scon.iNextState = IS_AIMATTACK_FIRE_S;
+				break;
 			default:
 				m_Scon.iNextState = IS_ATTACK_01;
 				break;
 			}
 			break;
 
-		case Client::CP_Chixia::INPUT_ATTACK_CHARGE:
-			m_Scon.iNextState = 00;
+		case Client::CP_Chixia::INPUT_AIM:
+			m_Scon.iNextState = IS_AIMATTACK_START;
 			break;
 
 		case Client::CP_Chixia::INPUT_SKILL:
-			if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
-				m_Scon.iNextState = IS_SKILL_01_B;
+			if (IS_HOLDSHOT_UPPER_LOOP_F <= m_Scon.iCurState)
+			{
+				m_Scon.iNextState = IS_SKILL_03_Deprive;
+			}
 			else
-				m_Scon.iNextState = IS_SKILL_01_F;
+			{
+				if (0.f == m_pCharacterState->fCurCooltime[CPlayerState::COOL_SKILL])
+				{
+					if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
+						m_Scon.iNextState = IS_SKILL_01_B;
+					else
+						m_Scon.iNextState = IS_SKILL_01_F;
+				}
+			}
+			break;
+
+		case Client::CP_Chixia::INPUT_SKILL_CHARGE:
+			if (0.f == m_pCharacterState->fCurCooltime[CPlayerState::COOL_SKILL])
+			{
+				if (!bInputDir[0] && !bInputDir[1] && !bInputDir[2] && !bInputDir[3])
+					m_Scon.iNextState = IS_SKILL_03_B;
+				else
+					m_Scon.iNextState = IS_SKILL_03_F;
+			}
 			break;
 
 		case Client::CP_Chixia::INPUT_BURST:
@@ -1486,10 +1689,10 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 			}
 			break;
 		case Client::CP_Chixia::INPUT_ATTACK:
-			if (m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] <= m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL])
-				m_Scon.iNextState = 00;
+			if(false == m_bAirRecentFireL)
+				m_Scon.iNextState = IS_AIRATTACK_FIRE_L;
 			else
-				m_Scon.iNextState = 00;
+				m_Scon.iNextState = IS_AIRATTACK_FIRE_R;
 			break;
 		case Client::CP_Chixia::INPUT_TOOL:
 			if (0.0 == m_pPlayerStateClass->Get_CurToolCoolTime())
@@ -1759,14 +1962,27 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 		}
 	}
 
-
-
-
 	// 그래서 어느 방향을 바라보는가
 	_vector vFinalDir;
 
+	// 조준 공격 중일 경우
+	if (true == m_bAiming)
+	{
+		// 45 도 기준 블렌딩
+		if (0.f <= XMVectorGetY(matCam.r[2]))
+			m_bAimingUp = true;
+		else
+			m_bAimingUp = false;
+
+		if (0.03f > fabs(XMVectorGetY(XMVector3Normalize(matCam.r[2]))))
+			m_fYAimingAngle = 0.f;
+		else
+			m_fYAimingAngle = acosf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(vCamLook), XMVector3Normalize(matCam.r[2]))));
+
+		vFinalDir = vTargetDir;
+	}
 	// 공격 행동일 경우
-	if (eCurFrameInput >= INPUT_ATTACK)
+	else if (eCurFrameInput >= INPUT_ATTACK)
 	{
 		// 고정 타겟이 있거나 가장 가까운 몬스터와의 거리가 10 미만일 때 타겟 방향
 		if ((nullptr != m_pFixedTarget) ||
@@ -1796,12 +2012,33 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 					m_pMainTransform->Set_LookDir(vFinalDir);
 			}
 
+			if (true == m_bAiming)
+			{
+				m_pMainTransform->Set_LookDir(vCamLook);
+			}
+
 			//궁극기 카메라 모션 실행
 			if (IS_BURST == m_Scon.iCurState)
 				m_pCamMovement->UseCamera(CCameraMovement::CAM_BANGSUN);
+		}
+		else if ((true == m_bAiming || true == m_bHolding) && INPUT_MOVE >= eCurFrameInput)
+		{
+			if (INPUT_NONE == eCurFrameInput && true == m_bHolding)
+			{
+				m_Scon.iNextState = IS_HOLDSHOT_LOWER_LOOP;
+			}
 
+			if (m_iSubState != m_Scon.iNextState)
+			{
+				if (IS_HOLDSHOT_LOWER_END != m_iSubState)
+				{
+					SetUp_SubState();
+					SetUp_SubAnimations(false);
+				}
+			}
 		}
 	}
+	
 
 	// 매 프레임
 	if (PS_CLIMB != m_Scon.ePositionState)
@@ -1815,9 +2052,6 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 		{
 			_vector vAxis = XMVector3Cross(m_pMainTransform->Get_State(CTransform::STATE_LOOK), vFinalDir);
 			_float fAngle = acosf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_LOOK)), XMVector3Normalize(vFinalDir))));
-
-			if (IS_SKILL_01_B == m_Scon.iCurState || IS_SKILL_01_F == m_Scon.iCurState)
-				int a = 1;
 
 			if (!XMVector3Equal(vAxis, XMVectorZero()))
 			{
@@ -1835,24 +2069,121 @@ void CP_Chixia::Tick_State(_double TimeDelta)
 {
 	CGameInstance* pGI = CGameInstance::GetInstance();
 
-
-
 	if (false == m_Scon.bAnimFinished)
 	{
 		_float4 vRotation = _float4(0.f, 0.f, 0.f, 1.f);
 		_float3 vMovement;
 		_double ProgressRatio;
+		if (true == m_bAiming)
+		{
+			_double SubProgressRatio;
+			// 포즈 잡기
+			// Pose 상태를 Animset-DefaultMatrix에 세팅
+			// D : 172, F : 173, U : 178
+			if (XMConvertToRadians(45.f) <= fabs(m_fYAimingAngle))
+			{
+				if (true == m_bAimingUp)
+					m_pAnimSetCom[ANIMSET_BASE]->Set_PoseAnim(178);
+				else
+					m_pAnimSetCom[ANIMSET_BASE]->Set_PoseAnim(172);
+			}
+			else
+			{
+				m_pAnimSetCom[ANIMSET_BASE]->Set_PoseAnim(173);
 
-		// 애니메이션 갱신
-		m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &vRotation, &vMovement, &m_Scon.TrackPos, &m_Scon.bAnimFinished, &ProgressRatio);
-		m_pAnimSetCom[ANIMSET_RIBBON]->Update_RibbonAnimation(ProgressRatio);
+				if (true == m_bAimingUp)
+					m_pAnimSetCom[ANIMSET_BASE]->Blend_PoseAnim(178, fabs(m_fYAimingAngle) / XMConvertToRadians(45.f));
+				else
+					m_pAnimSetCom[ANIMSET_BASE]->Blend_PoseAnim(172, fabs(m_fYAimingAngle) / XMConvertToRadians(45.f));
+			}
 
-		m_pAnimSetCom[ANIMSET_BASE]->Update_TargetBones();
+			if (m_Scon.iCurState != IS_AIMATTACK_STAND)
+			{
+				// BASE - 상체
+				m_pAnimSetCom[ANIMSET_BASE]->Play_Animation_Blending(TimeDelta, nullptr, nullptr, &m_Scon.TrackPos, &m_Scon.bAnimFinished, &ProgressRatio);
+				m_pAnimSetCom[ANIMSET_BASE]->Update_TargetUpperBones();
 
-		m_pAnimSetCom[ANIMSET_RIBBON]->Ribbon_TargetBones();
-		// 여기까지 Playanimation
+				// RIB - 상체
+				m_pAnimSetCom[ANIMSET_RIBBON]->Update_RibbonAnimation(ProgressRatio);
+				m_pAnimSetCom[ANIMSET_RIBBON]->Ribbon_TargetUpperBones();
+			}
+			else 
+				m_pAnimSetCom[ANIMSET_BASE]->Update_TargetUpperBones();
+			
+			if (m_tSubState.iAnimID[ANIMSET_BASE] != 173)
+			{
+				// BASE - 하체
+				m_pAnimSetCom[ANIMSET_BASE]->Play_SubAnimation(TimeDelta, &vRotation, &vMovement, &m_SubTrackPos, &m_SubAnimFinished, &SubProgressRatio);
+				m_pAnimSetCom[ANIMSET_BASE]->Update_TargetLowerBones();
 
-		m_pModelCom->Invalidate_CombinedMatrices();
+				// RIB - 하체
+				m_pAnimSetCom[ANIMSET_RIBBON]->Update_SubRibbonAnimation(SubProgressRatio);
+				m_pAnimSetCom[ANIMSET_RIBBON]->Ribbon_TargetLowerBones();
+			}
+			else
+				m_pAnimSetCom[ANIMSET_BASE]->Update_TargetLowerBones();
+
+			m_pModelCom->Invalidate_CombinedMatrices_Split();
+		}
+		else if (true == m_bHolding)
+		{
+			_double SubProgressRatio;
+			// 포즈 잡기
+			m_pAnimSetCom[ANIMSET_BASE]->Set_PoseAnim(201);
+		
+			// BASE - 상체
+			m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, nullptr, nullptr, &m_Scon.TrackPos, &m_Scon.bAnimFinished, &ProgressRatio);
+			m_pAnimSetCom[ANIMSET_BASE]->Update_TargetUpperBones();
+
+			// RIB - 상체
+			m_pAnimSetCom[ANIMSET_RIBBON]->Update_RibbonAnimation(ProgressRatio);
+			m_pAnimSetCom[ANIMSET_RIBBON]->Ribbon_TargetUpperBones();
+		
+			// BASE - 하체
+			if (IS_HOLDSHOT_LOWER_LOOP == m_iSubState ||
+				IS_HOLDSHOT_LOWER_END == m_iSubState)
+			{
+				m_pAnimSetCom[ANIMSET_BASE]->Play_SubAnimation_Blending(TimeDelta, &vRotation, &vMovement, &m_SubTrackPos, &m_SubAnimFinished, &SubProgressRatio);
+			}
+			else
+				m_pAnimSetCom[ANIMSET_BASE]->Play_SubAnimation(TimeDelta, &vRotation, &vMovement, &m_SubTrackPos, &m_SubAnimFinished, &SubProgressRatio);
+			m_pAnimSetCom[ANIMSET_BASE]->Update_TargetLowerBones();
+
+			// RIB - 하체
+			m_pAnimSetCom[ANIMSET_RIBBON]->Update_SubRibbonAnimation(SubProgressRatio);
+			m_pAnimSetCom[ANIMSET_RIBBON]->Ribbon_TargetLowerBones();
+		
+				
+
+			m_pModelCom->Invalidate_CombinedMatrices_Split();
+		}
+		else if(IS_AIRATTACK_FIRE_L == m_Scon.iCurState ||
+			IS_AIRATTACK_FIRE_R == m_Scon.iCurState)
+		{
+			m_pAnimSetCom[ANIMSET_BASE]->Set_PoseAnim(189);
+
+			m_pAnimSetCom[ANIMSET_BASE]->Play_Animation_Blending(TimeDelta, nullptr, nullptr, &m_Scon.TrackPos, &m_Scon.bAnimFinished, &ProgressRatio);
+			m_pAnimSetCom[ANIMSET_BASE]->Update_TargetBones();
+
+			m_pAnimSetCom[ANIMSET_RIBBON]->Update_RibbonAnimation(ProgressRatio);
+			m_pAnimSetCom[ANIMSET_RIBBON]->Ribbon_TargetBones();
+
+			m_pModelCom->Invalidate_CombinedMatrices_Split();
+		}
+		else
+		{
+			// 애니메이션 갱신
+			m_pAnimSetCom[ANIMSET_BASE]->Play_Animation(TimeDelta, &vRotation, &vMovement, &m_Scon.TrackPos, &m_Scon.bAnimFinished, &ProgressRatio);
+			m_pAnimSetCom[ANIMSET_RIBBON]->Update_RibbonAnimation(ProgressRatio);
+
+			m_pAnimSetCom[ANIMSET_BASE]->Update_TargetBones();
+
+			m_pAnimSetCom[ANIMSET_RIBBON]->Ribbon_TargetBones();
+			// 여기까지 Playanimation
+
+			m_pModelCom->Invalidate_CombinedMatrices();
+		}
+		
 
 		// 루프하지 않는 애니메이션이 이번 프레임에 끝났으면 전프레임 움직임을 적용
 		// 애니메이션 프레임이랑 FrameRate가 달라서 발생하는 오차값으로 인한 버그 방지
@@ -1868,7 +2199,14 @@ void CP_Chixia::Tick_State(_double TimeDelta)
 			}
 			else
 			{
-				const PHYSICMOVE& PhysicMove = StatePhysics[m_tCurState.iPhysicMoveID];
+				PHYSICMOVE PhysicMove;
+
+				if(true == m_bAiming || true == m_bHolding)
+					PhysicMove = StatePhysics[m_tSubState.iPhysicMoveID];
+				else
+					PhysicMove = StatePhysics[m_tCurState.iPhysicMoveID];
+
+
 				if (false == PhysicMove.bConstant)
 				{
 					_vector vMove = XMLoadFloat3(&m_Scon.vPrevMovement);
@@ -1949,6 +2287,27 @@ void CP_Chixia::Tick_State(_double TimeDelta)
 				m_Scon.iNextState = m_tCurState.iNextState;
 				SetUp_State();
 				SetUp_Animations(true);
+			}
+		}
+	}
+
+	if (true == m_SubAnimFinished)
+	{
+		if (true == m_tSubState.bLoop)
+		{
+			m_Scon.iNextState = m_Scon.iCurState;
+			SetUp_SubState();
+			m_tSubState.bLerp = false;
+			SetUp_SubAnimations(true);
+
+		}
+		else
+		{
+			if (NO_ANIM != m_tSubState.iNextState)
+			{
+				m_Scon.iNextState = m_tSubState.iNextState;
+				SetUp_SubState();
+				SetUp_SubAnimations(true);
 			}
 		}
 	}
@@ -2049,20 +2408,7 @@ void CP_Chixia::On_Cell()
 				}
 				else
 				{
-					// 공중 공격으로 착지하는 경우
-					if (00 == m_Scon.iCurState ||
-						00 == m_Scon.iCurState)
-					{
-						m_pCamMovement->StartWave();
-						m_Scon.iNextState = 00;
-					}
-					else if (00 == m_Scon.iCurState ||
-						00 == m_Scon.iCurState)
-					{
-						m_pCamMovement->StartWave();
-						m_Scon.iNextState = 00;
-					}
-					else if (SS_BEHIT_FLY_START == m_Scon.iCurState ||
+					if (SS_BEHIT_FLY_START == m_Scon.iCurState ||
 						SS_BEHIT_PUSH == m_Scon.iCurState ||
 						SS_BEHIT_FLY_LOOP == m_Scon.iCurState)
 					{
@@ -2289,6 +2635,12 @@ void CP_Chixia::Init_AnimSystem()
 	{
 		const _tchar* szAnimName = pAnim->Get_Name();
 
+		if (!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Z_HoldShot_Upper_Loop_F) HoldShot_Upper_Loop_F")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Z_HoldShot_Upper_Loop_B) HoldShot_Upper_Loop_B")))
+		{
+			pAnim->Set_Duration(20.0);
+		}
+
 		for (auto& pChannel : pAnim->Get_Channels())
 		{
 			const _tchar* szChannelName = pChannel->Get_Name();
@@ -2298,29 +2650,70 @@ void CP_Chixia::Init_AnimSystem()
 				lstrcmp(szChannelName, TEXT("WeaponProp01")) &&
 				lstrcmp(szChannelName, TEXT("WeaponProp02")) &&
 				wcsncmp(szChannelName, TEXT("Root"), 4))
+			{
 				pChannel->Set_Apply(false);
+			}
+				
 
+
+			if (!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(X_AimShot_Attack) AimShot_Attack")) ||
+				!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(X_AimPose_F_Start) AimPose_F_Start")) || 
+				!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Y_AirAttack01_Fl) AirAttack01_Fl")) || 
+				!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Y_AirAttack01_FR) AirAttack01_FR")))
+			{
+				if (!lstrcmp(szChannelName, TEXT("Bip001LForearm")) ||
+					pBone->Is_ChildOf(TEXT("Bip001LForearm")))
+				{
+					pChannel->Set_Apply(false);
+				}
+			}
+
+		
+			if (!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Z_HoldShot_Lower_End) HoldShot_Lower_End")) ||
+				!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Z_HoldShot_Lower_Stand) HoldShot_Lower_Stand")))
+			{
+				if (!lstrcmp(szChannelName, TEXT("Bip001_L_CalfTwist")) ||
+					//pBone->Is_ChildOf(TEXT("Bip001_L_Calf")) ||
+					!lstrcmp(szChannelName, TEXT("Bip001_R_CalfTwist")))
+					//pBone->Is_ChildOf(TEXT("Bip001_R_Calf")))
+				{
+					for (auto& KeyFrame : pChannel->Get_KeyFrames())
+					{
+						XMStoreFloat4(&KeyFrame.vRotation, XMQuaternionInverse(XMLoadFloat4(&KeyFrame.vRotation)));
+					}
+					//pChannel->Set_Apply(false);
+				}
+			}
+
+			if (!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Z_HoldShot_Upper_Loop_F) HoldShot_Upper_Loop_F")) || 
+				!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Z_HoldShot_Upper_Loop_B) HoldShot_Upper_Loop_B")) || 
+				!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Skill03_Derive) Skill03_Derive")))
+			{
+				if (!lstrcmp(szChannelName, TEXT("WeaponProp01")) ||
+					!lstrcmp(szChannelName, TEXT("WeaponProp02")))
+				{
+					pChannel->Set_Apply(false);
+				}
+			}
+				
 			if (true == pBone->Is_ChildOf(TEXT("Bip001Head")))
 			{
-				if (lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|AirAttack_End")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|AirAttack_Loop")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|AirAttack_Start")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack01")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack02")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack03")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack04")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack09")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack_po2_Temp")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Attack_po3_Temp")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Burst01")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Skill01")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Skill02")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|SkillQte")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Stand1_Action01")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Stand1_Action02")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Stand1_Action03")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|Stand2")) &&
-					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|StandChange")))
+				if (lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Attack01) Attack01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Attack02) Attack02")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Attack03) Attack03")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Attack04) Attack04")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Burst01) Burst01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Skill01) Skill01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Skill01_B) Skill01_B")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Skill03_B) Skill03_B")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Skill03_Derive) Skill03_Derive")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(SkillQTE) SkillQTE")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Stand1_Action01) Stand1_Action01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Stand2) Stand2")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(StandChange) StandChange")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(AimPose_D) AimPose_D")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(AimPose_F) AimPose_F")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(AimPose_U) AimPose_U")))
 				{
 					pChannel->Set_Apply(false);
 				}
@@ -2454,7 +2847,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_04].fDamageFactor = 2.1f;
 	m_AttackInfos[ATK_ATTACK_04].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK_04].eElementType = ELMT_FUSION;
-	m_AttackInfos[ATK_ATTACK_04].fSPGain = 7.f;
+	m_AttackInfos[ATK_ATTACK_04].fSPGain = 5.f;
 	m_AttackInfos[ATK_ATTACK_04].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_04].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_04].iHitEffectID = 5;
@@ -2463,7 +2856,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_01].fDamageFactor = 0.8f;
 	m_AttackInfos[ATK_SKILL_01].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_SKILL_01].eElementType = ELMT_FUSION;
-	m_AttackInfos[ATK_SKILL_01].fSPGain = 3.f;
+	m_AttackInfos[ATK_SKILL_01].fSPGain = 2.f;
 	m_AttackInfos[ATK_SKILL_01].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_01].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_01].iHitEffectID = 5;
@@ -2472,7 +2865,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_QTE].fDamageFactor = 0.8f;
 	m_AttackInfos[ATK_SKILL_QTE].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_SKILL_QTE].eElementType = ELMT_FUSION;
-	m_AttackInfos[ATK_SKILL_QTE].fSPGain = 3.f;
+	m_AttackInfos[ATK_SKILL_QTE].fSPGain = 2.f;
 	m_AttackInfos[ATK_SKILL_QTE].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_QTE].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_QTE].iHitEffectID = 1;
@@ -2481,7 +2874,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_BURST_1].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_BURST_1].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_BURST_1].eElementType = ELMT_FUSION;
-	m_AttackInfos[ATK_BURST_1].fSPGain = 1.5f;
+	m_AttackInfos[ATK_BURST_1].fSPGain = 1.f;
 	m_AttackInfos[ATK_BURST_1].fBPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_1].fTPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_1].iHitEffectID = 1;
@@ -2495,15 +2888,6 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_BURST_2].fTPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_2].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_BURST_2].szHitEffectTag, TEXT("Hit_Effect_01"));
-
-	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 0.6f;
-	m_AttackInfos[ATK_AIRATTACK].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_AIRATTACK].eElementType = ELMT_NONE;
-	m_AttackInfos[ATK_AIRATTACK].fSPGain = 1.f;
-	m_AttackInfos[ATK_AIRATTACK].fBPGain = 1.5f;
-	m_AttackInfos[ATK_AIRATTACK].fTPGain = 1.5f;
-	m_AttackInfos[ATK_AIRATTACK].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_AIRATTACK].szHitEffectTag, TEXT("Hit_Effect_01"));
 
 	m_AttackInfos[ATK_AIMATTACK_S].fDamageFactor = 1.2f;
 	m_AttackInfos[ATK_AIMATTACK_S].eHitIntensity = HIT_SMALL;
@@ -2523,6 +2907,15 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_AIMATTACK_B].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitEffectTag, TEXT("Hit_Effect_01"));
 
+	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 0.6f;
+	m_AttackInfos[ATK_AIRATTACK].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_AIRATTACK].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_AIRATTACK].fSPGain = 1.f;
+	m_AttackInfos[ATK_AIRATTACK].fBPGain = 1.5f;
+	m_AttackInfos[ATK_AIRATTACK].fTPGain = 1.5f;
+	m_AttackInfos[ATK_AIRATTACK].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_AIRATTACK].szHitEffectTag, TEXT("Hit_Effect_01"));
+
 	m_AttackInfos[ATK_SKILL_03].fDamageFactor = 0.33f;
 	m_AttackInfos[ATK_SKILL_03].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_SKILL_03].eElementType = ELMT_FUSION;
@@ -2530,7 +2923,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_03].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_03].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_03].iHitEffectID = 1;
-	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitEffectTag, TEXT("Hit_Effect_01"));
+	lstrcpy(m_AttackInfos[ATK_SKILL_03].szHitEffectTag, TEXT("Hit_Effect_01"));
 
 }
 
@@ -2724,6 +3117,106 @@ void CP_Chixia::Init_Missiles()
 
 	m_MissilePools[MISS_BURST_2] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_BURST_2] = _float3(0.f, 0.f, 0.f);
+
+	// MISS_AIMATTACK_S
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Chixia_AimAttack_S_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iNumMissiles = 10;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIMATTACK_S;
+	tMissilePoolDesc.tMissileDesc.fExtents = 0.2f;
+	tMissilePoolDesc.tMissileDesc.bDeleteOnHit = true;
+
+	tMissilePoolDesc.bTargetDir = true;
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 75.f;
+	tMissilePoolDesc.StopTime = 1.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+
+	m_MissilePools[MISS_AIMATTACK_S] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_AIMATTACK_S] = _float3(0.f, 0.f, 0.f);
+
+	// MISS_AIMATTACK_B
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Chixia_AimAttack_B_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iNumMissiles = 10;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 1.0;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIMATTACK_B;
+	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+	tMissilePoolDesc.tMissileDesc.bDeleteOnHit = true;
+
+	tMissilePoolDesc.bTargetDir = true;
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 60.f;
+	tMissilePoolDesc.StopTime = 1.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+
+	m_MissilePools[MISS_AIMATTACK_B] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_AIMATTACK_B] = _float3(0.f, 0.f, 0.f);
+
+	// MISS_AIRATTACK
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Chixia_AirAttack_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iNumMissiles = 10;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIRATTACK;
+	tMissilePoolDesc.tMissileDesc.fExtents = 0.2f;
+	tMissilePoolDesc.tMissileDesc.bDeleteOnHit = true;
+
+	tMissilePoolDesc.bTargetDir = true;
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 75.f;
+	tMissilePoolDesc.StopTime = 1.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+
+	m_MissilePools[MISS_AIRATTACK] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_AIRATTACK] = _float3(0.f, 0.f, 0.f);
+
+	// MISS_SKILL_03
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Chixia_Skill_03_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iNumMissiles = 30;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2;
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_SKILL_03;
+	tMissilePoolDesc.tMissileDesc.fExtents = 0.2f;
+	tMissilePoolDesc.tMissileDesc.bDeleteOnHit = true;
+
+	tMissilePoolDesc.bTargetDir = true;
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 75.f;
+	tMissilePoolDesc.StopTime = 1.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+
+	m_MissilePools[MISS_SKILL_03] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_SKILL_03] = _float3(0.f, 0.f, 0.f);
 
 
 }
