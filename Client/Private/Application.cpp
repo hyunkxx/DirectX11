@@ -2932,25 +2932,59 @@ HRESULT CApplication::Ready_Static_Effect()
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
-			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_01_04.bin"),
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_02_02.bin"),
 			"../../Resource/Effect/M_Qunjing/Attack/")))
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
-			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_01_05.bin"),
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_02_03.bin"),
 			"../../Resource/Effect/M_Qunjing/Attack/")))
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
-			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_01_Flare.bin"),
-			"../../Resource/Effect/M_Qunjing/Attack/")))
-			return E_FAIL;
-
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
-			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_02_04.bin"),
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_07_01.bin"),
 			"../../Resource/Effect/M_Qunjing/Attack/")))
 			return E_FAIL;
 		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_08_01.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_Stone.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_Crack_S.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_Crack_B.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_Flare.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_L.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_R.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_Bullet.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
 	}
 
 #pragma endregion
