@@ -13,6 +13,7 @@
 #include "TerminalUI.h"
 #include "ItemDB.h"
 
+#include "UICam.h"
 #include "EchoSystem.h"
 
 CResonatorUI::CResonatorUI(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -1001,15 +1002,15 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_OrthoSkillPointText.fWidth = 512.f * 0.6f;
 	m_OrthoSkillPointText.fHeight = 64.f * 0.6f;
 	m_OrthoSkillPointText.fX = m_OrthoForteBack.fX - 16.f;
-	m_OrthoSkillPointText.fY = g_iWinSizeY - 78.f;
+	m_OrthoSkillPointText.fY = g_iWinSizeY - 72.f;
 	CAppManager::ComputeOrtho(&m_OrthoSkillPointText);
 
 	for (_uint i = 0; i < 2; ++i)
 	{
-		m_OrthoSkillPoint[i].fWidth = 16.f * 0.9f;
-		m_OrthoSkillPoint[i].fHeight = 25.f * 0.9f;
+		m_OrthoSkillPoint[i].fWidth = 16.f * 0.8f;
+		m_OrthoSkillPoint[i].fHeight = 25.f * 0.8f;
 		m_OrthoSkillPoint[i].fX = m_OrthoForteBack.fX + 52 + (i * (14.f * 0.8f));
-		m_OrthoSkillPoint[i].fY = g_iWinSizeY - 82.f;
+		m_OrthoSkillPoint[i].fY = g_iWinSizeY - 70.f;
 		CAppManager::ComputeOrtho(&m_OrthoSkillPoint[i]);
 	}
 
@@ -1034,14 +1035,15 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_OrthoSkillUpgradeBtn.fWidth = 170.f;
 	m_OrthoSkillUpgradeBtn.fHeight = 70.f;
 	m_OrthoSkillUpgradeBtn.fX = m_OrthoForteBack.fX;
-	m_OrthoSkillUpgradeBtn.fY = g_iWinSizeY - 45.f;
+	m_OrthoSkillUpgradeBtn.fY = g_iWinSizeY - 35.f;
 	CAppManager::ComputeOrtho(&m_OrthoSkillUpgradeBtn);
 
 	m_OrthoSkillUpgradeText.fWidth = 512.f * 0.6f;
 	m_OrthoSkillUpgradeText.fHeight = 64.f * 0.6f;
 	m_OrthoSkillUpgradeText.fX = m_OrthoForteBack.fX;
-	m_OrthoSkillUpgradeText.fY = g_iWinSizeY - 40.f;
+	m_OrthoSkillUpgradeText.fY = g_iWinSizeY - 30.f;
 	CAppManager::ComputeOrtho(&m_OrthoSkillUpgradeText);
+
 #pragma endregion
 
 	// 기타 임시 디폴트 세팅
@@ -1064,6 +1066,14 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	itemDesc.iAmount = 20;
 	m_pInven->PushItemDesc(itemDesc);
 	
+	itemDesc = pDB->GetItemData(ITEM::SWORD4);
+	itemDesc.iAmount = 5;
+	m_pInven->PushItemDesc(itemDesc);
+
+	itemDesc = pDB->GetItemData(ITEM::GUN3);
+	itemDesc.iAmount = 5;
+	m_pInven->PushItemDesc(itemDesc);
+
 	return S_OK;
 }
 
@@ -1193,49 +1203,77 @@ HRESULT CResonatorUI::addComponents()
 
 void CResonatorUI::elemAlphaUpdate(_double TimeDelta)
 {
-	// 개별 요소 알파 올리기 10개는 임의 지정
-	for (_uint i = 0; i < SMOOTH_MAX; ++i)
-	{
-		if (m_bElemAlphaStart[i])
-		{
-			m_fElemAlpha[i] += (_float)TimeDelta * 2.f;
-			if (m_fElemAlpha[i] >= 1.f)
-				m_fElemAlpha[i] = 1.f;
-		}
+	CCamera* pCam = m_pCamMovement->GetCamera(CCameraMovement::CAM_UI);
 
-		if (m_fElemAlpha[i] >= 0.3f)
-		{
-			if (i < SMOOTH_MAX - 1)
-				m_bElemAlphaStart[i + 1] = true;
-
-		}
-	}
-	
-	if (m_eCurButton == BTN_STATE)
+	if (m_eCurButton == BTN_RESONANCE)
 	{
-		if (m_fElemAlpha[6] >= 1.f)
+		m_bElemAlphaStart[0] = true;
+		m_fElemAlpha[0] = 1.f;
+
+		if (static_cast<CUICam*>(pCam)->IsMoveFinish())
 		{
-			if (!m_bSlotRenderFinish)
+			for (_uint i = 0; i < SMOOTH_MAX; ++i)
 			{
-				m_bSlotRenderFinish = true;
-				for (_uint i = 0; i < 4; ++i)
-					m_bFlashStart[i] = true;
+				if (m_bElemAlphaStart[i])
+				{
+					m_fElemAlpha[i] += (_float)TimeDelta * 2.f;
+					if (m_fElemAlpha[i] >= 1.f)
+						m_fElemAlpha[i] = 1.f;
+				}
+
+				if (m_fElemAlpha[i] >= 0.3f)
+				{
+					if (i < SMOOTH_MAX - 1)
+						m_bElemAlphaStart[i + 1] = true;
+
+				}
 			}
 		}
 	}
-	else if (m_eCurButton == BTN_WEAPON)
+	else
 	{
-		if (m_fElemAlpha[7] >= 1.f)
+		for (_uint i = 0; i < SMOOTH_MAX; ++i)
 		{
-			if (!m_bSlotRenderFinish)
+			if (m_bElemAlphaStart[i])
 			{
-				m_bSlotRenderFinish = true;
-				for (_uint i = 0; i < 4; ++i)
-					m_bFlashStart[i] = true;
+				m_fElemAlpha[i] += (_float)TimeDelta * 2.f;
+				if (m_fElemAlpha[i] >= 1.f)
+					m_fElemAlpha[i] = 1.f;
+			}
+
+			if (m_fElemAlpha[i] >= 0.3f)
+			{
+				if (i < SMOOTH_MAX - 1)
+					m_bElemAlphaStart[i + 1] = true;
+
+			}
+		}
+
+		if (m_eCurButton == BTN_STATE)
+		{
+			if (m_fElemAlpha[6] >= 1.f)
+			{
+				if (!m_bSlotRenderFinish)
+				{
+					m_bSlotRenderFinish = true;
+					for (_uint i = 0; i < 4; ++i)
+						m_bFlashStart[i] = true;
+				}
+			}
+		}
+		else if (m_eCurButton == BTN_WEAPON)
+		{
+			if (m_fElemAlpha[7] >= 1.f)
+			{
+				if (!m_bSlotRenderFinish)
+				{
+					m_bSlotRenderFinish = true;
+					for (_uint i = 0; i < 4; ++i)
+						m_bFlashStart[i] = true;
+				}
 			}
 		}
 	}
-
 
 }
 
@@ -1283,7 +1321,6 @@ void CResonatorUI::stateActive()
 
 	elemAlphaReset();
 
-	m_pUICharacter->ExitAnimation(UICharacter::UI_STATE);
 	m_pCamMovement->UseCamera(CCameraMovement::CAM_UI);
 }
 
@@ -1983,11 +2020,14 @@ void CResonatorUI::selectCharacter(_double TimeDelta)
 			if (pGM->OnMouse(m_OrthoCharBack[i]))
 			{
 				if (m_iCurCharacter != i)
+				{
 					elemAlphaReset(1);
+					m_pUICharacter->ChangeCharacter((UICharacter::MODEL)i);
+				}
 
 				m_iCurCharacter = i;
+				
 			}
-
 		}
 
 	}
@@ -2405,16 +2445,21 @@ void CResonatorUI::weaponKeyInput(_double TimeDelta)
 			// WeaponChange Confirm
 			if (pGameMode->OnMouse(m_OrthoWeaponConfirmText))
 			{
-				if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
-					m_iConfirmButtonState = BTN_CLICK;
-				else
+				CItem::ITEM_DESC pSlotItem = m_pInven->GetSlotData(CInventory::INVEN_WEAPON, m_iSelectSlot);
+				if ((pSlotItem.iData[3] == 1 && m_iCurCharacter == CPlayerState::CHARACTER_CHIXIA)
+					|| (pSlotItem.iData[3] == 0 && m_iCurCharacter == CPlayerState::CHARACTER_ROVER)
+					|| (pSlotItem.iData[3] == 0 && m_iCurCharacter == CPlayerState::CHARACTER_YANGYANG))
 				{
-					if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::AWAY && m_iConfirmButtonState == BTN_CLICK)
+					if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+						m_iConfirmButtonState = BTN_CLICK;
+					else
 					{
-						m_bWeaponChangeConfirm = true;
-						m_iConfirmButtonState = BTN_ON;
-						m_pInven->SwapWeapon(m_iCurCharacter, m_iSelectSlot);
-						//무기변경
+						if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::AWAY && m_iConfirmButtonState == BTN_CLICK)
+						{
+							m_bWeaponChangeConfirm = true;
+							m_iConfirmButtonState = BTN_ON;
+							m_pInven->SwapWeapon(m_iCurCharacter, m_iSelectSlot);
+						}
 					}
 				}
 			}
@@ -3514,7 +3559,7 @@ HRESULT CResonatorUI::resonanceRender()
 
 
 	// 시퀀스 슬롯 1
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[4], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot1[0].WorldMatrix)))
 		return E_FAIL;
@@ -3522,7 +3567,7 @@ HRESULT CResonatorUI::resonanceRender()
 		return E_FAIL;
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[4], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot1[1].WorldMatrix)))
 		return E_FAIL;
@@ -3531,7 +3576,7 @@ HRESULT CResonatorUI::resonanceRender()
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
 
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[19], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[5], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceText[0].WorldMatrix)))
 		return E_FAIL;
@@ -3542,7 +3587,7 @@ HRESULT CResonatorUI::resonanceRender()
 
 	for (_uint i = 0; i < 3; ++i)
 	{
-		fAlpha = m_fElemAlpha[19] * 2.f;
+		fAlpha = m_fElemAlpha[6] * 2.f;
 
 		if (i < iResonanceSocket[0])
 			vColor = { 1.f, 1.f, 1.f };
@@ -3564,7 +3609,7 @@ HRESULT CResonatorUI::resonanceRender()
 
 
 	// 시퀀스 슬롯 2
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[16], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[3], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot2[0].WorldMatrix)))
 		return E_FAIL;
@@ -3572,7 +3617,7 @@ HRESULT CResonatorUI::resonanceRender()
 		return E_FAIL;
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[16], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[3], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot2[1].WorldMatrix)))
 		return E_FAIL;
@@ -3581,7 +3626,7 @@ HRESULT CResonatorUI::resonanceRender()
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
 
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[17], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[4], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceText[1].WorldMatrix)))
 		return E_FAIL;
@@ -3592,7 +3637,7 @@ HRESULT CResonatorUI::resonanceRender()
 
 	for (_uint i = 0; i < 3; ++i)
 	{
-		fAlpha = m_fElemAlpha[17] * 2.f;
+		fAlpha = m_fElemAlpha[5] * 2.f;
 
 		if (i < iResonanceSocket[1])
 			vColor = { 1.f, 1.f, 1.f };
@@ -3612,7 +3657,7 @@ HRESULT CResonatorUI::resonanceRender()
 	}
 
 	// 시퀀스 슬롯 3
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[16], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[3], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot3[0].WorldMatrix)))
 		return E_FAIL;
@@ -3620,7 +3665,7 @@ HRESULT CResonatorUI::resonanceRender()
 		return E_FAIL;
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[16], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[3], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot3[1].WorldMatrix)))
 		return E_FAIL;
@@ -3629,7 +3674,7 @@ HRESULT CResonatorUI::resonanceRender()
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
 
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[17], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[4], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceText[2].WorldMatrix)))
 		return E_FAIL;
@@ -3640,7 +3685,7 @@ HRESULT CResonatorUI::resonanceRender()
 
 	for (_uint i = 0; i < 3; ++i)
 	{
-		fAlpha = m_fElemAlpha[17] * 2.f;
+		fAlpha = m_fElemAlpha[5] * 2.f;
 		if (i < iResonanceSocket[2])
 			vColor = { 1.f, 1.f, 1.f };
 		else
@@ -3659,7 +3704,7 @@ HRESULT CResonatorUI::resonanceRender()
 	}
 
 	// 시퀀스 슬롯 4
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[4], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot4[0].WorldMatrix)))
 		return E_FAIL;
@@ -3667,7 +3712,7 @@ HRESULT CResonatorUI::resonanceRender()
 		return E_FAIL;
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[4], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot4[1].WorldMatrix)))
 		return E_FAIL;
@@ -3676,7 +3721,7 @@ HRESULT CResonatorUI::resonanceRender()
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
 
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[19], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[5], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceText[3].WorldMatrix)))
 		return E_FAIL;
@@ -3687,7 +3732,7 @@ HRESULT CResonatorUI::resonanceRender()
 
 	for (_uint i = 0; i < 3; ++i)
 	{
-		fAlpha = m_fElemAlpha[19] * 2.f;
+		fAlpha = m_fElemAlpha[6] * 2.f;
 		if (i < iResonanceSocket[3])
 			vColor = { 1.f, 1.f, 1.f };
 		else
@@ -3707,7 +3752,7 @@ HRESULT CResonatorUI::resonanceRender()
 
 	if (m_iSelectSQ != SQ_NONE)
 	{
-		fAlpha = m_fElemAlpha[17] * 0.5f;
+		fAlpha = m_fElemAlpha[7] * 0.5f;
 		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceUpgradeBack.WorldMatrix)))
@@ -3721,7 +3766,7 @@ HRESULT CResonatorUI::resonanceRender()
 		vColor = UNIQUE_COLOR;
 		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQCostSlot.WorldMatrix)))
 			return E_FAIL;
@@ -3730,7 +3775,7 @@ HRESULT CResonatorUI::resonanceRender()
 		m_pShader->Begin(8);
 		m_pVIBuffer->Render();
 
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQCostIcon.WorldMatrix)))
 			return E_FAIL;
@@ -3740,7 +3785,7 @@ HRESULT CResonatorUI::resonanceRender()
 		m_pVIBuffer->Render();
 
 		//비용
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQCost[0].WorldMatrix)))
 			return E_FAIL;
@@ -3748,7 +3793,7 @@ HRESULT CResonatorUI::resonanceRender()
 			return E_FAIL;
 		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQCost[1].WorldMatrix)))
 			return E_FAIL;
@@ -3770,7 +3815,7 @@ HRESULT CResonatorUI::resonanceRender()
 
 		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQOwn[0].WorldMatrix)))
 			return E_FAIL;
@@ -3783,7 +3828,7 @@ HRESULT CResonatorUI::resonanceRender()
 		{
 			if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
 				return E_FAIL;
-			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 				return E_FAIL;
 			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQOwn[i + 1].WorldMatrix)))
 				return E_FAIL;
@@ -3804,7 +3849,7 @@ HRESULT CResonatorUI::resonanceRender()
 				return E_FAIL;
 		}
 
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQUpgradeButton.WorldMatrix)))
 			return E_FAIL;
@@ -3812,7 +3857,7 @@ HRESULT CResonatorUI::resonanceRender()
 		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
 
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSQUpgradeButtonText.WorldMatrix)))
 			return E_FAIL;
@@ -3827,7 +3872,7 @@ HRESULT CResonatorUI::resonanceRender()
 	switch (m_iSelectSQ)
 	{
 	case SQ_1:
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot1[1].WorldMatrix)))
 			return E_FAIL;
@@ -3836,7 +3881,7 @@ HRESULT CResonatorUI::resonanceRender()
 		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
 
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceCurSequenceText.WorldMatrix)))
 			return E_FAIL;
@@ -3847,7 +3892,7 @@ HRESULT CResonatorUI::resonanceRender()
 
 		break;
 	case SQ_2:
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot2[1].WorldMatrix)))
 			return E_FAIL;
@@ -3856,7 +3901,7 @@ HRESULT CResonatorUI::resonanceRender()
 		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
 
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceCurSequenceText.WorldMatrix)))
 			return E_FAIL;
@@ -3867,7 +3912,7 @@ HRESULT CResonatorUI::resonanceRender()
 
 		break;
 	case SQ_3:
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot3[1].WorldMatrix)))
 			return E_FAIL;
@@ -3876,7 +3921,7 @@ HRESULT CResonatorUI::resonanceRender()
 		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
 
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceCurSequenceText.WorldMatrix)))
 			return E_FAIL;
@@ -3887,7 +3932,7 @@ HRESULT CResonatorUI::resonanceRender()
 
 		break;
 	case SQ_4:
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceSlot4[1].WorldMatrix)))
 			return E_FAIL;
@@ -3896,7 +3941,7 @@ HRESULT CResonatorUI::resonanceRender()
 		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
 
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[18], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSequenceCurSequenceText.WorldMatrix)))
 			return E_FAIL;
@@ -4446,20 +4491,6 @@ HRESULT CResonatorUI::weaponSwitchRender()
 	{
 		CItem::ITEM_DESC pSlotItem = m_pInven->GetSlotData(CInventory::INVEN_WEAPON, i);
 	
-		if (i == m_iSelectSlot)
-		{
-			/*if (FAILED(m_pShader->SetRawValue("g_vColor", &vItemSlotColor, sizeof(_float3))))
-				return E_FAIL;*/
-			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
-				return E_FAIL;
-			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponSlot[i].WorldMatrix)))
-				return E_FAIL;
-			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTON, m_pShader, "g_DiffuseTexture")))
-				return E_FAIL;
-			m_pShader->Begin(10);
-			m_pVIBuffer->Render();
-		}
-
 		// Weapon Slot
 		_float3 vItemSlotColor = CItemDB::GetItemSlotColor(pSlotItem.eItemGrade);
 		if (FAILED(m_pShader->SetRawValue("g_vColor", &vItemSlotColor, sizeof(_float3))))
@@ -4485,6 +4516,20 @@ HRESULT CResonatorUI::weaponSwitchRender()
 
 		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
+
+		if (i == m_iSelectSlot)
+		{
+			/*if (FAILED(m_pShader->SetRawValue("g_vColor", &vItemSlotColor, sizeof(_float3))))
+			return E_FAIL;*/
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponSlot[i].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTOM_SMALL, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+		}
 
 		if (pSlotItem.iData[2] > 0)
 		{

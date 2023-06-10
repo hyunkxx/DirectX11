@@ -75,13 +75,19 @@ public:
 	virtual void RenderGUI();
 
 public:
+	enum MODEL { ROVER, YANGYANG, CHIXIA, MODEL_END };
 	enum UIANIMATION { UI_STATE, UI_WEAPON, UI_ECHO, UI_RESONANCE, UI_WUTHERIDE };
 	void SetAnimation(UIANIMATION eCurUI);
 
-	void ExitAnimation(UIANIMATION eCurUI);
+	void ExitAnimation(UIANIMATION eCurUI) = delete;
+	void ChangeCharacter(MODEL eModelType);
 
 private:
 	void initAnimation();
+	void initRoverAnimation();
+	void initYangyangAnimation();
+	void initChixiagAnimation();
+
 	void updateAnimationState(_double TimeDelta);
 
 	HRESULT addComponents();
@@ -95,13 +101,16 @@ public:
 private:
 	CRenderer* m_pRenderer = nullptr;
 	CShader* m_pShader = nullptr;
-	CModel_VTF*	m_pModel = nullptr;
-	CModel_Anim* m_pAnimSetBase = nullptr;
-	CModel_Anim* m_pAnimSetRibbon = nullptr;
 
-	_uint m_iAnimID = { 0 };
-	_uint m_iRibbonID = { 0 };
-	UIANIMATION m_eUIState = UI_STATE;
+	MODEL m_iCurModel = ROVER;
+
+	CModel_VTF*	m_pModel[MODEL_END];
+	CModel_Anim* m_pAnimSetBase[MODEL_END];
+	CModel_Anim* m_pAnimSetRibbon[MODEL_END];
+	
+	_uint m_iAnimID[MODEL_END] = { 0 };
+	_uint m_iRibbonID[MODEL_END] = { 0 };
+	UIANIMATION m_eUIState = { UI_STATE };
 
 	// Studio
 	_bool m_bStateBase = false;

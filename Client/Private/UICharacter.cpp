@@ -27,6 +27,10 @@ HRESULT UICharacter::Initialize_Prototype()
 
 HRESULT UICharacter::Initialize(void * pArg)
 {
+	ZeroMemory(m_pModel, sizeof(m_pModel));
+	ZeroMemory(m_pAnimSetBase, sizeof(m_pAnimSetBase));
+	ZeroMemory(m_pAnimSetRibbon, sizeof(m_pAnimSetRibbon));
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 	
@@ -35,16 +39,21 @@ HRESULT UICharacter::Initialize(void * pArg)
 
 	initAnimation();
 
-	m_pAnimSetBase->Set_RootBone(TEXT("Root"));
+	for (_uint i = 0; i < MODEL_END; ++i)
+	{
+		m_pAnimSetBase[i]->Set_RootBone(TEXT("Root"));
+		m_iAnimID[i] = UICHAR_IDLE;
+	}
 
-	m_iAnimID = UICHAR_IDLE;
-
-	m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-	m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+	for (_uint i = 0; i < MODEL_END; ++i)
+	{
+		m_pAnimSetBase[i]->SetUp_Animation(m_iAnimID[i], true);
+		m_pAnimSetRibbon[i]->SetUp_Animation(m_iAnimID[i], true);
+	}
 
 	m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(270.f));
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(-999.f, 0.f, -1000.f, 1.f));
-	
+
 	return S_OK;
 }
 
@@ -69,7 +78,18 @@ void UICharacter::Tick(_double TimeDelta)
 
 	CCameraMovement::CAM_TYPE curCamType = m_pCamMovement->GetCurrentCamType();
 	if (curCamType != CCameraMovement::CAM_UI)
+	{
+		for (_uint i = 0; i < 3; ++i)
+		{
+			m_iAnimID[i] = UICHAR_IDLE;
+			m_iRibbonID[i] = UICHAR_RIB_IDLE;
+			m_eUIState = UI_STATE;
+			m_pAnimSetBase[i]->SetUp_Animation(m_iAnimID[i], true);
+			m_pAnimSetRibbon[i]->SetUp_Animation(m_iRibbonID[i], true);
+		}
+
 		return;
+	}
 
 	updateAnimationState(TimeDelta);
 }
@@ -82,11 +102,11 @@ void UICharacter::LateTick(_double TimeDelta)
 	if (curCamType != CCameraMovement::CAM_UI)
 		return;
 
-	if (m_iAnimID == UICHAR_RESONANT_START)
+	if (m_iAnimID[m_iCurModel] == UICHAR_RESONANT_START)
 		m_pUICam->SetMove(true);
 	else
 	{
-		if (m_iAnimID != UICHAR_RESONANT_LOOP)
+		if (m_iAnimID[m_iCurModel] != UICHAR_RESONANT_LOOP)
 			m_pUICam->SetMove(false);
 	}
 
@@ -131,32 +151,37 @@ HRESULT UICharacter::Render()
 	if (FAILED(setupShaderResource()))
 		return E_FAIL;
 
-	for (_uint i = 0; i < 6; ++i)
+	_uint iMeshCount;
+	if (m_iCurModel == YANGYANG)
+		iMeshCount = m_pModel[YANGYANG]->Get_NumMeshes() - 2;
+	else
+		iMeshCount = 6;
+
+	for (_uint i = 0; i < iMeshCount; ++i)
 	{
-		if (FAILED(m_pModel->SetUp_ShaderMaterialResource(m_pShader, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
+		if (FAILED(m_pModel[m_iCurModel]->SetUp_ShaderMaterialResource(m_pShader, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
+			return E_FAIL;
+		if (FAILED(m_pModel[m_iCurModel]->SetUp_ShaderMaterialResource(m_pShader, "g_NormalTexture", i, MyTextureType_NORMALS)))
+			return E_FAIL;
+		if (FAILED(m_pModel[m_iCurModel]->SetUp_VertexTexture(m_pShader, "g_VertexTexture", i)))
 			return E_FAIL;
 
-		if (FAILED(m_pModel->SetUp_ShaderMaterialResource(m_pShader, "g_NormalTexture", i, MyTextureType_NORMALS)))
-			return E_FAIL;
-
-		if (FAILED(m_pModel->SetUp_VertexTexture(m_pShader, "g_VertexTexture", i)))
-			return E_FAIL;
-
-		if (i == 5)
+		if (i == iMeshCount - 1)
 		{
-			//if (FAILED(m_pEyeBurstTexture->Setup_ShaderResource(m_pShader, "g_EyeBurstTexture")))
-			//	return E_FAIL;
-			//if (FAILED(m_pEyeMaskTexture->Setup_ShaderResource(m_pShader, "g_EyeMaskTexture")))
-			//	return E_FAIL;
+			if (FAILED(m_pModel[m_iCurModel]->SetUp_ShaderMaterialResource(m_pShader, "g_DiffuseTexture", i + 1, MyTextureType_DIFFUSE)))
+				return E_FAIL;
 
-			m_pShader->Begin(7);		//Burst
+			if (m_iCurModel == YANGYANG)
+				m_pShader->Begin(16);
+			else
+				m_pShader->Begin(7);		//Burst
 		}
 		else
 		{
 			m_pShader->Begin(4);
 		}
 
-		m_pModel->Render(i);
+		m_pModel[m_iCurModel]->Render(i);
 
 	}
 
@@ -174,45 +199,47 @@ void UICharacter::RenderGUI()
 
 void UICharacter::SetAnimation(UIANIMATION eCurUI)
 {
-	if (m_iAnimID == UICHAR_IDLE)
+	m_eUIState = m_eUIState;
+
+	if (m_iAnimID[m_iCurModel] == UICHAR_IDLE)
 	{
 		m_bStateBase = true;
 		switch (eCurUI)
 		{
 		case UI_STATE:
-			m_iAnimID = UICHAR_IDLE;
-			m_iRibbonID = UICHAR_RIB_IDLE;
+			m_iAnimID[m_iCurModel] = UICHAR_IDLE;
+			m_iRibbonID[m_iCurModel] = UICHAR_RIB_IDLE;
 			m_eUIState = UI_STATE;
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
+			m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], true);
+			m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], true);
 			break;
 		case UI_WEAPON:
-			m_iAnimID = UICHAR_WEAPON_START;
-			m_iRibbonID = UICHAR_RIB_WEAPON_START;
+			m_iAnimID[m_iCurModel] = UICHAR_WEAPON_START;
+			m_iRibbonID[m_iCurModel] = UICHAR_RIB_WEAPON_START;
 			m_eUIState = UI_WEAPON;
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
+			m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], true);
+			m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], true);
 			break;
 		case UI_ECHO:
-			m_iAnimID = UICHAR_CHIP_START;
-			m_iRibbonID = UICHAR_RIB_CHIP_START;
+			m_iAnimID[m_iCurModel] = UICHAR_CHIP_START;
+			m_iRibbonID[m_iCurModel] = UICHAR_RIB_CHIP_START;
 			m_eUIState = UI_ECHO;
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
+			m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], true);
+			m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], true);
 			break;
 		case UI_RESONANCE:
-			m_iAnimID = UICHAR_RESONANT_START;
-			m_iRibbonID = UICHAR_RIB_RESONANT_START;
+			m_iAnimID[m_iCurModel] = UICHAR_RESONANT_START;
+			m_iRibbonID[m_iCurModel] = UICHAR_RIB_RESONANT_START;
 			m_eUIState = UI_RESONANCE;
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
+			m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], true);
+			m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], true);
 			break;
 		case UI_WUTHERIDE:
-			m_iAnimID = UICHAR_INTO1_START;
-			m_iRibbonID = UICHAR_RIB_INTO1_START;
+			m_iAnimID[m_iCurModel] = UICHAR_INTO1_START;
+			m_iRibbonID[m_iCurModel] = UICHAR_RIB_INTO1_START;
 			m_eUIState = UI_WUTHERIDE;
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
+			m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], true);
+			m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], true);
 			break;
 		}
 	}
@@ -222,89 +249,100 @@ void UICharacter::SetAnimation(UIANIMATION eCurUI)
 		switch (m_eUIState)
 		{
 		case UI_STATE:
-			m_iAnimID = UICHAR_IDLE;
-			m_iRibbonID = UICHAR_RIB_IDLE;
+			m_iAnimID[m_iCurModel] = UICHAR_IDLE;
+			m_iRibbonID[m_iCurModel] = UICHAR_RIB_IDLE;
 			m_eUIState = eCurUI;
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
+			m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], true);
+			m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], true);
 			break;
 		case UI_WEAPON:
-			m_iAnimID = UICHAR_WEAPON_END;
-			m_iRibbonID = UICHAR_RIB_WEAPON_END;
+			m_iAnimID[m_iCurModel] = UICHAR_WEAPON_END;
+			m_iRibbonID[m_iCurModel] = UICHAR_RIB_WEAPON_END;
 			m_eUIState = eCurUI;
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
+			m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], true);
+			m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], true);
 			break;
 		case UI_ECHO:
-			m_iAnimID = UICHAR_CHIP_END;
-			m_iRibbonID = UICHAR_RIB_CHIP_END;
+			m_iAnimID[m_iCurModel] = UICHAR_CHIP_END;
+			m_iRibbonID[m_iCurModel] = UICHAR_RIB_CHIP_END;
 			m_eUIState = eCurUI;
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
+			m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], true);
+			m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], true);
 			break;
 		case UI_RESONANCE:
-			m_iAnimID = UICHAR_RESONANT_END;
-			m_iRibbonID = UICHAR_RIB_RESONANT_END;
+			m_iAnimID[m_iCurModel] = UICHAR_RESONANT_END;
+			m_iRibbonID[m_iCurModel] = UICHAR_RIB_RESONANT_END;
 			m_eUIState = eCurUI;
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
+			m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], true);
+			m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], true);
 			break;
 		case UI_WUTHERIDE:
-			m_iAnimID = UICHAR_INTO1_END;
-			m_iRibbonID = UICHAR_RIB_INTO1_END;
+			m_iAnimID[m_iCurModel] = UICHAR_INTO1_END;
+			m_iRibbonID[m_iCurModel] = UICHAR_RIB_INTO1_END;
 			m_eUIState = eCurUI;
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
+			m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], true);
+			m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], true);
 			break;
 		}
-
-		//ExitAnimation(eCurUI);
 	}
+	
 }
 
-void UICharacter::ExitAnimation(UIANIMATION eCurUI)
+void UICharacter::ChangeCharacter(MODEL eModelType)
 {
-	if (m_iAnimID == UICHAR_CHIP_LOOP ||
-		m_iAnimID == UICHAR_INTEN_LOOP ||
-		m_iAnimID == UICHAR_INTO1_LOOP ||
-		m_iAnimID == UICHAR_RESONANT_LOOP ||
-		m_iAnimID == UICHAR_WEAPON_LOOP)
+	m_iCurModel = eModelType;
+
+	switch (m_eUIState)
 	{
-		m_iAnimID--;
-		m_eUIState = eCurUI;
-		m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-		m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
+	case UI_STATE:
+		m_iAnimID[m_iCurModel] = UICHAR_IDLE;
+		m_iRibbonID[m_iCurModel] = UICHAR_RIB_IDLE;
+		break;
+	case UI_WEAPON:
+		m_iAnimID[m_iCurModel] = UICHAR_WEAPON_START;
+		m_iRibbonID[m_iCurModel] = UICHAR_RIB_WEAPON_START;
+		break;
+	case UI_ECHO:
+		m_iAnimID[m_iCurModel] = UICHAR_CHIP_START;
+		m_iRibbonID[m_iCurModel] = UICHAR_RIB_CHIP_START;
+		break;
+	case UI_RESONANCE:
+		m_iAnimID[m_iCurModel] = UICHAR_RESONANT_START;
+		m_iRibbonID[m_iCurModel] = UICHAR_RIB_RESONANT_START;
+		break;
+	case UI_WUTHERIDE:
+		m_iAnimID[m_iCurModel] = UICHAR_INTO1_START;
+		m_iRibbonID[m_iCurModel] = UICHAR_RIB_INTO1_START;
+		break;
 	}
-	else if (
-		m_iAnimID == UICHAR_CHIP_START ||
-		m_iAnimID == UICHAR_INTEN_START ||
-		m_iAnimID == UICHAR_INTO1_START ||
-		m_iAnimID == UICHAR_RESONANT_START ||
-		m_iAnimID == UICHAR_WEAPON_START)
-	{
-		m_iAnimID -= 2; // >> 재생중에 연속으로 클릭하니까 밀림 일단 보류
-		m_eUIState = eCurUI;
-		m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-		m_pAnimSetRibbon->SetUp_Animation(m_iAnimID, true);
-	}
+
+	m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], true);
+	m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], true);
 }
 
 void UICharacter::initAnimation()
 {
-	for (auto& pBone : m_pAnimSetBase->Get_Bones())
-		pBone->Set_TargetBone(m_pModel->Get_BonePtr(pBone->Get_Name()));
+	initRoverAnimation();
+	initYangyangAnimation();
+	initChixiagAnimation();
+}
 
-	for (auto& pBone : m_pAnimSetRibbon->Get_Bones())
-		pBone->Set_TargetBone(m_pModel->Get_BonePtr(pBone->Get_Name()));
+void UICharacter::initRoverAnimation()
+{
+	for (auto& pBone : m_pAnimSetBase[ROVER]->Get_Bones())
+		pBone->Set_TargetBone(m_pModel[ROVER]->Get_BonePtr(pBone->Get_Name()));
 
-	for (auto& pAnim : m_pAnimSetBase->Get_Animations())
+	for (auto& pBone : m_pAnimSetRibbon[ROVER]->Get_Bones())
+		pBone->Set_TargetBone(m_pModel[ROVER]->Get_BonePtr(pBone->Get_Name()));
+
+	for (auto& pAnim : m_pAnimSetBase[ROVER]->Get_Animations())
 	{
 		const _tchar* szAnimName = pAnim->Get_Name();
 
 		for (auto& pChannel : pAnim->Get_Channels())
 		{
 			const _tchar* szChannelName = pChannel->Get_Name();
-			CBone* pBone = m_pAnimSetBase->Get_BonePtr(pChannel->Get_TargetBoneID());
+			CBone* pBone = m_pAnimSetBase[ROVER]->Get_BonePtr(pChannel->Get_TargetBoneID());
 
 			if ((wcsncmp(szChannelName, TEXT("Bip001"), 6) &&
 				lstrcmp(szChannelName, TEXT("WeaponProp01")) &&
@@ -317,14 +355,14 @@ void UICharacter::initAnimation()
 		}
 	}
 
-	for (auto& pAnim : m_pAnimSetRibbon->Get_Animations())
+	for (auto& pAnim : m_pAnimSetRibbon[ROVER]->Get_Animations())
 	{
 		const _tchar* szAnimName = pAnim->Get_Name();
 
 		for (auto& pChannel : pAnim->Get_Channels())
 		{
 			const _tchar* szChannelName = pChannel->Get_Name();
-			CBone* pBone = m_pAnimSetRibbon->Get_BonePtr(pChannel->Get_TargetBoneID());
+			CBone* pBone = m_pAnimSetRibbon[ROVER]->Get_BonePtr(pChannel->Get_TargetBoneID());
 
 
 			if (!wcsncmp(szChannelName, TEXT("Root"), 4) ||
@@ -333,8 +371,308 @@ void UICharacter::initAnimation()
 				!wcsncmp(szChannelName, TEXT("R2"), 2) ||
 				!wcsncmp(szChannelName, TEXT("Hulu"), 4))
 				pChannel->Set_Apply(false);
-			else 
+			else
 				pChannel->Set_Apply(true);
+		}
+	}
+}
+
+void UICharacter::initYangyangAnimation()
+{
+	for (auto& pBone : m_pAnimSetBase[YANGYANG]->Get_Bones())
+		pBone->Set_TargetBone(m_pModel[YANGYANG]->Get_BonePtr(pBone->Get_Name()));
+	
+	for (auto& pAnim : m_pAnimSetBase[YANGYANG]->Get_Animations())
+	{
+		const _tchar* szAnimName = pAnim->Get_Name();
+
+		if (!lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Start")))
+			pAnim->Set_Duration(10.0);
+
+		if (!lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Start_2")))
+			pAnim->Set_Duration(30.0);
+
+
+		for (auto& pChannel : pAnim->Get_Channels())
+		{
+			const _tchar* szChannelName = pChannel->Get_Name();
+			CBone* pBone = m_pAnimSetBase[YANGYANG]->Get_BonePtr(pChannel->Get_TargetBoneID());
+
+			if (wcsncmp(szChannelName, TEXT("Bip001"), 6) &&
+				lstrcmp(szChannelName, TEXT("WeaponProp01")) &&
+				lstrcmp(szChannelName, TEXT("WeaponProp02")) &&
+				wcsncmp(szChannelName, TEXT("Root"), 4))
+				pChannel->Set_Apply(false);
+
+			if (true == pBone->Is_ChildOf(TEXT("Bip001Head")))
+			{
+				if (lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_End")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_End_2")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Loop")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Start")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|AirAttack_Start_2")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack02")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack03")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack04")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Attack06")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Burst01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Skill01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Skill02")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|SkillQte")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Stand1_Action01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Stand1_Action02")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Stand1_Action03")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|Stand2")) &&
+					lstrcmp(szAnimName, TEXT("R2T1YangyangMd10011.ao|StandChange")))
+				{
+					pChannel->Set_Apply(false);
+				}
+			}
+		}
+	}
+
+	// Ribbon
+	for (auto& pBone : m_pAnimSetRibbon[YANGYANG]->Get_Bones())
+		pBone->Set_TargetBone(m_pModel[YANGYANG]->Get_BonePtr(pBone->Get_Name()));
+
+	for (auto& pAnim : m_pAnimSetRibbon[YANGYANG]->Get_Animations())
+	{
+		const _tchar* szAnimName = pAnim->Get_Name();
+
+		for (auto& pChannel : pAnim->Get_Channels())
+		{
+			const _tchar* szChannelName = pChannel->Get_Name();
+			CBone* pBone = m_pAnimSetRibbon[YANGYANG]->Get_BonePtr(pChannel->Get_TargetBoneID());
+
+			/*if (pChannel->Get_NumKeyFrames() <= 2)
+			continue;*/
+
+			// spine 자식 Bone
+			if (!(true == pBone->Is_ChildOf(TEXT("R_Skirt_Bone09")) ||
+				!lstrcmp(szChannelName, TEXT("R_Skirt_Bone09")) ||
+				true == pBone->Is_ChildOf(TEXT("R_Skirt_Bone19")) ||
+				!lstrcmp(szChannelName, TEXT("R_Skirt_Bone19")) ||
+				true == pBone->Is_ChildOf(TEXT("L_Skirt_Bone09")) ||
+				!lstrcmp(szChannelName, TEXT("L_Skirt_Bone09")) ||
+				true == pBone->Is_ChildOf(TEXT("L_Skirt_Bone19")) ||
+				!lstrcmp(szChannelName, TEXT("L_Skirt_Bone19")) ||
+				true == pBone->Is_ChildOf(TEXT("R_Skirt_Bone38")) ||
+				!lstrcmp(szChannelName, TEXT("R_Skirt_Bone38")) ||
+				true == pBone->Is_ChildOf(TEXT("L_Skirt_Bone38")) ||
+				!lstrcmp(szChannelName, TEXT("L_Skirt_Bone38")) ||
+				true == pBone->Is_ChildOf(TEXT("HairLong_Bone01")) ||
+				!lstrcmp(szChannelName, TEXT("HairLong_Bone01")) ||
+				true == pBone->Is_ChildOf(TEXT("HairLong_Bone20")) ||
+				!lstrcmp(szChannelName, TEXT("HairLong_Bone20")) ||
+				true == pBone->Is_ChildOf(TEXT("HairF_Bone17")) ||
+				!lstrcmp(szChannelName, TEXT("HairF_Bone17")) ||
+				true == pBone->Is_ChildOf(TEXT("HairF_Bone13")) ||
+				!lstrcmp(szChannelName, TEXT("HairF_Bone13")) ||
+				true == pBone->Is_ChildOf(TEXT("HairF_Bone09")) ||
+				!lstrcmp(szChannelName, TEXT("HairF_Bone09")) ||
+				true == pBone->Is_ChildOf(TEXT("HairF_Bone05")) ||
+				!lstrcmp(szChannelName, TEXT("HairF_Bone05")) ||
+				true == pBone->Is_ChildOf(TEXT("HairF_Bone01")) ||
+				!lstrcmp(szChannelName, TEXT("HairF_Bone01")) ||
+				true == pBone->Is_ChildOf(TEXT("Fadai_Bone01")) ||
+				!lstrcmp(szChannelName, TEXT("Fadai_Bone01")) ||
+				true == pBone->Is_ChildOf(TEXT("Fadai_Bone08")) ||
+				!lstrcmp(szChannelName, TEXT("Fadai_Bone08")) ||
+				true == pBone->Is_ChildOf(TEXT("Fadai_Bone11")) ||
+				!lstrcmp(szChannelName, TEXT("Fadai_Bone11")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Piao007_R")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Piao007_R"))))
+			{
+				pChannel->Set_Apply(false);
+			}
+		}
+	}
+}
+
+void UICharacter::initChixiagAnimation()
+{
+	for (auto& pBone : m_pAnimSetBase[CHIXIA]->Get_Bones())
+		pBone->Set_TargetBone(m_pModel[CHIXIA]->Get_BonePtr(pBone->Get_Name()));
+
+	for (auto& pBone : m_pAnimSetRibbon[CHIXIA]->Get_Bones())
+		pBone->Set_TargetBone(m_pModel[CHIXIA]->Get_BonePtr(pBone->Get_Name()));
+
+	for (auto& pAnim : m_pAnimSetBase[CHIXIA]->Get_Animations())
+	{
+		const _tchar* szAnimName = pAnim->Get_Name();
+
+		if (!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Z_HoldShot_Upper_Loop_F) HoldShot_Upper_Loop_F")) ||
+			!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Z_HoldShot_Upper_Loop_B) HoldShot_Upper_Loop_B")))
+		{
+			pAnim->Set_Duration(20.0);
+		}
+
+		for (auto& pChannel : pAnim->Get_Channels())
+		{
+			const _tchar* szChannelName = pChannel->Get_Name();
+			CBone* pBone = m_pAnimSetBase[CHIXIA]->Get_BonePtr(pChannel->Get_TargetBoneID());
+
+			if (wcsncmp(szChannelName, TEXT("Bip001"), 6) &&
+				lstrcmp(szChannelName, TEXT("WeaponProp01")) &&
+				lstrcmp(szChannelName, TEXT("WeaponProp02")) &&
+				wcsncmp(szChannelName, TEXT("Root"), 4))
+			{
+				pChannel->Set_Apply(false);
+			}
+
+
+
+			if (!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(X_AimShot_Attack) AimShot_Attack")) ||
+				!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(X_AimPose_F_Start) AimPose_F_Start")) ||
+				!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Y_AirAttack01_Fl) AirAttack01_Fl")) ||
+				!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Y_AirAttack01_FR) AirAttack01_FR")))
+			{
+				if (!lstrcmp(szChannelName, TEXT("Bip001LForearm")) ||
+					pBone->Is_ChildOf(TEXT("Bip001LForearm")))
+				{
+					pChannel->Set_Apply(false);
+				}
+			}
+
+
+			if (!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Z_HoldShot_Lower_End) HoldShot_Lower_End")) ||
+				!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Z_HoldShot_Lower_Stand) HoldShot_Lower_Stand")))
+			{
+				if (!lstrcmp(szChannelName, TEXT("Bip001_L_CalfTwist")) ||
+					//pBone->Is_ChildOf(TEXT("Bip001_L_Calf")) ||
+					!lstrcmp(szChannelName, TEXT("Bip001_R_CalfTwist")))
+					//pBone->Is_ChildOf(TEXT("Bip001_R_Calf")))
+				{
+					for (auto& KeyFrame : pChannel->Get_KeyFrames())
+					{
+						XMStoreFloat4(&KeyFrame.vRotation, XMQuaternionInverse(XMLoadFloat4(&KeyFrame.vRotation)));
+					}
+					//pChannel->Set_Apply(false);
+				}
+			}
+
+			if (!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Z_HoldShot_Upper_Loop_F) HoldShot_Upper_Loop_F")) ||
+				!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Z_HoldShot_Upper_Loop_B) HoldShot_Upper_Loop_B")) ||
+				!lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Skill03_Derive) Skill03_Derive")))
+			{
+				if (!lstrcmp(szChannelName, TEXT("WeaponProp01")) ||
+					!lstrcmp(szChannelName, TEXT("WeaponProp02")))
+				{
+					pChannel->Set_Apply(false);
+				}
+			}
+
+			if (true == pBone->Is_ChildOf(TEXT("Bip001Head")))
+			{
+				if (lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Attack01) Attack01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Attack02) Attack02")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Attack03) Attack03")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Attack04) Attack04")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Burst01) Burst01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Skill01) Skill01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Skill01_B) Skill01_B")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Skill03_B) Skill03_B")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Skill03_Derive) Skill03_Derive")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(SkillQTE) SkillQTE")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Stand1_Action01) Stand1_Action01")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(Stand2) Stand2")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(StandChange) StandChange")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(AimPose_D) AimPose_D")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(AimPose_F) AimPose_F")) &&
+					lstrcmp(szAnimName, TEXT("R2T1MaxiaofangMd10011.ao|(AimPose_U) AimPose_U")))
+				{
+					pChannel->Set_Apply(false);
+				}
+			}
+		}
+	}
+
+	// Ribbon
+	for (auto& pBone : m_pAnimSetBase[CHIXIA]->Get_Bones())
+	{
+		const _tchar* szBonename = pBone->Get_Name();
+		CBone* pTargetBone = m_pModel[CHIXIA]->Get_BonePtr(szBonename);
+		pBone->Set_TargetBone(pTargetBone);
+
+
+		if (!lstrcmp(szBonename, TEXT("Bone_Skirt001_L")) ||
+			!lstrcmp(szBonename, TEXT("Bone_Skirt007_R")) ||
+			!lstrcmp(szBonename, TEXT("Bone_Skirt011_L")) ||
+			!lstrcmp(szBonename, TEXT("Bone_Skirt017_R")) ||
+			!lstrcmp(szBonename, TEXT("Bone_Skirt022_M")) ||
+			!lstrcmp(szBonename, TEXT("Bone_Piao001_M")) ||
+			!lstrcmp(szBonename, TEXT("Bone_Piao011_R")))
+		{
+			_matrix matTemp = XMLoadFloat4x4(&pTargetBone->Get_DefaultTransformationMatrix());
+			_vector vAxis = matTemp.r[1];
+			matTemp = matTemp * XMMatrixRotationAxis(vAxis, XMConvertToRadians(-7.f));
+			matTemp.r[3] *= 1.15f;
+			matTemp.r[3] = XMVectorSetW(matTemp.r[3], 1.f);
+			pTargetBone->Set_DefaultMatrix(matTemp);
+		}
+	}
+
+
+	for (auto& pAnim : m_pAnimSetRibbon[CHIXIA]->Get_Animations())
+	{
+		const _tchar* szAnimName = pAnim->Get_Name();
+
+		for (auto& pChannel : pAnim->Get_Channels())
+		{
+			const _tchar* szChannelName = pChannel->Get_Name();
+			CBone* pBone = m_pAnimSetRibbon[CHIXIA]->Get_BonePtr(pChannel->Get_TargetBoneID());
+
+			if (pChannel->Get_NumKeyFrames() <= 2)
+			{
+				pChannel->Set_Apply(false);
+				continue;
+			}
+
+
+			if (!(true == pBone->Is_ChildOf(TEXT("Bone_Skirt001_L")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Skirt007_R")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Skirt011_L")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Skirt017_R")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Skirt022_M")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Piao001_M")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Piao011_R")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Hair001_L")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Hair005_L")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Hair008_R")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Hair011_M")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Hair014_L")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Hair018_R")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Hair028_L")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Hair032_R")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Hair036_L")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Hair040_R")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Hair044_R")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Piao025_L")) ||
+				true == pBone->Is_ChildOf(TEXT("Bone_Piao032_R")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Skirt001_L")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Skirt007_R")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Skirt011_L")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Skirt017_R")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Skirt022_M")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Piao001_M")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Piao011_R")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Hair001_L")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Hair005_L")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Hair008_R")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Hair011_M")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Hair014_L")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Hair018_R")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Hair028_L")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Hair032_R")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Hair036_L")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Hair040_R")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Hair044_R")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Piao025_L")) ||
+				!lstrcmp(szChannelName, TEXT("Bone_Piao032_R"))))
+			{
+				pChannel->Set_Apply(false);
+			}
 		}
 	}
 }
@@ -343,13 +681,13 @@ void UICharacter::updateAnimationState(_double TimeDelta)
 {
 	_bool bFinished = false;
 
-	m_pAnimSetBase->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, &bFinished);
-	m_pAnimSetBase->Update_TargetBones();
+	m_pAnimSetBase[m_iCurModel]->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, &bFinished);
+	m_pAnimSetBase[m_iCurModel]->Update_TargetBones();
 
-	m_pAnimSetRibbon->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, nullptr);
-	m_pAnimSetRibbon->Ribbon_TargetBones();
+	m_pAnimSetRibbon[m_iCurModel]->Play_Animation(TimeDelta, nullptr, nullptr, nullptr, nullptr);
+	m_pAnimSetRibbon[m_iCurModel]->Ribbon_TargetBones();
 
-	m_pModel->Invalidate_CombinedMatrices();
+	m_pModel[m_iCurModel]->Invalidate_CombinedMatrices();
 
 	if (m_bStateBase)
 	{
@@ -358,29 +696,29 @@ void UICharacter::updateAnimationState(_double TimeDelta)
 			switch (m_eUIState)
 			{
 			case UI_STATE:
-				m_iAnimID = UICHAR_IDLE;
-				m_iRibbonID = UICHAR_RIB_IDLE;
+				m_iAnimID[m_iCurModel] = UICHAR_IDLE;
+				m_iRibbonID[m_iCurModel] = UICHAR_RIB_IDLE;
 				break;
 			case UI_WEAPON:
-				m_iAnimID = UICHAR_WEAPON_LOOP;
-				m_iRibbonID = UICHAR_RIB_WEAPON_LOOP;
+				m_iAnimID[m_iCurModel] = UICHAR_WEAPON_LOOP;
+				m_iRibbonID[m_iCurModel] = UICHAR_RIB_WEAPON_LOOP;
 				break;
 			case UI_ECHO:
-				m_iAnimID = UICHAR_CHIP_LOOP;
-				m_iRibbonID = UICHAR_RIB_CHIP_LOOP;
+				m_iAnimID[m_iCurModel] = UICHAR_CHIP_LOOP;
+				m_iRibbonID[m_iCurModel] = UICHAR_RIB_CHIP_LOOP;
 				break;
 			case UI_RESONANCE:
-				m_iAnimID = UICHAR_RESONANT_LOOP;
-				m_iRibbonID = UICHAR_RIB_RESONANT_LOOP;
+				m_iAnimID[m_iCurModel] = UICHAR_RESONANT_LOOP;
+				m_iRibbonID[m_iCurModel] = UICHAR_RIB_RESONANT_LOOP;
 				break;
 			case UI_WUTHERIDE:
-				m_iAnimID = UICHAR_INTO1_LOOP;
-				m_iRibbonID = UICHAR_RIB_INTO1_LOOP;
+				m_iAnimID[m_iCurModel] = UICHAR_INTO1_LOOP;
+				m_iRibbonID[m_iCurModel] = UICHAR_RIB_INTO1_LOOP;
 				break;
 			}
 
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, false);
-			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, false);
+			m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], false);
+			m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], false);
 		}
 	}
 	else
@@ -391,32 +729,31 @@ void UICharacter::updateAnimationState(_double TimeDelta)
 			switch (m_eUIState)
 			{
 			case UI_STATE:
-				m_iAnimID = UICHAR_IDLE;
-				m_iRibbonID = UICHAR_RIB_IDLE;
+				m_iAnimID[m_iCurModel] = UICHAR_IDLE;
+				m_iRibbonID[m_iCurModel] = UICHAR_RIB_IDLE;
 				break;
 			case UI_WEAPON:
-				m_iAnimID = UICHAR_WEAPON_START;
-				m_iRibbonID = UICHAR_RIB_WEAPON_START;
+				m_iAnimID[m_iCurModel] = UICHAR_WEAPON_START;
+				m_iRibbonID[m_iCurModel] = UICHAR_RIB_WEAPON_START;
 				break;
 			case UI_ECHO:
-				m_iAnimID = UICHAR_CHIP_START;
-				m_iRibbonID = UICHAR_RIB_CHIP_START;
+				m_iAnimID[m_iCurModel] = UICHAR_CHIP_START;
+				m_iRibbonID[m_iCurModel] = UICHAR_RIB_CHIP_START;
 				break;
 			case UI_RESONANCE:
-				m_iAnimID = UICHAR_RESONANT_START;
-				m_iRibbonID = UICHAR_RIB_RESONANT_START;
+				m_iAnimID[m_iCurModel] = UICHAR_RESONANT_START;
+				m_iRibbonID[m_iCurModel] = UICHAR_RIB_RESONANT_START;
 				break;
 			case UI_WUTHERIDE:
-				m_iAnimID = UICHAR_INTO1_START;
-				m_iRibbonID = UICHAR_RIB_INTO1_START;
+				m_iAnimID[m_iCurModel] = UICHAR_INTO1_START;
+				m_iRibbonID[m_iCurModel] = UICHAR_RIB_INTO1_START;
 				break;
 			}
 
-			m_pAnimSetBase->SetUp_Animation(m_iAnimID, true);
-			m_pAnimSetRibbon->SetUp_Animation(m_iRibbonID, true);
+			m_pAnimSetBase[m_iCurModel]->SetUp_Animation(m_iAnimID[m_iCurModel], true);
+			m_pAnimSetRibbon[m_iCurModel]->SetUp_Animation(m_iRibbonID[m_iCurModel], true);
 		}
 	}
-
 }
 
 HRESULT UICharacter::addComponents()
@@ -443,15 +780,33 @@ HRESULT UICharacter::addComponents()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_PLAYERGIRL_MODEL,
-		TEXT("Com_Shader_ModelVTF"), (CComponent**)&m_pModel)))
+		TEXT("model_rover"), (CComponent**)&m_pModel[ROVER])))
 		return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_UI_ROVER,
-		TEXT("Com_Shader_ModelAnimBase"), (CComponent**)&m_pAnimSetBase)))
+		TEXT("baseanim_rover"), (CComponent**)&m_pAnimSetBase[ROVER])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_UI_ROVER_RIBBON,
+		TEXT("robbone_rover"), (CComponent**)&m_pAnimSetRibbon[ROVER])))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_UI_ROVER_RIBBON,
-		TEXT("Com_Shader_ModelAnimRibbon"), (CComponent**)&m_pAnimSetRibbon)))
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_YANGYANG_MODEL,
+		TEXT("model_yang"), (CComponent**)&m_pModel[YANGYANG])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_UI_YANGYANG,
+		TEXT("baseanim_yang"), (CComponent**)&m_pAnimSetBase[YANGYANG])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_UI_YANGYANG_RIBBON,
+		TEXT("robbone_yang"), (CComponent**)&m_pAnimSetRibbon[YANGYANG])))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_CHIXIA_MODEL,
+		TEXT("model_chixia"), (CComponent**)&m_pModel[CHIXIA])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_UI_CHIXIA,
+		TEXT("baseanim_chixia"), (CComponent**)&m_pAnimSetBase[CHIXIA])))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_UI_CHIXIA_RIBBON,
+		TEXT("robbone_chixia"), (CComponent**)&m_pAnimSetRibbon[CHIXIA])))
 		return E_FAIL;
 
 	// Studio
@@ -527,13 +882,22 @@ void UICharacter::Free()
 
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
-	Safe_Release(m_pModel);
-	Safe_Release(m_pAnimSetBase);
-	Safe_Release(m_pAnimSetRibbon);
 	Safe_Release(m_pMainTransform);
 
 	Safe_Release(m_pUIShader);
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pStudioTransform);
+
+	Safe_Release(m_pModel[0]);
+	Safe_Release(m_pAnimSetBase[0]);
+	Safe_Release(m_pAnimSetRibbon[0]);
+
+	Safe_Release(m_pModel[1]);
+	Safe_Release(m_pAnimSetBase[1]);
+	Safe_Release(m_pAnimSetRibbon[1]);
+
+	Safe_Release(m_pModel[2]);
+	Safe_Release(m_pAnimSetBase[2]);
+	Safe_Release(m_pAnimSetRibbon[2]);
 
 }

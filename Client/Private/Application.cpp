@@ -1643,7 +1643,16 @@ HRESULT CApplication::Ready_Item_Image()
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LV20,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/lv20_.dds")))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_WEAPON_SLOT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/WeaponSlot2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_WEAPON_SLOT2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/WeaponSlot1.dds")))))
+		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::GLOW_CIRCLE_GARD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/CircleGlowGard.dds")))))
+		return E_FAIL;
 	//¿ÃπÃ¡ˆ
 	return S_OK;
 }

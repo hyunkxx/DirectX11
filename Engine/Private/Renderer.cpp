@@ -456,6 +456,7 @@ HRESULT CRenderer::Initialize_Prototype()
 	m_pLUT[3] = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/LUT/LUT_Grungy.png");
 	m_pLUT[4] = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/LUT/LUT_South.png");
 	m_pLUT[5] = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/LUT/LUT_Kuro.png");
+	m_pLUT[6] = CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Texture/LUT/LastLUT.png");
 
 #pragma endregion
 

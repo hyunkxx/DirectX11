@@ -30,6 +30,7 @@ public:
 
 public:
 	void SetMove(_bool bValue) { m_bMove = bValue; }
+	_bool IsMoveFinish() const { return m_bMoveFinish; };
 
 public:
 	_float GetCameraSpeed();
@@ -45,7 +46,7 @@ private:
 
 private:
 	_bool m_bMove = false;
-
+	_bool m_bMoveFinish = false;
 };
 
 END

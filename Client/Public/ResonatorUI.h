@@ -76,7 +76,6 @@ private:
 
 	void upgradeCharacter(_uint iCharacterType);
 
-
 	void weaponKeyInput(_double TimeDelta);
 	void pushUpgradeButton(_double TimeDelta);
 	void upshSwitchButton(_double TimeDelta);
@@ -334,7 +333,7 @@ private:
 
 	enum {SQ_1, SQ_2, SQ_3, SQ_4, SQ_NONE};
 	_uint m_iSelectSQ = SQ_NONE;
-
+	
 #pragma endregion
 
 #pragma region FORTE

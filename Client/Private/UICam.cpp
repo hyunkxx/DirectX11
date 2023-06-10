@@ -67,19 +67,25 @@ void CUICam::LateTick(_double TimeDelta)
 		_vector vCamRight = XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_RIGHT));
 
 		_vector vCurPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
-		_vector vTargetPos = XMVectorSet(-1000.25f, 1.2f, -999.95f, 1.f);
+		_vector vTargetPos = XMVectorSet(-1000.2f, 1.2f, -999.95f, 1.f);
 
-		vCurPos = XMVectorLerp(vCurPos, vTargetPos, (_float)TimeDelta * 2.f);
+		vCurPos = XMVectorLerp(vCurPos, vTargetPos, (_float)TimeDelta * 3.5f);
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
+
+		if (XMVectorGetX(XMVector3Length(vCurPos - vTargetPos)) < 0.02f)
+			m_bMoveFinish = true;
+		else
+			m_bMoveFinish = false;
 	}
 	else
 	{
+		m_bMoveFinish = false;
 		_vector vCamRight = XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_RIGHT));
 
 		_vector vCurPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
-		_vector vTargetPos = XMVectorSet(-1000.3f, 1.2f, -999.7f, 1.f);
+		_vector vTargetPos = XMVectorSet(-1000.24f, 1.2f, -999.7f, 1.f);
 
-		vCurPos = XMVectorLerp(vCurPos, vTargetPos, (_float)TimeDelta * 2.f);
+		vCurPos = XMVectorLerp(vCurPos, vTargetPos, (_float)TimeDelta * 3.5f);
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
 	}
 
