@@ -1817,6 +1817,10 @@ HRESULT CLoader::Load_Level_City()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/MerchantMen/merchantmen%d.dds"), 135))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UISOUVI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
+		return E_FAIL;
+
 
 #pragma region COMPONENTS
 
@@ -2199,6 +2203,9 @@ HRESULT CLoader::Load_Level_Forest()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/MerchantMen/merchantmen%d.dds"), 135))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UISOUVI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
+		return E_FAIL;
 
 #pragma region COMPONENTS
 

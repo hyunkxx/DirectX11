@@ -69,11 +69,17 @@ private:
 	HRESULT Setup_5SlotShader(_uint index);
 	HRESULT Setup_6SlotShader(_uint index);
 	HRESULT Setup_7SlotShader(_uint index);
+	HRESULT Setup_8SlotShader(_uint index);
+	HRESULT Setup_9SlotShader(_uint index);
+	HRESULT Setup_10SlotShader(_uint index);
+	HRESULT Setup_11SlotShader(_uint index);
+	HRESULT Setup_12SlotShader(_uint index);
 
 private:
 	void	InMenuOpen(_double TimeDelta);
 	_bool	InMenuEnd(_double TimeDelta);
 	void	SettingLimitTexNum();
+	void	SettingOverPurchase(); //
 	void	SettingOwnTexNum();
 	void	SettingBuyTexNum();
 	void	IsMouseinRect();
@@ -102,7 +108,9 @@ private:
 	_bool		m_MenuRenderStart = { true };
 	_bool		m_DetailRenderStart = { true };
 	_bool		m_ConfirmRenderStart = { true };
+	_bool		m_bOverPurchase = { false };
 	CItem::ITEM_DESC itemDesc[13];
+	vector<SOUDESC>*	pSelectSlot = { nullptr };
 
 	//마우스
 	_long mouse = 0l;
@@ -110,8 +118,10 @@ private:
 
 	
 	// 임시값 설정 나중에 인벤에 연결시키기
+	_int Limibuycount[13] = { 0 };
+	_int* pLimibuycount = nullptr;
 	_int Limited = 5;
-	_int BuyNum = 0; // 리미트변수랑 공용
+	_int BuyNum = 0; 
 	_int CurrentOwn = 99;
 	_int Cost = 10; // 물건 하나당 가격
 	_int iTotal = 0; // 총 구매비용
@@ -142,6 +152,11 @@ private:
 	vector<SOUDESC>		  m_5Slot;			//10
 	vector<SOUDESC>		  m_6Slot;			//11
 	vector<SOUDESC>		  m_7Slot;			//12
+	vector<SOUDESC>		  m_8Slot;			//13
+	vector<SOUDESC>		  m_9Slot;			//14
+	vector<SOUDESC>		  m_10Slot;			//15
+	vector<SOUDESC>		  m_11Slot;			//16
+	vector<SOUDESC>		  m_12Slot;			//17
 
 public:
 	static CUI_Souvenir* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
