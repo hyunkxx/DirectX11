@@ -38,7 +38,7 @@ HRESULT CParts::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	if (m_iModelID == SMODEL::SMD_SWORD_0_SWORD)
+	if (m_iModelID == SMODEL::SMD_SWORD_5_MAIN)
 		int a = 1;
 
 	if (1 == m_pModelCom->Get_NumMeshes())

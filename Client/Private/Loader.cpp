@@ -159,16 +159,19 @@ HRESULT CLoader::Load_Level_Logo()
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
 	m_pApp->LoadRatio(0.5f);
 	// SMODEL
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sword.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_SWORD_0_SCABBARD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Scabbard.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_HULU_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_FLOATING_ROCK_01, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/FloatingRock_01.smdl")))))
@@ -377,16 +380,19 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 
 	// SMODEL
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sword.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SWORD_0_SCABBARD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Scabbard.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_HULU_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
@@ -1712,13 +1718,14 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_AWUKAKA, CM_AWukaka::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SWORD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SWORD))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SCABBARD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SCABBARD))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
 		return E_FAIL;
 	
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_0, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_0))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
 		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
 		return E_FAIL;
 
@@ -1912,16 +1919,19 @@ HRESULT CLoader::Load_Level_City()
 		return E_FAIL;
 
 	// SMODEL
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sword.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SWORD_0_SCABBARD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Scabbard.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_HULU_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
@@ -2266,16 +2276,19 @@ HRESULT CLoader::Load_Level_Forest()
 		return E_FAIL;
 
 	// SMODEL
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sword.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SWORD_0_SCABBARD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Scabbard.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_HULU_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
@@ -3643,22 +3656,22 @@ HRESULT CLoader::Load_Level_AnimTool()
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
 
 	// SModel
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sword.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_0_SCABBARD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Scabbard.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_GUN_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun01/Gun01.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_GUN_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun01/Gun01.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
 		return E_FAIL;
 
 	// DModel
@@ -3817,9 +3830,9 @@ HRESULT CLoader::Load_Level_AnimTool()
 	tDesc.iModelID = DMODEL::DMD_PLAYERGIRL_MODEL;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
-	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_2;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_5_MAIN;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_5_SUB;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_1;
 	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_PlayerGirl/PlayerGirl_%d.state"));
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_PLAYERGIRL, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
@@ -3831,51 +3844,51 @@ HRESULT CLoader::Load_Level_AnimTool()
 	tDesc.iModelID = DMODEL::DMD_PLAYERGIRL_MODEL;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_PLAYERGIRL_UI_BASE;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_PLAYERGIRL_UI_RIBBON;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
-	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_2;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_5_MAIN;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_5_SUB;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_1;
 	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_PlayerGirl_UI/PlayerGirl_UI_%d.state"));
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_PLAYERGIRL_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
 		return E_FAIL;
 	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_PLAYERGIRL_UI), TEXT("PlayerGirl_UI"));
 
-	//// YANGYANG
-	//ZeroMemory(&tDesc, sizeof tDesc);
-	//tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
-	//tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_ANIMSET_BASE;
-	//tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_ANIMSET_RIBBON;
-	//tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
-	//tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
-	//tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_0;
-	//lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang/YangYang_%d.state"));
+	// YANGYANG
+	ZeroMemory(&tDesc, sizeof tDesc);
+	tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_ANIMSET_BASE;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_ANIMSET_RIBBON;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_5_MAIN;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_5_SUB;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_2;
+	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang/YangYang_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG), TEXT("YangYang"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG), TEXT("YangYang"));
 
-	//// YANGYANG_UI
-	//ZeroMemory(&tDesc, sizeof tDesc);
-	//tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
-	//tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_UI_BASE;
-	//tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_UI_RIBBON;
-	//tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_0_SWORD;
-	//tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_0_SCABBARD;
-	//tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_0;
-	//lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang_UI/YangYang_UI_%d.state"));
+	// YANGYANG_UI
+	ZeroMemory(&tDesc, sizeof tDesc);
+	tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_UI_BASE;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_UI_RIBBON;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_5_MAIN;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_5_SUB;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_2;
+	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang_UI/YangYang_UI_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG_UI), TEXT("YangYang_UI"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG_UI), TEXT("YangYang_UI"));
 
 	// CHIXIA
 	ZeroMemory(&tDesc, sizeof tDesc);
 	tDesc.iModelID = DMODEL::DMD_CHIXIA_MODEL;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_CHIXIA_ANIMSET_BASE;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_CHIXIA_ANIMSET_RIBBON;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_GUN_0;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_GUN_0;
-	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_1;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_GUN_5;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_GUN_5;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_3;
 	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_ChiXia/ChiXia_%d.state"));
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_CHIXIA, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
@@ -3887,9 +3900,9 @@ HRESULT CLoader::Load_Level_AnimTool()
 	tDesc.iModelID = DMODEL::DMD_CHIXIA_MODEL;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_CHIXIA_UI_BASE;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_CHIXIA_UI_RIBBON;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_GUN_0;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_GUN_0;
-	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_1;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_GUN_5;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_GUN_5;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_3;
 	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_ChiXia_UI/ChiXia_UI_%d.state"));
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_CHIXIA_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
@@ -4047,22 +4060,22 @@ HRESULT CLoader::Load_Level_AnimTool()
 
 	// GENERIC 끝
 
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SWORD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SWORD))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SCABBARD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SCABBARD))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_0, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_0))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_0, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_0))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
 		return E_FAIL;
 
 #pragma endregion
@@ -4132,22 +4145,25 @@ HRESULT CLoader::Load_Level_Test()
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
 
 	// SMODEL
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SWORD_0_SWORD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sword.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SWORD_0_SCABBARD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Scabbard.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_GUN_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun01/Gun01.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_GUN_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun05/Gun05.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
+
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
@@ -4247,15 +4263,15 @@ HRESULT CLoader::Load_Level_Test()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P3, CM_Crownless_P3::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SWORD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SWORD))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_0_SCABBARD, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_0_SCABBARD))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_0, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_0))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_0, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_0))))
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
 		return E_FAIL;

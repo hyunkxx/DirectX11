@@ -2869,15 +2869,15 @@ HRESULT CP_PlayerGirl::Init_Parts()
 
 	// CharState? 지금 사용중인 WEAPONMAIN 
 
-	m_Parts[PARTS_WEAPON_MAIN] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_SWORD_0_SWORD, &PartsDesc));
+	m_Parts[PARTS_WEAPON_MAIN] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_SWORD_5_MAIN, &PartsDesc));
 	m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(EBONE_WEAPON02);
 	m_Parts[PARTS_WEAPON_MAIN]->Set_DissolveColor(_float3(0.3f, 0.6f, 1.f));
 
-	m_Parts[PARTS_WEAPON_SUB] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_SWORD_0_SCABBARD, &PartsDesc));
+	m_Parts[PARTS_WEAPON_SUB] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_SWORD_5_SUB, &PartsDesc));
 	m_Parts[PARTS_WEAPON_SUB]->Set_Parent(EBONE_WEAPON01);
 	m_Parts[PARTS_WEAPON_SUB]->Set_DissolveColor(_float3(0.3f, 0.6f, 1.f));
 
-	m_Parts[PARTS_HULU] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_HULU_0, &PartsDesc));
+	m_Parts[PARTS_HULU] = static_cast<CParts*>(pGame->Clone_GameObject(OBJECT::PARTS_HULU_1, &PartsDesc));
 	m_Parts[PARTS_HULU]->Set_Parent(PBONE_HULU);
 	m_Parts[PARTS_HULU]->Set_DissolveColor(_float3(0.3f, 0.3f, 1.f));
 
