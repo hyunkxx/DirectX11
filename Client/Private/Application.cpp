@@ -2247,7 +2247,6 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/Comon/Parry_Effect/")))
 			return E_FAIL;
 
-
 		// ¾ÆÀÌÅÛ È¹µæ ÀÌÆåÆ®
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
 			TEXT("../../Resource/Effect/Comon/Get_Item_Effect_01.bin"),
@@ -2259,6 +2258,12 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/Comon/Item/")))
 			return E_FAIL;
 
+		//·¹º§¾÷ ÀÌÆåÆ®
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/P_Level_Up_Effect.bin"),
+			"../../Resource/Effect/Comon/Level/")))
+			return E_FAIL;
+		
 	}
 #pragma endregion
 
