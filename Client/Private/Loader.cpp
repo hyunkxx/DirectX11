@@ -2171,7 +2171,7 @@ HRESULT CLoader::Load_Level_Forest()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_FILTER,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Terrain/Filter_Map/Filter.dds")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Data/Forest/Terrain/Filter_Map/Filter.dds")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_D_1,
@@ -2215,19 +2215,25 @@ HRESULT CLoader::Load_Level_Forest()
 	LoadCharacterProbs(LEVEL_FOREST);
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_SIMPLE_BOX");
 		return E_FAIL;
+	}
 
 	// DMODEL
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : DMD_PLAYERGIRL_ANIMSET_BASE");
 		return E_FAIL;
-	m_pApp->LoadRatio(0.6f);
+	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : DMD_PLAYERGIRL_ANIMSET_RIBBON");
 		return E_FAIL;
+	}
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
-		return E_FAIL;
-
+	m_pApp->LoadRatio(0.6f);
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
 	{
