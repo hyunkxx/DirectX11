@@ -146,17 +146,10 @@ HRESULT CP_Chixia::Initialize(void * pArg)
 	if (iLevel == LEVEL_GAMEPLAY)
 		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(55.f));
 
-	return S_OK;
-}
-
-void CP_Chixia::Start()
-{
 	CGameInstance* pGame = CGameInstance::GetInstance();
-
-#ifdef _DEBUG
-	m_pRendererCom->DebugBundleRender_Control(true);
-#endif
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pPlayerStateClass->Register_Character(CPlayerState::CHARACTER_CHIXIA, this, &m_bOnControl);
+
 	m_pCharacterState = m_pPlayerStateClass->Get_CharState_byChar(CPlayerState::CHARACTER_CHIXIA);
 
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = (_float)m_tStates[IS_SKILL_01_F].CoolTime;
@@ -172,6 +165,18 @@ void CP_Chixia::Start()
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO] = 5.f;
 	//
 
+	return S_OK;
+}
+
+void CP_Chixia::Start()
+{
+	CGameInstance* pGame = CGameInstance::GetInstance();
+
+#ifdef _DEBUG
+	m_pRendererCom->DebugBundleRender_Control(true);
+#endif
+	
+
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 	m_pCamMovement->BindTransform(m_pMainTransform);
@@ -180,6 +185,9 @@ void CP_Chixia::Start()
 	m_pUIMain = static_cast<CUI_MainScreen*>(pGame->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));
 
 	m_pInven->AddItem(ITEM::GEM, 100);
+
+	if (false == m_bOnControl)
+		SetState(DISABLE);
 }
 
 void CP_Chixia::PreTick(_double TimeDelta)
@@ -251,8 +259,8 @@ void CP_Chixia::Tick(_double TimeDelta)
 		m_ReleaseTargetTimeAcc = 0.0;
 
 
-
-	Key_Input(TimeDelta * m_TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
+	if (true == m_bOnControl)
+		Key_Input(TimeDelta * m_TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
 
 	if (m_bHolding)
 	{
@@ -271,8 +279,9 @@ void CP_Chixia::Tick(_double TimeDelta)
 
 
 	Tick_State(TimeDelta * m_TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
-
-	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
+	
+	if (true == m_bOnControl)
+		On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
 
 			   // Parts 처리
 	for (_uint i = 0; i < PARTS_END; ++i)
@@ -818,6 +827,98 @@ void CP_Chixia::Check_TimeDelay(_double TimeDelta)
 	}
 }
 
+void CP_Chixia::Appear(CTransform * pTransform, CCharacter * pTarget)
+{
+	SetState(ACTIVE);
+
+	m_pFixedTarget = pTarget;
+	m_pMainTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix());
+
+	
+
+	m_Scon.iNextState = SS_STAND1;
+	SetUp_State();
+	SetUp_Animations(false);
+
+	m_bInputLock = false;
+	m_bOnControl = true;
+	m_pMoveCollider->SetActive(true);
+	m_pHitCollider->SetActive(true);
+	Shot_DissolveKey(true, 5.f);
+	for (auto& pParts : m_Parts)
+		pParts->Start_Dissolve(true, 5.f, true);
+}
+
+void CP_Chixia::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget)
+{
+	*ppTarget = m_pFixedTarget;
+	*ppTransform = m_pMainTransform;
+	m_pFixedTarget = nullptr;
+
+	m_bOnControl = false;
+	m_pMoveCollider->SetActive(false);
+	m_pHitCollider->SetActive(false);
+	m_bDisableAfterDissolve = true;
+	Shot_DissolveKey(false, 144.f);
+	for (auto& pParts : m_Parts)
+		pParts->Start_Dissolve(false, 144.f, true);
+}
+
+void CP_Chixia::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
+{
+	SetState(ACTIVE);
+
+	m_pFixedTarget = pTarget;
+
+	m_pMainTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix());
+
+	CTransform* pTargetTransform = pTarget->GetTransform();
+	_vector vTargetPos = pTargetTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vDir = XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_POSITION) - vTargetPos);
+	_vector vFinalPos;
+
+	// 1번 슬롯일 경우 왼쪽
+	if (CPlayerState::SLOT_SUB1 == m_pPlayerStateClass->Get_Slot(CPlayerState::CHARACTER_CHIXIA))
+		vFinalPos = vTargetPos + XMVector3TransformNormal(vDir, XMMatrixRotationY(XMConvertToRadians(120.f)));
+	// 2번 슬롯일 경우 오른쪽
+	else
+		vFinalPos = vTargetPos + XMVector3TransformNormal(vDir, XMMatrixRotationY(XMConvertToRadians(-120.f)));
+
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vFinalPos, XMVectorGetY(m_pMainTransform->Get_State(CTransform::STATE_POSITION))));
+	m_pMainTransform->Set_LookDir(XMVectorSetY(vTargetPos - vFinalPos, 0.f));
+
+	m_Scon.iNextState = IS_SKILL_QTE;
+	SetUp_State();
+	SetUp_Animations(false);
+
+	m_bInputLock = false;
+	m_bOnControl = true;
+	m_pMoveCollider->SetActive(true);
+	m_pHitCollider->SetActive(true);
+	Shot_DissolveKey(true, 5.f);
+	for (auto& pParts : m_Parts)
+		pParts->Start_Dissolve(true, 5.f, true);
+}
+
+void CP_Chixia::Disappear_QTE(CTransform ** ppTransform, CCharacter ** ppTarget)
+{
+	*ppTarget = m_pFixedTarget;
+	*ppTransform = m_pMainTransform;
+	m_pFixedTarget = nullptr;
+
+	m_Scon.iNextState = SS_SPRINT_IMPULSE_F;
+	SetUp_State();
+	SetUp_Animations(false);
+
+	m_bOnControl = false;
+	m_pMoveCollider->SetActive(false);
+	m_pHitCollider->SetActive(false);
+	m_bDisableAfterDissolve = true;
+	Shot_DissolveKey(false, 10.f);
+	for (auto& pParts : m_Parts)
+		pParts->Start_Dissolve(false, 10.f, true);
+}
+
 void CP_Chixia::Shot_PartsKey(_uint iParts/*int0*/, _uint iState/*int1*/, _uint iDissolve/*int2*/, _double Duration/*float*/)
 {
 	// Weapon Main / Sub
@@ -996,7 +1097,6 @@ void CP_Chixia::SetUp_State()
 		SS_CLIMB_MOVE == m_Scon.iCurState ||
 		SS_BEHIT_FLY_START == m_Scon.iCurState ||
 		SS_BEHIT_PUSH == m_Scon.iCurState ||
-		IS_SKILL_QTE == m_Scon.iCurState ||
 		SS_FALL == m_Scon.iCurState) &&
 		PS_AIR != m_Scon.ePositionState)
 	{
@@ -1442,6 +1542,20 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 		if (pGame->InputKey(DIK_Q) == KEY_STATE::TAP)
 		{
 			eCurFrameInput = INPUT_SUMMON;
+		}
+
+		if (pGame->InputKey(DIK_1) == KEY_STATE::TAP)
+		{
+			if (PS_GROUND == m_Scon.ePositionState &&
+				5 > m_tCurState.iLeavePriority)
+				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB1);
+		}
+
+		if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
+		{
+			if (PS_GROUND == m_Scon.ePositionState &&
+				5 > m_tCurState.iLeavePriority)
+				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
 		}
 	}
 

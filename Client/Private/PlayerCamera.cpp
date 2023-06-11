@@ -11,6 +11,7 @@
 #include "UI_MerchantMen.h"
 #include "UI_Souvenir.h"
 #include "UI_Panhua.h"
+#include "Character.h"
 
 CPlayerCamera::CPlayerCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCamera(pDevice, pContext)
@@ -58,6 +59,10 @@ HRESULT CPlayerCamera::Initialize(void * pArg)
 	m_pMainTransform = CTransform::Create(m_pDevice, m_pContext);
 	m_pMainTransform->Set_TransformDesc(m_CameraDesc.TransformDesc);
 
+	// 플레이어 스테이트 세팅
+	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pPlayerStateClass->Set_PlayerCamera(this);
+
 #ifdef _DEBUG
 	m_ShakeDesc.fPower = 2.f;
 	m_ShakeDesc.fSpeed = 10.f;
@@ -76,10 +81,12 @@ void CPlayerCamera::Start()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
 	_uint nCurrentLevel = pGM->GetCurrentLevel();
-	m_pPlayerTransform = static_cast<CTransform*>(pGameInstance->Find_GameObject(nCurrentLevel, TEXT("Player"))->Find_Component(TEXT("Com_Transform")));
-	if (nullptr == m_pPlayerTransform)
+
+	m_pPlayerTransform = m_pPlayerStateClass->Get_ActiveCharacter()->GetTransform();
+	m_pPlayerNavigation = static_cast<CNavigation*>(m_pPlayerStateClass->Get_ActiveCharacter()->Find_Component(TEXT("Com_Navigation")));
+
+	if (nullptr == m_pPlayerTransform || nullptr == m_pPlayerNavigation)
 		return;
-	Safe_AddRef(m_pPlayerTransform);
 
 	// 초기 위치로 1회 갱신해 놓음
 	_vector vAxisRight = XMVector3Cross(XMLoadFloat3(&m_vDir), XMVectorSet(0.f, 1.f, 0.f, 0.f));
@@ -93,10 +100,8 @@ void CPlayerCamera::Start()
 
 	m_pMainTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));
 	m_pMainTransform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
+	
 
-	m_pPlayerNavigation = static_cast<CNavigation*>(pGameInstance->Find_GameObject(nCurrentLevel, TEXT("Player"))->Find_Component(TEXT("Com_Navigation")));
-
-	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	CCameraMovement* pCamMovement = nullptr;
 	pCamMovement = static_cast<CCameraMovement*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 	pCamMovement->AddCamera(CCameraMovement::CAM_MAINPLAYER, this);
@@ -641,11 +646,6 @@ CGameObject * CPlayerCamera::Clone(void * pArg)
 void CPlayerCamera::Free()
 {
 	__super::Free();
-
-	if (true == m_bClone)
-	{
-		Safe_Release(m_pPlayerTransform);
-	}
 }
 
 void CPlayerCamera::AttachTargetTransform(CTransform * pTransform)
@@ -659,4 +659,10 @@ void CPlayerCamera::AttachTargetTransform(CTransform * pTransform)
 void CPlayerCamera::SoftLerp()
 {
 
+}
+
+void CPlayerCamera::Reset_ActiveCharacter(CCharacter * pCharacter)
+{
+	m_pPlayerTransform = pCharacter->GetTransform();
+	m_pPlayerNavigation = static_cast<CNavigation*>(m_pPlayerStateClass->Get_ActiveCharacter()->Find_Component(TEXT("Com_Navigation")));
 }

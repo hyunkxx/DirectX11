@@ -16,6 +16,7 @@
 #include "M_Crownless_P1.h"
 #include "M_Crownless_P2.h"
 #include "M_Crownless_P3.h"
+#include "PlayerState.h"
 
 #include "AcquireSystem.h"
 #include "Sandbag.h"
@@ -271,14 +272,21 @@ HRESULT CLevel_Test::Ready_Layer_Player(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
-		return E_FAIL;*/
+	CGameObject* pCharacter = nullptr;
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_YANGYANG, pLayerTag, TEXT("Player"))))
-	//	return E_FAIL;
+	// 한 명만 테스트 할 경우 슬롯을 미리 스왑해 놓아야 함
+	static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"))->Set_ActiveCharacter(CPlayerState::CHARACTER_CHIXIA);
+
+	// 여러명 테스트할 때
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_YANGYANG, pLayerTag, TEXT("Player"))))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_CHIXIA, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
+	
 
 	return S_OK;
 }

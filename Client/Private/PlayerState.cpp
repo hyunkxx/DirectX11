@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "..\Public\PlayerState.h"
 #include "ItemDB.h"
+#include "GameInstance.h"
+#include "PlayerCamera.h"
+#include "GameMode.h"
+#include "Layer.h"
 
 CPlayerState::CPlayerState(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -207,6 +211,46 @@ void CPlayerState::SetEquitWeapon(CHARACTERS eCharType, CItem::ITEM_DESC eWeapon
 	m_EquipWeapons[eCharType] = eWeapon;
 }
 
+_bool CPlayerState::Change_ActiveCharacter(_uint iSubID)
+{
+	if (0.0 != m_PlayerState.fCurTagCooltime)
+		return false;
+
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	CGameMode* pGM = CGameMode::GetInstance();
+	CTransform* pOriginTransform = nullptr;
+	CCharacter* pTarget = nullptr;
+
+	if (m_PlayerState.fCurQTEGauge == m_PlayerState.fMaxQTEGauge && true == m_PlayerState.bLockOn)
+	{
+		m_pCharacter[m_CharSlot[SLOT_MAIN]]->Disappear_QTE(&pOriginTransform, &pTarget);
+		m_pCharacter[m_CharSlot[iSubID]]->Appear_QTE(pOriginTransform, pTarget);
+	}
+	else
+	{
+		m_pCharacter[m_CharSlot[SLOT_MAIN]]->Disappear(&pOriginTransform, &pTarget);
+		m_pCharacter[m_CharSlot[iSubID]]->Appear(pOriginTransform, pTarget);
+	}
+
+	CHARACTERS eTemp = m_CharSlot[SLOT_MAIN];
+	m_CharSlot[SLOT_MAIN] = m_CharSlot[iSubID];
+	m_CharSlot[iSubID] = eTemp;
+
+	m_PlayerState.fCurTagCooltime = m_PlayerState.fMaxTagCooltime;
+
+	// 
+	m_pPlayerCam->Reset_ActiveCharacter(m_pCharacter[m_CharSlot[SLOT_MAIN]]);
+	CLayer* pMonsterLayer = pGI->Find_Layer(pGM->GetCurrentLevel(), TEXT("layer_monster"));
+
+	if (nullptr != pMonsterLayer)
+	{
+		for (auto& pMonster : pMonsterLayer->m_GameObjects)
+			static_cast<CCharacter*>(pMonster.second)->Change_Target(m_pCharacter[m_CharSlot[SLOT_MAIN]]);
+	}
+
+	return true;
+}
+
 void CPlayerState::AddExp(CHARACTERS eCharater, _float fExp)
 {
 	if (m_CharacterState[eCharater].iCurLevel >= MAX_LEVEL)
@@ -365,3 +409,4 @@ void CPlayerState::Free()
 {
 	__super::Free();
 }
+

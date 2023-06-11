@@ -13,6 +13,7 @@
 #include "Missile_Constant.h"
 #include "OBBKey.h"
 #include "DissolveKey.h"
+#include "PlayerState.h"
 
 #include "CameraMovement.h"
 #include "Chest.h"
@@ -129,8 +130,8 @@ void CM_Anjin::Start()
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 
 	// Find ActivePlayer
-	m_pTarget = static_cast<CCharacter*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
-	m_pTargetTransform = static_cast<CTransform*>(m_pTarget->Find_Component(TEXT("Com_Transform")));
+	m_pTarget = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"))->Get_ActiveCharacter();
+	m_pTargetTransform = m_pTarget->GetTransform();
 
 	//UI추가
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
@@ -545,6 +546,12 @@ void CM_Anjin::SetUp_State()
 	// 쿨타임 적용
 	if (true == m_tCurState.bApplyCoolTime)
 		m_StateCoolTimes[m_Scon.iCurState] = m_tCurState.CoolTime;
+}
+
+void CM_Anjin::Change_Target(CCharacter * pActiveCharacter)
+{
+	m_pTarget = pActiveCharacter;
+	m_pTargetTransform = m_pTarget->GetTransform();
 }
 
 void CM_Anjin::Find_Target()

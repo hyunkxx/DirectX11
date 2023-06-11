@@ -12,6 +12,7 @@
 #include "MissileKey.h"
 #include "Missile_Constant.h"
 #include "DissolveKey.h"
+#include "PlayerState.h"
 
 #include "Chest.h"
 #include "CameraMovement.h"
@@ -125,10 +126,9 @@ void CM_GAzizi::Start()
 #endif
 
 	//pStaticObject = pGame->Find_GameObject(LEVEL_GAMEPLAY, L"StaticTest");
+	m_pTarget = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"))->Get_ActiveCharacter();
+	m_pTargetTransform = m_pTarget->GetTransform();
 
-	// Find ActivePlayer
-	m_pTarget = static_cast<CCharacter*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
-	m_pTargetTransform = static_cast<CTransform*>(m_pTarget->Find_Component(TEXT("Com_Transform")));
 	pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 
 	//UIÃß°¡
@@ -503,6 +503,12 @@ void CM_GAzizi::SetUp_State()
 
 	if (true == m_tCurState.bApplyCoolTime)
 		m_StateCoolTimes[m_Scon.iCurState] = m_tCurState.CoolTime;
+}
+
+void CM_GAzizi::Change_Target(CCharacter * pActiveCharacter)
+{
+	m_pTarget = pActiveCharacter;
+	m_pTargetTransform = m_pTarget->GetTransform();
 }
 
 void CM_GAzizi::Find_Target()

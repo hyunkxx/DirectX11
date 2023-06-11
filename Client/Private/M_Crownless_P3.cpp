@@ -15,6 +15,7 @@
 #include "OBBKey.h"
 #include "DissolveKey.h"
 #include "TraceKey.h"
+#include "PlayerState.h"
 
 #include "CameraMovement.h"
 #include "Chest.h"
@@ -143,8 +144,8 @@ void CM_Crownless_P3::Start()
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 
 	// Find ActivePlayer
-	m_pTarget = static_cast<CCharacter*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
-	m_pTargetTransform = static_cast<CTransform*>(m_pTarget->Find_Component(TEXT("Com_Transform")));
+	m_pTarget = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"))->Get_ActiveCharacter();
+	m_pTargetTransform = m_pTarget->GetTransform();
 
 	//UIÃß°¡
 	/*m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
@@ -779,6 +780,12 @@ void CM_Crownless_P3::SetUp_State()
 		m_pAttackCollider->SetExtents_(_float3(1.0f, 0.3f, 0.3f));
 	}
 
+}
+
+void CM_Crownless_P3::Change_Target(CCharacter * pActiveCharacter)
+{
+	m_pTarget = pActiveCharacter;
+	m_pTargetTransform = m_pTarget->GetTransform();
 }
 
 void CM_Crownless_P3::Find_Target()

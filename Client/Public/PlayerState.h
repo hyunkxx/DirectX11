@@ -113,6 +113,17 @@ public:
 	virtual void LateTick(_double TimeDelta);
 	virtual void RenderGUI();
 
+	// 플레이어 캐릭터를 등록한다.
+	void Register_Character(CPlayerState::CHARACTERS eCharacterID, CCharacter* pCharacter, _bool* bOnControl)
+	{
+		m_pCharacter[eCharacterID] = pCharacter;
+
+		if (m_CharSlot[SLOT_MAIN] == eCharacterID)
+			*bOnControl = true;
+		else
+			*bOnControl = false;
+	}
+
 public: // Get
 	CHARACTER_STATE* Get_CharState_byChar(_uint iCharID)
 	{
@@ -162,9 +173,26 @@ public: // Get
 		if (m_PlayerState.fCurQTEGauge > m_PlayerState.fMaxQTEGauge)
 			m_PlayerState.fCurQTEGauge = m_PlayerState.fMaxQTEGauge;
 	}
+
+	_uint Get_Slot(_uint iCharacterID)
+	{
+		if (m_CharSlot[SLOT_MAIN] == iCharacterID)
+			return SLOT_MAIN;
+		else if (m_CharSlot[SLOT_SUB1] == iCharacterID)
+			return SLOT_SUB1;
+		else 
+			return SLOT_SUB2;
+	}
 	
 	CItem::ITEM_DESC* GetCurWeaponDesc(CHARACTERS eCharType) { return &m_EquipWeapons[eCharType]; }
 	void SetEquitWeapon(CHARACTERS eCharType, CItem::ITEM_DESC eWeapon);
+
+	CCharacter* Get_ActiveCharacter()
+	{
+		return m_pCharacter[m_CharSlot[SLOT_MAIN]];
+	}
+
+	_bool Change_ActiveCharacter(_uint iSubID); 
 
 public: // Set
 	void Set_ToolUsed(_uint iToolID)
@@ -182,6 +210,22 @@ public: // Set
 	{
 		m_PlayerState.bAiming = bAiming;
 	}
+
+	void Set_ActiveCharacter(_uint eCharacterID)
+	{
+		if (CHARACTER_END <= eCharacterID || eCharacterID == m_CharSlot[SLOT_MAIN])
+			return;
+
+		CHARACTERS eTemp = m_CharSlot[SLOT_MAIN];
+		m_CharSlot[SLOT_MAIN] = CHARACTERS(eCharacterID);
+
+		if (m_CharSlot[SLOT_SUB1] == eCharacterID)
+			m_CharSlot[SLOT_SUB1] = eTemp;
+		else 
+			m_CharSlot[SLOT_SUB2] = eTemp;
+	}
+
+	void Set_PlayerCamera(class CPlayerCamera* pPCam) { m_pPlayerCam = pPCam; }
 
 
 public:
@@ -213,8 +257,12 @@ public:
 private:
 	// 캐릭터가 아닌 플레이어 자체애 대한 정보를 담은 구조체
 	PLAYER_STATE		m_PlayerState;
-	// 각 캐릭터별 스탯 고정 순서 (방순 -> 양양 -> 치하)
+	// 각 캐릭터별 스탯, 고정 순서 : (방순 -> 양양 -> 치하)
 	CHARACTER_STATE		m_CharacterState[CHARACTER_END];
+	// 캐릭터 포인터
+	CCharacter*			m_pCharacter[CHARACTER_END] = { nullptr, };
+	// 플레이어 카메라 포인터
+	class CPlayerCamera* m_pPlayerCam = { nullptr };
 	// 캐릭터 슬롯 현황, enum ID값만 순서대로 저장해놓음, 캐릭터 교체하는 순서에 따라 위치가 바뀜
 	CHARACTERS			m_CharSlot[SLOT_END];
 
@@ -229,3 +277,4 @@ private:
 };
 
 END
+

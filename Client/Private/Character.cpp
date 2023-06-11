@@ -96,7 +96,10 @@ void CCharacter::LateTick(_double TimeDelta)
 			// Dissolve Out이 끝나면 Render를 끈다. 
 			if (false == m_bDissolveType)
 			{
-				m_bRender = false;
+				if (false == m_bDisableAfterDissolve)
+					m_bRender = false;
+				else
+					SetState(DISABLE);
 			}
 		}
 

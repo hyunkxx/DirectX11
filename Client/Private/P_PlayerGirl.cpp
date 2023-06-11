@@ -114,6 +114,7 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 
 	switch (pGameMode->GetCurrentLevel())
 	{
+	case LEVEL_TEST:
 	case LEVEL_GAMEPLAY:
 		m_pNaviCom->Set_CurrentIndex(0);
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 30.776f, 1.f));
@@ -174,6 +175,25 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	if(iLevel == LEVEL_GAMEPLAY)
 		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(55.f));
 
+
+	CGameInstance* pGame = CGameInstance::GetInstance();
+
+	m_pPlayerStateClass = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pPlayerStateClass->Register_Character(CPlayerState::CHARACTER_ROVER, this, &m_bOnControl);
+	m_pCharacterState = m_pPlayerStateClass->Get_CharState_byChar(CPlayerState::CHARACTER_ROVER);
+	
+	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = (_float)m_tStates[IS_SKILL_01].CoolTime;
+	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST] = 10.f;
+	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 100.f;
+	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] = 100.f;
+
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 100.f;
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 100.f;
+
+	// TODO: 에코 쿨타임, 에코 착용 시 변경하도록 바꿔야 함
+	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO] = 5.f;
+	//
+
 	return S_OK;
 }
 
@@ -184,22 +204,6 @@ void CP_PlayerGirl::Start()
 #ifdef _DEBUG
 	m_pRendererCom->DebugBundleRender_Control(true);
 #endif
-	m_pPlayerStateClass = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
-	m_pCharacterState = m_pPlayerStateClass->Get_CharState_byChar(CPlayerState::CHARACTER_ROVER);
-
-	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = (_float)m_tStates[IS_SKILL_01].CoolTime;
-	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST] = (_float)m_tStates[IS_BURST].CoolTime;
-	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 100.f;
-	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] = 100.f;
-
-	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 100.f;
-	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 100.f;
-	
-
-	// TODO: 에코 쿨타임, 에코 착용 시 변경하도록 바꿔야 함
-	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO] = 5.f;
-	//
-
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 	m_pCamMovement->BindTransform(m_pMainTransform);
@@ -213,6 +217,9 @@ void CP_PlayerGirl::Start()
 	m_pInven->AddItem(ITEM::SWORD1, 1);
 
 	m_pInven->AddItem(ITEM::SEQUENCE_GEM, 4);
+
+	if (false == m_bOnControl)
+		SetState(DISABLE);
 }
 
 void CP_PlayerGirl::PreTick(_double TimeDelta)
@@ -240,49 +247,15 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 	updateAttackDesc();
 
 	__super::Tick(TimeDelta * m_TimeDelay);
-	
-	/*if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::HOLD)
-	{
-		m_TimeDelay = 0.1;
-	}
-	else
-	{
-		m_TimeDelay = 1.0;
-	}*/
 
-	if (pGameInstance->InputMouse(DIMK_WHEEL) == KEY_STATE::AWAY)
-	{
-		if (m_ReleaseTargetTimeAcc < 0.3)
-		{
-			if (nullptr != m_pNearst)
-				m_pFixedTarget = m_pNearst;
-
-			if (nullptr != m_pFixedTarget)
-			{
-				m_pPlayerStateClass->Set_LockOn(true, m_pFixedTarget);
-			}
-		}
-		else if (nullptr != m_pFixedTarget && 1.0 < m_ReleaseTargetTimeAcc)
-		{
-			m_pFixedTarget = nullptr;
-			m_pPlayerStateClass->Set_LockOn(false, nullptr);
-		}
-	}
-
-	if (pGameInstance->InputMouse(DIMK_WHEEL) == KEY_STATE::HOLD)
-	{
-		m_ReleaseTargetTimeAcc += TimeDelta;
-	}
-	else
-		m_ReleaseTargetTimeAcc = 0.0;
-
-	
 		
-	Key_Input(TimeDelta * m_TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
+	if(true == m_bOnControl)
+		Key_Input(TimeDelta * m_TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
 
 	Tick_State(TimeDelta * m_TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 
-	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
+	if (true == m_bOnControl)
+		On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
 	
 	// Parts 처리
 	for (_uint i = 0; i < PARTS_END; ++i)
@@ -836,6 +809,96 @@ void CP_PlayerGirl::Check_TimeDelay(_double TimeDelta)
 	}
 }
 
+void CP_PlayerGirl::Appear(CTransform * pTransform, CCharacter * pTarget)
+{
+	SetState(ACTIVE);
+
+	m_pFixedTarget = pTarget;
+	m_pMainTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix());
+
+	m_Scon.iNextState = SS_STAND1;
+	SetUp_State();
+	SetUp_Animations(false);
+
+	m_bInputLock = false;
+	m_bOnControl = true;
+	m_pMoveCollider->SetActive(true);
+	m_pHitCollider->SetActive(true);
+	Shot_DissolveKey(true, 5.f);
+	for (auto& pParts : m_Parts)
+		pParts->Start_Dissolve(true, 5.f, true);
+}
+
+void CP_PlayerGirl::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget)
+{
+	*ppTarget = m_pFixedTarget;
+	*ppTransform = m_pMainTransform;
+	m_pFixedTarget = nullptr;
+
+	m_bOnControl = false;
+	m_pMoveCollider->SetActive(false);
+	m_pHitCollider->SetActive(false);
+	m_bDisableAfterDissolve = true;
+	Shot_DissolveKey(false, 144.f);
+	for (auto& pParts : m_Parts)
+		pParts->Start_Dissolve(false, 144.f, true);
+}
+
+void CP_PlayerGirl::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
+{
+	SetState(ACTIVE);
+
+	m_pFixedTarget = pTarget;
+	
+	m_pMainTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix());
+
+	CTransform* pTargetTransform = pTarget->GetTransform();
+	_vector vTargetPos = pTargetTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vDir = XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_POSITION) - vTargetPos);
+	_vector vFinalPos;
+
+	// 1번 슬롯일 경우 왼쪽
+	if (CPlayerState::SLOT_SUB1 == m_pPlayerStateClass->Get_Slot(CPlayerState::CHARACTER_CHIXIA))
+		vFinalPos = vTargetPos + 2.f * XMVector3TransformNormal(vDir, XMMatrixRotationY(XMConvertToRadians(120.f)));
+	// 2번 슬롯일 경우 오른쪽
+	else
+		vFinalPos = vTargetPos + 2.f * XMVector3TransformNormal(vDir, XMMatrixRotationY(XMConvertToRadians(-120.f)));
+
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vFinalPos, XMVectorGetY(m_pMainTransform->Get_State(CTransform::STATE_POSITION)) + 1.5f));
+	m_pMainTransform->Set_LookDir(XMVectorSetY(vTargetPos - vFinalPos, 0.f));
+
+	m_Scon.iNextState = IS_SKILL_QTE;
+	SetUp_State();
+	SetUp_Animations(false);
+
+	m_bInputLock = false;
+	m_bOnControl = true;
+	m_pMoveCollider->SetActive(true);
+	m_pHitCollider->SetActive(true);
+	Shot_DissolveKey(true, 5.f);
+	for (auto& pParts : m_Parts)
+		pParts->Start_Dissolve(true, 5.f, true);
+}
+
+void CP_PlayerGirl::Disappear_QTE(CTransform ** ppTransform, CCharacter ** ppTarget)
+{
+	*ppTarget = m_pFixedTarget;
+	*ppTransform = m_pMainTransform;
+	m_pFixedTarget = nullptr;
+
+	m_Scon.iNextState = SS_SPRINT_IMPULSE_F;
+	SetUp_State();
+	SetUp_Animations(false);
+
+	m_bOnControl = false;
+	m_pMoveCollider->SetActive(false);
+	m_pHitCollider->SetActive(false);
+	m_bDisableAfterDissolve = true;
+	Shot_DissolveKey(false, 10.f);
+	for (auto& pParts : m_Parts)
+		pParts->Start_Dissolve(false, 10.f, true);
+}
+
 void CP_PlayerGirl::Shot_PartsKey(_uint iParts/*int0*/, _uint iState/*int1*/, _uint iDissolve/*int2*/, _float fDissSpeed/*float*/)
 {
 	// Weapon Main / Sub
@@ -1008,7 +1071,8 @@ void CP_PlayerGirl::SetUp_State()
 		SS_CLIMB_MOVE == m_Scon.iCurState ||
 		SS_BEHIT_FLY_START == m_Scon.iCurState ||
 		SS_BEHIT_PUSH == m_Scon.iCurState ||
-		SS_FALL == m_Scon.iCurState) &&
+		SS_FALL == m_Scon.iCurState ||
+		IS_SKILL_QTE == m_Scon.iCurState) &&
 		PS_AIR != m_Scon.ePositionState)
 	{
 		m_Scon.ePositionState = PS_AIR;
@@ -1191,6 +1255,36 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 
 	if (m_bInputLock)
 	{
+		// 타겟 락온 관련 조작
+		if (pGame->InputMouse(DIMK_WHEEL) == KEY_STATE::HOLD)
+		{
+			m_ReleaseTargetTimeAcc += TimeDelta;
+		}
+		else
+		{
+			if (pGame->InputMouse(DIMK_WHEEL) == KEY_STATE::AWAY)
+			{
+				if (m_ReleaseTargetTimeAcc < 0.3)
+				{
+					if (nullptr != m_pNearst)
+						m_pFixedTarget = m_pNearst;
+
+					if (nullptr != m_pFixedTarget)
+					{
+						m_pPlayerStateClass->Set_LockOn(true, m_pFixedTarget);
+					}
+				}
+				else if (nullptr != m_pFixedTarget && 1.0 < m_ReleaseTargetTimeAcc)
+				{
+					m_pFixedTarget = nullptr;
+					m_pPlayerStateClass->Set_LockOn(false, nullptr);
+				}
+			}
+			else
+				m_ReleaseTargetTimeAcc = 0.0;
+		}
+			
+
 		if (pGame->InputKey(DIK_C) == KEY_STATE::TAP)
 			m_Scon.bWalk = !m_Scon.bWalk;
 
@@ -1332,6 +1426,21 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		if (pGame->InputKey(DIK_Q) == KEY_STATE::TAP)
 		{
 			eCurFrameInput = INPUT_SUMMON;
+		}
+
+
+		if (pGame->InputKey(DIK_1) == KEY_STATE::TAP)
+		{
+			if (PS_GROUND == m_Scon.ePositionState &&
+				5 > m_tCurState.iLeavePriority)
+				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB1);
+		}
+
+		if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
+		{
+			if (PS_GROUND == m_Scon.ePositionState &&
+				5 > m_tCurState.iLeavePriority)
+				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
 		}
 	}
 
@@ -2146,6 +2255,11 @@ void CP_PlayerGirl::On_Cell()
 				{
 					// 오르막 방향으로 점프 시 예외처리
 					m_pMainTransform->Set_PosY(fCellHeight);
+				}
+				else if (IS_SKILL_QTE == m_Scon.iCurState)
+				{
+					m_pMainTransform->Set_PosY(fCellHeight);
+					m_Scon.ePositionState = PS_GROUND;
 				}
 				else
 				{

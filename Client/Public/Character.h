@@ -417,8 +417,19 @@ public:
 
 	virtual void Set_AttackHit(_bool bAttackHit) {}
 
+	
+
 	virtual void Recover_Gauge(_float fSP, _float fBP, _float fTP) {}
 
+	// 몬스터가 잡고 있는 타겟 플레이어 포인터 변경하는 함수
+	virtual void Change_Target(CCharacter* pActiveCharacter) {}
+
+	// PlayerCharacter 교대 시 등장하는/사라지는 함수
+	virtual void Appear(CTransform* pTransform, CCharacter* pTarget) {}
+	virtual void Disappear(class CTransform** ppTransform, CCharacter** ppTarget) {}
+
+	virtual void Appear_QTE(CTransform* pTransform, CCharacter* pTarget) {}
+	virtual void Disappear_QTE(class CTransform** ppTransform, CCharacter** ppTarget) {}
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _float fDissSpeed) {}
@@ -463,6 +474,7 @@ protected:
 	_bool m_bDissolveType = false;
 	_float m_fDissolveSpeed = 1.f;
 	_float3 m_vDissolveColor = {};
+	_bool	m_bDisableAfterDissolve = { false };
 
 public:
 	virtual void Free() override;

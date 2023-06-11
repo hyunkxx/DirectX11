@@ -67,6 +67,8 @@ public:
 
 	void SoftLerp();
 
+	void Reset_ActiveCharacter(class CCharacter* pCharacter);
+
 private:
 	_bool		m_bFixMouse = { false };
 	CTransform* m_pPlayerTransform = { nullptr };

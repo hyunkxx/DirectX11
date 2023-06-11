@@ -193,6 +193,15 @@ public:
 		m_pPlayerStateClass->Gain_QTEGauge(fTP);
 	}
 
+	// 교대 처리용 함수
+	virtual void Appear(CTransform* pTransform, CCharacter* pTarget);
+	virtual void Disappear(class CTransform** ppTransform, CCharacter** ppTarget);
+
+	virtual void Appear_QTE(CTransform* pTransform, CCharacter* pTarget);
+	virtual void Disappear_QTE(class CTransform** ppTransform, CCharacter** ppTarget);
+
+	
+
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _double Duration);
@@ -280,6 +289,7 @@ private:
 	_float4x4			m_WorldMatrix;
 
 	_bool				m_bInputLock = { true };
+	_bool				m_bOnControl = { false };
 
 	// 타겟 관련 변수들, 캐릭터 교체 시 값 변경에 주의
 	CCharacter*			m_pNearst = { nullptr };
