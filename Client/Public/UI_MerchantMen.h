@@ -85,6 +85,8 @@ private:
 	_bool	MinusAlphaW(vector<MERMENDESC>* pDesc, _double TimeDelta);
 	void	ColorP(MERMENDESC* pDesc, _float4 fcolor, _double TimeDelta);
 	void	ColorM(MERMENDESC * pDesc, _float4 fcolor, _double TimeDelta);
+	void	Start_Move(_uint indexstart, _uint indexend, _double TimeDelta);
+	void	End_Move(_uint indexstart, _uint indexend, _double TimeDelta);
 	_bool	SelectUI(MERMENDESC* pDesc);
 	void	Load();
 	void	Save();

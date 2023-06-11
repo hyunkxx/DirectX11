@@ -80,12 +80,16 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	if (pGameInstance->InputKey(DIK_NUMPADENTER) == KEY_STATE::TAP) // 임시
 	{
+		if (nullptr == m_pUIMen)
+			return;
 		m_pUIMen->SetState(ACTIVE);
 		m_pUIMen->Set_SituMeet();
 		//m_pPlayerStateClass->AddPlayer();
 	}
 	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::TAP) // 임시
 	{
+		if (nullptr == m_pUISovi)
+			return;
 		m_pUISovi->SetState(ACTIVE);
 		m_pUISovi->Set_SituMeet();
 		//m_pPlayerStateClass->AddPlayer();

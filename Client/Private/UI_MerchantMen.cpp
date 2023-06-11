@@ -51,32 +51,32 @@ HRESULT CUI_MerchantMen::Initialize(void * pArg)
 
 
 
-	_float3 color0 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[0].eItemGrade);
+	_float3 color0 = SLOT_COLOR;
 	m_FinalList[2].fColorR = m_0RewardList[0].fColorR = -(255.f - (color0.x * 255.f));
 	m_FinalList[2].fColorG = m_0RewardList[0].fColorG = -(255.f - (color0.y * 255.f));
 	m_FinalList[2].fColorB = m_0RewardList[0].fColorB = -(255.f - (color0.z * 255.f));
 
-	_float3 color1 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[1].eItemGrade);
+	_float3 color1 = SLOT_COLOR;
 	m_FinalList[3].fColorR = m_1RewardList[0].fColorR = -(255.f - (color1.x * 255.f));
 	m_FinalList[3].fColorG = m_1RewardList[0].fColorG = -(255.f - (color1.y * 255.f));
 	m_FinalList[3].fColorB = m_1RewardList[0].fColorB = -(255.f - (color1.z * 255.f));
 
-	_float3 color2 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[2].eItemGrade);
+	_float3 color2 = SLOT_ADVANCED_COLOR;
 	m_FinalList[4].fColorR = m_2RewardList[0].fColorR = -(255.f - (color2.x * 255.f));
 	m_FinalList[4].fColorG = m_2RewardList[0].fColorG = -(255.f - (color2.y * 255.f));
 	m_FinalList[4].fColorB = m_2RewardList[0].fColorB = -(255.f - (color2.z * 255.f));
 
-	_float3 color3 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[3].eItemGrade);
+	_float3 color3 = SLOT_RARE_COLOR;
 	m_FinalList[5].fColorR = m_3RewardList[0].fColorR = -(255.f - (color3.x * 255.f));
 	m_FinalList[5].fColorG = m_3RewardList[0].fColorG = -(255.f - (color3.y * 255.f));
 	m_FinalList[5].fColorB = m_3RewardList[0].fColorB = -(255.f - (color3.z * 255.f));
 
-	_float3 color4 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[4].eItemGrade);
+	_float3 color4 = SLOT_UNIQUE_COLOR;
 	m_FinalList[6].fColorR = m_4RewardList[0].fColorR = -(255.f - (color4.x * 255.f));
 	m_FinalList[6].fColorG = m_4RewardList[0].fColorG = -(255.f - (color4.y * 255.f));
 	m_FinalList[6].fColorB = m_4RewardList[0].fColorB = -(255.f - (color4.z * 255.f));
 
-	_float3 color5 = m_pDB->GetItemColor((CItem::ITEM_GRADE)itemDesc[5].eItemGrade);
+	_float3 color5 = SLOT_COLOR;
 	m_FinalList[7].fColorR = m_5RewardList[0].fColorR = -(255.f - (color5.x * 255.f));
 	m_FinalList[7].fColorG = m_5RewardList[0].fColorG = -(255.f - (color5.y * 255.f));
 	m_FinalList[7].fColorB = m_5RewardList[0].fColorB = -(255.f - (color5.z * 255.f));
@@ -276,6 +276,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		}
 		if (SelectUI(&m_MenuList[0])) // 랜더 도중에 메뉴에 마우스를 올리면
 		{
+			Start_Move(0, 3, TimeDelta);
+			End_Move(3, 6, TimeDelta);
 			if ((false == m_MenuList[3].OnRect) && (false == m_MenuList[0].OnRect))
 			{
 				m_MenuList[0].iTexNum = 79;
@@ -293,6 +295,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		}
 		else if (SelectUI(&m_MenuList[3]))
 		{
+			Start_Move(3, 6, TimeDelta);
+			End_Move(0, 3, TimeDelta);
 			if ((false == m_MenuList[3].OnRect) && (false == m_MenuList[0].OnRect))
 			{
 				m_MenuList[0].iTexNum = 80;
@@ -306,6 +310,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			{
 				m_MenuList[3].OnRect = true;
 			}
+		}
+		else
+		{
+			End_Move(0, 6, TimeDelta);
 		}
 
 		if (true == m_MenuList[0].OnRect) // 인메뉴로 이동
@@ -2141,6 +2149,52 @@ void CUI_MerchantMen::ColorM(MERMENDESC* pDesc, _float4 fcolor, _double TimeDelt
 	else
 		pDesc->fColorB = fcolor.z;
 }
+void CUI_MerchantMen::Start_Move(_uint indexstart, _uint indexend, _double TimeDelta)
+{
+	for (_uint i = indexstart; i < indexend; ++i)
+	{
+		_vector OriPos = XMVectorSet(m_MenuList[i].OriPos.x, m_MenuList[i].OriPos.y, m_MenuList[i].fZ, 1.f);
+		_vector AimPos = XMVectorSet(m_MenuList[i].AimPos.x, m_MenuList[i].AimPos.y, m_MenuList[i].fZ, 1.f);
+		_vector vDir = AimPos - OriPos;
+		_vector CurrentPos = XMVectorSet(m_MenuList[i].fX, m_MenuList[i].fY, m_MenuList[i].fZ, 1.f);
+		CurrentPos += XMVector4Normalize(vDir) * (_float)TimeDelta * 30.f;
+
+		_float Dist = XMVectorGetX(CurrentPos) - m_MenuList[i].AimPos.x;
+		if (0.05f < Dist)
+		{
+			m_MenuList[i].fX = XMVectorGetX(CurrentPos);
+		}
+		else
+		{
+			m_MenuList[i].fX = m_MenuList[i].AimPos.x;
+		}
+		XMStoreFloat4x4(&(m_MenuList[i].WorldMatrix), XMMatrixScaling(m_MenuList[i].fWidth, m_MenuList[i].fHeight, 1.f)
+			* XMMatrixTranslation(m_MenuList[i].fX, m_MenuList[i].fY, m_MenuList[i].fZ));
+	}
+}
+void CUI_MerchantMen::End_Move(_uint indexstart, _uint indexend, _double TimeDelta)
+{
+	for (_uint i = indexstart; i < indexend; ++i)
+	{
+		_vector OriPos = XMVectorSet(m_MenuList[i].OriPos.x, m_MenuList[i].OriPos.y, m_MenuList[i].fZ, 1.f);
+		_vector AimPos = XMVectorSet(m_MenuList[i].AimPos.x, m_MenuList[i].AimPos.y, m_MenuList[i].fZ, 1.f);
+		_vector vDir = OriPos - AimPos;
+		_vector CurrentPos = XMVectorSet(m_MenuList[i].fX, m_MenuList[i].fY, m_MenuList[i].fZ, 1.f);
+		CurrentPos += XMVector4Normalize(vDir) * (_float)TimeDelta * 30.f;
+
+		_float Dist = m_MenuList[i].OriPos.x - XMVectorGetX(CurrentPos);
+		if (0.05f < Dist)
+		{
+			m_MenuList[i].fX = XMVectorGetX(CurrentPos);
+		}
+		else
+		{
+			m_MenuList[i].fX = m_MenuList[i].OriPos.x;
+		}
+		XMStoreFloat4x4(&(m_MenuList[i].WorldMatrix), XMMatrixScaling(m_MenuList[i].fWidth, m_MenuList[i].fHeight, 1.f)
+			* XMMatrixTranslation(m_MenuList[i].fX, m_MenuList[i].fY, m_MenuList[i].fZ));
+	}
+}
 
 void CUI_MerchantMen::Load()
 {
@@ -2218,6 +2272,8 @@ void CUI_MerchantMen::Load()
 		Desc.bRender = true;
 		Desc.Color.w = Desc.fColorA;
 		Desc.fColorA = -255.f;
+		Desc.OriPos = _float2(Desc.fX, Desc.fY);
+		Desc.AimPos = _float2(Desc.fX - 10.f, Desc.fY);
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_MenuList.push_back(Desc);

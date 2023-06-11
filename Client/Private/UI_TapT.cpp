@@ -462,7 +462,7 @@ void CUI_TapT::Start_Move(_uint indexstart, _uint indexend, _double TimeDelta)
 		_vector pos = CurrentPos;
 			pos += (OriPos - CurrentPos) * (_float)TimeDelta * 3.f;
 			_float Dist = Distance(XMVectorSet(m_DescList[i+6]->fX, m_DescList[i+6]->fY, m_DescList[i]->fZ, 1.f), CurrentPos);
-			if (2.f < Dist)
+			if (0.5f < Dist)
 			{
 				m_DescList[i]->fX = XMVectorGetX(pos);
 				m_DescList[i]->fY = XMVectorGetY(pos);
