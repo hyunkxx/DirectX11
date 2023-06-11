@@ -33,6 +33,7 @@
 #include "TerminalUI.h"
 #include "ResonatorUI.h"
 
+#include "UICharacter.h"
 #include "EchoSystem.h"
 
 CApplication::CApplication()
@@ -247,6 +248,14 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::FLOOR,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Floor.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
 #pragma region TERRAIN
