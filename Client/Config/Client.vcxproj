@@ -295,6 +295,7 @@
     <ClInclude Include="..\Public\UI_Mouse.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Panhua.h" />
     <ClInclude Include="..\Public\UI_Souvenir.h" />
     <ClInclude Include="..\Public\UI_TapT.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -440,6 +441,7 @@
     <ClCompile Include="..\Private\UI_Mouse.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\UI_Panhua.cpp" />
     <ClCompile Include="..\Private\UI_Souvenir.cpp" />
     <ClCompile Include="..\Private\UI_TapT.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

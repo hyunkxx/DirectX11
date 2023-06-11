@@ -48,6 +48,7 @@
 #include "UI_Tip.h"
 #include "UI_MerchantMen.h"
 #include "UI_Souvenir.h"
+#include "UI_Panhua.h"
 
 #include "Missile.h"
 #include "Missile_Constant.h"
@@ -331,6 +332,9 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UISOUVI,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UIPANHUA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 122))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::EYE_BURST, 
@@ -1726,6 +1730,8 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UISOUVI, CUI_Souvenir::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIPANHUA, CUI_Panhua::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma endregion
 
@@ -1792,6 +1798,9 @@ HRESULT CLoader::Load_Level_City()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UISOUVI,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIPANHUA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 122))))
 		return E_FAIL;
 
 
@@ -2158,6 +2167,9 @@ HRESULT CLoader::Load_Level_Forest()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UISOUVI,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIPANHUA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 122))))
 		return E_FAIL;
 
 #pragma region COMPONENTS

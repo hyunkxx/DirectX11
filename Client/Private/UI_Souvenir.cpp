@@ -4,8 +4,6 @@
 #include "GameInstance.h"
 #include "Input_Device.h"
 #include "UI_Mouse.h"
-#include "UI_MainScreen.h"
-#include "UI_Minimap.h"
 #include "PlayerState.h"
 #include "ItemDB.h"
 #include "Item.h"
@@ -1242,7 +1240,6 @@ HRESULT CUI_Souvenir::Render()
 
 void CUI_Souvenir::RenderGUI()
 {
-	if (ImGui::Button("SouvenirSave")) { Save(); };
 }
 
 _bool CUI_Souvenir::SelectUI(SOUDESC* pDesc)

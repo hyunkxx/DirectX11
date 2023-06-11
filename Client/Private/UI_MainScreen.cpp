@@ -11,6 +11,7 @@
 #include "UI_Tip.h"
 #include "UI_MerchantMen.h"
 #include "UI_Souvenir.h"
+#include "UI_Panhua.h"
 
 CUI_MainScreen::CUI_MainScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -67,6 +68,8 @@ void CUI_MainScreen::Start()
 	m_pTip = static_cast<CUI_Tip*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
 	m_pUIMen = static_cast<CUI_MerchantMen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MerchantMen"));
 	m_pUISovi = static_cast<CUI_Souvenir*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Souvenir"));
+	m_pUIPanhua = static_cast<CUI_Panhua*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Panhua"));
+
 	SetPlayer();
 	SetHP();
 	SetStaticSkillCoolTime(); // 메인캐릭터로 전체 쿨타임 설정
@@ -92,7 +95,13 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 			return;
 		m_pUISovi->SetState(ACTIVE);
 		m_pUISovi->Set_SituMeet();
-		//m_pPlayerStateClass->AddPlayer();
+	}
+	if (pGameInstance->InputKey(DIK_NUMPADMINUS) == KEY_STATE::TAP) // 임시
+	{
+		if (nullptr == m_pUIPanhua)
+			return;
+		m_pUIPanhua->SetState(ACTIVE);
+		m_pUIPanhua->Set_SituMeet();
 	}
 	OtherobjIsActive(TimeDelta);
 

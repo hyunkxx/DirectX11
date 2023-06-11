@@ -12,9 +12,9 @@ class CTransform;
 END
 
 BEGIN(Client)
-class CUI_Souvenir final : public CGameObject
+class CUI_Panhua final : public CGameObject
 {
-	enum SOUSITUINDEX { MEET, MENU, INMENU, DETAILS, CONFRIM, BYE, SOUEND};
+	enum PANSITUINDEX { MEET, MENU, INMENU, DETAILS, CONFRIM, BYE, SOUEND};
 
 	typedef struct tagSou
 	{
@@ -38,12 +38,12 @@ class CUI_Souvenir final : public CGameObject
 		_float fColorG = { 0.f };
 		_float fColorB = { 0.f };
 		_bool  OnRect; // 마우스가 버퍼 위에 있는지
-	}SOUDESC;
+	}PANDESC;
 
 protected:
-	explicit CUI_Souvenir(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	explicit CUI_Souvenir(const CUI_Souvenir& rhs);
-	virtual ~CUI_Souvenir() = default;
+	explicit CUI_Panhua(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	explicit CUI_Panhua(const CUI_Panhua& rhs);
+	virtual ~CUI_Panhua() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -85,23 +85,23 @@ private:
 	void	SettingOwnTexNum();
 	void	SettingBuyTexNum();
 	void	IsMouseinRect();
-	_bool	AddAlpha(SOUDESC* pDesc, _double TimeDelta);
-	_bool	MinusAlpha(SOUDESC* pDesc, _double TimeDelta);
-	_bool	AddAlphaW(vector<SOUDESC>* pDesc, _double TimeDelta);
-	_bool	MinusAlphaW(vector<SOUDESC>* pDesc, _double TimeDelta);
-	void	ColorP(SOUDESC* pDesc, _float4 fcolor, _double TimeDelta);
-	void	ColorM(SOUDESC * pDesc, _float4 fcolor, _double TimeDelta);
+	_bool	AddAlpha(PANDESC* pDesc, _double TimeDelta);
+	_bool	MinusAlpha(PANDESC* pDesc, _double TimeDelta);
+	_bool	AddAlphaW(vector<PANDESC>* pDesc, _double TimeDelta);
+	_bool	MinusAlphaW(vector<PANDESC>* pDesc, _double TimeDelta);
+	void	ColorP(PANDESC* pDesc, _float4 fcolor, _double TimeDelta);
+	void	ColorM(PANDESC * pDesc, _float4 fcolor, _double TimeDelta);
 	void	MouseMove();
-	_bool	SelectUI(SOUDESC* pDesc);
+	_bool	SelectUI(PANDESC* pDesc);
 	void	Total();
 	void	Load();
 	void	Save();
 
 public:
 	_bool	IsMouseActive() { return m_bMouseActive; }
-	void	Set_SituMeet() { Situation = SOUSITUINDEX::MEET; }
+	void	Set_SituMeet() { Situation = PANSITUINDEX::MEET; }
 private:
-	SOUSITUINDEX Situation = { SOUSITUINDEX::SOUEND };
+	PANSITUINDEX Situation = { PANSITUINDEX::SOUEND };
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint		m_iPass = { 1 };
 	_int		m_Count = {0};
@@ -112,7 +112,7 @@ private:
 	_bool		m_ConfirmRenderStart = { true };
 	_bool		m_bOverPurchase = { false };
 	CItem::ITEM_DESC itemDesc[13];
-	vector<SOUDESC>*	pSelectSlot = { nullptr };
+	vector<PANDESC>*	pSelectSlot = { nullptr };
 
 	//마우스
 	_long mouse = 0l;
@@ -137,31 +137,31 @@ private:
 
 	_float magnification = { 0.f };
 	_int type = { 0 };
-	SOUDESC* CurrentDesc = { nullptr };
+	PANDESC* CurrentDesc = { nullptr };
 	_float2 Size = { 0.f, 0.f };
 
 private:
-	vector<SOUDESC>		  m_SouList;		//0
-	vector<SOUDESC>		  m_MenuList;		//1
-	vector<SOUDESC>		  m_CommonList;		//2
-	vector<SOUDESC>		  m_DetailsList;	//3
-	vector<SOUDESC>		  m_FinalList;		//4
-	vector<SOUDESC>		  m_0Slot;			//5
-	vector<SOUDESC>		  m_1Slot;			//6
-	vector<SOUDESC>		  m_2Slot;			//7
-	vector<SOUDESC>		  m_3Slot;			//8
-	vector<SOUDESC>		  m_4Slot;			//9
-	vector<SOUDESC>		  m_5Slot;			//10
-	vector<SOUDESC>		  m_6Slot;			//11
-	vector<SOUDESC>		  m_7Slot;			//12
-	vector<SOUDESC>		  m_8Slot;			//13
-	vector<SOUDESC>		  m_9Slot;			//14
-	vector<SOUDESC>		  m_10Slot;			//15
-	vector<SOUDESC>		  m_11Slot;			//16
-	vector<SOUDESC>		  m_12Slot;			//17
+	vector<PANDESC>		  m_PanList;		//0
+	vector<PANDESC>		  m_MenuList;		//1
+	vector<PANDESC>		  m_CommonList;		//2
+	vector<PANDESC>		  m_DetailsList;	//3
+	vector<PANDESC>		  m_FinalList;		//4
+	vector<PANDESC>		  m_0Slot;			//5
+	vector<PANDESC>		  m_1Slot;			//6
+	vector<PANDESC>		  m_2Slot;			//7
+	vector<PANDESC>		  m_3Slot;			//8
+	vector<PANDESC>		  m_4Slot;			//9
+	vector<PANDESC>		  m_5Slot;			//10
+	vector<PANDESC>		  m_6Slot;			//11
+	vector<PANDESC>		  m_7Slot;			//12
+	vector<PANDESC>		  m_8Slot;			//13
+	vector<PANDESC>		  m_9Slot;			//14
+	vector<PANDESC>		  m_10Slot;			//15
+	vector<PANDESC>		  m_11Slot;			//16
+	vector<PANDESC>		  m_12Slot;			//17
 
 public:
-	static CUI_Souvenir* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUI_Panhua* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
 

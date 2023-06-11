@@ -223,6 +223,7 @@ private:
 	class CUI_Tip*				m_pTip = { nullptr };
 	class CUI_MerchantMen*		m_pUIMen = { nullptr };
 	class CUI_Souvenir*			m_pUISovi = { nullptr };
+	class CUI_Panhua*			m_pUIPanhua = { nullptr };
 private:
 	CRenderer*					m_pRenderer = { nullptr };
 	CShader*					m_pShader = { nullptr };

@@ -3,8 +3,6 @@
 #include "GameMode.h"
 #include "GameInstance.h"
 #include "UI_Mouse.h"
-#include "UI_MainScreen.h"
-#include "UI_Minimap.h"
 #include "PlayerState.h"
 #include "ItemDB.h"
 #include "Item.h"

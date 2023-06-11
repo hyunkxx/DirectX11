@@ -10,6 +10,7 @@
 #include "UI_Tip.h"
 #include "UI_MerchantMen.h"
 #include "UI_Souvenir.h"
+#include "UI_Panhua.h"
 
 CPlayerCamera::CPlayerCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCamera(pDevice, pContext)
@@ -107,6 +108,7 @@ void CPlayerCamera::Start()
 	m_pUITip = static_cast<CUI_Tip*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
 	m_pUIMen = static_cast<CUI_MerchantMen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MerchantMen"));
 	m_pUISovi = static_cast<CUI_Souvenir*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Souvenir"));
+	m_pUIPanhua = static_cast<CUI_Panhua*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Panhua"));
 }
 
 void CPlayerCamera::Tick(_double TimeDelta)
@@ -125,19 +127,19 @@ void CPlayerCamera::Tick(_double TimeDelta)
 	{
 
 		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
-		//if (false == m_pTerminalUI->IsActive())
-		//{
-		//	if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi)
-		//		return;
+		if (false == m_pTerminalUI->IsActive())
+		{
+			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || m_pUIPanhua)
+				return;
 
-		//	m_bFixMouse = (m_pUITap->IsMouseActive() ? false : m_pUITip->IsMouseActive() ? false : m_pUIMen->IsMouseActive() ? false : m_pUISovi ->IsMouseActive() ? false : true);
-		//}
-		//else
-		//{
-		//	if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi)
-		//		return;
-		//	m_pUITip->SetState(DISABLE);
-		//}
+			m_bFixMouse = (m_pUITap->IsMouseActive() ? false : m_pUITip->IsMouseActive() ? false : m_pUIMen->IsMouseActive() ? false : m_pUISovi ->IsMouseActive() ? false : m_pUIPanhua->IsMouseActive() ? false : true);
+		}
+		else
+		{
+			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || m_pUIPanhua)
+				return;
+			m_pUITip->SetState(DISABLE);
+		}
 
 		if (pGameInstance->InputKey(DIK_LALT) == KEY_STATE::HOLD)
 		{

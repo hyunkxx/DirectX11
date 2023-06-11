@@ -1,28 +1,26 @@
 #include "stdafx.h"
-#include "..\Public\UI_Souvenir.h"
+#include "..\Public\UI_Panhua.h"
 #include "GameMode.h"
 #include "GameInstance.h"
 #include "Input_Device.h"
 #include "UI_Mouse.h"
-#include "UI_MainScreen.h"
-#include "UI_Minimap.h"
 #include "PlayerState.h"
 #include "ItemDB.h"
 #include "Item.h"
 #include "Inventory.h"
 
 
-CUI_Souvenir::CUI_Souvenir(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_Panhua::CUI_Panhua(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
 {
 }
 
-CUI_Souvenir::CUI_Souvenir(const CUI_Souvenir& rhs)
+CUI_Panhua::CUI_Panhua(const CUI_Panhua& rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CUI_Souvenir::Initialize_Prototype()
+HRESULT CUI_Panhua::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -30,7 +28,7 @@ HRESULT CUI_Souvenir::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Initialize(void * pArg)
+HRESULT CUI_Panhua::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -362,7 +360,7 @@ HRESULT CUI_Souvenir::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CUI_Souvenir::Start()
+void CUI_Panhua::Start()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
@@ -382,47 +380,47 @@ void CUI_Souvenir::Start()
 	/* NPC랑 플레이어랑 충돌하면 Setstate()로 활성화 , 비활성화*/
 }
 
-void CUI_Souvenir::Tick(_double TimeDelta)
+void CUI_Panhua::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	switch (Situation)
 	{
-	case Client::CUI_Souvenir::MEET:
+	case Client::CUI_Panhua::MEET:
 	{
 		m_pUIMouse->Set_RenderMouse(true);
 		m_bMouseActive = true;
 
-		if (SelectUI(&m_SouList[0]))
+		if (SelectUI(&m_PanList[0]))
 		{
-			if (false == m_SouList[0].OnRect)
+			if (false == m_PanList[0].OnRect)
 			{
-				for (auto& Sou : m_SouList)
+				for (auto& Sou : m_PanList)
 				{
 					Sou.fColorA = Sou.Color.w;
 				}
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				m_SouList[0].OnRect = true;
+				m_PanList[0].OnRect = true;
 			}
 		}
 
-		if (true == m_SouList[0].OnRect)
+		if (true == m_PanList[0].OnRect)
 		{
-			if (MinusAlphaW(&m_SouList, TimeDelta))
+			if (MinusAlphaW(&m_PanList, TimeDelta))
 			{
-				m_SouList[0].OnRect = false;
-				Situation = CUI_Souvenir::MENU;
+				m_PanList[0].OnRect = false;
+				Situation = CUI_Panhua::MENU;
 			}
 		}
 		else
 		{
-			AddAlphaW(&m_SouList, TimeDelta);
+			AddAlphaW(&m_PanList, TimeDelta);
 		}
 	}
 		break;
-	case Client::CUI_Souvenir::MENU:
+	case Client::CUI_Panhua::MENU:
 	{
 		if (m_MenuRenderStart)
 		{
@@ -477,7 +475,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			{
 				m_MenuRenderStart = true;
 				m_MenuList[0].OnRect = false;
-				Situation = CUI_Souvenir::INMENU;
+				Situation = CUI_Panhua::INMENU;
 			}
 		}
 		if (true == m_MenuList[3].OnRect) // 떠나다
@@ -487,12 +485,12 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 				m_MenuRenderStart = true;
 				m_MenuList[3].OnRect = false;
 				SetState(DISABLE);
-				//Situation = CUI_Souvenir::MEET;
+				//Situation = CUI_Panhua::MEET;
 			}
 		}
 	}
 		break;
-	case Client::CUI_Souvenir::INMENU: ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	case Client::CUI_Panhua::INMENU: ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	{
 		if (m_bOverPurchase)
 			SettingOverPurchase();
@@ -524,18 +522,18 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
 				m_InMenuRenderStart = false;
-				Situation = CUI_Souvenir::MENU;
+				Situation = CUI_Panhua::MENU;
 			}
 		}
 		else
 			m_CommonList[4].iTexNum = 7;
-		if (CUI_Souvenir::MENU == Situation)
+		if (CUI_Panhua::MENU == Situation)
 		{
 			MinusAlphaW(&m_CommonList, TimeDelta);
 		}
 	}
 		break;
-	case Client::CUI_Souvenir::DETAILS: //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	case Client::CUI_Panhua::DETAILS: //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	{
 		if (m_DetailRenderStart)
 		{
@@ -635,7 +633,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			{
 				BuyNum = 0;
 				m_DetailRenderStart = false;
-				Situation = CUI_Souvenir::INMENU;
+				Situation = CUI_Panhua::INMENU;
 				(m_DetailsList[13].bRender == false ? m_DetailsList[13].bRender = true : m_DetailsList[13].bRender = true);
 				(m_DetailsList[14].bRender == false ? m_DetailsList[14].bRender = true : m_DetailsList[14].bRender = true);
 				(m_DetailsList[15].bRender == false ? m_DetailsList[15].bRender = true : m_DetailsList[15].bRender = true);
@@ -652,7 +650,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			{
 				BuyNum = 0;
 				m_DetailRenderStart = false;
-				Situation = CUI_Souvenir::INMENU;
+				Situation = CUI_Panhua::INMENU;
 				(m_DetailsList[13].bRender == false ? m_DetailsList[13].bRender = true : m_DetailsList[13].bRender = true);
 				(m_DetailsList[14].bRender == false ? m_DetailsList[14].bRender = true : m_DetailsList[14].bRender = true);
 				(m_DetailsList[15].bRender == false ? m_DetailsList[15].bRender = true : m_DetailsList[15].bRender = true);
@@ -663,7 +661,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			m_DetailsList[26].iTexNum = 21;
 
 
-		if (CUI_Souvenir::INMENU == Situation)
+		if (CUI_Panhua::INMENU == Situation)
 		{
 			MinusAlphaW(&m_DetailsList, TimeDelta);
 		}
@@ -677,7 +675,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 				(*pLimibuycount) += BuyNum;
 				//제한개수와 누적구매가 같다면
 				(Limited == (*pLimibuycount) ? m_bOverPurchase = true : false);
-				Situation = CUI_Souvenir::CONFRIM;
+				Situation = CUI_Panhua::CONFRIM;
 				(m_DetailsList[13].bRender == false ? m_DetailsList[13].bRender = true : m_DetailsList[13].bRender = true);
 				(m_DetailsList[14].bRender == false ? m_DetailsList[14].bRender = true : m_DetailsList[14].bRender = true);
 				(m_DetailsList[15].bRender == false ? m_DetailsList[15].bRender = true : m_DetailsList[15].bRender = true);
@@ -712,7 +710,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 
 	}
 		break;
-	case Client::CUI_Souvenir::CONFRIM:
+	case Client::CUI_Panhua::CONFRIM:
 	{
 		// 아이템 아이콘, 박스 색상
 		m_FinalList[4].iTexNum = (*pSelectSlot)[2].iTexNum;
@@ -750,7 +748,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
 				m_ConfirmRenderStart = true;
-				Situation = CUI_Souvenir::BYE;
+				Situation = CUI_Panhua::BYE;
 			}
 		}
 		else
@@ -761,7 +759,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 
 	}
 		break;
-	case Client::CUI_Souvenir::BYE:
+	case Client::CUI_Panhua::BYE:
 	{
 		// 인벤토리 처리 후 목록으로
 		// 보상 인벤에 넣기
@@ -795,14 +793,14 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 		m_pInven->EraseItem(CInventory::INVEN_COIN, 1, iTotal);
 
 		BuyNum = 0;
-		Situation = CUI_Souvenir::INMENU;
+		Situation = CUI_Panhua::INMENU;
 	}
 		break;
 	}
 }
 
 
-void CUI_Souvenir::InMenuOpen(_double TimeDelta)
+void CUI_Panhua::InMenuOpen(_double TimeDelta)
 {// 창 열릴 때 전체 랜더
 	_int Count = 0;
 
@@ -838,7 +836,7 @@ void CUI_Souvenir::InMenuOpen(_double TimeDelta)
 		m_InMenuRenderStart = false;
 }
 
-_bool CUI_Souvenir::InMenuEnd(_double TimeDelta)
+_bool CUI_Panhua::InMenuEnd(_double TimeDelta)
 {// 창 열릴 때 전체 랜더
 	_int Count = 0;
 
@@ -876,7 +874,7 @@ _bool CUI_Souvenir::InMenuEnd(_double TimeDelta)
 	else
 		return false;
 }
-void CUI_Souvenir::Start_Move(_uint indexstart, _uint indexend, _double TimeDelta)
+void CUI_Panhua::Start_Move(_uint indexstart, _uint indexend, _double TimeDelta)
 {
 	for (_uint i = indexstart; i < indexend; ++i)
 	{
@@ -899,7 +897,7 @@ void CUI_Souvenir::Start_Move(_uint indexstart, _uint indexend, _double TimeDelt
 			* XMMatrixTranslation(m_MenuList[i].fX, m_MenuList[i].fY, m_MenuList[i].fZ));
 	}
 }
-void CUI_Souvenir::End_Move(_uint indexstart, _uint indexend, _double TimeDelta)
+void CUI_Panhua::End_Move(_uint indexstart, _uint indexend, _double TimeDelta)
 {
 	for (_uint i = indexstart; i < indexend; ++i)
 	{
@@ -923,7 +921,7 @@ void CUI_Souvenir::End_Move(_uint indexstart, _uint indexend, _double TimeDelta)
 	}
 }
 
-void CUI_Souvenir::Total()
+void CUI_Panhua::Total()
 {
 	iTotal = BuyNum * Cost;
 
@@ -953,12 +951,12 @@ void CUI_Souvenir::Total()
 	}
 }
 
-void CUI_Souvenir::SettingLimitTexNum()
+void CUI_Panhua::SettingLimitTexNum()
 {
 		m_DetailsList[9].iTexNum = (*pLimibuycount) + 27;
 		m_DetailsList[11].iTexNum = Limited + 27;
 }
-void CUI_Souvenir::SettingOverPurchase()
+void CUI_Panhua::SettingOverPurchase()
 {
 	if (nullptr == pSelectSlot)
 		return;
@@ -973,7 +971,7 @@ void CUI_Souvenir::SettingOverPurchase()
 	//}
 	m_bOverPurchase = false;
 }
-void CUI_Souvenir::SettingOwnTexNum()
+void CUI_Panhua::SettingOwnTexNum()
 {
 	if (99 < CurrentOwn)
 	{
@@ -1004,7 +1002,7 @@ void CUI_Souvenir::SettingOwnTexNum()
 		m_DetailsList[27].iTexNum = 22;
 	}
 }
-void CUI_Souvenir::SettingBuyTexNum()
+void CUI_Panhua::SettingBuyTexNum()
 {
 	m_DetailsList[17].bRender = false;
 	m_DetailsList[18].bRender = false;
@@ -1015,7 +1013,7 @@ void CUI_Souvenir::SettingBuyTexNum()
 		m_DetailsList[27].iTexNum = 22;
 	}
 }
-void CUI_Souvenir::LateTick(_double TimeDelta)
+void CUI_Panhua::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
@@ -1023,18 +1021,18 @@ void CUI_Souvenir::LateTick(_double TimeDelta)
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_UI_POST, this);
 }
 
-HRESULT CUI_Souvenir::Render()
+HRESULT CUI_Panhua::Render()
 {
 
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 	switch (Situation)
 	{
-	case Client::CUI_Souvenir::MEET:
+	case Client::CUI_Panhua::MEET:
 	{
-		for (_uint i = 0; i < (_int)m_SouList.size(); ++i)
+		for (_uint i = 0; i < (_int)m_PanList.size(); ++i)
 		{
-			if (m_SouList[i].bRender)
+			if (m_PanList[i].bRender)
 			{
 				if (FAILED(Setup_SouShader(i)))
 					return E_FAIL;
@@ -1044,7 +1042,7 @@ HRESULT CUI_Souvenir::Render()
 		}
 	}
 	break;
-	case Client::CUI_Souvenir::MENU:
+	case Client::CUI_Panhua::MENU:
 	{
 		for (_uint i = 0; i < (_int)m_MenuList.size(); ++i)
 		{
@@ -1058,7 +1056,7 @@ HRESULT CUI_Souvenir::Render()
 		}
 	}
 	break;
-	case Client::CUI_Souvenir::INMENU:
+	case Client::CUI_Panhua::INMENU:
 	{
 		for (_uint i = 0; i < (_int)m_CommonList.size(); ++i)
 		{
@@ -1202,7 +1200,7 @@ HRESULT CUI_Souvenir::Render()
 		}
 	}
 	break;
-	case Client::CUI_Souvenir::DETAILS:
+	case Client::CUI_Panhua::DETAILS:
 	{
 		for (_uint i = 0; i < (_int)m_DetailsList.size(); ++i)
 		{
@@ -1215,7 +1213,7 @@ HRESULT CUI_Souvenir::Render()
 			}
 		}
 		break;
-	case Client::CUI_Souvenir::CONFRIM:
+	case Client::CUI_Panhua::CONFRIM:
 	{
 		for (_uint i = 0; i < (_int)m_FinalList.size(); ++i)
 		{
@@ -1229,7 +1227,7 @@ HRESULT CUI_Souvenir::Render()
 		}
 	}
 	break;
-	case Client::CUI_Souvenir::BYE:
+	case Client::CUI_Panhua::BYE:
 	{
 	}
 	break;
@@ -1240,12 +1238,11 @@ HRESULT CUI_Souvenir::Render()
 	return S_OK;
 }
 
-void CUI_Souvenir::RenderGUI()
+void CUI_Panhua::RenderGUI()
 {
-	if (ImGui::Button("SouvenirSave")) { Save(); };
 }
 
-_bool CUI_Souvenir::SelectUI(SOUDESC* pDesc)
+_bool CUI_Panhua::SelectUI(PANDESC* pDesc)
 {
 	_float3	fMousePos = m_pUIMouse->Get_MousePos();
 	_vector vMouse = XMLoadFloat3(&fMousePos);
@@ -1278,7 +1275,7 @@ _bool CUI_Souvenir::SelectUI(SOUDESC* pDesc)
 	return false;
 }
 
-HRESULT CUI_Souvenir::Add_Components()
+HRESULT CUI_Panhua::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
 		TEXT("com_renderer"), (CComponent**)&m_pRenderer)))
@@ -1300,31 +1297,31 @@ HRESULT CUI_Souvenir::Add_Components()
 
 }
 
-HRESULT CUI_Souvenir::Setup_SouShader(_uint index)
+HRESULT CUI_Panhua::Setup_SouShader(_uint index)
 {
-	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_SouList[index].iTexNum)))
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_PanList[index].iTexNum)))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_SouList[index].WorldMatrix))))
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_PanList[index].WorldMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_SouList[index].fColorR), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_PanList[index].fColorR), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_SouList[index].fColorG), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_PanList[index].fColorG), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_SouList[index].fColorB), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_PanList[index].fColorB), sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_SouList[index].fColorA), sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_PanList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 
-	m_iPass = m_SouList[index].iPass;
+	m_iPass = m_PanList[index].iPass;
 
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_MenuShader(_uint index)
+HRESULT CUI_Panhua::Setup_MenuShader(_uint index)
 {
 	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_MenuList[index].iTexNum)))
 		return E_FAIL;
@@ -1348,7 +1345,7 @@ HRESULT CUI_Souvenir::Setup_MenuShader(_uint index)
 	return S_OK;
 }
 
-void CUI_Souvenir::IsMouseinRect()
+void CUI_Panhua::IsMouseinRect()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (SelectUI(&m_0Slot[0]))
@@ -1356,7 +1353,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_0Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[0];
 			Limited = 5;
 			Cost = 1;
@@ -1375,7 +1372,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_1Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[1];
 			Limited = 5;
 			Cost = 2;
@@ -1394,7 +1391,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_2Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[2];
 			Limited = 5;
 			Cost = 3;
@@ -1413,7 +1410,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_3Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[3];
 			Limited = 1;
 			Cost = 5;
@@ -1432,7 +1429,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_4Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[4];
 			Limited = 1;
 			Cost = 10;
@@ -1451,7 +1448,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_5Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[5];
 			Limited = 5;
 			Cost = 1;
@@ -1470,7 +1467,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_6Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[6];
 			Limited = 5;
 			Cost = 2;
@@ -1489,7 +1486,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_7Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[7];
 			Limited = 5;
 			Cost = 3;
@@ -1508,7 +1505,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_8Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[8];
 			Limited = 1;
 			Cost = 5;
@@ -1527,7 +1524,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_9Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[9];
 			Limited = 1;
 			Cost = 10;
@@ -1546,7 +1543,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_10Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[10];
 			Limited = 3;
 			Cost = 1;
@@ -1565,7 +1562,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_11Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[11];
 			Limited = 3;
 			Cost = 5;
@@ -1584,7 +1581,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_12Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			Situation = CUI_Souvenir::DETAILS;
+			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[12];
 			Limited = 1;
 			Cost = 10;
@@ -1599,7 +1596,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_12Slot[8].bRender = false;
 
 }
-_bool CUI_Souvenir::AddAlpha(SOUDESC* pDesc, _double TimeDelta)
+_bool CUI_Panhua::AddAlpha(PANDESC* pDesc, _double TimeDelta)
 {
 	if (pDesc->Color.w > pDesc->fColorA)
 		{
@@ -1613,7 +1610,7 @@ _bool CUI_Souvenir::AddAlpha(SOUDESC* pDesc, _double TimeDelta)
 	return false;
 }
 
-_bool CUI_Souvenir::MinusAlpha(SOUDESC* pDesc, _double TimeDelta)
+_bool CUI_Panhua::MinusAlpha(PANDESC* pDesc, _double TimeDelta)
 {
 		if (pDesc->Color.w < pDesc->fColorA)
 		{
@@ -1627,7 +1624,7 @@ _bool CUI_Souvenir::MinusAlpha(SOUDESC* pDesc, _double TimeDelta)
 	return false;
 }
 
-_bool CUI_Souvenir::AddAlphaW(vector<SOUDESC>* pDesc, _double TimeDelta)
+_bool CUI_Panhua::AddAlphaW(vector<PANDESC>* pDesc, _double TimeDelta)
 {
 	for (_uint i = 0; i < (_int)(*pDesc).size(); ++i)
 	{
@@ -1656,7 +1653,7 @@ _bool CUI_Souvenir::AddAlphaW(vector<SOUDESC>* pDesc, _double TimeDelta)
 	return false;
 }
 
-_bool CUI_Souvenir::MinusAlphaW(vector<SOUDESC>* pDesc, _double TimeDelta)
+_bool CUI_Panhua::MinusAlphaW(vector<PANDESC>* pDesc, _double TimeDelta)
 {
 	for (_uint i = 0; i < (_int)(*pDesc).size(); ++i)
 	{
@@ -1685,7 +1682,7 @@ _bool CUI_Souvenir::MinusAlphaW(vector<SOUDESC>* pDesc, _double TimeDelta)
 	return false;
 }
 
-void CUI_Souvenir::ColorP(SOUDESC* pDesc, _float4 fcolor, _double TimeDelta)
+void CUI_Panhua::ColorP(PANDESC* pDesc, _float4 fcolor, _double TimeDelta)
 {
 	if (0.1f < fcolor.x - pDesc->fColorR)
 	{
@@ -1707,7 +1704,7 @@ void CUI_Souvenir::ColorP(SOUDESC* pDesc, _float4 fcolor, _double TimeDelta)
 		pDesc->fColorB = fcolor.z;
 }
 
-void CUI_Souvenir::ColorM(SOUDESC* pDesc, _float4 fcolor, _double TimeDelta)
+void CUI_Panhua::ColorM(PANDESC* pDesc, _float4 fcolor, _double TimeDelta)
 {
 	if (0.1f < abs(fcolor.x - pDesc->fColorR))
 	{
@@ -1729,7 +1726,7 @@ void CUI_Souvenir::ColorM(SOUDESC* pDesc, _float4 fcolor, _double TimeDelta)
 		pDesc->fColorB = fcolor.z;
 }
 
-void CUI_Souvenir::MouseMove()
+void CUI_Panhua::MouseMove()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	
@@ -1822,19 +1819,19 @@ void CUI_Souvenir::MouseMove()
 
 }
 
-void CUI_Souvenir::Load()
+void CUI_Panhua::Load()
 {
 	//
 	_uint index = 3;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/Souvenir%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Panhua%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -1860,7 +1857,7 @@ void CUI_Souvenir::Load()
 		Desc.fColorA = -255.f;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
-		m_SouList.push_back(Desc);
+		m_PanList.push_back(Desc);
 		CloseHandle(hFile);
 
 	}
@@ -1869,12 +1866,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/SouMenu%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/PanMenu%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -1911,12 +1908,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/SouCommon%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/PanCommon%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -1951,12 +1948,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/SouFinal%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/PanFinal%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -1991,12 +1988,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/SouDetails%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/PanDetails%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2031,12 +2028,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/0Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan0Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2072,12 +2069,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/1Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan1Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2112,12 +2109,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/2Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan2Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2153,12 +2150,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/3Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan3Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2194,12 +2191,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/4Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan4Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2235,12 +2232,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/5Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan5Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2276,12 +2273,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/6Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan6Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2317,12 +2314,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/7Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan7Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2357,12 +2354,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/8Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan8Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2397,12 +2394,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/9Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan9Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2437,12 +2434,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/10Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan10Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2477,12 +2474,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/11Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan11Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2517,12 +2514,12 @@ void CUI_Souvenir::Load()
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/12Slot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Pan12Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-		SOUDESC Desc;
-		ZeroMemory(&Desc, sizeof(SOUDESC));
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
 
 		_ulong dwByte = 0;
 		while (true)
@@ -2560,14 +2557,14 @@ void CUI_Souvenir::Load()
 
 
 
-void CUI_Souvenir::Save()
+void CUI_Panhua::Save()
 {
 	//
 	_uint index = 0;
-	for (auto& Desc : m_SouList)
+	for (auto& Desc : m_PanList)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/Souvenir%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Panhua%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2594,7 +2591,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_MenuList)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/SouMenu%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/PanMenu%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2621,7 +2618,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_CommonList)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/SouCommon%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/PanCommon%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2649,7 +2646,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_FinalList)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/SouFinal%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/PanFinal%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2674,7 +2671,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_DetailsList)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/SouDetails%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/PanDetails%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2699,7 +2696,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_0Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/0Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan0Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2724,7 +2721,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_1Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/1Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan1Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2749,7 +2746,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_2Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/2Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan2Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2774,7 +2771,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_3Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/3Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan3Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2799,7 +2796,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_4Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/4Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan4Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2824,7 +2821,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_5Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/5Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan5Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2849,7 +2846,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_6Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/6Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan6Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2874,7 +2871,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_7Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/7Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan7Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2898,7 +2895,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_8Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/8Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan8Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2922,7 +2919,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_9Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/9Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan9Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2946,7 +2943,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_10Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/10Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan10Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2970,7 +2967,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_11Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/11Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan11Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -2994,7 +2991,7 @@ void CUI_Souvenir::Save()
 	for (auto& Desc : m_12Slot)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/12Slot%d.dat", index);
+		wsprintf(szFileName, L"../../Data/UI/Pan12Slot%d.dat", index);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		Desc.fColorA = Desc.Color.w;
@@ -3015,7 +3012,7 @@ void CUI_Souvenir::Save()
 	}
 }
 
-HRESULT CUI_Souvenir::Setup_CommonShader(_uint index)
+HRESULT CUI_Panhua::Setup_CommonShader(_uint index)
 {
 	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_CommonList[index].iTexNum)))
 		return E_FAIL;
@@ -3039,7 +3036,7 @@ HRESULT CUI_Souvenir::Setup_CommonShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_DetailsShader(_uint index)
+HRESULT CUI_Panhua::Setup_DetailsShader(_uint index)
 {
 	if(30 == index)
 	{
@@ -3071,7 +3068,7 @@ HRESULT CUI_Souvenir::Setup_DetailsShader(_uint index)
 
 	return S_OK;
 }
-HRESULT CUI_Souvenir::Setup_0SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_0SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3104,7 +3101,7 @@ HRESULT CUI_Souvenir::Setup_0SlotShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_1SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_1SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3137,7 +3134,7 @@ HRESULT CUI_Souvenir::Setup_1SlotShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_2SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_2SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3170,7 +3167,7 @@ HRESULT CUI_Souvenir::Setup_2SlotShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_3SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_3SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3203,7 +3200,7 @@ HRESULT CUI_Souvenir::Setup_3SlotShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_4SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_4SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3236,7 +3233,7 @@ HRESULT CUI_Souvenir::Setup_4SlotShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_5SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_5SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3269,7 +3266,7 @@ HRESULT CUI_Souvenir::Setup_5SlotShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_6SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_6SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3302,7 +3299,7 @@ HRESULT CUI_Souvenir::Setup_6SlotShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_7SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_7SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3335,7 +3332,7 @@ HRESULT CUI_Souvenir::Setup_7SlotShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_8SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_8SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3368,7 +3365,7 @@ HRESULT CUI_Souvenir::Setup_8SlotShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_9SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_9SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3401,7 +3398,7 @@ HRESULT CUI_Souvenir::Setup_9SlotShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_10SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_10SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3434,7 +3431,7 @@ HRESULT CUI_Souvenir::Setup_10SlotShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_11SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_11SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3467,7 +3464,7 @@ HRESULT CUI_Souvenir::Setup_11SlotShader(_uint index)
 	return S_OK;
 }
 
-HRESULT CUI_Souvenir::Setup_12SlotShader(_uint index)
+HRESULT CUI_Panhua::Setup_12SlotShader(_uint index)
 {
 	if (2 == index)
 	{
@@ -3501,7 +3498,7 @@ HRESULT CUI_Souvenir::Setup_12SlotShader(_uint index)
 }
 
 
-HRESULT CUI_Souvenir::Setup_FinalShader(_uint index)
+HRESULT CUI_Panhua::Setup_FinalShader(_uint index)
 {
 	if (4 == index)
 	{
@@ -3535,12 +3532,12 @@ HRESULT CUI_Souvenir::Setup_FinalShader(_uint index)
 }
 
 
-CUI_Souvenir* CUI_Souvenir::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_Panhua* CUI_Panhua::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUI_Souvenir* pInstance = new CUI_Souvenir(pDevice, pContext);
+	CUI_Panhua* pInstance = new CUI_Panhua(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		wstring message = L"Failed to Create : CUI_Souvenir";
+		wstring message = L"Failed to Create : CUI_Panhua";
 		MESSAGE(message);
 		Safe_Release(pInstance);
 	}
@@ -3548,12 +3545,12 @@ CUI_Souvenir* CUI_Souvenir::Create(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	return pInstance;
 }
 
-CGameObject* CUI_Souvenir::Clone(void* pArg)
+CGameObject* CUI_Panhua::Clone(void* pArg)
 {
-	CUI_Souvenir* pInstance = new CUI_Souvenir(*this);
+	CUI_Panhua* pInstance = new CUI_Panhua(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		wstring message = L"Failed to Clone : CUI_Souvenir";
+		wstring message = L"Failed to Clone : CUI_Panhua";
 		MESSAGE(message);
 		Safe_Release(pInstance);
 	}
@@ -3561,7 +3558,7 @@ CGameObject* CUI_Souvenir::Clone(void* pArg)
 	return pInstance;
 }
 
-void CUI_Souvenir::Free()
+void CUI_Panhua::Free()
 {
 	__super::Free();
 	Safe_Release(m_pRenderer);
