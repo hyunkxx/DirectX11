@@ -2180,37 +2180,67 @@ HRESULT CLoader::Load_Level_Forest()
 #pragma region TERRAIN
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, COMPONENT::VIBUFFER_TERRAIN,
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height_1.bmp"), TEXT("../../Data/Forest/Terrain/Height_Map/Vertices.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : VIBUFFER_TERRAIN");
 		return E_FAIL;
+	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_FILTER,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Data/Forest/Terrain/Filter_Map/Filter.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : TERRAIN_FILTER");
 		return E_FAIL;
+	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_D_1,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_01_D.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : TERRAIN_D_1");
 		return E_FAIL;
+	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_D_2,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_10_D.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : TERRAIN_D_2");
 		return E_FAIL;
+	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_D_3,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_16_D.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : TERRAIN_D_3");
 		return E_FAIL;
+	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_D_4,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_09_D_2.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : TERRAIN_D_4");
 		return E_FAIL;
+	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_N_1,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_01_N.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : TERRAIN_N_1");
 		return E_FAIL;
+	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_N_2,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_10_N.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : TERRAIN_N_2");
 		return E_FAIL;
+	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_N_3,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_16_N.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : TERRAIN_N_3");
 		return E_FAIL;
+	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_N_4,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_09_N.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : TERRAIN_N_4");
 		return E_FAIL;
+	}
 
 #pragma endregion TERRAIN
 

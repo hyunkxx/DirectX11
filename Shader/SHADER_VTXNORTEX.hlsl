@@ -21,6 +21,8 @@ float				g_fUVSampler_Ratio_4;
 
 texture2D			g_FilterTexture;
 
+float2				g_fFilterTexUV_Ratio;
+
 texture2D			g_BrushTexture;
 vector				g_vBrushPos = vector(10.f, 0.f, 0.f, 1.f);
 float				g_fBrushRange = 5.f;
@@ -196,7 +198,10 @@ PS_OUT PS_MAIN_PHONG_NORMALMAP(PS_IN_PHONG In)
 	vNormal_4 = mul(vNormal_4, WorldMatrix);
 
 	//vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
-	vector		vFilter = g_FilterTexture.Sample(LinearSampler, float2(In.vTexUV.x, (In.vTexUV.y * 0.50f)));
+	//vector		vFilter = g_FilterTexture.Sample(LinearSampler, float2(In.vTexUV.x, (In.vTexUV.y * 0.50f)));
+
+	vector		vFilter = g_FilterTexture.Sample(LinearSampler,
+		float2((In.vTexUV.x * g_fFilterTexUV_Ratio.x), (In.vTexUV.y * g_fFilterTexUV_Ratio.y)));
 
 	vector		vMtrlDiffuse = { 0.0f, 0.0f, 0.0f, 0.0f };
 	vector		vNormal = { 0.0f, 0.0f, 0.0f, 0.0f };

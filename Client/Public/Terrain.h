@@ -47,6 +47,8 @@ private:
 	_float						m_fUVSampler_Ratio_3 = { 0.0f };
 	_float						m_fUVSampler_Ratio_4 = { 0.0f };
 
+	_float2						m_fFilterUV_Ratio = { 1.0f, 1.0f };
+
 private:
 	HRESULT Add_Components();
 	HRESULT Setup_ShaderResources();

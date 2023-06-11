@@ -126,12 +126,15 @@ void CTerrain::SetUp_LevelFilePath(_uint iLevelID, const _tchar * pFilePath, _tc
 	{
 	case LEVEL_ID::LEVEL_GAMEPLAY:
 		lstrcat(szLevelFilePath, TEXT("GamePlay/"));
+		m_fFilterUV_Ratio = { 1.0f, 0.50f };
 		break;
 	case LEVEL_ID::LEVEL_CITY:
 		lstrcat(szLevelFilePath, TEXT("City/"));
+		m_fFilterUV_Ratio = { 1.0f, 1.0f };
 		break;
 	case LEVEL_ID::LEVEL_FOREST:
 		lstrcat(szLevelFilePath, TEXT("Forest/"));
+		m_fFilterUV_Ratio = { 1.0f, 1.0f };
 		break;
 
 	default:
@@ -252,6 +255,9 @@ HRESULT CTerrain::Setup_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pFilterTexture->Setup_ShaderResource(m_pShader, "g_FilterTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetRawValue("g_fFilterTexUV_Ratio", &m_fFilterUV_Ratio, sizeof(_float2))))
 		return E_FAIL;
 
 	return S_OK;
