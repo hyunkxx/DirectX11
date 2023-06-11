@@ -79,7 +79,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성A
@@ -2189,6 +2189,36 @@ HRESULT CApplication::Ready_Static_Effect()
 
 	for (_int i = 0; 10 > i; i++)
 	{
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/P_Hook_Effect_C.bin"),
+			"../../Resource/Effect/Comon/Hook/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/P_Hook_Effect_N.bin"),
+			"../../Resource/Effect/Comon/Hook/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/P_Hook_Effect_Y.bin"),
+			"../../Resource/Effect/Comon/Hook/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/P_Hook_Jump_C.bin"),
+			"../../Resource/Effect/Comon/Hook/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/P_Hook_Jump_N.bin"),
+			"../../Resource/Effect/Comon/Hook/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/P_Hook_Jump_Y.bin"),
+			"../../Resource/Effect/Comon/Hook/")))
+			return E_FAIL;
+		
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
 			TEXT("../../Resource/Effect/Comon/Flare_Effect.bin"),
 			"../../Resource/Effect/Comon/Flare/")))
