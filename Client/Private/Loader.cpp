@@ -2196,7 +2196,7 @@ HRESULT CLoader::Load_Level_Forest()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_16_D.dds")))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_D_4,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_09_D.dds")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_09_D_2.dds")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::TERRAIN_N_1,
