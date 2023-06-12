@@ -136,7 +136,8 @@ void CMissile::End()
 
 	if (nullptr != m_pEffect)
 	{
-		m_pEffect->Shut_Down();
+		if(false == m_tMissileDesc.bNoShutDownEffect)
+			m_pEffect->Shut_Down();
 		m_pEffect = nullptr;
 	}
 		

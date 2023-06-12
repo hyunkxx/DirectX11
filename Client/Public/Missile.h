@@ -29,6 +29,7 @@ public:
 		_uint				iAttackInfoID;	// 히트 시 적용할 공격 정보
 		_float				fExtents;		// Collider 구체 반지름
 		_bool				bDeleteOnHit;
+		_bool				bNoShutDownEffect;
 
 		class CMissilePool**	ppNextMissilePool;	// 해당 미사일이 사라지면서 생성할 다음 미사일의 풀
 	}MISSILEDESC;

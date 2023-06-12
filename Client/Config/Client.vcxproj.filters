@@ -372,12 +372,18 @@
     <ClCompile Include="..\Private\TraceKey.cpp">
       <Filter>src\05.AnimStateKeys</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\P_Chixia.cpp" />
     <ClCompile Include="..\Private\UI_Souvenir.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Forest.cpp" />
     <ClCompile Include="..\private\UIWeapon.cpp" />
+    <ClCompile Include="..\Private\UI_Panhua.cpp" />
+    <ClCompile Include="..\private\P_Chixia.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\M_FHuxiuxiu.cpp">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -728,12 +734,18 @@
     <ClInclude Include="..\Public\TraceKey.h">
       <Filter>src\05.AnimStateKeys</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\P_Chixia.h" />
     <ClInclude Include="..\Public\UI_Souvenir.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Forest.h" />
     <ClInclude Include="..\public\UIWeapon.h" />
+    <ClInclude Include="..\Public\UI_Panhua.h" />
+    <ClInclude Include="..\public\P_Chixia.h">
+      <Filter>src\02. GameObject\03. Character\00. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\M_FHuxiuxiu.h">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

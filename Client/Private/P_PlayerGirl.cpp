@@ -2894,6 +2894,7 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.fDistance = 2.f;
 	tMissilePoolDesc.fInitAngle = 0.f;
 	tMissilePoolDesc.fRotSpeed = XMConvertToRadians(720.f);
+	
 
 	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("Nvzhu_Skill_02_Circle"));
 	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 1; //PlayerGirl
@@ -2902,6 +2903,7 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.LifeTime = 1.5;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_SKILL_02_03;
 	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
 	
 	m_MissilePools[MISS_SKILL_02] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_SKILL_02] = _float3(0.f, 0.f, 0.f);
@@ -2938,6 +2940,7 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_BURST_01;
 	tMissilePoolDesc.tMissileDesc.fExtents = 7.f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
 
 	m_MissilePools[MISS_BURST_01] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 3.5f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_BURST_01] = _float3(0.f, 0.f, 0.f);
@@ -2956,6 +2959,7 @@ void CP_PlayerGirl::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_BURST_02;
 	tMissilePoolDesc.tMissileDesc.fExtents = 7.f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
 
 	m_MissilePools[MISS_BURST_02] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 3.5f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_BURST_02] = _float3(0.f, 0.f, 0.f);

@@ -289,6 +289,7 @@ private:
 private:
 	HRESULT Add_Components();
 	void SetUp_State();
+
 	virtual void Change_Target(CCharacter* pActiveCharacter);
 	// 플레이어가 일정 거리 안으로 접근했는지 확인하는 함수
 	void Find_Target();

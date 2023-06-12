@@ -1151,7 +1151,6 @@ void CM_Crownless_P2::Release_Traces()
 	}
 }
 
-
 void CM_Crownless_P2::Apply_CoolTime(_double TimeDelta)
 {
 	if (0.0 < m_GlobalCoolTime)

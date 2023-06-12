@@ -29,6 +29,7 @@
 const _double CM_Crownless_P3::m_TraceInterval = 0.09;
 
 CCharacter::SINGLESTATE CM_Crownless_P3::m_tStates[IS_END];
+
 CM_Crownless_P3::CM_Crownless_P3(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCharacter(pDevice, pContext)
 {

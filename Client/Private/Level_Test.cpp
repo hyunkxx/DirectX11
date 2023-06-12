@@ -13,6 +13,7 @@
 #include "M_GAzizi.h"
 #include "M_Anjin.h"
 #include "M_AWukaka.h"
+#include "M_FHuxiuxiu.h"
 #include "M_Crownless_P1.h"
 #include "M_Crownless_P2.h"
 #include "M_Crownless_P3.h"
@@ -39,6 +40,7 @@ HRESULT CLevel_Test::Initialize()
 	CP_Yangyang::Init_States(m_pDevice, m_pContext);
 	CP_Chixia::Init_States(m_pDevice, m_pContext);
 	CSandbag::Init_States(m_pDevice, m_pContext);
+	CM_FHuxiuxiu::Init_States(m_pDevice, m_pContext);
 	CM_Crownless_P1::Init_States(m_pDevice, m_pContext);
 	CM_Crownless_P2::Init_States(m_pDevice, m_pContext);
 	CM_Crownless_P3::Init_States(m_pDevice, m_pContext);
@@ -275,17 +277,17 @@ HRESULT CLevel_Test::Ready_Layer_Player(const _tchar * pLayerTag)
 	CGameObject* pCharacter = nullptr;
 
 	// 한 명만 테스트 할 경우 슬롯을 미리 스왑해 놓아야 함
-	static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"))->Set_ActiveCharacter(CPlayerState::CHARACTER_CHIXIA);
+	//static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"))->Set_ActiveCharacter(CPlayerState::CHARACTER_CHIXIA);
 
 	// 여러명 테스트할 때
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_YANGYANG, pLayerTag, TEXT("Player"))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_YANGYANG, pLayerTag, TEXT("Player"))))
+	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_CHIXIA, pLayerTag, TEXT("Player"))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_CHIXIA, pLayerTag, TEXT("Player"))))
+	//	return E_FAIL;
 	
 
 	return S_OK;
@@ -295,8 +297,13 @@ HRESULT CLevel_Test::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
+	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
+		return E_FAIL;*/
+
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_FHUXIUXIU, pLayerTag, TEXT("FHuxiuxiu"))))
 		return E_FAIL;
+
 
 
 	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_CROWNLESS_P1, pLayerTag, TEXT("Crownless_P1"))))
@@ -352,6 +359,7 @@ void CLevel_Test::Free()
 	CP_Yangyang::Release_States();
 	CP_Chixia::Release_States();
 	CSandbag::Release_States();
+	CM_FHuxiuxiu::Release_States();
 	CM_Crownless_P1::Release_States();
 	CM_Crownless_P2::Release_States();
 	CM_Crownless_P3::Release_States();

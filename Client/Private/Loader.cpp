@@ -23,6 +23,7 @@
 #include "M_GAzizi.h"
 #include "M_Anjin.h"
 #include "M_AWukaka.h"
+#include "M_FHuxiuxiu.h"
 #include "M_Crownless_P1.h"
 #include "M_Crownless_P2.h"
 #include "M_Crownless_P3.h"
@@ -3626,44 +3627,6 @@ HRESULT CLoader::Load_Level_AnimTool()
 	m_pApp->LoadRatio(0.3f);
 	m_szLoadingStateText = L"¸ðµ¨¸¦ ·ÎµùÁßÀÔ´Ï´Ù.";
 
-	// SModel
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_GUN_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun01/Gun01.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
-		return E_FAIL;
-
-	// DModel
-	// Playergirl == nvzhu == ¹æ¼øÀÌ
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
-		return E_FAIL;
-	m_pApp->LoadRatio(0.5f);
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Ribbon.dmdl")))))
-		return E_FAIL;
-
-
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
 		return E_FAIL;
 
@@ -3676,74 +3639,111 @@ HRESULT CLoader::Load_Level_AnimTool()
 		return E_FAIL;
 
 
-	// yangyang == ¾ç¾ç
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
-		return E_FAIL;
+	//// SModel
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
+	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
+	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_GUN_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun01/Gun01.smdl")))))
+	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Base.dmdl")))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
+	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Ribbon.dmdl")))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+	//	return E_FAIL;
 
-	// chixia == ½Ö±ÇÃÑ³à // AimAttack, AirAttack, HoldShot ´õ ÀÖÀ½
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia.dmdl")))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
+	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
-		return E_FAIL;
+	//// DModel
+	//// Playergirl == nvzhu == ¹æ¼øÀÌ
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
+	//	return E_FAIL;
+	//m_pApp->LoadRatio(0.5f);
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
+	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Base.dmdl")))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
+	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Ribbon.dmdl")))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Base.dmdl")))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Ribbon.dmdl")))))
+	//	return E_FAIL;
+
+	//// yangyang == ¾ç¾ç
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Base.dmdl")))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Ribbon.dmdl")))))
+	//	return E_FAIL;
+
+	//// chixia == ½Ö±ÇÃÑ³à // AimAttack, AirAttack, HoldShot ´õ ÀÖÀ½
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia.dmdl")))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Base.dmdl")))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Ribbon.dmdl")))))
+	//	return E_FAIL;
 
 
 	// 4¼Ó¼º Á¤·É ÄÁ¼Á ¸ó½ºÅÍµé
 	// GAzizi == ¿ø±â¿Á == ±¤¼Ó¼º, AWukaka == ÀÚÆø µ¿±ÛÀÌ == ¾Ï¼Ó¼º, FHuxiuxiu == Ç³¼Ó¼º, HKacaca == È­¼Ó¼º 
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_GAZIZI, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/GAzizi.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_GAZIZI, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/GAzizi.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_AWUKAKA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/AWukaka.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_AWUKAKA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/AWukaka.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_FHUXIUXIU, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/FHuxiuxiu.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_FHUXIUXIU, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/FHuxiuxiu.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_HKACACA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/HKacaca.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_HKACACA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/HKacaca.dmdl")))))
+		return E_FAIL;
 
-	//// ÀÎ°£Çü À¯·É? ÄÁ¼Á ¸ó½ºÅÍµé
-	//// ANJIN == ³´¸Ç, HUOJIN == Ä®¸Ç, BingLie == ¾óÀ½Ã¢¸Ç, FengLie == ¼±Ç³±â¸Ç, LeiLie == ¹ø°³È°¸Ç
-	//// LeiFa == ¹ø°³ ¸¶¹ý»ç, QunJing == ²®Áú °ñ·½
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin.dmdl")))))
-	//	return E_FAIL;
+	// ÀÎ°£Çü À¯·É? ÄÁ¼Á ¸ó½ºÅÍµé
+	// ANJIN == ³´¸Ç, HUOJIN == Ä®¸Ç, BingLie == ¾óÀ½Ã¢¸Ç, FengLie == ¼±Ç³±â¸Ç, LeiLie == ¹ø°³È°¸Ç
+	// LeiFa == ¹ø°³ ¸¶¹ý»ç, QunJing == ²®Áú °ñ·½
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_HUOJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Huojin.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_HUOJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Huojin.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Binglie.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Binglie.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_FENGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Fenglie.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_FENGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Fenglie.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_LEILIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leilie.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_LEILIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leilie.dmdl")))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_LEIFA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leifa.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_LEIFA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leifa.dmdl")))))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_QUNJING, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Qunjing.dmdl")))))
 		return E_FAIL;
@@ -3794,9 +3794,9 @@ HRESULT CLoader::Load_Level_AnimTool()
 		return E_FAIL;*/
 
 
-	//VTF
+	/*VTF
 	CTestVTF::TESTVTF_DESC tDesc;
-	// PLAYERGIRL
+	 PLAYERGIRL
 	ZeroMemory(&tDesc, sizeof tDesc);
 	tDesc.iModelID = DMODEL::DMD_PLAYERGIRL_MODEL;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE;
@@ -3810,7 +3810,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 		return E_FAIL;
 	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_PLAYERGIRL), TEXT("PlayerGirl"));
 
-	// PLAYERGIRL_UI
+	 PLAYERGIRL_UI
 	ZeroMemory(&tDesc, sizeof tDesc);
 	tDesc.iModelID = DMODEL::DMD_PLAYERGIRL_MODEL;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_PLAYERGIRL_UI_BASE;
@@ -3824,7 +3824,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 		return E_FAIL;
 	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_PLAYERGIRL_UI), TEXT("PlayerGirl_UI"));
 
-	// YANGYANG
+	 YANGYANG
 	ZeroMemory(&tDesc, sizeof tDesc);
 	tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_ANIMSET_BASE;
@@ -3838,7 +3838,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 		return E_FAIL;
 	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG), TEXT("YangYang"));
 
-	// YANGYANG_UI
+	 YANGYANG_UI
 	ZeroMemory(&tDesc, sizeof tDesc);
 	tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_UI_BASE;
@@ -3852,7 +3852,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 		return E_FAIL;
 	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG_UI), TEXT("YangYang_UI"));
 
-	// CHIXIA
+	 CHIXIA
 	ZeroMemory(&tDesc, sizeof tDesc);
 	tDesc.iModelID = DMODEL::DMD_CHIXIA_MODEL;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_CHIXIA_ANIMSET_BASE;
@@ -3866,7 +3866,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 		return E_FAIL;
 	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_CHIXIA), TEXT("ChiXia"));
 
-	// CHIXIA_UI
+	 CHIXIA_UI
 	ZeroMemory(&tDesc, sizeof tDesc);
 	tDesc.iModelID = DMODEL::DMD_CHIXIA_MODEL;
 	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_CHIXIA_UI_BASE;
@@ -3878,91 +3878,91 @@ HRESULT CLoader::Load_Level_AnimTool()
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_CHIXIA_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
 		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_CHIXIA_UI), TEXT("ChiXia_UI"));
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_CHIXIA_UI), TEXT("ChiXia_UI"));*/
 
 
 	CTestGeneric::TESTGENERIC_DESC tGenericDesc;
-	////GENERIC
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_GAZIZI;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_GAzizi/GAzizi_%d.state"));
+	//GENERIC
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_GAZIZI;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_GAzizi/GAzizi_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_GAZIZI, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_GAZIZI), TEXT("GAzizi"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_GAZIZI, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_GAZIZI), TEXT("GAzizi"));
 
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_AWUKAKA;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_AWukaka/AWukaka_%d.state"));
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_AWUKAKA;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_AWukaka/AWukaka_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_AWUKAKA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_AWUKAKA), TEXT("AWukaka"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_AWUKAKA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_AWUKAKA), TEXT("AWukaka"));
 
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_HKACACA;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_HKacaca/HKacaca_%d.state"));
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_HKACACA;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_HKacaca/HKacaca_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_HKACACA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_HKACACA), TEXT("HKacaca"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_HKACACA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_HKACACA), TEXT("HKacaca"));
 
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_FHUXIUXIU;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_FHuxiuxiu/FHuxiuxiu_%d.state"));
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_FHUXIUXIU;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_FHuxiuxiu/FHuxiuxiu_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_FHUXIUXIU, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_FHUXIUXIU), TEXT("FHuxiuxiu"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_FHUXIUXIU, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_FHUXIUXIU), TEXT("FHuxiuxiu"));
 
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_ANJIN;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Anjin/Anjin_%d.state"));
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_ANJIN;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Anjin/Anjin_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_ANJIN, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_ANJIN), TEXT("Anjin"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_ANJIN, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_ANJIN), TEXT("Anjin"));
 
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_HUOJIN;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Huojin/Huojin_%d.state"));
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_HUOJIN;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Huojin/Huojin_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_HUOJIN, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_HUOJIN), TEXT("Huojin"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_HUOJIN, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_HUOJIN), TEXT("Huojin"));
 
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_BINGLIE;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Binglie/Binglie_%d.state"));
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_BINGLIE;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Binglie/Binglie_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_BINGLIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_BINGLIE), TEXT("Binglie"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_BINGLIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_BINGLIE), TEXT("Binglie"));
 
 
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_FENGLIE;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Fenglie/Fenglie_%d.state"));
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_FENGLIE;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Fenglie/Fenglie_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_FENGLIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_FENGLIE), TEXT("Fenglie"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_FENGLIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_FENGLIE), TEXT("Fenglie"));
 
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_LEILIE;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Leilie/Leilie_%d.state"));
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_LEILIE;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Leilie/Leilie_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_LEILIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_LEILIE), TEXT("Leilie"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_LEILIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_LEILIE), TEXT("Leilie"));
 
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_LEIFA;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Leifa/Leifa_%d.state"));
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_LEIFA;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Leifa/Leifa_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_LEIFA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_LEIFA), TEXT("Leifa"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_LEIFA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_LEIFA), TEXT("Leifa"));
 
 	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
 	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_QUNJING;
@@ -4031,7 +4031,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 
 	// GENERIC ³¡
 
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
+	/*if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
@@ -4047,7 +4047,7 @@ HRESULT CLoader::Load_Level_AnimTool()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
-		return E_FAIL;
+		return E_FAIL;*/
 
 #pragma endregion
 
@@ -4172,6 +4172,9 @@ HRESULT CLoader::Load_Level_Test()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin.dmdl")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_FHUXIUXIU, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/FHuxiuxiu.dmdl")))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_CROWNLESS_P1, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P1.dmdl")))))
 		return E_FAIL;
 
@@ -4225,6 +4228,9 @@ HRESULT CLoader::Load_Level_Test()
 
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SANDBAG, CSandbag::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FHUXIUXIU, CM_FHuxiuxiu::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P1, CM_Crownless_P1::Create(m_pDevice, m_pContext))))
