@@ -61,7 +61,8 @@ public:
 		IS_AIRATTACK_2_END,
 		IS_SKILL_01,
 		IS_SKILL_02,
-		IS_SKILL_QTE,			// 2단 올려베기
+		IS_SKILL_03,			// SKILL_QTE 슬로우 없는 버전
+		IS_SKILL_QTE,
 		IS_BURST,
 		IS_END
 	};

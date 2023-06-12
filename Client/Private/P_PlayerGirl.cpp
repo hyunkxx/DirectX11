@@ -858,7 +858,7 @@ void CP_PlayerGirl::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
 	_vector vFinalPos;
 
 	// 1번 슬롯일 경우 왼쪽
-	if (CPlayerState::SLOT_SUB1 == m_pPlayerStateClass->Get_Slot(CPlayerState::CHARACTER_CHIXIA))
+	if (CPlayerState::SLOT_SUB1 == m_pPlayerStateClass->Get_Slot(CPlayerState::CHARACTER_ROVER))
 		vFinalPos = vTargetPos + 2.f * XMVector3TransformNormal(vDir, XMMatrixRotationY(XMConvertToRadians(120.f)));
 	// 2번 슬롯일 경우 오른쪽
 	else
@@ -1078,6 +1078,7 @@ void CP_PlayerGirl::SetUp_State()
 		m_Scon.ePositionState = PS_AIR;
 		m_Scon.bFalling = false;
 		XMStoreFloat3(&m_vJumpPos, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+		m_iAirJumpCount = 1;
 	}
 
 	if (SS_LAND_LIGHT == m_Scon.iCurState ||
@@ -1432,14 +1433,14 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		if (pGame->InputKey(DIK_1) == KEY_STATE::TAP)
 		{
 			if (PS_GROUND == m_Scon.ePositionState &&
-				5 > m_tCurState.iLeavePriority)
+				7 > m_tCurState.iLeavePriority)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB1);
 		}
 
 		if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
 		{
 			if (PS_GROUND == m_Scon.ePositionState &&
-				5 > m_tCurState.iLeavePriority)
+				7 > m_tCurState.iLeavePriority)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
 		}
 	}

@@ -45,7 +45,7 @@ const char CP_Yangyang::szIndividualStateTag[CP_Yangyang::IS_END - CP_Yangyang::
 	"IS_AIRATTACK_END",
 	"IS_SKILL_01",
 	"IS_SKILL_02",
-	"IS_SKILL_QTE",
+	"IS_SKILL_03",
 	"IS_BURST"
 };
 
@@ -878,7 +878,7 @@ void CP_Yangyang::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
 	_vector vFinalPos;
 
 	// 1번 슬롯일 경우 왼쪽
-	if (CPlayerState::SLOT_SUB1 == m_pPlayerStateClass->Get_Slot(CPlayerState::CHARACTER_CHIXIA))
+	if (CPlayerState::SLOT_SUB1 == m_pPlayerStateClass->Get_Slot(CPlayerState::CHARACTER_YANGYANG))
 		vFinalPos = vTargetPos + 2.f * XMVector3TransformNormal(vDir, XMMatrixRotationY(XMConvertToRadians(120.f)));
 	// 2번 슬롯일 경우 오른쪽
 	else
@@ -1105,11 +1105,14 @@ void CP_Yangyang::SetUp_State()
 		SS_BEHIT_FLY_START == m_Scon.iCurState ||
 		SS_BEHIT_PUSH == m_Scon.iCurState ||
 		IS_SKILL_QTE == m_Scon.iCurState ||
+		IS_SKILL_03 == m_Scon.iCurState ||
 		SS_FALL == m_Scon.iCurState) &&
 		PS_AIR != m_Scon.ePositionState)
 	{
 		m_Scon.ePositionState = PS_AIR;
 		m_Scon.bFalling = false;
+		m_iAirJumpCount = 1;
+
 		XMStoreFloat3(&m_vJumpPos, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 	}
 
@@ -1302,26 +1305,6 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 		if (pGame->InputKey(DIK_C) == KEY_STATE::TAP)
 			m_Scon.bWalk = !m_Scon.bWalk;
 
-		/*if (pGame->InputKey(DIK_UP) == KEY_STATE::TAP)
-		{
-		m_Scon.iNextState = m_Scon.iCurState + 1;
-
-		if (m_Scon.iNextState >= iState_End)
-		m_Scon.iNextState = iState_End - 1;
-
-		SetUp_State();
-		}
-
-		if (pGame->InputKey(DIK_DOWN) == KEY_STATE::TAP)
-		{
-		m_Scon.iNextState = m_Scon.iCurState - 1;
-
-		if (m_Scon.iNextState <= 0)
-		m_Scon.iNextState = 0;
-
-		SetUp_State();
-		}*/
-
 		if (pGame->InputKey(DIK_P) == KEY_STATE::TAP)
 		{
 			// 초기위치 설정
@@ -1445,14 +1428,14 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 		if (pGame->InputKey(DIK_1) == KEY_STATE::TAP)
 		{
 			if (PS_GROUND == m_Scon.ePositionState &&
-				5 > m_tCurState.iLeavePriority)
+				7 > m_tCurState.iLeavePriority)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB1);
 		}
 
 		if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
 		{
 			if (PS_GROUND == m_Scon.ePositionState &&
-				5 > m_tCurState.iLeavePriority)
+				7 > m_tCurState.iLeavePriority)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
 		}
 	}
@@ -1643,7 +1626,7 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 
 			case IS_SKILL_02:
 				if (m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] == m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL])
-					m_Scon.iNextState = IS_SKILL_QTE;
+					m_Scon.iNextState = IS_SKILL_03;
 				else
 					m_Scon.iNextState = IS_ATTACK_06;
 				break;
@@ -1702,7 +1685,7 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 			}
 			break;
 		case Client::CP_Yangyang::INPUT_ATTACK:
-			if (m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] <= m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL])
+			if (m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] <= m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] || IS_SKILL_QTE == m_Scon.iCurState)
 				m_Scon.iNextState = IS_AIRATTACK_2_START;
 			else
 				m_Scon.iNextState = IS_AIRATTACK_1_START;
