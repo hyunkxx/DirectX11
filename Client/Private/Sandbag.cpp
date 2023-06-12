@@ -769,7 +769,7 @@ void CSandbag::Select_State(_double TimeDelta)
 			{
 				if (true == m_bAttackReady)
 				{
-					iCurFrameAI = AI_ATTACK_RANGE;
+					iCurFrameAI = AI_ATTACK;
 				}
 				else
 				{
@@ -784,7 +784,7 @@ void CSandbag::Select_State(_double TimeDelta)
 	case Client::CSandbag::AI_IDLE:
 		m_Scon.iNextState = AI_IDLE;
 		break;
-	case Client::CSandbag::AI_ATTACK_RANGE:
+	case Client::CSandbag::AI_ATTACK:
 		if (0.0 == m_StateCoolTimes[IS_ATTACK03_READY])
 			m_Scon.iNextState = IS_ATTACK03_READY;
 		else if (0.0 == m_StateCoolTimes[IS_ATTACK02_1])

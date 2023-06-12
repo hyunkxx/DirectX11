@@ -15,7 +15,7 @@ END
 
 BEGIN(Client)
 class CUI_Monster;
-class CM_AWukaka
+class CM_Huojin
 	: public CCharacter
 {
 public:
@@ -26,6 +26,7 @@ public:
 		AI_CHASE,
 		AI_STAY,
 		AI_ATTACK,
+		AI_RUSH,
 		AI_END
 	};
 
@@ -40,20 +41,23 @@ public:
 		IS_RUN,
 		IS_ATTACK01,
 		IS_ATTACK02,
-		IS_ATTACK03,
+		IS_ATTACK03_1,		// 가드
+		IS_ATTACK03_2,		// 반격
 		IS_STANDUP,
-		IS_BEHIT_S, // Small
-		IS_BEHIT_B, // Big
-		IS_BEHIT_FLY_START, // or PUSH  ~~ 둘이 비슷함
-		IS_BEHIT_FLY_LOOP, // or PUSH  ~~ 둘이 비슷함
-		IS_BEHIT_FLY_FALL, // or PUSH  ~~ 둘이 비슷함
-		IS_BEHIT_HOVER, // 뜬 채로 맞음
-		IS_BEHIT_PRESS, // 누운 채로 맞음
+		IS_BEHIT_S,
+		IS_BEHIT_B,
+		IS_BEHIT_FLY_START,
+		IS_BEHIT_FLY_LOOP,
+		IS_BEHIT_FLY_FALL,
+		IS_BEHIT_HOVER,
+		IS_BEHIT_PRESS,
+		IS_BEHIT_BLOCK,
 		IS_DEAD,
 		IS_END
 	};
 
 	// 이펙트용 본 월드 행렬 배열 인덱스 
+	// 각 본마다 현재 Tracking Effect가 실행중인지 파악하고 사용 중인 이펙트에게 전달할 행렬을 갱신함
 	enum EffectBone
 	{
 		EBONE_NONE,
@@ -68,23 +72,18 @@ public:
 	// 공격 종류
 	enum Attacks
 	{
-		ATK_ATTACK_01,
+		ATK_ATTACK_01_1,
+		ATK_ATTACK_01_2,
+		ATK_ATTACK_01_3,
 		ATK_ATTACK_02,
 		ATK_ATTACK_03,
 		ATK_END
 	};
 
-	// 미사일 종류
-	enum Missiles
-	{
-		MISS_ATTACK_03,
-		MISS_END
-	};
-
 private:
-	CM_AWukaka(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CM_AWukaka(const CM_AWukaka& rhs);
-	virtual ~CM_AWukaka() = default;
+	CM_Huojin(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CM_Huojin(const CM_Huojin& rhs);
+	virtual ~CM_Huojin() = default;
 
 public:
 	virtual HRESULT	Initialize_Prototype();
@@ -105,7 +104,6 @@ public:
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _uint iEffectTypeID, _bool bTracking);
-	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
 	virtual void Shot_PriorityKey(_uint iLeavePriority);
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID);
 
@@ -117,7 +115,6 @@ public:
 		*pAttackOut = m_tMonsterInfo.fAttack;
 	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
-
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -142,12 +139,6 @@ private:
 	TAGATTACK			m_AttackInfos[ATK_END];
 	_uint				m_iCurAttackID = { 0 };	// OBB 히트 시 사용할 공격 구조체ID
 
-												// 미사일 풀
-	CMissilePool*		m_MissilePools[MISS_END] = { nullptr, };
-	_float3				m_MissileRotAngles[MISS_END];
-
-
-
 	// 몬스터 변수
 	MONINFO			m_tMonsterInfo;
 	// 타겟 플레이어 > 생성되는 타이밍에 무조건 플레이어 박음
@@ -159,6 +150,7 @@ private:
 	_float				m_fAlertRange = { 0.f };
 	// 공격 범위
 	_float				m_fAttackRange = { 0.f };
+	_float				m_fCloseRange = { 0.f };
 	// 몬스터와 플레이어 간의 거리
 	_float				m_fTargetDistance = { 0.f };
 
@@ -169,6 +161,8 @@ private:
 	// MoveCollider 충돌 시 비교할 무게
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
 	_float				m_fPushWeight = {};
+
+	_bool				m_bOBBOnLeft = { false };
 
 	//UI추가
 	class CUI_Minimap*		m_pUIIcon = { nullptr };
@@ -183,7 +177,6 @@ private:
 	// 
 
 	void Init_AttackInfos();
-	void Init_Missiles();
 
 	// 적용 중인 쿨타임 TimeDelta 만큼 줄여주는 함수
 	void Apply_CoolTime(_double TimeDelta);
@@ -205,7 +198,7 @@ private:
 	HRESULT Setup_ShadowShaderResource();
 
 public:
-	static CM_AWukaka* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CM_Huojin* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 
@@ -213,16 +206,16 @@ public:
 	virtual CCollider* GetAttackCollider() const override { return m_pAttackCollider; }
 	virtual CCollider* GetHitCollider() const override { return m_pHitCollider; }
 	virtual CCollider* GetMoveCollider() const override { return m_pMoveCollider; }
-	void CM_AWukaka::OnCollisionEnter(CCollider * src, CCollider * dest) override;
-	void CM_AWukaka::OnCollisionStay(CCollider * src, CCollider * dest) override;
-	void CM_AWukaka::OnCollisionExit(CCollider * src, CCollider * dest) override;
+	void CM_Huojin::OnCollisionEnter(CCollider * src, CCollider * dest) override;
+	void CM_Huojin::OnCollisionStay(CCollider * src, CCollider * dest) override;
+	void CM_Huojin::OnCollisionExit(CCollider * src, CCollider * dest) override;
 
 	CCollider* m_pCollider = nullptr;
 
+	
 	CCollider* m_pAttackCollider = nullptr;
 	CCollider* m_pHitCollider = nullptr;
 	CCollider* m_pMoveCollider = nullptr;
-
 	class CCameraMovement* m_pCamMovement = nullptr;
 };
 

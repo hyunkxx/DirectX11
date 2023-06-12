@@ -709,7 +709,7 @@ void CM_AWukaka::Select_State(_double TimeDelta)
 			{
 				if (true == m_bAttackReady)
 				{
-					iCurFrameAI = AI_ATTACK_RANGE;
+					iCurFrameAI = AI_ATTACK;
 				}
 				else
 				{
@@ -724,7 +724,7 @@ void CM_AWukaka::Select_State(_double TimeDelta)
 	case Client::CM_AWukaka::AI_IDLE:
 		m_Scon.iNextState = AI_IDLE;
 		break;
-	case Client::CM_AWukaka::AI_ATTACK_RANGE:
+	case Client::CM_AWukaka::AI_ATTACK:
 		if (0.2f > m_tMonsterInfo.fCurHP / m_tMonsterInfo.fMaxHP)
 			m_Scon.iNextState = IS_ATTACK03;
 		else

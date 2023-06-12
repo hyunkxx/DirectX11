@@ -25,7 +25,8 @@ public:
 		AI_IDLE,
 		AI_CHASE,
 		AI_STAY,
-		AI_ATTACK_RANGE,
+		AI_ATTACK,
+		AI_RUSH,
 		AI_COMBO,
 		AI_END
 	};
@@ -167,6 +168,7 @@ private:
 	_float				m_fAlertRange = { 0.f };
 	// 공격 범위
 	_float				m_fAttackRange = { 0.f };
+	_float				m_fCloseRange = { 0.f };
 	// 몬스터와 플레이어 간의 거리
 	_float				m_fTargetDistance = { 0.f };
 

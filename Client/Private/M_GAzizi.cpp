@@ -690,7 +690,7 @@ void CM_GAzizi::Select_State(_double TimeDelta)
 			{
 				if (true == m_bAttackReady)
 				{
-					iCurFrameAI = AI_ATTACK_RANGE;
+					iCurFrameAI = AI_ATTACK;
 				}
 				else
 				{
@@ -705,7 +705,7 @@ void CM_GAzizi::Select_State(_double TimeDelta)
 	case Client::CM_GAzizi::AI_IDLE:
 		m_Scon.iNextState = AI_IDLE;
 		break;
-	case Client::CM_GAzizi::AI_ATTACK_RANGE:
+	case Client::CM_GAzizi::AI_ATTACK:
 		if (true == m_bAttackReady)
 		{
 			if (0.0 == m_StateCoolTimes[IS_ATTACK3])

@@ -710,7 +710,7 @@ void CM_FHuxiuxiu::Select_State(_double TimeDelta)
 			{
 				if (true == m_bAttackReady)
 				{
-					iCurFrameAI = AI_ATTACK_RANGE;
+					iCurFrameAI = AI_ATTACK;
 				}
 				else
 				{
@@ -725,7 +725,7 @@ void CM_FHuxiuxiu::Select_State(_double TimeDelta)
 	case Client::CM_FHuxiuxiu::AI_IDLE:
 		m_Scon.iNextState = AI_IDLE;
 		break;
-	case Client::CM_FHuxiuxiu::AI_ATTACK_RANGE:
+	case Client::CM_FHuxiuxiu::AI_ATTACK:
 		if (0.0 == m_StateCoolTimes[IS_ATTACK02])
 			m_Scon.iNextState = IS_ATTACK02;
 		else

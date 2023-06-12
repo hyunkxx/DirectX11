@@ -384,6 +384,21 @@
     <ClCompile Include="..\private\M_FHuxiuxiu.cpp">
       <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\M_Binglie.cpp">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\M_Fenglie.cpp">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\M_Huojin.cpp">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\M_Leilie.cpp">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\M_Qunjing.cpp">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -744,6 +759,21 @@
       <Filter>src\02. GameObject\03. Character\00. Player</Filter>
     </ClInclude>
     <ClInclude Include="..\public\M_FHuxiuxiu.h">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\M_Qunjing.h">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\M_Binglie.h">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\M_Fenglie.h">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\M_Huojin.h">
+      <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\M_Leilie.h">
       <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClInclude>
   </ItemGroup>

@@ -25,7 +25,7 @@ public:
 		AI_IDLE,
 		AI_CHASE,
 		AI_STAY,
-		AI_ATTACK_RANGE,
+		AI_ATTACK,
 		AI_END
 	};
 

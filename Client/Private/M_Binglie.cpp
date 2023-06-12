@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Public\M_Anjin.h"
+#include "..\Public\M_Binglie.h"
 
 #include "GameMode.h"
 #include "GameInstance.h"
@@ -21,19 +21,18 @@
 #include "UI_Monster.h"
 #include "UI_Minimap.h"
 
-CCharacter::SINGLESTATE CM_Anjin::m_tStates[IS_END];
-
-CM_Anjin::CM_Anjin(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CCharacter::SINGLESTATE CM_Binglie::m_tStates[IS_END];
+CM_Binglie::CM_Binglie(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCharacter(pDevice, pContext)
 {
 }
 
-CM_Anjin::CM_Anjin(const CM_Anjin & rhs)
+CM_Binglie::CM_Binglie(const CM_Binglie & rhs)
 	: CCharacter(rhs)
 {
 }
 
-HRESULT CM_Anjin::Initialize_Prototype()
+HRESULT CM_Binglie::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -41,7 +40,7 @@ HRESULT CM_Anjin::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CM_Anjin::Initialize(void * pArg)
+HRESULT CM_Binglie::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -65,10 +64,9 @@ HRESULT CM_Anjin::Initialize(void * pArg)
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
 	// 초기위치 설정
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(186.066f, 32.837f, 242.489f, 1.f));
-	m_pNaviCom->Set_CurrentIndex(2200);
-
-
+	_float fRand = _float(rand() % 10);
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.f + fRand, 0.f, 45.f - fRand, 1.f));
+	m_pNaviCom->Set_CurrentIndex(0);
 
 	// StateController 초기화
 	m_Scon.iCurState = 0;
@@ -80,14 +78,13 @@ HRESULT CM_Anjin::Initialize(void * pArg)
 	m_pModelCom->SetUp_Animation(0, true, false);
 
 	// 고유 변수 초기화
-	m_fAlertRange = 15.f;
-	m_fAttackRange = 7.f;
-	m_fCloseRange = 4.f;
+	m_fAlertRange = 18.f;
+	m_fAttackRange = 12.f;
 	m_bAttackReady = true;
 
 	// CharInfo 초기화
-	lstrcpy(m_tMonsterInfo.szName, TEXT("Anjin"));
-	m_tMonsterInfo.eElement = ELMT_HAVOC;
+	lstrcpy(m_tMonsterInfo.szName, TEXT("FHuxiuxiu"));
+	m_tMonsterInfo.eElement = ELMT_AERO;
 	m_tMonsterInfo.iLevel = 1;
 	m_tMonsterInfo.iExp = 0;
 	m_tMonsterInfo.fMaxHP = 2000.f;
@@ -102,7 +99,7 @@ HRESULT CM_Anjin::Initialize(void * pArg)
 
 	// 충돌 타입 처리
 	m_eCollisionType = CT_MONSTER;
-	m_fPushWeight = 75.f;
+	m_fPushWeight = 25.f;
 
 	//m_pAttackCollider->SetActive(false);
 
@@ -112,7 +109,7 @@ HRESULT CM_Anjin::Initialize(void * pArg)
 	wsprintf(szIndex, TEXT("UI_Monster%d"), Monindex);
 	CUI_Monster::MONINFO MonInfo;
 	MonInfo.Level = 3;
-	MonInfo.Type = CUI_Monster::MONSTERTYPE::BOSS;
+	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE1;
 	CGameObject * pUIMon = nullptr;
 	if (pGame->Add_GameObjectEx(&pUIMon, LEVEL_ANYWHERE, OBJECT::UIMONSTER, TEXT("layer_UI"), szIndex, &MonInfo))
 		return E_FAIL;
@@ -122,7 +119,7 @@ HRESULT CM_Anjin::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CM_Anjin::Start()
+void CM_Binglie::Start()
 {
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
@@ -137,12 +134,12 @@ void CM_Anjin::Start()
 	m_pTargetTransform = m_pTarget->GetTransform();
 
 	//UI추가
-	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
+	/*m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 44);
-	m_pUIIcon->SetRender(m_UIIndex, true);
+	m_pUIIcon->SetRender(m_UIIndex, true);*/
 }
 
-void CM_Anjin::PreTick(_double TimeDelta)
+void CM_Binglie::PreTick(_double TimeDelta)
 {
 	// 플레이어 교체시 현재 선택된 캐릭터로 타겟을 변경하는 함수
 	//if(false == m_pTarget->IsActive())
@@ -152,7 +149,7 @@ void CM_Anjin::PreTick(_double TimeDelta)
 	Find_Target();
 }
 
-void CM_Anjin::Tick(_double TimeDelta)
+void CM_Binglie::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
@@ -180,26 +177,24 @@ void CM_Anjin::Tick(_double TimeDelta)
 	pGameInstance->AddCollider(m_pCollider);
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
-	pGameInstance->AddCollider(m_pAttackCollider, COLL_MONSTERATTACK);
-	m_pAttackCollider->Update(XMLoadFloat4x4(&m_EffectBoneMatrices[EBONE_RHAND]));
-
 	pGameInstance->AddCollider(m_pHitCollider, COLL_PLAYERATTACK);
 	m_pHitCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
 	pGameInstance->AddCollider(m_pMoveCollider, COLL_MOVE);
 	m_pMoveCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
+	//UI추가
 	if (false == this->IsDisable())
 	{
 		_float4 Head;
 		XMStoreFloat4(&Head, XMLoadFloat4x4(&m_EffectBoneMatrices[EBONE_HEAD]).r[3]);
-		Head.y += 0.5f;
+		Head.y += 0.7f;
 		m_pUIMon->Set_CharacterPos(XMLoadFloat4(&Head));
-		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+		//m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 	}
 }
 
-void CM_Anjin::LateTick(_double TimeDelta)
+void CM_Binglie::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
@@ -211,7 +206,7 @@ void CM_Anjin::LateTick(_double TimeDelta)
 	Update_EffectBones();
 }
 
-HRESULT CM_Anjin::Render()
+HRESULT CM_Binglie::Render()
 {
 	if (false == m_bRender)
 		return S_OK;
@@ -235,7 +230,6 @@ HRESULT CM_Anjin::Render()
 		if (FAILED(m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i)))
 			return E_FAIL;
 
-
 		if (m_bDissolve)
 		{
 			CGameInstance* pGame = CGameInstance::GetInstance();
@@ -253,7 +247,6 @@ HRESULT CM_Anjin::Render()
 		}
 		else
 			m_pShaderCom->Begin(10);
-
 		m_pModelCom->Render(i);
 
 	}
@@ -261,7 +254,7 @@ HRESULT CM_Anjin::Render()
 	return S_OK;
 }
 
-HRESULT CM_Anjin::RenderShadow()
+HRESULT CM_Binglie::RenderShadow()
 {
 	if (false == m_bRender)
 		return S_OK;
@@ -285,11 +278,11 @@ HRESULT CM_Anjin::RenderShadow()
 	return S_OK;
 }
 
-void CM_Anjin::RenderGUI()
+void CM_Binglie::RenderGUI()
 {
 }
 
-HRESULT CM_Anjin::Add_Components()
+HRESULT CM_Binglie::Add_Components()
 {
 	/* For.Com_Renderer*/
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
@@ -315,7 +308,7 @@ HRESULT CM_Anjin::Add_Components()
 		TEXT("Com_Shader_ModelAnim"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_MONSTER_ANJIN,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_MONSTER_BINGLIE,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
@@ -339,18 +332,8 @@ HRESULT CM_Anjin::Add_Components()
 
 	// attack Hit / Move
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.5f, 0.f, -0.5f };
-	CollDesc.vExtents = { 0.5f, 0.1f, 1.f };
-	CollDesc.vRotation = { 0.f, 0.f, 0.f };
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::OBB,
-
-		TEXT("Com_AttackCollider"), (CComponent**)&m_pAttackCollider, &CollDesc)))
-		return E_FAIL;
-
-
-	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 1.f, 0.f };
-	CollDesc.vExtents = { 1.f, 1.f, 1.f };
+	CollDesc.vCenter = { 0.f, 0.7f, 0.f };
+	CollDesc.vExtents = { 0.5f, 0.5f, 0.5f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_HitCollider"), (CComponent**)&m_pHitCollider, &CollDesc)))
@@ -359,7 +342,7 @@ HRESULT CM_Anjin::Add_Components()
 
 	CollDesc.owner = this;
 	CollDesc.vCenter = { 0.f, 0.f, 0.f };
-	CollDesc.vExtents = { 0.4f, 0.4f, 0.4f };
+	CollDesc.vExtents = { 0.4f, 0.f, 0.4f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_MoveCollider"), (CComponent**)&m_pMoveCollider, &CollDesc)))
@@ -368,7 +351,7 @@ HRESULT CM_Anjin::Add_Components()
 	return S_OK;
 }
 
-HRESULT CM_Anjin::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+HRESULT CM_Binglie::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	ZeroMemory(m_tStates, sizeof(SINGLESTATE) * IS_END);
 
@@ -376,7 +359,7 @@ HRESULT CM_Anjin::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 	for (_int i = 0; i < IS_END; ++i)
 	{
 		_tchar szBuffer[MAX_PATH];
-		wsprintf(szBuffer, TEXT("../../Data/CharState/M_Anjin/Anjin_%d.state"), i);
+		wsprintf(szBuffer, TEXT("../../Data/CharState/M_Binglie/Binglie_%d.state"), i);
 		HANDLE hFile = CreateFile(szBuffer, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
 		if (INVALID_HANDLE_VALUE == hFile)
@@ -435,7 +418,7 @@ HRESULT CM_Anjin::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 	return S_OK;
 }
 
-void CM_Anjin::Release_States()
+void CM_Binglie::Release_States()
 {
 	for (_int i = 0; i < IS_END; ++i)
 	{
@@ -450,7 +433,7 @@ void CM_Anjin::Release_States()
 	}
 }
 
-void CM_Anjin::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _uint iEffectTypeID, _bool bTracking/*iInt1*/)
+void CM_Binglie::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _uint iEffectTypeID, _bool bTracking/*iInt1*/)
 {
 	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag, Engine::EFFECT_ID(iEffectTypeID));
 	if (nullptr == pEffect || EBONE_END <= EffectBoneID)
@@ -459,7 +442,7 @@ void CM_Anjin::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneI
 	pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
 }
 
-void CM_Anjin::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
+void CM_Binglie::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 {
 	if (MISS_END <= iMissilePoolID || EBONE_END <= iEffectBoneID)
 		return;
@@ -484,19 +467,13 @@ void CM_Anjin::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot, vTargetPos);
 }
 
-void CM_Anjin::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
-{
-	m_pAttackCollider->SetActive(bOBB);
-	m_iCurAttackID = iAttackInfoID;
-}
 
-
-void CM_Anjin::Shot_PriorityKey(_uint iLeavePriority)
+void CM_Binglie::Shot_PriorityKey(_uint iLeavePriority)
 {
 	m_tCurState.iLeavePriority = iLeavePriority;
 }
 
-void CM_Anjin::SetUp_State()
+void CM_Binglie::SetUp_State()
 {
 	// 키 리셋
 	for (_uint i = 0; i < m_tCurState.iKeyCount; ++i)
@@ -517,9 +494,6 @@ void CM_Anjin::SetUp_State()
 
 	m_Scon.TrackPos = 0.0;
 	m_Scon.bAnimFinished = false;
-
-	// 애니메이션이 강제로 끊긴 경우 대비 애니메이션 갱신 시 OBB 콜라이더 무조건 끄기
-	m_pAttackCollider->SetActive(false);
 
 	//Position State 반영
 	if ((IS_BEHIT_FLY_START == m_Scon.iCurState) &&
@@ -546,18 +520,17 @@ void CM_Anjin::SetUp_State()
 		}
 	}
 
-	// 쿨타임 적용
 	if (true == m_tCurState.bApplyCoolTime)
 		m_StateCoolTimes[m_Scon.iCurState] = m_tCurState.CoolTime;
 }
 
-void CM_Anjin::Change_Target(CCharacter * pActiveCharacter)
+void CM_Binglie::Change_Target(CCharacter * pActiveCharacter)
 {
 	m_pTarget = pActiveCharacter;
 	m_pTargetTransform = m_pTarget->GetTransform();
 }
 
-void CM_Anjin::Find_Target()
+void CM_Binglie::Find_Target()
 {
 	// 매프레임 타겟까지의 거리를 계산해놓는다.
 	m_fTargetDistance = XMVectorGetX(XMVector3Length(m_pTargetTransform->Get_State(CTransform::STATE_POSITION) - m_pMainTransform->Get_State(CTransform::STATE_POSITION)));
@@ -577,7 +550,7 @@ void CM_Anjin::Find_Target()
 	}
 }
 
-void CM_Anjin::Init_AttackInfos()
+void CM_Binglie::Init_AttackInfos()
 {
 	for (_uint i = 0; i < ATK_END; ++i)
 	{
@@ -586,98 +559,74 @@ void CM_Anjin::Init_AttackInfos()
 
 	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_ATTACK_01].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_ATTACK_01].eElementType = ELMT_HAVOC;
+	m_AttackInfos[ATK_ATTACK_01].eElementType = ELMT_GLACIO;
 	m_AttackInfos[ATK_ATTACK_01].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_02_1].fDamageFactor = 2.f;
-	m_AttackInfos[ATK_ATTACK_02_1].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_ATTACK_02_1].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_02_1].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_1].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_1].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02_1].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_GLACIO;
+	m_AttackInfos[ATK_ATTACK_02].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_02].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_02_2].fDamageFactor = 2.5f;
-	m_AttackInfos[ATK_ATTACK_02_2].eHitIntensity = HIT_BIG;
-	m_AttackInfos[ATK_ATTACK_02_2].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_02_2].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_2].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_2].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02_2].szHitEffectTag, TEXT("Anjin_Hit"));
-
-	m_AttackInfos[ATK_ATTACK_02_3].fDamageFactor = 3.f;
-	m_AttackInfos[ATK_ATTACK_02_3].eHitIntensity = HIT_FLY;
-	m_AttackInfos[ATK_ATTACK_02_3].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_02_3].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_3].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_3].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02_3].szHitEffectTag, TEXT("GenkiDama_Boom"));
-
-	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 3.5f;
-	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_FLY;
-	m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_03].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_03].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Anjin_Hit"));
 }
 
-void CM_Anjin::Init_Missiles()
+void CM_Binglie::Init_Missiles()
 {
-	// Attack01
-	//CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
-	//ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+	CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	//tMissilePoolDesc.pMissilePoolTag = TEXT("GenkiDama_Shoot_%d");
-	//tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-	//tMissilePoolDesc.iNumMissiles = 3;
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_01_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iNumMissiles = 3;
 
-	//lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("GenkiDama_Shoot"));
-	//tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial / GAzizi
-	//tMissilePoolDesc.tMissileDesc.pOwner = this;
-	//tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-	//tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
-	//tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_01;
-	//tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("FHUxiuxiu_Bullet_01"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_01;
+	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
 
-	//tMissilePoolDesc.bTargetDir = false;
-	//tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-	//tMissilePoolDesc.fVelocity = 18.f;
-	//tMissilePoolDesc.StopTime = 3.0;
-	//tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+	tMissilePoolDesc.bTargetDir = false;
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 18.f;
+	tMissilePoolDesc.StopTime = 3.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
 
-	//m_MissilePools[MISS_ATTACK_01] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.2f, 0.f, 0.f), &tMissilePoolDesc);
-	//m_MissileRotAngles[MISS_ATTACK_01] = _float3(0.f, 0.f, 0.f);
+	m_MissilePools[MISS_ATTACK_01] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK_01] = _float3(0.f, 0.f, 0.f);
 
-	//// Attack03
-	//ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+	// Attack02
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	//tMissilePoolDesc.pMissilePoolTag = TEXT("GenkiDama_Shoot2_%d");
-	//tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-	//tMissilePoolDesc.iNumMissiles = 3;
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_02_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iNumMissiles = 3;
 
-	//lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("GenkiDama_Shoot_02"));
-	//tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial / GAzizi
-	//tMissilePoolDesc.tMissileDesc.pOwner = this;
-	//tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-	//tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
-	//tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_03;
-	//tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Binglie_Ball"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_02;
+	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
 
-	//tMissilePoolDesc.bTargetDir = true;
-	//tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-	//tMissilePoolDesc.fVelocity = 18.f;
-	//tMissilePoolDesc.StopTime = 3.0;
-	//tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+	tMissilePoolDesc.bTargetDir = true;
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 18.f;
+	tMissilePoolDesc.StopTime = 3.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
 
-	//m_MissilePools[MISS_ATTACK_03] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.2f, 0.f, 0.f), &tMissilePoolDesc);
-	//m_MissileRotAngles[MISS_ATTACK_03] = _float3(0.f, 0.f, 0.f);
+	m_MissilePools[MISS_ATTACK_02] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK_02] = _float3(0.f, 0.f, 0.f);
 }
 
-void CM_Anjin::Apply_CoolTime(_double TimeDelta)
+void CM_Binglie::Apply_CoolTime(_double TimeDelta)
 {
 	if (0.0 < m_GlobalCoolTime)
 	{
@@ -700,7 +649,7 @@ void CM_Anjin::Apply_CoolTime(_double TimeDelta)
 	}
 }
 
-HRESULT CM_Anjin::SetUp_ShaderResources()
+HRESULT CM_Binglie::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -719,7 +668,7 @@ HRESULT CM_Anjin::SetUp_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CM_Anjin::Setup_ShadowShaderResource()
+HRESULT CM_Binglie::Setup_ShadowShaderResource()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -735,7 +684,7 @@ HRESULT CM_Anjin::Setup_ShadowShaderResource()
 	return S_OK;
 }
 
-void CM_Anjin::Select_State(_double TimeDelta)
+void CM_Binglie::Select_State(_double TimeDelta)
 {
 	AI_STATE iCurFrameAI = AI_NONE;
 
@@ -745,33 +694,15 @@ void CM_Anjin::Select_State(_double TimeDelta)
 	}
 	else
 	{
-		// iEnterPriority가 1 == 콤보 공격이 가능한 애니메이션임
-		// iLeavePriority가 0 == 다음 애니메이션으로 넘어갈 프레임이 되었음
-		if (1 == m_tCurState.iEnterPriority && 0 == m_tCurState.iLeavePriority)
-		{
-			// 일정 확률로 콤보 실행 or 그냥 마무리 동작으로
-			if (2 >= rand() % 5)
-				iCurFrameAI = AI_COMBO;
-			else
-			{
-				m_tCurState.iLeavePriority = 1;
-				m_tCurState.iNextState = IS_IDLE;
-			}
-		}
-
 		if (IS_RUN == m_Scon.iCurState)
 		{
-			if (m_fTargetDistance < m_fAttackRange && 0.0 == m_StateCoolTimes[IS_ATTACK03_READY])
-			{
-				iCurFrameAI = AI_RUSH;
-			}
-			else if (m_fTargetDistance < m_fCloseRange * 0.8f)
+			if (m_fTargetDistance < m_fAttackRange * 0.8f)
 				m_Scon.iCurState = IS_IDLE;
 		}
 
 		if (IS_IDLE == m_Scon.iCurState)
 		{
-			if (m_fCloseRange < m_fTargetDistance)
+			if (m_fAttackRange < m_fTargetDistance)
 			{
 				iCurFrameAI = AI_CHASE;
 			}
@@ -791,22 +722,19 @@ void CM_Anjin::Select_State(_double TimeDelta)
 
 	switch (iCurFrameAI)
 	{
-	case Client::CM_Anjin::AI_IDLE:
+	case Client::CM_Binglie::AI_IDLE:
 		m_Scon.iNextState = AI_IDLE;
 		break;
-	case Client::CM_Anjin::AI_ATTACK:
-		if (0.0 == m_StateCoolTimes[IS_ATTACK02_1])
-			m_Scon.iNextState = IS_ATTACK02_1;
+	case Client::CM_Binglie::AI_ATTACK:
+		if (0.0 == m_StateCoolTimes[IS_ATTACK02])
+			m_Scon.iNextState = IS_ATTACK02;
 		else
 			m_Scon.iNextState = IS_ATTACK01;
 		break;
-	case Client::CM_Anjin::AI_RUSH:
-		m_Scon.iNextState = IS_ATTACK03_READY;
-		break;
-	case Client::CM_Anjin::AI_CHASE:
+	case Client::CM_Binglie::AI_CHASE:
 		m_Scon.iNextState = IS_RUN;
 		break;
-	case Client::CM_Anjin::AI_STAY:
+	case Client::CM_Binglie::AI_STAY:
 		if (m_fAttackRange * 0.7f < m_fTargetDistance)
 		{
 			m_Scon.iNextState = IS_WALK_F;
@@ -821,10 +749,6 @@ void CM_Anjin::Select_State(_double TimeDelta)
 		}
 		else
 			m_Scon.iNextState = IS_WALK_B;
-		break;
-	case Client::CM_Anjin::AI_COMBO:
-		// 콤보 판단이 뜬 경우 다음 콤보 즉시 이행
-		m_Scon.iNextState = m_tCurState.iNextState;
 		break;
 	default:
 		break;
@@ -865,7 +789,7 @@ void CM_Anjin::Select_State(_double TimeDelta)
 	}
 }
 
-void CM_Anjin::Tick_State(_double TimeDelta)
+void CM_Binglie::Tick_State(_double TimeDelta)
 {
 	//
 	if (false == m_Scon.bAnimFinished)
@@ -913,6 +837,8 @@ void CM_Anjin::Tick_State(_double TimeDelta)
 					XMStoreFloat3(&vMovement, XMLoadFloat3(&m_Scon.vMovement) * (_float)TimeDelta);
 			}
 		}
+
+
 		// 구해진 이동값만큼 움직이고 이전 프레임 정보를 저장, + TimeDelta 대응
 		m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom);
 
@@ -938,14 +864,13 @@ void CM_Anjin::Tick_State(_double TimeDelta)
 		{
 			SetState(DISABLE);
 			m_pUIMon->SetState(DISABLE);
-			m_pUIIcon->Set_Disable(m_UIIndex);
+			//m_pUIIcon->Set_Disable(m_UIIndex);
 		}
+
+
 		// 공격 행동 시
 		if (IS_ATTACK01 == m_Scon.iCurState ||
-			IS_ATTACK02_1 == m_Scon.iCurState ||
-			IS_ATTACK02_2 == m_Scon.iCurState ||
-			IS_ATTACK02_3 == m_Scon.iCurState ||
-			IS_ATTACK03 == m_Scon.iCurState)
+			IS_ATTACK02 == m_Scon.iCurState)
 		{
 			m_bAttackReady = false;
 			m_GlobalCoolTime += 3.f;
@@ -971,7 +896,7 @@ void CM_Anjin::Tick_State(_double TimeDelta)
 	}
 }
 
-void CM_Anjin::On_Cell()
+void CM_Binglie::On_Cell()
 {
 	_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
 	_float fPosY = XMVectorGetY(vPos);
@@ -1003,10 +928,9 @@ void CM_Anjin::On_Cell()
 			}
 		}
 	}
-
 }
 
-void CM_Anjin::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+void CM_Binglie::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
 {
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
@@ -1023,8 +947,11 @@ void CM_Anjin::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttack
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
-	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
+	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint);
+
 	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
+
+
 	m_tMonsterInfo.fCurHP -= fFinalDamage;
 
 	// TODO: 여기서 대미지 폰트 출력
@@ -1095,18 +1022,18 @@ void CM_Anjin::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttack
 }
 
 
-HRESULT CM_Anjin::Init_EffectBones()
+HRESULT CM_Binglie::Init_EffectBones()
 {
 	//NONE은 걍 월드 매트릭스를 저장해놨다가 던짐
-	m_EffectBones[EBONE_SPINE] = nullptr;
-	m_EffectBones[EBONE_LHAND] = nullptr;
+	m_EffectBones[EBONE_SPINE] = m_pModelCom->Get_BonePtr(TEXT("Bip001Spine"));
+	m_EffectBones[EBONE_LHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001LHand"));
 	m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
 	m_EffectBones[EBONE_HEAD] = m_pModelCom->Get_BonePtr(TEXT("Bip001Head"));
 
 	return S_OK;
 }
 
-void CM_Anjin::Update_EffectBones()
+void CM_Binglie::Update_EffectBones()
 {
 	memcpy(&m_EffectBoneMatrices[EBONE_NONE], &m_pMainTransform->Get_WorldMatrix(), sizeof(_float4x4));
 
@@ -1121,35 +1048,38 @@ void CM_Anjin::Update_EffectBones()
 	}
 }
 
-CM_Anjin * CM_Anjin::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CM_Binglie * CM_Binglie::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CM_Anjin* pInstance = new CM_Anjin(pDevice, pContext);
+	CM_Binglie* pInstance = new CM_Binglie(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Create : CM_Anjin");
+		MSG_BOX("Failed to Create : CM_Binglie");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CM_Anjin::Clone(void * pArg)
+CGameObject * CM_Binglie::Clone(void * pArg)
 {
-	CM_Anjin* pInstance = new CM_Anjin(*this);
+	CM_Binglie* pInstance = new CM_Binglie(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Clone : CM_Anjin");
+		MSG_BOX("Failed to Clone : CM_Binglie");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CM_Anjin::Free()
+void CM_Binglie::Free()
 {
 	__super::Free();
+
+	for (_uint i = 0; i < MISS_END; ++i)
+		Safe_Release(m_MissilePools[i]);
 
 
 	Safe_Release(m_pNaviCom);
@@ -1159,13 +1089,12 @@ void CM_Anjin::Free()
 	Safe_Release(m_pRendererCom);
 
 	Safe_Release(m_pCollider);
-	Safe_Release(m_pAttackCollider);
 	Safe_Release(m_pHitCollider);
 	Safe_Release(m_pMoveCollider);
 
 }
 
-void CM_Anjin::OnCollisionEnter(CCollider * src, CCollider * dest)
+void CM_Binglie::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
 	CGameMode* pGM = CGameMode::GetInstance();
 	CCharacter* pOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
@@ -1236,10 +1165,10 @@ void CM_Anjin::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 }
 
-void CM_Anjin::OnCollisionStay(CCollider * src, CCollider * dest)
+void CM_Binglie::OnCollisionStay(CCollider * src, CCollider * dest)
 {
 }
 
-void CM_Anjin::OnCollisionExit(CCollider * src, CCollider * dest)
+void CM_Binglie::OnCollisionExit(CCollider * src, CCollider * dest)
 {
 }

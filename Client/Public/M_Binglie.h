@@ -15,7 +15,7 @@ END
 
 BEGIN(Client)
 class CUI_Monster;
-class CM_AWukaka
+class CM_Binglie
 	: public CCharacter
 {
 public:
@@ -40,15 +40,15 @@ public:
 		IS_RUN,
 		IS_ATTACK01,
 		IS_ATTACK02,
-		IS_ATTACK03,
 		IS_STANDUP,
-		IS_BEHIT_S, // Small
-		IS_BEHIT_B, // Big
-		IS_BEHIT_FLY_START, // or PUSH  ~~ 둘이 비슷함
-		IS_BEHIT_FLY_LOOP, // or PUSH  ~~ 둘이 비슷함
-		IS_BEHIT_FLY_FALL, // or PUSH  ~~ 둘이 비슷함
-		IS_BEHIT_HOVER, // 뜬 채로 맞음
-		IS_BEHIT_PRESS, // 누운 채로 맞음
+		IS_BEHIT_S,
+		IS_BEHIT_B,
+		IS_BEHIT_FLY_START,
+		IS_BEHIT_FLY_LOOP,
+		IS_BEHIT_FLY_FALL,
+		IS_BEHIT_HOVER,
+		IS_BEHIT_PRESS,
+		IS_BEHIT_BLOCK,
 		IS_DEAD,
 		IS_END
 	};
@@ -70,21 +70,21 @@ public:
 	{
 		ATK_ATTACK_01,
 		ATK_ATTACK_02,
-		ATK_ATTACK_03,
 		ATK_END
 	};
 
 	// 미사일 종류
 	enum Missiles
 	{
-		MISS_ATTACK_03,
+		MISS_ATTACK_01,
+		MISS_ATTACK_02,
 		MISS_END
 	};
 
 private:
-	CM_AWukaka(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CM_AWukaka(const CM_AWukaka& rhs);
-	virtual ~CM_AWukaka() = default;
+	CM_Binglie(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CM_Binglie(const CM_Binglie& rhs);
+	virtual ~CM_Binglie() = default;
 
 public:
 	virtual HRESULT	Initialize_Prototype();
@@ -107,7 +107,6 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _uint iEffectTypeID, _bool bTracking);
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
 	virtual void Shot_PriorityKey(_uint iLeavePriority);
-	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID);
 
 public:
 	virtual _uint Get_AttackID() override { return m_iCurAttackID; }
@@ -205,21 +204,19 @@ private:
 	HRESULT Setup_ShadowShaderResource();
 
 public:
-	static CM_AWukaka* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CM_Binglie* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 
 	CCollider* GetDefaultCollider() const { return m_pCollider; }
-	virtual CCollider* GetAttackCollider() const override { return m_pAttackCollider; }
 	virtual CCollider* GetHitCollider() const override { return m_pHitCollider; }
 	virtual CCollider* GetMoveCollider() const override { return m_pMoveCollider; }
-	void CM_AWukaka::OnCollisionEnter(CCollider * src, CCollider * dest) override;
-	void CM_AWukaka::OnCollisionStay(CCollider * src, CCollider * dest) override;
-	void CM_AWukaka::OnCollisionExit(CCollider * src, CCollider * dest) override;
+	void CM_Binglie::OnCollisionEnter(CCollider * src, CCollider * dest) override;
+	void CM_Binglie::OnCollisionStay(CCollider * src, CCollider * dest) override;
+	void CM_Binglie::OnCollisionExit(CCollider * src, CCollider * dest) override;
 
 	CCollider* m_pCollider = nullptr;
 
-	CCollider* m_pAttackCollider = nullptr;
 	CCollider* m_pHitCollider = nullptr;
 	CCollider* m_pMoveCollider = nullptr;
 
