@@ -314,6 +314,9 @@ private:
 	_bool m_bRimToggle = false;
 	_float m_fBurstRim = 1.f;
 	_float m_fRimAlpha = 0.f;
+	
+	//파괴 오브젝트 확인용 레이더
+	class CRader* m_pRader = { nullptr };
 
 private:
 	HRESULT Add_Components();

@@ -397,8 +397,17 @@ PS_OUT	PS_MAIN_MIX_DISTORTION(PS_IN_DISTORTION In)
 	}
 	else
 	{
-		if(Out.vDiffuse.a < 0.3f)
-			Out.vDiffuse.a = g_fAlpha;
+		if (Out.vDiffuse.a < 0.3f)
+		{
+			if (g_fAlpha < 0.3f)
+			{
+				Out.vDiffuse.a = g_fAlpha;
+			}
+			else
+			{
+				Out.vDiffuse.a = 0.3f;
+			}
+		}
 	}
 
 	return Out;

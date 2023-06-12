@@ -73,7 +73,7 @@ namespace OBJECT
 		PARTS_HULU_1,
 		PARTS_HULU_2,
 		PARTS_HULU_3,
-		
+
 		SKY,
 		SKY_LOBBY,
 		FLOATING_STONE,
@@ -103,6 +103,9 @@ namespace OBJECT
 		MISSILE_ROTAROUND,
 
 		UICharacter,
+
+
+		INTERACTION_OBJECT_BOMBER = 20000,
 
 		// AnimTool 전용 오브젝트
 		TESTVTF_BEGIN = 900000,

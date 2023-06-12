@@ -85,6 +85,10 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_MapObject_Statue(TEXT("layer_statue"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Interaction_Object(TEXT("layer_Interaction_Object"))))
+		return E_FAIL;
+	
+
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
 	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
@@ -2034,6 +2038,24 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Statue(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STATUE_1");
 		return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	_float4x4 vWorldMatrix;
+	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
+	vWorldMatrix._41 = 238.f;
+	vWorldMatrix._42 = 39.f;
+	vWorldMatrix._43 = 242.f;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber", &vWorldMatrix)))
+		return E_FAIL;
 
 	return S_OK;
 }

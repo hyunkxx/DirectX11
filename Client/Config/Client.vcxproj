@@ -238,10 +238,12 @@
     <ClInclude Include="..\public\M_Huojin.h" />
     <ClInclude Include="..\public\M_Leilie.h" />
     <ClInclude Include="..\public\M_Qunjing.h" />
+    <ClInclude Include="..\Public\Object_Bomer.h" />
     <ClInclude Include="..\Public\Particle_Effect.h" />
     <ClInclude Include="..\public\PlayerState.h" />
     <ClInclude Include="..\public\P_Chixia.h" />
     <ClInclude Include="..\public\P_Yangyang.h" />
+    <ClInclude Include="..\Public\Rader.h" />
     <ClInclude Include="..\Public\Rect_Effect.h" />
     <ClInclude Include="..\public\ResonatorUI.h" />
     <ClInclude Include="..\public\Sandbag.h" />
@@ -389,10 +391,12 @@
     <ClCompile Include="..\private\M_Huojin.cpp" />
     <ClCompile Include="..\private\M_Leilie.cpp" />
     <ClCompile Include="..\private\M_Qunjing.cpp" />
+    <ClCompile Include="..\Private\Object_Bomer.cpp" />
     <ClCompile Include="..\Private\Particle_Effect.cpp" />
     <ClCompile Include="..\private\PlayerState.cpp" />
     <ClCompile Include="..\private\P_Chixia.cpp" />
     <ClCompile Include="..\private\P_Yangyang.cpp" />
+    <ClCompile Include="..\Private\Rader.cpp" />
     <ClCompile Include="..\Private\Rect_Effect.cpp" />
     <ClCompile Include="..\private\ResonatorUI.cpp" />
     <ClCompile Include="..\private\Sandbag.cpp" />

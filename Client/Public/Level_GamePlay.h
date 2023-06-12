@@ -40,6 +40,7 @@ private:
 	HRESULT Ready_Layer_MapObject_Pil(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MapObject_Statue(const _tchar* pLayerTag);
 
+	HRESULT Ready_Interaction_Object(const _tchar* pLayerTag);
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

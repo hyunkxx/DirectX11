@@ -23,6 +23,9 @@
 #include "Floor.h"
 #include "Character.h"
 
+//INTERACTION_OBJECT
+#include "Object_Bomer.h"
+
 // Item
 #include "Item.h"
 
@@ -143,6 +146,7 @@ HRESULT CApplication::Render()
 		XMVectorSet(1.f, 1.f, 1.f, 1.f),
 		_float2(0.5f, 0.5f)
 	);
+
 #ifdef _DEBUG 
 	m_pGUIManager->RenderDrawData();
 #endif
@@ -707,6 +711,10 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::STATIC_CHARACTER_STATE,
 		CPlayerState::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::INTERACTION_OBJECT_BOMBER,
+		CObject_Bomber::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Static_Effect()))
@@ -2275,8 +2283,51 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/Comon/P_Level_Up_Effect.bin"),
 			"../../Resource/Effect/Comon/Level/")))
 			return E_FAIL;
+
+		//레이더 이펙트
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/P_Rader_Effect.bin"),
+			"../../Resource/Effect/Comon/Hook/")))
+			return E_FAIL;
+
+		//Object Bomber
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Object_Bomber.bin"),
+			"../../Resource/Effect/Comon/Bomber/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Object_Boom_Effect.bin"),
+			"../../Resource/Effect/Comon/Bomber/")))
+			return E_FAIL;
+
+		//Monster Hit Effect
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/M_Blue_Hit.bin"),
+			"../../Resource/Effect/Comon/M_Hit/")))
+			return E_FAIL;
 		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/M_Green_Hit.bin"),
+			"../../Resource/Effect/Comon/M_Hit/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/M_Purple_Hit.bin"),
+			"../../Resource/Effect/Comon/M_Hit/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/M_Red_Hit.bin"),
+			"../../Resource/Effect/Comon/M_Hit/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/M_Yellow_Hit.bin"),
+			"../../Resource/Effect/Comon/M_Hit/")))
+			return E_FAIL;
 	}
+
 #pragma endregion
 
 #pragma region Tutorial_Monster

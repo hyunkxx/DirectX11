@@ -28,6 +28,9 @@
 //CamMovement
 #include "CameraMovement.h"
 
+#include "Rader.h"
+
+
 const _int CP_PlayerGirl::iStateLimit = CP_PlayerGirl::IS_END;
 
 const char CP_PlayerGirl::szIndividualStateTag[CP_PlayerGirl::IS_END - CP_PlayerGirl::IS_START][MAX_PATH] =
@@ -253,7 +256,7 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 	updateAttackDesc();
 
 	__super::Tick(TimeDelta * m_TimeDelay);
-
+	m_pRader->Tick(TimeDelta);
 		
 	if(true == m_bOnControl)
 		Key_Input(TimeDelta * m_TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
@@ -286,6 +289,7 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 void CP_PlayerGirl::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta * m_TimeDelay);
+	m_pRader->LateTick(TimeDelta);
 
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -660,6 +664,10 @@ HRESULT CP_PlayerGirl::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::EYE_MASK,
 		TEXT("Com_Eye_Mask_Texture"), (CComponent**)&m_pEyeMaskTexture)))
+		return E_FAIL;
+
+	m_pRader = CRader::Create(m_pDevice, m_pContext);
+	if (nullptr == m_pRader)
 		return E_FAIL;
 
 	CCollider::COLLIDER_DESC CollDesc;
@@ -1450,8 +1458,10 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
 		}
 	}
-
-
+	if (pGame->InputKey(DIK_L) == KEY_STATE::TAP)
+	{
+		m_pRader->Play_Rader(m_pMainTransform);
+	}
 
 	// 타겟 방향
 	_vector vTargetDir;
