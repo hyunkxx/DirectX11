@@ -169,7 +169,7 @@ void CLevel_Forest::Tick(_double TimeDelta)
 		pGameInstance->TimeSlowDown(0.5f, 0.1f);
 
 
-	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_TAB))
+	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_RSHIFT))
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CROWN));
 }
 
