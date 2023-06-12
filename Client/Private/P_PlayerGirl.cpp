@@ -2395,7 +2395,7 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 	// 공격력과 방어력이 같을 때 1배 대미지
 	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint *
 		((fAttackPoint * 2 - m_pCharacterState->fDefense[CPlayerState::STAT_TOTAL]) / fAttackPoint); 
-		/** 추후 속성 보너스 추가*/
+	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
 
 	m_pCharacterState->fCurHP -= fFinalDamage;
 

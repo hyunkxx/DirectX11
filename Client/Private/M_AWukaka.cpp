@@ -958,7 +958,7 @@ void CM_AWukaka::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAtta
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
 	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
-
+	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
 	m_tMonsterInfo.fCurHP -= fFinalDamage;
 
 	// TODO: 여기서 대미지 폰트 출력

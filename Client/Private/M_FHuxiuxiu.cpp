@@ -580,12 +580,12 @@ void CM_FHuxiuxiu::Init_Missiles()
 	CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	tMissilePoolDesc.pMissilePoolTag = TEXT("GenkiDama_Shoot_%d");
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_01_%d");
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 3;
 
 	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("FHUxiuxiu_Bullet_01"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial / GAzizi
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
@@ -601,15 +601,15 @@ void CM_FHuxiuxiu::Init_Missiles()
 	m_MissilePools[MISS_ATTACK_01] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_ATTACK_01] = _float3(0.f, 0.f, 0.f);
 
-	// Attack03
+	// Attack02
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	tMissilePoolDesc.pMissilePoolTag = TEXT("GenkiDama_Shoot2_%d");
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_02_%d");
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
 	tMissilePoolDesc.iNumMissiles = 3;
 
 	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("FHUxiuxiu_Bullet_01"));
-	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial / GAzizi
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
@@ -838,9 +838,6 @@ void CM_FHuxiuxiu::Tick_State(_double TimeDelta)
 			}
 		}
 
-		if (IS_ATTACK01 == m_Scon.iCurState)
-			XMStoreFloat3(&vMovement, XMLoadFloat3(&vMovement) * 2.f);
-
 
 		// 구해진 이동값만큼 움직이고 이전 프레임 정보를 저장, + TimeDelta 대응
 		m_pMainTransform->Move_Anim(&vMovement, m_Scon.ePositionState, m_pNaviCom);
@@ -907,8 +904,7 @@ void CM_FHuxiuxiu::On_Cell()
 
 	if (PS_GROUND == m_Scon.ePositionState)
 	{
-		if (IS_ATTACK02 != m_Scon.iCurState)
-			m_pMainTransform->Set_PosY(fCellHeight);
+		m_pMainTransform->Set_PosY(fCellHeight);
 	}
 	else if (PS_AIR == m_Scon.ePositionState)
 	{
@@ -951,7 +947,10 @@ void CM_FHuxiuxiu::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAt
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
-	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
+	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint);
+
+	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
+
 
 	m_tMonsterInfo.fCurHP -= fFinalDamage;
 
