@@ -210,11 +210,11 @@ PS_OUT	PS_MAIN_SELFSHADOW(PS_IN In)
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.55f, 1.f);
 	Out.vOutNormal = float4(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
-	Out.vShaderInfo = float4(1.f, 0.f, 0.f, 0.f);
+	//Out.vShaderInfo = float4(0.4f, 0.f, 0.f, 0.f);
+	Out.vShaderInfo = float4(1.0f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
-
 
 PS_OUT_SHADOW	PS_MAIN_SHADOW(VS_OUT_SHADOW In)
 {
@@ -279,6 +279,51 @@ PS_OUT PS_MAIN_SUB_DIFFUSE_MASK(PS_IN In)
 	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vShaderInfo = float4(1.f, 0.f, 0.f, 0.f);
 
+
+	return Out;
+}
+
+PS_OUT	PS_MAIN_GRASS(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	float fGlowValue = vMtrlDiffuse.r;
+
+	// NormalTex
+	if (0.0f <  In.vModelOption_NEG.x)
+	{
+		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+		float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+		float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+		vNormal = mul(vNormal, WorldMatrix);
+		In.vNormal.xyz = vNormal;
+	}
+
+	// EditionColor
+	if (0.0f < In.vModelOption_NEG.y)
+		vMtrlDiffuse.rgb *= g_vEditionColor;
+
+	Out.vDiffuse = vMtrlDiffuse;
+	if (Out.vDiffuse.a < 0.1f)
+		discard;
+
+	// Glow
+	if (In.vModelOption_NEG.z != 0.f)
+	{
+		if (fGlowValue > 0.65f)
+			Out.vGlow = float4(vMtrlDiffuse.rgb, 0.f);
+	}
+	else
+		Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
+
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.55f, 1.f);
+	Out.vOutNormal = float4(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
+	Out.vShaderInfo = float4(0.4f, 0.f, 0.f, 0.f);
+	//Out.vShaderInfo = float4(1.0f, 0.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -354,4 +399,16 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_SUB_DIFFUSE_MASK();
 	}
 
+	// 디퓨즈 있는 풀
+	pass Instance_Model_Grass_Pass5
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_GRASS();
+	}
 }

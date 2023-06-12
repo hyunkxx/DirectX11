@@ -44,6 +44,8 @@ public:
 	HRESULT Render_Default();
 	HRESULT Render_Default_SelfShadow();
 
+	HRESULT Render_Grass();
+
 public:
 	void SetUp_LevelFilePath(_uint iLevelID, const _tchar* pFilePath, _Out_ _tchar& szResultFilePath);
 

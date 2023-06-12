@@ -136,6 +136,10 @@ void CTerrain::SetUp_LevelFilePath(_uint iLevelID, const _tchar * pFilePath, _tc
 		lstrcat(szLevelFilePath, TEXT("Forest/"));
 		m_fFilterUV_Ratio = { 1.0f, 1.0f };
 		break;
+	case LEVEL_ID::LEVEL_CROWN:
+		lstrcat(szLevelFilePath, TEXT("Crown/"));
+		m_fFilterUV_Ratio = { 1.0f, 1.0f };
+		break;
 
 	default:
 		break;

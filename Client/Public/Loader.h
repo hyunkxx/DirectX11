@@ -16,6 +16,7 @@ public:
 	HRESULT Load_Level_GamePlay();
 	HRESULT Load_Level_City();
 	HRESULT Load_Level_Forest();
+	HRESULT Load_Level_Crown();
 	
 	HRESULT Load_Level_AnimTool();
 	HRESULT Load_Level_Test();

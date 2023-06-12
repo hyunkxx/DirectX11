@@ -49,6 +49,9 @@ HRESULT CMapObject::Initialize(void * pArg)
 	
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, POSITION_ZERO);
 
+	//if (m_EditionDesc.iTypeID == CMapObject::MAPOBJECT_TYPEID::ID_ROCK)
+		//m_EditionDesc.fCullingRatio = 0.f;
+
 	m_EditionDesc.fCullingRatio = 0.f;
 
 	return S_OK;
@@ -58,7 +61,8 @@ void CMapObject::Start()
 {
 	__super::Start();
 
-	if (m_EditionDesc.iTypeID != CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK)
+	// 여기도 확인해볼것
+	if (m_EditionDesc.iTypeID != CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK && m_EditionDesc.iTypeID != CMapObject::MAPOBJECT_TYPEID::ID_TOF_GRASS)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC_SHADOW, this);
 }
 
@@ -153,7 +157,7 @@ HRESULT CMapObject::Render()
 			return E_FAIL;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_TOF_GRASS:
-		if (FAILED(Render_Default_SelfShadow()))
+		if (FAILED(Render_Grass()))
 			return E_FAIL;
 		break;
 
@@ -321,6 +325,42 @@ HRESULT CMapObject::Render_Default_SelfShadow()
 	return S_OK;
 }
 
+HRESULT CMapObject::Render_Grass()
+{
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		// Model 중 NormalTextrue 가 없는 Model 은 m_IsNormalTex 이 false 가 되어서 노말맵 을 적용시키지 않음.
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsNormalTex)))
+			return E_FAIL;
+
+		m_iShaderPassID = 5;
+
+		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseNormalTex", &m_IsNormalTex, sizeof(_bool))))
+			return E_FAIL;
+
+		m_IsNormalTex = false;
+
+		if (true == m_EditionDesc.UseEditionColor && i == m_EditionDesc.iEditionColor_MeshNum)
+			m_IsUse_EdtionColor = true;
+		else
+			m_IsUse_EdtionColor = false;
+
+		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseEditionColor", &m_IsUse_EdtionColor, sizeof(_bool))))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(m_iShaderPassID);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
 void CMapObject::SetUp_LevelFilePath(_uint iLevelID, const _tchar* pFilePath, _Out_ _tchar& szResultFilePath)
 {
 	ZeroMemory(&szResultFilePath, sizeof(_tchar) * MAX_PATH);
@@ -341,7 +381,9 @@ void CMapObject::SetUp_LevelFilePath(_uint iLevelID, const _tchar* pFilePath, _O
 	case LEVEL_ID::LEVEL_FOREST:
 		lstrcat(szLevelFilePath, TEXT("Forest/"));
 		break;
-
+	case LEVEL_ID::LEVEL_CROWN:
+		lstrcat(szLevelFilePath, TEXT("Crown/"));
+		break;
 	default:
 		break;
 	}
