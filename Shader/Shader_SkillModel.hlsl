@@ -450,6 +450,30 @@ PS_OUT	PS_MAIN_MIX_DISTORTION_N0_CLAMP(PS_IN_DISTORTION In)
 	return Out;
 }
 
+PS_OUT	PS_MAIN_CLAMP_DISCARD(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;;
+	float2 vUV = In.vTexUV + g_vUV;
+
+	if (vUV.x > 1.f || vUV.y > 1.f || vUV.x < 0.f || vUV.y < 0.f)
+		discard;
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vUV);
+
+
+	vMtrlDiffuse.a = (vMtrlDiffuse.r + vMtrlDiffuse.g + vMtrlDiffuse.b) / 3.f;
+	if (vMtrlDiffuse.a < 0.1f)
+		discard;
+
+	Out.vDiffuse.rgb = Set_Mask_Color(float3(vMtrlDiffuse.rgb));
+
+	Out.vDiffuse.a = saturate(vMtrlDiffuse.a - (1.f - g_fAlpha));
+
+	if (vMtrlDiffuse.a > 0.1f)
+		Out.vDistortion = float4(0.f, 1.f, 0.f, 1.f);
+
+	return Out;
+}
+
 
 technique11 DefaultTechnique
 {
@@ -581,4 +605,18 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MIX_DISTORTION_N0_CLAMP();
 	}
+
+	pass Deafulat_Clamp_Discard
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_CLAMP_DISCARD();
+	}
+	
 }

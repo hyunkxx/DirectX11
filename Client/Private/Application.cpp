@@ -1976,6 +1976,18 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/Comon/P_Evasion_Effect_C.bin"),
 			"../../Resource/Effect/Comon/P_Evasion_Effect/")))
 			return E_FAIL;
+
+		// QTE
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_QTE_Effect.bin"),
+			"../../Resource/Effect/Player_Chixia/QTE/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
+			TEXT("../../Resource/Effect/Player_Chixia/P_Chixia_QTE_Sphere.bin"),
+			"../../Resource/Effect/Player_Chixia/QTE/")))
+			return E_FAIL;
+
 	}
 #pragma endregion
 
@@ -2323,9 +2335,7 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/M_Zigzag/Rush/")))
 			return E_FAIL;
 
-
 		// ³´µç ¸ó½ºÅÍ µîÀå ÀÌÆÑÆ®
-
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
 			TEXT("../../Resource/Effect/Comon/M_Appear_Effect.bin"),
 			"../../Resource/Effect/Comon/M_Appear_Effect/")))
