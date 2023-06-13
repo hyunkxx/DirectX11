@@ -1990,6 +1990,30 @@ HRESULT CApplication::Ready_Item_Image()
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_DUCKNOODLES,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Ducknoodles.dds")))))
 		return E_FAIL;
+
+	// 요리 설명
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_DESC_FOODMATERIA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Foodmaterial.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_DESC_RECIPE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Recipematerial.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_DESC_FOODNORMAL,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Normalfood.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_DESC_FOODADVANCED,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Advancefood.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_DESC_FOODRARE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Rarefood.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_DESC_FOODUNIQUE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Uniquefood.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ITEM_DESC_FOODLEGEND,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Legendfood.dds")))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

@@ -2267,7 +2267,7 @@ void CUI_Panhua::IsMouseinRect()
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[15];
 			Limited = 1;
-			Cost = 100000;
+			Cost = 10000;
 			m_DetailsList[31].iTexNum = 126;
 			m_DetailsList[32].iTexNum = 127;
 			m_DetailsList[33].iTexNum = 131;
@@ -2286,7 +2286,7 @@ void CUI_Panhua::IsMouseinRect()
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[16];
 			Limited = 1;
-			Cost = 100000;
+			Cost = 10000;
 			m_DetailsList[31].iTexNum = 129;
 			m_DetailsList[32].iTexNum = 130;
 			m_DetailsList[33].iTexNum = 131;
