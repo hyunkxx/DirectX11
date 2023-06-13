@@ -82,7 +82,8 @@ private:
 	void	End_Move(_uint indexstart, _uint indexend, _double TimeDelta);
 	void	SettingLimitTexNum();
 	void	SettingOverPurchase(); //
-	void	SettingOwnTexNum();
+	void	SettingCurMoneyTexNum();
+	void	SettingCurOwnTexNum();
 	void	SettingBuyTexNum();
 	void	IsMouseinRect();
 	_bool	AddAlpha(SOUDESC* pDesc, _double TimeDelta);
@@ -124,7 +125,8 @@ private:
 	_int* pLimibuycount = nullptr;
 	_int Limited = 5;
 	_int BuyNum = 0; 
-	_int CurrentOwn = 99;
+	_int CurrentMoney = 0;
+	_int CurrentOwn = 0;
 	_int Cost = 10; // 물건 하나당 가격
 	_int iTotal = 0; // 총 구매비용
 

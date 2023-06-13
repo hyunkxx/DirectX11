@@ -1634,6 +1634,196 @@ HRESULT CApplication::Ready_Item_Image()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/CircleGlowGard.dds")))))
 		return E_FAIL;
 	//이미지
+	//요리 재료 아이콘
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_RICE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Rice.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_TOFU,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Tofu.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_FLOUR,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Flour.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_MUSHROOM,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Mushroom.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_CHICKEN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Chicken.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_EGG,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Egg.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_MEAT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Meat.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_HERB,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Herb.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_VIOLET,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Violet.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_DANDELION,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Dandelion.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_PEPPER,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Pepper.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SUGAR,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Sugar.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SALT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Salt.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_OIL,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Oil.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SOYSAUCE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Soysauce.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_RECIPE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Recipe.dds")))))
+		return E_FAIL;
+
+	//요리 재료 텍스트
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RICE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Rice.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TOFU,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Tofu.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_FLOUR,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Flour.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_MUSHROOM,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Mushroom.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_CHICKEN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Chicken.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_EGG,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Egg.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_MEAT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Meat.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_HERB,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Herb.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_VIOLET,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Violet.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_DANDELION,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Dandelion.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_PEPPER,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Pepper.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SUGAR,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Sugar.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SALT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Salt.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_OIL,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Oil.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SOYSAUCE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Soysauce.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RECIPE0,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Recipe0.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RECIPE1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Recipe1.dds")))))
+		return E_FAIL;
+
+	//요리 아이콘
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_FLATBREAD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Flatbread.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SALAD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Salad.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_FRIEDTOFU,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/FriedTofu.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_SALTEDTEA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SaltedTea.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_HERBTEA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/HerbTea.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_DRAGONNOODLE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/DragonNoodle.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_OMURICE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Omurice.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_FRIEDRICE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Friedrice.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_FRIEDCHICKEN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Friedchicken.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_RABBITBREAD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Rabbitbread.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_FRIEDMUSHROOM,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/FriedMushroom.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_MAPOTOFU,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Mapotofu.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_PORKBELLY,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/PorkBelly.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_DUCKNOODLES,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Ducknoodles.dds")))))
+		return E_FAIL;
+
+	//요리 텍스트
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_FLATBREAD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Flatbread.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SALAD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Salad.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_FRIEDTOFU,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_FriedTofu.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SALTEDTEA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_SaltedTea.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_HERBTEA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_HerbTea.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_DRAGONNOODLE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_DragonNoodle.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_OMURICE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Omurice.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_FRIEDRICE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Friedrice.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_FRIEDCHICKEN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Friedchicken.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RABBITBREAD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Rabbitbread.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_FRIEDMUSHROOM,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_FriedMushroom.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_MAPOTOFU,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Mapotofu.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_PORKBELLY,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_PorkBelly.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_DUCKNOODLES,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Text_Ducknoodles.dds")))))
+		return E_FAIL;
 	return S_OK;
 }
 

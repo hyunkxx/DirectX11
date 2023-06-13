@@ -119,9 +119,9 @@ private:
 	// 플레이어state랑 연결시킬것
 	_int		m_PlayerCurrentLevel = { 50 };
 	// 임시 변수
-	_int		CurrentOwn =  { 2 };
+	_int		CurrentOwn =  { 2 }; //피스
 	_int		NeedNum		= { 0 };
-	_int		ItemNum		= { 0 };
+	_int		ItemNum		= { 0 }; //완성품
 
 	//툴
 	_int iSituation = { 0 };

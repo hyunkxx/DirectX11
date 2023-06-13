@@ -340,7 +340,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UIPANHUA,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 122))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::EYE_BURST, 
@@ -1806,7 +1806,7 @@ HRESULT CLoader::Load_Level_City()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIPANHUA,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 122))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
 		return E_FAIL;
 
 
@@ -2175,7 +2175,7 @@ HRESULT CLoader::Load_Level_Forest()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIPANHUA,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 122))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
 		return E_FAIL;
 
 #pragma region COMPONENTS
@@ -3666,7 +3666,7 @@ HRESULT CLoader::Load_Level_Crown()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIPANHUA,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 122))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
 		return E_FAIL;
 
 #pragma region COMPONENTS

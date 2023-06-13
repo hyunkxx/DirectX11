@@ -298,7 +298,7 @@ HRESULT CUI_MainScreen::Add_Components()
 
 void CUI_MainScreen::OtherobjIsActive(_double TimeDelta)
 {
-	if ((nullptr == m_pTerminalUI) || (nullptr == m_pTip) || (nullptr == m_pUIMen)||(nullptr == m_pUISovi))
+	if ((nullptr == m_pTerminalUI) || (nullptr == m_pTip) || (nullptr == m_pUIMen)||(nullptr == m_pUISovi) || (nullptr == m_pUIPanhua))
 		return;
 	if (m_pTerminalUI->IsActive())
 		m_bRender = false;
@@ -307,6 +307,8 @@ void CUI_MainScreen::OtherobjIsActive(_double TimeDelta)
 	else if (m_pUIMen->IsActive())
 		m_bRender = false;
 	else if(m_pUISovi->IsActive())
+		m_bRender = false;
+	else if (m_pUIPanhua->IsActive())
 		m_bRender = false;
 	else
 		m_bRender = true;

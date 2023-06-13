@@ -56,7 +56,7 @@ public:
 
 private:
 	HRESULT Add_Components();
-	HRESULT Setup_SouShader(_uint index);
+	HRESULT Setup_PanShader(_uint index);
 	HRESULT Setup_MenuShader(_uint index);
 	HRESULT Setup_CommonShader(_uint index);
 	HRESULT Setup_DetailsShader(_uint index);
@@ -74,7 +74,10 @@ private:
 	HRESULT Setup_10SlotShader(_uint index);
 	HRESULT Setup_11SlotShader(_uint index);
 	HRESULT Setup_12SlotShader(_uint index);
-
+	HRESULT Setup_13SlotShader(_uint index);
+	HRESULT Setup_14SlotShader(_uint index);
+	HRESULT Setup_15SlotShader(_uint index);
+	HRESULT Setup_16SlotShader(_uint index);
 private:
 	void	InMenuOpen(_double TimeDelta);
 	_bool	InMenuEnd(_double TimeDelta);
@@ -82,7 +85,8 @@ private:
 	void	End_Move(_uint indexstart, _uint indexend, _double TimeDelta);
 	void	SettingLimitTexNum();
 	void	SettingOverPurchase(); //
-	void	SettingOwnTexNum();
+	void	SettingCurMoneyTexNum();
+	void	SettingCurOwnTexNum();
 	void	SettingBuyTexNum();
 	void	IsMouseinRect();
 	_bool	AddAlpha(PANDESC* pDesc, _double TimeDelta);
@@ -111,7 +115,7 @@ private:
 	_bool		m_DetailRenderStart = { true };
 	_bool		m_ConfirmRenderStart = { true };
 	_bool		m_bOverPurchase = { false };
-	CItem::ITEM_DESC itemDesc[13];
+	CItem::ITEM_DESC	itemDesc[17];
 	vector<PANDESC>*	pSelectSlot = { nullptr };
 
 	//마우스
@@ -120,11 +124,12 @@ private:
 
 	
 	// 임시값 설정 나중에 인벤에 연결시키기
-	_int Limibuycount[13] = { 0 };
+	_int Limibuycount[17] = { 0 };
 	_int* pLimibuycount = nullptr;
-	_int Limited = 5;
+	_int Limited = 1;
 	_int BuyNum = 0; 
-	_int CurrentOwn = 99;
+	_int CurrentMoney = 0;
+	_int CurrentOwn = 0;
 	_int Cost = 10; // 물건 하나당 가격
 	_int iTotal = 0; // 총 구매비용
 
@@ -159,6 +164,10 @@ private:
 	vector<PANDESC>		  m_10Slot;			//15
 	vector<PANDESC>		  m_11Slot;			//16
 	vector<PANDESC>		  m_12Slot;			//17
+	vector<PANDESC>		  m_13Slot;			//18
+	vector<PANDESC>		  m_14Slot;			//19
+	vector<PANDESC>		  m_15Slot;			//20
+	vector<PANDESC>		  m_16Slot;			//21
 
 public:
 	static CUI_Panhua* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

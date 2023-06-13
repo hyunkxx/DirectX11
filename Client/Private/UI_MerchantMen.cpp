@@ -94,9 +94,10 @@ void CUI_MerchantMen::Start()
 	
 	SetState(DISABLE);
 
-	
-	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
-	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4); // 나중에 주석 풀기
+	m_pInven->AddItem(ITEM::CASKET, 0);
+	m_pInven->AddItem(ITEM::CASKETPIECE, 9);
+	ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET); // 나중에 주석 풀기
+	CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE); // 나중에 주석 풀기
 
 
 
@@ -214,8 +215,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 	}
 
 	//m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel; // 나중에 주석 풀기
-	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
-	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4); // 나중에 주석 풀기
+	 ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET);
+	 CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE);
 	_int num = ItemNum / 1;
 	m_CasketList[3].iTexNum = 67 + num;
 	_int Ten = CurrentOwn / 10;
@@ -526,9 +527,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 1);
 							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 1);
 							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
-							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
-							CurrentOwn = CurrentOwn - (ItemNum * NeedNum);
 
+							m_pInven->AddItem(ITEM::CASKETPIECE, -(NeedNum * (CurrentOwn / NeedNum)));
+							ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET);
+							CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE);
 
 
 						}
@@ -724,8 +726,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 1);
 							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 1);
 							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
-							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
-							CurrentOwn = CurrentOwn - (ItemNum * NeedNum);
+
+							m_pInven->AddItem(ITEM::CASKETPIECE, -(NeedNum * (CurrentOwn / NeedNum)));
+							ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET);
+							CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE);
 						}
 					}
 					else
@@ -918,8 +922,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 2);
 							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 2);
 							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
-							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
-							CurrentOwn = CurrentOwn - (ItemNum * NeedNum);
+
+							m_pInven->AddItem(ITEM::CASKETPIECE, -(NeedNum * (CurrentOwn / NeedNum)));
+							ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET);
+							CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE);
 						}
 					}
 					else
@@ -1111,8 +1117,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 3);
 							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 2);
 							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
-							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
-							CurrentOwn = CurrentOwn - (ItemNum * NeedNum); // 인벤토리 연결하고나면 지우기
+
+							m_pInven->AddItem(ITEM::CASKETPIECE, -(NeedNum * (CurrentOwn / NeedNum)));
+							ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET);
+							CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE);
 						}
 					}
 					else
@@ -1306,8 +1314,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 							m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 5);
 							m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, 3);
 							m_pInven->AddItem(ITEM::CASKET, CurrentOwn / NeedNum);
-							m_pInven->EraseItem(CInventory::INVEN_MATERIAL, 4, NeedNum * (CurrentOwn / NeedNum));
-							CurrentOwn = CurrentOwn - (ItemNum * NeedNum);
+
+							m_pInven->AddItem(ITEM::CASKETPIECE, -(NeedNum * (CurrentOwn / NeedNum)));
+							ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET);
+							CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE);
 						}
 					}
 					else

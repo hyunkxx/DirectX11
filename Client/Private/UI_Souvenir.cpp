@@ -367,11 +367,9 @@ void CUI_Souvenir::Start()
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	
+	m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, 123);
+	CurrentMoney = m_pInven->GetTotalAmount(CInventory::INVEN_COIN, ITEM::COMMEMORATIVE_COIN);
 	SetState(DISABLE);
-
-	
-	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
-	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4); // 나중에 주석 풀기
 
 
 	
@@ -512,8 +510,8 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 		// 슬롯 위에 올리면 테두리, 리미트 셋팅, 디테일 설명이미지 셋팅
 		IsMouseinRect();
 
-		// 은화 현재 보유 수량
-		SettingOwnTexNum();
+		// 코인 현재 보유 수량
+		SettingCurMoneyTexNum();
 
 		// 캔슬 누르면 목록으로 돌아가기, 텍스처 바꾸기
 		if (SelectUI(&m_CommonList[4]))
@@ -539,8 +537,8 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 		{
 			(AddAlphaW(&m_DetailsList, TimeDelta) ? m_DetailRenderStart = false : m_DetailRenderStart = true);
 		}
-		// 은화 현재 보유 수량
-		SettingOwnTexNum();
+		// 선택아이템 현재 수량
+		SettingCurOwnTexNum();
 		// 구매제한 수량
 		SettingLimitTexNum();
 		SettingBuyTexNum();
@@ -667,7 +665,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 		}
 
 		// 구매 누르면 확인창 뜨기,테스처 바꾸기
-		if ((SelectUI(&m_DetailsList[27])) && (0<BuyNum) &&(Limited - (*pLimibuycount)>= BuyNum) && (CurrentOwn >= iTotal) &&(Limited != (*pLimibuycount)))
+		if ((SelectUI(&m_DetailsList[27])) && (0<BuyNum) &&(Limited - (*pLimibuycount)>= BuyNum) && (CurrentMoney >= iTotal) &&(Limited != (*pLimibuycount)))
 		{
 			m_DetailsList[27].iTexNum = 20;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
@@ -790,8 +788,10 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 		if (pSelectSlot == &m_12Slot)
 			m_pInven->AddItem(ITEM::GEM, BuyNum);
 
-		m_pInven->EraseItem(CInventory::INVEN_COIN, 1, iTotal);
 
+		m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, -iTotal);
+		// 코인 현재 보유 수량
+		SettingCurMoneyTexNum();
 		BuyNum = 0;
 		Situation = CUI_Souvenir::INMENU;
 	}
@@ -971,37 +971,105 @@ void CUI_Souvenir::SettingOverPurchase()
 	//}
 	m_bOverPurchase = false;
 }
-void CUI_Souvenir::SettingOwnTexNum()
+void CUI_Souvenir::SettingCurMoneyTexNum()
 {
-	if (99 < CurrentOwn)
+	CGameInstance * pGame = CGameInstance::GetInstance();
+	CurrentMoney = m_pInven->GetTotalAmount(CInventory::INVEN_COIN, ITEM::COMMEMORATIVE_COIN);
+	string strCoint = to_string(CurrentMoney);
+	_uint iDigit = (_uint)strCoint.size();
+	for (_uint i = 0; i < iDigit; ++i)
 	{
-		m_CommonList[8].bRender = m_DetailsList[6].bRender = true;
-		m_CommonList[9].bRender = m_DetailsList[7].bRender = true;
-		m_CommonList[10].bRender = m_DetailsList[8].bRender = true;
-		m_CommonList[8].iTexNum = m_DetailsList[6].iTexNum = CurrentOwn / 100 + 27;
-		m_CommonList[9].iTexNum = m_DetailsList[7].iTexNum = (CurrentOwn - (CurrentOwn / 100) * 100) / 10 + 27;
-		m_CommonList[10].iTexNum = m_DetailsList[8].iTexNum = (CurrentOwn - (CurrentOwn / 100) * 100) % 10 + 27;
+		_int Num = i;
+		switch (Num)
+		{
+		case 0: {m_CommonList[8].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		case 1: {m_CommonList[9].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		case 2: {m_CommonList[10].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		}
 	}
-	else if (9 < CurrentOwn)
+
+	if (1000 > CurrentMoney)
 	{
-		m_CommonList[8].bRender = m_DetailsList[6].bRender = true;
-		m_CommonList[9].bRender = m_DetailsList[7].bRender = true;
-		m_CommonList[10].bRender = m_DetailsList[8].bRender = false;
-		m_CommonList[8].iTexNum = m_DetailsList[6].iTexNum = CurrentOwn / 10 + 27;
-		m_CommonList[9].iTexNum = m_DetailsList[7].iTexNum = (CurrentOwn - (CurrentOwn / 10) * 10) + 27;
+		m_CommonList[8].bRender  = true;
+		m_CommonList[9].bRender  = true;
+		m_CommonList[10].bRender = true;
 	}
-	else
+	if (100 > CurrentMoney)
 	{
-		m_CommonList[8].bRender = m_DetailsList[6].bRender = true;
-		m_CommonList[9].bRender = m_DetailsList[7].bRender = false;
-		m_CommonList[10].bRender = m_DetailsList[8].bRender = false;
-		m_CommonList[8].iTexNum = m_DetailsList[6].iTexNum = CurrentOwn + 27;
+		m_CommonList[8].bRender  = true;
+		m_CommonList[9].bRender  = true;
+		m_CommonList[10].bRender = false;
 	}
-	if (CurrentOwn < iTotal)
+	if (10 > CurrentMoney)
+	{
+		m_CommonList[8].bRender  = true;
+		m_CommonList[9].bRender  = false;
+		m_CommonList[10].bRender = false;
+	}
+	if (CurrentMoney < iTotal)
 	{
 		m_DetailsList[27].iTexNum = 22;
 	}
 }
+
+void CUI_Souvenir::SettingCurOwnTexNum()
+{
+	CGameInstance * pGame = CGameInstance::GetInstance();
+
+	if (pSelectSlot == (&m_0Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_WEAPON, ITEM::SWORD0); }
+	if (pSelectSlot == (&m_1Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_WEAPON, ITEM::SWORD1); }
+	if (pSelectSlot == (&m_2Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_WEAPON, ITEM::SWORD2); }
+	if (pSelectSlot == (&m_3Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_WEAPON, ITEM::SWORD3); }
+	if (pSelectSlot == (&m_4Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_WEAPON, ITEM::SWORD4); }
+	if (pSelectSlot == (&m_5Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_WEAPON, ITEM::GUN0); }
+	if (pSelectSlot == (&m_6Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_WEAPON, ITEM::GUN1); }
+	if (pSelectSlot == (&m_7Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_WEAPON, ITEM::GUN2); }
+	if (pSelectSlot == (&m_8Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_WEAPON, ITEM::GUN3); }
+	if (pSelectSlot == (&m_9Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_WEAPON, ITEM::GUN4); }
+	if (pSelectSlot == (&m_10Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::TACTITE_COIN); }
+	if (pSelectSlot == (&m_11Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::EXP3); }
+	if (pSelectSlot == (&m_12Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::GEM); }
+
+	string strCoint = to_string(CurrentOwn);
+	_uint iDigit = (_uint)strCoint.size();
+
+	for (_uint i = 0; i < iDigit; ++i)
+	{
+		_int Num = i;
+		switch (Num)
+		{
+		case 0: {m_DetailsList[6].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		case 1: {m_DetailsList[7].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		case 2: {m_DetailsList[8].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		}
+	}
+
+	if (1000 > CurrentOwn)
+	{
+		m_DetailsList[6].bRender = true;
+		m_DetailsList[7].bRender = true;
+		m_DetailsList[8].bRender = true;
+	}
+	if (100 > CurrentOwn)
+	{
+		m_DetailsList[6].bRender = true;
+		m_DetailsList[7].bRender = true;
+		m_DetailsList[8].bRender = false;
+	}
+	if (10 > CurrentOwn)
+	{
+		m_DetailsList[6].bRender = true;
+		m_DetailsList[7].bRender = false;
+		m_DetailsList[8].bRender = false;
+	}
+}
+
 void CUI_Souvenir::SettingBuyTexNum()
 {
 	m_DetailsList[17].bRender = false;

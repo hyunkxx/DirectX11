@@ -40,7 +40,7 @@ HRESULT CUI_Panhua::Initialize(void * pArg)
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	Load();
 	// 위치이동 임시코드
-	
+	//
 	for (_int i=0; i< (_int)m_0Slot.size(); ++i)
 	{
 		m_1Slot[i].fX = m_0Slot[i].fX;
@@ -248,115 +248,268 @@ HRESULT CUI_Panhua::Initialize(void * pArg)
 		XMStoreFloat4x4(&(m_12Slot[i].WorldMatrix), XMMatrixScaling(m_12Slot[i].fWidth, m_12Slot[i].fHeight, 1.f)
 			* XMMatrixTranslation(m_12Slot[i].fX, m_12Slot[i].fY, m_12Slot[i].fZ));
 	}
+	for (_int i = 0; i< 9; ++i)
+	{
+		m_13Slot[i].fX		= m_12Slot[i].fX;
+		m_13Slot[i].fY		= m_12Slot[i].fY - 82.f;
+		m_13Slot[i].fZ		= m_12Slot[i].fZ;
+		m_13Slot[i].iPass	= m_12Slot[i].iPass;
+		m_13Slot[i].iTexNum = m_12Slot[i].iTexNum;
+		m_13Slot[i].fHeight = m_12Slot[i].fHeight;
+		m_13Slot[i].fWidth  = m_12Slot[i].fWidth;
+		m_13Slot[i].fColorR = m_12Slot[i].fColorR;
+		m_13Slot[i].fColorG = m_12Slot[i].fColorG;
+		m_13Slot[i].fColorB = m_12Slot[i].fColorB;
+		m_13Slot[i].fColorA = m_12Slot[i].fColorA;
+
+		XMStoreFloat4x4(&(m_13Slot[i].WorldMatrix), XMMatrixScaling(m_13Slot[i].fWidth, m_13Slot[i].fHeight, 1.f)
+			* XMMatrixTranslation(m_13Slot[i].fX, m_13Slot[i].fY, m_13Slot[i].fZ));
+	}
+	for (_int i = 0; i< 9; ++i)
+	{
+		m_14Slot[i].fX		= m_13Slot[i].fX;
+		m_14Slot[i].fY		= m_13Slot[i].fY - 82.f;
+		m_14Slot[i].fZ		= m_13Slot[i].fZ;
+		m_14Slot[i].iPass   = m_13Slot[i].iPass;
+		m_14Slot[i].iTexNum = m_13Slot[i].iTexNum;
+		m_14Slot[i].fHeight = m_13Slot[i].fHeight;
+		m_14Slot[i].fWidth  = m_13Slot[i].fWidth;
+		m_14Slot[i].fColorR = m_13Slot[i].fColorR;
+		m_14Slot[i].fColorG = m_13Slot[i].fColorG;
+		m_14Slot[i].fColorB = m_13Slot[i].fColorB;
+		m_14Slot[i].fColorA = m_13Slot[i].fColorA;
+
+		XMStoreFloat4x4(&(m_14Slot[i].WorldMatrix), XMMatrixScaling(m_14Slot[i].fWidth, m_14Slot[i].fHeight, 1.f)
+			* XMMatrixTranslation(m_14Slot[i].fX, m_14Slot[i].fY, m_14Slot[i].fZ));
+	}
+	for (_int i = 0; i< 9; ++i)
+	{
+		m_15Slot[i].fX		= m_14Slot[i].fX;
+		m_15Slot[i].fY		= m_14Slot[i].fY - 82.f;
+		m_15Slot[i].fZ		= m_14Slot[i].fZ;
+		m_15Slot[i].iPass   = m_14Slot[i].iPass;
+		m_15Slot[i].iTexNum = m_14Slot[i].iTexNum;
+		m_15Slot[i].fHeight = m_14Slot[i].fHeight;
+		m_15Slot[i].fWidth  = m_14Slot[i].fWidth;
+		m_15Slot[i].fColorR = m_14Slot[i].fColorR;
+		m_15Slot[i].fColorG = m_14Slot[i].fColorG;
+		m_15Slot[i].fColorB = m_14Slot[i].fColorB;
+		m_15Slot[i].fColorA = m_14Slot[i].fColorA;
+
+		XMStoreFloat4x4(&(m_15Slot[i].WorldMatrix), XMMatrixScaling(m_15Slot[i].fWidth, m_15Slot[i].fHeight, 1.f)
+			* XMMatrixTranslation(m_15Slot[i].fX, m_15Slot[i].fY, m_15Slot[i].fZ));
+	}
+	for (_int i = 0; i< 9; ++i)
+	{
+		m_16Slot[i].fX		= m_15Slot[i].fX;
+		m_16Slot[i].fY		= m_15Slot[i].fY - 82.f;
+		m_16Slot[i].fZ		= m_15Slot[i].fZ;
+		m_16Slot[i].iPass   = m_15Slot[i].iPass;
+		m_16Slot[i].iTexNum = m_15Slot[i].iTexNum;
+		m_16Slot[i].fHeight = m_15Slot[i].fHeight;
+		m_16Slot[i].fWidth  = m_15Slot[i].fWidth;
+		m_16Slot[i].fColorR = m_15Slot[i].fColorR;
+		m_16Slot[i].fColorG = m_15Slot[i].fColorG;
+		m_16Slot[i].fColorB = m_15Slot[i].fColorB;
+		m_16Slot[i].fColorA = m_15Slot[i].fColorA;
+
+		XMStoreFloat4x4(&(m_16Slot[i].WorldMatrix), XMMatrixScaling(m_16Slot[i].fWidth, m_16Slot[i].fHeight, 1.f)
+			* XMMatrixTranslation(m_16Slot[i].fX, m_16Slot[i].fY, m_16Slot[i].fZ));
+	}
+
+ // 설명0 ,타입
+m_DetailsList[31].fX = -338.f;
+m_DetailsList[31].fY = 108.87f;
+m_DetailsList[31].fWidth = 460.8f;
+m_DetailsList[31].fHeight = 129.6f;
+m_DetailsList[33].fX = -488.f;
+
 	m_pDB = CItemDB::GetInstance();
 	// 고정 박스, 보상메세지 박스 색상
-	itemDesc[0] = m_pDB->GetItemData(ITEM::SWORD0); //cost 1 59
-	itemDesc[1] = m_pDB->GetItemData(ITEM::SWORD1); //cost 2 60
-	itemDesc[2] = m_pDB->GetItemData(ITEM::SWORD2); //cost 3 61
-	itemDesc[3] = m_pDB->GetItemData(ITEM::SWORD3); //cost 5 62
-	itemDesc[4] = m_pDB->GetItemData(ITEM::SWORD4); //cost 10 65
-	itemDesc[5] = m_pDB->GetItemData(ITEM::GUN0); //cost 1 59
-	itemDesc[6] = m_pDB->GetItemData(ITEM::GUN1); //cost 2 60
-	itemDesc[7] = m_pDB->GetItemData(ITEM::GUN2); //cost 3 61
-	itemDesc[8] = m_pDB->GetItemData(ITEM::GUN3); //cost 5 62
-	itemDesc[9] = m_pDB->GetItemData(ITEM::GUN4); //cost 10 65
-	itemDesc[10] = m_pDB->GetItemData(ITEM::TACTITE_COIN); //cost 1 59
-	itemDesc[11] = m_pDB->GetItemData(ITEM::EXP3);  //cost 5 62
-	itemDesc[12] = m_pDB->GetItemData(ITEM::GEM);  //cost 10 65
+	itemDesc[0] = m_pDB->GetItemData(ITEM::RICE);		//cost 100
+	itemDesc[1] = m_pDB->GetItemData(ITEM::TOFU);		//cost 100
+	itemDesc[2] = m_pDB->GetItemData(ITEM::FLOUR);		//cost 100
+	itemDesc[3] = m_pDB->GetItemData(ITEM::MUSHROOM);	//cost 100
+	itemDesc[4] = m_pDB->GetItemData(ITEM::CHICKEN);	//cost 100
+	itemDesc[5] = m_pDB->GetItemData(ITEM::EGG);		//cost 100
+	itemDesc[6] = m_pDB->GetItemData(ITEM::MEAT);		//cost 100
+	itemDesc[7] = m_pDB->GetItemData(ITEM::HERB);		//cost 100
+	itemDesc[8] = m_pDB->GetItemData(ITEM::VIOLET);		//cost 100
+	itemDesc[9] = m_pDB->GetItemData(ITEM::DANDELION);  //cost 100
+	itemDesc[10] = m_pDB->GetItemData(ITEM::PEPPER);	//cost 100
+	itemDesc[11] = m_pDB->GetItemData(ITEM::SUGAR);		//cost 100
+	itemDesc[12] = m_pDB->GetItemData(ITEM::SALT);		//cost 100
+	itemDesc[13] = m_pDB->GetItemData(ITEM::OIL);		//cost 100
+	itemDesc[14] = m_pDB->GetItemData(ITEM::SOYSAUCE);		//cost 100
+	itemDesc[15] = m_pDB->GetItemData(ITEM::RECIPE0);		//cost 100
+	itemDesc[16] = m_pDB->GetItemData(ITEM::RECIPE1);		//cost 100
 
+	m_MenuList[0].fX = m_MenuList[3].fX;
+	m_MenuList[1].fX = m_MenuList[4].fX;
+
+	m_MenuList[0].OriPos = _float2(m_MenuList[0].fX, m_MenuList[0].fY);
+	m_MenuList[0].AimPos = _float2(m_MenuList[0].fX - 10.f, m_MenuList[0].fY);
+
+	m_MenuList[1].OriPos = _float2(m_MenuList[1].fX, m_MenuList[1].fY);
+	m_MenuList[1].AimPos = _float2(m_MenuList[1].fX - 10.f, m_MenuList[1].fY);
+	m_MenuList[2].iTexNum = 50;
+
+	m_DetailsList[22].iTexNum = m_CommonList[7].iTexNum = 16;
 
 	_float3 color0 = SLOT_COLOR;
 	m_0Slot[1].fColorR = -(255.f - (color0.x * 255.f));
 	m_0Slot[1].fColorG = -(255.f - (color0.y * 255.f));
 	m_0Slot[1].fColorB = -(255.f - (color0.z * 255.f));
-	m_0Slot[2].iTexNum = STATIC_IMAGE::ICON_SWORD_0;
-	m_0Slot[5].iTexNum = 80; //이름
-	m_0Slot[7].iTexNum = 59; //가격
-	_float3 color1 = SLOT_ADVANCED_COLOR;
+	m_0Slot[2].iTexNum = STATIC_IMAGE::ICON_RICE; // 아이콘
+	m_0Slot[5].iTexNum = 80; // 이름
+	m_0Slot[4].iTexNum = 67;					  // 수량
+	m_0Slot[6].iTexNum = 16;					  // 재화 아이콘
+	m_0Slot[7].iTexNum = 68;					  // 가격 이미지
+	_float3 color1 = SLOT_COLOR;
 	m_1Slot[1].fColorR = -(255.f - (color1.x * 255.f));
 	m_1Slot[1].fColorG = -(255.f - (color1.y * 255.f));
 	m_1Slot[1].fColorB = -(255.f - (color1.z * 255.f));
-	m_1Slot[2].iTexNum = STATIC_IMAGE::ICON_SWORD_1;
+	m_1Slot[2].iTexNum = STATIC_IMAGE::ICON_TOFU;
 	m_1Slot[5].iTexNum = 83;
-	m_1Slot[7].iTexNum = 60;
-	_float3 color2 = SLOT_RARE_COLOR;
+	m_1Slot[4].iTexNum = 67;
+	m_1Slot[6].iTexNum = 16;
+	m_1Slot[7].iTexNum = 68;
+	_float3 color2 = SLOT_COLOR;
 	m_2Slot[1].fColorR = -(255.f - (color2.x * 255.f));
 	m_2Slot[1].fColorG = -(255.f - (color2.y * 255.f));
 	m_2Slot[1].fColorB = -(255.f - (color2.z * 255.f));
-	m_2Slot[2].iTexNum = STATIC_IMAGE::ICON_SWORD_2;
+	m_2Slot[2].iTexNum = STATIC_IMAGE::ICON_FLOUR;
 	m_2Slot[5].iTexNum = 86;
-	m_2Slot[7].iTexNum = 61;
-	_float3 color3 = SLOT_UNIQUE_COLOR;
+	m_2Slot[4].iTexNum = 67;
+	m_2Slot[6].iTexNum = 16;
+	m_2Slot[7].iTexNum = 68;
+	_float3 color3 = SLOT_COLOR;
 	m_3Slot[1].fColorR = -(255.f - (color3.x * 255.f));
 	m_3Slot[1].fColorG = -(255.f - (color3.y * 255.f));
 	m_3Slot[1].fColorB = -(255.f - (color3.z * 255.f));
-	m_3Slot[2].iTexNum = STATIC_IMAGE::ICON_SWORD_3;
+	m_3Slot[2].iTexNum = STATIC_IMAGE::ICON_MUSHROOM;
 	m_3Slot[5].iTexNum = 89;
-	m_3Slot[7].iTexNum = 62;
-	_float3 color4 = SLOT_LEGEND_COLOR;
+	m_3Slot[4].iTexNum = 67;
+	m_3Slot[6].iTexNum = 16;
+	m_3Slot[7].iTexNum = 68;
+	_float3 color4 = SLOT_COLOR;
 	m_4Slot[1].fColorR = -(255.f - (color4.x * 255.f));
 	m_4Slot[1].fColorG = -(255.f - (color4.y * 255.f));
 	m_4Slot[1].fColorB = -(255.f - (color4.z * 255.f));
-	m_4Slot[2].iTexNum = STATIC_IMAGE::ICON_SWORD_4;
+	m_4Slot[2].iTexNum = STATIC_IMAGE::ICON_CHICKEN;
 	m_4Slot[5].iTexNum = 92;
-	m_4Slot[7].iTexNum = 65;
+	m_4Slot[4].iTexNum = 67; 
+	m_4Slot[6].iTexNum = 16;
+	m_4Slot[7].iTexNum = 68;
 	_float3 color5 = SLOT_COLOR;
 	m_5Slot[1].fColorR = -(255.f - (color5.x * 255.f));
 	m_5Slot[1].fColorG = -(255.f - (color5.y * 255.f));
 	m_5Slot[1].fColorB = -(255.f - (color5.z * 255.f));
-	m_5Slot[2].iTexNum = STATIC_IMAGE::ICON_GUN_0;
+	m_5Slot[2].iTexNum = STATIC_IMAGE::ICON_EGG;
 	m_5Slot[5].iTexNum = 95;
-	m_5Slot[7].iTexNum = 59;
+	m_5Slot[4].iTexNum = 67;
+	m_5Slot[6].iTexNum = 16;
+	m_5Slot[7].iTexNum = 68;
 	_float3 color6 = SLOT_ADVANCED_COLOR;
 	m_6Slot[1].fColorR = -(255.f - (color6.x * 255.f));
 	m_6Slot[1].fColorG = -(255.f - (color6.y * 255.f));
 	m_6Slot[1].fColorB = -(255.f - (color6.z * 255.f));
-	m_6Slot[2].iTexNum = STATIC_IMAGE::ICON_GUN_1;
+	m_6Slot[2].iTexNum = STATIC_IMAGE::ICON_MEAT;
 	m_6Slot[5].iTexNum = 98;
-	m_6Slot[7].iTexNum = 60;
-	_float3 color7 = SLOT_RARE_COLOR;
+	m_6Slot[4].iTexNum = 67;
+	m_6Slot[6].iTexNum = 16;
+	m_6Slot[7].iTexNum = 69;
+	_float3 color7 = SLOT_ADVANCED_COLOR;
 	m_7Slot[1].fColorR = -(255.f - (color7.x * 255.f));
 	m_7Slot[1].fColorG = -(255.f - (color7.y * 255.f));
 	m_7Slot[1].fColorB = -(255.f - (color7.z * 255.f));
-	m_7Slot[2].iTexNum = STATIC_IMAGE::ICON_GUN_2;
+	m_7Slot[2].iTexNum = STATIC_IMAGE::ICON_HERB;
 	m_7Slot[5].iTexNum = 101;
-	m_7Slot[7].iTexNum = 61;
-	_float3 color8 = SLOT_UNIQUE_COLOR;
+	m_7Slot[4].iTexNum = 67;
+	m_7Slot[6].iTexNum = 16;
+	m_7Slot[7].iTexNum = 69;
+	_float3 color8 = SLOT_ADVANCED_COLOR;
 	m_8Slot[1].fColorR = -(255.f - (color8.x * 255.f));
 	m_8Slot[1].fColorG = -(255.f - (color8.y * 255.f));
 	m_8Slot[1].fColorB = -(255.f - (color8.z * 255.f));
-	m_8Slot[2].iTexNum = STATIC_IMAGE::ICON_GUN_3;
+	m_8Slot[2].iTexNum = STATIC_IMAGE::ICON_VIOLET;
 	m_8Slot[5].iTexNum = 104;
-	m_8Slot[7].iTexNum = 62;
-	_float3 color9 = SLOT_LEGEND_COLOR;
+	m_8Slot[4].iTexNum = 67;
+	m_8Slot[6].iTexNum = 16;
+	m_8Slot[7].iTexNum = 69;
+	_float3 color9 = SLOT_ADVANCED_COLOR;
 	m_9Slot[1].fColorR = -(255.f - (color9.x * 255.f));
 	m_9Slot[1].fColorG = -(255.f - (color9.y * 255.f));
 	m_9Slot[1].fColorB = -(255.f - (color9.z * 255.f));
-	m_9Slot[2].iTexNum = STATIC_IMAGE::ICON_GUN_4;
+	m_9Slot[2].iTexNum = STATIC_IMAGE::ICON_DANDELION;
 	m_9Slot[5].iTexNum = 107;
-	m_9Slot[7].iTexNum = 65;
-	_float3 color10 = SLOT_COLOR;
+	m_9Slot[4].iTexNum = 67;
+	m_9Slot[6].iTexNum = 16;
+	m_9Slot[7].iTexNum = 69;
+	_float3 color10 = SLOT_RARE_COLOR;
 	m_10Slot[1].fColorR = -(255.f - (color10.x * 255.f));
 	m_10Slot[1].fColorG = -(255.f - (color10.y * 255.f));
 	m_10Slot[1].fColorB = -(255.f - (color10.z * 255.f));
-	m_10Slot[2].iTexNum = STATIC_IMAGE::ITEM_TACTITE_COIN;
+	m_10Slot[2].iTexNum = STATIC_IMAGE::ICON_PEPPER;
+	m_10Slot[5].iTexNum = 110;
 	m_10Slot[4].iTexNum = 67;
-	m_10Slot[5].iTexNum = 116;
-	m_10Slot[7].iTexNum = 59;
-	_float3 color11 = SLOT_UNIQUE_COLOR;
+	m_10Slot[6].iTexNum = 16;
+	m_10Slot[7].iTexNum = 70;
+	_float3 color11 = SLOT_RARE_COLOR;
 	m_11Slot[1].fColorR = -(255.f - (color11.x * 255.f));
 	m_11Slot[1].fColorG = -(255.f - (color11.y * 255.f));
 	m_11Slot[1].fColorB = -(255.f - (color11.z * 255.f));
-	m_11Slot[2].iTexNum = STATIC_IMAGE::ITEM_EXP3;
+	m_11Slot[2].iTexNum = STATIC_IMAGE::ICON_SUGAR;
 	m_11Slot[5].iTexNum = 113;
-	m_11Slot[7].iTexNum = 62;
-	_float3 color12 = SLOT_LEGEND_COLOR;
+	m_11Slot[4].iTexNum = 67;
+	m_11Slot[6].iTexNum = 16;
+	m_11Slot[7].iTexNum = 70;
+	_float3 color12 = SLOT_RARE_COLOR;
 	m_12Slot[1].fColorR = -(255.f - (color12.x * 255.f));
 	m_12Slot[1].fColorG = -(255.f - (color12.y * 255.f));
 	m_12Slot[1].fColorB = -(255.f - (color12.z * 255.f));
-	m_12Slot[2].iTexNum = STATIC_IMAGE::ICON_GEM;
-	m_12Slot[5].iTexNum = 110;
-	m_12Slot[7].iTexNum = 65;
+	m_12Slot[2].iTexNum = STATIC_IMAGE::ICON_SALT;
+	m_12Slot[5].iTexNum = 116;
+	m_12Slot[4].iTexNum = 67;
+	m_12Slot[6].iTexNum = 16;
+	m_12Slot[7].iTexNum = 70;
+	_float3 color13 = SLOT_RARE_COLOR;
+	m_13Slot[1].fColorR = -(255.f - (color13.x * 255.f));
+	m_13Slot[1].fColorG = -(255.f - (color13.y * 255.f));
+	m_13Slot[1].fColorB = -(255.f - (color13.z * 255.f));
+	m_13Slot[2].iTexNum = STATIC_IMAGE::ICON_OIL;
+	m_13Slot[5].iTexNum = 119;
+	m_13Slot[4].iTexNum = 67;
+	m_13Slot[6].iTexNum = 16;
+	m_13Slot[7].iTexNum = 70;
+	_float3 color14 = SLOT_RARE_COLOR;
+	m_14Slot[1].fColorR = -(255.f - (color14.x * 255.f));
+	m_14Slot[1].fColorG = -(255.f - (color14.y * 255.f));
+	m_14Slot[1].fColorB = -(255.f - (color14.z * 255.f));
+	m_14Slot[2].iTexNum = STATIC_IMAGE::ICON_SOYSAUCE;
+	m_14Slot[5].iTexNum = 122;
+	m_14Slot[4].iTexNum = 67;
+	m_14Slot[6].iTexNum = 16;
+	m_14Slot[7].iTexNum = 70;
+	_float3 color15 = SLOT_LEGEND_COLOR;
+	m_15Slot[1].fColorR = -(255.f - (color15.x * 255.f));
+	m_15Slot[1].fColorG = -(255.f - (color15.y * 255.f));
+	m_15Slot[1].fColorB = -(255.f - (color15.z * 255.f));
+	m_15Slot[2].iTexNum = STATIC_IMAGE::ICON_RECIPE;
+	m_15Slot[5].iTexNum = 125;
+	m_15Slot[4].iTexNum = 66;
+	m_15Slot[6].iTexNum = 16;
+	m_15Slot[7].iTexNum = 72;
+	_float3 color16 = SLOT_LEGEND_COLOR;
+	m_16Slot[1].fColorR = -(255.f - (color16.x * 255.f));
+	m_16Slot[1].fColorG = -(255.f - (color16.y * 255.f));
+	m_16Slot[1].fColorB = -(255.f - (color16.z * 255.f));
+	m_16Slot[2].iTexNum = STATIC_IMAGE::ICON_RECIPE;
+	m_16Slot[5].iTexNum = 128;
+	m_16Slot[4].iTexNum = 66;
+	m_16Slot[6].iTexNum = 16;
+	m_16Slot[7].iTexNum = 72;
+
 	return S_OK;
 }
 
@@ -370,7 +523,7 @@ void CUI_Panhua::Start()
 	SetState(DISABLE);
 
 	
-	//CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
+	//CurrentMoney = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
 	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4); // 나중에 주석 풀기
 
 
@@ -512,8 +665,8 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		// 슬롯 위에 올리면 테두리, 리미트 셋팅, 디테일 설명이미지 셋팅
 		IsMouseinRect();
 
-		// 은화 현재 보유 수량
-		SettingOwnTexNum();
+		// 코인 현재 보유 수량
+		SettingCurMoneyTexNum();
 
 		// 캔슬 누르면 목록으로 돌아가기, 텍스처 바꾸기
 		if (SelectUI(&m_CommonList[4]))
@@ -539,8 +692,8 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		{
 			(AddAlphaW(&m_DetailsList, TimeDelta) ? m_DetailRenderStart = false : m_DetailRenderStart = true);
 		}
-		// 은화 현재 보유 수량
-		SettingOwnTexNum();
+		// 선택아이템 현재 수량
+		SettingCurOwnTexNum();
 		// 구매제한 수량
 		SettingLimitTexNum();
 		SettingBuyTexNum();
@@ -667,7 +820,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		}
 
 		// 구매 누르면 확인창 뜨기,테스처 바꾸기
-		if ((SelectUI(&m_DetailsList[27])) && (0<BuyNum) &&(Limited - (*pLimibuycount)>= BuyNum) && (CurrentOwn >= iTotal) &&(Limited != (*pLimibuycount)))
+		if ((SelectUI(&m_DetailsList[27])) && (0<BuyNum) &&(Limited - (*pLimibuycount)>= BuyNum) && (CurrentMoney >= iTotal) &&(Limited != (*pLimibuycount)))
 		{
 			m_DetailsList[27].iTexNum = 20;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
@@ -719,14 +872,14 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		m_FinalList[3].fColorB = (*pSelectSlot)[1].fColorB;
 
 		// 구매수량
-		if (pSelectSlot == &m_10Slot)
+		if ((pSelectSlot != &m_15Slot) && (pSelectSlot != &m_16Slot))
 		{
-			for (_int i = 6; i < 10; ++i)
+			for (_int i = 8; i < 10; ++i)
 			{
-				m_FinalList[i].bRender = true;
+				m_FinalList[i].bRender = false;
 			}
-		m_FinalList[6].iTexNum = ((BuyNum * 2000) / 1000 ) + 27;
-		m_FinalList[7].iTexNum = m_FinalList[8].iTexNum = m_FinalList[9].iTexNum = 27;
+			m_FinalList[6].iTexNum = (BuyNum*10)/10 + 27;
+			m_FinalList[7].iTexNum = 27;
 		}
 		else
 		{
@@ -736,7 +889,6 @@ void CUI_Panhua::Tick(_double TimeDelta)
 			}
 			m_FinalList[6].iTexNum = BuyNum + 27;
 		}
-
 		if (m_ConfirmRenderStart)
 			(AddAlphaW(&m_FinalList, TimeDelta) ? m_ConfirmRenderStart = false : m_ConfirmRenderStart = true);
 
@@ -764,34 +916,42 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		// 인벤토리 처리 후 목록으로
 		// 보상 인벤에 넣기
 		if(pSelectSlot == &m_0Slot)
-			m_pInven->AddItem(ITEM::SWORD0, BuyNum);
+			m_pInven->AddItem(itemDesc[0].iItemID, BuyNum*10);
 		if (pSelectSlot == &m_1Slot)
-			m_pInven->AddItem(ITEM::SWORD1, BuyNum);
+			m_pInven->AddItem(itemDesc[1].iItemID, BuyNum * 10);
 		if (pSelectSlot == &m_2Slot)
-			m_pInven->AddItem(ITEM::SWORD2, BuyNum);
+			m_pInven->AddItem(itemDesc[2].iItemID, BuyNum * 10);
 		if (pSelectSlot == &m_3Slot)
-			m_pInven->AddItem(ITEM::SWORD3, BuyNum);
+			m_pInven->AddItem(itemDesc[3].iItemID, BuyNum * 10);
 		if (pSelectSlot == &m_4Slot)
-			m_pInven->AddItem(ITEM::SWORD4, BuyNum);
+			m_pInven->AddItem(itemDesc[4].iItemID, BuyNum * 10);
 		if (pSelectSlot == &m_5Slot)
-			m_pInven->AddItem(ITEM::GUN0, BuyNum);
+			m_pInven->AddItem(itemDesc[5].iItemID, BuyNum * 10);
 		if (pSelectSlot == &m_6Slot)
-			m_pInven->AddItem(ITEM::GUN1, BuyNum);
+			m_pInven->AddItem(itemDesc[6].iItemID, BuyNum * 10);
 		if (pSelectSlot == &m_7Slot)
-			m_pInven->AddItem(ITEM::GUN2, BuyNum);
+			m_pInven->AddItem(itemDesc[7].iItemID, BuyNum * 10);
 		if (pSelectSlot == &m_8Slot)
-			m_pInven->AddItem(ITEM::GUN3, BuyNum);
+			m_pInven->AddItem(itemDesc[8].iItemID, BuyNum * 10);
 		if (pSelectSlot == &m_9Slot)
-			m_pInven->AddItem(ITEM::GUN4, BuyNum);
+			m_pInven->AddItem(itemDesc[9].iItemID, BuyNum * 10);
 		if (pSelectSlot == &m_10Slot)
-			m_pInven->AddItem(ITEM::TACTITE_COIN, BuyNum*2000);
+			m_pInven->AddItem(itemDesc[10].iItemID, BuyNum * 10);
 		if (pSelectSlot == &m_11Slot)
-			m_pInven->AddItem(ITEM::EXP3, BuyNum);
+			m_pInven->AddItem(itemDesc[11].iItemID, BuyNum * 10);
 		if (pSelectSlot == &m_12Slot)
-			m_pInven->AddItem(ITEM::GEM, BuyNum);
+			m_pInven->AddItem(itemDesc[12].iItemID, BuyNum * 10);
+		if (pSelectSlot == &m_13Slot)
+			m_pInven->AddItem(itemDesc[13].iItemID, BuyNum * 10);
+		if (pSelectSlot == &m_14Slot)
+			m_pInven->AddItem(itemDesc[14].iItemID, BuyNum * 10);
+		if (pSelectSlot == &m_15Slot)
+			m_pInven->AddItem(itemDesc[15].iItemID, BuyNum);
+		if (pSelectSlot == &m_16Slot)
+			m_pInven->AddItem(itemDesc[16].iItemID, BuyNum);
 
-		m_pInven->EraseItem(CInventory::INVEN_COIN, 1, iTotal);
-
+		m_pInven->DeleteCoin(iTotal);
+		SettingCurMoneyTexNum();
 		BuyNum = 0;
 		Situation = CUI_Panhua::INMENU;
 	}
@@ -832,7 +992,15 @@ void CUI_Panhua::InMenuOpen(_double TimeDelta)
 		++Count;
 	if (AddAlphaW(&m_12Slot, TimeDelta))
 		++Count;
-	if (14 == Count)
+	if (AddAlphaW(&m_13Slot, TimeDelta))
+		++Count;
+	if (AddAlphaW(&m_14Slot, TimeDelta))
+		++Count;
+	if (AddAlphaW(&m_15Slot, TimeDelta))
+		++Count;
+	if (AddAlphaW(&m_16Slot, TimeDelta))
+		++Count;
+	if (18 == Count)
 		m_InMenuRenderStart = false;
 }
 
@@ -868,8 +1036,15 @@ _bool CUI_Panhua::InMenuEnd(_double TimeDelta)
 		++Count;
 	if (MinusAlphaW(&m_12Slot, TimeDelta))
 		++Count;
-
-	if (14 == Count)
+	if (MinusAlphaW(&m_13Slot, TimeDelta))
+		++Count;
+	if (MinusAlphaW(&m_14Slot, TimeDelta))
+		++Count;
+	if (MinusAlphaW(&m_15Slot, TimeDelta))
+		++Count;
+	if (MinusAlphaW(&m_16Slot, TimeDelta))
+		++Count;
+	if (18 == Count)
 		return true;
 	else
 		return false;
@@ -924,37 +1099,113 @@ void CUI_Panhua::End_Move(_uint indexstart, _uint indexend, _double TimeDelta)
 void CUI_Panhua::Total()
 {
 	iTotal = BuyNum * Cost;
+	CGameInstance * pGame = CGameInstance::GetInstance();
+	string strCoint = to_string(iTotal);
+	_uint iDigit = (_uint)strCoint.size();
+	for (_uint i = 0; i < iDigit; ++i)
+	{
+		_int Num = i;
+		switch (Num)
+		{
+		case 0: {m_DetailsList[23].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		case 1: {m_DetailsList[24].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		case 2: {m_DetailsList[25].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		case 3: {m_DetailsList[34].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		case 4: {m_DetailsList[35].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		case 5: {m_DetailsList[36].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		case 6: {m_DetailsList[37].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		}
 
-	if (99 < iTotal)
+
+	}
+
+	if (10000000 > iTotal) // 백만
 	{
 		m_DetailsList[23].bRender = true;
 		m_DetailsList[24].bRender = true;
 		m_DetailsList[25].bRender = true;
-		m_DetailsList[23].iTexNum = iTotal / 100 + 27;
-		m_DetailsList[24].iTexNum = (iTotal - (iTotal / 100) * 100) / 10 + 27;
-		m_DetailsList[25].iTexNum = (iTotal - (iTotal / 100) * 100) % 10 + 27;
+		m_DetailsList[34].bRender = true;
+		m_DetailsList[35].bRender = true;
+		m_DetailsList[36].bRender = true;
+		m_DetailsList[37].bRender = true;
+
 	}
-	else if (9 < iTotal)
+	if (1000000 > iTotal) // 십만
+	{
+		m_DetailsList[23].bRender = true;
+		m_DetailsList[24].bRender = true;
+		m_DetailsList[25].bRender = true;
+		m_DetailsList[34].bRender = true;
+		m_DetailsList[35].bRender = true;
+		m_DetailsList[36].bRender = true;
+		m_DetailsList[37].bRender = false;
+
+	}
+	if (100000 > iTotal) //만
+	{
+		m_DetailsList[23].bRender = true;
+		m_DetailsList[24].bRender = true;
+		m_DetailsList[25].bRender = true;
+		m_DetailsList[34].bRender = true;
+		m_DetailsList[35].bRender = true;
+		m_DetailsList[36].bRender = false;
+		m_DetailsList[37].bRender = false;
+
+	}
+	if (10000 > iTotal) // 천
+	{
+		m_DetailsList[23].bRender = true;
+		m_DetailsList[24].bRender = true;
+		m_DetailsList[25].bRender = true;
+		m_DetailsList[34].bRender = true;
+		m_DetailsList[35].bRender = false;
+		m_DetailsList[36].bRender = false;
+		m_DetailsList[37].bRender = false;
+	}
+	if (1000 > iTotal) //백
+	{
+		m_DetailsList[23].bRender = true;
+		m_DetailsList[24].bRender = true;
+		m_DetailsList[25].bRender = true;
+		m_DetailsList[34].bRender = false;
+		m_DetailsList[35].bRender = false;
+		m_DetailsList[36].bRender = false;
+		m_DetailsList[37].bRender = false;
+	}
+	if (100 > iTotal) //십
 	{
 		m_DetailsList[23].bRender = true;
 		m_DetailsList[24].bRender = true;
 		m_DetailsList[25].bRender = false;
-		m_DetailsList[23].iTexNum = iTotal / 10 + 27;
-		m_DetailsList[24].iTexNum = (iTotal - (iTotal / 10) * 10) + 27;
+		m_DetailsList[34].bRender = false;
+		m_DetailsList[35].bRender = false;
+		m_DetailsList[36].bRender = false;
+		m_DetailsList[37].bRender = false;
+
 	}
-	else
+	if (10 > iTotal) //일
 	{
 		m_DetailsList[23].bRender = true;
 		m_DetailsList[24].bRender = false;
 		m_DetailsList[25].bRender = false;
-		m_DetailsList[23].iTexNum = iTotal + 27;
+		m_DetailsList[34].bRender = false;
+		m_DetailsList[35].bRender = false;
+		m_DetailsList[36].bRender = false;
+		m_DetailsList[37].bRender = false;
 	}
 }
 
 void CUI_Panhua::SettingLimitTexNum()
 {
-		m_DetailsList[9].iTexNum = (*pLimibuycount) + 27;
-		m_DetailsList[11].iTexNum = Limited + 27;
+	m_DetailsList[9].iTexNum = (*pLimibuycount) + 27;
+	m_DetailsList[11].iTexNum = Limited + 27;
 }
 void CUI_Panhua::SettingOverPurchase()
 {
@@ -971,37 +1222,189 @@ void CUI_Panhua::SettingOverPurchase()
 	//}
 	m_bOverPurchase = false;
 }
-void CUI_Panhua::SettingOwnTexNum()
+
+void CUI_Panhua::SettingCurMoneyTexNum()
 {
-	if (99 < CurrentOwn)
+	CGameInstance * pGame = CGameInstance::GetInstance();
+	CurrentMoney = m_pInven->GetCoin();
+	string strCoint = to_string(CurrentMoney);
+	_uint iDigit = (_uint)strCoint.size();
+	//for (_uint i = 0; i < iDigit; ++i)
+	//{
+	//	pGame->SetupSRV(strCoint[i] - '0', m_pShader, "g_DiffuseTextures");
+	//}
+	for (_uint i = 0; i < iDigit; ++i)
 	{
-		m_CommonList[8].bRender = m_DetailsList[6].bRender = true;
-		m_CommonList[9].bRender = m_DetailsList[7].bRender = true;
-		m_CommonList[10].bRender = m_DetailsList[8].bRender = true;
-		m_CommonList[8].iTexNum = m_DetailsList[6].iTexNum = CurrentOwn / 100 + 27;
-		m_CommonList[9].iTexNum = m_DetailsList[7].iTexNum = (CurrentOwn - (CurrentOwn / 100) * 100) / 10 + 27;
-		m_CommonList[10].iTexNum = m_DetailsList[8].iTexNum = (CurrentOwn - (CurrentOwn / 100) * 100) % 10 + 27;
+		_int Num = i;
+		switch (Num)
+		{
+		case 0: {m_CommonList[8].iTexNum = (strCoint[i] - '0' )+ 27; }
+			break;
+		case 1: {m_CommonList[9].iTexNum = (strCoint[i] - '0') + 27; }
+			break;
+		case 2: {m_CommonList[10].iTexNum = (strCoint[i] - '0') + 27; }
+			break;
+		case 3: {m_CommonList[12].iTexNum = (strCoint[i] - '0') + 27; }
+			break;
+		case 4: {m_CommonList[13].iTexNum = (strCoint[i] - '0') + 27; }
+			break;
+		case 5: {m_CommonList[14].iTexNum = (strCoint[i] - '0') + 27; }
+			break;
+		case 6: {m_CommonList[15].iTexNum = (strCoint[i] - '0') + 27; }
+			break;
+		}
+		
+
 	}
-	else if (9 < CurrentOwn)
+
+	if (10000000 > CurrentMoney) // 백만
 	{
-		m_CommonList[8].bRender = m_DetailsList[6].bRender = true;
-		m_CommonList[9].bRender = m_DetailsList[7].bRender = true;
-		m_CommonList[10].bRender = m_DetailsList[8].bRender = false;
-		m_CommonList[8].iTexNum = m_DetailsList[6].iTexNum = CurrentOwn / 10 + 27;
-		m_CommonList[9].iTexNum = m_DetailsList[7].iTexNum = (CurrentOwn - (CurrentOwn / 10) * 10) + 27;
+		m_CommonList[8].bRender =  true;
+		m_CommonList[9].bRender =  true;
+		m_CommonList[10].bRender = true;
+		m_CommonList[12].bRender = true;
+		m_CommonList[13].bRender = true;
+		m_CommonList[14].bRender = true;
+		m_CommonList[15].bRender = true;
+
 	}
-	else
+	if (1000000 > CurrentMoney) // 십만
 	{
-		m_CommonList[8].bRender = m_DetailsList[6].bRender = true;
-		m_CommonList[9].bRender = m_DetailsList[7].bRender = false;
-		m_CommonList[10].bRender = m_DetailsList[8].bRender = false;
-		m_CommonList[8].iTexNum = m_DetailsList[6].iTexNum = CurrentOwn + 27;
+		m_CommonList[8].bRender =  true;
+		m_CommonList[9].bRender =  true;
+		m_CommonList[10].bRender = true;
+		m_CommonList[12].bRender = true;
+		m_CommonList[13].bRender = true;
+		m_CommonList[14].bRender = true;
+		m_CommonList[15].bRender = false;
+
 	}
-	if (CurrentOwn < iTotal)
+	if (100000 > CurrentMoney) //만
+	{
+		m_CommonList[8].bRender =  true;
+		m_CommonList[9].bRender =  true;
+		m_CommonList[10].bRender = true;
+		m_CommonList[12].bRender = true;
+		m_CommonList[13].bRender = true;
+		m_CommonList[14].bRender = false;
+		m_CommonList[15].bRender = false;
+
+	}
+	if (10000 > CurrentMoney) // 천
+	{
+		m_CommonList[8].bRender =  true;
+		m_CommonList[9].bRender =  true;
+		m_CommonList[10].bRender = true;
+		m_CommonList[12].bRender = true;
+		m_CommonList[13].bRender = false;
+		m_CommonList[14].bRender = false;
+		m_CommonList[15].bRender = false;
+	}
+	if (1000 > CurrentMoney) //백
+		{
+			m_CommonList[8].bRender  = true;
+			m_CommonList[9].bRender  = true;
+			m_CommonList[10].bRender = true;
+			m_CommonList[12].bRender = false;
+			m_CommonList[13].bRender = false;
+			m_CommonList[14].bRender = false;
+			m_CommonList[15].bRender = false;
+		}
+	if (100 > CurrentMoney) //십
+	{
+		m_CommonList[8].bRender = true;
+		m_CommonList[9].bRender = true;
+		m_CommonList[10].bRender = false;
+		m_CommonList[12].bRender = false;
+		m_CommonList[13].bRender = false;
+		m_CommonList[14].bRender = false;
+		m_CommonList[15].bRender = false;
+
+	}
+	if(10 > CurrentMoney) //일
+	{
+		m_CommonList[8].bRender = true;
+		m_CommonList[9].bRender = false;
+		m_CommonList[10].bRender = false;
+		m_CommonList[12].bRender = false;
+		m_CommonList[13].bRender = false;
+		m_CommonList[14].bRender = false;
+		m_CommonList[15].bRender = false;
+	}
+
+
+
+	if (CurrentMoney < iTotal)
 	{
 		m_DetailsList[27].iTexNum = 22;
 	}
 }
+
+void CUI_Panhua::SettingCurOwnTexNum()
+{
+	CGameInstance * pGame = CGameInstance::GetInstance();
+
+	if (pSelectSlot == (&m_0Slot))  { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::RICE); }
+	if (pSelectSlot == (&m_1Slot))  { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::TOFU); }
+	if (pSelectSlot == (&m_2Slot))  { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::FLOUR); }
+	if (pSelectSlot == (&m_3Slot))  { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::MUSHROOM); }
+	if (pSelectSlot == (&m_4Slot))  { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CHICKEN); }
+	if (pSelectSlot == (&m_5Slot))  { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::EGG); }
+	if (pSelectSlot == (&m_6Slot))  { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::MEAT); }
+	if (pSelectSlot == (&m_7Slot))  { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::HERB); }
+	if (pSelectSlot == (&m_8Slot))  { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::VIOLET); }
+	if (pSelectSlot == (&m_9Slot))  { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::DANDELION); }
+	if (pSelectSlot == (&m_10Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::PEPPER); }
+	if (pSelectSlot == (&m_11Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::SUGAR); }
+	if (pSelectSlot == (&m_12Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::SALT); }
+	if (pSelectSlot == (&m_13Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::OIL); }
+	if (pSelectSlot == (&m_14Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::SOYSAUCE); }
+	if (pSelectSlot == (&m_15Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::RECIPE0); }
+	if (pSelectSlot == (&m_16Slot)) { CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::RECIPE1); }
+
+
+
+	string strCoint = to_string(CurrentOwn);
+	_uint iDigit = (_uint)strCoint.size();
+	
+	for (_uint i = 0; i < iDigit; ++i)
+	{
+		_int Num = i;
+		switch (Num)
+		{
+		case 0: {m_DetailsList[6].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		case 1: {m_DetailsList[7].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		case 2: {m_DetailsList[8].iTexNum = (strCoint[i] - '0') + 27; }
+				break;
+		}
+
+
+	}
+
+	if (1000 > CurrentOwn) //백
+	{
+		m_DetailsList[6].bRender = true;
+		m_DetailsList[7].bRender = true;
+		m_DetailsList[8].bRender = true;
+	}
+	if (100 > CurrentOwn) //십
+	{
+		m_DetailsList[6].bRender = true;
+		m_DetailsList[7].bRender = true;
+		m_DetailsList[8].bRender = false;
+
+	}
+	if (10 > CurrentOwn) //일
+	{
+		m_DetailsList[6].bRender = true;
+		m_DetailsList[7].bRender = false;
+		m_DetailsList[8].bRender = false;
+	}
+
+}
+
 void CUI_Panhua::SettingBuyTexNum()
 {
 	m_DetailsList[17].bRender = false;
@@ -1034,7 +1437,7 @@ HRESULT CUI_Panhua::Render()
 		{
 			if (m_PanList[i].bRender)
 			{
-				if (FAILED(Setup_SouShader(i)))
+				if (FAILED(Setup_PanShader(i)))
 					return E_FAIL;
 				m_pShader->Begin(m_iPass);
 				m_pVIBuffer->Render();
@@ -1198,6 +1601,46 @@ HRESULT CUI_Panhua::Render()
 				m_pVIBuffer->Render();
 			}
 		}
+		for (_uint i = 0; i < (_int)m_13Slot.size(); ++i)
+		{
+			if (m_13Slot[i].bRender)
+			{
+				if (FAILED(Setup_13SlotShader(i)))
+					return E_FAIL;
+				m_pShader->Begin(m_iPass);
+				m_pVIBuffer->Render();
+			}
+		}
+		for (_uint i = 0; i < (_int)m_14Slot.size(); ++i)
+		{
+			if (m_14Slot[i].bRender)
+			{
+				if (FAILED(Setup_14SlotShader(i)))
+					return E_FAIL;
+				m_pShader->Begin(m_iPass);
+				m_pVIBuffer->Render();
+			}
+		}
+		for (_uint i = 0; i < (_int)m_15Slot.size(); ++i)
+		{
+			if (m_15Slot[i].bRender)
+			{
+				if (FAILED(Setup_15SlotShader(i)))
+					return E_FAIL;
+				m_pShader->Begin(m_iPass);
+				m_pVIBuffer->Render();
+			}
+		}
+		for (_uint i = 0; i < (_int)m_16Slot.size(); ++i)
+		{
+			if (m_16Slot[i].bRender)
+			{
+				if (FAILED(Setup_16SlotShader(i)))
+					return E_FAIL;
+				m_pShader->Begin(m_iPass);
+				m_pVIBuffer->Render();
+			}
+		}
 	}
 	break;
 	case Client::CUI_Panhua::DETAILS:
@@ -1240,6 +1683,189 @@ HRESULT CUI_Panhua::Render()
 
 void CUI_Panhua::RenderGUI()
 {
+	ImGui::Begin("Panhua ID");
+	ImGui::InputInt("ID", &m_iObjectID);
+
+	if (ImGui::Button("PanhuaSave")) { Save(); }
+	ImGui::SameLine();
+	if (ImGui::Button("PanhuaLoad")) { Load(); }
+	ImGui::NewLine();
+
+	if (ImGui::InputInt("PanhuaSituation", &iSituation))
+	{
+		Situation = (PANSITUINDEX)iSituation;
+	}
+	ImGui::InputInt("PanhuaListType", &type);
+	ImGui::InputInt("PanhuaIn_List_Index", &m_Index);
+	ImGui::NewLine();
+
+
+	switch (type)
+	{
+
+	case 0:
+	{
+		if ((-1 < m_Index) && (m_Index < (_int)m_PanList.size()))
+			CurrentDesc = &m_PanList[m_Index];
+		if (ImGui::Button("New"))
+		{
+			PANDESC Desc;
+			ZeroMemory(&Desc, sizeof(PANDESC));
+			m_PanList.push_back(Desc);
+		}
+	}
+	break;
+
+	case 1:
+	{
+		if ((-1 < m_Index) && (m_Index < (_int)m_MenuList.size()))
+			CurrentDesc = &m_MenuList[m_Index];
+		if (ImGui::Button("New"))
+		{
+			PANDESC Desc;
+			ZeroMemory(&Desc, sizeof(PANDESC));
+			m_MenuList.push_back(Desc);
+		}
+	}
+	break;
+	case 2:
+	{
+		if ((-1 < m_Index) && (m_Index < (_int)m_CommonList.size()))
+			CurrentDesc = &m_CommonList[m_Index];
+
+		if (ImGui::Button("New"))
+		{
+			PANDESC Desc;
+			ZeroMemory(&Desc, sizeof(PANDESC));
+			m_CommonList.push_back(Desc);
+		}
+	}
+	break;
+	case 3:
+	{
+		if ((-1 < m_Index) && (m_Index < (_int)m_DetailsList.size()))
+			CurrentDesc = &m_DetailsList[m_Index];
+
+		if (ImGui::Button("New"))
+		{
+			PANDESC Desc;
+			ZeroMemory(&Desc, sizeof(PANDESC));
+			m_DetailsList.push_back(Desc);
+		}
+	}
+	break;
+	case 4:
+	{
+		if ((-1 < m_Index) && (m_Index < (_int)m_FinalList.size()))
+			CurrentDesc = &m_FinalList[m_Index];
+		if (ImGui::Button("New"))
+		{
+			PANDESC Desc;
+			ZeroMemory(&Desc, sizeof(PANDESC));
+			m_FinalList.push_back(Desc);
+		}
+	}
+	break;
+
+	case 5:
+	{
+		if ((-1 < m_Index) && (m_Index < (_int)m_0Slot.size()))
+			CurrentDesc = &m_0Slot[m_Index];
+		if (ImGui::Button("New"))
+		{
+			PANDESC Desc;
+			ZeroMemory(&Desc, sizeof(PANDESC));
+			m_0Slot.push_back(Desc);
+		}
+	}
+	break;	
+	case 6:
+	{
+		if ((-1 < m_Index) && (m_Index < (_int)m_7Slot.size()))
+			CurrentDesc = &m_7Slot[m_Index];
+		if (ImGui::Button("New"))
+		{
+			PANDESC Desc;
+			ZeroMemory(&Desc, sizeof(PANDESC));
+			m_7Slot.push_back(Desc);
+		}
+	}
+	break;
+	}
+
+
+
+
+	if (nullptr != CurrentDesc)
+	{
+		ImGui::InputInt("pass", &CurrentDesc->iPass);
+		ImGui::InputInt("texNum", &CurrentDesc->iTexNum);
+		bRender = (_int)CurrentDesc->bRender;
+		if (ImGui::InputInt("bRender", &bRender))
+		{
+			if (0 >= bRender)
+			{
+				CurrentDesc->bRender = false;
+			}
+			else
+				CurrentDesc->bRender = true;
+		}
+		ImGui::NewLine();
+
+		_float4 Pos = _float4{ CurrentDesc->fX, CurrentDesc->fY, CurrentDesc->fZ, 1.f };
+		ImGui::InputFloat3("PanPos", &Pos.x, "%.2f");
+		ImGui::SliderFloat("PanX", &Pos.x, -640.f, 640.f);
+		ImGui::SliderFloat("PanY", &Pos.y, -360.f, 360.f);
+		ImGui::SliderFloat("PanZ", &Pos.z, -1.f, 1.f);
+		CurrentDesc->fX = CurrentDesc->WorldMatrix._41 = Pos.x;
+		CurrentDesc->fY = CurrentDesc->WorldMatrix._42 = Pos.y;
+		CurrentDesc->fZ = CurrentDesc->WorldMatrix._43 = Pos.z;
+		ImGui::Separator();
+		ImGui::Checkbox("bTextMod", &bTexMod);
+		if (bTexMod)
+		{
+			ImGui::InputFloat("fmagnification", &magnification);
+			ImGui::SliderFloat("magnification", &(magnification), 0.001f, 10.f);
+
+			ImGui::InputFloat2("imageSize", &Size.x);
+			if (ImGui::Button("TextMod", ImVec2(10.f, 10.f)))
+			{
+				CurrentDesc->fWidth = Size.x * magnification;
+				CurrentDesc->fHeight = Size.y * magnification;
+			}
+		}
+		else
+		{
+			ImGui::NewLine();
+
+			ImGui::InputFloat("PanScaleX", &(CurrentDesc->fWidth));
+			ImGui::NewLine();
+			ImGui::InputFloat("PanScaleY", &(CurrentDesc->fHeight));
+			ImGui::NewLine();
+			ImGui::SliderFloat("sPanScaleX", &(CurrentDesc->fWidth), 0.1f, 1280.f);
+			ImGui::NewLine();
+			ImGui::SliderFloat("sPanScaleY", &(CurrentDesc->fHeight), 0.1f, 720.f);
+			ImGui::NewLine();
+		}
+		XMStoreFloat4x4(&(CurrentDesc->WorldMatrix), XMMatrixScaling(CurrentDesc->fWidth, CurrentDesc->fHeight, 1.f)
+			* XMMatrixTranslation(CurrentDesc->fX, CurrentDesc->fY, CurrentDesc->fZ));
+		ImGui::Separator();
+		//// 알파값
+		//CurrentDesc->Color.x = CurrentDesc->fColorR;
+		//CurrentDesc->Color.y = CurrentDesc->fColorG;
+		//CurrentDesc->Color.z = CurrentDesc->fColorB;
+		//CurrentDesc->Color.w = CurrentDesc->fColorA;
+		ImGui::InputFloat("R", &(CurrentDesc->fColorR));
+		ImGui::InputFloat("G", &(CurrentDesc->fColorG));
+		ImGui::InputFloat("B", &(CurrentDesc->fColorB));
+		ImGui::InputFloat("A", &(CurrentDesc->fColorA));
+		ImGui::SliderFloat("sR", &(CurrentDesc->fColorR), -255.f, 255.f);
+		ImGui::SliderFloat("sG", &(CurrentDesc->fColorG), -255.f, 255.f);
+		ImGui::SliderFloat("sB", &(CurrentDesc->fColorB), -255.f, 255.f);
+		ImGui::SliderFloat("sA", &(CurrentDesc->fColorA), -255.f, 255.f);
+	}
+
+	ImGui::End();
 }
 
 _bool CUI_Panhua::SelectUI(PANDESC* pDesc)
@@ -1285,7 +1911,7 @@ HRESULT CUI_Panhua::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UISOUVI,
+	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UIPANHUA,
 		TEXT("com_texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
@@ -1297,7 +1923,7 @@ HRESULT CUI_Panhua::Add_Components()
 
 }
 
-HRESULT CUI_Panhua::Setup_SouShader(_uint index)
+HRESULT CUI_Panhua::Setup_PanShader(_uint index)
 {
 	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_PanList[index].iTexNum)))
 		return E_FAIL;
@@ -1356,11 +1982,11 @@ void CUI_Panhua::IsMouseinRect()
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[0];
 			Limited = 5;
-			Cost = 1;
+			Cost = 1000;
 			m_DetailsList[31].iTexNum = 81; //설명0
 			m_DetailsList[32].iTexNum = 82; //설명1
-			m_DetailsList[33].iTexNum = 119; //설명타입
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ICON_SWORD_0; //아이템 이미지
+			m_DetailsList[33].iTexNum = 131; //설명타입
+			m_DetailsList[30].iTexNum = itemDesc[0].iImageIndex; //아이템 이미지
 			pSelectSlot = &m_0Slot;
 		}
 	}
@@ -1375,11 +2001,11 @@ void CUI_Panhua::IsMouseinRect()
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[1];
 			Limited = 5;
-			Cost = 2;
+			Cost = 1000;
 			m_DetailsList[31].iTexNum = 84;
 			m_DetailsList[32].iTexNum = 85;
-			m_DetailsList[33].iTexNum = 119;
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ICON_SWORD_1;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[1].iImageIndex;
 			pSelectSlot = &m_1Slot;
 		}
 	}
@@ -1394,11 +2020,11 @@ void CUI_Panhua::IsMouseinRect()
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[2];
 			Limited = 5;
-			Cost = 3;
+			Cost = 1000;
 			m_DetailsList[31].iTexNum = 87;
 			m_DetailsList[32].iTexNum = 88;
-			m_DetailsList[33].iTexNum = 119;
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ICON_SWORD_2;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[2].iImageIndex;
 			pSelectSlot = &m_2Slot;
 		}
 	}
@@ -1412,12 +2038,12 @@ void CUI_Panhua::IsMouseinRect()
 		{
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[3];
-			Limited = 1;
-			Cost = 5;
+			Limited = 5;
+			Cost = 1000;
 			m_DetailsList[31].iTexNum = 90;
 			m_DetailsList[32].iTexNum = 91;
-			m_DetailsList[33].iTexNum = 119;
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ICON_SWORD_3;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[3].iImageIndex;
 			pSelectSlot = &m_3Slot;
 		}
 	}
@@ -1431,12 +2057,12 @@ void CUI_Panhua::IsMouseinRect()
 		{
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[4];
-			Limited = 1;
-			Cost = 10;
+			Limited = 5;
+			Cost = 1000;
 			m_DetailsList[31].iTexNum = 93;
 			m_DetailsList[32].iTexNum = 94;
-			m_DetailsList[33].iTexNum = 119;
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ICON_SWORD_4;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[4].iImageIndex;
 			pSelectSlot = &m_4Slot;
 		}
 	}
@@ -1450,12 +2076,12 @@ void CUI_Panhua::IsMouseinRect()
 		{
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[5];
-			Limited = 5;
-			Cost = 1;
+			Limited = 3;
+			Cost = 2000;
 			m_DetailsList[31].iTexNum = 96;
 			m_DetailsList[32].iTexNum = 97;
-			m_DetailsList[33].iTexNum = 119;
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ICON_GUN_0;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[5].iImageIndex;
 			pSelectSlot = &m_5Slot;
 		}
 	}
@@ -1469,12 +2095,12 @@ void CUI_Panhua::IsMouseinRect()
 		{
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[6];
-			Limited = 5;
-			Cost = 2;
+			Limited = 3;
+			Cost = 2000;
 			m_DetailsList[31].iTexNum = 99;
 			m_DetailsList[32].iTexNum = 100;
-			m_DetailsList[33].iTexNum = 119;
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ICON_GUN_1;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[6].iImageIndex;
 			pSelectSlot = &m_6Slot;
 		}
 	}
@@ -1488,12 +2114,12 @@ void CUI_Panhua::IsMouseinRect()
 		{
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[7];
-			Limited = 5;
-			Cost = 3;
+			Limited = 3;
+			Cost = 2000;
 			m_DetailsList[31].iTexNum = 102;
 			m_DetailsList[32].iTexNum = 103;
-			m_DetailsList[33].iTexNum = 119;
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ICON_GUN_2;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[7].iImageIndex;
 			pSelectSlot = &m_7Slot;
 		}
 	}
@@ -1507,12 +2133,12 @@ void CUI_Panhua::IsMouseinRect()
 		{
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[8];
-			Limited = 1;
-			Cost = 5;
+			Limited = 3;
+			Cost = 2000;
 			m_DetailsList[31].iTexNum = 105;
 			m_DetailsList[32].iTexNum = 106;
-			m_DetailsList[33].iTexNum = 119;
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ICON_GUN_3;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[8].iImageIndex;
 			pSelectSlot = &m_8Slot;
 		}
 	}
@@ -1526,12 +2152,12 @@ void CUI_Panhua::IsMouseinRect()
 		{
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[9];
-			Limited = 1;
-			Cost = 10;
+			Limited = 2;
+			Cost = 2000;
 			m_DetailsList[31].iTexNum = 108;
 			m_DetailsList[32].iTexNum = 109;
-			m_DetailsList[33].iTexNum = 119;
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ICON_GUN_4;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[9].iImageIndex;
 			pSelectSlot = &m_9Slot;
 		}
 	}
@@ -1545,12 +2171,12 @@ void CUI_Panhua::IsMouseinRect()
 		{
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[10];
-			Limited = 3;
-			Cost = 1;
-			m_DetailsList[31].iTexNum = 117;
-			m_DetailsList[32].iTexNum = 118;
-			m_DetailsList[33].iTexNum = 121;
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ITEM_TACTITE_COIN;
+			Limited = 2;
+			Cost = 3000;
+			m_DetailsList[31].iTexNum = 111;
+			m_DetailsList[32].iTexNum = 112;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[10].iImageIndex;
 			pSelectSlot = &m_10Slot;
 		}
 	}
@@ -1564,12 +2190,12 @@ void CUI_Panhua::IsMouseinRect()
 		{
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[11];
-			Limited = 3;
-			Cost = 5;
+			Limited = 2;
+			Cost = 3000;
 			m_DetailsList[31].iTexNum = 114;
 			m_DetailsList[32].iTexNum = 115;
-			m_DetailsList[33].iTexNum = 120;
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ITEM_EXP3;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[11].iImageIndex;
 			pSelectSlot = &m_11Slot;
 		}
 	}
@@ -1583,17 +2209,93 @@ void CUI_Panhua::IsMouseinRect()
 		{
 			Situation = CUI_Panhua::DETAILS;
 			pLimibuycount = &Limibuycount[12];
-			Limited = 1;
-			Cost = 10;
-			m_DetailsList[31].iTexNum = 111;
-			m_DetailsList[32].iTexNum = 112;
-			m_DetailsList[33].iTexNum = 120;
-			m_DetailsList[30].iTexNum = STATIC_IMAGE::ICON_GEM;
+			Limited = 2;
+			Cost = 3000;
+			m_DetailsList[31].iTexNum = 117;
+			m_DetailsList[32].iTexNum = 118;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[12].iImageIndex;
 			pSelectSlot = &m_12Slot;
 		}
 	}
 	else
 		m_12Slot[8].bRender = false;
+
+	if (SelectUI(&m_13Slot[0]))
+	{
+		m_13Slot[8].bRender = true; //올렸을때
+		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
+			Situation = CUI_Panhua::DETAILS;
+			pLimibuycount = &Limibuycount[13];
+			Limited = 2;
+			Cost = 3000;
+			m_DetailsList[31].iTexNum = 120;
+			m_DetailsList[32].iTexNum = 121;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[13].iImageIndex;
+			pSelectSlot = &m_13Slot;
+		}
+	}
+	else
+		m_13Slot[8].bRender = false;
+
+	if (SelectUI(&m_14Slot[0]))
+	{
+		m_14Slot[8].bRender = true; //올렸을때
+		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
+			Situation = CUI_Panhua::DETAILS;
+			pLimibuycount = &Limibuycount[14];
+			Limited = 2;
+			Cost = 3000;
+			m_DetailsList[31].iTexNum = 123;
+			m_DetailsList[32].iTexNum = 124;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[14].iImageIndex;
+			pSelectSlot = &m_14Slot;
+		}
+	}
+	else
+		m_14Slot[8].bRender = false;
+
+	if (SelectUI(&m_15Slot[0]))
+	{
+		m_15Slot[8].bRender = true; //올렸을때
+		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
+			Situation = CUI_Panhua::DETAILS;
+			pLimibuycount = &Limibuycount[15];
+			Limited = 1;
+			Cost = 100000;
+			m_DetailsList[31].iTexNum = 126;
+			m_DetailsList[32].iTexNum = 127;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[15].iImageIndex;
+			pSelectSlot = &m_15Slot;
+		}
+	}
+	else
+		m_15Slot[8].bRender = false;
+
+	if (SelectUI(&m_16Slot[0]))
+	{
+		m_16Slot[8].bRender = true; //올렸을때
+		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
+			Situation = CUI_Panhua::DETAILS;
+			pLimibuycount = &Limibuycount[16];
+			Limited = 1;
+			Cost = 100000;
+			m_DetailsList[31].iTexNum = 129;
+			m_DetailsList[32].iTexNum = 130;
+			m_DetailsList[33].iTexNum = 131;
+			m_DetailsList[30].iTexNum = itemDesc[16].iImageIndex;
+			pSelectSlot = &m_16Slot;
+		}
+	}
+	else
+		m_16Slot[8].bRender = false;
 
 }
 _bool CUI_Panhua::AddAlpha(PANDESC* pDesc, _double TimeDelta)
@@ -1816,7 +2518,30 @@ void CUI_Panhua::MouseMove()
 		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
 			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
 	}
-
+	for (auto& Slot : m_13Slot)
+	{
+		Slot.fY += mouse;
+		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+	}
+	for (auto& Slot : m_14Slot)
+	{
+		Slot.fY += mouse;
+		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+	}
+	for (auto& Slot : m_15Slot)
+	{
+		Slot.fY += mouse;
+		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+	}
+	for (auto& Slot : m_16Slot)
+	{
+		Slot.fY += mouse;
+		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+	}
 }
 
 void CUI_Panhua::Load()
@@ -1904,7 +2629,7 @@ void CUI_Panhua::Load()
 
 	}
 	//
-	index = 12;
+	index = 16;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -1984,7 +2709,7 @@ void CUI_Panhua::Load()
 	}
 
 	//
-	index = 34;
+	index = 38;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -2548,6 +3273,167 @@ void CUI_Panhua::Load()
 		m_12Slot.push_back(Desc);
 		CloseHandle(hFile);
 	}
+
+	//
+	index = 9;
+	for (_uint i = 0; i < index; ++i)
+	{
+		TCHAR	szFileName[128] = L"";
+		wsprintf(szFileName, L"../../Data/UI/Pan13Slot%d.dat", i);
+		HANDLE hFile = CreateFile(
+			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
+
+		_ulong dwByte = 0;
+		while (true)
+		{
+			ReadFile(hFile, &(Desc.fX), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fY), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fZ), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fWidth), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fHeight), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorA), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorR), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorG), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorB), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.iPass), sizeof(_int), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.iTexNum), sizeof(_int), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.bRender), sizeof(_bool), &dwByte, nullptr);
+			if (0 == dwByte)
+				break;
+		}
+		Desc.bRender = true;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 22;
+		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
+			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
+		m_13Slot.push_back(Desc);
+		CloseHandle(hFile);
+	}
+
+	//
+	index = 9;
+	for (_uint i = 0; i < index; ++i)
+	{
+		TCHAR	szFileName[128] = L"";
+		wsprintf(szFileName, L"../../Data/UI/Pan14Slot%d.dat", i);
+		HANDLE hFile = CreateFile(
+			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
+
+		_ulong dwByte = 0;
+		while (true)
+		{
+			ReadFile(hFile, &(Desc.fX), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fY), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fZ), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fWidth), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fHeight), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorA), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorR), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorG), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorB), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.iPass), sizeof(_int), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.iTexNum), sizeof(_int), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.bRender), sizeof(_bool), &dwByte, nullptr);
+			if (0 == dwByte)
+				break;
+		}
+		Desc.bRender = true;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 22;
+		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
+			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
+		m_14Slot.push_back(Desc);
+		CloseHandle(hFile);
+	}
+
+	//
+	index = 9;
+	for (_uint i = 0; i < index; ++i)
+	{
+		TCHAR	szFileName[128] = L"";
+		wsprintf(szFileName, L"../../Data/UI/Pan15Slot%d.dat", i);
+		HANDLE hFile = CreateFile(
+			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
+
+		_ulong dwByte = 0;
+		while (true)
+		{
+			ReadFile(hFile, &(Desc.fX), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fY), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fZ), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fWidth), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fHeight), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorA), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorR), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorG), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorB), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.iPass), sizeof(_int), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.iTexNum), sizeof(_int), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.bRender), sizeof(_bool), &dwByte, nullptr);
+			if (0 == dwByte)
+				break;
+		}
+		Desc.bRender = true;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 22;
+		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
+			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
+		m_15Slot.push_back(Desc);
+		CloseHandle(hFile);
+	}
+
+	//
+	index = 9;
+	for (_uint i = 0; i < index; ++i)
+	{
+		TCHAR	szFileName[128] = L"";
+		wsprintf(szFileName, L"../../Data/UI/Pan16Slot%d.dat", i);
+		HANDLE hFile = CreateFile(
+			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+		PANDESC Desc;
+		ZeroMemory(&Desc, sizeof(PANDESC));
+
+		_ulong dwByte = 0;
+		while (true)
+		{
+			ReadFile(hFile, &(Desc.fX), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fY), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fZ), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fWidth), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fHeight), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorA), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorR), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorG), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.fColorB), sizeof(_float), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.iPass), sizeof(_int), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.iTexNum), sizeof(_int), &dwByte, nullptr);
+			ReadFile(hFile, &(Desc.bRender), sizeof(_bool), &dwByte, nullptr);
+			if (0 == dwByte)
+				break;
+		}
+		Desc.bRender = true;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 22;
+		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
+			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
+		m_16Slot.push_back(Desc);
+		CloseHandle(hFile);
+	}
+
 }
 
 
@@ -3010,6 +3896,106 @@ void CUI_Panhua::Save()
 		CloseHandle(hFile);
 		++index;
 	}
+
+	//
+	index = 0;
+	for (auto& Desc : m_13Slot)
+	{
+		TCHAR	szFileName[128] = L"";
+		wsprintf(szFileName, L"../../Data/UI/Pan13Slot%d.dat", index);
+		HANDLE hFile = CreateFile(
+			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+		Desc.fColorA = Desc.Color.w;
+		_ulong dwByte = 0;
+		WriteFile(hFile, &(Desc.fX), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fY), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fZ), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fWidth), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fHeight), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorA), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorR), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorG), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorB), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.iPass), sizeof(_int), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.iTexNum), sizeof(_int), &dwByte, nullptr);
+		CloseHandle(hFile);
+		++index;
+	}
+
+	//
+	index = 0;
+	for (auto& Desc : m_14Slot)
+	{
+		TCHAR	szFileName[128] = L"";
+		wsprintf(szFileName, L"../../Data/UI/Pan14Slot%d.dat", index);
+		HANDLE hFile = CreateFile(
+			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+		Desc.fColorA = Desc.Color.w;
+		_ulong dwByte = 0;
+		WriteFile(hFile, &(Desc.fX), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fY), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fZ), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fWidth), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fHeight), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorA), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorR), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorG), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorB), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.iPass), sizeof(_int), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.iTexNum), sizeof(_int), &dwByte, nullptr);
+		CloseHandle(hFile);
+		++index;
+	}
+
+	//
+	index = 0;
+	for (auto& Desc : m_15Slot)
+	{
+		TCHAR	szFileName[128] = L"";
+		wsprintf(szFileName, L"../../Data/UI/Pan15Slot%d.dat", index);
+		HANDLE hFile = CreateFile(
+			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+		Desc.fColorA = Desc.Color.w;
+		_ulong dwByte = 0;
+		WriteFile(hFile, &(Desc.fX), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fY), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fZ), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fWidth), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fHeight), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorA), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorR), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorG), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorB), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.iPass), sizeof(_int), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.iTexNum), sizeof(_int), &dwByte, nullptr);
+		CloseHandle(hFile);
+		++index;
+	}
+
+	//
+	index = 0;
+	for (auto& Desc : m_16Slot)
+	{
+		TCHAR	szFileName[128] = L"";
+		wsprintf(szFileName, L"../../Data/UI/Pan16Slot%d.dat", index);
+		HANDLE hFile = CreateFile(
+			szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+		Desc.fColorA = Desc.Color.w;
+		_ulong dwByte = 0;
+		WriteFile(hFile, &(Desc.fX), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fY), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fZ), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fWidth), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fHeight), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorA), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorR), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorG), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.fColorB), sizeof(_float), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.iPass), sizeof(_int), &dwByte, nullptr);
+		WriteFile(hFile, &(Desc.iTexNum), sizeof(_int), &dwByte, nullptr);
+		CloseHandle(hFile);
+		++index;
+	}
 }
 
 HRESULT CUI_Panhua::Setup_CommonShader(_uint index)
@@ -3136,7 +4122,7 @@ HRESULT CUI_Panhua::Setup_1SlotShader(_uint index)
 
 HRESULT CUI_Panhua::Setup_2SlotShader(_uint index)
 {
-	if (2 == index)
+	if (2 == index) 
 	{
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
 		if (FAILED(pGameInstance->SetupSRV(m_2Slot[index].iTexNum, m_pShader, "g_MyTexture")))
@@ -3301,7 +4287,7 @@ HRESULT CUI_Panhua::Setup_6SlotShader(_uint index)
 
 HRESULT CUI_Panhua::Setup_7SlotShader(_uint index)
 {
-	if (2 == index)
+	if (2 == index) 
 	{
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
 		if (FAILED(pGameInstance->SetupSRV(m_7Slot[index].iTexNum, m_pShader, "g_MyTexture")))
@@ -3367,7 +4353,7 @@ HRESULT CUI_Panhua::Setup_8SlotShader(_uint index)
 
 HRESULT CUI_Panhua::Setup_9SlotShader(_uint index)
 {
-	if (2 == index)
+	if (2 == index) 
 	{
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
 		if (FAILED(pGameInstance->SetupSRV(m_9Slot[index].iTexNum, m_pShader, "g_MyTexture")))
@@ -3400,7 +4386,7 @@ HRESULT CUI_Panhua::Setup_9SlotShader(_uint index)
 
 HRESULT CUI_Panhua::Setup_10SlotShader(_uint index)
 {
-	if (2 == index)
+	if (2 == index) 
 	{
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
 		if (FAILED(pGameInstance->SetupSRV(m_10Slot[index].iTexNum, m_pShader, "g_MyTexture")))
@@ -3466,7 +4452,7 @@ HRESULT CUI_Panhua::Setup_11SlotShader(_uint index)
 
 HRESULT CUI_Panhua::Setup_12SlotShader(_uint index)
 {
-	if (2 == index)
+	if (2 == index) 
 	{
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
 		if (FAILED(pGameInstance->SetupSRV(m_12Slot[index].iTexNum, m_pShader, "g_MyTexture")))
@@ -3493,6 +4479,138 @@ HRESULT CUI_Panhua::Setup_12SlotShader(_uint index)
 		return E_FAIL;
 
 	m_iPass = m_12Slot[index].iPass;
+
+	return S_OK;
+}
+
+HRESULT CUI_Panhua::Setup_13SlotShader(_uint index)
+{
+	if (2 == index)
+	{
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+		if (FAILED(pGameInstance->SetupSRV(m_13Slot[index].iTexNum, m_pShader, "g_MyTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_13Slot[index].iTexNum)))
+			return E_FAIL;
+	}
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_13Slot[index].WorldMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_13Slot[index].fColorR), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_13Slot[index].fColorG), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_13Slot[index].fColorB), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_13Slot[index].fColorA), sizeof(_float))))
+		return E_FAIL;
+
+	m_iPass = m_12Slot[index].iPass;
+
+	return S_OK;
+}
+
+HRESULT CUI_Panhua::Setup_14SlotShader(_uint index)
+{
+	if (2 == index)
+	{
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+		if (FAILED(pGameInstance->SetupSRV(m_14Slot[index].iTexNum, m_pShader, "g_MyTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_14Slot[index].iTexNum)))
+			return E_FAIL;
+	}
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_14Slot[index].WorldMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_14Slot[index].fColorR), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_14Slot[index].fColorG), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_14Slot[index].fColorB), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_14Slot[index].fColorA), sizeof(_float))))
+		return E_FAIL;
+
+	m_iPass = m_14Slot[index].iPass;
+
+	return S_OK;
+}
+
+HRESULT CUI_Panhua::Setup_15SlotShader(_uint index)
+{
+	if (2 == index)
+	{
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+		if (FAILED(pGameInstance->SetupSRV(m_15Slot[index].iTexNum, m_pShader, "g_MyTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_15Slot[index].iTexNum)))
+			return E_FAIL;
+	}
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_15Slot[index].WorldMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_15Slot[index].fColorR), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_15Slot[index].fColorG), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_15Slot[index].fColorB), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_15Slot[index].fColorA), sizeof(_float))))
+		return E_FAIL;
+
+	m_iPass = m_15Slot[index].iPass;
+
+	return S_OK;
+}
+
+HRESULT CUI_Panhua::Setup_16SlotShader(_uint index)
+{
+	if (2 == index)
+	{
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+		if (FAILED(pGameInstance->SetupSRV(m_16Slot[index].iTexNum, m_pShader, "g_MyTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_16Slot[index].iTexNum)))
+			return E_FAIL;
+	}
+	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_16Slot[index].WorldMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_16Slot[index].fColorR), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_16Slot[index].fColorG), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_16Slot[index].fColorB), sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_16Slot[index].fColorA), sizeof(_float))))
+		return E_FAIL;
+	
+	m_iPass = m_16Slot[index].iPass;
 
 	return S_OK;
 }

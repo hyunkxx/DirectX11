@@ -143,7 +143,6 @@ void CUI_TapT::LateTick(_double TimeDelta)
 
 HRESULT CUI_TapT::Render()
 {
-	
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 	if (0.5f < m_ShaderY)

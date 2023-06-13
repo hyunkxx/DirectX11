@@ -132,19 +132,19 @@ void CPlayerCamera::Tick(_double TimeDelta)
 	{
 
 		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
-		/*if (false == m_pTerminalUI->IsActive())
+		if (false == m_pTerminalUI->IsActive())
 		{
-			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || m_pUIPanhua)
+			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || nullptr == m_pUIPanhua)
 				return;
 
-			m_bFixMouse = (m_pUITap->IsMouseActive() ? false : m_pUITip->IsMouseActive() ? false : m_pUIMen->IsMouseActive() ? false : m_pUISovi ->IsMouseActive() ? false : m_pUIPanhua->IsMouseActive() ? false : true);
+			m_bFixMouse = (m_pUITap->IsMouseActive() ? false : m_pUITip->IsMouseActive() ? false : m_pUIMen->IsMouseActive() ? false : m_pUISovi->IsMouseActive() ? false : m_pUIPanhua->IsMouseActive() ? false : true);
 		}
 		else
 		{
-			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || m_pUIPanhua)
+			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || nullptr == m_pUIPanhua)
 				return;
 			m_pUITip->SetState(DISABLE);
-		}*/
+		}
 
 		if (pGameInstance->InputKey(DIK_LALT) == KEY_STATE::HOLD)
 		{
