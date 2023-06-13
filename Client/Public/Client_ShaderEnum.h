@@ -22,4 +22,4 @@ namespace SHADER
 
 		MODEL_INSTANCE
 	};
-}
+};
