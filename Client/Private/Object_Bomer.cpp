@@ -183,6 +183,11 @@ void CObject_Bomber::Shoot_Bomber()
 		XMStoreFloat3(&m_vThrowLook, XMVector3Normalize(m_pCatchTransform->Get_State(CTransform::STATE::STATE_LOOK)));
 		m_fThrowTime = 0.f;
 		m_eState = ID_THROW;
+
+		CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Object_Bomber_Effect_02", EFFECT_ID::COMON);
+		if (nullptr == pEffect)
+			return;
+		pEffect->Play_Effect(&m_WorldMatrix, true);
 	}
 }
 
