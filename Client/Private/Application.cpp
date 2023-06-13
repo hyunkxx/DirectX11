@@ -82,7 +82,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성A
@@ -3358,12 +3358,22 @@ HRESULT CApplication::Ready_Static_Effect()
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_03_01.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
 			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_07_01.bin"),
 			"../../Resource/Effect/M_Qunjing/Attack/")))
 			return E_FAIL;
 		
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
 			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_08_01.bin"),
+			"../../Resource/Effect/M_Qunjing/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::M_QUNJING,
+			TEXT("../../Resource/Effect/M_Qunjing/M_Qunjing_Attack_08_02.bin"),
 			"../../Resource/Effect/M_Qunjing/Attack/")))
 			return E_FAIL;
 		
