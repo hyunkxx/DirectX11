@@ -153,7 +153,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 		*/
 
 		/* 임시 마우스 고정 혜지 용 */
-		/*if (pGameInstance->InputKey(DIK_NUMLOCK) == KEY_STATE::TAP)
+		if (pGameInstance->InputKey(DIK_NUMLOCK) == KEY_STATE::TAP)
 		{
 			if (false == m_IsMouse_UnLock)
 				m_IsMouse_UnLock = true;
@@ -161,7 +161,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 				m_IsMouse_UnLock = false;
 		}
 		if (true == m_IsMouse_UnLock)
-			m_bFixMouse = false;*/
+			m_bFixMouse = false;
 
 
 

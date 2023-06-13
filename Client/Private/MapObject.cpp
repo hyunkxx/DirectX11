@@ -299,24 +299,28 @@ HRESULT CMapObject::Render_Default_SelfShadow()
 
 		m_IsNormalTex = false;
 
+		_bool bGlow = { false };
+
 		if (m_EditionDesc.iSIMD_ID == SIMODEL::SIMD_TREE_31)
 		{
 			if (i == 0)
-			{
-				_bool bGlow = true;
-				if (FAILED(m_pShaderCom->SetRawValue("g_IsUseGlow", &bGlow, sizeof(_bool))))
-					return E_FAIL;
-			}
-		}
+				bGlow = true;
+			else
+				bGlow = false;
 
+			if (FAILED(m_pShaderCom->SetRawValue("g_IsUseGlow", &bGlow, sizeof(_bool))))
+				return E_FAIL;
+
+		}
 		if (m_EditionDesc.iSIMD_ID == SIMODEL::SIMD_SHR_4)
 		{
 			if (i == 2)
-			{
-				_bool bGlow = true;
-				if (FAILED(m_pShaderCom->SetRawValue("g_IsUseGlow", &bGlow, sizeof(_bool))))
-					return E_FAIL;
-			}
+				bGlow = true;
+			else
+				bGlow = false;
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_IsUseGlow", &bGlow, sizeof(_bool))))
+				return E_FAIL;
 		}
 
 		if (true == m_EditionDesc.UseEditionColor && i == m_EditionDesc.iEditionColor_MeshNum)
