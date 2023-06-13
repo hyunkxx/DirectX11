@@ -133,19 +133,20 @@ void CCollisionManager::Render()
 	if (!m_bDebugRender)
 	{
 		Clear();
-		return;
 	}
-
-	for (_uint iLayer = 0; iLayer < m_iCollisionsCount; ++iLayer)
+	else
 	{
-		for (auto& coll : m_Collisions[iLayer])
+		for (_uint iLayer = 0; iLayer < m_iCollisionsCount; ++iLayer)
 		{
-			if (coll->IsVisible())
-				coll->Render();
+			for (auto& coll : m_Collisions[iLayer])
+			{
+				if (coll->IsVisible())
+					coll->Render();
+			}
 		}
-	}
 
-	Clear();
+		Clear();
+	}
 }
 
 int CCollisionManager::GetHasCollisionCount(_uint iLayerIndex)

@@ -17,6 +17,7 @@ public:
 		ITEM_GRADE			eItemGrade;			// 아이템 등급
 		_uint				iImageIndex;		// 아이템 아이콘 텍스쳐(인덱스)
 		_uint				iImageTextIndex;	// 아이템 이름 텍스쳐(인덱스)
+		_uint				iDescTextureID;		// 아이템 설명 텍스쳐 (720 x 360)
 		_uint				iAmount;			// 수량
 		_tchar				szTag[MAX_TAG];		// 아이템 태그
 		_int				iData[4];			// 부가 정보

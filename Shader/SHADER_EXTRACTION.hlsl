@@ -1,6 +1,8 @@
 #include "SHADER_DEFINES.hpp"
 
 float4x4  g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+float4x4  g_ProjMatrixInv, g_ViewMatrixInv;
+float4x4  g_PipeProjMatrix, g_PipeViewMatrix;
 
 texture2D g_SourTexture, g_DestTexture;
 texture2D g_DepthTexture;
@@ -117,8 +119,27 @@ PS_OUT PS_EXTRACTION_FINAL_FOG(PS_IN In)
 	vector vSourColor = g_SourTexture.Sample(LinearBorderSampler, In.vTexUV);
 	vector vDepthDesc = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);
 
-	float fFogFactor = saturate((g_fFogEnd - vDepthDesc.y * g_Far) / (g_fFogEnd - g_fFogStart));
-	Out.vColor = fFogFactor * vSourColor + (1.0 - fFogFactor) * vFogColor;
+	//float fViewZ = vDepthDesc.y * g_Far;
+
+	//vector vPosition;
+	//vPosition.x = (In.vTexUV.x * 2.f - 1.f) * fViewZ;
+	//vPosition.y = (In.vTexUV.y * -2.f + 1.f) * fViewZ;
+	//vPosition.z = vDepthDesc.x * fViewZ;
+	//vPosition.w = fViewZ;
+	//
+	//if (vDepthDesc.w == 0.5f)
+	//{
+	//	float distance = length(vPosition.xyz);
+	//	float fogFactor = saturate((distance - 500.f) / 0.1f);
+
+	//	Out.vColor = lerp(vFogColor, vSourColor, fogFactor);
+
+	//}
+	//else
+	//{
+		float fFogFactor = saturate((g_fFogEnd - vDepthDesc.y * g_Far) / (g_fFogEnd - g_fFogStart));
+		Out.vColor = fFogFactor * vSourColor + (1.0 - fFogFactor) * vFogColor;
+	//}
 
 	return Out;
 }   

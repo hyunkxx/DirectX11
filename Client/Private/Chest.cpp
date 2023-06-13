@@ -8,6 +8,7 @@
 
 #include "ItemDB.h"
 #include "UI_Minimap.h"
+#include "Inventory.h"
 #include "Effect.h"
 
 CChest::CChest(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -66,9 +67,9 @@ HRESULT CChest::Initialize(void * pArg)
 
 void CChest::Start()
 {
-	//UI
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
+	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, TEXT("Inventory")));
 	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 45);
 }
 
@@ -98,6 +99,11 @@ void CChest::Tick(_double TimeDelta)
 			{
 				m_fPushButtonAcc = 0.f;
 				m_bInteractionBegin = true;
+
+				_float4x4 matrix = m_pMainTransform->Get_WorldMatrix();
+				matrix._42 = matrix._42 + 1.f;
+				CEffect* pOpenEffect = pGameInstance->Get_Effect(L"Get_Item_Effect_02", EFFECT_ID::COMON);
+				pOpenEffect->Play_Effect(&matrix);
 
 				//UI Ãß°¡
 				m_pUIIcon->Set_Disable(m_UIIndex);
@@ -245,6 +251,7 @@ void CChest::Interaction(void * pArg)
 		CItem::ITEM_DESC item0 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
 		item0.iAmount = 12900;
 		CGameMode::GetInstance()->EnqueueItemDesc(item0);
+		m_pInven->AddItem(ITEM::TACTITE_COIN, item0.iAmount);
 		break;
 	}
 	case CChest::CHEST_STANDARD:
@@ -252,10 +259,13 @@ void CChest::Interaction(void * pArg)
 		CItem::ITEM_DESC item0 = CItemDB::GetInstance()->GetItemData(ITEM::COMMEMORATIVE_COIN);
 		item0.iAmount = 2;
 		CItem::ITEM_DESC item1 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
-		item1.iAmount = 99000;
+		item1.iAmount = 1000;
 
 		CGameMode::GetInstance()->EnqueueItemDesc(item0);
 		CGameMode::GetInstance()->EnqueueItemDesc(item1);
+
+		m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, item0.iAmount);
+		m_pInven->AddItem(ITEM::TACTITE_COIN, item1.iAmount);
 		break;
 	}
 	case CChest::CHEST_EXPANDED:
@@ -265,10 +275,15 @@ void CChest::Interaction(void * pArg)
 		CItem::ITEM_DESC item1 = CItemDB::GetInstance()->GetItemData(ITEM::COMMEMORATIVE_COIN);
 		item1.iAmount = 2;
 		CItem::ITEM_DESC item2 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
-		item2.iAmount = 99000;
+		item2.iAmount = 500;
 		CGameMode::GetInstance()->EnqueueItemDesc(item0);
 		CGameMode::GetInstance()->EnqueueItemDesc(item1);
 		CGameMode::GetInstance()->EnqueueItemDesc(item2);
+
+		m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, item0.iAmount);
+		m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, item1.iAmount);
+		m_pInven->AddItem(ITEM::TACTITE_COIN, item2.iAmount);
+
 		break;
 	}
 	default:

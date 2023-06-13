@@ -587,6 +587,9 @@ HRESULT CTerminalUI::addGameObjects()
 	if (FAILED(pGI->Add_GameObjectEx(&m_pSlotUI[0], LEVEL_STATIC, OBJECT::UI_TERMINAL_RESONATOR, L"Terminal_UI", L"Resonator", this)))
 		return E_FAIL;
 
+	if (FAILED(pGI->Add_GameObjectEx(&m_pSlotUI[1], LEVEL_STATIC, OBJECT::UI_TERMINAL_BACKPACK, L"Terminal_UI", L"Backpack", this)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

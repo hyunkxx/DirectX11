@@ -1501,6 +1501,17 @@ void CRenderer::FinalExtraction()
 	if (FAILED(m_pShader_Extraction->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
+	CPipeLine* pPipeline = CPipeLine::GetInstance();
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_ViewMatrixInv", &pPipeline->Get_Transform_float4x4_Inverse(CPipeLine::TS_VIEW))))
+		return;
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_ProjMatrixInv", &pPipeline->Get_Transform_float4x4_Inverse(CPipeLine::TS_PROJ))))
+		return;
+
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_PipeViewMatrix", &pPipeline->Get_Transform_float4x4(CPipeLine::TS_VIEW))))
+		return;
+	if (FAILED(m_pShader_Extraction->SetMatrix("g_PipeProjMatrix", &pPipeline->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
+		return;
+
 	if (FAILED(m_pShader_Extraction->SetRawValue("g_vCamPosition", &pGameInstance->Get_CamPosition(), sizeof(_float4))))
 		return;
 

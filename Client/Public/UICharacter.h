@@ -11,6 +11,7 @@ class CModel_Anim;
 class CModel_VTF;
 class CVIBuffer_Rect;
 
+class CBone;
 END
 
 BEGIN(Client)
@@ -121,6 +122,8 @@ private:
 private:
 	class CCameraMovement* m_pCamMovement = nullptr;
 	class CUICam* m_pUICam = nullptr;
+	class CUIWeapon* m_pWeapons = nullptr;
+
 };
 
 END

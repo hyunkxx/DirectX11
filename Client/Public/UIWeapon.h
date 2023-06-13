@@ -15,7 +15,7 @@ BEGIN(Client)
 class CUIWeapon final : public CGameObject 
 {
 public:
-	enum PROB_TYPE { SWORD1, SWORD2, SWORD3, SWORD4, SWORD5, 
+	enum PROP_TYPE { SWORD1, SWORD2, SWORD3, SWORD4, SWORD5,
 		SWORD1_SUB, SWORD2_SUB, SWORD3_SUB, SWORD4_SUB, SWORD5_SUB,
 		GUN1, GUN2, GUN3, GUN4, GUN5, PROB_END };
 
@@ -34,10 +34,17 @@ public:
 	virtual HRESULT Render();
 
 public:
-	void SetupWeaponProb(_uint iCharacter, _uint iWeaponProbID, CBone ** ppBone);
+	void SetupWeaponProp(_uint iCharacter, _uint iWeaponPropID, CBone * pBone);
+	void SetupParentTransform(CTransform* pTransform) { m_pParentTransform = pTransform; };
 
+	void SetCurPlayer(_uint iCurPlayer) { m_iCurPlayer = iCurPlayer; };
+	void SetWeaponState(_bool value) { m_bOnHand = value; }
+	void SetDissolveAmount(_float fValue) { m_fDissolveAmount = fValue; }
 private:
-	HRESULT addGameObject();
+	HRESULT addComponents();
+	HRESULT setupShaderResources();
+
+	HRESULT renderWeapon();
 
 public:
 	static CUIWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -48,15 +55,26 @@ private:
 	CRenderer* m_pRenderer = nullptr;
 	CShader* m_pShader = nullptr;
 
-	enum { ROVER, YANGYANG, CHIXIA, CHARACTER_END };
-	enum { WEAPON_PROB01, WEAPON_PROB02, WEAPON_PROB_END };
-	CBone** m_pWeaponProb[CHARACTER_END][WEAPON_PROB_END];
-
-	CModel* m_pModels[PROB_END];
+private:
+	class CPlayerState* m_pPlayerState = nullptr;
+	CTransform* m_pParentTransform = nullptr;
 
 private:
-	PROB_TYPE m_eCurWeapon = PROB_END;
 
+	enum { ROVER, YANGYANG, CHIXIA, CHARACTER_END };
+	enum { BONE_PROP01, BONE_PROP02, BONE_PROP03, BONE_PROP04, BONE_PROP_END};
+	CBone* m_pPropBone[4];
+	CModel* m_pModels[15];
+
+	_uint m_iWeaponModel = 0;
+		
+private:
+	_uint m_iCurPlayer = 0;
+	_float4x4 m_WorldMatrix[4];
+
+	_bool m_bOnHand = false;
+	_bool m_bDessolve = false;
+	_float m_fDissolveAmount = 0.f;
 };
 
 END

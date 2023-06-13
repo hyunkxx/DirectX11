@@ -16,6 +16,7 @@
 #include "P_PlayerGirl.h"
 #include "P_Yangyang.h"
 #include "P_Chixia.h"
+#include "UIWeapon.h"
 #include "UICharacter.h"
 #include "Parts.h"
 
@@ -386,7 +387,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
 
 	LoadCharacters(LEVEL_GAMEPLAY);
-	LoadCharacterProbs(LEVEL_GAMEPLAY);
+	LoadCharacterProps(LEVEL_GAMEPLAY);
 
 	// SMODEL
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
@@ -1728,6 +1729,8 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UICharacter, UICharacter::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIWeapon, CUIWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	//UIUI
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UI, CUI_MainScreen::Create(m_pDevice, m_pContext))))
@@ -1903,7 +1906,7 @@ HRESULT CLoader::Load_Level_City()
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
 
 	LoadCharacters(LEVEL_CITY);
-	LoadCharacterProbs(LEVEL_CITY);
+	LoadCharacterProps(LEVEL_CITY);
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
 		return E_FAIL;
@@ -2270,7 +2273,7 @@ HRESULT CLoader::Load_Level_Forest()
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
 
 	LoadCharacters(LEVEL_FOREST);
-	LoadCharacterProbs(LEVEL_FOREST);
+	LoadCharacterProps(LEVEL_FOREST);
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
 	{
@@ -5869,7 +5872,7 @@ HRESULT CLoader::LoadCharacters(_uint iLevel)
 	return S_OK;
 }
 
-HRESULT CLoader::LoadCharacterProbs(_uint iLevel)
+HRESULT CLoader::LoadCharacterProps	(_uint iLevel)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 

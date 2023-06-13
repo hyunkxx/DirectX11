@@ -146,6 +146,7 @@ PS_OUT PS_SSAO(PS_IN In)
 	vector vDepth = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);
 	vector vNormal = g_NormalTexture.Sample(LinearClampSampler, In.vTexUV);
 
+	///¼öÁ¤ Àü
 	if (vDepth.b == 0.5f)
 	{
 		Out.vColor = float4(1.f, 1.f, 1.f, 1.f);

@@ -15,6 +15,7 @@
 
 #include "UICam.h"
 #include "EchoSystem.h"
+#include "Layer.h"
 
 CResonatorUI::CResonatorUI(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -449,10 +450,22 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 		m_OrthoWeaponSlot[i].fY = 250 + ((i/5) * 100.f);
 		CAppManager::ComputeOrtho(&m_OrthoWeaponSlot[i]);
 
+		m_OrthoWeaponSlotBack[i].fWidth = 100.f;
+		m_OrthoWeaponSlotBack[i].fHeight = 20.f;
+		m_OrthoWeaponSlotBack[i].fX = (g_iWinSizeX >> 1) - (m_OrthoWeaponInvenBack.fWidth * 0.5f) + 100.f + ((i % 5) * 100.f);
+		m_OrthoWeaponSlotBack[i].fY = 250 + ((i / 5) * 100.f) - 40.f;
+		CAppManager::ComputeOrtho(&m_OrthoWeaponSlotBack[i]);
+
+		m_OrthoWeaponSlotName[i].fWidth = 512.f * 0.33f;
+		m_OrthoWeaponSlotName[i].fHeight = 64.f * 0.33f;
+		m_OrthoWeaponSlotName[i].fX = (g_iWinSizeX >> 1) - (m_OrthoWeaponInvenBack.fWidth * 0.5f) + 100.f + ((i % 5) * 100.f);
+		m_OrthoWeaponSlotName[i].fY = 250 + ((i / 5) * 100.f) - 38.f;
+		CAppManager::ComputeOrtho(&m_OrthoWeaponSlotName[i]);
+
 		m_OrthoWeaponIcon[i].fWidth = 70.f;
 		m_OrthoWeaponIcon[i].fHeight = 70.f;
-		m_OrthoWeaponIcon[i].fX = (g_iWinSizeX >> 1) - (m_OrthoWeaponInvenBack.fWidth * 0.5f) + 100.f + ((i % 5) * 100.f);
-		m_OrthoWeaponIcon[i].fY = 250 + ((i / 5) * 100.f);
+		m_OrthoWeaponIcon[i].fX = (g_iWinSizeX >> 1) - (m_OrthoWeaponInvenBack.fWidth * 0.5f) + 110.f + ((i % 5) * 100.f);
+		m_OrthoWeaponIcon[i].fY = 260 + ((i / 5) * 100.f);
 		CAppManager::ComputeOrtho(&m_OrthoWeaponIcon[i]);
 
 		// 아이템 별 강화 횟수
@@ -471,8 +484,8 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	}
 
 	//Select Weapon Slot
-	m_OrthoSelectWeaponSlot.fWidth = 240.f;
-	m_OrthoSelectWeaponSlot.fHeight = 240.f;
+	m_OrthoSelectWeaponSlot.fWidth = 220.f;
+	m_OrthoSelectWeaponSlot.fHeight = 220.f;
 	m_OrthoSelectWeaponSlot.fX = (g_iWinSizeX >> 1) + (m_OrthoWeaponInvenBack.fWidth * 0.25f);
 	m_OrthoSelectWeaponSlot.fY = (g_iWinSizeY >> 1) - 130.f;
 	CAppManager::ComputeOrtho(&m_OrthoSelectWeaponSlot);
@@ -544,7 +557,6 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_OrthoWeaponConfirmText.fX = m_OrthoSelectWeaponName.fX;
 	m_OrthoWeaponConfirmText.fY = m_OrthoSelectWeaponAtkBack.fY + 65.f;
 	CAppManager::ComputeOrtho(&m_OrthoWeaponConfirmText);
-
 
 #pragma endregion
 
@@ -2435,7 +2447,7 @@ void CResonatorUI::weaponKeyInput(_double TimeDelta)
 			//슬롯 체크
 			for (_uint i = 0; i < 20; ++i)
 			{
-				if (pGameMode->OnMouse(m_OrthoWeaponIcon[i]))
+				if (pGameMode->OnMouse(m_OrthoWeaponSlot[i]))
 				{
 					if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						m_iSelectSlot = i;
@@ -2456,6 +2468,8 @@ void CResonatorUI::weaponKeyInput(_double TimeDelta)
 					{
 						if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::AWAY && m_iConfirmButtonState == BTN_CLICK)
 						{
+							m_pUICharacter->ChangeCharacter((UICharacter::MODEL)m_iCurCharacter); // 모션 다시 돌리기
+							m_bSwitchButton = false;
 							m_bWeaponChangeConfirm = true;
 							m_iConfirmButtonState = BTN_ON;
 							m_pInven->SwapWeapon(m_iCurCharacter, m_iSelectSlot);
@@ -4485,6 +4499,51 @@ HRESULT CResonatorUI::weaponSwitchRender()
 	m_pShader->Begin(10);
 	m_pVIBuffer->Render();
 
+	///
+	//if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor3, sizeof(_float3))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[2], sizeof(_float))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSlot[i].WorldMatrix)))
+	//	return E_FAIL;
+	//if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ITEM_SLOT_GLOW, m_pShader, "g_DiffuseTexture")))
+	//	return E_FAIL;
+
+	//m_pShader->Begin(8);
+	//m_pVIBuffer->Render();
+
+	//if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ITEM_SLOT_BACK, m_pShader, "g_DiffuseTexture")))
+	//	return E_FAIL;
+	//m_pShader->Begin(10);
+	//m_pVIBuffer->Render();
+
+	//// ItemName Back
+	//vColor3 = getGradeToneDownColor((_uint)m_pInven->GetSlotData(eInvenType, i).eItemGrade);
+	//vColor4 = { vColor3.x, vColor3.y, vColor3.z, (m_fElemAlpha[i + 1] / 1.f) * 0.5f };
+	//if (FAILED(m_pShader->SetRawValue("g_vColor4", &vColor4, sizeof(_float4))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[i + 2], sizeof(_float))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoItemTextBack[i].WorldMatrix)))
+	//	return E_FAIL;
+	//if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SIDEALPHA_WHITE, m_pShader, "g_DiffuseTexture")))
+	//	return E_FAIL;
+
+	//m_pShader->Begin(11);
+	//m_pVIBuffer->Render();
+
+	//// ItemName
+	//if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[i + 2], sizeof(_float))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoItemText[i].WorldMatrix)))
+	//	return E_FAIL;
+	//if (FAILED(pGameInstance->SetupSRV(m_pInven->GetSlotData(eInvenType, i).iImageTextIndex, m_pShader, "g_DiffuseTexture")))
+	//	return E_FAIL;
+
+	//m_pShader->Begin(10);
+	//m_pVIBuffer->Render();
+	///
+
 	// Select Weapon Text
 	_uint iSlotCount = m_pInven->GetInvenTotalCount(CInventory::INVEN_WEAPON);
 	for (_uint i = 0; i < iSlotCount; ++i)
@@ -4499,11 +4558,38 @@ HRESULT CResonatorUI::weaponSwitchRender()
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponSlot[i].WorldMatrix)))
 			return E_FAIL;
-		/*if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_GLOWGARD, m_pShader, "g_DiffuseTexture")))
-			return E_FAIL;*/
-		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::SLOT74, m_pShader, "g_DiffuseTexture")))
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ITEM_SLOT_GLOW, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+		
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vItemSlotColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[9], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponSlot[i].WorldMatrix)))
+			return E_FAIL;
+
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ITEM_SLOT_BACK, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_vColor", &vItemSlotColor, sizeof(_float3))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponSlotBack[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SIDEALPHA_WHITE, m_pShader, "g_DiffuseTexture")))
 			return E_FAIL;
 		m_pShader->Begin(8);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponSlotName[i].WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(pSlotItem.iImageTextIndex, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
 
 		// Weapon Icon
@@ -4525,7 +4611,7 @@ HRESULT CResonatorUI::weaponSwitchRender()
 				return E_FAIL;
 			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoWeaponSlot[i].WorldMatrix)))
 				return E_FAIL;
-			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTOM_SMALL, m_pShader, "g_DiffuseTexture")))
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_SELECT_GLOWBUTTON, m_pShader, "g_DiffuseTexture")))
 				return E_FAIL;
 			m_pShader->Begin(10);
 			m_pVIBuffer->Render();
@@ -4567,7 +4653,7 @@ HRESULT CResonatorUI::weaponSwitchRender()
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectWeaponSlot.WorldMatrix)))
 		return E_FAIL;
-	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_GLOWGARD, m_pShader, "g_DiffuseTexture")))
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ITEM_SLOT_GLOW, m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
 
 	m_pShader->Begin(8);
@@ -4850,7 +4936,7 @@ HRESULT CResonatorUI::chooseCharacter()
 
 CResonatorUI * CResonatorUI::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CResonatorUI*	pInstance = new CResonatorUI(pDevice, pContext);
+	CResonatorUI* pInstance = new CResonatorUI(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("Failed to Created : CResonatorUI");

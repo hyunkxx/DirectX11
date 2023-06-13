@@ -23,7 +23,7 @@ public:
 
 private:
 	HRESULT LoadCharacters(_uint iLevel);
-	HRESULT LoadCharacterProbs(_uint iLevel);
+	HRESULT LoadCharacterProps(_uint iLevel);
 
 public:
 	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL_ID eNextLevel);

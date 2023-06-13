@@ -6,6 +6,7 @@
 #include "GameInstance.h"
 #include "ResonatorUI.h"
 #include "UICam.h"
+#include "UIWeapon.h"
 
 UICharacter::UICharacter(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -27,9 +28,7 @@ HRESULT UICharacter::Initialize_Prototype()
 
 HRESULT UICharacter::Initialize(void * pArg)
 {
-	ZeroMemory(m_pModel, sizeof(m_pModel));
-	ZeroMemory(m_pAnimSetBase, sizeof(m_pAnimSetBase));
-	ZeroMemory(m_pAnimSetRibbon, sizeof(m_pAnimSetRibbon));
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -53,6 +52,14 @@ HRESULT UICharacter::Initialize(void * pArg)
 
 	m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(270.f));
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(-999.f, 0.f, -1000.f, 1.f));
+
+	m_pWeapons = static_cast<CUIWeapon*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UIWeapon"));
+	m_pWeapons->SetupParentTransform(m_pMainTransform);
+
+	m_pWeapons->SetupWeaponProp(0, 0, m_pModel[0]->Get_BonePtr(TEXT("WeaponProp01")));
+	m_pWeapons->SetupWeaponProp(0, 1, m_pModel[0]->Get_BonePtr(TEXT("WeaponProp02")));
+	m_pWeapons->SetupWeaponProp(0, 2, m_pModel[0]->Get_BonePtr(TEXT("WeaponProp03")));
+	m_pWeapons->SetupWeaponProp(0, 3, m_pModel[0]->Get_BonePtr(TEXT("WeaponProp04")));
 
 	return S_OK;
 }
@@ -90,7 +97,7 @@ void UICharacter::Tick(_double TimeDelta)
 
 		return;
 	}
-
+	
 	updateAnimationState(TimeDelta);
 }
 
@@ -102,6 +109,14 @@ void UICharacter::LateTick(_double TimeDelta)
 	if (curCamType != CCameraMovement::CAM_UI)
 		return;
 
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	_float4x4 vViewInv = pGI->Get_Transform_float4x4_Inverse(CPipeLine::TS_VIEW);
+	m_pStudioTransform->Set_WorldMatrix(vViewInv);
+	_vector vStudioPos = m_pStudioTransform->Get_State(CTransform::STATE_POSITION) + m_pStudioTransform->Get_State(CTransform::STATE_LOOK) * 2.5f;
+
+	m_pStudioTransform->Set_Scale(_float3(2.1f, 2.1f, 3.8f));
+	m_pStudioTransform->Set_State(CTransform::STATE_POSITION, vStudioPos);
+
 	if (m_iAnimID[m_iCurModel] == UICHAR_RESONANT_START)
 		m_pUICam->SetMove(true);
 	else
@@ -110,14 +125,17 @@ void UICharacter::LateTick(_double TimeDelta)
 			m_pUICam->SetMove(false);
 	}
 
-	CGameInstance* pGI = CGameInstance::GetInstance();
-	_float4x4 vViewInv = pGI->Get_Transform_float4x4_Inverse(CPipeLine::TS_VIEW);
-	m_pStudioTransform->Set_WorldMatrix(vViewInv);
-	_vector vStudioPos = m_pStudioTransform->Get_State(CTransform::STATE_POSITION) + m_pStudioTransform->Get_State(CTransform::STATE_LOOK) * 2.5f;
+	if (m_iAnimID[m_iCurModel] == UICHAR_WEAPON_START ||
+		m_iAnimID[m_iCurModel] == UICHAR_WEAPON_LOOP ||
+		m_iAnimID[m_iCurModel] == UICHAR_WEAPON_END)
+	{
+		m_pWeapons->SetWeaponState(true);
+	}
+	else
+	{
+		m_pWeapons->SetWeaponState(false);
+	}
 
-	m_pStudioTransform->Set_Scale(_float3(2.1f, 2.1f, 3.8f));
-	m_pStudioTransform->Set_State(CTransform::STATE_POSITION, vStudioPos);
-	
 	if (m_pRenderer)
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 }
@@ -292,6 +310,14 @@ void UICharacter::ChangeCharacter(MODEL eModelType)
 {
 	m_iCurModel = eModelType;
 
+	if(m_eUIState == UI_WEAPON)
+		m_pWeapons->SetDissolveAmount(1.f);
+
+	m_pWeapons->SetupWeaponProp(m_iCurModel, 0, m_pModel[m_iCurModel]->Get_BonePtr(TEXT("WeaponProp01")));
+	m_pWeapons->SetupWeaponProp(m_iCurModel, 1, m_pModel[m_iCurModel]->Get_BonePtr(TEXT("WeaponProp02")));
+	m_pWeapons->SetupWeaponProp(m_iCurModel, 2, m_pModel[m_iCurModel]->Get_BonePtr(TEXT("WeaponProp03")));
+	m_pWeapons->SetupWeaponProp(m_iCurModel, 3, m_pModel[m_iCurModel]->Get_BonePtr(TEXT("WeaponProp04")));
+	
 	switch (m_eUIState)
 	{
 	case UI_STATE:
@@ -790,7 +816,7 @@ HRESULT UICharacter::addComponents()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_YANGYANG_MODEL,
-		TEXT("model_yang"), (CComponent**)&m_pModel[YANGYANG])))
+		TEXT("model_yangyang"), (CComponent**)&m_pModel[YANGYANG])))
 		return E_FAIL;
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, DMODEL::DMD_UI_YANGYANG,
 		TEXT("baseanim_yang"), (CComponent**)&m_pAnimSetBase[YANGYANG])))
@@ -888,16 +914,19 @@ void UICharacter::Free()
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pStudioTransform);
 
-	Safe_Release(m_pModel[0]);
-	Safe_Release(m_pAnimSetBase[0]);
-	Safe_Release(m_pAnimSetRibbon[0]);
+	if (IsClone())
+	{
+		Safe_Release(m_pModel[0]);
+		Safe_Release(m_pAnimSetBase[0]);
+		Safe_Release(m_pAnimSetRibbon[0]);
 
-	Safe_Release(m_pModel[1]);
-	Safe_Release(m_pAnimSetBase[1]);
-	Safe_Release(m_pAnimSetRibbon[1]);
+		Safe_Release(m_pModel[1]);
+		Safe_Release(m_pAnimSetBase[1]);
+		Safe_Release(m_pAnimSetRibbon[1]);
 
-	Safe_Release(m_pModel[2]);
-	Safe_Release(m_pAnimSetBase[2]);
-	Safe_Release(m_pAnimSetRibbon[2]);
+		Safe_Release(m_pModel[2]);
+		Safe_Release(m_pAnimSetBase[2]);
+		Safe_Release(m_pAnimSetRibbon[2]);
+	}
 
 }

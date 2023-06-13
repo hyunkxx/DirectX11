@@ -68,8 +68,8 @@ private:
 	CTexture* m_pSpecular = nullptr;
 	CTexture* m_pSSAO = nullptr;
 
-	//UI Ãß°¡
-	class CUI_Minimap*		m_pUIIcon = { nullptr };
+	class CInventory* m_pInven = nullptr;
+	class CUI_Minimap* m_pUIIcon = nullptr;
 private:
 	CHEST_TYPE m_eChestType = CHEST_SIMPLE;
 	_bool m_bOverlapedPlayer = false;

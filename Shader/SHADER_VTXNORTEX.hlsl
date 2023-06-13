@@ -161,7 +161,7 @@ PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
 	// In.vNormal.xyz => -1 ~ 1
 	// Out.vNormal.xyz => 0 ~ 1
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 0.5f);
 
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
@@ -234,7 +234,7 @@ PS_OUT PS_MAIN_PHONG_NORMALMAP(PS_IN_PHONG In)
 	/* In.vNormal.xyz => -1 ~ 1 */
 	/* Out.vNormal.xyz => 0 ~ 1 */
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 0.5f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
@@ -305,7 +305,7 @@ PS_OUT PS_MAIN_PHONG_NORMALMAP_DARK(PS_IN_PHONG In)
 	/* In.vNormal.xyz => -1 ~ 1 */
 	/* Out.vNormal.xyz => 0 ~ 1 */
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 0.5f);
 	Out.vOutNormal = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vGlow = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);

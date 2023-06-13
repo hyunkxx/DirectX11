@@ -238,6 +238,9 @@ private:
 	ORTHO_DESC m_OrthoWeaponConfirmButton;
 	ORTHO_DESC m_OrthoWeaponConfirmText;
 
+	ORTHO_DESC m_OrthoWeaponSlotBack[20];
+	ORTHO_DESC m_OrthoWeaponSlotName[20];
+
 	_bool m_bSwitchButton = false;
 	_uint m_iSelectSlot = 0;
 	_uint m_iConfirmButtonState = 0;
