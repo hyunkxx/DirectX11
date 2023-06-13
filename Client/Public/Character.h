@@ -443,6 +443,8 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_SlowKey(_float fTargetTime, _float fLerpSpeed);
 	virtual void Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed);
 
+	virtual void Set_InitPos(_fvector vPos, _uint iNaviID);
+
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CCharacter(const CCharacter& rhs);

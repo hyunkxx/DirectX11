@@ -7,10 +7,16 @@
 #include "DynamicCamera.h"
 #include "PlayerCamera.h"
 #include "Character.h"
+
 #include "P_PlayerGirl.h"
+#include "P_Yangyang.h"
+#include "P_Chixia.h"
+
 #include "M_GAzizi.h"
 #include "M_Anjin.h"
 #include "M_AWukaka.h"
+#include "M_FHuxiuxiu.h"
+
 #include "AcquireSystem.h"
 #include "TerminalUI.h"
 
@@ -33,20 +39,23 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	// 몬스터들 상태 초기화 해놓기
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
+	CP_Yangyang::Init_States(m_pDevice, m_pContext);
+	CP_Chixia::Init_States(m_pDevice, m_pContext);
 	CM_GAzizi::Init_States(m_pDevice, m_pContext);
 	CM_Anjin::Init_States(m_pDevice, m_pContext);
 	CM_AWukaka::Init_States(m_pDevice, m_pContext);
+	CM_FHuxiuxiu::Init_States(m_pDevice, m_pContext);
 
 	if(FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
-		return E_FAIL;
-
-	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Monster(TEXT("layer_monster"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
 	
 	if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
@@ -323,6 +332,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYER_YANGYANG, pLayerTag, TEXT("Player"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYER_CHIXIA, pLayerTag, TEXT("Player"))))
+		return E_FAIL;
+
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
 	//	return E_FAIL;
 
@@ -333,17 +348,24 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MONSTER_GAZIZI, pLayerTag, TEXT("GAzizi"))))
-		return E_FAIL;
+	CGameObject* pChar = nullptr;
 
-	/*if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
-		return E_FAIL;*/
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MONSTER_ANJIN, pLayerTag, TEXT("Anjin"))))
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_GAZIZI, pLayerTag, TEXT("GAzizi"))))
 		return E_FAIL;
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(149.f, 29.f, 244.f, 1.f), 1927);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::MONSTER_AWUKAKA, pLayerTag, TEXT("AWukaka"))))
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_ANJIN, pLayerTag, TEXT("Anjin"))))
 		return E_FAIL;
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(141.f, 29.f, 237.f, 1.f), 1906);
+
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_AWUKAKA, pLayerTag, TEXT("AWukaka"))))
+		return E_FAIL;
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(145.f, 29.f, 244.f, 1.f), 1927);
+
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_FHUXIUXIU, pLayerTag, TEXT("FHuxiuxiu"))))
+		return E_FAIL;
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(130.f, 29.f, 244.f, 1.f), 1897);
+
 
 	return S_OK;
 }
@@ -2097,7 +2119,10 @@ void CLevel_GamePlay::Free()
 	__super::Free();
 
 	CP_PlayerGirl::Release_States();
+	CP_Yangyang::Release_States();
+	CP_Chixia::Release_States();
 	CM_GAzizi::Release_States();
 	CM_Anjin::Release_States();
 	CM_AWukaka::Release_States();
+	CM_FHuxiuxiu::Release_States();
 }

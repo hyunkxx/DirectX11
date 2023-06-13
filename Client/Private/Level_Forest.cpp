@@ -8,9 +8,13 @@
 #include "PlayerCamera.h"
 #include "Character.h"
 #include "P_PlayerGirl.h"
-#include "M_GAzizi.h"
-#include "M_Anjin.h"
-#include "M_AWukaka.h"
+#include "P_Yangyang.h"
+#include "P_Chixia.h"
+#include "M_Huojin.h"
+#include "M_Binglie.h"
+#include "M_Fenglie.h"
+#include "M_Leilie.h"
+#include "M_Qunjing.h"
 #include "AcquireSystem.h"
 #include "TerminalUI.h"
 
@@ -33,14 +37,21 @@ HRESULT CLevel_Forest::Initialize()
 
 	// 몬스터들 상태 초기화 해놓기
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
+	CP_Yangyang::Init_States(m_pDevice, m_pContext);
+	CP_Chixia::Init_States(m_pDevice, m_pContext);
+	CM_Huojin::Init_States(m_pDevice, m_pContext);
+	CM_Binglie::Init_States(m_pDevice, m_pContext);
+	CM_Fenglie ::Init_States(m_pDevice, m_pContext);
+	CM_Leilie::Init_States(m_pDevice, m_pContext);
+	CM_Qunjing::Init_States(m_pDevice, m_pContext);
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
+		return E_FAIL;
+	// 플레이어 이후에 카메라를 초기화해야함
+	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Monster(TEXT("layer_monster"))))
@@ -308,6 +319,32 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar * pLayerTag)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
+
+	CGameObject* pChar = nullptr;
+
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_HUOJIN, pLayerTag, TEXT("Huojin"))))
+		return E_FAIL;
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(397.004f, 19.020f, 184.340f, 1.f), 1022);
+
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_BINGLIE, pLayerTag, TEXT("Binglie"))))
+		return E_FAIL;
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(396.381f, 19.134f, 196.303f, 1.f), 989);
+
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_FENGLIE, pLayerTag, TEXT("Fenglie"))))
+		return E_FAIL;
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(405.227f, 19.020f, 195.202f, 1.f), 1048);
+
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_LEILIE, pLayerTag, TEXT("Leilie"))))
+		return E_FAIL;
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(406.052f, 19.020f, 184.768f, 1.f), 1046);
+
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_QUNJING, pLayerTag, TEXT("Qunjing"))))
+		return E_FAIL;
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(409.052f, 19.020f, 187.768f, 1.f), 1047);
+
+
+
+
 
 	return S_OK;
 }
@@ -2238,4 +2275,11 @@ void CLevel_Forest::Free()
 	__super::Free();
 
 	CP_PlayerGirl::Release_States();
+	CP_Yangyang::Release_States();
+	CP_Chixia::Release_States();
+	CM_Huojin::Release_States();
+	CM_Binglie::Release_States();
+	CM_Fenglie::Release_States();
+	CM_Leilie::Release_States();
+	CM_Qunjing::Release_States();
 }

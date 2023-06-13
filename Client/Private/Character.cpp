@@ -50,6 +50,17 @@ void CCharacter::Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed)
 	m_fDissolveSpeed = fDissolveSpeed;
 }
 
+void CCharacter::Set_InitPos(_fvector vPos, _uint iNaviID)
+{
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vPos);
+
+	CNavigation* pNavi = static_cast<CNavigation*>(Find_Component(TEXT("Com_Navigation")));
+	
+	if(nullptr != pNavi)
+		pNavi->Set_CurrentIndex(iNaviID);
+
+}
+
 CCharacter::CCharacter(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
