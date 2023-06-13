@@ -670,7 +670,7 @@ void CM_Fenglie::Select_State(_double TimeDelta)
 		m_Scon.iNextState = AI_IDLE;
 		break;
 	case Client::CM_Fenglie::AI_ATTACK:
-		if (m_fTargetDistance > 4.f)
+		if (m_fTargetDistance < 4.f)
 			m_Scon.iNextState = IS_ATTACK01;
 		else
 			m_Scon.iNextState = IS_ATTACK02;

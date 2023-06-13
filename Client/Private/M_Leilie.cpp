@@ -450,14 +450,19 @@ void CM_Leilie::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 		return;
 
 	_vector vInitPos;
-	if (0 != iEffectBoneID)
+	if (MISS_ATTACK_03 == iMissilePoolID)
+	{
+		vInitPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION);
+	}
+	else if (0 != iEffectBoneID)
 	{
 		vInitPos = XMVector3TransformCoord(
-			XMVector3TransformCoord(m_EffectBones[iEffectBoneID]->Get_CombinedPosition(), XMMatrixRotationY(180.f)),
+			XMVector3TransformCoord(m_EffectBones[iEffectBoneID]->Get_CombinedPosition(), XMMatrixRotationY(XMConvertToRadians(180.f))),
 			XMLoadFloat4x4(m_pMainTransform->Get_WorldMatrixPtr()));
 	}
 	else
 		vInitPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+	
 
 
 	_matrix matRot = XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_RIGHT), m_MissileRotAngles[iMissilePoolID].x)
@@ -559,31 +564,31 @@ void CM_Leilie::Init_AttackInfos()
 		ZeroMemory(&m_AttackInfos[i], sizeof TAGATTACK);
 	}
 
-	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = 1.f;
-	m_AttackInfos[ATK_ATTACK_01].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = 1.1f;
+	m_AttackInfos[ATK_ATTACK_01].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK_01].eElementType = ELMT_CONDUCTO;
 	m_AttackInfos[ATK_ATTACK_01].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_02_1].fDamageFactor = 2.f;
-	m_AttackInfos[ATK_ATTACK_02_1].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK_02_1].fDamageFactor = 0.7f;
+	m_AttackInfos[ATK_ATTACK_02_1].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_02_1].eElementType = ELMT_CONDUCTO;
 	m_AttackInfos[ATK_ATTACK_02_1].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_1].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_1].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02_1].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_02_2].fDamageFactor = 2.f;
-	m_AttackInfos[ATK_ATTACK_02_2].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK_02_2].fDamageFactor = 2.3f;
+	m_AttackInfos[ATK_ATTACK_02_2].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK_02_2].eElementType = ELMT_CONDUCTO;
 	m_AttackInfos[ATK_ATTACK_02_2].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_2].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_2].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02_2].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 0.9f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_CONDUCTO;
 	m_AttackInfos[ATK_ATTACK_03].fSPGain = 0.f;
@@ -600,9 +605,9 @@ void CM_Leilie::Init_Missiles()
 
 	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_01_%d");
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-	tMissilePoolDesc.iNumMissiles = 3;
+	tMissilePoolDesc.iNumMissiles = 2;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("FHUxiuxiu_Bullet_01"));
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Leilie_Bullet"));
 	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
@@ -612,7 +617,7 @@ void CM_Leilie::Init_Missiles()
 
 	tMissilePoolDesc.bTargetDir = false;
 	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-	tMissilePoolDesc.fVelocity = 18.f;
+	tMissilePoolDesc.fVelocity = 25.f;
 	tMissilePoolDesc.StopTime = 3.0;
 	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
 
@@ -624,9 +629,9 @@ void CM_Leilie::Init_Missiles()
 
 	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_02_1_%d");
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-	tMissilePoolDesc.iNumMissiles = 3;
+	tMissilePoolDesc.iNumMissiles = 6 ;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Binglie_Ball"));
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Leilie_Bullet"));
 	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
@@ -636,7 +641,7 @@ void CM_Leilie::Init_Missiles()
 
 	tMissilePoolDesc.bTargetDir = true;
 	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-	tMissilePoolDesc.fVelocity = 18.f;
+	tMissilePoolDesc.fVelocity = 20.f;
 	tMissilePoolDesc.StopTime = 3.0;
 	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
 
@@ -648,19 +653,19 @@ void CM_Leilie::Init_Missiles()
 
 	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_02_2_%d");
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-	tMissilePoolDesc.iNumMissiles = 3;
+	tMissilePoolDesc.iNumMissiles = 2;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Binglie_Ball"));
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Leilie_Charge_Bullet"));
 	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_02_2;
-	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+	tMissilePoolDesc.tMissileDesc.fExtents = 0.6f;
 
 	tMissilePoolDesc.bTargetDir = true;
 	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-	tMissilePoolDesc.fVelocity = 18.f;
+	tMissilePoolDesc.fVelocity = 35.f;
 	tMissilePoolDesc.StopTime = 3.0;
 	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
 
@@ -671,22 +676,17 @@ void CM_Leilie::Init_Missiles()
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
 	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_03_%d");
-	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-	tMissilePoolDesc.iNumMissiles = 3;
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 2;
 
-	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Binglie_Ball"));
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Leilie_Bombing"));
 	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
-	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.3;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 5.5;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_03;
-	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
-
-	tMissilePoolDesc.bTargetDir = true;
-	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-	tMissilePoolDesc.fVelocity = 18.f;
-	tMissilePoolDesc.StopTime = 3.0;
-	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+	tMissilePoolDesc.tMissileDesc.fExtents = 2.5f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
 
 	m_MissilePools[MISS_ATTACK_03] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_ATTACK_03] = _float3(0.f, 0.f, 0.f);

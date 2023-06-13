@@ -1034,7 +1034,7 @@ void CP_Yangyang::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	if (0 != iEffectBoneID)
 	{
 		vInitPos = XMVector3TransformCoord(
-			XMVector3TransformCoord(m_EffectBones[iEffectBoneID]->Get_CombinedPosition(), XMMatrixRotationY(180.f)),
+			XMVector3TransformCoord(m_EffectBones[iEffectBoneID]->Get_CombinedPosition(), XMMatrixRotationY(XMConvertToRadians(180.f))),
 			XMLoadFloat4x4(m_pMainTransform->Get_WorldMatrixPtr()));
 	}
 	else
