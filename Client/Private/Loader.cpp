@@ -594,6 +594,13 @@ HRESULT CLoader::Load_Level_GamePlay()
 		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_30");
 		return E_FAIL;
 	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_31, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Trees/31/SM_Com_Tre_01AL.smdl"), TEXT("../../Data/GamePlay/MapObject/Trees/Tree_31.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_31");
+		return E_FAIL;
+	}
 #pragma endregion TREE
 
 #pragma region ROCK
@@ -2486,6 +2493,13 @@ HRESULT CLoader::Load_Level_Forest()
 		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_30");
 		return E_FAIL;
 	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SIMODEL::SIMD_TREE_31, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Trees/31/SM_Com_Tre_01AL.smdl"), TEXT("../../Data/Forest/MapObject/Trees/Tree_31.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_31");
+		return E_FAIL;
+	}
 #pragma endregion TREE
 
 #pragma region ROCK
@@ -3975,6 +3989,13 @@ HRESULT CLoader::Load_Level_Crown()
 		TEXT("../../Resource/Model/Static/Map/Object/Trees/30/SM_Com_Tre_38AL.smdl"), TEXT("../../Data/Crown/MapObject/Trees/Tree_30.data")))))
 	{
 		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_30");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SIMODEL::SIMD_TREE_31, CModel_Instance::Create(m_pDevice, m_pContext,
+		TEXT("../../Resource/Model/Static/Map/Object/Trees/31/SM_Com_Tre_01AL.smdl"), TEXT("../../Data/Crown/MapObject/Trees/Tree_31.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SIMD_TREE_31");
 		return E_FAIL;
 	}
 #pragma endregion TREE

@@ -299,6 +299,16 @@ HRESULT CMapObject::Render_Default_SelfShadow()
 
 		m_IsNormalTex = false;
 
+		if (m_EditionDesc.iSIMD_ID == SIMODEL::SIMD_TREE_31)
+		{
+			if (i == 1)
+			{
+				_bool bGlow = true;
+				if (FAILED(m_pShaderCom->SetRawValue("g_IsUseGlow", &bGlow, sizeof(_bool))))
+					return E_FAIL;
+			}
+		}
+
 		if (m_EditionDesc.iSIMD_ID == SIMODEL::SIMD_SHR_4)
 		{
 			if (i == 2)
