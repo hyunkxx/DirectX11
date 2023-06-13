@@ -375,9 +375,6 @@
     <ClCompile Include="..\Private\UI_Souvenir.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Level_Forest.cpp" />
-    <ClCompile Include="..\private\UIWeapon.cpp" />
-    <ClCompile Include="..\Private\UI_Panhua.cpp" />
     <ClCompile Include="..\private\P_Chixia.cpp">
       <Filter>src\02. GameObject\03. Character\00. Player</Filter>
     </ClCompile>
@@ -399,10 +396,27 @@
     <ClCompile Include="..\private\M_Qunjing.cpp">
       <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Level_Crown.cpp" />
-    <ClCompile Include="..\Private\Object_Bomer.cpp" />
-    <ClCompile Include="..\Private\Rader.cpp" />
-    <ClCompile Include="..\Private\Boom_Rock.cpp" />
+    <ClCompile Include="..\Private\Rader.cpp">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Object_Bomer.cpp">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boom_Rock.cpp">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Forest.cpp">
+      <Filter>src\01. Level\04. Forest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UIWeapon.cpp">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Crown.cpp">
+      <Filter>src\01. Level\05. BossRoom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Panhua.cpp">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -756,9 +770,6 @@
     <ClInclude Include="..\Public\UI_Souvenir.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Level_Forest.h" />
-    <ClInclude Include="..\public\UIWeapon.h" />
-    <ClInclude Include="..\Public\UI_Panhua.h" />
     <ClInclude Include="..\public\P_Chixia.h">
       <Filter>src\02. GameObject\03. Character\00. Player</Filter>
     </ClInclude>
@@ -780,10 +791,27 @@
     <ClInclude Include="..\public\M_Leilie.h">
       <Filter>src\02. GameObject\03. Character\01. Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Level_Crown.h" />
-    <ClInclude Include="..\Public\Object_Bomer.h" />
-    <ClInclude Include="..\Public\Rader.h" />
-    <ClInclude Include="..\Public\Boom_Rock.h" />
+    <ClInclude Include="..\Public\Rader.h">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Object_Bomer.h">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Boom_Rock.h">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Forest.h">
+      <Filter>src\01. Level\04. Forest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UIWeapon.h">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Crown.h">
+      <Filter>src\01. Level\05. BossRoom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Panhua.h">
+      <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -933,6 +961,12 @@
     </Filter>
     <Filter Include="src\01. Level\03. City">
       <UniqueIdentifier>{76965224-f77e-4605-a579-aea075cf3a27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\01. Level\04. Forest">
+      <UniqueIdentifier>{5b5295bb-83ce-422b-892e-7cd74fa6c732}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\01. Level\05. BossRoom">
+      <UniqueIdentifier>{62a97694-e3fb-4bac-93e5-3391b2ec912a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
