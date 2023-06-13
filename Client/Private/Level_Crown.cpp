@@ -599,6 +599,15 @@ HRESULT CLevel_Crown::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
+	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
+	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_31_EditionColor.data");
+	EditionDesc.fCullingRatio = 30.0f;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CROWN, OBJECT::MAP_OBJECT, pLayerTag, TEXT("MapObject_Tree"), &EditionDesc)))
+	{
+		MSG_BOX("Failed to AddGameObejct In LEVEL_CROWN : SIMD_TREE_31");
+		return E_FAIL;
+	}
+
 	return S_OK;
 }
 
