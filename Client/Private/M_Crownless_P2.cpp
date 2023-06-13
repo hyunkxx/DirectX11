@@ -1592,11 +1592,11 @@ void CM_Crownless_P2::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float 
 			switch (pAttackInfo->eHitIntensity)
 			{
 			case HIT_NONE:
-				m_fHitPoint -= 3;
+				m_fHitPoint -= 3.f;
 				break;
 			case HIT_SMALL:
-				m_fHitPoint -= 10;
-				if (m_fHitPoint < 0)
+				m_fHitPoint -= 10.f;
+				if (m_fHitPoint < 0.f)
 				{
 					m_pCamMovement->StartVibration();
 					m_Scon.iNextState = IS_BEHIT_S;
@@ -1604,8 +1604,8 @@ void CM_Crownless_P2::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float 
 				}
 				break;
 			case HIT_BIG:
-				m_fHitPoint -= 25;
-				if (m_fHitPoint < 0)
+				m_fHitPoint -= 25.f;
+				if (m_fHitPoint < 0.f)
 				{
 					m_pCamMovement->StartVibration(10.f, 0.7f);
 					m_Scon.iNextState = IS_BEHIT_B;
@@ -1614,7 +1614,7 @@ void CM_Crownless_P2::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float 
 				break;
 			case HIT_FLY:
 			{
-				m_fHitPoint -= 60;
+				m_fHitPoint -= 60.f;
 
 				if (m_fHitPoint < 0)
 				{

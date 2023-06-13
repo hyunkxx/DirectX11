@@ -83,8 +83,8 @@ HRESULT CM_Binglie::Initialize(void * pArg)
 	m_bAttackReady = true;
 
 	// CharInfo √ ±‚»≠
-	lstrcpy(m_tMonsterInfo.szName, TEXT("FHuxiuxiu"));
-	m_tMonsterInfo.eElement = ELMT_AERO;
+	lstrcpy(m_tMonsterInfo.szName, TEXT("Binglie"));
+	m_tMonsterInfo.eElement = ELMT_GLACIO;
 	m_tMonsterInfo.iLevel = 1;
 	m_tMonsterInfo.iExp = 0;
 	m_tMonsterInfo.fMaxHP = 2000.f;

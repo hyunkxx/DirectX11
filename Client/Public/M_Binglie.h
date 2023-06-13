@@ -216,7 +216,6 @@ public:
 	void CM_Binglie::OnCollisionExit(CCollider * src, CCollider * dest) override;
 
 	CCollider* m_pCollider = nullptr;
-
 	CCollider* m_pHitCollider = nullptr;
 	CCollider* m_pMoveCollider = nullptr;
 

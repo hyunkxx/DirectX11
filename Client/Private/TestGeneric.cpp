@@ -402,7 +402,7 @@ void CTestGeneric::Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _d
 void CTestGeneric::Shot_EffectKey(_tchar * szEffectTag, _uint EffectBoneID, _uint iEffectID, _bool bTracking)
 {
 	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag, EFFECT_ID(iEffectID));
-	if (nullptr == pEffect || EBONE_END <= EffectBoneID)
+	if (nullptr == pEffect || EBONE_END <= EffectBoneID || (nullptr == m_EffectBones[EffectBoneID] && EffectBoneID != 0))
 		return;
 
 	pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
@@ -817,7 +817,7 @@ HRESULT CTestGeneric::Init_EffectBones()
 	if (nullptr != pBone)
 		m_EffectBones[EBONE_HEAD] = pBone;
 
-	pBone = m_pModelCom->Get_BonePtr(TEXT("Bip001LFoot"));
+	pBone = m_pModelCom->Get_BonePtr(TEXT("Bone_Weapon01"));
 	if (nullptr != pBone)
 		m_EffectBones[EBONE_LFOOT] = pBone;
 

@@ -16,6 +16,9 @@
 #include "M_Anjin.h"
 #include "M_Huojin.h"
 #include "M_Binglie.h"
+#include "M_Fenglie.h"
+#include "M_Leilie.h"
+#include "M_Qunjing.h"
 #include "M_Crownless_P1.h"
 #include "M_Crownless_P2.h"
 #include "M_Crownless_P3.h"
@@ -46,6 +49,9 @@ HRESULT CLevel_Test::Initialize()
 	CM_Anjin::Init_States(m_pDevice, m_pContext);
 	CM_Huojin::Init_States(m_pDevice, m_pContext);
 	CM_Binglie ::Init_States(m_pDevice, m_pContext);
+	CM_Fenglie::Init_States(m_pDevice, m_pContext);
+	CM_Leilie::Init_States(m_pDevice, m_pContext);
+	CM_Qunjing::Init_States(m_pDevice, m_pContext);
 	CM_Crownless_P1::Init_States(m_pDevice, m_pContext);
 	CM_Crownless_P2::Init_States(m_pDevice, m_pContext);
 	CM_Crownless_P3::Init_States(m_pDevice, m_pContext);
@@ -312,7 +318,16 @@ HRESULT CLevel_Test::Ready_Layer_Monster(const _tchar * pLayerTag)
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_ANJIN, pLayerTag, TEXT("Anjin"))))
 	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_BINGLIE, pLayerTag, TEXT("Binglie"))))
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_BINGLIE, pLayerTag, TEXT("Binglie"))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_FENGLIE, pLayerTag, TEXT("Fenglie"))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_LEILIE, pLayerTag, TEXT("Leilie"))))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_QUNJING, pLayerTag, TEXT("Qunjing"))))
 		return E_FAIL;
 
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_HUOJIN, pLayerTag, TEXT("Huojin"))))
@@ -377,6 +392,9 @@ void CLevel_Test::Free()
 	CM_Anjin::Release_States();
 	CM_Huojin::Release_States();
 	CM_Binglie::Release_States();
+	CM_Fenglie::Release_States();
+	CM_Leilie::Release_States();
+	CM_Qunjing::Release_States();
 	CM_Crownless_P1::Release_States();
 	CM_Crownless_P2::Release_States();
 	CM_Crownless_P3::Release_States();
