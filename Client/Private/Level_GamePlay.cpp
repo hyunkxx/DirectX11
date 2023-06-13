@@ -2066,6 +2066,13 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber", &vWorldMatrix)))
 		return E_FAIL;
 
+	vWorldMatrix._41 = 260.f;
+	vWorldMatrix._42 = 38.f;
+	vWorldMatrix._43 = 227.f;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock", &vWorldMatrix)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

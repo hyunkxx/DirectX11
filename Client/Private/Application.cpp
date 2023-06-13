@@ -25,7 +25,7 @@
 
 //INTERACTION_OBJECT
 #include "Object_Bomer.h"
-
+#include "Boom_Rock.h"
 // Item
 #include "Item.h"
 
@@ -82,7 +82,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성A
@@ -610,6 +610,7 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		MSG_BOX("Failed to Add Texture in Application : ROCK_MASK_83");
 		return E_FAIL;
 	}
+
 	
 #pragma endregion ROCK_MASK
 	
@@ -656,6 +657,11 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::CARCULATOR,
 		CCalculator::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, SMODEL::INTERACTION_ROCK,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/2/SM_Com_Roc_07AS.smdl")))))
 		return E_FAIL;
 
 	// 각 레벨마다 네비게이션 생성해서 사용하도록 수정
@@ -715,6 +721,10 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::INTERACTION_OBJECT_BOMBER,
 		CObject_Bomber::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::INTERACTION_OBJECT_ROCK,
+		CBoom_Rock::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Static_Effect()))

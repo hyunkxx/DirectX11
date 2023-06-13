@@ -14,6 +14,7 @@ BEGIN(Client)
 
 class CRader :
 	public CGameObject
+	, public IOnCollisionEnter
 {
 protected:
 	CRader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -41,6 +42,7 @@ protected:
 
 private:
 	_float		m_fCoolTime = { 0.f };
+	_float		m_fLinear = { 0.f };
 	_bool		m_bReady = { true };
 
 protected:
@@ -52,7 +54,7 @@ public:
 	virtual void Free() override;
 
 	CCollider* GetDefaultCollider() const { return m_pCollider; }
-	void CRader::OnCollisionEnter(CCollider * src, CCollider * dest);
+	void CRader::OnCollisionEnter(CCollider * src, CCollider * dest)override;
 
 };
 

@@ -9,7 +9,6 @@ BEGIN(Engine)
 class CSphereCollider;
 class CEffect;
 class CTransform;
-
 END
 
 BEGIN(Client)
@@ -56,7 +55,7 @@ protected:
 	_float4x4 m_StartMatrix;
 	_float4x4 m_WorldMatrix;
 	_float4x4 m_CatchMatrix;
-	_float	  m_fSpeed = { 5.f };
+	_float	  m_fSpeed = { 1.f };
 	STATE_ID  m_eState = { ID_IDLE };
 
 	_float	  m_fResetTime = { 0.f };

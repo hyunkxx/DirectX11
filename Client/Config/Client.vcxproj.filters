@@ -402,6 +402,7 @@
     <ClCompile Include="..\private\Level_Crown.cpp" />
     <ClCompile Include="..\Private\Object_Bomer.cpp" />
     <ClCompile Include="..\Private\Rader.cpp" />
+    <ClCompile Include="..\Private\Boom_Rock.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -782,6 +783,7 @@
     <ClInclude Include="..\public\Level_Crown.h" />
     <ClInclude Include="..\Public\Object_Bomer.h" />
     <ClInclude Include="..\Public\Rader.h" />
+    <ClInclude Include="..\Public\Boom_Rock.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

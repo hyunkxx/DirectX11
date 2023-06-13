@@ -46,6 +46,23 @@ void CRader::Tick(_double TimeDelta)
 
 	m_pCollider->Update(XMLoadFloat4x4(m_pMainTransform->Get_WorldMatrixPtr()));
 
+	if (!m_bReady && m_fCoolTime < 1.f)
+	{
+		m_fLinear += (_float)TimeDelta;
+		if (m_fLinear > 1.f)
+			m_fLinear = 1.f;
+
+		_float3 vSize;
+		XMStoreFloat3(&vSize , XMVectorLerp(XMVectorSet(1.f, 1.f, 1.f, 1.f), XMVectorSet(25.f, 25.f, 25.f, 1.f), m_fLinear));
+		m_pCollider->SetExtents_(vSize);
+	}
+	else
+	{
+		_float3 vSize = _float3(0.1f, 0.1f, 0.1f);
+		m_pCollider->SetExtents_(vSize);
+	}
+
+	pGameInstance->AddCollider(m_pCollider, COLL_RIM_INTERACTION);
 }
 
 void CRader::LateTick(_double TimeDelta)
@@ -65,6 +82,7 @@ void CRader::Play_Rader(CTransform* pTransform)
 		return;
 
 	m_pMainTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix());
+	m_pMainTransform->Set_Scale(_float3(1.f, 1.f, 1.f));
 	m_WorldMatrix = pTransform->Get_WorldMatrix();
 
 	m_pEffect = CGameInstance::GetInstance()->Get_Effect(L"P_Rader_Effect", EFFECT_ID::COMON);
@@ -72,6 +90,7 @@ void CRader::Play_Rader(CTransform* pTransform)
 
 	m_bReady = false;
 	m_fCoolTime = 0.f;
+	m_fLinear = 0.f;
 
 }
 

@@ -195,6 +195,7 @@
     <ClInclude Include="..\public\AppManager.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\ActionCam.h" />
+    <ClInclude Include="..\Public\Boom_Rock.h" />
     <ClInclude Include="..\Public\CameraCurve.h" />
     <ClInclude Include="..\public\CameraMovement.h" />
     <ClInclude Include="..\public\Character.h" />
@@ -355,6 +356,7 @@
     <ClCompile Include="..\private\AppManager.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\ActionCam.cpp" />
+    <ClCompile Include="..\Private\Boom_Rock.cpp" />
     <ClCompile Include="..\Private\CameraCurve.cpp" />
     <ClCompile Include="..\private\CameraMovement.cpp" />
     <ClCompile Include="..\private\Character.cpp" />

@@ -6,10 +6,10 @@ float4x4 g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 texture2D	g_DepthTexture;
-float4		g_vCamPosition;
 float3		g_vColor;
 
 float4		g_LightPos;
+vector		g_vCamPosition;
 
 texture2D	g_EmissiveTexture;
 texture2D	g_SpecularTexture;
@@ -19,6 +19,10 @@ texture2D   g_MaskTexture;
 float		g_fTimeAcc;
 
 bool		g_IsUseNormalTex;
+
+//Rim Light
+float4 g_RimColor = float4(1.f, 0.7f, 0.4f, 1.f);
+float g_RimPower = 5.f;
 
 struct VS_IN
 {
@@ -35,6 +39,7 @@ struct VS_OUT
 	float2 vTexUV : TEXCOORD0;
 	float4 vProjPos : TEXCOORD1;
 	float4 vDepth : TEXCOORD2;
+	float4 vWorldPos : TEXCOORD3;
 
 	float3 vTangent : TANGENT;
 	float3 vBiNormal : BINORMAL;
@@ -71,6 +76,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vTexUV = In.vTexUV;
 	Out.vProjPos = Out.vPosition;
 	Out.vDepth = Out.vPosition;
+	Out.vWorldPos = mul(In.vPosition, g_WorldMatrix);
 
 	Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix)).xyz;
 	Out.vBiNormal = normalize(cross(Out.vNormal.xyz, Out.vTangent)).xyz;
@@ -143,6 +149,7 @@ struct PS_IN
 	float2 vTexUV : TEXCOORD0;
 	float4 vProjPos : TEXCOORD1;
 	float4 vDepth : TEXCOORD2;
+	float4 vWorldPos : TEXCOORD3;
 
 	float3 vTangent : TANGENT;
 	float3 vBiNormal : BINORMAL;
@@ -464,6 +471,35 @@ PS_OUT_OUTLINE PS_Dessolve_XLinear(PS_IN In)
 	return Out;
 }
 
+PS_OUT_OUTLINE PS_RimLight(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector vCamDir = normalize(In.vWorldPos - g_vCamPosition);
+	float rim = 0;
+	rim = 1 - saturate(dot(In.vNormal, -vCamDir));
+
+	rim = pow(rim, g_RimPower);
+
+	float4 rimColor = rim * g_RimColor;
+	Out.vDiffuse = rimColor * g_fTimeAcc;
+
+	Out.vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 1.f);
+	Out.vOutNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+
+	Out.vGlow = Out.vDiffuse;
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 1.f);
+	Out.vShaderInfo = float4(0.9f, 0.f, 0.f, 0.f);
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	//아웃라인 없는 디폴트 그리기
@@ -620,4 +656,16 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Dessolve_XLinear();
 	}
 
+	pass RimLight_Pass11
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_RimLight();
+	}
 }

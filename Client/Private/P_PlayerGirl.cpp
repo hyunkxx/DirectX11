@@ -1458,7 +1458,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
 		}
 	}
-	if (pGame->InputKey(DIK_L) == KEY_STATE::TAP)
+	if (pGame->InputKey(DIK_N) == KEY_STATE::TAP)
 	{
 		m_pRader->Play_Rader(m_pMainTransform);
 	}

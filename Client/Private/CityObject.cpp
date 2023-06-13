@@ -238,6 +238,7 @@ HRESULT CCityObject::SetUp_ShadowShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;

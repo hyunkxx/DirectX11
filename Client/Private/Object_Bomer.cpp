@@ -85,7 +85,7 @@ void CObject_Bomber::State_Control(_double TimeDelta)
 		XMStoreFloat3(&vPosition, m_pTarget->GetTransform()->Get_State(CTransform::STATE::STATE_POSITION));
 		fDist = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_vStartPos) - XMLoadFloat3(&vPosition)));
 
-		if (fDist < 5.f)
+		if (fDist < 8.f)
 		{
 			if(CGameInstance::GetInstance()->InputKey(DIK_F) == KEY_STATE::TAP)
 				Catch_Bomber(m_pTarget->GetTransform());
@@ -113,7 +113,7 @@ void CObject_Bomber::State_Control(_double TimeDelta)
 		break;
 
 	case Client::CObject_Bomber::ID_THROW:
-		m_fThrowTime == (_float)TimeDelta;
+		m_fThrowTime += (_float)TimeDelta;
 
 		if (m_fThrowTime > 3.f)
 		{
@@ -212,7 +212,7 @@ HRESULT CObject_Bomber::Add_Components()
 	if (nullptr == m_pEffect)
 		return E_FAIL;
 
-	m_pEffect->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(),true);
+	m_pEffect->Play_Effect(&m_WorldMatrix,true);
 
 	return S_OK;
 }
