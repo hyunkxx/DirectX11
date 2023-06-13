@@ -241,7 +241,7 @@ HRESULT CLevel_Crown::Ready_Layer_BackGround(const _tchar* pLayerTag)
 		return E_FAIL;
 
 	// SKY_LOBBY SKY
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CROWN, OBJECT::SKY_LOBBY, pLayerTag, L"sky")))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CROWN, OBJECT::SKY, pLayerTag, L"sky")))
 		return E_FAIL;
 
 	return S_OK;
@@ -319,6 +319,8 @@ HRESULT CLevel_Crown::Ready_Layer_UI(const _tchar * pLayerTag)
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CROWN, OBJECT::UIWeapon, pLayerTag, TEXT("UIWeapon"))))
+		return E_FAIL;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CROWN, OBJECT::UICharacter, pLayerTag, TEXT("UI_Character"))))
 		return E_FAIL;
 

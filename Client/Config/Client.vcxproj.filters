@@ -417,6 +417,9 @@
     <ClCompile Include="..\Private\UI_Panhua.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\BackpackUI.cpp">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -811,6 +814,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_Panhua.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BackpackUI.h">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
