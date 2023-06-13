@@ -240,7 +240,8 @@ HRESULT CLevel_Crown::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CROWN, OBJECT::TERRAIN, pLayerTag, L"terrain", &EditionDesc)))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CROWN, OBJECT::SKY, pLayerTag, L"sky")))
+	// SKY_LOBBY SKY
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CROWN, OBJECT::SKY_LOBBY, pLayerTag, L"sky")))
 		return E_FAIL;
 
 	return S_OK;

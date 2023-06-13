@@ -301,7 +301,7 @@ HRESULT CMapObject::Render_Default_SelfShadow()
 
 		if (m_EditionDesc.iSIMD_ID == SIMODEL::SIMD_TREE_31)
 		{
-			if (i == 1)
+			if (i == 0)
 			{
 				_bool bGlow = true;
 				if (FAILED(m_pShaderCom->SetRawValue("g_IsUseGlow", &bGlow, sizeof(_bool))))
