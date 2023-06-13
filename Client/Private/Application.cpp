@@ -2646,7 +2646,17 @@ HRESULT CApplication::Ready_Static_Effect()
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
-			TEXT("../../Resource/Effect/M_Leilie/M_Leilie_Enforce_Arrow.bin"),
+			TEXT("../../Resource/Effect/M_Leilie/M_Leilie_Bombing.bin"),
+			"../../Resource/Effect/M_Leilie/Arrow/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Leilie/M_Leilie_Bullet.bin"),
+			"../../Resource/Effect/M_Leilie/Arrow/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Leilie/M_Leilie_Charge_Bullet.bin"),
 			"../../Resource/Effect/M_Leilie/Arrow/")))
 			return E_FAIL;
 
@@ -2692,7 +2702,17 @@ HRESULT CApplication::Ready_Static_Effect()
 		// 팽그리 (부메랑)
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
-			TEXT("../../Resource/Effect/M_Fenglie/M_Fenglie_Weapon.bin"),
+			TEXT("../../Resource/Effect/M_Fenglie/M_Fenglie_Attack_01.bin"),
+			"../../Resource/Effect/M_Fenglie/Weapon/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Fenglie/M_Fenglie_Attack_02.bin"),
+			"../../Resource/Effect/M_Fenglie/Weapon/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Fenglie/M_Fenglie_Flare.bin"),
 			"../../Resource/Effect/M_Fenglie/Weapon/")))
 			return E_FAIL;
 
@@ -2705,6 +2725,11 @@ HRESULT CApplication::Ready_Static_Effect()
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
 			TEXT("../../Resource/Effect/M_Binglie/M_Binglie_Shoot_Ready.bin"),
+			"../../Resource/Effect/M_Binglie/Attack/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+			TEXT("../../Resource/Effect/M_Binglie/M_Binglie_Shoot_Start.bin"),
 			"../../Resource/Effect/M_Binglie/Attack/")))
 			return E_FAIL;
 
@@ -2724,14 +2749,8 @@ HRESULT CApplication::Ready_Static_Effect()
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
-			TEXT("../../Resource/Effect/M_Binglie/M_Binglie_Shoot_Start.bin"),
+			TEXT("../../Resource/Effect/M_Binglie/M_Binglie_Bullet.bin"),
 			"../../Resource/Effect/M_Binglie/Attack/")))
-			return E_FAIL;
-		
-		// 스킬쓰면서 지속적으로 빛나는 무기 이펙트
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
-			TEXT("../../Resource/Effect/M_Fenglie/M_Fenglie_Weapon.bin"),
-			"../../Resource/Effect/M_Fenglie/Weapon/")))
 			return E_FAIL;
 
 		// 번개 내리꽂히는 이펙트
