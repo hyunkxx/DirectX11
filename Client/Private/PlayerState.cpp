@@ -70,7 +70,7 @@ HRESULT CPlayerState::Initialize_Prototype()
 	m_CharSlot[SLOT_SUB1] = CHARACTER_YANGYANG;
 	m_CharSlot[SLOT_SUB2] = CHARACTER_CHIXIA;
 
-	return S_OK;
+return S_OK;
 }
 
 HRESULT CPlayerState::Initialize(void * pArg)
@@ -79,7 +79,7 @@ HRESULT CPlayerState::Initialize(void * pArg)
 	m_EquipWeapons[CHARACTER_ROVER] = pDB->GetItemData(ITEM::SWORD0);
 	m_EquipWeapons[CHARACTER_YANGYANG] = pDB->GetItemData(ITEM::SWORD0);
 	m_EquipWeapons[CHARACTER_CHIXIA] = pDB->GetItemData(ITEM::GUN0);
-	
+		
 	ZeroMemory(m_fSequenceValue, sizeof m_fSequenceValue);
 	ZeroMemory(m_AttackDesc, sizeof m_AttackDesc);
 
@@ -149,20 +149,23 @@ void CPlayerState::PreTick(_double TimeDelta)
 		}
 	}
 #pragma endregion
-	
+
 #pragma region CharStat
-	// 음식 효과 지속시간 체크
-	if (0.f < m_PlayerState.fFoodDuration)
-	{
-		m_PlayerState.fFoodDuration -= fTimeDelta;
-		if (0.f > m_PlayerState.fFoodDuration)
-		{
-			ZeroMemory(m_PlayerState.fFoodStat, sizeof(_float) * TOOL_END);
-			m_PlayerState.fFoodDuration = 0.f;
-		}
-			
-	}
 	
+	// 음식 효과 지속시간 체크
+	for (_uint iBuffType = 0; iBuffType < FOOD_END; ++iBuffType)
+	{
+		if (m_bFoodBuff[iBuffType])
+		{
+			m_fFoodBuffTimeAcc[iBuffType] -= (_float)TimeDelta;
+			if (m_fFoodBuffTimeAcc[iBuffType] <= 0.f)
+			{
+				m_fFoodBuffTimeAcc[iBuffType] = 0.f;
+				m_bFoodBuff[iBuffType] = false;
+			}
+		}
+	}
+
 	// 캐릭터 스탯 계산해놓기 ( 시퀀스체인, 무기착용 추가 )
 	for (_uint i = 0; i < CHARACTER_END; ++i)
 	{
@@ -170,6 +173,15 @@ void CPlayerState::PreTick(_double TimeDelta)
 		_float fCriRate = m_CharacterState[i].fCriticalRate[STAT_BASE];
 		_float fDefense = m_CharacterState[i].fDefense[STAT_BASE];
 		
+		if (m_bFoodBuff[FOOD_ATTACK])
+			fAttack += 30;
+
+		if (m_bFoodBuff[FOOD_DEFENSE])
+			fDefense += 30;
+
+		if (m_bFoodBuff[FOOD_CRIRATE])
+			fCriRate += 10;
+
 		fAttack += m_CharacterState[i].fAttack[STAT_BASE] * m_fSequenceValue[SQUENCE1];
 		fCriRate += m_fSequenceValue[SQUENCE2];
 		fDefense += m_CharacterState[i].fDefense[STAT_BASE] * m_fSequenceValue[SQUENCE3];
@@ -177,7 +189,7 @@ void CPlayerState::PreTick(_double TimeDelta)
 		m_CharacterState[i].fAttack[STAT_EQUIP] = (_float)CItemDB::ComputeWeaponDamage(m_EquipWeapons[i]);
 		m_CharacterState[i].fAttack[STAT_TOTAL] = (fAttack + m_CharacterState[i].fAttack[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_ATK])
 													* (1 + (m_CharacterState[i].fAttack[STAT_BUFF] - m_CharacterState[i].fAttack[STAT_DEBUFF]));
-
+		
 		m_CharacterState[i].fDefense[STAT_TOTAL] = (fDefense + m_CharacterState[i].fDefense[STAT_EQUIP] + m_PlayerState.fFoodStat[STYPE_DEF])
 			* (1 + (m_CharacterState[i].fDefense[STAT_BUFF] - m_CharacterState[i].fDefense[STAT_DEBUFF]));
 		
@@ -250,6 +262,21 @@ _bool CPlayerState::Change_ActiveCharacter(_uint iSubID)
 	}
 
 	return true;
+}
+
+void CPlayerState::UseFoodBuff(FOOD_BUFF eFoodType, _uint iFoodIconID)
+{
+	m_iFoodIconID[eFoodType] = iFoodIconID;
+	m_bFoodBuff[eFoodType] = true;
+	m_fFoodBuffTimeAcc[eFoodType] = 60.f;
+}
+
+void CPlayerState::AddHP(CHARACTERS eCharater, _float fValue)
+{
+	if(m_CharacterState[eCharater].fCurHP + fValue > m_CharacterState[eCharater].fMaxHP)
+		m_CharacterState[eCharater].fCurHP = m_CharacterState[eCharater].fMaxHP;
+	else
+		m_CharacterState[eCharater].fCurHP += fValue;
 }
 
 void CPlayerState::AddExp(CHARACTERS eCharater, _float fExp)

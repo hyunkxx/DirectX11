@@ -12,6 +12,7 @@
 #include "UI_MerchantMen.h"
 #include "UI_Souvenir.h"
 #include "UI_Panhua.h"
+#include "AppManager.h"
 
 CUI_MainScreen::CUI_MainScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -56,6 +57,23 @@ HRESULT CUI_MainScreen::Initialize(void * pArg)
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+
+	//Active Buff
+	for (_uint i = 0; i < 3; ++i)
+	{
+		m_OrthoFoodIcon[i].fWidth = 50.f;
+		m_OrthoFoodIcon[i].fHeight = 50.f;
+		m_OrthoFoodIcon[i].fX = g_iWinSizeX - 160.f + (i * 60.f);
+		m_OrthoFoodIcon[i].fY = 35.f;
+		CAppManager::ComputeOrtho(&m_OrthoFoodIcon[i]);
+
+		m_OrthoFoodSlot[i].fWidth = 70.f;
+		m_OrthoFoodSlot[i].fHeight = 70.f;
+		m_OrthoFoodSlot[i].fX = g_iWinSizeX - 160.f + (i * 60.f);
+		m_OrthoFoodSlot[i].fY = 35.f;
+		CAppManager::ComputeOrtho(&m_OrthoFoodSlot[i]);
+	}
+
 	return S_OK;
 }
 
@@ -131,6 +149,41 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 		RRAct(TimeDelta);
 	}
 
+	for (_uint i = 0; i < 3; ++i)
+	{
+		if (m_bSoon[i])
+		{
+			if (!m_bSoonToggle[i])
+			{
+				m_fFlashAcc[i] -= (_float)TimeDelta * 2.f;
+				if (m_fFlashAcc[i] < 0.f)
+				{
+					m_fFlashAcc[i] = 0.f; 
+					m_bSoonToggle[i] = !m_bSoonToggle[i];
+				}
+			}
+			else
+			{
+				m_fFlashAcc[i] += (_float)TimeDelta * 2.f;
+				if (m_fFlashAcc[i] >= 1.f)
+				{
+					m_fFlashAcc[i] = 1.f;
+					m_bSoonToggle[i] = !m_bSoonToggle[i];
+				}
+			}
+
+		}
+		else
+		{
+			//ZeroMemory(m_bSoon, sizeof(m_bSoon));
+			//ZeroMemory(m_bSoonToggle, sizeof(m_bSoonToggle));
+
+			//m_fFlashAcc[0] = 1.f;
+			//m_fFlashAcc[1] = 1.f;
+			//m_fFlashAcc[2] = 1.f;
+		}
+	}
+
 }
 
 void CUI_MainScreen::LateTick(_double TimeDelta)
@@ -143,11 +196,15 @@ void CUI_MainScreen::LateTick(_double TimeDelta)
 
 HRESULT CUI_MainScreen::Render()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 	if (true == m_bRender) // 다른ui창 활성화때 전체off
 	{
 		if (FAILED(__super::Render()))
 			return E_FAIL;
 
+		renderFoodBuff();
+		
 		for (auto& Desc : DamageList)
 		{
 			if (FAILED(__super::Render()))
@@ -284,6 +341,10 @@ HRESULT CUI_MainScreen::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI_SUB,
+		TEXT("com_subui_shader"), (CComponent**)&m_pSubShader)))
+		return E_FAIL;
+	
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UI,
 		TEXT("com_texFunc"), (CComponent**)&m_pTexFunc)))
 		return E_FAIL;
@@ -2162,6 +2223,106 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesPlayer(_uint Bufferindex)
 	return S_OK;
 }
 
+HRESULT CUI_MainScreen::renderFoodBuff()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(m_pSubShader->SetMatrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pSubShader->SetMatrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	_float fAlpha = 1.f;
+	_uint* pFoodIcon = m_pPlayerStateClass->GetFoodIconID();
+	_float *pDuration = m_pPlayerStateClass->GetFoodDutation();
+
+	_uint iActiveCount = 0; // 활성화 버프 카운트
+	_uint iFoodIcons[3];
+	_float fFoodDuration[3];
+
+	_uint iActiveIconIndex = 0;
+	for (_uint i = 0; i < 3; ++i)
+	{
+		if (m_pPlayerStateClass->IsActivateFoodBuff((CPlayerState::FOOD_BUFF)i))
+		{
+			iActiveCount++;
+			iFoodIcons[iActiveIconIndex] = pFoodIcon[i];
+			fFoodDuration[iActiveIconIndex] = pDuration[i];
+
+			iActiveIconIndex++;
+		}
+	}
+
+	_float3 vColor3 = { 0.5f, 0.5f, 0.5f };
+
+	iActiveIconIndex = 0;
+	if (iActiveCount > 0)
+	{
+		
+		for (_uint i = 0; i < iActiveCount; ++i)
+		{
+			vColor3 = { 1.f, 1.f, 1.f };
+
+			fAlpha = 1.f;
+			_float fDuration = fFoodDuration[iActiveIconIndex] / 60.f;
+			if (fDuration < 0.2f)
+			{
+				m_bSoon[iActiveIconIndex] = true;
+				fAlpha = m_fFlashAcc[iActiveIconIndex];
+			}
+
+			if (FAILED(m_pSubShader->SetRawValue("g_vColor", &vColor3, sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(m_pSubShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pSubShader->SetMatrix("g_WorldMatrix", &m_OrthoFoodSlot[2 - i].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::GLOW_CIRCLE_GARD, m_pSubShader, "g_DiffuseTexture")))
+				return E_FAIL;
+
+			m_pSubShader->Begin(10);
+			m_pVIBuffer->Render();
+
+			vColor3 = { 0.5f, 0.5f, 0.5f };
+			if (FAILED(m_pSubShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pSubShader->SetRawValue("g_vColor", &vColor3, sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(m_pSubShader->SetMatrix("g_WorldMatrix", &m_OrthoFoodIcon[2 - i].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(iFoodIcons[iActiveIconIndex], m_pSubShader, "g_DiffuseTexture")))
+				return E_FAIL;
+
+			m_pSubShader->Begin(8);
+			m_pVIBuffer->Render();
+
+			fAlpha = 1.f;
+			if (fDuration < 0.2f)
+			{
+				m_bSoon[iActiveIconIndex] = true;
+				fAlpha = m_fFlashAcc[iActiveIconIndex];
+			}
+
+			if (FAILED(m_pSubShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pSubShader->SetRawValue("g_fFillAmount", &fDuration, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pSubShader->SetMatrix("g_WorldMatrix", &m_OrthoFoodIcon[2 - i].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(iFoodIcons[iActiveIconIndex], m_pSubShader, "g_DiffuseTexture")))
+				return E_FAIL;
+
+			m_pSubShader->Begin(3);
+			m_pVIBuffer->Render();
+
+			iActiveIconIndex++;
+		}
+	}
+
+
+	return S_OK;
+}
+
 CUI_MainScreen* CUI_MainScreen::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUI_MainScreen* pInstance = new CUI_MainScreen(pDevice, pContext);
@@ -2195,6 +2356,7 @@ void CUI_MainScreen::Free()
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexFunc);
 	Safe_Release(m_pVIBuffer);
+	Safe_Release(m_pSubShader);
 
 	if (!m_bClone)
 	{

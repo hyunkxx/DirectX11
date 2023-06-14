@@ -124,6 +124,10 @@ private:
 	ORTHO_DESC m_OrthoFoodUse;
 	ORTHO_DESC m_OrthoItemDiscard;
 
+	//버튼 텍스트
+	ORTHO_DESC m_OrthoUseBtnText;
+	ORTHO_DESC m_OrthoDiscardBtnText;
+
 	ORTHO_DESC m_OrthoDiscardBack;
 	ORTHO_DESC m_OrthoDiscardSlot;
 	ORTHO_DESC m_OrthoDiscardIcon;
@@ -134,18 +138,47 @@ private:
 	ORTHO_DESC m_OrthoOwnAmount[6];
 	ORTHO_DESC m_OrthoDiscardText;
 	ORTHO_DESC m_OrthoDiscardAmount[6];
+
+	ORTHO_DESC m_OrthoTextOwnBack;
+	ORTHO_DESC m_OrthoTextAmountBack;
+
+	ORTHO_DESC m_OrthoReset;
+	ORTHO_DESC m_OrthoSelectAll;
+	ORTHO_DESC m_OrthoDiscard;
 	
-	_uint m_iDiscardCurDigit = 0;
-	_uint m_iDiscardAmount[7];
-	_uint m_iCalcResultAmount;
+	ORTHO_DESC m_OrthoResetTextBtn;
+	ORTHO_DESC m_OrthoSelectAllTextBtn;
+	ORTHO_DESC m_OrthoDiscardTextBtn;
+
+	_bool ResetPush = false;
+	_bool SelectAllPush = false;
+	_bool DiscardPush = false;
+
+	_bool m_bConfirm = false;
+	deque<char> m_AmountQueue;
+	_int m_DiscardAmount = 0;
+	_uint m_iCurDiscardDigit = 0;
 
 	CInventory::INVEN_TYPE eInvenType = CInventory::INVEN_WEAPON;
 
 	_uint m_iCurSlot = 0;
 	_float m_fTapAlpha[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
 	_float m_fCurDescAlpha = 0.f;
-
 	_bool m_bDiscardPanel = false;
+
+
+	// Food
+	ORTHO_DESC m_OrthoExitFood;
+	ORTHO_DESC m_OrthoFoodPanel;
+	ORTHO_DESC m_OrthoSelectCharacter[3];
+	ORTHO_DESC m_OrthoSelectCharacterIcon[3];
+	ORTHO_DESC m_OrthoFoodConfirm;
+	ORTHO_DESC m_OrthoFoodConfirmText;
+	ORTHO_DESC m_OrthoSelectCharText;
+
+	_bool m_bFoodPanel = false;
+	_bool m_bFoodConfirmPush = false;
+	_uint m_iCurCharacter = 0;
 
 private:
 	_bool m_bActive = false;

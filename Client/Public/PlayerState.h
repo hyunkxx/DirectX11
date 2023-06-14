@@ -29,7 +29,8 @@ public:
 	// 게이지
 	enum CHARGAUGES { GAUGE_SPECIAL, GAUGE_BURST, GAUGE_END };
 
-	
+	//음식
+	enum FOOD_BUFF { FOOD_DEFENSE, FOOD_ATTACK, FOOD_CRIRATE, FOOD_END };
 
 	typedef struct tagPlayerState{
 		// 현재 캐릭터 수 // UI 표시 및 기능 제한용
@@ -229,6 +230,11 @@ public: // Set
 
 
 public:
+	_uint* GetFoodIconID() { return m_iFoodIconID; };
+	_float* GetFoodDutation() { return m_fFoodBuffTimeAcc; }
+	_bool IsActivateFoodBuff(FOOD_BUFF eFoodType) { return m_bFoodBuff[eFoodType]; }
+	void UseFoodBuff(FOOD_BUFF eFoodType, _uint iFoodIconID);
+	void AddHP(CHARACTERS eCharater, _float fValue);
 	void AddExp(CHARACTERS eCharater, _float fExp);
 	CHARACTER_STATE* Get_MainCharacterState() { return &(m_CharacterState[m_CharSlot[SLOT_MAIN]]); }
 	CHARACTER_STATE* Get_SecondCharacterState() { return &(m_CharacterState[m_CharSlot[SLOT_SUB1]]); }
@@ -274,6 +280,11 @@ private:
 	
 	_uint m_iSkillPoint[CHARACTER_END] = { 0, };
 	ATTACK_DESC m_AttackDesc[CHARACTER_END];
+
+	_float m_fFoodBuffTimeAcc[FOOD_END] = { 0.f, 0.f, 0.f };
+	_uint m_iFoodIconID[FOOD_END] = { 0, 0, 0 };
+	_bool m_bFoodBuff[FOOD_END] = { false, false, false };
+	
 };
 
 END

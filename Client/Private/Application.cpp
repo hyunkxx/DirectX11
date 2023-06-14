@@ -1805,6 +1805,35 @@ HRESULT CApplication::Ready_Item_Image()
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::KEY_A,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/KeyA.dds")))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::KEY_END,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/KeyEnd.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RESET,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Reset_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SELECTALL,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SelectAll_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_DISCARD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Discard_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::RECT_ROVER_ICON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/RoverIcon.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::RECT_YANGYANG_ICON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/YangYangIcon.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::RECT_CHIXIA_ICON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/ChixiaIcon.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SELECT_CHARACTER,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SelectCharacter_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_USE_,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Use_.dds")))))
+		return E_FAIL;
 
 	//이미지
 	//요리 재료 아이콘
@@ -1856,6 +1885,7 @@ HRESULT CApplication::Ready_Item_Image()
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_RECIPE,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Recipe.dds")))))
 		return E_FAIL;
+
 
 	//요리 재료 텍스트
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_RICE,

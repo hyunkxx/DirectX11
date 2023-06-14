@@ -37,6 +37,27 @@ HRESULT CInventory::Initialize(void * pArg)
 	CGameInstance* pGI = CGameInstance::GetInstance();
 	m_pPlayerState = static_cast<CPlayerState*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 
+	// 임시 채우기
+	AddItem(ITEM::FLATBREAD, 5);
+	AddItem(ITEM::SALAD, 5);
+	AddItem(ITEM::FRIEDTOFU, 5);
+	AddItem(ITEM::SALTEDTEA, 5);
+	AddItem(ITEM::HERBTEA, 5);
+	AddItem(ITEM::DRAGONNOODLE, 5);
+	AddItem(ITEM::OMURICE, 5);
+	AddItem(ITEM::FRIEDRICE, 5);
+	AddItem(ITEM::FRIEDCHICKEN, 5);
+	AddItem(ITEM::RABBITBREAD, 5);
+	AddItem(ITEM::FRIEDMUSHROOM, 5);
+	AddItem(ITEM::MAPOTOFU, 5);
+	AddItem(ITEM::PORKBELLY, 5);
+	AddItem(ITEM::DUCKNOODLES, 5);
+
+	AddItem(ITEM::GEM, 100);
+	AddItem(ITEM::SWORD0, 1);
+	AddItem(ITEM::SWORD1, 1);
+	AddItem(ITEM::SEQUENCE_GEM, 4);
+
 	return S_OK;
 }
 

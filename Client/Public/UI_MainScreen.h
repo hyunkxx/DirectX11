@@ -93,6 +93,7 @@ private:
 	HRESULT Setup_ShaderResourcesI1(_uint Bufferindex); // Hp바 옆에 아이콘테두리
 	HRESULT Setup_ShaderResourcesI2(_uint Bufferindex); // Hp바 옆에 아이콘테두리
 	HRESULT Setup_ShaderResourcesPlayer(_uint Bufferindex); // 플레이어변경
+	HRESULT renderFoodBuff(); // FoodBuff 렌더
 
 public:
 	void	Set_Texchange(_int Texindex);
@@ -232,6 +233,16 @@ private:
 
 	vector<CUTRECT*>	  m_CutDescList;
 	list<DAMAGEDESC>	  DamageList;
+
+private://FOOD Duration
+	ORTHO_DESC m_OrthoFoodSlot[3];
+	ORTHO_DESC m_OrthoFoodIcon[3];
+	CShader* m_pSubShader;
+
+	_bool m_bSoon[3] = { false, false, false };
+	_bool m_bSoonToggle[3] = { false, false, false };
+	_float m_fFlashAcc[3] = { 1.f, 1.f, 1.f };
+
 };
 
 END

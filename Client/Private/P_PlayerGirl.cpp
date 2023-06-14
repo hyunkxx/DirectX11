@@ -220,13 +220,6 @@ void CP_PlayerGirl::Start()
 	m_pCamMovement->SetupBone(CCameraMovement::CAM_BANGSUN, m_pModelCom->Get_BonePtr(L"Bip001RFinger21"));
 	m_pUIMain = static_cast<CUI_MainScreen*>(pGame->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));
 
-	m_pInven->AddItem(ITEM::GEM, 100);
-
-	m_pInven->AddItem(ITEM::SWORD0, 1);
-	m_pInven->AddItem(ITEM::SWORD1, 1);
-
-	m_pInven->AddItem(ITEM::SEQUENCE_GEM, 4);
-
 	if (false == m_bOnControl)
 		SetState(DISABLE);
 }

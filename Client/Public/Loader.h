@@ -21,6 +21,7 @@ public:
 	HRESULT Load_Level_AnimTool();
 	HRESULT Load_Level_Test();
 
+
 private:
 	HRESULT LoadCharacters(_uint iLevel);
 	HRESULT LoadCharacterProps(_uint iLevel);

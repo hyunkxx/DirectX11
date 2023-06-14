@@ -211,6 +211,19 @@ HRESULT CBackpackUI::Initialize(void * pArg)
 	m_OrthoItemDiscard.fY = 640.f;
 	CAppManager::ComputeOrtho(&m_OrthoItemDiscard);
 
+	// 버튼 텍스트
+	m_OrthoUseBtnText.fWidth = 512.f * 0.5f;
+	m_OrthoUseBtnText.fHeight = 64.f * 0.5f;
+	m_OrthoUseBtnText.fX = g_iWinSizeX - 250.f;
+	m_OrthoUseBtnText.fY = 590.f;
+	CAppManager::ComputeOrtho(&m_OrthoUseBtnText);
+
+	m_OrthoDiscardBtnText.fWidth = 512.f * 0.5f;
+	m_OrthoDiscardBtnText.fHeight = 64.f * 0.5f;
+	m_OrthoDiscardBtnText.fX = g_iWinSizeX - 140.f;
+	m_OrthoDiscardBtnText.fY = 590.f;
+	CAppManager::ComputeOrtho(&m_OrthoDiscardBtnText);
+
 	m_OrthoDiscardBack.fWidth = 500.f;
 	m_OrthoDiscardBack.fHeight = 400.f;
 	m_OrthoDiscardBack.fX = g_iWinSizeX >> 1;
@@ -251,11 +264,60 @@ HRESULT CBackpackUI::Initialize(void * pArg)
 	m_OrthoOwnText.fY = (g_iWinSizeY >> 1) + 30.f;
 	CAppManager::ComputeOrtho(&m_OrthoOwnText);
 
+	m_OrthoTextOwnBack.fWidth = 200.f;
+	m_OrthoTextOwnBack.fHeight = 64.f * 0.5f;
+	m_OrthoTextOwnBack.fX = (g_iWinSizeX >> 1) + 100.f;
+	m_OrthoTextOwnBack.fY = (g_iWinSizeY >> 1) + 30.f;
+	CAppManager::ComputeOrtho(&m_OrthoTextOwnBack);
+
 	m_OrthoDiscardText.fWidth = 512.f * 0.5f;
 	m_OrthoDiscardText.fHeight = 64.f * 0.5f;
 	m_OrthoDiscardText.fX = (g_iWinSizeX >> 1) + 150.f;
-	m_OrthoDiscardText.fY = (g_iWinSizeY >> 1) + 80.f;
+	m_OrthoDiscardText.fY = (g_iWinSizeY >> 1) + 60.f;
 	CAppManager::ComputeOrtho(&m_OrthoDiscardText);
+	
+	m_OrthoTextAmountBack.fWidth = 200.f;
+	m_OrthoTextAmountBack.fHeight = 64.f * 0.5f;
+	m_OrthoTextAmountBack.fX = (g_iWinSizeX >> 1) + 100.f;
+	m_OrthoTextAmountBack.fY = (g_iWinSizeY >> 1) + 60.f;
+	CAppManager::ComputeOrtho(&m_OrthoTextAmountBack);
+
+	// 삭제 버튼들
+	m_OrthoReset.fWidth = 200.f;
+	m_OrthoReset.fHeight = 70.f;
+	m_OrthoReset.fX = (g_iWinSizeX >> 1) + 100.f;
+	m_OrthoReset.fY = (g_iWinSizeY >> 1) + 100.f;
+	CAppManager::ComputeOrtho(&m_OrthoReset);
+
+	m_OrthoSelectAll.fWidth = 200.f;
+	m_OrthoSelectAll.fHeight = 70.f;
+	m_OrthoSelectAll.fX = (g_iWinSizeX >> 1) + 100.f;
+	m_OrthoSelectAll.fY = (g_iWinSizeY >> 1) + 140.f;
+	CAppManager::ComputeOrtho(&m_OrthoSelectAll);
+
+	m_OrthoDiscard.fWidth = 200.f;
+	m_OrthoDiscard.fHeight = 70.f;
+	m_OrthoDiscard.fX = (g_iWinSizeX >> 1) + 100.f;
+	m_OrthoDiscard.fY = (g_iWinSizeY >> 1) + 180.f;
+	CAppManager::ComputeOrtho(&m_OrthoDiscard);
+
+	m_OrthoResetTextBtn.fWidth = 512.f * 0.5f;
+	m_OrthoResetTextBtn.fHeight = 64.f * 0.5f;
+	m_OrthoResetTextBtn.fX = (g_iWinSizeX >> 1) + 100.f;
+	m_OrthoResetTextBtn.fY = (g_iWinSizeY >> 1) + 102.f;
+	CAppManager::ComputeOrtho(&m_OrthoResetTextBtn);
+
+	m_OrthoSelectAllTextBtn.fWidth = 512.f * 0.5f;
+	m_OrthoSelectAllTextBtn.fHeight = 64.f * 0.5f;
+	m_OrthoSelectAllTextBtn.fX = (g_iWinSizeX >> 1) + 100.f;
+	m_OrthoSelectAllTextBtn.fY = (g_iWinSizeY >> 1) + 142.f;
+	CAppManager::ComputeOrtho(&m_OrthoSelectAllTextBtn);
+
+	m_OrthoDiscardTextBtn.fWidth = 512.f * 0.5f;
+	m_OrthoDiscardTextBtn.fHeight = 64.f * 0.5f;
+	m_OrthoDiscardTextBtn.fX = (g_iWinSizeX >> 1) + 100.f;
+	m_OrthoDiscardTextBtn.fY = (g_iWinSizeY >> 1) + 182.f;
+	CAppManager::ComputeOrtho(&m_OrthoDiscardTextBtn);
 
 	for (_uint i = 0; i < 6; ++i)
 	{
@@ -267,11 +329,56 @@ HRESULT CBackpackUI::Initialize(void * pArg)
 
 		m_OrthoDiscardAmount[i].fWidth = 16.f * 0.6f;
 		m_OrthoDiscardAmount[i].fHeight = 25.f * 0.6f;
-		m_OrthoDiscardAmount[i].fX = ((g_iWinSizeX >> 1) + 100.f) + (i * (15.f * 0.5f));;
-		m_OrthoDiscardAmount[i].fY = (g_iWinSizeY >> 1) + 80.f;
+		m_OrthoDiscardAmount[i].fX = ((g_iWinSizeX >> 1) + 100.f) + (i * (15.f * 0.5f));
+		m_OrthoDiscardAmount[i].fY = (g_iWinSizeY >> 1) + 60.f;
 		CAppManager::ComputeOrtho(&m_OrthoDiscardAmount[i]);
 	}
 
+	m_OrthoFoodPanel.fWidth = 400.f;
+	m_OrthoFoodPanel.fHeight = 250.f;
+	m_OrthoFoodPanel.fX = g_iWinSizeX >> 1;
+	m_OrthoFoodPanel.fY = g_iWinSizeY >> 1;
+	CAppManager::ComputeOrtho(&m_OrthoFoodPanel);
+
+	m_OrthoExitFood.fWidth = 40.f;
+	m_OrthoExitFood.fHeight = 40.f;
+	m_OrthoExitFood.fX = (g_iWinSizeX >> 1) + 170.f;
+	m_OrthoExitFood.fY = (g_iWinSizeY >> 1) - 90.f;
+	CAppManager::ComputeOrtho(&m_OrthoExitFood);
+
+	m_OrthoSelectCharText.fWidth = 512.f * 0.5f;
+	m_OrthoSelectCharText.fHeight = 64.f * 0.5f;
+	m_OrthoSelectCharText.fX = (g_iWinSizeX >> 1);
+	m_OrthoSelectCharText.fY = (g_iWinSizeY >> 1) - 90.f;
+	CAppManager::ComputeOrtho(&m_OrthoSelectCharText);
+
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		m_OrthoSelectCharacter[i].fWidth = 100.f;
+		m_OrthoSelectCharacter[i].fHeight = 100.f;
+		m_OrthoSelectCharacter[i].fX = (g_iWinSizeX >> 1) - 110.f + (i * 100.f);
+		m_OrthoSelectCharacter[i].fY = (g_iWinSizeY >> 1) - 20.f;
+		CAppManager::ComputeOrtho(&m_OrthoSelectCharacter[i]);
+
+		m_OrthoSelectCharacterIcon[i].fWidth = 90.f;
+		m_OrthoSelectCharacterIcon[i].fHeight = 90.f;
+		m_OrthoSelectCharacterIcon[i].fX = (g_iWinSizeX >> 1) - 110.f + (i * 100.f);
+		m_OrthoSelectCharacterIcon[i].fY = (g_iWinSizeY >> 1) - 20.f;
+		CAppManager::ComputeOrtho(&m_OrthoSelectCharacterIcon[i]);
+	}
+
+	m_OrthoFoodConfirm.fWidth = 160.f;
+	m_OrthoFoodConfirm.fHeight = 80.f;
+	m_OrthoFoodConfirm.fX = g_iWinSizeX >> 1;
+	m_OrthoFoodConfirm.fY = (g_iWinSizeY >> 1) + 60.f;
+	CAppManager::ComputeOrtho(&m_OrthoFoodConfirm);
+
+	m_OrthoFoodConfirmText.fWidth = 512.f * 0.5f;
+	m_OrthoFoodConfirmText.fHeight = 64.f * 0.5f;
+	m_OrthoFoodConfirmText.fX = g_iWinSizeX >> 1;
+	m_OrthoFoodConfirmText.fY = m_OrthoFoodConfirm.fY + 2.f;
+	CAppManager::ComputeOrtho(&m_OrthoFoodConfirmText);
 
 #pragma endregion 
 	// 직교
@@ -499,9 +606,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 
 	_uint iTotalCount = m_pInven->GetInvenTotalCount(eInvenType);
 	_uint iCurSlotAmount = m_pInven->GetSlotData(eInvenType, m_iCurSlot).iAmount;
-	_uint iCurSlotDigit = (_uint)to_string(iCurSlotAmount).size();
-
-	string strCurSlotAmount = to_string(iCurSlotAmount);
+	string strAmount = to_string(iCurSlotAmount);
 
 	if (!m_bDiscardPanel)
 	{
@@ -513,7 +618,12 @@ void CBackpackUI::keyInput(_double TimeDelta)
 				if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 				{
 					if (eInvenType != i)
+					{
+						if (i != CInventory::INVEN_COOK)
+							m_bFoodPanel = false;
+
 						elemAlphaReset(2);
+					}
 
 					eInvenType = (CInventory::INVEN_TYPE)i;
 				}
@@ -521,22 +631,27 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		}
 
 		// 슬롯 선택
-		for (_uint i = 0; i < iTotalCount; ++i)
+		if (!m_bFoodPanel)
 		{
-			if (pGM->OnMouse(m_OrthoSlot[i]))
+			for (_uint i = 0; i < iTotalCount; ++i)
 			{
-				if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+				if (pGM->OnMouse(m_OrthoSlot[i]))
 				{
-					if (m_iCurSlot != i)
+					if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 					{
-						m_fCurDescAlpha = 0.f;
-						m_iDiscardCurDigit = 0;
-						m_iCalcResultAmount = 0;
-						ZeroMemory(m_iDiscardAmount, sizeof m_iDiscardAmount);
-					}
+						if (m_iCurSlot != i)
+						{
+							m_fCurDescAlpha = 0.f;
 
-					m_iCurSlot = i;
-					m_bFlashBegin[i] = true;
+							m_iCurDiscardDigit = 0;
+							m_DiscardAmount = 0;
+							m_AmountQueue.clear();
+							m_bConfirm = false;
+						}
+
+						m_iCurSlot = i;
+						m_bFlashBegin[i] = true;
+					}
 				}
 			}
 		}
@@ -547,7 +662,11 @@ void CBackpackUI::keyInput(_double TimeDelta)
 			{
 				if (pGM->OnMouse(m_OrthoFoodUse))
 				{
-
+					if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+					{
+						if (!m_bFoodPanel)
+							m_bFoodPanel = true;
+					}
 				}
 				else if (pGM->OnMouse(m_OrthoItemDiscard))
 				{
@@ -561,9 +680,24 @@ void CBackpackUI::keyInput(_double TimeDelta)
 			{
 				if (pGM->OnMouse(m_OrthoItemDiscard))
 				{
-					if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+					if (eInvenType != CInventory::INVEN_WEAPON)
 					{
-						m_bDiscardPanel = true;
+						if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+						{
+							m_bDiscardPanel = true;
+						}
+					}
+					else
+					{
+						if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+						{
+							m_pInven->DiscardItem(eInvenType, m_iCurSlot, iCurSlotAmount);
+
+							if (m_iCurSlot > 0)
+								m_iCurSlot--;
+							else
+								m_iCurSlot = 0;
+						}
 					}
 				}
 			}
@@ -584,11 +718,8 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				if (strCurSlotAmount[m_iDiscardCurDigit] - '0' >= 7)
-				{
-					m_iDiscardAmount[m_iDiscardCurDigit] = 7;
-					m_iDiscardCurDigit++;
-				}
+				if (iCurSlotAmount >= 7 && m_AmountQueue.size() < 5)
+					m_AmountQueue.push_back('7');
 			}
 		}
 
@@ -596,11 +727,8 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				if (strCurSlotAmount[m_iDiscardCurDigit] - '0' >= 8)
-				{
-					m_iDiscardAmount[m_iDiscardCurDigit] = 8;
-					m_iDiscardCurDigit++;
-				}
+				if (iCurSlotAmount >= 8 && m_AmountQueue.size() < 5)
+					m_AmountQueue.push_back('8');
 			}
 		}
 
@@ -608,11 +736,8 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				if (strCurSlotAmount[m_iDiscardCurDigit] - '0' >= 9)
-				{
-					m_iDiscardAmount[m_iDiscardCurDigit] = 9;
-					m_iDiscardCurDigit++;
-				}
+				if (iCurSlotAmount >= 9 && m_AmountQueue.size() < 5)
+					m_AmountQueue.push_back('9');
 			}
 		}
 
@@ -620,11 +745,8 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				if (strCurSlotAmount[m_iDiscardCurDigit] - '0' >= 4)
-				{
-					m_iDiscardAmount[m_iDiscardCurDigit] = 4;
-					m_iDiscardCurDigit++;
-				}
+				if (iCurSlotAmount >= 4 && m_AmountQueue.size() < 5)
+					m_AmountQueue.push_back('4');
 			}
 		}
 
@@ -632,11 +754,8 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				if (strCurSlotAmount[m_iDiscardCurDigit] - '0' >= 5)
-				{
-					m_iDiscardAmount[m_iDiscardCurDigit] = 5;
-					m_iDiscardCurDigit++;
-				}
+				if (iCurSlotAmount >= 5 && m_AmountQueue.size() < 5)
+					m_AmountQueue.push_back('5');
 			}
 		}
 
@@ -644,11 +763,8 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				if (strCurSlotAmount[m_iDiscardCurDigit] - '0' >= 6)
-				{
-					m_iDiscardAmount[m_iDiscardCurDigit] = 6;
-					m_iDiscardCurDigit++;
-				}
+				if (iCurSlotAmount >= 6 && m_AmountQueue.size() < 5)
+					m_AmountQueue.push_back('6');
 			}
 		}
 
@@ -656,11 +772,8 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				if (strCurSlotAmount[m_iDiscardCurDigit] - '0' >= 1)
-				{
-					m_iDiscardAmount[m_iDiscardCurDigit] = 1;
-					m_iDiscardCurDigit++;
-				}
+				if (iCurSlotAmount >= 1 && m_AmountQueue.size() < 5)
+					m_AmountQueue.push_back('1');
 			}
 		}
 
@@ -668,11 +781,8 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				if (strCurSlotAmount[m_iDiscardCurDigit] - '0' >= 2)
-				{
-					m_iDiscardAmount[m_iDiscardCurDigit] = 2;
-					m_iDiscardCurDigit++;
-				}
+				if (iCurSlotAmount >= 2 && m_AmountQueue.size() < 5)
+					m_AmountQueue.push_back('2');
 			}
 		}
 
@@ -680,32 +790,26 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				if (strCurSlotAmount[m_iDiscardCurDigit] - '0' >= 3)
-				{
-					m_iDiscardAmount[m_iDiscardCurDigit] = 3;
-					m_iDiscardCurDigit++;
-				}
+				if (iCurSlotAmount >= 3 && m_AmountQueue.size() < 5)
+					m_AmountQueue.push_back('3');
 			}
 		}
 
 		else if (pGM->OnMouse(m_OrthoCalcKey[9]))
 		{
-			if (m_iDiscardCurDigit > 0 && pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				m_iDiscardAmount[m_iDiscardCurDigit] = 0;
-				m_iDiscardCurDigit--;
+				if (!m_AmountQueue.empty())
+					m_AmountQueue.pop_back();
 			}
 		}
-
+		
 		else if (pGM->OnMouse(m_OrthoCalcKey[10]))
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				if (strCurSlotAmount[m_iDiscardCurDigit] - '0' >= 0)
-				{
-					m_iDiscardAmount[m_iDiscardCurDigit] = 0;
-					m_iDiscardCurDigit++;
-				}
+				if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+					m_AmountQueue.push_back('0');
 			}
 		}
 
@@ -713,31 +817,157 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				for (_uint i = 0; i < iCurSlotDigit; ++i)
+				if (!m_bConfirm)
 				{
-					m_iDiscardAmount[i] = strCurSlotAmount[i] - '0';
-				}
+					m_bConfirm = true;
 
-				m_iDiscardCurDigit = iCurSlotDigit;
+					if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+					{
+						_int iDigit = 0;
+						char szPad[6] = "";
+						while (m_AmountQueue.size() > 0)
+						{
+							szPad[iDigit] = m_AmountQueue.front();
+							m_AmountQueue.pop_front();
+							iDigit++;
+						}
+
+						m_DiscardAmount = atoi(szPad);
+
+						if ((_int)iCurSlotAmount < m_DiscardAmount)
+							m_DiscardAmount = (_int)iCurSlotAmount;
+
+					}
+				}
 			}
 		}
 
-		_uint iResult = 1;
-		m_iCalcResultAmount = 0;
-		for (_uint i = 0; i < iCurSlotDigit; ++i)
+		// 삭제 최종 입력처리
+		else if (pGM->OnMouse(m_OrthoReset))
 		{
-			if (i > 0)
-				iResult *= 10;
+			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+				ResetPush = true;
 			else
-				iResult = 1;
-		}
+				ResetPush = false;
 
-		for (_uint i = 0; i < m_iDiscardCurDigit; ++i)
+			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
+			{
+				m_DiscardAmount = 0;
+				m_iCurDiscardDigit = 0;
+				m_AmountQueue.clear();
+				m_bConfirm = false;
+			}
+
+		}
+		else if (pGM->OnMouse(m_OrthoSelectAll))
 		{
-			m_iCalcResultAmount += m_iDiscardAmount[i] * (_uint)iResult;
-			iResult /= 10;
+			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+				SelectAllPush = true;
+			else
+				SelectAllPush = false;
+
+			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
+			{
+				m_DiscardAmount = iCurSlotAmount;
+				m_iCurDiscardDigit = 0;
+				m_AmountQueue.clear();
+				m_bConfirm = true;
+			}
+		}
+		else if (pGM->OnMouse(m_OrthoDiscard))
+		{
+			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+				DiscardPush = true;
+			else
+				DiscardPush = false;
+
+			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
+			{
+				if (m_bConfirm)
+				{
+					m_bDiscardPanel = false;
+					m_pInven->DiscardItem(eInvenType, m_iCurSlot, m_DiscardAmount);
+					m_iCurDiscardDigit = 0;
+					m_AmountQueue.clear();
+					m_bConfirm = false;
+				}
+			}
+		}
+		else
+		{
+			ResetPush = false;
+			SelectAllPush = false;
+			DiscardPush = false;
 		}
 
+	}
+
+	if (m_bFoodPanel)
+	{
+		CPlayerState::PLAYER_STATE* pState = m_pPlayerState->Get_PlayerState();
+		_uint iActiveCount = pState->iCharCount;
+
+		// 음식 섭취패널 나가기 버튼
+		if (pGM->OnMouse(m_OrthoExitFood))
+		{
+			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+				m_bFoodPanel = false;
+		}
+
+		//음식 먹일 캐릭터 선택
+		if (pGM->OnMouse(m_OrthoSelectCharacterIcon[0]))
+		{
+			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			{
+				m_iCurCharacter = 0;
+			}
+		}
+		else if (pGM->OnMouse(m_OrthoSelectCharacterIcon[1]))
+		{
+			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			{
+				if (iActiveCount > 1)
+					m_iCurCharacter = 1;
+			}
+		}
+		else if (pGM->OnMouse(m_OrthoSelectCharacterIcon[2]))
+		{
+			{
+				if (iActiveCount > 2)
+					m_iCurCharacter = 2;
+			}
+		}
+
+		if (pGM->OnMouse(m_OrthoFoodConfirm))
+		{
+			// 음식먹기
+			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
+			{
+				m_bFoodPanel = false;
+				CItem::ITEM_DESC itemData = m_pInven->GetSlotData(eInvenType, m_iCurSlot);
+				m_pInven->DiscardItem(eInvenType, m_iCurSlot, 1);
+
+				// 음식 먹기
+				switch (itemData.eItemGrade)
+				{
+				case CItem::NORMAL:
+					m_pPlayerState->AddHP((CPlayerState::CHARACTERS)m_iCurCharacter, 250.f);
+					break;
+				case CItem::ADVANCED:
+					m_pPlayerState->AddHP((CPlayerState::CHARACTERS)m_iCurCharacter, 500.f);
+					break;
+				case CItem::RARE:
+					m_pPlayerState->UseFoodBuff(CPlayerState::FOOD_DEFENSE, itemData.iImageIndex);
+					break;
+				case CItem::UNIQUE:
+					m_pPlayerState->UseFoodBuff(CPlayerState::FOOD_ATTACK, itemData.iImageIndex);
+					break;
+				case CItem::LEGEND:
+					m_pPlayerState->UseFoodBuff(CPlayerState::FOOD_CRIRATE, itemData.iImageIndex);
+					break;
+				}
+			}
+		}
 	}
 }
 
@@ -1124,22 +1354,36 @@ HRESULT CBackpackUI::mainRender()
 		m_pVIBuffer->Render();
 
 		// 아이템 사용
-		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoFoodUse.WorldMatrix)))
-			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fCurDescAlpha, sizeof(_float))))
-			return E_FAIL;
+		if (eInvenType == CInventory::INVEN_COOK)
+		{
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoFoodUse.WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fCurDescAlpha, sizeof(_float))))
+				return E_FAIL;
 
-		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_GLOW_SOLID_BUTTON, m_pShader, "g_DiffuseTexture")))
-			return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_GLOW_SOLID_BUTTON, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
 
-		m_pShader->Begin(10);
-		m_pVIBuffer->Render();
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
 
-		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_USE, m_pShader, "g_DiffuseTexture")))
-			return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_USE, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
 
-		m_pShader->Begin(10);
-		m_pVIBuffer->Render();
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+
+			// Use Text
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoUseBtnText.WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fCurDescAlpha, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_USE_, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+
+		}
 
 		// 아이템 버리기
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoItemDiscard.WorldMatrix)))
@@ -1159,11 +1403,22 @@ HRESULT CBackpackUI::mainRender()
 
 		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
+
+		// Discard Text
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDiscardBtnText.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fCurDescAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_DISCARD, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
 	}
 
 	if (m_bDiscardPanel)
 	{
-		fAlpha = 1.f;
+		fAlpha = 3.f;
 		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDiscardBack.WorldMatrix)))
@@ -1174,6 +1429,7 @@ HRESULT CBackpackUI::mainRender()
 		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
 
+		fAlpha = 1.f;
 		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDiscardExit.WorldMatrix)))
@@ -1268,7 +1524,7 @@ HRESULT CBackpackUI::mainRender()
 					return E_FAIL;
 				break;
 			case 11:
-				if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::KEY_A, m_pShader, "g_DiffuseTexture")))
+				if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::KEY_END, m_pShader, "g_DiffuseTexture")))
 					return E_FAIL;
 				break;
 			default:
@@ -1279,6 +1535,17 @@ HRESULT CBackpackUI::mainRender()
 			m_pVIBuffer->Render();
 		}
 
+		fAlpha = 0.3f;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoTextOwnBack.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_BACK, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(13);
+		m_pVIBuffer->Render();
+
 		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoOwnText.WorldMatrix)))
@@ -1288,6 +1555,8 @@ HRESULT CBackpackUI::mainRender()
 
 		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
+
+
 
 		string strOwn = to_string(m_pInven->GetSlotData(eInvenType, m_iCurSlot).iAmount);
 		_uint iDigit = (_uint)strOwn.size();
@@ -1308,6 +1577,17 @@ HRESULT CBackpackUI::mainRender()
 			m_pVIBuffer->Render();
 		}
 
+		fAlpha = 0.3f;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoTextAmountBack.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_BACK, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(13);
+		m_pVIBuffer->Render();
+
 		fAlpha *= 0.7f;
 		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
 			return E_FAIL;
@@ -1318,24 +1598,239 @@ HRESULT CBackpackUI::mainRender()
 
 		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
-
-		strOwn = to_string(m_iCalcResultAmount);
-		iDigit = (_uint)strOwn.size();
-		if (iDigit > 5)
-			iDigit = 5;
-
-		for (_uint i = 0; i < iDigit; ++i)
+		
+		//strOwn = to_string();
+		if (!m_bConfirm)
 		{
+			iDigit = (_uint)m_AmountQueue.size();
+			if (iDigit > 5)
+				iDigit = 5;
+
+			for (_uint i = 0; i < iDigit; ++i)
+			{
+				if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+					return E_FAIL;
+				if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDiscardAmount[i].WorldMatrix)))
+					return E_FAIL;
+				if (FAILED(pGameInstance->SetupSRV(m_AmountQueue[i] - '0', m_pShader, "g_DiffuseTexture")))
+					return E_FAIL;
+
+				m_pShader->Begin(10);
+				m_pVIBuffer->Render();
+			}
+		}
+		else
+		{
+			string finalAmount = to_string(m_DiscardAmount);
+			iDigit = (_uint)finalAmount.size();
+			if (iDigit > 5)
+				iDigit = 5;
+
+			for (_uint i = 0; i < iDigit; ++i)
+			{
+				if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+					return E_FAIL;
+				if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDiscardAmount[i].WorldMatrix)))
+					return E_FAIL;
+				if (FAILED(pGameInstance->SetupSRV(finalAmount[i] - '0', m_pShader, "g_DiffuseTexture")))
+					return E_FAIL;
+
+				m_pShader->Begin(10);
+				m_pVIBuffer->Render();
+			}
+		}
+
+		fAlpha = 1.f;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoReset.WorldMatrix)))
+			return E_FAIL;
+
+		if (!ResetPush)
+		{
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_NONE, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_CLICK, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+		}
+
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoResetTextBtn.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_RESET, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectAll.WorldMatrix)))
+			return E_FAIL;
+
+		if (!SelectAllPush)
+		{
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_NONE, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_CLICK, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+		}
+
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectAllTextBtn.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SELECTALL, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDiscard.WorldMatrix)))
+			return E_FAIL;
+
+		if (!DiscardPush && m_bConfirm)
+		{
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_NONE, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_CLICK, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+		}
+
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDiscardTextBtn.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_DISCARD, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+	}
+
+	if (m_bFoodPanel)
+	{
+		CPlayerState::PLAYER_STATE* pState = m_pPlayerState->Get_PlayerState();
+		_uint iActiveCount = pState->iCharCount;
+
+		fAlpha = 1.f;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoFoodPanel.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::UI_PANEL, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		fAlpha = 1.f;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectCharText.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_SELECT_CHARACTER, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+
+		fAlpha = 1.f;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoExitFood.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ICON_BACKPAGE, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		for (_uint i = 0; i < 3; ++i)
+		{
+			if (i == m_iCurCharacter)
+				fAlpha = 1.f;
+			else
+				fAlpha = 0.5f;
+
 			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
 				return E_FAIL;
-			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDiscardAmount[i].WorldMatrix)))
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectCharacter[i].WorldMatrix)))
 				return E_FAIL;
-			if (FAILED(pGameInstance->SetupSRV(strOwn[i] - '0', m_pShader, "g_DiffuseTexture")))
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ITEM_SLOT_GLOW, m_pShader, "g_DiffuseTexture")))
 				return E_FAIL;
 
 			m_pShader->Begin(10);
 			m_pVIBuffer->Render();
 		}
+
+		for (_uint i = 0; i < 3; ++i)
+		{
+			fAlpha = 1.f;
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoSelectCharacterIcon[i].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::RECT_ROVER_ICON + i, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+
+			if(i < iActiveCount)
+				m_pShader->Begin(10);
+			else
+			{
+				vColor4 = { 1.f, 1.f, 1.f, 1.f };
+				if (FAILED(m_pShader->SetRawValue("g_vColor4", &vColor4, sizeof(_float4))))
+					return E_FAIL;
+				m_pShader->Begin(12);
+			}
+
+			m_pVIBuffer->Render();
+		}
+
+		fAlpha = 1.f;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoFoodConfirm.WorldMatrix)))
+			return E_FAIL;
+
+		if (m_bFoodConfirmPush)
+		{
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_CLICK, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_YELLOW_BUTTON_NONE, m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+		}
+
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+
+		fAlpha = 1.f;
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoFoodConfirmText.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_CONFIRM, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
 
 	}
 
