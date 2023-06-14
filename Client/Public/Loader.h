@@ -52,6 +52,12 @@ private:
 	_uint					m_Wait = 0;
 	_uint					m_Start = 0;
 
+private:
+	HRESULT Load_MapResource_GamePlay();
+	HRESULT Load_MapResource_City();
+	HRESULT Load_MapResource_Forest();
+	HRESULT Load_MapResource_Crown();
+
 };
 
 END

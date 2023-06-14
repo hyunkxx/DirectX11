@@ -368,21 +368,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
 
 	
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::NAVIGATION,
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Navigation/Navigation.data")))))
-		return E_FAIL;
-		
-
-#pragma region FOREST_LEVEL
-	/*
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::NAVIGATION,
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Forest/Navigation/Navigation.data")))))
-		return E_FAIL;
-		*/
-#pragma endregion FOREST_LEVEL
-
-
-
 	m_pApp->LoadRatio(0.2f);
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
 
@@ -413,6 +398,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
 		return E_FAIL;
 
+	if (FAILED(Load_MapResource_GamePlay()))
+	{
+		MSG_BOX("Failed to Load_MapResource_GamePlay");
+		return E_FAIL;
+	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_MONSTER_CROWNLESS_P1, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P3.dmdl")))))
 		return E_FAIL;
@@ -424,6 +414,1534 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, DMODEL::DMD_MONSTER_FHUXIUXIU, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/FHuxiuxiu.dmdl")))))
 		return E_FAIL;
+
+
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+		return E_FAIL;
+
+	m_pApp->LoadRatio(0.9f);
+	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODEL_INSTANCE, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL_INSTANCE.hlsl"), VTXSMODELINSTANCE_DECLARATION::Elements, VTXSMODELINSTANCE_DECLARATION::ElementCount))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : MODEL_INSTANCE_SHADER");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	m_pApp->LoadRatio(1.f);
+	//GamePlay GameObject
+#pragma region GAMEOBJECTS
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CAMERA, CPlayerCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_PLAYERGIRL, CP_PlayerGirl::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_YANGYANG, CP_Yangyang::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CHIXIA, CP_Chixia::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE, CMissile::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_CONSTANT, CMissile_Constant::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_ROTAROUND, CMissile_RotAround::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SANDBAG, CSandbag::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_GAZIZI, CM_GAzizi::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_ANJIN, CM_Anjin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_AWUKAKA, CM_AWukaka::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FHUXIUXIU, CM_FHuxiuxiu::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MAP_OBJECT, CMapObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_SIMPLE, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_SIMPLE))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_STANDARD, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_STANDARD))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_EXPANDED, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_EXPANDED))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UICharacter, UICharacter::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIWeapon, CUIWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//UIUI
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UI, CUI_MainScreen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MOUSE, CUI_Mouse::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMINIMAP, CUI_Minimap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITAPT, CUI_TapT::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMONSTER, CUI_Monster::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITIP, CUI_Tip::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMERCHANTMEN, CUI_MerchantMen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UISOUVI, CUI_Souvenir::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIPANHUA, CUI_Panhua::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion
+
+	m_Start = (_uint)time(nullptr);
+
+	while (true)
+	{
+		m_Wait = (_uint)time(nullptr);
+
+		if (m_Wait - m_Start >= 3)
+			break;
+	}
+
+	m_szLoadingStateText = L"Load Completed";
+	m_isFinish = true;	
+
+	return S_OK;
+}
+
+HRESULT CLoader::Load_Level_City()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::EYE_BURST,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::EYE_MASK,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeMask.dds"))))
+		return E_FAIL;
+
+
+	// ui
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Main/main%d.dds"), 255))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMOUSE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Mouse/CursorPre%d.dds"), 2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMAPDEFAULT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/DefaultIcon%d.dds"), 3))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMAPICON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Icon%d.dds"), 47))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIFIGHT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Fight/Fight%d.dds"), 90))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UITIP,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 29))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMERCHANT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/MerchantMen/merchantmen%d.dds"), 135))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UISOUVI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIPANHUA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
+		return E_FAIL;
+
+
+#pragma region COMPONENTS
+
+	m_pApp->LoadRatio(0.1f);
+	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+
+	if (FAILED(Load_MapResource_City()))
+	{
+		MSG_BOX("Failed to Load_MapResource_City");
+		return E_FAIL;
+	}
+
+	m_pApp->LoadRatio(0.2f);
+	m_szLoadingStateText = L"모델를 로딩중입니다.";
+
+	LoadCharacters(LEVEL_CITY);
+	LoadCharacterProps(LEVEL_CITY);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
+		return E_FAIL;
+
+	// DMODEL
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+	m_pApp->LoadRatio(0.6f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_SKY");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_SKY_LOBBY");
+		return E_FAIL;
+	}
+
+	m_pApp->LoadRatio(0.9f);
+	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+#pragma endregion COMPONENTS
+
+#pragma region GAMEOBJECTS
+
+	m_pApp->LoadRatio(1.f);
+	m_szLoadingStateText = L"객체원본을 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CITY_OBJECT, CCityObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion GAMEOBJECTS
+
+	m_Start = (_uint)time(nullptr);
+
+	while (true)
+	{
+		m_Wait = (_uint)time(nullptr);
+
+		if (m_Wait - m_Start >= 3)
+			break;
+	}
+
+	m_szLoadingStateText = L"Load Completed";
+	m_isFinish = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Load_Level_Forest()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::EYE_BURST,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::EYE_MASK,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeMask.dds"))))
+		return E_FAIL;
+
+
+	// ui
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Main/main%d.dds"), 255))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIMOUSE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Mouse/CursorPre%d.dds"), 2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIMAPDEFAULT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/DefaultIcon%d.dds"), 3))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIMAPICON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Icon%d.dds"), 47))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIFIGHT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Fight/Fight%d.dds"), 90))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UITIP,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 29))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIMERCHANT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/MerchantMen/merchantmen%d.dds"), 135))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UISOUVI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIPANHUA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
+		return E_FAIL;
+
+#pragma region COMPONENTS
+
+	m_pApp->LoadRatio(0.1f);
+	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+
+	m_pApp->LoadRatio(0.2f);
+	m_szLoadingStateText = L"모델를 로딩중입니다.";
+
+	LoadCharacters(LEVEL_FOREST);
+	LoadCharacterProps(LEVEL_FOREST);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_SIMPLE_BOX");
+		return E_FAIL;
+	}
+
+	// DMODEL
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : DMD_PLAYERGIRL_ANIMSET_BASE");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : DMD_PLAYERGIRL_ANIMSET_RIBBON");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_HUOJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Huojin.dmdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_BINGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Binglie.dmdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_FENGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Fenglie.dmdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_LEILIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leilie.dmdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_QUNJING, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Qunjing.dmdl")))))
+		return E_FAIL;
+
+
+	m_pApp->LoadRatio(0.6f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_SKY");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_SKY_LOBBY");
+		return E_FAIL;
+	}
+
+	if (FAILED(Load_MapResource_Forest()))
+	{
+		MSG_BOX("Failed to Load_MapResource_Forest");
+		return E_FAIL;
+	}
+  
+	m_pApp->LoadRatio(0.9f);
+	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SHADER::MODEL_INSTANCE, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL_INSTANCE.hlsl"), VTXSMODELINSTANCE_DECLARATION::Elements, VTXSMODELINSTANCE_DECLARATION::ElementCount))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : MODEL_INSTANCE_SHADER");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+#pragma endregion COMPONENTS
+
+#pragma region GAMEOBJECTS
+
+	m_pApp->LoadRatio(1.f);
+	m_szLoadingStateText = L"객체원본을 로딩중입니다.";	
+
+	// GamePlay 랑 중복된 객체원본 주석.
+	/*
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
+		return E_FAIL;	
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
+		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_PLAYERGIRL, CP_PlayerGirl::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_YANGYANG, CP_Yangyang::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CHIXIA, CP_Chixia::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+		*/
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_HUOJIN, CM_Huojin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_BINGLIE, CM_Binglie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FENGLIE, CM_Fenglie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_LEILIE, CM_Leilie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_QUNJING, CM_Qunjing::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion GAMEOBJECTS
+
+	m_Start = (_uint)time(nullptr);
+
+	while (true)
+	{
+		m_Wait = (_uint)time(nullptr);
+
+		if (m_Wait - m_Start >= 3)
+			break;
+	}
+
+	m_szLoadingStateText = L"Load Completed";
+	m_isFinish = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Load_Level_Crown()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::EYE_BURST,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::EYE_MASK,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeMask.dds"))))
+		return E_FAIL;
+
+
+	// ui
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Main/main%d.dds"), 255))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIMOUSE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Mouse/CursorPre%d.dds"), 2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIMAPDEFAULT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/DefaultIcon%d.dds"), 3))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIMAPICON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Icon%d.dds"), 47))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIFIGHT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Fight/Fight%d.dds"), 90))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UITIP,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 29))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIMERCHANT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/MerchantMen/merchantmen%d.dds"), 135))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UISOUVI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIPANHUA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
+		return E_FAIL;
+
+#pragma region COMPONENTS
+
+	m_pApp->LoadRatio(0.1f);
+	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+
+	
+	m_pApp->LoadRatio(0.2f);
+	m_szLoadingStateText = L"모델를 로딩중입니다.";
+
+	LoadCharacters(LEVEL_CROWN);
+	LoadCharacterProps(LEVEL_CROWN);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : SMD_SIMPLE_BOX");
+		return E_FAIL;
+	}
+
+	// DMODEL
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : DMD_PLAYERGIRL_ANIMSET_BASE");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : DMD_PLAYERGIRL_ANIMSET_RIBBON");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	m_pApp->LoadRatio(0.6f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : SMD_SKY");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : SMD_SKY_LOBBY");
+		return E_FAIL;
+	}
+
+	if (FAILED(Load_MapResource_Crown()))
+	{
+		MSG_BOX("Failed to Load_MapResource_Crown");
+		return E_FAIL;
+	} 
+
+	m_pApp->LoadRatio(0.9f);
+	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SHADER::MODEL_INSTANCE, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL_INSTANCE.hlsl"), VTXSMODELINSTANCE_DECLARATION::Elements, VTXSMODELINSTANCE_DECLARATION::ElementCount))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : MODEL_INSTANCE_SHADER");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+#pragma endregion COMPONENTS
+
+#pragma region GAMEOBJECTS
+
+	m_pApp->LoadRatio(1.f);
+	m_szLoadingStateText = L"객체원본을 로딩중입니다.";
+
+#pragma endregion GAMEOBJECTS
+
+	m_Start = (_uint)time(nullptr);
+
+	while (true)
+	{
+		m_Wait = (_uint)time(nullptr);
+
+		if (m_Wait - m_Start >= 3)
+			break;
+	}
+
+	m_szLoadingStateText = L"Load Completed";
+	m_isFinish = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Load_Level_AnimTool()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CAnimToolManager* pAnimTool = CAnimToolManager::GetInstance();
+
+	//GamePlay Component
+#pragma region COMPONENTS
+	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
+
+	m_pApp->LoadRatio(0.1f);
+	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+
+	m_pApp->LoadRatio(0.3f);
+	m_szLoadingStateText = L"모델를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY, CSky::Create(m_pDevice, m_pContext, CSky::DEFAULT))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY_LOBBY, CSky::Create(m_pDevice, m_pContext, CSky::LOBBY))))
+		return E_FAIL;
+
+
+	// SModel
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_GUN_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun01/Gun01.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
+		return E_FAIL;
+
+	// DModel
+	// Playergirl == nvzhu == 방순이
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
+		return E_FAIL;
+	m_pApp->LoadRatio(0.5f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	// yangyang == 양양
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	// chixia == 쌍권총녀 // AimAttack, AirAttack, HoldShot 더 있음
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Ribbon.dmdl")))))
+		return E_FAIL;
+
+
+	// 4속성 정령 컨셉 몬스터들
+	// GAzizi == 원기옥 == 광속성, AWukaka == 자폭 동글이 == 암속성, FHuxiuxiu == 풍속성, HKacaca == 화속성 
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_GAZIZI, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/GAzizi.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_AWUKAKA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/AWukaka.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_FHUXIUXIU, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/FHuxiuxiu.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_HKACACA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/HKacaca.dmdl")))))
+		return E_FAIL;
+
+	// 인간형 유령? 컨셉 몬스터들
+	// ANJIN == 낫맨, HUOJIN == 칼맨, BingLie == 얼음창맨, FengLie == 선풍기맨, LeiLie == 번개활맨
+	// LeiFa == 번개 마법사, QunJing == 껍질 골렘
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_HUOJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Huojin.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Binglie.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_FENGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Fenglie.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_LEILIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leilie.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_LEIFA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leifa.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_QUNJING, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Qunjing.dmdl")))))
+		return E_FAIL;
+
+	//// 늑대 몹들
+	//// Binlang1~2 == 쫄 늑대(색깔놀이), Binlang Elite == 대장 늑대
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINLANG_01, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Wolf/Binlang01.dmdl")))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINLANG_02, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Wolf/Binlang02.dmdl")))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINLANG_ELITE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Wolf/BinlangElite.dmdl")))))
+	//	return E_FAIL;
+
+	// 보스들
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_CROWNLESS_P1, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P1.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_CROWNLESS_P2, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P2.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_CROWNLESS_P3, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P3.dmdl")))))
+		return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_INFERNORIDER, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/InfernoRider/InfernoRider.dmdl")))))
+	//	return E_FAIL;
+
+	m_pApp->LoadRatio(0.6f);
+	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+#pragma endregion
+
+	m_pApp->LoadRatio(1.f);
+	//GamePlay GameObject
+#pragma region GAMEOBJECTS
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/*if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_NULL, CTestGeneric::Create(m_pDevice, m_pContext))))
+		return E_FAIL;*/
+
+
+	//VTF
+	CTestVTF::TESTVTF_DESC tDesc;
+	 //PLAYERGIRL
+	ZeroMemory(&tDesc, sizeof tDesc);
+	tDesc.iModelID = DMODEL::DMD_PLAYERGIRL_MODEL;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_5_MAIN;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_5_SUB;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_1;
+	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_PlayerGirl/PlayerGirl_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_PLAYERGIRL, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_PLAYERGIRL), TEXT("PlayerGirl"));
+
+	 //PLAYERGIRL_UI
+	ZeroMemory(&tDesc, sizeof tDesc);
+	tDesc.iModelID = DMODEL::DMD_PLAYERGIRL_MODEL;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_PLAYERGIRL_UI_BASE;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_PLAYERGIRL_UI_RIBBON;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_5_MAIN;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_5_SUB;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_1;
+	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_PlayerGirl_UI/PlayerGirl_UI_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_PLAYERGIRL_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_PLAYERGIRL_UI), TEXT("PlayerGirl_UI"));
+
+	 //YANGYANG
+	ZeroMemory(&tDesc, sizeof tDesc);
+	tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_ANIMSET_BASE;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_ANIMSET_RIBBON;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_5_MAIN;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_5_SUB;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_2;
+	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang/YangYang_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG), TEXT("YangYang"));
+
+	 //YANGYANG_UI
+	ZeroMemory(&tDesc, sizeof tDesc);
+	tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_UI_BASE;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_UI_RIBBON;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_5_MAIN;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_5_SUB;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_2;
+	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang_UI/YangYang_UI_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG_UI), TEXT("YangYang_UI"));
+
+	// CHIXIA
+	ZeroMemory(&tDesc, sizeof tDesc);
+	tDesc.iModelID = DMODEL::DMD_CHIXIA_MODEL;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_CHIXIA_ANIMSET_BASE;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_CHIXIA_ANIMSET_RIBBON;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_GUN_5;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_GUN_5;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_3;
+	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_ChiXia/ChiXia_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_CHIXIA, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_CHIXIA), TEXT("ChiXia"));
+
+	// CHIXIA_UI
+	ZeroMemory(&tDesc, sizeof tDesc);
+	tDesc.iModelID = DMODEL::DMD_CHIXIA_MODEL;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_CHIXIA_UI_BASE;
+	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_CHIXIA_UI_RIBBON;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_GUN_5;
+	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_GUN_5;
+	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_3;
+	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_ChiXia_UI/ChiXia_UI_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_CHIXIA_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_CHIXIA_UI), TEXT("ChiXia_UI"));
+
+
+	CTestGeneric::TESTGENERIC_DESC tGenericDesc;
+	//GENERIC
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_GAZIZI;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_GAzizi/GAzizi_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_GAZIZI, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_GAZIZI), TEXT("GAzizi"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_AWUKAKA;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_AWukaka/AWukaka_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_AWUKAKA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_AWUKAKA), TEXT("AWukaka"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_HKACACA;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_HKacaca/HKacaca_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_HKACACA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_HKACACA), TEXT("HKacaca"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_FHUXIUXIU;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_FHuxiuxiu/FHuxiuxiu_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_FHUXIUXIU, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_FHUXIUXIU), TEXT("FHuxiuxiu"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_ANJIN;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Anjin/Anjin_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_ANJIN, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_ANJIN), TEXT("Anjin"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_HUOJIN;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Huojin/Huojin_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_HUOJIN, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_HUOJIN), TEXT("Huojin"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_BINGLIE;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Binglie/Binglie_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_BINGLIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_BINGLIE), TEXT("Binglie"));
+
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_FENGLIE;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Fenglie/Fenglie_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_FENGLIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_FENGLIE), TEXT("Fenglie"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_LEILIE;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Leilie/Leilie_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_LEILIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_LEILIE), TEXT("Leilie"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_LEIFA;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Leifa/Leifa_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_LEIFA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_LEIFA), TEXT("Leifa"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_QUNJING;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Qunjing/Qunjing_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_QUNJING, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_QUNJING), TEXT("Qunjing"));
+
+	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_BINLANG_01;
+	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Binlang/Binlang_%d.state"));
+
+	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_BINLANG_01, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+	//	return E_FAIL;
+	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_BINLANG_01), TEXT("Binlang01"));
+
+	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_BINLANG_02;
+	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Binlang/Binlang_%d.state"));
+
+	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_BINLANG_02, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+	//	return E_FAIL;
+	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_BINLANG_02), TEXT("Binlang02"));
+
+	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_BINLANG_ELITE;
+	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_BinlangElite/BinlangElite_%d.state"));
+
+	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_BINLANG_ELITE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+	//	return E_FAIL;
+	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_BINLANG_ELITE), TEXT("BinlangElite"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_CROWNLESS_P1;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Crownless_P1/M_Crownless_P1_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_CROWNLESS_P1, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_CROWNLESS_P1), TEXT("Crownless_P1"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_CROWNLESS_P2;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Crownless_P2/M_Crownless_P2_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_CROWNLESS_P2, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_CROWNLESS_P2), TEXT("Crownless_P2"));
+
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_CROWNLESS_P3;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Crownless_P3/M_Crownless_P3_%d.state"));
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_CROWNLESS_P3, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_CROWNLESS_P3), TEXT("Crownless_P3"));
+
+	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_INFERNORIDER;
+	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_InfernoRider/M_InfernoRider_%d.state"));
+
+	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_INFERNORIDER, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+	//	return E_FAIL;
+	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_INFERNORIDER), TEXT("InfernoRider"));
+
+
+	// GENERIC 끝
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
+		return E_FAIL;
+
+#pragma endregion
+
+	m_szLoadingStateText = L"Load Completed";
+	m_isFinish = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Load_Level_Test()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	//GamePlay Component
+#pragma region COMPONENTS
+	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
+	// UI
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Main/main%d.dds"), 255))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMOUSE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Mouse/CursorPre%d.dds"), 2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMAP,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Map%d.dds"), 2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMAPDEFAULT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/DefaultIcon%d.dds"), 2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMAPICON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Icon%d.dds"), 47))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIFIGHT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Fight/Fight%d.dds"), 79))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::EYE_BURST,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::EYE_MASK,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeMask.dds"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::BOX_EMISSIVE,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Static/Prop/Interaction/SimpleBox/box_emissive.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::BOX_SPECULAR,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Static/Prop/Interaction/SimpleBox/box_spec.dds"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::BOX_SSAO,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Static/Prop/Interaction/SimpleBox/box_ssao.dds"))))
+		return E_FAIL;
+
+	m_pApp->LoadRatio(0.1f);
+	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, COMPONENT::NAVIGATION,
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Test/Navigation.data")))))
+		return E_FAIL;
+
+	m_pApp->LoadRatio(0.2f);
+	m_szLoadingStateText = L"모델를 로딩중입니다.";
+
+	// SMODEL
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_GUN_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun05/Gun05.smdl")))))
+		return E_FAIL;
+
+
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
+		return E_FAIL;
+
+	// DMODEL
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+	m_pApp->LoadRatio(0.6f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_CHIXIA_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_FHUXIUXIU, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/FHuxiuxiu.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_HUOJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Huojin.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_BINGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Binglie.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_FENGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Fenglie.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_LEILIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leilie.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_QUNJING, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Qunjing.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_CROWNLESS_P1, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P1.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_CROWNLESS_P2, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P2.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_CROWNLESS_P3, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P3.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+		return E_FAIL;
+
+	m_pApp->LoadRatio(0.9f);
+	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
+		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	m_pApp->LoadRatio(1.f);
+	//GamePlay GameObject
+#pragma region GAMEOBJECTS
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CAMERA, CPlayerCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_PLAYERGIRL, CP_PlayerGirl::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_YANGYANG, CP_Yangyang::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CHIXIA, CP_Chixia::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE, CMissile::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_CONSTANT, CMissile_Constant::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_ROTAROUND, CMissile_RotAround::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SANDBAG, CSandbag::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_ANJIN, CM_Anjin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_HUOJIN, CM_Huojin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_BINGLIE, CM_Binglie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FENGLIE, CM_Fenglie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_LEILIE, CM_Leilie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_QUNJING, CM_Qunjing::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FHUXIUXIU, CM_FHuxiuxiu::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P1, CM_Crownless_P1::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P2, CM_Crownless_P2::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P3, CM_Crownless_P3::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MAP_OBJECT, CMapObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_SIMPLE, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_SIMPLE))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_STANDARD, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_STANDARD))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_EXPANDED, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_EXPANDED))))
+		return E_FAIL;
+
+	//UIUI
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UI, CUI_MainScreen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMONSTER, CUI_Monster::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion
+
+	m_Start = (_uint)time(nullptr);
+
+	while (true)
+	{
+		m_Wait = (_uint)time(nullptr);
+
+		if (m_Wait - m_Start >= 3)
+			break;
+	}
+
+	m_szLoadingStateText = L"Load Completed";
+	m_isFinish = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::LoadCharacters(_uint iLevel)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_UI_ROVER, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Base.dmdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_UI_ROVER_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_UI_YANGYANG, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Base.dmdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_UI_YANGYANG_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_CHIXIA_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia.dmdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_UI_CHIXIA, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Base.dmdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_UI_CHIXIA_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::LoadCharacterProps	(_uint iLevel)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_1_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Main.smdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_1_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sub.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_2_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword02/Sword02_Main.smdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_2_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword02/Sword02_Sub.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_3_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword03/Sword03_Main.smdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_3_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword03/Sword03_Sub.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_4_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword04/Sword04_Main.smdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_4_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword04/Sword04_Sub.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_GUN_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun01/Gun01.smdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_GUN_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun02/Gun02.smdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_GUN_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun03/Gun03.smdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_GUN_4, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun04/Gun04.smdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_GUN_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun05/Gun05.smdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL_ID eNextLevel)
+{
+	CLoader* pInstance = new CLoader(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize(eNextLevel)))
+	{
+		wstring message = L"Failed to Create : CLoader";
+		MESSAGE(message);
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CLoader::Free()
+{
+	WaitForSingleObject(m_hThread, INFINITE);
+
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pContext);
+
+	DeleteCriticalSection(&m_hCriticalSection);
+	CloseHandle(m_hThread);
+}
+
+HRESULT CLoader::Load_MapResource_GamePlay()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::NAVIGATION,
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Navigation/Navigation.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : NAVIGATION");
+		return E_FAIL;
+	}
+
+#pragma region TERRAIN
+
+	// Height7 Height7_1 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::VIBUFFER_TERRAIN,
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height7_1.bmp"), TEXT("../../Data/GamePlay/Terrain/Height_Map/Vertices.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : VIBUFFER_TERRAIN");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_FILTER,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Terrain/Filter_Map/Filter.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : TERRAIN_FILTER");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_D_1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_01_D.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : TERRAIN_D_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_D_2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Roc_01A_D.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : TERRAIN_D_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_D_3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_16_D.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : TERRAIN_D_3");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_D_4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_02_D.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : TERRAIN_D_4");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_N_1,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_01_N.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : TERRAIN_N_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_N_2,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Roc_01A_N.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : TERRAIN_N_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_N_3,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_16_N.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : TERRAIN_N_3");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_N_4,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_02_N.dds")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : TERRAIN_N_4");
+		return E_FAIL;
+	}
+
+#pragma endregion TERRAIN
+
+#pragma region INSTANCE_OBJECT
 
 #pragma region TREE
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_TREE_0, CModel_Instance::Create(m_pDevice, m_pContext,
@@ -1152,70 +2670,70 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	/*
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_GRASS_6, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass0.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_6.data")))))
+	TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass0.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_6.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_6");
-		return E_FAIL;
+	MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_6");
+	return E_FAIL;
 	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_GRASS_7, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass1.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_7.data")))))
+	TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass1.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_7.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_7");
-		return E_FAIL;
+	MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_7");
+	return E_FAIL;
 	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_GRASS_8, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass2.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_8.data")))))
+	TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass2.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_8.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_8");
-		return E_FAIL;
+	MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_8");
+	return E_FAIL;
 	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_GRASS_9, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass3.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_9.data")))))
+	TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass3.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_9.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_9");
-		return E_FAIL;
+	MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_9");
+	return E_FAIL;
 	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_GRASS_10, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass4.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_10.data")))))
+	TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass4.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_10.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_10");
-		return E_FAIL;
+	MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_10");
+	return E_FAIL;
 	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_GRASS_11, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass5.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_11.data")))))
+	TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass5.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_11.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_11");
-		return E_FAIL;
+	MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_11");
+	return E_FAIL;
 	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_GRASS_12, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass6.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_12.data")))))
+	TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass6.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_12.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_12");
-		return E_FAIL;
+	MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_12");
+	return E_FAIL;
 	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_GRASS_13, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass7.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_13.data")))))
+	TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass7.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_13.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_13");
-		return E_FAIL;
+	MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_13");
+	return E_FAIL;
 	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_GRASS_14, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass8.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_14.data")))))
+	TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass8.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_14.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_14");
-		return E_FAIL;
+	MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_14");
+	return E_FAIL;
 	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_GRASS_15, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass9.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_15.data")))))
+	TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass9.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_15.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_15");
-		return E_FAIL;
+	MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_15");
+	return E_FAIL;
 	}
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SIMODEL::SIMD_GRASS_16, CModel_Instance::Create(m_pDevice, m_pContext,
-		TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass10.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_16.data")))))
+	TEXT("../../Resource/Model/Static/Map/Object/Test/V_Grass10.smdl"), TEXT("../../Data/GamePlay/MapObject/Grass/Grass_16.data")))))
 	{
-		MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_16");
-		return E_FAIL;
+	MSG_BOX("Failed to Prototype In Loader : SIMD_GRASS_16");
+	return E_FAIL;
 	}*/
 
 #pragma endregion GRASS
@@ -1629,235 +3147,29 @@ HRESULT CLoader::Load_Level_GamePlay()
 		MSG_BOX("Failed to Prototype In Loader : SIMD_STATUE_1");
 		return E_FAIL;
 	}
-#pragma endregion STATUE
+#pragma endregion STATUE  
 
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
-		return E_FAIL;
-
-#pragma region TERRAIN
-
-	// Height7 Height7_1 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::VIBUFFER_TERRAIN,
-		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height7_1.bmp"), TEXT("../../Data/GamePlay/Terrain/Height_Map/Vertices.data")))))
-		return E_FAIL;
-		
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_FILTER,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Terrain/Filter_Map/Filter.dds")))))
-		return E_FAIL;
-		
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_D_1,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_01_D.dds")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_D_2,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Roc_01A_D.dds")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_D_3,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_16_D.dds")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_D_4,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_02_D.dds")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_N_1,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_01_N.dds")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_N_2,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Roc_01A_N.dds")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_N_3,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_San_16_N.dds")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::TERRAIN_N_4,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_02_N.dds")))))
-		return E_FAIL;
-
-
-#pragma endregion TERRAIN
-
-	m_pApp->LoadRatio(0.9f);
-	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODEL_INSTANCE, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODEL_INSTANCE.hlsl"), VTXSMODELINSTANCE_DECLARATION::Elements, VTXSMODELINSTANCE_DECLARATION::ElementCount))))
-	{
-		MSG_BOX("Failed to Prototype In Loader : MODEL_INSTANCE_SHADER");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-	m_pApp->LoadRatio(1.f);
-	//GamePlay GameObject
-#pragma region GAMEOBJECTS
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CAMERA, CPlayerCamera::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_PLAYERGIRL, CP_PlayerGirl::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_YANGYANG, CP_Yangyang::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CHIXIA, CP_Chixia::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE, CMissile::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_CONSTANT, CMissile_Constant::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_ROTAROUND, CMissile_RotAround::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SANDBAG, CSandbag::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_GAZIZI, CM_GAzizi::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_ANJIN, CM_Anjin::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_AWUKAKA, CM_AWukaka::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FHUXIUXIU, CM_FHuxiuxiu::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MAP_OBJECT, CMapObject::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_SIMPLE, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_SIMPLE))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_STANDARD, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_STANDARD))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_EXPANDED, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_EXPANDED))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UICharacter, UICharacter::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIWeapon, CUIWeapon::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	//UIUI
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UI, CUI_MainScreen::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MOUSE, CUI_Mouse::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMINIMAP, CUI_Minimap::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITAPT, CUI_TapT::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMONSTER, CUI_Monster::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITIP, CUI_Tip::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMERCHANTMEN, CUI_MerchantMen::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UISOUVI, CUI_Souvenir::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIPANHUA, CUI_Panhua::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-#pragma endregion
-
-	m_Start = (_uint)time(nullptr);
-
-	while (true)
-	{
-		m_Wait = (_uint)time(nullptr);
-
-		if (m_Wait - m_Start >= 3)
-			break;
-	}
-
-	m_szLoadingStateText = L"Load Completed";
-	m_isFinish = true;	
-
+#pragma endregion INSTANCE_OBJECT
+	 
 	return S_OK;
 }
 
-HRESULT CLoader::Load_Level_City()
+HRESULT CLoader::Load_MapResource_City()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::EYE_BURST,
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, COMPONENT::NAVIGATION,
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/City/Navigation/Navigation.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : NAVIGATION");
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::EYE_MASK,
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeMask.dds"))))
-		return E_FAIL;
-
-
-	// ui
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UI,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Main/main%d.dds"), 255))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMOUSE,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Mouse/CursorPre%d.dds"), 2))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMAPDEFAULT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/DefaultIcon%d.dds"), 3))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMAPICON,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Icon%d.dds"), 47))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIFIGHT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Fight/Fight%d.dds"), 90))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UITIP,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 29))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMERCHANT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/MerchantMen/merchantmen%d.dds"), 135))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UISOUVI,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIPANHUA,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
-		return E_FAIL;
-
-
-#pragma region COMPONENTS
-
-	m_pApp->LoadRatio(0.1f);
-	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+	}
 
 #pragma region TERRAIN
-	
+
 	// Height_0
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, COMPONENT::VIBUFFER_TERRAIN,
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Height_0.bmp"), TEXT("../../Data/City/Terrain/Height_Map/Vertices.data")))))
@@ -1871,7 +3183,7 @@ HRESULT CLoader::Load_Level_City()
 		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : TERRAIN_FILTER");
 		return E_FAIL;
 	}
-	
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::TERRAIN_D_1,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Terrain/Diffuse/T4_Gra_01_D.dds")))))
 	{
@@ -1923,29 +3235,6 @@ HRESULT CLoader::Load_Level_City()
 	}
 
 #pragma endregion TERRAIN
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, COMPONENT::NAVIGATION,
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/City/Navigation/Navigation.data")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : NAVIGATION");
-		return E_FAIL;
-	}
-	m_pApp->LoadRatio(0.2f);
-	m_szLoadingStateText = L"모델를 로딩중입니다.";
-
-	LoadCharacters(LEVEL_CITY);
-	LoadCharacterProps(LEVEL_CITY);
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
-		return E_FAIL;
-
-	// DMODEL
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
-		return E_FAIL;
-	m_pApp->LoadRatio(0.6f);
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
 
 #pragma region CITY_OBJECT 
 	// BUI
@@ -2116,113 +3405,21 @@ HRESULT CLoader::Load_Level_City()
 
 #pragma endregion CITY_OBJECT
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_SKY");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_SKY_LOBBY");
-		return E_FAIL;
-	}
-
-	m_pApp->LoadRatio(0.9f);
-	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-#pragma endregion COMPONENTS
-
-#pragma region GAMEOBJECTS
-
-	m_pApp->LoadRatio(1.f);
-	m_szLoadingStateText = L"객체원본을 로딩중입니다.";
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CITY_OBJECT, CCityObject::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-#pragma endregion GAMEOBJECTS
-
-	m_Start = (_uint)time(nullptr);
-
-	while (true)
-	{
-		m_Wait = (_uint)time(nullptr);
-
-		if (m_Wait - m_Start >= 3)
-			break;
-	}
-
-	m_szLoadingStateText = L"Load Completed";
-	m_isFinish = true;
-
 	return S_OK;
 }
 
-HRESULT CLoader::Load_Level_Forest()
+HRESULT CLoader::Load_MapResource_Forest()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::EYE_BURST,
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, COMPONENT::NAVIGATION,
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Forest/Navigation/Navigation.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : NAVIGATION");
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::EYE_MASK,
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeMask.dds"))))
-		return E_FAIL;
-
-
-	// ui
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UI,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Main/main%d.dds"), 255))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIMOUSE,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Mouse/CursorPre%d.dds"), 2))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIMAPDEFAULT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/DefaultIcon%d.dds"), 3))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIMAPICON,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Icon%d.dds"), 47))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIFIGHT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Fight/Fight%d.dds"), 90))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UITIP,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 29))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIMERCHANT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/MerchantMen/merchantmen%d.dds"), 135))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UISOUVI,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIPANHUA,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
-		return E_FAIL;
-
-#pragma region COMPONENTS
-
-	m_pApp->LoadRatio(0.1f);
-	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+	}
 
 #pragma region TERRAIN
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, COMPONENT::VIBUFFER_TERRAIN,
@@ -2291,76 +3488,7 @@ HRESULT CLoader::Load_Level_Forest()
 
 #pragma endregion TERRAIN
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, COMPONENT::NAVIGATION,
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Forest/Navigation/Navigation.data")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : NAVIGATION");
-		return E_FAIL;
-	}
-	m_pApp->LoadRatio(0.2f);
-	m_szLoadingStateText = L"모델를 로딩중입니다.";
-
-	LoadCharacters(LEVEL_FOREST);
-	LoadCharacterProps(LEVEL_FOREST);
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_SIMPLE_BOX");
-		return E_FAIL;
-	}
-
-	// DMODEL
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : DMD_PLAYERGIRL_ANIMSET_BASE");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : DMD_PLAYERGIRL_ANIMSET_RIBBON");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_HUOJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Huojin.dmdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_BINGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Binglie.dmdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_FENGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Fenglie.dmdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_LEILIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leilie.dmdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_QUNJING, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Qunjing.dmdl")))))
-		return E_FAIL;
-
-
-	m_pApp->LoadRatio(0.6f);
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_SKY");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_SKY_LOBBY");
-		return E_FAIL;
-	}
-
-
+#pragma region INSTANCE_OBJECT
 
 #pragma region TREE
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SIMODEL::SIMD_TREE_0, CModel_Instance::Create(m_pDevice, m_pContext,
@@ -3646,154 +4774,23 @@ HRESULT CLoader::Load_Level_Forest()
 	}
 #pragma endregion TOF_GRASS  
 
-	m_pApp->LoadRatio(0.9f);
-	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SHADER::MODEL_INSTANCE, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODEL_INSTANCE.hlsl"), VTXSMODELINSTANCE_DECLARATION::Elements, VTXSMODELINSTANCE_DECLARATION::ElementCount))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : MODEL_INSTANCE_SHADER");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-#pragma endregion COMPONENTS
-
-#pragma region GAMEOBJECTS
-
-	m_pApp->LoadRatio(1.f);
-	m_szLoadingStateText = L"객체원본을 로딩중입니다.";	
-
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_2))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_PLAYERGIRL, CP_PlayerGirl::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_YANGYANG, CP_Yangyang::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CHIXIA, CP_Chixia::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_HUOJIN, CM_Huojin::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_BINGLIE, CM_Binglie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FENGLIE, CM_Fenglie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_LEILIE, CM_Leilie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_QUNJING, CM_Qunjing::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-
-
-
-
-
-
-#pragma endregion GAMEOBJECTS
-
-	m_Start = (_uint)time(nullptr);
-
-	while (true)
-	{
-		m_Wait = (_uint)time(nullptr);
-
-		if (m_Wait - m_Start >= 3)
-			break;
-	}
-
-	m_szLoadingStateText = L"Load Completed";
-	m_isFinish = true;
+#pragma endregion INSTANCE_OBJECT
 
 	return S_OK;
 }
 
-HRESULT CLoader::Load_Level_Crown()
+HRESULT CLoader::Load_MapResource_Crown()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::EYE_BURST,
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, COMPONENT::NAVIGATION,
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Crown/Navigation/Navigation.data")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : NAVIGATION");
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::EYE_MASK,
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeMask.dds"))))
-		return E_FAIL;
-
-
-	// ui
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UI,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Main/main%d.dds"), 255))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIMOUSE,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Mouse/CursorPre%d.dds"), 2))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIMAPDEFAULT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/DefaultIcon%d.dds"), 3))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIMAPICON,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Icon%d.dds"), 47))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIFIGHT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Fight/Fight%d.dds"), 90))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UITIP,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 29))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIMERCHANT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/MerchantMen/merchantmen%d.dds"), 135))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UISOUVI,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Souvenir/souvenir%d.dds"), 122))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIPANHUA,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
-		return E_FAIL;
-
-#pragma region COMPONENTS
-
-	m_pApp->LoadRatio(0.1f);
-	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
+	}
 
 #pragma region TERRAIN
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, COMPONENT::VIBUFFER_TERRAIN,
@@ -3862,64 +4859,7 @@ HRESULT CLoader::Load_Level_Crown()
 
 #pragma endregion TERRAIN
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, COMPONENT::NAVIGATION,
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Crown/Navigation/Navigation.data")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : NAVIGATION");
-		return E_FAIL;
-	}
-	m_pApp->LoadRatio(0.2f);
-	m_szLoadingStateText = L"모델를 로딩중입니다.";
-
-	LoadCharacters(LEVEL_CROWN);
-	LoadCharacterProps(LEVEL_CROWN);
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : SMD_SIMPLE_BOX");
-		return E_FAIL;
-	}
-
-	// DMODEL
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : DMD_PLAYERGIRL_ANIMSET_BASE");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : DMD_PLAYERGIRL_ANIMSET_RIBBON");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	m_pApp->LoadRatio(0.6f);
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : SMD_SKY");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : SMD_SKY_LOBBY");
-		return E_FAIL;
-	}
-
-
+#pragma region INSTANCE_OBJECT
 
 #pragma region TREE
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SIMODEL::SIMD_TREE_0, CModel_Instance::Create(m_pDevice, m_pContext,
@@ -5205,856 +6145,7 @@ HRESULT CLoader::Load_Level_Crown()
 	}
 #pragma endregion TOF_GRASS  
 
-	m_pApp->LoadRatio(0.9f);
-	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SHADER::MODEL_INSTANCE, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODEL_INSTANCE.hlsl"), VTXSMODELINSTANCE_DECLARATION::Elements, VTXSMODELINSTANCE_DECLARATION::ElementCount))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : MODEL_INSTANCE_SHADER");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-#pragma endregion COMPONENTS
-
-#pragma region GAMEOBJECTS
-
-	m_pApp->LoadRatio(1.f);
-	m_szLoadingStateText = L"객체원본을 로딩중입니다.";
-
-#pragma endregion GAMEOBJECTS
-
-	m_Start = (_uint)time(nullptr);
-
-	while (true)
-	{
-		m_Wait = (_uint)time(nullptr);
-
-		if (m_Wait - m_Start >= 3)
-			break;
-	}
-
-	m_szLoadingStateText = L"Load Completed";
-	m_isFinish = true;
+#pragma endregion INSTANCE_OBJECT
 
 	return S_OK;
-}
-
-HRESULT CLoader::Load_Level_AnimTool()
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	CAnimToolManager* pAnimTool = CAnimToolManager::GetInstance();
-
-	//GamePlay Component
-#pragma region COMPONENTS
-	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
-
-	m_pApp->LoadRatio(0.1f);
-	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
-
-	m_pApp->LoadRatio(0.3f);
-	m_szLoadingStateText = L"모델를 로딩중입니다.";
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY, CSky::Create(m_pDevice, m_pContext, CSky::DEFAULT))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY_LOBBY, CSky::Create(m_pDevice, m_pContext, CSky::LOBBY))))
-		return E_FAIL;
-
-
-	// SModel
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_GUN_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun01/Gun01.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
-		return E_FAIL;
-
-	// DModel
-	// Playergirl == nvzhu == 방순이
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
-		return E_FAIL;
-	m_pApp->LoadRatio(0.5f);
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_PLAYERGIRL_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	// yangyang == 양양
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_YANGYANG_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	// chixia == 쌍권총녀 // AimAttack, AirAttack, HoldShot 더 있음
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_UI_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_CHIXIA_UI_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Ribbon.dmdl")))))
-		return E_FAIL;
-
-
-	// 4속성 정령 컨셉 몬스터들
-	// GAzizi == 원기옥 == 광속성, AWukaka == 자폭 동글이 == 암속성, FHuxiuxiu == 풍속성, HKacaca == 화속성 
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_GAZIZI, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/GAzizi.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_AWUKAKA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/AWukaka.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_FHUXIUXIU, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/FHuxiuxiu.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_HKACACA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/HKacaca.dmdl")))))
-		return E_FAIL;
-
-	// 인간형 유령? 컨셉 몬스터들
-	// ANJIN == 낫맨, HUOJIN == 칼맨, BingLie == 얼음창맨, FengLie == 선풍기맨, LeiLie == 번개활맨
-	// LeiFa == 번개 마법사, QunJing == 껍질 골렘
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_HUOJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Huojin.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Binglie.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_FENGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Fenglie.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_LEILIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leilie.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_LEIFA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leifa.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_QUNJING, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Qunjing.dmdl")))))
-		return E_FAIL;
-
-	//// 늑대 몹들
-	//// Binlang1~2 == 쫄 늑대(색깔놀이), Binlang Elite == 대장 늑대
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINLANG_01, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Wolf/Binlang01.dmdl")))))
-	//	return E_FAIL;
-
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINLANG_02, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Wolf/Binlang02.dmdl")))))
-	//	return E_FAIL;
-
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_BINLANG_ELITE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Wolf/BinlangElite.dmdl")))))
-	//	return E_FAIL;
-
-	// 보스들
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_CROWNLESS_P1, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P1.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_CROWNLESS_P2, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P2.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_CROWNLESS_P3, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P3.dmdl")))))
-		return E_FAIL;
-
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_INFERNORIDER, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/InfernoRider/InfernoRider.dmdl")))))
-	//	return E_FAIL;
-
-	m_pApp->LoadRatio(0.6f);
-	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-#pragma endregion
-
-	m_pApp->LoadRatio(1.f);
-	//GamePlay GameObject
-#pragma region GAMEOBJECTS
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/*if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_NULL, CTestGeneric::Create(m_pDevice, m_pContext))))
-		return E_FAIL;*/
-
-
-	//VTF
-	CTestVTF::TESTVTF_DESC tDesc;
-	 //PLAYERGIRL
-	ZeroMemory(&tDesc, sizeof tDesc);
-	tDesc.iModelID = DMODEL::DMD_PLAYERGIRL_MODEL;
-	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE;
-	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_5_MAIN;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_5_SUB;
-	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_1;
-	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_PlayerGirl/PlayerGirl_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_PLAYERGIRL, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_PLAYERGIRL), TEXT("PlayerGirl"));
-
-	 //PLAYERGIRL_UI
-	ZeroMemory(&tDesc, sizeof tDesc);
-	tDesc.iModelID = DMODEL::DMD_PLAYERGIRL_MODEL;
-	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_PLAYERGIRL_UI_BASE;
-	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_PLAYERGIRL_UI_RIBBON;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_5_MAIN;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_5_SUB;
-	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_1;
-	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_PlayerGirl_UI/PlayerGirl_UI_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_PLAYERGIRL_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_PLAYERGIRL_UI), TEXT("PlayerGirl_UI"));
-
-	 //YANGYANG
-	ZeroMemory(&tDesc, sizeof tDesc);
-	tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
-	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_ANIMSET_BASE;
-	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_ANIMSET_RIBBON;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_5_MAIN;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_5_SUB;
-	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_2;
-	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang/YangYang_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG), TEXT("YangYang"));
-
-	 //YANGYANG_UI
-	ZeroMemory(&tDesc, sizeof tDesc);
-	tDesc.iModelID = DMODEL::DMD_YANGYANG_MODEL;
-	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_YANGYANG_UI_BASE;
-	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_YANGYANG_UI_RIBBON;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_SWORD_5_MAIN;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_SWORD_5_SUB;
-	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_2;
-	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_YangYang_UI/YangYang_UI_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_YANGYANG_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_YANGYANG_UI), TEXT("YangYang_UI"));
-
-	// CHIXIA
-	ZeroMemory(&tDesc, sizeof tDesc);
-	tDesc.iModelID = DMODEL::DMD_CHIXIA_MODEL;
-	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_CHIXIA_ANIMSET_BASE;
-	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_CHIXIA_ANIMSET_RIBBON;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_GUN_5;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_GUN_5;
-	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_3;
-	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_ChiXia/ChiXia_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_CHIXIA, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_CHIXIA), TEXT("ChiXia"));
-
-	// CHIXIA_UI
-	ZeroMemory(&tDesc, sizeof tDesc);
-	tDesc.iModelID = DMODEL::DMD_CHIXIA_MODEL;
-	tDesc.iAnimSetID[CTestVTF::ANIMSET_BASE] = DMODEL::DMD_CHIXIA_UI_BASE;
-	tDesc.iAnimSetID[CTestVTF::ANIMSET_RIBBON] = DMODEL::DMD_CHIXIA_UI_RIBBON;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_MAIN] = OBJECT::PARTS_GUN_5;
-	tDesc.iPartsID[CTestVTF::PARTS_WEAPON_SUB] = OBJECT::PARTS_GUN_5;
-	tDesc.iPartsID[CTestVTF::PARTS_HULU] = OBJECT::PARTS_HULU_3;
-	lstrcpy(tDesc.szFilePath, TEXT("../../Data/CharState/P_ChiXia_UI/ChiXia_UI_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTVTF_CHIXIA_UI, CTestVTF::Create(m_pDevice, m_pContext, &tDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_VTF, VTFID(OBJECT::TESTVTF_CHIXIA_UI), TEXT("ChiXia_UI"));
-
-
-	CTestGeneric::TESTGENERIC_DESC tGenericDesc;
-	//GENERIC
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_GAZIZI;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_GAzizi/GAzizi_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_GAZIZI, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_GAZIZI), TEXT("GAzizi"));
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_AWUKAKA;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_AWukaka/AWukaka_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_AWUKAKA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_AWUKAKA), TEXT("AWukaka"));
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_HKACACA;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_HKacaca/HKacaca_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_HKACACA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_HKACACA), TEXT("HKacaca"));
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_FHUXIUXIU;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_FHuxiuxiu/FHuxiuxiu_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_FHUXIUXIU, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_FHUXIUXIU), TEXT("FHuxiuxiu"));
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_ANJIN;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Anjin/Anjin_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_ANJIN, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_ANJIN), TEXT("Anjin"));
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_HUOJIN;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Huojin/Huojin_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_HUOJIN, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_HUOJIN), TEXT("Huojin"));
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_BINGLIE;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Binglie/Binglie_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_BINGLIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_BINGLIE), TEXT("Binglie"));
-
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_FENGLIE;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Fenglie/Fenglie_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_FENGLIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_FENGLIE), TEXT("Fenglie"));
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_LEILIE;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Leilie/Leilie_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_LEILIE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_LEILIE), TEXT("Leilie"));
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_LEIFA;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Leifa/Leifa_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_LEIFA, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_LEIFA), TEXT("Leifa"));
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_QUNJING;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Qunjing/Qunjing_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_QUNJING, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_QUNJING), TEXT("Qunjing"));
-
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_BINLANG_01;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Binlang/Binlang_%d.state"));
-
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_BINLANG_01, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_BINLANG_01), TEXT("Binlang01"));
-
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_BINLANG_02;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Binlang/Binlang_%d.state"));
-
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_BINLANG_02, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_BINLANG_02), TEXT("Binlang02"));
-
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_BINLANG_ELITE;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_BinlangElite/BinlangElite_%d.state"));
-
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_BINLANG_ELITE, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_BINLANG_ELITE), TEXT("BinlangElite"));
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_CROWNLESS_P1;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Crownless_P1/M_Crownless_P1_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_CROWNLESS_P1, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_CROWNLESS_P1), TEXT("Crownless_P1"));
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_CROWNLESS_P2;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Crownless_P2/M_Crownless_P2_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_CROWNLESS_P2, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_CROWNLESS_P2), TEXT("Crownless_P2"));
-
-	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_CROWNLESS_P3;
-	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_Crownless_P3/M_Crownless_P3_%d.state"));
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_CROWNLESS_P3, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-		return E_FAIL;
-	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_CROWNLESS_P3), TEXT("Crownless_P3"));
-
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_INFERNORIDER;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_InfernoRider/M_InfernoRider_%d.state"));
-
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_INFERNORIDER, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_INFERNORIDER), TEXT("InfernoRider"));
-
-
-	// GENERIC 끝
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_2))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
-		return E_FAIL;
-
-#pragma endregion
-
-	m_szLoadingStateText = L"Load Completed";
-	m_isFinish = true;
-	return S_OK;
-}
-
-HRESULT CLoader::Load_Level_Test()
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	//GamePlay Component
-#pragma region COMPONENTS
-	m_szLoadingStateText = L"텍스쳐를 로딩중입니다.";
-	// UI
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UI,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Main/main%d.dds"), 255))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMOUSE,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Mouse/CursorPre%d.dds"), 2))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMAP,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Map%d.dds"), 2))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMAPDEFAULT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/DefaultIcon%d.dds"), 2))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIMAPICON,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Map/Icon%d.dds"), 47))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::UIFIGHT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Fight/Fight%d.dds"), 79))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::EYE_BURST,
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::EYE_MASK,
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeMask.dds"))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::BOX_EMISSIVE,
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Static/Prop/Interaction/SimpleBox/box_emissive.dds"))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::BOX_SPECULAR,
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Static/Prop/Interaction/SimpleBox/box_spec.dds"))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, TEXTURE::BOX_SSAO,
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Static/Prop/Interaction/SimpleBox/box_ssao.dds"))))
-		return E_FAIL;
-
-	m_pApp->LoadRatio(0.1f);
-	m_szLoadingStateText = L"정점버퍼를 로딩중입니다.";
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, COMPONENT::NAVIGATION,
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Test/Navigation.data")))))
-		return E_FAIL;
-
-	m_pApp->LoadRatio(0.2f);
-	m_szLoadingStateText = L"모델를 로딩중입니다.";
-
-	// SMODEL
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_GUN_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun05/Gun05.smdl")))))
-		return E_FAIL;
-
-
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
-		return E_FAIL;
-
-	// DMODEL
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
-		return E_FAIL;
-	m_pApp->LoadRatio(0.6f);
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_CHIXIA_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_FHUXIUXIU, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/FHuxiuxiu.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_HUOJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Huojin.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_BINGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Binglie.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_FENGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Fenglie.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_LEILIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leilie.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_QUNJING, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Qunjing.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_CROWNLESS_P1, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P1.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_CROWNLESS_P2, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P2.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_CROWNLESS_P3, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P3.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
-		return E_FAIL;
-
-	m_pApp->LoadRatio(0.9f);
-	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SHADER::MODEL, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODEL.hlsl"), VTXSMODEL_DECLARATION::ElementDesc, VTXSMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, SHADER::MODELANIM, CShader::Create(m_pDevice, m_pContext,
-		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-	m_pApp->LoadRatio(1.f);
-	//GamePlay GameObject
-#pragma region GAMEOBJECTS
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CAMERA, CPlayerCamera::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_PLAYERGIRL, CP_PlayerGirl::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_YANGYANG, CP_Yangyang::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CHIXIA, CP_Chixia::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE, CMissile::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_CONSTANT, CMissile_Constant::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_ROTAROUND, CMissile_RotAround::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SANDBAG, CSandbag::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_ANJIN, CM_Anjin::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_HUOJIN, CM_Huojin::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_BINGLIE, CM_Binglie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FENGLIE, CM_Fenglie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_LEILIE, CM_Leilie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_QUNJING, CM_Qunjing::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FHUXIUXIU, CM_FHuxiuxiu::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P1, CM_Crownless_P1::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P2, CM_Crownless_P2::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P3, CM_Crownless_P3::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_2))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MAP_OBJECT, CMapObject::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_SIMPLE, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_SIMPLE))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_STANDARD, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_STANDARD))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_EXPANDED, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_EXPANDED))))
-		return E_FAIL;
-
-	//UIUI
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UI, CUI_MainScreen::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMONSTER, CUI_Monster::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-#pragma endregion
-
-	m_Start = (_uint)time(nullptr);
-
-	while (true)
-	{
-		m_Wait = (_uint)time(nullptr);
-
-		if (m_Wait - m_Start >= 3)
-			break;
-	}
-
-	m_szLoadingStateText = L"Load Completed";
-	m_isFinish = true;
-
-	return S_OK;
-}
-
-HRESULT CLoader::LoadCharacters(_uint iLevel)
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_PLAYERGIRL_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu.dmdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_UI_ROVER, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Base.dmdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_UI_ROVER_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_UI_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_YANGYANG_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang.dmdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_UI_YANGYANG, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Base.dmdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_UI_YANGYANG_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_UI_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_CHIXIA_MODEL, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia.dmdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_UI_CHIXIA, CModel_VTF::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Base.dmdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, DMODEL::DMD_UI_CHIXIA_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_UI_Ribbon.dmdl")))))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLoader::LoadCharacterProps	(_uint iLevel)
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_1_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Main.smdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_1_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword01/Sword01_Sub.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_2_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword02/Sword02_Main.smdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_2_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword02/Sword02_Sub.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_3_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword03/Sword03_Main.smdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_3_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword03/Sword03_Sub.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_4_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword04/Sword04_Main.smdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_4_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword04/Sword04_Sub.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_5_MAIN, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Main.smdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_SWORD_5_SUB, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Sword05/Sword05_Sub.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_GUN_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun01/Gun01.smdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_GUN_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun02/Gun02.smdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_GUN_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun03/Gun03.smdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_GUN_4, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun04/Gun04.smdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_GUN_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Gun05/Gun05.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_HULU_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu01/Hulu01.smdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_HULU_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu02/Hulu02.smdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(iLevel, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL_ID eNextLevel)
-{
-	CLoader* pInstance = new CLoader(pDevice, pContext);
-
-	if (FAILED(pInstance->Initialize(eNextLevel)))
-	{
-		wstring message = L"Failed to Create : CLoader";
-		MESSAGE(message);
-		Safe_Release(pInstance);
-	}
-
-	return pInstance;
-}
-
-void CLoader::Free()
-{
-	WaitForSingleObject(m_hThread, INFINITE);
-
-	Safe_Release(m_pDevice);
-	Safe_Release(m_pContext);
-
-	DeleteCriticalSection(&m_hCriticalSection);
-	CloseHandle(m_hThread);
 }

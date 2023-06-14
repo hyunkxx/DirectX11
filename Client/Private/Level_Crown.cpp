@@ -168,9 +168,6 @@ void CLevel_Crown::Tick(_double TimeDelta)
 	if (pGameInstance->InputKey(DIK_K) == KEY_STATE::TAP)
 		pGameInstance->TimeSlowDown(0.5f, 0.1f);
 
-
-	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_TAB))
-		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CROWN));
 }
 
 void CLevel_Crown::RenderLevelUI()
