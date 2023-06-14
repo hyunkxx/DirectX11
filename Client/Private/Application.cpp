@@ -2727,6 +2727,11 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/Comon/Hook/")))
 			return E_FAIL;
 
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Guide_Spirit_R.bin"),
+			"../../Resource/Effect/Comon/Spirit/")))
+			return E_FAIL;
+
 		for (_int j = 0; 3 > j; j++)
 		{
 			if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
@@ -3430,6 +3435,11 @@ HRESULT CApplication::Ready_Static_Effect()
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
 			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P3_Attack_Paralysis_01_1.bin"),
+			"../../Resource/Effect/B_Crownless/Attack/")))
+			return E_FAIL;
+		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::BOSS_CROWNLESS,
+			TEXT("../../Resource/Effect/B_Crownless/B_Crownless_P3_Hurricane.bin"),
 			"../../Resource/Effect/B_Crownless/Attack/")))
 			return E_FAIL;
 		
