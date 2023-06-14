@@ -47,7 +47,7 @@ void CBoom_Rock::Tick(_double TimeDelta)
 
 	__super::Tick(TimeDelta);
 	
-	if (m_bRimNight)
+	if (m_bRimLight)
 	{
 		m_fRimTime += (_float)TimeDelta;
 
@@ -58,7 +58,7 @@ void CBoom_Rock::Tick(_double TimeDelta)
 			{
 				m_fBurstRim = 0.f;
 				m_fRimTime = 0.f;
-				m_bRimNight = false;
+				m_bRimLight = false;
 			}
 		}
 	}
@@ -97,9 +97,9 @@ HRESULT CBoom_Rock::Render()
 	m_pShader->Begin(2);
 	m_pModel->Render(0);
 
-	if (m_fBurstRim > 0.f && m_bRimNight)
+	if (m_fBurstRim > 0.f && m_bRimLight)
 	{ 
-		_float vRimPower = 50.f;
+		_float vRimPower = 10.f;
 		_float fAlpha = 0.5f;
 		_float3 vColor = LEGEND_COLOR;
 		_float4 vRimColor = _float4(vColor.x, vColor.y, vColor.z, 1.f);
@@ -227,9 +227,9 @@ void CBoom_Rock::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
 	if (m_pCollider_Lader == src)
 	{
-		if (!m_bRimNight)
+		if (!m_bRimLight)
 		{
-			m_bRimNight = true;
+			m_bRimLight = true;
 			m_fRimTime = 0.f;
 			m_fBurstRim = 0.3f;
 		}

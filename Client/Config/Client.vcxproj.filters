@@ -420,6 +420,7 @@
     <ClCompile Include="..\Private\BackpackUI.cpp">
       <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Invisible_Chest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -818,6 +819,7 @@
     <ClInclude Include="..\Public\BackpackUI.h">
       <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Invisible_Chest.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

@@ -2711,6 +2711,29 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/Comon/M_Yellow_Hit.bin"),
 			"../../Resource/Effect/Comon/M_Hit/")))
 			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Box_Appear_Effect_G.bin"),
+			"../../Resource/Effect/Comon/Hook/")))
+			return E_FAIL;
+		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Box_Appear_Effect_Y.bin"),
+			"../../Resource/Effect/Comon/Hook/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Box_Appear_Effect_P.bin"),
+			"../../Resource/Effect/Comon/Hook/")))
+			return E_FAIL;
+
+		for (_int j = 0; 3 > j; j++)
+		{
+			if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+				TEXT("../../Resource/Effect/Comon/Invisible_Box_Effect.bin"),
+				"../../Resource/Effect/Comon/Hook/")))
+				return E_FAIL;
+		}
 	}
 
 #pragma endregion

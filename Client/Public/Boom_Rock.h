@@ -41,7 +41,7 @@ protected:
 
 	_bool	  m_bRender = { true };
 
-	_bool  m_bRimNight = { false };
+	_bool  m_bRimLight = { false };
 	_float m_fRimTime = { 0.f };
 	_float m_fBurstRim = { 0.3f };
 

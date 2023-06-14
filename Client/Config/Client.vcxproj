@@ -213,6 +213,7 @@
     <ClInclude Include="..\public\EchoSystem.h" />
     <ClInclude Include="..\Public\Efffect_Tool.h" />
     <ClInclude Include="..\public\Inventory.h" />
+    <ClInclude Include="..\Public\Invisible_Chest.h" />
     <ClInclude Include="..\public\Level_City.h" />
     <ClInclude Include="..\public\Level_Crown.h" />
     <ClInclude Include="..\public\Level_Forest.h" />
@@ -368,6 +369,7 @@
     <ClCompile Include="..\private\EchoSystem.cpp" />
     <ClCompile Include="..\Private\Efffect_Tool.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />
+    <ClCompile Include="..\Private\Invisible_Chest.cpp" />
     <ClCompile Include="..\private\Level_City.cpp" />
     <ClCompile Include="..\private\Level_Crown.cpp" />
     <ClCompile Include="..\private\Level_Forest.cpp" />

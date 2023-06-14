@@ -39,6 +39,8 @@
 #include "InteractionObject.h"
 #include "Chest.h"
 
+#include "Invisible_Chest.h"
+
 #include "PlayerCamera.h"
 
 #include "MapObject.h"
@@ -498,6 +500,13 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_STANDARD, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_STANDARD))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_EXPANDED, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_EXPANDED))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::INVISIBLE_CHEST_SIMPLE, CInvisible_Chest::Create(m_pDevice, m_pContext, CInvisible_Chest::CHEST_SIMPLE))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::INVISIBLE_CHEST_STANDARD, CInvisible_Chest::Create(m_pDevice, m_pContext, CInvisible_Chest::CHEST_STANDARD))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::INVISIBLE_CHEST_EXPANDED, CInvisible_Chest::Create(m_pDevice, m_pContext, CInvisible_Chest::CHEST_EXPANDED))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UICharacter, UICharacter::Create(m_pDevice, m_pContext))))

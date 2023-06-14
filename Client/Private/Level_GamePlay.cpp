@@ -271,6 +271,19 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_EXPANDED, pLayerTag, L"chest_expanded", &vPos)))
 		return E_FAIL;
 
+
+	vPos = { 42.f, 2.828f, 31.f };
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_SIMPLE, pLayerTag, L"Invisivle_chest_simple", &vPos)))
+		return E_FAIL;
+
+	vPos = { 38.f, 2.7f, 35.f };
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_STANDARD, pLayerTag, L"Invisivle_chest_standard", &vPos)))
+		return E_FAIL;
+
+	vPos = { 39.f, 2.83f, 41.f };
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_EXPANDED, pLayerTag, L"Invisivle_chest_expanded", &vPos)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
