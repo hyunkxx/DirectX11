@@ -30,6 +30,11 @@ private:
 	HRESULT Ready_Layer_CityObject();
 	HRESULT Load_CityObject(const _tchar* pDataFilePath, const _tchar* pObjectTag);
 
+private:
+	HRESULT Ready_Layer_Trigger(const _tchar* pLayerTag);
+	HRESULT Load_TriggerData(const _tchar* pDataFilePath, const _tchar* pObjectTag, const _tchar* pLayerTag);
+
+
 public:
 	static CLevel_City* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

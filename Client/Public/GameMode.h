@@ -84,6 +84,25 @@ public: // UI Handler
 	void EnqueueItemDesc(CItem::ITEM_DESC ItemDesc);
 	void SetGagebar(_float fValue);
 
+public:
+	void ReserveLevel(LEVEL_ID eLevelID) {
+		if (LEVEL_ID::LEVEL_END <= eLevelID || 0 > eLevelID)
+			return;
+		m_IsReserveLevel = true;
+		m_eReserveLevel_ID = eLevelID;
+	}
+	void Reset_ReserveLevel() {
+		m_IsReserveLevel = false; 
+		m_eReserveLevel_ID = LEVEL_END;
+	}
+
+	_bool Is_ReserveLevel() { return m_IsReserveLevel; }
+	LEVEL_ID Get_ReserveLevel() { return m_eReserveLevel_ID; }
+	
+private:
+	_bool				m_IsReserveLevel = { false };
+	LEVEL_ID			m_eReserveLevel_ID = { LEVEL_END };
+
 private: 
 	class CAcquireSystem* m_pAcquireSystem = nullptr;
 	CRenderer* m_pRenderer = nullptr;

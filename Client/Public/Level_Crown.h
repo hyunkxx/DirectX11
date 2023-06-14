@@ -43,6 +43,10 @@ private:
 	HRESULT Ready_Layer_MapObject_NoiRock(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MapObject_Tof_Grass(const _tchar* pLayerTag);
 
+private:
+	HRESULT Ready_Layer_Trigger(const _tchar* pLayerTag);
+	HRESULT Load_TriggerData(const _tchar* pDataFilePath, const _tchar* pObjectTag, const _tchar* pLayerTag);
+
 public:
 	static CLevel_Crown* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

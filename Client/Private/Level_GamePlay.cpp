@@ -97,6 +97,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Interaction_Object(TEXT("layer_Interaction_Object"))))
 		return E_FAIL;
 	
+	if (FAILED(Ready_Layer_Trigger(TEXT("layer_trigger"))))
+		return E_FAIL;
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
@@ -177,6 +179,12 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 
 	if (pGameInstance->InputKey(DIK_K) == KEY_STATE::TAP)
 		pGameInstance->TimeSlowDown(0.5f, 0.1f);
+
+	if (true == pGameMode->Is_ReserveLevel())
+	{
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
+		pGameMode->Reset_ReserveLevel();
+	}
 
 
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_RSHIFT))
@@ -2109,6 +2117,62 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock", &vWorldMatrix)))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Trigger(const _tchar * pLayerTag)
+{
+	if (FAILED(Load_TriggerData(TEXT("../../Data/GamePlay/Trigger/Potal_City.data"), TEXT("Trigger_Poatal_City"), pLayerTag)))
+	{
+		MSG_BOX("Trigger_Poatal_City");
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Load_TriggerData(const _tchar * pDataFilePath, const _tchar * pObjectTag, const _tchar * pLayerTag)
+{
+	CGameInstance*			pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	HANDLE		hFile = CreateFile(pDataFilePath, GENERIC_READ, 0, 0,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Failed to Load Data in LEVEL_GAMEPLAY : Trigger");
+		return E_FAIL;
+	}
+
+	_tchar		szObjectTag[MAX_PATH] = { TEXT("") };
+	wsprintf(szObjectTag, pObjectTag);
+
+	DWORD		dwByte = 0;
+
+	TRIGGER_DESC		TriggerDesc = {};
+	ZeroMemory(&TriggerDesc, sizeof(TRIGGER_DESC));
+
+	ReadFile(hFile, &TriggerDesc.vP, sizeof(_float3), &dwByte, nullptr);
+	ReadFile(hFile, &TriggerDesc.vS, sizeof(_float3), &dwByte, nullptr);
+	ReadFile(hFile, &TriggerDesc.vA, sizeof(_float3), &dwByte, nullptr);
+
+	ReadFile(hFile, &TriggerDesc.fRange, sizeof(_float), &dwByte, nullptr);
+
+	ReadFile(hFile, &TriggerDesc.iTriggerID, sizeof(_uint), &dwByte, nullptr);
+	ReadFile(hFile, &TriggerDesc.iTriggerType, sizeof(_uint), &dwByte, nullptr);
+
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::TRIGGER,
+		pLayerTag, szObjectTag, &TriggerDesc)))
+	{
+		MSG_BOX("Failed to Load & AddGameObejct In LEVEL_GAMEPLAY : Trigger");
+		return E_FAIL;
+	}
+
+	CloseHandle(hFile);
 
 	return S_OK;
 }

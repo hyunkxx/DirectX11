@@ -99,6 +99,9 @@ HRESULT CLevel_Forest::Initialize()
 	if (FAILED(Ready_Layer_MapObject_Tof_Grass(TEXT("layer_tof_grass"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Trigger(TEXT("layer_trigger"))))
+		return E_FAIL;
+
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
 	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
@@ -179,6 +182,12 @@ void CLevel_Forest::Tick(_double TimeDelta)
 	if (pGameInstance->InputKey(DIK_K) == KEY_STATE::TAP)
 		pGameInstance->TimeSlowDown(0.5f, 0.1f);
 
+
+	if (true == pGameMode->Is_ReserveLevel())
+	{
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
+		pGameMode->Reset_ReserveLevel();
+	}
 
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_RSHIFT))
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CROWN));
@@ -2255,6 +2264,89 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Tof_Grass(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_TOF_GRASS_14");
 		return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Forest::Ready_Layer_Trigger(const _tchar * pLayerTag)
+{
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Potal_City.data"), TEXT("Trigger_Poatal_City"), pLayerTag)))
+	{
+		MSG_BOX("Trigger_Poatal_City");
+		return E_FAIL;
+	}
+
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Potal_Crown.data"), TEXT("Trigger_Potal_Crown"), pLayerTag)))
+	{
+		MSG_BOX("Trigger_Potal_Crown");
+		return E_FAIL;
+	}
+
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_0.data"), TEXT("Trigger_Spawn_Forest_0"), pLayerTag)))
+	{
+		MSG_BOX("Trigger_Spawn_Forest_0");
+		return E_FAIL;
+	}
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_1.data"), TEXT("Trigger_Spawn_Forest_1"), pLayerTag)))
+	{
+		MSG_BOX("Trigger_Spawn_Forest_1");
+		return E_FAIL;
+	}
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_2.data"), TEXT("Trigger_Spawn_Forest_2"), pLayerTag)))
+	{
+		MSG_BOX("Trigger_Spawn_Forest_2");
+		return E_FAIL;
+	}
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_3.data"), TEXT("Trigger_Spawn_Forest_3"), pLayerTag)))
+	{
+		MSG_BOX("Trigger_Spawn_Forest_3");
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Forest::Load_TriggerData(const _tchar * pDataFilePath, const _tchar * pObjectTag, const _tchar * pLayerTag)
+{
+	CGameInstance*			pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	HANDLE		hFile = CreateFile(pDataFilePath, GENERIC_READ, 0, 0,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Failed to Load Data in LEVEL_FOREST : Trigger");
+		return E_FAIL;
+	}
+
+	_tchar		szObjectTag[MAX_PATH] = { TEXT("") };
+	wsprintf(szObjectTag, pObjectTag);
+
+	DWORD		dwByte = 0;
+
+	TRIGGER_DESC		TriggerDesc = {};
+	ZeroMemory(&TriggerDesc, sizeof(TRIGGER_DESC));
+
+	ReadFile(hFile, &TriggerDesc.vP, sizeof(_float3), &dwByte, nullptr);
+	ReadFile(hFile, &TriggerDesc.vS, sizeof(_float3), &dwByte, nullptr);
+	ReadFile(hFile, &TriggerDesc.vA, sizeof(_float3), &dwByte, nullptr);
+
+	ReadFile(hFile, &TriggerDesc.fRange, sizeof(_float), &dwByte, nullptr);
+
+	ReadFile(hFile, &TriggerDesc.iTriggerID, sizeof(_uint), &dwByte, nullptr);
+	ReadFile(hFile, &TriggerDesc.iTriggerType, sizeof(_uint), &dwByte, nullptr);
+
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::TRIGGER,
+		pLayerTag, szObjectTag, &TriggerDesc)))
+	{
+		MSG_BOX("Failed to Load & AddGameObejct In LEVEL_FOREST : Trigger");
+		return E_FAIL;
+	}
+
+	CloseHandle(hFile);
 
 	return S_OK;
 }

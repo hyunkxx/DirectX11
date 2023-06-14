@@ -3,6 +3,8 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
+#include "PlayerState.h"
+
 BEGIN(Engine)
 class CRenderer;
 class CShader;
@@ -44,20 +46,44 @@ private:
 public:
 	virtual HRESULT	Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
+	virtual void Start();
+	virtual void PreTick(_double TimeDelta);
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render() override;
 
 public:
 	TRIGGER_TYPE Get_TriggerType() const { return m_eTriggerType; }
-	_bool IsIn_Trigger() const { return m_IsInTrigger; }
-
 	TRIGGER_ID Get_TriggerID() const { return m_eTriggerID; }
-
 	TRIGGER_DESC Get_TriggerDesc() const { return m_TriggerDesc; }
+
+	_bool IsIn_Trigger() const { return m_IsInTrigger; }
+	_bool Is_Trigger() const { return m_IsTrigger; }
 
 public:
 	void SetUp_State();
+
+public:
+	// 트리거 종류 별로 발동 조건 구분 ( 키입력 )
+	void Trigger_Condition(); 
+
+	// 발동조건 충족후 트리거 종류별로 처리 구분. -> 처리 한뒤에 m_IsTrigger false 로 초기화.
+	void Trigger_Process(); 
+
+
+public: // 트리거 별 처리 함수
+	void Trigger_Potal_City();
+	void Trigger_Potal_Forest();
+	void Trigger_Potal_Crown();
+
+	void Trigger_Spawn_Forest_0();
+	void Trigger_Spawn_Forest_1();
+	void Trigger_Spawn_Forest_2();
+	void Trigger_Spawn_Forest_3();
+
+	void Trigger_Spawn_Crown();
+
+	void Trigger_Interact_Cook();
 
 private:
 	TRIGGER_DESC				m_TriggerDesc = {};
@@ -65,18 +91,22 @@ private:
 
 	TRIGGER_ID					m_eTriggerID = { TRIGGER_ID::ID_END };
 
+private:
 	// 트리거 범위 안에 접근 했을 경우.
 	_bool						m_IsInTrigger = { false };
-	
+	_bool						m_IsTrigger = { false };
+
 	_float						m_fDistance = { 0.0f };
 
-	_tchar						m_szDataFilePath[MAX_PATH] = { L"" };
+	_vector						m_vPlayerPos = { 0.0f, 0.0f, 0.0f, 0.0f };
+	_vector						m_vTriggerPos = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 private:
 	CRenderer*					m_pRendererCom = { nullptr };
 	CShader*					m_pShaderCom = { nullptr };
 	CModel*						m_pModelCom = { nullptr };
 
+	CPlayerState*				m_pPlayerState = { nullptr };
 
 private:
 	HRESULT Add_Components();

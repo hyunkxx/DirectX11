@@ -47,14 +47,50 @@ HRESULT CTrigger::Initialize(void* pArg)
 	return S_OK;
 }
 
+void CTrigger::Start()
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return;
+
+	m_pPlayerState = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, TEXT("CharacterState")));
+	if (nullptr == m_pPlayerState)
+	{
+		MSG_BOX("Failed to Find GameObject In Trigger : CharacterState");
+		return;
+	}
+}
+
+void CTrigger::PreTick(_double TimeDelta)
+{
+}
+
 void CTrigger::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	if (nullptr != m_pMainTransform)
+		m_vTriggerPos = m_pMainTransform->Get_State(CTransform::STATE::STATE_POSITION);
+	if (nullptr != m_pPlayerState)
+		m_vPlayerPos = m_pPlayerState->Get_ActiveCharacter()->Get_Position();
+	
+	m_fDistance = XMVectorGetX(XMVector3Length(m_vPlayerPos - m_vTriggerPos));
+
+	if (m_TriggerDesc.fRange >= m_fDistance)
+		m_IsInTrigger = true;
+	else
+		m_IsInTrigger = false;
+
+	if (true == m_IsInTrigger)
+		Trigger_Condition();
 }
 
 void CTrigger::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
+
+	if (true == m_IsTrigger)
+		Trigger_Process();
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
@@ -97,6 +133,135 @@ void CTrigger::SetUp_State()
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vPos));
 	m_pMainTransform->Set_Scale(m_TriggerDesc.vS);
 	m_pMainTransform->SetRotationXYZ(m_TriggerDesc.vA);
+}
+
+void CTrigger::Trigger_Condition()
+{
+	CGameInstance*			pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return;
+
+	switch (m_eTriggerID)
+	{
+	case CTrigger::TRIGGER_ID::ID_POTAL_CITY:
+	case CTrigger::TRIGGER_ID::ID_POTAL_FOREST:
+	case CTrigger::TRIGGER_ID::ID_POTAL_CROWN:
+		if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F))
+			m_IsTrigger = true;
+		break;
+
+	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_0:
+	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_1:
+	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_2:
+	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_3:
+	case CTrigger::TRIGGER_ID::ID_SPAWN_CROWN:
+	case CTrigger::TRIGGER_ID::ID_INTERACT_COOK:
+		if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F))
+			m_IsTrigger = true;
+		break;
+
+	default:
+		break;
+	}
+}
+
+void CTrigger::Trigger_Process()
+{
+	switch (m_eTriggerID)
+	{
+	case CTrigger::TRIGGER_ID::ID_POTAL_CITY:
+		Trigger_Potal_City();
+		break;
+	case CTrigger::TRIGGER_ID::ID_POTAL_FOREST:
+		Trigger_Potal_Forest();
+		break;
+	case CTrigger::TRIGGER_ID::ID_POTAL_CROWN:
+		Trigger_Potal_Crown();
+		break;
+	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_0:
+		Trigger_Spawn_Forest_0();
+		break;
+	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_1:
+		Trigger_Spawn_Forest_1();
+		break;
+	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_2:
+		Trigger_Spawn_Forest_2();
+		break;
+	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_3:
+		Trigger_Spawn_Forest_3();
+		break;
+	case CTrigger::TRIGGER_ID::ID_SPAWN_CROWN:
+		Trigger_Spawn_Crown();
+		break;
+	case CTrigger::TRIGGER_ID::ID_INTERACT_COOK:
+		Trigger_Interact_Cook();
+		break;
+
+	default:
+		break;
+	}
+
+	m_IsTrigger = false;
+}
+
+void CTrigger::Trigger_Potal_City()
+{
+	CGameMode*			pGameMode = CGameMode::GetInstance();
+	if (nullptr == pGameMode)
+		return;
+
+	if (false == pGameMode->Is_ReserveLevel())
+		pGameMode->ReserveLevel(LEVEL_ID::LEVEL_CITY);
+}
+
+void CTrigger::Trigger_Potal_Forest()
+{
+	CGameMode*			pGameMode = CGameMode::GetInstance();
+	if (nullptr == pGameMode)
+		return;
+
+	if (false == pGameMode->Is_ReserveLevel())
+		pGameMode->ReserveLevel(LEVEL_ID::LEVEL_FOREST);
+}
+
+void CTrigger::Trigger_Potal_Crown()
+{
+	CGameMode*			pGameMode = CGameMode::GetInstance();
+	if (nullptr == pGameMode)
+		return;
+
+	if (false == pGameMode->Is_ReserveLevel())
+		pGameMode->ReserveLevel(LEVEL_ID::LEVEL_CROWN);
+}
+
+void CTrigger::Trigger_Spawn_Forest_0()
+{
+	MSG_BOX("Trigger : Spawn_Forest_0");
+}
+
+void CTrigger::Trigger_Spawn_Forest_1()
+{
+	MSG_BOX("Trigger : Spawn_Forest_1");
+}
+
+void CTrigger::Trigger_Spawn_Forest_2()
+{
+	MSG_BOX("Trigger : Spawn_Forest_2");
+}
+
+void CTrigger::Trigger_Spawn_Forest_3()
+{
+	MSG_BOX("Trigger : Spawn_Forest_3");
+}
+
+void CTrigger::Trigger_Spawn_Crown()
+{
+	MSG_BOX("Trigger : Trigger_Spawn_Crown");
+}
+
+void CTrigger::Trigger_Interact_Cook()
+{
+	MSG_BOX("Trigger : Interact_Cook");
 }
 
 HRESULT CTrigger::Add_Components()

@@ -54,6 +54,9 @@ HRESULT CLevel_City::Initialize()
 	if (FAILED(Ready_Layer_CityObject()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Trigger(TEXT("layer_trigger"))))
+		return E_FAIL;
+
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
 	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
@@ -132,6 +135,13 @@ void CLevel_City::Tick(_double TimeDelta)
 
 	if (pGameInstance->InputKey(DIK_K) == KEY_STATE::TAP)
 		pGameInstance->TimeSlowDown(0.5f, 0.1f);
+
+
+	if (true == pGameMode->Is_ReserveLevel())
+	{
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
+		pGameMode->Reset_ReserveLevel();
+	}
 
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_RSHIFT))
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FOREST));
@@ -435,6 +445,68 @@ HRESULT CLevel_City::Load_CityObject(const _tchar* pDataFilePath, const _tchar* 
 			MSG_BOX("Failed to Add_GameObject In Level_GamePlay : City_Object");
 			return E_FAIL;
 		}
+	}
+
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CLevel_City::Ready_Layer_Trigger(const _tchar * pLayerTag)
+{
+	if (FAILED(Load_TriggerData(TEXT("../../Data/City/Trigger/Potal_Forest.data"), TEXT("Trigger_Poatal_Forest"), pLayerTag)))
+	{
+		MSG_BOX("Trigger_Potal_Forest");
+		return E_FAIL;
+	}
+
+	if (FAILED(Load_TriggerData(TEXT("../../Data/City/Trigger/Interact_Cook.data"), TEXT("Trigger_Interact_Cook"), pLayerTag)))
+	{
+		MSG_BOX("Trigger_Interact_Cook");
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_City::Load_TriggerData(const _tchar * pDataFilePath, const _tchar * pObjectTag, const _tchar * pLayerTag)
+{
+	CGameInstance*			pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	HANDLE		hFile = CreateFile(pDataFilePath, GENERIC_READ, 0, 0,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Failed to Load Data in LEVEL_CITY : Trigger");
+		return E_FAIL;
+	}
+
+	_tchar		szObjectTag[MAX_PATH] = { TEXT("") };
+	wsprintf(szObjectTag, pObjectTag);
+
+	DWORD		dwByte = 0;
+
+	TRIGGER_DESC		TriggerDesc = {};
+	ZeroMemory(&TriggerDesc, sizeof(TRIGGER_DESC));
+
+	ReadFile(hFile, &TriggerDesc.vP, sizeof(_float3), &dwByte, nullptr);
+	ReadFile(hFile, &TriggerDesc.vS, sizeof(_float3), &dwByte, nullptr);
+	ReadFile(hFile, &TriggerDesc.vA, sizeof(_float3), &dwByte, nullptr);
+
+	ReadFile(hFile, &TriggerDesc.fRange, sizeof(_float), &dwByte, nullptr);
+
+	ReadFile(hFile, &TriggerDesc.iTriggerID, sizeof(_uint), &dwByte, nullptr);
+	ReadFile(hFile, &TriggerDesc.iTriggerType, sizeof(_uint), &dwByte, nullptr);
+
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::TRIGGER,
+		pLayerTag, szObjectTag, &TriggerDesc)))
+	{
+		MSG_BOX("Failed to Load & AddGameObejct In LEVEL_CITY : Trigger");
+		return E_FAIL;
 	}
 
 	CloseHandle(hFile);
