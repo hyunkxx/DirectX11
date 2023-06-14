@@ -13,7 +13,7 @@ END
 BEGIN(Client)
 class CUI_Cooking final : public CGameObject
 {
-	enum COOKSITUINDEX { MEET, SETTINGNUM, MENU, CONFRIM, BYE, SOUEND};
+	enum COOKSITUINDEX { MEET, SETTINGNUM, MENU, READYCONFRIM, CONFRIM, BYE, COOKEND};
 
 	typedef struct tagSou
 	{
@@ -49,6 +49,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Start() override;
 	virtual void Tick(_double TimeDelta) override;
+	
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual void RenderGUI() override;
@@ -67,7 +68,18 @@ private:
 	HRESULT Setup_LButtonShader(_uint index);
 	HRESULT Setup_RButtonShader(_uint index);
 	HRESULT Setup_FinalShader(_uint index);
+
 private:
+	void	SettingNumbers();
+	void	SettingTotal(_int MakeNum);
+	void	SettingOwnMaterial0(_int * pFood);
+	void	SettingOwnMaterial1(_int * pFood);
+	void	SettingOwnMaterial2(_int * pFood);
+	void	SettingNeedMaterial0(_int * pFood);
+	void	SettingNeedMaterial1(_int * pFood);
+	void	SettingNeedMaterial2(_int * pFood);
+	void	SettingOwnNum(_int * pFood);
+	void	SelectSlot();
 	void	SelectGreade();
 	void	SettingSlot();
 	void	InMenuOpen(_double TimeDelta);
@@ -86,73 +98,67 @@ private:
 
 public:
 	_bool	IsMouseActive() { return m_bMouseActive; }
-	
+	void	Set_SituMeet() { Situation = COOKSITUINDEX::MEET; }
 private:
-	COOKSITUINDEX Situation = { COOKSITUINDEX::SOUEND };
+	COOKSITUINDEX Situation = { COOKSITUINDEX::COOKEND };
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint		m_iPass = { 21 };
 	_bool		m_bMouseActive = { false };
 	_bool		m_MenuRenderStart = { true };
+	_bool		m_MenuOutStart = { false };
 	_bool		m_ConfirmRenderStart = { true };
 	_int		m_Count = { 0 };
-	
+	COOKDESC*   pSelectSlot = { nullptr };
+	_int*		pOwnFood = { nullptr }; // 보유 요리 숫자를 띄울 변수
+	_int*		pNeedMaterial0 = { nullptr };
+	_int*		pNeedMaterial1 = { nullptr };
+	_int*		pNeedMaterial2 = { nullptr };
+	_int*		pOwnMaterial0 = { nullptr };
+	_int*		pOwnMaterial1 = { nullptr };
+	_int*		pOwnMaterial2 = { nullptr };
+	_int		MakeNum = { 0 };	// 만들 요리의 수량
+	_bool		bMake = { false };
 	// 임시값 설정 나중에 인벤에 연결시키기
-	// 만들 요리의 수량
-	_int    CreateNum = { 0 };
 	_int    GradeIndex = { 0 }; // 0 = all, 1 = 1
 	// 요리에 필요한 재료 수량
-	_int	NeedRice = { 0 };
-	_int    NeedTofu = { 0 };
-	_int    NeedFlour = { 0 };
-	_int    NeedMushroom = { 0 };
-	_int    NeedChicken = { 0 };
-	_int    NeedEgg = { 0 };
-	_int    NeedMeat = { 0 };
-	_int    NeedHerb = { 0 };
-	_int    NeedViolet = { 0 };
-	_int    NeedDandelion = { 0 };
-	_int    NeedPepper = { 0 };
-	_int    NeedSugar = { 0 };
-	_int    NeedSalt = { 0 };
-	_int    NeedOil = { 0 };
-	_int    NeedSoysauce = { 0 };
-	_int    NeedRecipe0 = { 0 };
-	_int    NeedRecipe1 = { 0 };
+	_int	NeedMaterial0 = { 0 };
+	_int    NeedMaterial1 = { 0 };
+	_int    NeedMaterial2 = { 0 };
 
 	// 인벤토리에 있는 재료 수량
-	_int	InvenRice = { 0 };
-	_int    InvenTofu = { 0 };
-	_int    InvenFlour = { 0 };
-	_int    InvenMushroom = { 0 };
-	_int    InvenChicken = { 0 };
-	_int    InvenEgg = { 0 };
-	_int    InvenMeat = { 0 };
-	_int    InvenHerb = { 0 };
-	_int    InvenViolet = { 0 };
-	_int    InvenDandelion = { 0 };
-	_int    InvenPepper = { 0 };
-	_int    InvenSugar = { 0 };
-	_int    InvenSalt = { 0 };
-	_int    InvenOil = { 0 };
-	_int    InvenSoysauce = { 0 };
-	_int    InvenRecipe0 = { 0 };
-	_int    InvenRecipe1 = { 0 };
+	_int	InvenRice		= { 0 };
+	_int    InvenTofu		= { 0 };
+	_int    InvenFlour		= { 0 };
+	_int    InvenMushroom	= { 0 };
+	_int    InvenChicken	= { 0 };
+	_int    InvenEgg		= { 0 };
+	_int    InvenMeat		= { 0 };
+	_int    InvenHerb		= { 0 };
+	_int    InvenViolet		= { 0 };
+	_int    InvenDandelion	= { 0 };
+	_int    InvenPepper		= { 0 };
+	_int    InvenSugar		= { 0 };
+	_int    InvenSalt		= { 0 };
+	_int    InvenOil		= { 0 };
+	_int    InvenSoysauce	= { 0 };
+	_int    InvenRecipe0	= { 0 };
+	_int    InvenRecipe1	= { 0 };
 
 	// 인벤토리에 있는 요리 수량 ->Own:
-	_int    Flatbread = { 0 };
-	_int    Salad = { 0 };
-	_int    FriedTofu = { 0 };
-	_int    SaltedTea = { 0 };
-	_int    HerbTea = { 0 };
-	_int    DragonNoodle = { 0 };
-	_int    Omurice = { 0 };
-	_int    Friedrice = { 0 };
-	_int    Friedchicken = { 0 };
-	_int    Rabbitbread = { 0 };
-	_int    FriedMushroom = { 0 };
-	_int    Mapotofu = { 0 };
-	_int    PorkBelly = { 0 };
-	_int    Ducknoodles = { 0 };
+	_int    InvenFlatbread			= { 0 };
+	_int    InvenSalad				= { 0 };
+	_int    InvenFriedTofu			= { 0 };
+	_int    InvenSaltedTea			= { 0 };
+	_int    InvenHerbTea			= { 0 };
+	_int    InvenDragonNoodle		= { 0 };
+	_int    InvenOmurice			= { 0 };
+	_int    InvenFriedrice			= { 0 };
+	_int    InvenFriedchicken		= { 0 };
+	_int    InvenRabbitbread		= { 0 };
+	_int    InvenFriedMushroom		= { 0 };
+	_int    InvenMapotofu			= { 0 };
+	_int    InvenPorkBelly			= { 0 };
+	_int    InvenDucknoodles		= { 0 };
 
 	// 컬러
 	_float3 color0 = {0.f ,0.f, 0.f};
@@ -206,7 +212,11 @@ public:
 
 private:
 	class CUI_Mouse*		m_pUIMouse = { nullptr };
+	class CPlayerState*		m_pPlayerStateClass = { nullptr };
+	class CItemDB*			m_pDB = { nullptr };
+	class CInventory*		m_pInven = { nullptr };
 
+private:
 	CRenderer*		m_pRenderer = { nullptr };
 	CShader*		m_pShader = { nullptr };
 	CTexture*		m_pTexture = { nullptr };

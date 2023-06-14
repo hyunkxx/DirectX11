@@ -296,6 +296,7 @@
     <ClInclude Include="..\public\UICam.h" />
     <ClInclude Include="..\public\UICharacter.h" />
     <ClInclude Include="..\public\UIWeapon.h" />
+    <ClInclude Include="..\Public\UI_Cooking.h" />
     <ClInclude Include="..\Public\UI_MainScreen.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -456,6 +457,7 @@
     <ClCompile Include="..\private\UICam.cpp" />
     <ClCompile Include="..\private\UICharacter.cpp" />
     <ClCompile Include="..\private\UIWeapon.cpp" />
+    <ClCompile Include="..\Private\UI_Cooking.cpp" />
     <ClCompile Include="..\Private\UI_MainScreen.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

@@ -12,6 +12,7 @@
 #include "UI_MerchantMen.h"
 #include "UI_Souvenir.h"
 #include "UI_Panhua.h"
+#include "UI_Cooking.h"
 #include "AppManager.h"
 
 CUI_MainScreen::CUI_MainScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -87,6 +88,7 @@ void CUI_MainScreen::Start()
 	m_pUIMen = static_cast<CUI_MerchantMen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MerchantMen"));
 	m_pUISovi = static_cast<CUI_Souvenir*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Souvenir"));
 	m_pUIPanhua = static_cast<CUI_Panhua*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Panhua"));
+	m_pUICook = static_cast<CUI_Cooking*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Cooking"));
 
 	SetPlayer();
 	SetHP();
@@ -120,6 +122,13 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 			return;
 		m_pUIPanhua->SetState(ACTIVE);
 		m_pUIPanhua->Set_SituMeet();
+	}
+	if (pGameInstance->InputKey(DIK_NUMLOCK) == KEY_STATE::TAP) // юс╫ц
+	{
+		if (nullptr == m_pUICook)
+			return;
+		m_pUICook->SetState(ACTIVE);
+		m_pUICook->Set_SituMeet();
 	}
 	OtherobjIsActive(TimeDelta);
 
@@ -359,7 +368,7 @@ HRESULT CUI_MainScreen::Add_Components()
 
 void CUI_MainScreen::OtherobjIsActive(_double TimeDelta)
 {
-	if ((nullptr == m_pTerminalUI) || (nullptr == m_pTip) || (nullptr == m_pUIMen)||(nullptr == m_pUISovi) || (nullptr == m_pUIPanhua))
+	if ((nullptr == m_pTerminalUI) || (nullptr == m_pTip) || (nullptr == m_pUIMen) || (nullptr == m_pUISovi) || (nullptr == m_pUIPanhua) || (nullptr == m_pUICook))
 		return;
 	if (m_pTerminalUI->IsActive())
 		m_bRender = false;
@@ -367,29 +376,14 @@ void CUI_MainScreen::OtherobjIsActive(_double TimeDelta)
 		m_bRender = false;
 	else if (m_pUIMen->IsActive())
 		m_bRender = false;
-	else if(m_pUISovi->IsActive())
+	else if (m_pUISovi->IsActive())
 		m_bRender = false;
 	else if (m_pUIPanhua->IsActive())
 		m_bRender = false;
+	else if (m_pUICook->IsActive())
+		m_bRender = false;
 	else
 		m_bRender = true;
-	//if (m_pTerminalUI->IsActive())
-	//{
-	//	OffRender(TimeDelta);
-	//}
-	//else if (m_pTip->IsActive())
-	//{
-	//	OffRender(TimeDelta);
-	//}
-	//else
-	//{
-	//	Counting();
-	//	if (false == m_bRenderCheck)
-	//	{
-	//		OnRender(TimeDelta);
-	//	}
-	//}
-
 }
 
 void CUI_MainScreen::OffRender(_double TimeDelta)

@@ -12,6 +12,7 @@
 #include "UI_Souvenir.h"
 #include "UI_Panhua.h"
 #include "Character.h"
+#include "UI_Cooking.h"
 
 CPlayerCamera::CPlayerCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCamera(pDevice, pContext)
@@ -114,6 +115,7 @@ void CPlayerCamera::Start()
 	m_pUIMen = static_cast<CUI_MerchantMen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MerchantMen"));
 	m_pUISovi = static_cast<CUI_Souvenir*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Souvenir"));
 	m_pUIPanhua = static_cast<CUI_Panhua*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Panhua"));
+	m_pUICook = static_cast<CUI_Cooking*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Cooking"));
 }
 
 void CPlayerCamera::Tick(_double TimeDelta)
@@ -132,19 +134,19 @@ void CPlayerCamera::Tick(_double TimeDelta)
 	{
 		
 		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
-	/*	if (false == m_pTerminalUI->IsActive())
+		if (false == m_pTerminalUI->IsActive())
 		{
-			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || nullptr == m_pUIPanhua)
+			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || nullptr == m_pUIPanhua || (nullptr == m_pUICook))
 				return;
 
-			m_bFixMouse = (m_pUITap->IsMouseActive() ? false : m_pUITip->IsMouseActive() ? false : m_pUIMen->IsMouseActive() ? false : m_pUISovi->IsMouseActive() ? false : m_pUIPanhua->IsMouseActive() ? false : true);
+			m_bFixMouse = (m_pUITap->IsMouseActive() ? false : m_pUITip->IsMouseActive() ? false : m_pUIMen->IsMouseActive() ? false : m_pUISovi->IsMouseActive() ? false : m_pUIPanhua->IsMouseActive() ? false : m_pUICook->IsMouseActive() ? false :true);
 		}
 		else
 		{
-			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || nullptr == m_pUIPanhua)
+			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || nullptr == m_pUIPanhua || (nullptr == m_pUICook))
 				return;
 			m_pUITip->SetState(DISABLE);
-		}*/
+		}
 
 		if (pGameInstance->InputKey(DIK_LALT) == KEY_STATE::HOLD)
 		{

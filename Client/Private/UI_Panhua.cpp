@@ -522,13 +522,6 @@ void CUI_Panhua::Start()
 	
 	SetState(DISABLE);
 
-	
-	//CurrentMoney = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 3); // 나중에 주석 풀기
-	//ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, 4); // 나중에 주석 풀기
-
-
-	
-
 	// 들어오기, 나가기 
 	/* NPC랑 플레이어랑 충돌하면 Setstate()로 활성화 , 비활성화*/
 }

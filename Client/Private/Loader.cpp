@@ -58,6 +58,7 @@
 #include "UI_MerchantMen.h"
 #include "UI_Souvenir.h"
 #include "UI_Panhua.h"
+#include "UI_Cooking.h"
 
 #include "Missile.h"
 #include "Missile_Constant.h"
@@ -287,6 +288,9 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UIPANHUA,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UICOOKING,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Cook/Cook%d.dds"), 115))))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::EYE_BURST, 
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/EyeBurst.dds"))))
@@ -445,7 +449,9 @@ HRESULT CLoader::Load_Level_City()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIPANHUA,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
 		return E_FAIL;
-
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UICOOKING,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Cook/Cook%d.dds"), 115))))
+		return E_FAIL;
 
 #pragma region COMPONENTS
 
@@ -563,7 +569,9 @@ HRESULT CLoader::Load_Level_Forest()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIPANHUA,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
 		return E_FAIL;
-
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UICOOKING,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Cook/Cook%d.dds"), 115))))
+		return E_FAIL;
 #pragma region COMPONENTS
 
 	m_pApp->LoadRatio(0.1f);
@@ -716,6 +724,10 @@ HRESULT CLoader::Load_Level_Crown()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIPANHUA,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Panhua/panhua%d.dds"), 132))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UICOOKING,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Cook/Cook%d.dds"), 115))))
 		return E_FAIL;
 
 #pragma region COMPONENTS
@@ -1710,6 +1722,9 @@ HRESULT CLoader::Load_Prototype_GameObject()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIPANHUA, CUI_Panhua::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UICOOKING, CUI_Cooking::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion UI
 
 #pragma region MONSTER
