@@ -401,8 +401,8 @@ HRESULT CM_Qunjing::Add_Components()
 
 
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 1.f, 0.f };
-	CollDesc.vExtents = { 1.f, 1.f, 1.f };
+	CollDesc.vCenter = { 0.f, 1.5f, 0.f };
+	CollDesc.vExtents = { 1.5f, 1.5f, 1.5f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_HitCollider"), (CComponent**)&m_pHitCollider, &CollDesc)))
@@ -411,7 +411,7 @@ HRESULT CM_Qunjing::Add_Components()
 
 	CollDesc.owner = this;
 	CollDesc.vCenter = { 0.f, 0.f, 0.f };
-	CollDesc.vExtents = { 0.4f, 0.4f, 0.4f };
+	CollDesc.vExtents = { 0.8f, 0.8f, 0.8f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_MoveCollider"), (CComponent**)&m_pMoveCollider, &CollDesc)))
@@ -683,79 +683,79 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK01_1].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK01_1].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK01_1].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK01_1].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK01_1].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK01_1].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_1].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK01_2].fDamageFactor = 1.1f;
 	m_AttackInfos[ATK_ATTACK01_2].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK01_2].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK01_2].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK01_2].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK01_2].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK01_2].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK01_2].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_2].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK01_3].fDamageFactor = 1.2f;
 	m_AttackInfos[ATK_ATTACK01_3].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK01_3].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK01_3].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK01_3].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK01_3].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK01_3].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK01_3].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_3].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK01_4].fDamageFactor = 1.8f;
 	m_AttackInfos[ATK_ATTACK01_4].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK01_4].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK01_4].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK01_4].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK01_4].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK01_4].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK01_4].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_4].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK02_1].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_ATTACK02_1].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK02_1].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK02_1].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK02_1].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK02_1].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK02_1].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK02_1].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK02_1].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK02_2].fDamageFactor = 0.3f;
 	m_AttackInfos[ATK_ATTACK02_2].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK02_2].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK02_2].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK02_2].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK02_2].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK02_2].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK02_2].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK02_2].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK02_3].fDamageFactor = 1.5f;
 	m_AttackInfos[ATK_ATTACK02_3].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK02_3].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK02_3].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK02_3].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK02_3].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK02_3].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK02_3].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK02_3].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK02_4].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK02_4].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK02_4].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK02_4].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK02_4].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK02_4].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK02_4].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK02_4].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK02_4].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK03_1].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_ATTACK03_1].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK03_1].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK03_1].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK03_1].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK03_1].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK03_1].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK03_1].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK03_1].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK03_2].fDamageFactor = 2.4f;
 	m_AttackInfos[ATK_ATTACK03_2].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK03_2].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK03_2].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK03_2].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK03_2].iHitEffectID = 2;
+	m_AttackInfos[ATK_ATTACK03_2].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK03_2].szHitEffectTag, TEXT("Anjin_Hit"));
 
 	m_AttackInfos[ATK_ATTACK03_4].fDamageFactor = 2.8f;
@@ -763,64 +763,64 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK03_4].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK03_4].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK03_4].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK03_4].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK03_4].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK03_4].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK03_4].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK04].fDamageFactor = 2.1f;
 	m_AttackInfos[ATK_ATTACK04].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK04].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK04].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK04].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK04].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK04].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK04].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK04].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK06].fDamageFactor = 1.8f;
 	m_AttackInfos[ATK_ATTACK06].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK06].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK06].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK06].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK06].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK06].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK06].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK06].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK07_1].fDamageFactor = 0.7f;
 	m_AttackInfos[ATK_ATTACK07_1].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK07_1].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK07_1].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK07_1].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK07_1].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK07_1].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK07_1].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK07_1].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK07_2].fDamageFactor = 1.9f;
 	m_AttackInfos[ATK_ATTACK07_2].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK07_2].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK07_2].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK07_2].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK07_2].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK07_2].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK07_2].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK07_2].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK08_1].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_ATTACK08_1].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK08_1].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK08_1].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK08_1].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK08_1].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK08_1].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK08_1].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_1].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK08_2].fDamageFactor = 3.f;
 	m_AttackInfos[ATK_ATTACK08_2].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK08_2].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK08_2].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK08_2].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK08_2].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK08_2].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK08_2].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_2].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK08_3].fDamageFactor = 1.6f;
 	m_AttackInfos[ATK_ATTACK08_3].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK08_3].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK08_3].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK08_3].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK08_3].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK08_3].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK08_3].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_3].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 }
 
@@ -1333,7 +1333,7 @@ void CM_Qunjing::On_Cell()
 	}
 }
 
-void CM_Qunjing::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+void CM_Qunjing::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos, _float fCritRate, _float fCritDMG)
 {
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
@@ -1351,6 +1351,12 @@ void CM_Qunjing::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAtta
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
 	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
+	_bool bCrit = false;
+	if (fCritRate > _float(rand() % 100))
+	{
+		bCrit = true;
+		fFinalDamage *= fCritDMG * 0.01f;
+	}
 	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
 	m_tMonsterInfo.fCurHP -= fFinalDamage;
 
@@ -1359,7 +1365,7 @@ void CM_Qunjing::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAtta
 	{
 		m_pUIMon->Set_Damage(fFinalDamage);
 	}
-	
+
 	_bool bHitCheck = false;
 
 	// 사망 시 사망 애니메이션 실행 
@@ -1397,7 +1403,7 @@ void CM_Qunjing::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAtta
 				bHitCheck = true;
 				if (m_fHitPoint < -50.f)
 					m_Scon.iNextState = IS_BEHIT_B;
-				else 
+				else
 					m_Scon.iNextState = IS_BEHIT_S;
 			}
 			break;
@@ -1420,7 +1426,7 @@ void CM_Qunjing::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAtta
 		default:
 			break;
 		}
-		
+
 	}
 
 	if (bHitCheck == true && m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority && m_Scon.iCurState != m_Scon.iNextState)
@@ -1429,9 +1435,7 @@ void CM_Qunjing::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAtta
 		SetUp_State();
 		m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
 	}
-
 }
-
 
 HRESULT CM_Qunjing::Init_EffectBones()
 {
@@ -1547,7 +1551,7 @@ void CM_Qunjing::OnCollisionEnter(CCollider * src, CCollider * dest)
 					_float3 EffPos = _float3(0.f, 0.f, 0.f);
 					XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
 
-					On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
+					On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos, pOpponent->Get_CritRate(), pOpponent->Get_CritDMG());
 				}
 			}
 		}
@@ -1583,7 +1587,7 @@ void CM_Qunjing::OnCollisionEnter(CCollider * src, CCollider * dest)
 					_float3 EffPos = _float3(0.f, 0.f, 0.f);
 					XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
 
-					On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos);
+					On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos, pMissileOwner->Get_CritRate(), pMissileOwner->Get_CritDMG());
 				}
 			}
 		}

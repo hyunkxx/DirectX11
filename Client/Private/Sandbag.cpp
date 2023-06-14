@@ -996,7 +996,7 @@ void CSandbag::On_Cell()
 
 }
 
-void CSandbag::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+void CSandbag::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos, _float fCritRate, _float fCritDMG)
 {
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
@@ -1014,6 +1014,12 @@ void CSandbag::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttack
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
 	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
+	_bool bCrit = false;
+	if (fCritRate > _float(rand() % 100))
+	{
+		bCrit = true;
+		fFinalDamage *= fCritDMG * 0.01f;
+	}
 	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
 	m_tMonsterInfo.fCurHP -= fFinalDamage;
 
@@ -1081,9 +1087,7 @@ void CSandbag::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttack
 		SetUp_State();
 		m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
 	}
-
 }
-
 
 HRESULT CSandbag::Init_EffectBones()
 {
@@ -1191,7 +1195,7 @@ void CSandbag::OnCollisionEnter(CCollider * src, CCollider * dest)
 				_float3 EffPos = _float3(0.f, 0.f, 0.f);
 				XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
 
-				On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
+				On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos, pOpponent->Get_CritRate(), pOpponent->Get_CritDMG());
 			}
 		}
 	}
@@ -1218,7 +1222,7 @@ void CSandbag::OnCollisionEnter(CCollider * src, CCollider * dest)
 				_float3 EffPos = _float3(0.f, 0.f, 0.f);
 				XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
 
-				On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos);
+				On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos, pMissileOwner->Get_CritRate(), pMissileOwner->Get_CritDMG());
 			}
 		}
 	}

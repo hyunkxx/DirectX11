@@ -452,7 +452,7 @@ void CM_Leilie::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	_vector vInitPos;
 	if (MISS_ATTACK_03 == iMissilePoolID)
 	{
-		vInitPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION);
+		vInitPos = m_pTarget->Get_CellHeight_Position();
 	}
 	else if (0 != iEffectBoneID)
 	{
@@ -569,32 +569,32 @@ void CM_Leilie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].eElementType = ELMT_CONDUCTO;
 	m_AttackInfos[ATK_ATTACK_01].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("M_Purple_Hit"));
 
 	m_AttackInfos[ATK_ATTACK_02_1].fDamageFactor = 0.7f;
 	m_AttackInfos[ATK_ATTACK_02_1].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_02_1].eElementType = ELMT_CONDUCTO;
 	m_AttackInfos[ATK_ATTACK_02_1].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_1].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_1].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02_1].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_02_1].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02_1].szHitEffectTag, TEXT("M_Purple_Hit"));
 
 	m_AttackInfos[ATK_ATTACK_02_2].fDamageFactor = 2.3f;
 	m_AttackInfos[ATK_ATTACK_02_2].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK_02_2].eElementType = ELMT_CONDUCTO;
 	m_AttackInfos[ATK_ATTACK_02_2].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_2].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02_2].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02_2].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_02_2].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02_2].szHitEffectTag, TEXT("M_Purple_Hit"));
 
 	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 0.9f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_CONDUCTO;
 	m_AttackInfos[ATK_ATTACK_03].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_03].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("M_Purple_Hit"));
 
 }
 
@@ -1031,7 +1031,7 @@ void CM_Leilie::On_Cell()
 	}
 }
 
-void CM_Leilie::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+void CM_Leilie::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos, _float fCritRate, _float fCritDMG)
 {
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
@@ -1050,9 +1050,14 @@ void CM_Leilie::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttac
 	// 공격력과 방어력이 같을 때 1배 대미지
 	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint);
 
+	_bool bCrit = false;
+	if (fCritRate > _float(rand() % 100))
+	{
+		bCrit = true;
+		fFinalDamage *= fCritDMG * 0.01f;
+	}
+
 	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
-
-
 	m_tMonsterInfo.fCurHP -= fFinalDamage;
 
 	// TODO: 여기서 대미지 폰트 출력
@@ -1119,9 +1124,7 @@ void CM_Leilie::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttac
 		SetUp_State();
 		m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
 	}
-
 }
-
 
 HRESULT CM_Leilie::Init_EffectBones()
 {
@@ -1231,7 +1234,7 @@ void CM_Leilie::OnCollisionEnter(CCollider * src, CCollider * dest)
 				_float3 EffPos = _float3(0.f, 0.f, 0.f);
 				XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
 
-				On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
+				On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos, pOpponent->Get_CritRate(), pOpponent->Get_CritDMG());
 			}
 		}
 	}
@@ -1258,7 +1261,7 @@ void CM_Leilie::OnCollisionEnter(CCollider * src, CCollider * dest)
 				_float3 EffPos = _float3(0.f, 0.f, 0.f);
 				XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
 
-				On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos);
+				On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos, pMissileOwner->Get_CritRate(), pMissileOwner->Get_CritDMG());
 			}
 		}
 	}

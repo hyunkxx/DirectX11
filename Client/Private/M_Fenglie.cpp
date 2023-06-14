@@ -557,16 +557,16 @@ void CM_Fenglie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].eElementType = ELMT_AERO;
 	m_AttackInfos[ATK_ATTACK_01].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("M_Green_Hit"));
 
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_AERO;
 	m_AttackInfos[ATK_ATTACK_02].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("M_Green_Hit"));
 
 }
 
@@ -874,7 +874,7 @@ void CM_Fenglie::On_Cell()
 	}
 }
 
-void CM_Fenglie::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+void CM_Fenglie::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos, _float fCritRate, _float fCritDMG)
 {
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
@@ -893,8 +893,14 @@ void CM_Fenglie::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAtta
 	// 공격력과 방어력이 같을 때 1배 대미지
 	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint);
 
-	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
+	_bool bCrit = false;
+	if (fCritRate > _float(rand() % 100))
+	{
+		bCrit = true;
+		fFinalDamage *= fCritDMG * 0.01f;
+	}
 
+	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
 
 	m_tMonsterInfo.fCurHP -= fFinalDamage;
 
@@ -1071,7 +1077,7 @@ void CM_Fenglie::OnCollisionEnter(CCollider * src, CCollider * dest)
 				_float3 EffPos = _float3(0.f, 0.f, 0.f);
 				XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
 
-				On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
+				On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos, pOpponent->Get_CritRate(), pOpponent->Get_CritDMG());
 			}
 		}
 	}
@@ -1098,7 +1104,7 @@ void CM_Fenglie::OnCollisionEnter(CCollider * src, CCollider * dest)
 				_float3 EffPos = _float3(0.f, 0.f, 0.f);
 				XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
 
-				On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos);
+				On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos, pMissileOwner->Get_CritRate(), pMissileOwner->Get_CritDMG());
 			}
 		}
 	}

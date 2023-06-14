@@ -92,7 +92,7 @@ void CPlayerCamera::Start()
 	_vector vAxisRight = XMVector3Cross(XMLoadFloat3(&m_vDir), XMVectorSet(0.f, 1.f, 0.f, 0.f));
 	_matrix matRotX = XMMatrixRotationAxis(vAxisRight, XMConvertToRadians(m_fXCurAngle));
 	_matrix matRotY = XMMatrixRotationY(XMConvertToRadians(m_fYCurAngle));
-	_vector vCamLook = XMVector3Normalize(-XMVector3TransformNormal(XMVector3TransformNormal(XMLoadFloat3(&m_vDir), matRotX), matRotY));
+	_vector vCamLook = XMVector3Normalize(-XMVector3TransformNormal(XMVector3TransformNormal(XMLoadFloat3(&m_vDir), matRotX),  matRotY));
 	_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	_vector vEyePos = vPlayerPos - vCamLook * m_fCurDistance;
 	XMStoreFloat3(&m_CameraDesc.vEye, vEyePos);

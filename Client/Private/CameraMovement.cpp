@@ -77,6 +77,9 @@ HRESULT CCameraMovement::BindTransform(CTransform * pTransform)
 
 	for (size_t i = 0; i < CAM_END; ++i)
 	{
+		if (i == CAM_MAINPLAYER)
+			continue;
+
 		if (m_pCams[i] == nullptr)
 		{
 			continue;

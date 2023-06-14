@@ -194,7 +194,16 @@ private:
 	// 지형에 의한 예외 처리
 	void On_Cell();
 	// 
-	void On_Hit(CCharacter* pChar, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos);
+	virtual void On_Hit(CCharacter* pChar, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos, _float fCritRate, _float fCritDMG);
+
+	virtual _float Get_CritRate()
+	{
+		return m_tMonsterInfo.fCriticalRate;
+	}
+	virtual _float Get_CritDMG()
+	{
+		return m_tMonsterInfo.fCriticalDMG;
+	}
 
 	// Effect
 	HRESULT	Init_EffectBones();

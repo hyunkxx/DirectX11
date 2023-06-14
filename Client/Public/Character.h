@@ -404,6 +404,7 @@ public:
 	virtual void Get_AttackInfo(_uint iAttackID, TAGATTACK* pAttackInfoOut, _float* fAttackOut) {}
 
 	virtual _vector Get_Position();
+	virtual _vector Get_CellHeight_Position();
 	virtual _vector Get_MainWeaponPosition() { return XMVectorZero(); }
 	void Push_OnNavi(_fvector PushVector);
 
@@ -417,6 +418,10 @@ public:
 
 	virtual void Set_AttackHit(_bool bAttackHit) {}
 
+	//피격 처리
+	virtual void On_Hit(CCharacter* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos, _float fCritRate, _float fCritDMG) {}
+	virtual _float Get_CritRate() { return 0.f; }
+	virtual _float Get_CritDMG() { return 0.f; }
 	
 
 	virtual void Recover_Gauge(_float fSP, _float fBP, _float fTP) {}

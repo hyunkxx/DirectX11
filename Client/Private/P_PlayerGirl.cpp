@@ -2382,7 +2382,7 @@ void CP_PlayerGirl::On_Cell()
 	}
 }
 
-void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos)
+void CP_PlayerGirl::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos, _float fCritRate, _float fCritDMG)
 {
 	// 저스트 회피 성공
 	if ((SS_MOVE_B == m_Scon.iCurState ||
@@ -2398,8 +2398,8 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 	{
 		return;
 	}
-	
-	static_cast<CCharacter*>(pGameObject)->Set_AttackHit(true);
+
+	pGameObject->Set_AttackHit(true);
 
 	// 그 외 피격 처리
 	// 피격 이펙트 출력
@@ -2414,7 +2414,16 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
 	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint *
-		((fAttackPoint * 2 - m_pCharacterState->fDefense[CPlayerState::STAT_TOTAL]) / fAttackPoint); 
+		((fAttackPoint * 2 - m_pCharacterState->fDefense[CPlayerState::STAT_TOTAL]) / fAttackPoint);
+	
+	
+	_bool bCrit = false;
+	if (fCritRate > _float(rand() % 100))
+	{
+		bCrit = true;
+		fFinalDamage *= fCritDMG * 0.01f;
+	}
+	
 	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
 
 	m_pCharacterState->fCurHP -= fFinalDamage;
@@ -2424,7 +2433,7 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 	// fFinalDamage : 최종 대미지
 	// pAttackInfo->eElementType : 공격 판정의 속성
 	m_pUIMain->Set_Damage(fFinalDamage);
-	
+
 
 	// 사망 시 사망 애니메이션 실행 
 	if (false/*0.f >= m_tMonsterInfo.fCurHP*/)
@@ -2432,8 +2441,8 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 		m_pCharacterState->fCurHP = 0.f;
 		m_Scon.iNextState = SS_DEAD;
 	}
-	
-	else 
+
+	else
 	{
 		if (PS_GROUND == m_Scon.ePositionState)
 		{
@@ -2486,7 +2495,7 @@ void CP_PlayerGirl::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _fl
 				break;
 			}
 		}
-	
+
 		if (m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
 		{
 			m_pMainTransform->Set_LookDir(XMVectorSetY(
@@ -3160,7 +3169,7 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 				if (SS_DEAD != m_Scon.iCurState)
 				{
 					m_bHit = true;
-					On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
+					On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos, pOpponent->Get_CritRate(), pOpponent->Get_CritDMG());
 				}
 					
 			}
@@ -3193,7 +3202,7 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 				/*_float3 EffPos;
 				XMStoreFloat3(&EffPos, (XMLoadFloat3(&dest->GetCenter()) + XMLoadFloat3(&src->GetCenter())) * 0.5f);*/
 				if (SS_DEAD != m_Scon.iCurState)
-					On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos);
+					On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos, pMissileOwner->Get_CritRate(), pMissileOwner->Get_CritDMG());
 			}
 		}
 	}

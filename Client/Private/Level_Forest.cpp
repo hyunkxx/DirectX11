@@ -50,11 +50,12 @@ HRESULT CLevel_Forest::Initialize()
 
 	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
 		return E_FAIL;
-	// 플레이어 이후에 카메라를 초기화해야함
-	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
-		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Monster(TEXT("layer_monster"))))
+		return E_FAIL;
+
+	// 플레이어 이후에 카메라를 초기화해야함
+	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
@@ -325,6 +326,12 @@ HRESULT CLevel_Forest::Ready_Layer_Player(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::PLAYER_YANGYANG, pLayerTag, TEXT("Player1"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::PLAYER_CHIXIA, pLayerTag, TEXT("Player2"))))
 		return E_FAIL;
 
 	return S_OK;

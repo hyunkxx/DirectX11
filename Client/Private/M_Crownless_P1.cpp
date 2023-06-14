@@ -742,38 +742,38 @@ void CM_Crownless_P1::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 6;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
 
 	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 6;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
 
 	m_AttackInfos[ATK_ATTACK_04_1].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_04_1].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_04_1].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_04_1].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_04_1].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_04_1].iHitEffectID = 6;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_1].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
 
 	m_AttackInfos[ATK_ATTACK_04_3].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_04_3].eHitIntensity = HIT_PUSH;
 	m_AttackInfos[ATK_ATTACK_04_3].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_04_3].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_04_3].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_04_3].iHitEffectID = 6;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_3].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
 
 	m_AttackInfos[ATK_ATTACK_05].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_05].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_05].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_05].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_05].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_05].iHitEffectID = 6;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_05].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
 
 	m_AttackInfos[ATK_ATTACK_08].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_08].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_08].eElementType = ELMT_HAVOC;
-	m_AttackInfos[ATK_ATTACK_08].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_08].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK_08].iHitEffectID = 6;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_08].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
 }
 
 void CM_Crownless_P1::Init_Missiles()
@@ -1372,7 +1372,7 @@ void CM_Crownless_P1::On_Cell()
 	}
 }
 
-void CM_Crownless_P1::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos)
+void CM_Crownless_P1::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos, _float fCritRate, _float fCritDMG)
 {
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
@@ -1391,6 +1391,14 @@ void CM_Crownless_P1::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
 	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
+
+	_bool bCrit = false;
+	if (fCritRate > _float(rand() % 100))
+	{
+		bCrit = true;
+		fFinalDamage *= fCritDMG * 0.01f;
+	}
+
 	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
 	m_tMonsterInfo.fCurHP -= fFinalDamage;
 
@@ -1469,7 +1477,6 @@ void CM_Crownless_P1::On_Hit(CCharacter* pChar, TAGATTACK * pAttackInfo, _float 
 		SetUp_State();
 		m_pModelCom->SetUp_Animation(m_tStates[m_Scon.iCurState].iAnimID, false, false);
 	}
-
 }
 
 
@@ -1586,7 +1593,7 @@ void CM_Crownless_P1::OnCollisionEnter(CCollider * src, CCollider * dest)
 				_float3 EffPos = _float3(0.f, 0.f, 0.f);
 				XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
 				
-				On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
+				On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos, pOpponent->Get_CritRate(), pOpponent->Get_CritDMG());
 			}
 		}
 	}
@@ -1613,7 +1620,7 @@ void CM_Crownless_P1::OnCollisionEnter(CCollider * src, CCollider * dest)
 				_float3 EffPos = _float3(0.f, 0.f, 0.f);
 				XMStoreFloat3(&EffPos, (destCenter + srcCenter) * 0.5f);
 
-				On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos);
+				On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos, pMissileOwner->Get_CritRate(), pMissileOwner->Get_CritDMG());
 			}
 		}
 	}

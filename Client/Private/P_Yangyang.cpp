@@ -2363,7 +2363,7 @@ void CP_Yangyang::On_Cell()
 	}
 }
 
-void CP_Yangyang::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos)
+void CP_Yangyang::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos, _float fCritRate, _float fCritDMG)
 {
 	// 저스트 회피 성공
 	if ((SS_MOVE_B == m_Scon.iCurState ||
@@ -2396,6 +2396,13 @@ void CP_Yangyang::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _floa
 	// 공격력과 방어력이 같을 때 1배 대미지
 	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint *
 		((fAttackPoint * 2 - m_pCharacterState->fDefense[CPlayerState::STAT_TOTAL]) / fAttackPoint);
+
+	_bool bCrit = false;
+	if (fCritRate > _float(rand() % 100))
+	{
+		bCrit = true;
+		fFinalDamage *= fCritDMG * 0.01f;
+	}
 
 	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
 
@@ -3157,7 +3164,7 @@ void CP_Yangyang::OnCollisionEnter(CCollider * src, CCollider * dest)
 				if (SS_DEAD != m_Scon.iCurState)
 				{
 					m_bHit = true;
-					On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
+					On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos, pOpponent->Get_CritRate(), pOpponent->Get_CritDMG());
 				}
 
 			}
@@ -3190,7 +3197,7 @@ void CP_Yangyang::OnCollisionEnter(CCollider * src, CCollider * dest)
 				/*_float3 EffPos;
 				XMStoreFloat3(&EffPos, (XMLoadFloat3(&dest->GetCenter()) + XMLoadFloat3(&src->GetCenter())) * 0.5f);*/
 				if (SS_DEAD != m_Scon.iCurState)
-					On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos);
+					On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos, pMissileOwner->Get_CritRate(), pMissileOwner->Get_CritDMG());
 			}
 		}
 	}

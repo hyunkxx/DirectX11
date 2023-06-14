@@ -373,7 +373,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_GAZIZI, pLayerTag, TEXT("GAzizi"))))
 		return E_FAIL;
-	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(149.f, 29.f, 244.f, 1.f), 1927);
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(139.f, 29.f, 237.f, 1.f), 1927);
 
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_ANJIN, pLayerTag, TEXT("Anjin"))))
 		return E_FAIL;

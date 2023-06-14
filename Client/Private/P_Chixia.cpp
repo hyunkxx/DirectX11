@@ -177,7 +177,6 @@ void CP_Chixia::Start()
 	m_pRendererCom->DebugBundleRender_Control(true);
 #endif
 	
-
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 	m_pCamMovement->BindTransform(m_pMainTransform);
@@ -2640,7 +2639,7 @@ void CP_Chixia::On_Cell()
 	}
 }
 
-void CP_Chixia::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos)
+void CP_Chixia::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos, _float fCritRate, _float fCritDMG)
 {
 	// 저스트 회피 성공
 	if ((SS_MOVE_B == m_Scon.iCurState ||
@@ -2674,6 +2673,13 @@ void CP_Chixia::On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _float 
 	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint *
 		((fAttackPoint * 2 - m_pCharacterState->fDefense[CPlayerState::STAT_TOTAL]) / fAttackPoint);
 	
+	_bool bCrit = false;
+	if (fCritRate > _float(rand() % 100))
+	{
+		bCrit = true;
+		fFinalDamage *= fCritDMG * 0.01f;
+	}	
+
 	fFinalDamage *= _float(110 - (rand() % 20)) * 0.01f;
 
 	m_pCharacterState->fCurHP -= fFinalDamage;
@@ -3537,7 +3543,7 @@ void CP_Chixia::OnCollisionEnter(CCollider * src, CCollider * dest)
 				if (SS_DEAD != m_Scon.iCurState)
 				{
 					m_bHit = true;
-					On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos);
+					On_Hit(pOpponent, &tAttackInfo, fAttackPoint, &EffPos, pOpponent->Get_CritRate(), pOpponent->Get_CritDMG());
 				}
 
 			}
@@ -3570,7 +3576,7 @@ void CP_Chixia::OnCollisionEnter(CCollider * src, CCollider * dest)
 				/*_float3 EffPos;
 				XMStoreFloat3(&EffPos, (XMLoadFloat3(&dest->GetCenter()) + XMLoadFloat3(&src->GetCenter())) * 0.5f);*/
 				if (SS_DEAD != m_Scon.iCurState)
-					On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos);
+					On_Hit(pMissileOwner, &tAttackInfo, fAttackPoint, &EffPos, pMissileOwner->Get_CritRate(), pMissileOwner->Get_CritDMG());
 			}
 		}
 	}

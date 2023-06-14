@@ -145,6 +145,18 @@ _vector CCharacter::Get_Position()
 	return m_pMainTransform->Get_State(CTransform::STATE_POSITION);
 }
 
+_vector CCharacter::Get_CellHeight_Position()
+{
+	_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+
+
+	CNavigation* pNavi = static_cast<CNavigation*>(Find_Component(TEXT("Com_Navigation")));
+	if (nullptr != pNavi)
+		vPos = XMVectorSetY(vPos, pNavi->Compute_Height(vPos));
+	
+	return vPos;
+}
+
 void CCharacter::Push_OnNavi(_fvector PushVector)
 {
 	m_pMainTransform->Push_OnNavi(PushVector, static_cast<CNavigation*>(Find_Component(TEXT("Com_Navigation"))));

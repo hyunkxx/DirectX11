@@ -344,7 +344,16 @@ private:
 	// 지형에 의한 예외 처리
 	void On_Cell();
 	// 피격 처리 함수 
-	void On_Hit(CGameObject* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos);
+	virtual void On_Hit(CCharacter* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos, _float fCritRate, _float fCritDMG);
+
+	virtual _float Get_CritRate()
+	{
+		return m_pCharacterState->fCriticalRate[CPlayerState::STAT_TOTAL];
+	}
+	virtual _float Get_CritDMG()
+	{
+		return m_pCharacterState->fCriticalDamage[CPlayerState::STAT_TOTAL];
+	}
 
 	void On_Dodge();
 
