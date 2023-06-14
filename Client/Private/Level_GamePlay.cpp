@@ -279,19 +279,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_EXPANDED, pLayerTag, L"chest_expanded", &vPos)))
 		return E_FAIL;
 
-
-	vPos = { 42.f, 2.828f, 31.f };
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_SIMPLE, pLayerTag, L"Invisivle_chest_simple", &vPos)))
-		return E_FAIL;
-
-	vPos = { 38.f, 2.7f, 35.f };
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_STANDARD, pLayerTag, L"Invisivle_chest_standard", &vPos)))
-		return E_FAIL;
-
-	vPos = { 39.f, 2.83f, 41.f };
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_EXPANDED, pLayerTag, L"Invisivle_chest_expanded", &vPos)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -2102,6 +2089,15 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+	_float3  vPos = { 42.f, 2.828f, 31.f };
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_SIMPLE, pLayerTag, L"Invisivle_chest_simple", &vPos)))
+		return E_FAIL;
+
+	vPos = { 38.f, 2.7f, 35.f };
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_STANDARD, pLayerTag, L"Invisivle_chest_standard", &vPos)))
+		return E_FAIL;
+
+
 	_float4x4 vWorldMatrix;
 	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
 	vWorldMatrix._41 = 238.f;
@@ -2117,6 +2113,25 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock", &vWorldMatrix)))
 		return E_FAIL;
+
+	vector<_float3>* pPosList = new vector<_float3>;
+
+	_float3 Pos1, Pos2, Pos3, Pos4;
+
+	Pos1 = _float3(59.f, 5.f, 37.f);
+	Pos2 = _float3(95.f, 7.f, 58.f);
+	Pos3 = _float3(102.f, 17.f, 68.f);
+	Pos4 = _float3(113.f, 17.f, 93.f);
+
+	pPosList->push_back(Pos1);
+	pPosList->push_back(Pos2);
+	pPosList->push_back(Pos3);
+	pPosList->push_back(Pos4);
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_GUIDE_SPIRIT, pLayerTag, L"Object_Guide_Spirit", pPosList)))
+		return E_FAIL;
+
+	Safe_Delete(pPosList);
 
 	return S_OK;
 }

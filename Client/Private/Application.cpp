@@ -26,6 +26,7 @@
 //INTERACTION_OBJECT
 #include "Object_Bomer.h"
 #include "Boom_Rock.h"
+#include "Guide_Spirit.h"
 // Item
 #include "Item.h"
 
@@ -116,12 +117,14 @@ HRESULT CApplication::Render()
 		return E_FAIL;
 
 #ifdef _DEBUG
+
 	m_pGUIManager->NewFrame();
 	m_pGameInstance->RenderGUI();
 	m_pGameInstance->RenderLevelUI();
 	m_pGUIManager->Render();
 
 	m_pContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
+
 #endif
 
 	m_pGameInstance->Clear_RenderTargetView(_float4(0.f, 0.f, 0.f, 0.f));
@@ -726,6 +729,10 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::INTERACTION_OBJECT_ROCK,
 		CBoom_Rock::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::INTERACTION_GUIDE_SPIRIT,
+		CGuide_Spirit::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Static_Effect()))
@@ -2729,6 +2736,21 @@ HRESULT CApplication::Ready_Static_Effect()
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
 			TEXT("../../Resource/Effect/Comon/Guide_Spirit_R.bin"),
+			"../../Resource/Effect/Comon/Spirit/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Giude_Spirit_Particle.bin"),
+			"../../Resource/Effect/Comon/Spirit/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Spilit_Flare.bin"),
+			"../../Resource/Effect/Comon/Spirit/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Spilit_Mark.bin"),
 			"../../Resource/Effect/Comon/Spirit/")))
 			return E_FAIL;
 

@@ -18,7 +18,7 @@ class CBoom_Rock :
 	public CGameObject
 	, public IOnCollisionEnter
 {
-public:
+private:
 	CBoom_Rock(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CBoom_Rock(const CBoom_Rock& rhs);
 	virtual ~CBoom_Rock() = default;

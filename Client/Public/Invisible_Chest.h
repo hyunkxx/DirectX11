@@ -65,6 +65,9 @@ public:
 	virtual void OnCollisionStay(CCollider * src, CCollider * dest) override;
 	virtual void OnCollisionExit(CCollider * src, CCollider * dest) override;
 
+	void		 Off_Detection(void);
+	void		 Appear_Box(void);
+
 public:
 	CCollider* GetCollider() const { return m_pCollider; };
 
@@ -107,7 +110,7 @@ private:
 
 	//상자 상태
 	CHEST_STATE m_ChestState = { STATE_INVISIBLE };
-
+	_bool		m_bRader_Detection = { true };
 };
 
 END

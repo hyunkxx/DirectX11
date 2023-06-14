@@ -88,7 +88,7 @@ void CInvisible_Chest::PreTick(_double TimeDelta)
 void CInvisible_Chest::Tick(_double TimeDelta)
 {
 
-	if (CGameInstance::GetInstance()->InputKey(DIK_M) == KEY_STATE::TAP && STATE_INVISIBLE != m_ChestState)
+	if (CGameInstance::GetInstance()->InputKey(DIK_M) == KEY_STATE::TAP && STATE_INVISIBLE != m_ChestState && m_bRader_Detection)
 	{
 		m_Invisible_Effect = nullptr;
 		m_Invisible_Effect = CGameInstance::GetInstance()->Get_Effect(L"Invisible_Box_Effect", EFFECT_ID::COMON);
@@ -602,4 +602,23 @@ void CInvisible_Chest::OnCollisionExit(CCollider * src, CCollider * dest)
 		interactionUIActive(false);
 		pGameMode->SetGagebar(0.f);
 	}
+}
+
+void CInvisible_Chest::Off_Detection(void)
+{
+	m_bRader_Detection = false;
+
+	if (nullptr != m_Invisible_Effect)
+	{
+		m_Invisible_Effect->Shut_Down();
+		m_Invisible_Effect = nullptr;
+	}
+
+}
+
+void CInvisible_Chest::Appear_Box(void)
+{
+	m_fBurstRim = 0.f;
+	m_bRimLight = true;
+	m_ChestState = STATE_APPEAR;
 }

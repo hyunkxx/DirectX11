@@ -424,6 +424,7 @@
     <ClCompile Include="..\Private\Trigger.cpp">
       <Filter>src\04. MapObject</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Guide_Spirit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -826,6 +827,7 @@
     <ClInclude Include="..\Public\Trigger.h">
       <Filter>src\04. MapObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Guide_Spirit.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

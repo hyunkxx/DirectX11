@@ -47,6 +47,7 @@ HRESULT CObject_Bomber::Initialize(void * pArg)
 		return E_FAIL;
 
 	SetState(ACTIVE);
+
 	return S_OK;
 }
 
@@ -122,7 +123,7 @@ void CObject_Bomber::State_Control(_double TimeDelta)
 			m_WorldMatrix = m_StartMatrix;
 		}
 
-		vLook = _float3(m_vThrowLook.x * m_fSpeed, m_vThrowLook.y * m_fSpeed, m_vThrowLook.z * m_fSpeed);
+		vLook = _float3(m_vThrowLook.x * m_fSpeed * (_float)TimeDelta, m_vThrowLook.y * m_fSpeed * (_float)TimeDelta, m_vThrowLook.z * m_fSpeed * (_float)TimeDelta);
 		m_WorldMatrix._41 += vLook.x;
 		m_WorldMatrix._42 += vLook.y;
 		m_WorldMatrix._43 += vLook.z;
