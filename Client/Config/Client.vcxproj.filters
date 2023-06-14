@@ -421,6 +421,9 @@
       <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Invisible_Chest.cpp" />
+    <ClCompile Include="..\Private\Trigger.cpp">
+      <Filter>src\04. MapObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -820,6 +823,9 @@
       <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Invisible_Chest.h" />
+    <ClInclude Include="..\Public\Trigger.h">
+      <Filter>src\04. MapObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

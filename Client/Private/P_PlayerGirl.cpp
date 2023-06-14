@@ -3102,7 +3102,7 @@ void CP_PlayerGirl::Free()
 	Safe_Release(m_pAttackCollider);
 	Safe_Release(m_pHitCollider);
 	Safe_Release(m_pMoveCollider);
-
+	Safe_Release(m_pRader);
 }
 
 void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)

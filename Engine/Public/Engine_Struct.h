@@ -432,4 +432,21 @@ namespace Engine
 	}SCITY_OBJECT_DESC;
 #pragma endregion CITY_OBJECT
 
+#pragma region TRIGGER
+	typedef struct tagTriggerDesc {
+		// 포탈같은 매쉬 추가할때 그놈 포지션
+		_float3			vP = { 0.0f, 0.0f, 0.0f };
+		_float3			vS = { 0.0f, 0.0f, 0.0f };
+		_float3			vA = { 0.0f, 0.0f, 0.0f };
+
+		// 트리거 적용 범위 ( 플레이어와 거리비교 거리 )
+		_float			fRange = { 0.0f };
+		_uint			iTriggerType = { 0 };
+
+		_uint			iTriggerID = { 0 };
+
+		const _tchar*	pFilePath = { L"" };
+
+	}TRIGGER_DESC;
+#pragma endregion TRIGGER
 }

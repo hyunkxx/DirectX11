@@ -83,6 +83,7 @@ namespace SMODEL
 		SMD_CIT_DES_0,
 		SMD_CIT_STO_0,
 
+		SMD_POTAL = 52000,
 
 		SMD_END
 	};

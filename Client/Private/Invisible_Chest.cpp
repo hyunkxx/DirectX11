@@ -66,7 +66,7 @@ HRESULT CInvisible_Chest::Initialize(void * pArg)
 	m_Invisible_Effect = CGameInstance::GetInstance()->Get_Effect(L"Invisible_Box_Effect", EFFECT_ID::COMON);
 	
 	if (nullptr == m_Invisible_Effect)
-		return;
+		return E_FAIL;
 
 	m_Invisible_Effect->Play_Effect(&m_pMainTransform->Get_WorldMatrix());
 

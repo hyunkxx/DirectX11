@@ -291,6 +291,7 @@
     <ClInclude Include="..\public\TestGeneric.h" />
     <ClInclude Include="..\Public\TestVTF.h" />
     <ClInclude Include="..\Public\TraceKey.h" />
+    <ClInclude Include="..\Public\Trigger.h" />
     <ClInclude Include="..\public\UICam.h" />
     <ClInclude Include="..\public\UICharacter.h" />
     <ClInclude Include="..\public\UIWeapon.h" />
@@ -449,6 +450,7 @@
     <ClCompile Include="..\private\TestGeneric.cpp" />
     <ClCompile Include="..\Private\TestVTF.cpp" />
     <ClCompile Include="..\Private\TraceKey.cpp" />
+    <ClCompile Include="..\Private\Trigger.cpp" />
     <ClCompile Include="..\private\UICam.cpp" />
     <ClCompile Include="..\private\UICharacter.cpp" />
     <ClCompile Include="..\private\UIWeapon.cpp" />

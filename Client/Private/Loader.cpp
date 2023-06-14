@@ -44,9 +44,9 @@
 #include "PlayerCamera.h"
 
 #include "MapObject.h"
-
 #include "CityObject.h"
 
+#include "Trigger.h"
 #include "Sky.h"
 
 #include "UI_MainScreen.h"
@@ -494,6 +494,8 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MAP_OBJECT, CMapObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TRIGGER, CTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_SIMPLE, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_SIMPLE))))
 		return E_FAIL;
@@ -835,37 +837,6 @@ HRESULT CLoader::Load_Level_Forest()
 
 	m_pApp->LoadRatio(1.f);
 	m_szLoadingStateText = L"객체원본을 로딩중입니다.";	
-
-	// GamePlay 랑 중복된 객체원본 주석.
-	/*
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
-		return E_FAIL;	
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_2))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
-		return E_FAIL;
-
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_PLAYERGIRL, CP_PlayerGirl::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_YANGYANG, CP_Yangyang::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CHIXIA, CP_Chixia::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-		*/
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_HUOJIN, CM_Huojin::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -1874,6 +1845,12 @@ HRESULT CLoader::Load_MapResource_GamePlay()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_POTAL, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Trigger/nvzhu.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : SMD_POTAL");
+		return E_FAIL;
+	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::NAVIGATION,
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Navigation/Navigation.data")))))
@@ -3169,6 +3146,11 @@ HRESULT CLoader::Load_MapResource_City()
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_POTAL, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Trigger/nvzhu.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_POTAL");
+		return E_FAIL;
+	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, COMPONENT::NAVIGATION,
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/City/Navigation/Navigation.data")))))
@@ -3422,6 +3404,12 @@ HRESULT CLoader::Load_MapResource_Forest()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_POTAL, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Trigger/nvzhu.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_POTAL");
+		return E_FAIL;
+	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, COMPONENT::NAVIGATION,
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Forest/Navigation/Navigation.data")))))
@@ -4793,6 +4781,12 @@ HRESULT CLoader::Load_MapResource_Crown()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SMODEL::SMD_POTAL, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Trigger/nvzhu.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : SMD_POTAL");
+		return E_FAIL;
+	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, COMPONENT::NAVIGATION,
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Crown/Navigation/Navigation.data")))))
