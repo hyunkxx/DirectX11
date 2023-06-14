@@ -176,6 +176,17 @@ void CLevel_Crown::Tick(_double TimeDelta)
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
 		pGameMode->Reset_ReserveLevel();
 	}
+
+#pragma region LEVEL_MOVE
+	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F1))
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY));
+	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F2))
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CITY));
+	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F3))
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FOREST));
+#pragma endregion LEVEL_MOVE
+
+	
 }
 
 void CLevel_Crown::RenderLevelUI()

@@ -80,6 +80,17 @@ void CLevel_Logo::Tick(_double TimeDelta)
 	else if (static_cast<CIntroCamera*>(m_pIntroCam)->IsLobbyOut() || KEY_STATE::TAP == pGameInstance->InputKey(DIK_F9))
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TEST));
 
+#pragma region LEVEL_MOVE
+	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F1))
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY));
+	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F2))
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CITY));
+	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F3))
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FOREST));
+	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F4))
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CROWN));
+#pragma endregion LEVEL_MOVE
+
 }
 
 HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar* pLayerTag)

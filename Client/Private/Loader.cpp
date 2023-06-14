@@ -187,12 +187,6 @@ HRESULT CLoader::Load_Level_Logo()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_HULU_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Player/Hulu03/Hulu03.smdl")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_FLOATING_ROCK_01, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/FloatingRock_01.smdl")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_FLOATING_ROCK_01_LOD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/FloatingRock_01_LOD.smdl")))))
-		return E_FAIL;
-
-
 	// DMODEL
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
 		return E_FAIL;
@@ -212,43 +206,11 @@ HRESULT CLoader::Load_Level_Logo()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, DMODEL::DMD_LOBBY_MALE_ANIMSET, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/LobbyMale/Male_Anim.dmdl")))))
 		return E_FAIL;
 
-#pragma region LOBBY_ROCK
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/0/SM_Com_Roc_28AS.smdl")))))
+	if (FAILED(Load_MapResource_Logo()))
 	{
-		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_0");
+		MSG_BOX("Failed to Prototype In Loader Logo : Load_MapResource_Logo()");
 		return E_FAIL;
 	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/1/SM_Com_Roc_52AS.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_1");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/2/SM_Com_Roc_76AL.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_2");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/3/SM_Com_Roc_77AL.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_3");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_4, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/4/SM_Com_Roc_78AL.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_4");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/5/SM_Com_Roc_82AM.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_5");
-		return E_FAIL;
-	}
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_6, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/6/SM_Com_Roc_83AM.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader Logo : SMD_LOBBY_ROCK_6");
-		return E_FAIL;
-	}
-#pragma endregion LOBBY_ROCK
 
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 	m_pApp->LoadRatio(0.7f);
@@ -260,43 +222,20 @@ HRESULT CLoader::Load_Level_Logo()
 		TEXT("../../Shader/SHADER_VTXMODELANIM.hlsl"), VTXDMODEL_DECLARATION::ElementDesc, VTXDMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
-		return E_FAIL;
 
 #pragma endregion
 
-	//Logo GameObject
+
 #pragma region GAMEOBJECTS
 	
 	m_szLoadingStateText = L"객체 원형을 준비중";
 	m_pApp->LoadRatio(0.8f);
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::INVENTORY, CInventory::Create(m_pDevice, m_pContext))))
+	
+	if (FAILED(Load_Prototype_GameObject()))
+	{
+		MSG_BOX("Failed to Prototype In Loader Logo : Load_Prototype_GameObject()");
 		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_CHARACTER_LEFT, CLobbyCharacter::Create(m_pDevice, m_pContext, DMODEL::DMD_PLAYERGIRL_MODEL, DMODEL::DMD_LOBBY_CHARACTER_MODEL, 0))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_CHARACTER_RIGHT, CLobbyCharacter::Create(m_pDevice, m_pContext, DMODEL::DMD_LOBBY_MALE_MODEL, DMODEL::DMD_LOBBY_MALE_ANIMSET, 1))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY, CSky::Create(m_pDevice, m_pContext, CSky::DEFAULT))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY_LOBBY, CSky::Create(m_pDevice, m_pContext, CSky::LOBBY))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::FLOATING_STONE, CFloatingStone::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHARACTERSELECT_TERRAIN, CCharacterSelect_Terrain::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-#pragma region LOBBY_ROCK
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_ROCK, CLobby_Rock::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-#pragma endregion LOBBY_ROCK
+	}
 
 #pragma endregion
 
@@ -418,13 +357,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 
 
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
-		return E_FAIL;
-
 	m_pApp->LoadRatio(0.9f);
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 
@@ -444,99 +376,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 
 	m_pApp->LoadRatio(1.f);
-	//GamePlay GameObject
-#pragma region GAMEOBJECTS
 
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CAMERA, CPlayerCamera::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_PLAYERGIRL, CP_PlayerGirl::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_YANGYANG, CP_Yangyang::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CHIXIA, CP_Chixia::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE, CMissile::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_CONSTANT, CMissile_Constant::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_ROTAROUND, CMissile_RotAround::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SANDBAG, CSandbag::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_GAZIZI, CM_GAzizi::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_ANJIN, CM_Anjin::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_AWUKAKA, CM_AWukaka::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FHUXIUXIU, CM_FHuxiuxiu::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MAP_OBJECT, CMapObject::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TRIGGER, CTrigger::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_SIMPLE, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_SIMPLE))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_STANDARD, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_STANDARD))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_EXPANDED, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_EXPANDED))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::INVISIBLE_CHEST_SIMPLE, CInvisible_Chest::Create(m_pDevice, m_pContext, CInvisible_Chest::CHEST_SIMPLE))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::INVISIBLE_CHEST_STANDARD, CInvisible_Chest::Create(m_pDevice, m_pContext, CInvisible_Chest::CHEST_STANDARD))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::INVISIBLE_CHEST_EXPANDED, CInvisible_Chest::Create(m_pDevice, m_pContext, CInvisible_Chest::CHEST_EXPANDED))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UICharacter, UICharacter::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIWeapon, CUIWeapon::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	//UIUI
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UI, CUI_MainScreen::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MOUSE, CUI_Mouse::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMINIMAP, CUI_Minimap::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITAPT, CUI_TapT::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMONSTER, CUI_Monster::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITIP, CUI_Tip::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMERCHANTMEN, CUI_MerchantMen::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UISOUVI, CUI_Souvenir::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIPANHUA, CUI_Panhua::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-#pragma endregion
 
 	m_Start = (_uint)time(nullptr);
 
@@ -636,18 +476,6 @@ HRESULT CLoader::Load_Level_City()
 		return E_FAIL;
 
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_SKY");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_SKY_LOBBY");
-		return E_FAIL;
-	}
-
 	m_pApp->LoadRatio(0.9f);
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 
@@ -665,9 +493,6 @@ HRESULT CLoader::Load_Level_City()
 
 	m_pApp->LoadRatio(1.f);
 	m_szLoadingStateText = L"객체원본을 로딩중입니다.";
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CITY_OBJECT, CCityObject::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
 #pragma endregion GAMEOBJECTS
 
@@ -747,6 +572,13 @@ HRESULT CLoader::Load_Level_Forest()
 	m_pApp->LoadRatio(0.2f);
 	m_szLoadingStateText = L"모델를 로딩중입니다.";
 
+	if (FAILED(Load_MapResource_Forest()))
+	{
+		MSG_BOX("Failed to Load_MapResource_Forest");
+		return E_FAIL;
+	}
+	m_pApp->LoadRatio(0.6f);
+
 	LoadCharacters(LEVEL_FOREST);
 	LoadCharacterProps(LEVEL_FOREST);
 
@@ -793,25 +625,6 @@ HRESULT CLoader::Load_Level_Forest()
 		return E_FAIL;
 
 
-	m_pApp->LoadRatio(0.6f);
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_SKY");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_SKY_LOBBY");
-		return E_FAIL;
-	}
-
-	if (FAILED(Load_MapResource_Forest()))
-	{
-		MSG_BOX("Failed to Load_MapResource_Forest");
-		return E_FAIL;
-	}
   
 	m_pApp->LoadRatio(0.9f);
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
@@ -833,27 +646,9 @@ HRESULT CLoader::Load_Level_Forest()
 
 #pragma endregion COMPONENTS
 
-#pragma region GAMEOBJECTS
-
 	m_pApp->LoadRatio(1.f);
 	m_szLoadingStateText = L"객체원본을 로딩중입니다.";	
 
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_HUOJIN, CM_Huojin::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_BINGLIE, CM_Binglie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FENGLIE, CM_Fenglie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_LEILIE, CM_Leilie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_QUNJING, CM_Qunjing::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-#pragma endregion GAMEOBJECTS
 
 	m_Start = (_uint)time(nullptr);
 
@@ -967,18 +762,6 @@ HRESULT CLoader::Load_Level_Crown()
 		return E_FAIL;
 
 	m_pApp->LoadRatio(0.6f);
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : SMD_SKY");
-		return E_FAIL;
-	}
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : SMD_SKY_LOBBY");
-		return E_FAIL;
-	}
 
 	if (FAILED(Load_MapResource_Crown()))
 	{
@@ -1815,6 +1598,145 @@ HRESULT CLoader::LoadCharacterProps	(_uint iLevel)
 	return S_OK;
 }
 
+HRESULT CLoader::Load_Prototype_GameObject()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+#pragma region LOBBY
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_CHARACTER_LEFT, CLobbyCharacter::Create(m_pDevice, m_pContext, DMODEL::DMD_PLAYERGIRL_MODEL, DMODEL::DMD_LOBBY_CHARACTER_MODEL, 0))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_CHARACTER_RIGHT, CLobbyCharacter::Create(m_pDevice, m_pContext, DMODEL::DMD_LOBBY_MALE_MODEL, DMODEL::DMD_LOBBY_MALE_ANIMSET, 1))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::FLOATING_STONE, CFloatingStone::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHARACTERSELECT_TERRAIN, CCharacterSelect_Terrain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion LOBBY
+
+#pragma region MAP
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY, CSky::Create(m_pDevice, m_pContext, CSky::DEFAULT))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SKY_LOBBY, CSky::Create(m_pDevice, m_pContext, CSky::LOBBY))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::LOBBY_ROCK, CLobby_Rock::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TERRAIN, CTerrain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MAP_OBJECT, CMapObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TRIGGER, CTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CITY_OBJECT, CCityObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion MAP
+
+#pragma region PLAYER
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CAMERA, CPlayerCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_PLAYERGIRL, CP_PlayerGirl::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_YANGYANG, CP_Yangyang::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CHIXIA, CP_Chixia::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion PLAYER
+
+
+#pragma region MOLU
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE, CMissile::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_CONSTANT, CMissile_Constant::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_ROTAROUND, CMissile_RotAround::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SANDBAG, CSandbag::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_SIMPLE, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_SIMPLE))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_STANDARD, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_STANDARD))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_EXPANDED, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_EXPANDED))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::INVISIBLE_CHEST_SIMPLE, CInvisible_Chest::Create(m_pDevice, m_pContext, CInvisible_Chest::CHEST_SIMPLE))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::INVISIBLE_CHEST_STANDARD, CInvisible_Chest::Create(m_pDevice, m_pContext, CInvisible_Chest::CHEST_STANDARD))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::INVISIBLE_CHEST_EXPANDED, CInvisible_Chest::Create(m_pDevice, m_pContext, CInvisible_Chest::CHEST_EXPANDED))))
+		return E_FAIL;
+#pragma endregion MOLU
+
+#pragma region UI
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::INVENTORY, CInventory::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UICharacter, UICharacter::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIWeapon, CUIWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	// UIUI
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UI, CUI_MainScreen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MOUSE, CUI_Mouse::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMINIMAP, CUI_Minimap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITAPT, CUI_TapT::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMONSTER, CUI_Monster::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UITIP, CUI_Tip::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMERCHANTMEN, CUI_MerchantMen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UISOUVI, CUI_Souvenir::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIPANHUA, CUI_Panhua::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion UI
+
+#pragma region MONSTER
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_GAZIZI, CM_GAzizi::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_ANJIN, CM_Anjin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_AWUKAKA, CM_AWukaka::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FHUXIUXIU, CM_FHuxiuxiu::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_HUOJIN, CM_Huojin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_BINGLIE, CM_Binglie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FENGLIE, CM_Fenglie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_LEILIE, CM_Leilie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_QUNJING, CM_Qunjing::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion MONSTER
+
+
+	return S_OK;
+}
+
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL_ID eNextLevel)
 {
 	CLoader* pInstance = new CLoader(pDevice, pContext);
@@ -1840,6 +1762,76 @@ void CLoader::Free()
 	CloseHandle(m_hThread);
 }
 
+HRESULT CLoader::Load_MapResource_Logo()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_LOGO : SMD_SKY_LOBBY");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_LOGO : SMD_SKY");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_FLOATING_ROCK_01, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/FloatingRock_01.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_LOGO : SMD_FLOATING_ROCK_01");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_FLOATING_ROCK_01_LOD, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/FloatingRock_01_LOD.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_LOGO : SMD_FLOATING_ROCK_01_LOD");
+		return E_FAIL;
+	}
+
+#pragma region LOBBY_ROCK
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_0, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/0/SM_Com_Roc_28AS.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_LOGO : SMD_LOBBY_ROCK_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_1, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/1/SM_Com_Roc_52AS.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_LOGO : SMD_LOBBY_ROCK_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_2, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/2/SM_Com_Roc_76AL.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_LOGO : SMD_LOBBY_ROCK_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_3, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/3/SM_Com_Roc_77AL.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_LOGO : SMD_LOBBY_ROCK_3");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_4, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/4/SM_Com_Roc_78AL.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_LOGO : SMD_LOBBY_ROCK_4");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_5, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/5/SM_Com_Roc_82AM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_LOGO : SMD_LOBBY_ROCK_5");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, SMODEL::SMD_LOBBY_ROCK_6, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/Lobby_Rock/6/SM_Com_Roc_83AM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_LOGO : SMD_LOBBY_ROCK_6");
+		return E_FAIL;
+	}
+#pragma endregion LOBBY_ROCK
+
+	return S_OK;
+}
+
 HRESULT CLoader::Load_MapResource_GamePlay()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -1856,6 +1848,18 @@ HRESULT CLoader::Load_MapResource_GamePlay()
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Navigation/Navigation.data")))))
 	{
 		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : NAVIGATION");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : SMD_SKY");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : SMD_SKY_LOBBY");
 		return E_FAIL;
 	}
 
@@ -3159,6 +3163,18 @@ HRESULT CLoader::Load_MapResource_City()
 		return E_FAIL;
 	}
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_SKY");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_SKY_LOBBY");
+		return E_FAIL;
+	}
+
 #pragma region TERRAIN
 
 	// Height_0
@@ -3415,6 +3431,18 @@ HRESULT CLoader::Load_MapResource_Forest()
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Forest/Navigation/Navigation.data")))))
 	{
 		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : NAVIGATION");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_SKY");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_SKY_LOBBY");
 		return E_FAIL;
 	}
 
@@ -4792,6 +4820,18 @@ HRESULT CLoader::Load_MapResource_Crown()
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Crown/Navigation/Navigation.data")))))
 	{
 		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : NAVIGATION");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SMODEL::SMD_SKY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/SM_SkysphereFlat2.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : SMD_SKY");
+		return E_FAIL;
+	}
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SMODEL::SMD_SKY_LOBBY, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Sky/Sky_Lobby.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : SMD_SKY_LOBBY");
 		return E_FAIL;
 	}
 

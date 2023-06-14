@@ -25,6 +25,9 @@ private:
 	HRESULT LoadCharacters(_uint iLevel);
 	HRESULT LoadCharacterProps(_uint iLevel);
 
+private:
+	HRESULT Load_Prototype_GameObject();
+
 public:
 	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL_ID eNextLevel);
 	virtual void Free() override;
@@ -53,6 +56,7 @@ private:
 	_uint					m_Start = 0;
 
 private:
+	HRESULT Load_MapResource_Logo();
 	HRESULT Load_MapResource_GamePlay();
 	HRESULT Load_MapResource_City();
 	HRESULT Load_MapResource_Forest();
