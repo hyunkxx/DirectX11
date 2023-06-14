@@ -823,12 +823,13 @@ void CP_PlayerGirl::Check_TimeDelay(_double TimeDelta)
 	}
 }
 
-void CP_PlayerGirl::Appear(CTransform * pTransform, CCharacter * pTarget)
+void CP_PlayerGirl::Appear(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID)
 {
 	SetState(ACTIVE);
 
 	m_pFixedTarget = pTarget;
 	m_pMainTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix());
+	m_pNaviCom->Set_CurrentIndex(iNaviCellID);
 
 	m_Scon.iNextState = SS_STAND1;
 	SetUp_State();
@@ -843,10 +844,11 @@ void CP_PlayerGirl::Appear(CTransform * pTransform, CCharacter * pTarget)
 		pParts->Start_Dissolve(true, 5.f, true);
 }
 
-void CP_PlayerGirl::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget)
+void CP_PlayerGirl::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget, _uint* pNaviCellID)
 {
 	*ppTarget = m_pFixedTarget;
 	*ppTransform = m_pMainTransform;
+	*pNaviCellID = m_pNaviCom->Get_CurrentIndex();
 	m_pFixedTarget = nullptr;
 
 	m_bOnControl = false;
@@ -858,7 +860,7 @@ void CP_PlayerGirl::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget)
 		pParts->Start_Dissolve(false, 144.f, true);
 }
 
-void CP_PlayerGirl::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
+void CP_PlayerGirl::Appear_QTE(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID)
 {
 	SetState(ACTIVE);
 
@@ -880,6 +882,7 @@ void CP_PlayerGirl::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
 
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vFinalPos, XMVectorGetY(m_pMainTransform->Get_State(CTransform::STATE_POSITION)) + 1.5f));
 	m_pMainTransform->Set_LookDir(XMVectorSetY(vTargetPos - vFinalPos, 0.f));
+	m_pNaviCom->Set_CurrentIndex(iNaviCellID);
 
 	m_Scon.iNextState = IS_SKILL_QTE;
 	SetUp_State();
@@ -894,10 +897,11 @@ void CP_PlayerGirl::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
 		pParts->Start_Dissolve(true, 5.f, true);
 }
 
-void CP_PlayerGirl::Disappear_QTE(CTransform ** ppTransform, CCharacter ** ppTarget)
+void CP_PlayerGirl::Disappear_QTE(CTransform ** ppTransform, CCharacter ** ppTarget, _uint* pNaviCellID)
 {
 	*ppTarget = m_pFixedTarget;
 	*ppTransform = m_pMainTransform;
+	*pNaviCellID = m_pNaviCom->Get_CurrentIndex();
 	m_pFixedTarget = nullptr;
 
 	m_Scon.iNextState = SS_SPRINT_IMPULSE_F;

@@ -425,11 +425,11 @@ public:
 	virtual void Change_Target(CCharacter* pActiveCharacter) {}
 
 	// PlayerCharacter 교대 시 등장하는/사라지는 함수
-	virtual void Appear(CTransform* pTransform, CCharacter* pTarget) {}
-	virtual void Disappear(class CTransform** ppTransform, CCharacter** ppTarget) {}
+	virtual void Appear(CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID) {}
+	virtual void Disappear(class CTransform** ppTransform, CCharacter** ppTarget, _uint* pNaviCellID) {}
 
-	virtual void Appear_QTE(CTransform* pTransform, CCharacter* pTarget) {}
-	virtual void Disappear_QTE(class CTransform** ppTransform, CCharacter** ppTarget) {}
+	virtual void Appear_QTE(CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID) {}
+	virtual void Disappear_QTE(class CTransform** ppTransform, CCharacter** ppTarget, _uint* pNaviCellID) {}
 
 public: // StateKey 대응 함수 모음
 	virtual void Shot_PartsKey(_uint iParts, _uint iState, _uint iDissolve, _float fDissSpeed) {}

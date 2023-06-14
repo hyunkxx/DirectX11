@@ -152,8 +152,9 @@ HRESULT CP_Chixia::Initialize(void * pArg)
 
 	m_pCharacterState = m_pPlayerStateClass->Get_CharState_byChar(CPlayerState::CHARACTER_CHIXIA);
 
-	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = (_float)m_tStates[IS_SKILL_01_F].CoolTime;
-	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST] = (_float)m_tStates[IS_BURST].CoolTime;
+	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = 5.f;
+	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST] = 10.f;
+
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 60.f;
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
@@ -827,15 +828,14 @@ void CP_Chixia::Check_TimeDelay(_double TimeDelta)
 	}
 }
 
-void CP_Chixia::Appear(CTransform * pTransform, CCharacter * pTarget)
+void CP_Chixia::Appear(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID)
 {
 	SetState(ACTIVE);
 
 	m_pFixedTarget = pTarget;
 	m_pMainTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix());
-
+	m_pNaviCom->Set_CurrentIndex(iNaviCellID);
 	
-
 	m_Scon.iNextState = SS_STAND1;
 	SetUp_State();
 	SetUp_Animations(false);
@@ -849,10 +849,11 @@ void CP_Chixia::Appear(CTransform * pTransform, CCharacter * pTarget)
 		pParts->Start_Dissolve(true, 5.f, true);
 }
 
-void CP_Chixia::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget)
+void CP_Chixia::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget, _uint* pNaviCellID)
 {
 	*ppTarget = m_pFixedTarget;
 	*ppTransform = m_pMainTransform;
+	*pNaviCellID = m_pNaviCom->Get_CurrentIndex();
 	m_pFixedTarget = nullptr;
 
 	m_bOnControl = false;
@@ -864,7 +865,7 @@ void CP_Chixia::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget)
 		pParts->Start_Dissolve(false, 144.f, true);
 }
 
-void CP_Chixia::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
+void CP_Chixia::Appear_QTE(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID)
 {
 	SetState(ACTIVE);
 
@@ -886,6 +887,7 @@ void CP_Chixia::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
 
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vFinalPos, XMVectorGetY(m_pMainTransform->Get_State(CTransform::STATE_POSITION))));
 	m_pMainTransform->Set_LookDir(XMVectorSetY(vTargetPos - vFinalPos, 0.f));
+	m_pNaviCom->Set_CurrentIndex(iNaviCellID);
 
 	m_Scon.iNextState = IS_SKILL_QTE;
 	SetUp_State();
@@ -900,10 +902,11 @@ void CP_Chixia::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
 		pParts->Start_Dissolve(true, 5.f, true);
 }
 
-void CP_Chixia::Disappear_QTE(CTransform ** ppTransform, CCharacter ** ppTarget)
+void CP_Chixia::Disappear_QTE(CTransform ** ppTransform, CCharacter ** ppTarget, _uint* pNaviCellID)
 {
 	*ppTarget = m_pFixedTarget;
 	*ppTransform = m_pMainTransform;
+	*pNaviCellID = m_pNaviCom->Get_CurrentIndex();
 	m_pFixedTarget = nullptr;
 
 	m_Scon.iNextState = SS_SPRINT_IMPULSE_F;

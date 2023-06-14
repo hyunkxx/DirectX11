@@ -290,15 +290,14 @@ HRESULT CLevel_Test::Ready_Layer_Player(const _tchar * pLayerTag)
 	// 한 명만 테스트 할 경우 슬롯을 미리 스왑해 놓아야 함
 	//static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"))->Set_ActiveCharacter(CPlayerState::CHARACTER_CHIXIA);
 
-	// 여러명 테스트할 때
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_YANGYANG, pLayerTag, TEXT("Player"))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_YANGYANG, pLayerTag, TEXT("Player"))))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_CHIXIA, pLayerTag, TEXT("Player"))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::PLAYER_CHIXIA, pLayerTag, TEXT("Player"))))
+		return E_FAIL;
 	
 
 	return S_OK;
@@ -321,11 +320,11 @@ HRESULT CLevel_Test::Ready_Layer_Monster(const _tchar * pLayerTag)
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_BINGLIE, pLayerTag, TEXT("Binglie"))))
 	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_FENGLIE, pLayerTag, TEXT("Fenglie"))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_FENGLIE, pLayerTag, TEXT("Fenglie"))))
+	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_LEILIE, pLayerTag, TEXT("Leilie"))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_LEILIE, pLayerTag, TEXT("Leilie"))))
+	//	return E_FAIL;
 
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_QUNJING, pLayerTag, TEXT("Qunjing"))))
 	//	return E_FAIL;

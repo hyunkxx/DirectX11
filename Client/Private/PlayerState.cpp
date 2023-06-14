@@ -220,16 +220,17 @@ _bool CPlayerState::Change_ActiveCharacter(_uint iSubID)
 	CGameMode* pGM = CGameMode::GetInstance();
 	CTransform* pOriginTransform = nullptr;
 	CCharacter* pTarget = nullptr;
+	_uint iCurrentCellID = 0;
 
 	if (m_PlayerState.fCurQTEGauge == m_PlayerState.fMaxQTEGauge && true == m_PlayerState.bLockOn)
 	{
-		m_pCharacter[m_CharSlot[SLOT_MAIN]]->Disappear_QTE(&pOriginTransform, &pTarget);
-		m_pCharacter[m_CharSlot[iSubID]]->Appear_QTE(pOriginTransform, pTarget);
+		m_pCharacter[m_CharSlot[SLOT_MAIN]]->Disappear_QTE(&pOriginTransform, &pTarget, &iCurrentCellID);
+		m_pCharacter[m_CharSlot[iSubID]]->Appear_QTE(pOriginTransform, pTarget, iCurrentCellID);
 	}
 	else
 	{
-		m_pCharacter[m_CharSlot[SLOT_MAIN]]->Disappear(&pOriginTransform, &pTarget);
-		m_pCharacter[m_CharSlot[iSubID]]->Appear(pOriginTransform, pTarget);
+		m_pCharacter[m_CharSlot[SLOT_MAIN]]->Disappear(&pOriginTransform, &pTarget, &iCurrentCellID);
+		m_pCharacter[m_CharSlot[iSubID]]->Appear(pOriginTransform, pTarget, iCurrentCellID);
 	}
 
 	CHARACTERS eTemp = m_CharSlot[SLOT_MAIN];

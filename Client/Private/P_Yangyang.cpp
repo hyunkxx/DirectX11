@@ -829,12 +829,13 @@ void CP_Yangyang::Check_TimeDelay(_double TimeDelta)
 	}
 }
 
-void CP_Yangyang::Appear(CTransform * pTransform, CCharacter * pTarget)
+void CP_Yangyang::Appear(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID)
 {
 	SetState(ACTIVE);
 
 	m_pFixedTarget = pTarget;
 	m_pMainTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix());
+	m_pNaviCom->Set_CurrentIndex(iNaviCellID);
 
 	m_Scon.iNextState = SS_STAND1;
 	SetUp_State();
@@ -850,10 +851,11 @@ void CP_Yangyang::Appear(CTransform * pTransform, CCharacter * pTarget)
 		pParts->Start_Dissolve(true, 5.f, true);
 }
 
-void CP_Yangyang::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget)
+void CP_Yangyang::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget, _uint* pNaviCellID)
 {
 	*ppTarget = m_pFixedTarget;
 	*ppTransform = m_pMainTransform;
+	*pNaviCellID = m_pNaviCom->Get_CurrentIndex();
 	m_pFixedTarget = nullptr;
 
 	m_bOnControl = false;
@@ -865,7 +867,7 @@ void CP_Yangyang::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget)
 		pParts->Start_Dissolve(false, 144.f, true);
 }
 
-void CP_Yangyang::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
+void CP_Yangyang::Appear_QTE(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID)
 {
 	SetState(ACTIVE);
 
@@ -886,6 +888,7 @@ void CP_Yangyang::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
 
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vFinalPos, XMVectorGetY(m_pMainTransform->Get_State(CTransform::STATE_POSITION)) + 1.5f));
 	m_pMainTransform->Set_LookDir(XMVectorSetY(vTargetPos - vFinalPos, 0.f));
+	m_pNaviCom->Set_CurrentIndex(iNaviCellID);
 
 	m_Scon.iNextState = IS_SKILL_QTE;
 	SetUp_State();
@@ -901,10 +904,11 @@ void CP_Yangyang::Appear_QTE(CTransform * pTransform, CCharacter * pTarget)
 		pParts->Start_Dissolve(true, 5.f, true);
 }
 
-void CP_Yangyang::Disappear_QTE(CTransform ** ppTransform, CCharacter ** ppTarget)
+void CP_Yangyang::Disappear_QTE(CTransform ** ppTransform, CCharacter ** ppTarget, _uint* pNaviCellID)
 {
 	*ppTarget = m_pFixedTarget;
 	*ppTransform = m_pMainTransform;
+	*pNaviCellID = m_pNaviCom->Get_CurrentIndex();
 	m_pFixedTarget = nullptr;
 
 	m_Scon.iNextState = SS_SPRINT_IMPULSE_F;
@@ -1123,7 +1127,8 @@ void CP_Yangyang::SetUp_State()
 		SS_CLIMB_BOOST_ONTOP == m_Scon.iCurState ||
 		SS_BEHIT_FLY_FALL == m_Scon.iCurState ||
 		IS_AIRATTACK_1_END == m_Scon.iCurState ||
-		IS_AIRATTACK_2_END == m_Scon.iCurState)
+		IS_AIRATTACK_2_END == m_Scon.iCurState ||
+		IS_AIRATTACK_2_QTE_END == m_Scon.iCurState)
 	{
 		m_Scon.ePositionState = PS_GROUND;
 	}
@@ -1180,7 +1185,8 @@ void CP_Yangyang::SetUp_State()
 	}
 	
 	if (false == m_bRender)
-		if (IS_AIRATTACK_2_END == m_Scon.iCurState)
+		if (IS_AIRATTACK_2_END == m_Scon.iCurState ||
+			IS_AIRATTACK_2_QTE_END == m_Scon.iCurState)
 			m_bRender = true;
 
 	// 게이지 차감
@@ -1685,6 +1691,8 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 			}
 			break;
 		case Client::CP_Yangyang::INPUT_ATTACK:
+			if (IS_SKILL_QTE == m_Scon.iCurState)
+				m_Scon.iNextState = IS_AIRATTACK_2_QTE_START;
 			if (m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] <= m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] || IS_SKILL_QTE == m_Scon.iCurState)
 				m_Scon.iNextState = IS_AIRATTACK_2_START;
 			else
@@ -2257,6 +2265,12 @@ void CP_Yangyang::On_Cell()
 					{
 						m_pCamMovement->StartWave();
 						m_Scon.iNextState = IS_AIRATTACK_2_END;
+					}
+					else if (IS_AIRATTACK_2_QTE_START == m_Scon.iCurState ||
+						IS_AIRATTACK_2_QTE_LOOP == m_Scon.iCurState)
+					{
+						m_pCamMovement->StartWave();
+						m_Scon.iNextState = IS_AIRATTACK_2_QTE_END;
 					}
 					else if (SS_BEHIT_FLY_START == m_Scon.iCurState ||
 						SS_BEHIT_PUSH == m_Scon.iCurState ||

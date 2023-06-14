@@ -63,6 +63,9 @@ public:
 		IS_SKILL_02,
 		IS_SKILL_03,			// SKILL_QTE 슬로우 없는 버전
 		IS_SKILL_QTE,
+		IS_AIRATTACK_2_QTE_START,
+		IS_AIRATTACK_2_QTE_LOOP,
+		IS_AIRATTACK_2_QTE_END,
 		IS_BURST,
 		IS_END
 	};
@@ -195,11 +198,11 @@ public:
 	}
 
 	// 교대 처리용 함수
-	virtual void Appear(CTransform* pTransform, CCharacter* pTarget);
-	virtual void Disappear(class CTransform** ppTransform, CCharacter** ppTarget);
+	virtual void Appear(CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID);
+	virtual void Disappear(class CTransform** ppTransform, CCharacter** ppTarget, _uint* pNaviCellID);
 
-	virtual void Appear_QTE(CTransform* pTransform, CCharacter* pTarget);
-	virtual void Disappear_QTE(class CTransform** ppTransform, CCharacter** ppTarget);
+	virtual void Appear_QTE(CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID);
+	virtual void Disappear_QTE(class CTransform** ppTransform, CCharacter** ppTarget, _uint* pNaviCellID);
 
 	
 

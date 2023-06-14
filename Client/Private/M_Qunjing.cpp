@@ -21,8 +21,8 @@
 #include "UI_Monster.h"
 #include "UI_Minimap.h"
 
-#define DIST_MELEE 4.f
-#define DIST_RANGE 10.f
+#define DIST_MELEE 5.f
+#define DIST_RANGE 12.f
 
 CCharacter::SINGLESTATE CM_Qunjing::m_tStates[IS_END];
 
@@ -59,11 +59,13 @@ HRESULT CM_Qunjing::Initialize(void * pArg)
 		return E_FAIL;
 
 	Init_AttackInfos();
+	Init_Missiles();
 
 	m_iStartAttackArray[MA_ATTACK01] = IS_ATTACK01;
 	m_iStartAttackArray[MA_ATTACK02] = IS_ATTACK02;
 	m_iStartAttackArray[MA_ATTACK03_1] = IS_ATTACK03_1;
 	m_iStartAttackArray[MA_ATTACK08] = IS_ATTACK08;
+	m_iStartAttackID = MA_ATTACK01;
 
 	for (_uint i = 0; i < IS_END; ++i)
 		m_pModelCom->Get_Animation(m_tStates[i].iAnimID)->Set_TicksPerSecond(m_tStates[i].FramePerSec);
@@ -156,8 +158,12 @@ void CM_Qunjing::PreTick(_double TimeDelta)
 	//if(false == m_pTarget->IsActive())
 	//	 Find ActivePlayer
 
+	
+
 	// 매 프레임 타겟까지의 거리를 계산하는 함수, 위에서 컬링해야 함
 	Find_Target();
+
+	Check_Derive();
 }
 
 void CM_Qunjing::Tick(_double TimeDelta)
@@ -385,8 +391,8 @@ HRESULT CM_Qunjing::Add_Components()
 
 	// attack Hit / Move
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.5f, 0.f, 0.f };
-	CollDesc.vExtents = { 0.7f, 0.2f, 0.2f };
+	CollDesc.vCenter = { 0.f, 0.f, 0.f };
+	CollDesc.vExtents = { 0.8f, 0.5f, 0.5f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::OBB,
 
@@ -460,6 +466,9 @@ HRESULT CM_Qunjing::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pCon
 				case CStateKey::TYPE_OBB:
 					m_tStates[i].ppStateKeys[j] = COBBKey::Create(pDevice, pContext, &tBaseData);
 					break;
+				case CStateKey::TYPE_MISSILE:
+					m_tStates[i].ppStateKeys[j] = CMissileKey::Create(pDevice, pContext, &tBaseData);
+					break;
 				case CStateKey::TYPE_SOUND:
 
 					break;
@@ -507,12 +516,50 @@ void CM_Qunjing::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
 	m_pAttackCollider->SetActive(bOBB);
 	m_iCurAttackID = iAttackInfoID;
 
-	if ((m_Scon.iCurState == IS_ATTACK01 && m_Scon.TrackPos < 50.0) ||
-		m_Scon.iCurState == IS_ATTACK03_2)
+	if (ATK_ATTACK01_2 == iAttackInfoID ||
+		ATK_ATTACK02_3 == iAttackInfoID)
+	{
 		m_bOBBOnLeft = true;
+	}
+	else if (ATK_ATTACK03_1 == iAttackInfoID)
+	{
+		m_bOBBOnLeft = true;
+		m_pAttackCollider->SetCenter_(_float3(0.f, 0.f, -0.7f));
+	}
+	
 	else
+	{
+		m_pAttackCollider->SetCenter_(_float3(0.6f, 0.f, 0.f));
 		m_bOBBOnLeft = false;
+	}
+		
 
+}
+
+void CM_Qunjing::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
+{
+	if (MISS_END <= iMissilePoolID || EBONE_END <= iEffectBoneID)
+		return;
+
+	_vector vInitPos;
+	if (0 != iEffectBoneID)
+	{
+		vInitPos = XMVector3TransformCoord(
+			XMVector3TransformCoord(m_EffectBones[iEffectBoneID]->Get_CombinedPosition(), XMMatrixRotationY(XMConvertToRadians(180.f))),
+			XMLoadFloat4x4(m_pMainTransform->Get_WorldMatrixPtr()));
+	}
+	else
+		vInitPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+
+
+
+	_matrix matRot = XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_RIGHT), m_MissileRotAngles[iMissilePoolID].x)
+		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_UP), m_MissileRotAngles[iMissilePoolID].y)
+		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_LOOK), m_MissileRotAngles[iMissilePoolID].z);
+
+	_vector vTargetPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot, vTargetPos);
 }
 
 void CM_Qunjing::Shot_PriorityKey(_uint iLeavePriority)
@@ -541,7 +588,6 @@ void CM_Qunjing::SetUp_State()
 
 	m_Scon.TrackPos = 0.0;
 	m_Scon.bAnimFinished = false;
-
 
 	// 
 	m_bAttackHit = false;
@@ -597,11 +643,32 @@ void CM_Qunjing::Find_Target()
 			m_Scon.iNextState = IS_GREETING;
 			SetUp_State();
 			m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true, false);
-			m_pMainTransform->Set_LookDir(XMVectorSetY(m_pTargetTransform->Get_State(CTransform::STATE_POSITION) - m_pMainTransform->Get_State(CTransform::STATE_POSITION), 0.f));
 
 			m_fHitPoint = 200.f;
 		}
 	}
+}
+
+void CM_Qunjing::Check_Derive()
+{
+	if (IS_ATTACK03_1 == m_Scon.iCurState)
+	{
+		if (IS_ATTACK03_2 != m_tCurState.iNextState)
+		{
+			if (true == m_bAttackHit)
+			{
+				m_tCurState.iNextState = IS_ATTACK03_2;
+			}
+		}
+	}
+	else if (IS_ATTACK03_3 == m_Scon.iCurState && 90.0 <= m_Scon.TrackPos && m_Scon.TrackPos < 96.0)
+	{
+		if (m_fTargetDistance < DIST_MELEE)
+			m_Scon.iNextState = IS_ATTACK03_4;
+		SetUp_State();
+		m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true);
+	}
+
 }
 
 void CM_Qunjing::Init_AttackInfos()
@@ -611,45 +678,359 @@ void CM_Qunjing::Init_AttackInfos()
 		ZeroMemory(&m_AttackInfos[i], sizeof TAGATTACK);
 	}
 
-	m_AttackInfos[ATK_ATTACK_01_1].fDamageFactor = 1.f;
-	m_AttackInfos[ATK_ATTACK_01_1].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_ATTACK_01_1].eElementType = ELMT_FUSION;
-	m_AttackInfos[ATK_ATTACK_01_1].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_01_1].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_01_1].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_01_1].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK01_1].fDamageFactor = 0.2f;
+	m_AttackInfos[ATK_ATTACK01_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK01_1].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK01_1].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK01_1].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK01_1].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_1].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_01_2].fDamageFactor = 1.f;
-	m_AttackInfos[ATK_ATTACK_01_2].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_ATTACK_01_2].eElementType = ELMT_FUSION;
-	m_AttackInfos[ATK_ATTACK_01_2].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_01_2].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_01_2].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_01_2].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK01_2].fDamageFactor = 1.1f;
+	m_AttackInfos[ATK_ATTACK01_2].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK01_2].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK01_2].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK01_2].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK01_2].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_2].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_01_3].fDamageFactor = 1.f;
-	m_AttackInfos[ATK_ATTACK_01_3].eHitIntensity = HIT_SMALL;
-	m_AttackInfos[ATK_ATTACK_01_3].eElementType = ELMT_FUSION;
-	m_AttackInfos[ATK_ATTACK_01_3].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_01_3].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_01_3].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_01_3].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK01_3].fDamageFactor = 1.2f;
+	m_AttackInfos[ATK_ATTACK01_3].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK01_3].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK01_3].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK01_3].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK01_3].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_3].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 1.f;
-	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_FLY;
-	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_FUSION;
-	m_AttackInfos[ATK_ATTACK_02].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK01_4].fDamageFactor = 1.8f;
+	m_AttackInfos[ATK_ATTACK01_4].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK01_4].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK01_4].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK01_4].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK01_4].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_4].szHitEffectTag, TEXT("Anjin_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 1.f;
-	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_BIG;
-	m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_FUSION;
-	m_AttackInfos[ATK_ATTACK_03].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_03].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK02_1].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_ATTACK02_1].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK02_1].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK02_1].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK02_1].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK02_1].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK02_1].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK02_2].fDamageFactor = 0.3f;
+	m_AttackInfos[ATK_ATTACK02_2].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK02_2].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK02_2].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK02_2].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK02_2].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK02_2].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK02_3].fDamageFactor = 1.5f;
+	m_AttackInfos[ATK_ATTACK02_3].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK02_3].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK02_3].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK02_3].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK02_3].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK02_3].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK02_4].fDamageFactor = 2.f;
+	m_AttackInfos[ATK_ATTACK02_4].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK02_4].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK02_4].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK02_4].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK02_4].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK02_4].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK03_1].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_ATTACK03_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK03_1].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK03_1].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK03_1].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK03_1].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK03_1].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK03_2].fDamageFactor = 2.4f;
+	m_AttackInfos[ATK_ATTACK03_2].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK03_2].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK03_2].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK03_2].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK03_2].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK03_2].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK03_4].fDamageFactor = 2.8f;
+	m_AttackInfos[ATK_ATTACK03_4].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK03_4].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK03_4].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK03_4].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK03_4].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK03_4].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK04].fDamageFactor = 2.1f;
+	m_AttackInfos[ATK_ATTACK04].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK04].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK04].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK04].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK04].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK04].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK06].fDamageFactor = 1.8f;
+	m_AttackInfos[ATK_ATTACK06].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK06].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK06].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK06].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK06].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK06].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK07_1].fDamageFactor = 0.7f;
+	m_AttackInfos[ATK_ATTACK07_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK07_1].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK07_1].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK07_1].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK07_1].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK07_1].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK07_2].fDamageFactor = 1.9f;
+	m_AttackInfos[ATK_ATTACK07_2].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK07_2].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK07_2].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK07_2].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK07_2].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK07_2].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK08_1].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_ATTACK08_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK08_1].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK08_1].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK08_1].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK08_1].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_1].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK08_2].fDamageFactor = 3.f;
+	m_AttackInfos[ATK_ATTACK08_2].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK08_2].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK08_2].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK08_2].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK08_2].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_2].szHitEffectTag, TEXT("Anjin_Hit"));
+
+	m_AttackInfos[ATK_ATTACK08_3].fDamageFactor = 1.6f;
+	m_AttackInfos[ATK_ATTACK08_3].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK08_3].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK08_3].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK08_3].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK08_3].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_3].szHitEffectTag, TEXT("Anjin_Hit"));
+
+}
+
+void CM_Qunjing::Init_Missiles()
+{
+	CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	// Attack01_1
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack01_1_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK01_1;
+	tMissilePoolDesc.tMissileDesc.fExtents = 2.5f;
+
+	m_MissilePools[MISS_ATTACK01_1] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK01_1] = _float3(0.f, 0.f, 0.f);
+
+	// Attack01_4
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack01_4_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK01_4;
+	tMissilePoolDesc.tMissileDesc.fExtents = 2.5f;
+
+	tMissilePoolDesc.bTargetDir = false;
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 15.f;
+	tMissilePoolDesc.StopTime = 3.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+
+	m_MissilePools[MISS_ATTACK01_4] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK01_4] = _float3(0.f, 0.f, 0.f);
+
+	// ATK_ATTACK02_4
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack02_2_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK02_4;
+	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
+
+	m_MissilePools[MISS_ATTACK02_4] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK02_4] = _float3(0.f, 0.f, 0.f);
+
+	// Attack03_2
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack03_2_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK03_2;
+	tMissilePoolDesc.tMissileDesc.fExtents = 3.f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
+
+	tMissilePoolDesc.bTargetDir = false;
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 15.f;
+	tMissilePoolDesc.StopTime = 3.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+
+	m_MissilePools[MISS_ATTACK03_2] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK03_2] = _float3(0.f, 0.f, 0.f);
+
+	// Attack03_4
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack03_4_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK03_4;
+	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
+
+	m_MissilePools[MISS_ATTACK03_4] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK03_4] = _float3(0.f, 0.f, 0.f);
+
+	// Attack04
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack04_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK04;
+	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
+
+	m_MissilePools[MISS_ATTACK04] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK04] = _float3(0.f, 0.f, 0.f);
+
+	// Attack07_1
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack07_1_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK07_1;
+	tMissilePoolDesc.tMissileDesc.fExtents = 2.5f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
+
+	m_MissilePools[MISS_ATTACK07_1] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK07_1] = _float3(0.f, 0.f, 0.f);
+
+	// Attack07_2
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack07_2_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Qunjing_Attack_Bullet"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 7; //Qunjing
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK07_2;
+	tMissilePoolDesc.tMissileDesc.fExtents = 2.f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
+
+	tMissilePoolDesc.bTargetDir = true;
+	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	tMissilePoolDesc.fVelocity = 45.f;
+	tMissilePoolDesc.StopTime = 3.0;
+	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+
+	m_MissilePools[MISS_ATTACK07_2] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK07_2] = _float3(0.f, 0.f, 0.f);
+
+	// Attack08_2
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack08_2_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK07_2;
+	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
+
+	m_MissilePools[MISS_ATTACK08_2] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK08_2] = _float3(0.f, 0.f, 0.f);
+
+	// Attack08_3
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack08_3_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK08_3;
+	tMissilePoolDesc.tMissileDesc.fExtents = 2.5f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
+
+	m_MissilePools[MISS_ATTACK08_3] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK08_3] = _float3(0.f, 0.f, 0.f);
 }
 
 void CM_Qunjing::Apply_CoolTime(_double TimeDelta)
@@ -1059,6 +1440,7 @@ HRESULT CM_Qunjing::Init_EffectBones()
 	m_EffectBones[EBONE_LHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001LHand"));
 	m_EffectBones[EBONE_RHAND] = m_pModelCom->Get_BonePtr(TEXT("Bip001RHand"));
 	m_EffectBones[EBONE_HEAD] = m_pModelCom->Get_BonePtr(TEXT("Bip001Head"));
+	m_EffectBones[EBONE_LFOOT] = m_pModelCom->Get_BonePtr(TEXT("Bip001LFoot"));
 
 	return S_OK;
 }

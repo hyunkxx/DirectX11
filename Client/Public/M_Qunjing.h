@@ -66,18 +66,47 @@ public:
 		EBONE_RHAND,
 		EBONE_HEAD,
 		// 여기까지 몬스터 공통으로 고정
+		EBONE_LFOOT,
 		EBONE_END
 	};
 
 	// 공격 종류
 	enum Attacks
 	{
-		ATK_ATTACK_01_1,
-		ATK_ATTACK_01_2,
-		ATK_ATTACK_01_3,
-		ATK_ATTACK_02,
-		ATK_ATTACK_03,
+		ATK_ATTACK01_1,
+		ATK_ATTACK01_2,
+		ATK_ATTACK01_3,
+		ATK_ATTACK01_4,
+		ATK_ATTACK02_1,
+		ATK_ATTACK02_2,
+		ATK_ATTACK02_3,
+		ATK_ATTACK02_4,
+		ATK_ATTACK03_1,
+		ATK_ATTACK03_2,
+		ATK_ATTACK03_4,
+		ATK_ATTACK04,
+		ATK_ATTACK06,
+		ATK_ATTACK07_1,
+		ATK_ATTACK07_2,
+		ATK_ATTACK08_1,
+		ATK_ATTACK08_2,
+		ATK_ATTACK08_3,
 		ATK_END
+	};
+
+	enum Missiles
+	{
+		MISS_ATTACK01_1,
+		MISS_ATTACK01_4,
+		MISS_ATTACK02_4,
+		MISS_ATTACK03_2,
+		MISS_ATTACK03_4,
+		MISS_ATTACK04,
+		MISS_ATTACK07_1,
+		MISS_ATTACK07_2,
+		MISS_ATTACK08_2,
+		MISS_ATTACK08_3,
+		MISS_END
 	};
 
 	enum MeleeAttacks
@@ -115,6 +144,7 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint EffectBoneID, _uint iEffectTypeID, _bool bTracking);
 	virtual void Shot_PriorityKey(_uint iLeavePriority);
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID);
+	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID);
 
 public:
 	virtual _uint Get_AttackID() override { return m_iCurAttackID; }
@@ -124,6 +154,12 @@ public:
 		*pAttackOut = m_tMonsterInfo.fAttack;
 	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
+
+
+	virtual void Set_AttackHit(_bool bAttackHit)
+	{
+		m_bAttackHit = bAttackHit;
+	}
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
@@ -147,6 +183,10 @@ private:
 	// 공격 구조체
 	TAGATTACK			m_AttackInfos[ATK_END];
 	_uint				m_iCurAttackID = { 0 };	// OBB 히트 시 사용할 공격 구조체ID
+
+	// 미사일 풀
+	CMissilePool*		m_MissilePools[MISS_END] = { nullptr, };
+	_float3				m_MissileRotAngles[MISS_END];
 
 	//
 	_uint				m_iStartAttackID = { 0 };
@@ -189,9 +229,11 @@ private:
 	virtual void Change_Target(CCharacter* pActiveCharacter);
 	// 플레이어가 일정 거리 안으로 접근했는지 확인하는 함수
 	void Find_Target();
+	void Check_Derive();
 	// 
 
 	void Init_AttackInfos();
+	void Init_Missiles();
 
 	// 적용 중인 쿨타임 TimeDelta 만큼 줄여주는 함수
 	void Apply_CoolTime(_double TimeDelta);

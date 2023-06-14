@@ -189,11 +189,11 @@ public:
 	}
 
 	// 교대 처리용 함수
-	virtual void Appear(CTransform* pTransform, CCharacter* pTarget);
-	virtual void Disappear(class CTransform** ppTransform, CCharacter** ppTarget);
+	virtual void Appear(CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID);
+	virtual void Disappear(class CTransform** ppTransform, CCharacter** ppTarget, _uint* iNaviCellID);
 
-	virtual void Appear_QTE(CTransform* pTransform, CCharacter* pTarget);
-	virtual void Disappear_QTE(class CTransform** ppTransform, CCharacter** ppTarget);
+	virtual void Appear_QTE(CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID);
+	virtual void Disappear_QTE(class CTransform** ppTransform, CCharacter** ppTarget, _uint* iNaviCellID);
 
 
 
