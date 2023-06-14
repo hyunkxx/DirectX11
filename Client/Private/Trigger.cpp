@@ -44,6 +44,9 @@ HRESULT CTrigger::Initialize(void* pArg)
 
 	SetUp_State();
 
+	if (TRIGGER_TYPE::TYPE_SPAWN == m_TriggerDesc.iTriggerType)
+		Load_SpawnPoint();
+
 	return S_OK;
 }
 
@@ -262,6 +265,42 @@ void CTrigger::Trigger_Spawn_Crown()
 void CTrigger::Trigger_Interact_Cook()
 {
 	MSG_BOX("Trigger : Interact_Cook");
+}
+
+HRESULT CTrigger::Load_SpawnPoint()
+{
+	HANDLE		hFile = CreateFile(m_TriggerDesc.pEditionFilePath, GENERIC_READ, 0, 0,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Failed to Load Data in Trigger : SpawnPoint");
+		return E_FAIL;
+	}
+
+	DWORD		dwByte = 0;
+
+	SPAWN_POINT		SpawnPoint = {};
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+
+	ReadFile(hFile, &m_iSpawnPointCount, sizeof(_uint), &dwByte, nullptr);
+
+	m_SpawnPoints.resize(m_iSpawnPointCount);
+
+	for (_uint i = 0; i < m_iSpawnPointCount; ++i)
+	{
+		ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+
+		ReadFile(hFile, &SpawnPoint.vP, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &SpawnPoint.iCellIndex, sizeof(_uint), &dwByte, nullptr);
+
+		m_SpawnPoints[i].vP = SpawnPoint.vP;
+		m_SpawnPoints[i].iCellIndex = SpawnPoint.iCellIndex;
+	}
+
+	CloseHandle(hFile);
+
+	return S_OK;
 }
 
 HRESULT CTrigger::Add_Components()

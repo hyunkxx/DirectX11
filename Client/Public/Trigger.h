@@ -102,6 +102,13 @@ private:
 	_vector						m_vTriggerPos = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 private:
+	_uint						m_iSpawnPointCount = { 0 };
+	vector<SPAWN_POINT>			m_SpawnPoints = {};
+
+public:
+	HRESULT Load_SpawnPoint();
+
+private:
 	CRenderer*					m_pRendererCom = { nullptr };
 	CShader*					m_pShaderCom = { nullptr };
 	CModel*						m_pModelCom = { nullptr };

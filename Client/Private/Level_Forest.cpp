@@ -2296,22 +2296,22 @@ HRESULT CLevel_Forest::Ready_Layer_Trigger(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_0.data"), TEXT("Trigger_Spawn_Forest_0"), pLayerTag)))
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_0.data"), TEXT("Trigger_Spawn_Forest_0"), pLayerTag, TEXT("../../Data/Forest/Trigger/Spawn_Forest_0_SpawnPoint.data"))))
 	{
 		MSG_BOX("Trigger_Spawn_Forest_0");
 		return E_FAIL;
 	}
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_1.data"), TEXT("Trigger_Spawn_Forest_1"), pLayerTag)))
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_1.data"), TEXT("Trigger_Spawn_Forest_1"), pLayerTag), TEXT("../../Data/Forest/Trigger/Spawn_Forest_1_SpawnPoint.data")))
 	{
 		MSG_BOX("Trigger_Spawn_Forest_1");
 		return E_FAIL;
 	}
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_2.data"), TEXT("Trigger_Spawn_Forest_2"), pLayerTag)))
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_2.data"), TEXT("Trigger_Spawn_Forest_2"), pLayerTag), TEXT("../../Data/Forest/Trigger/Spawn_Forest_2_SpawnPoint.data")))
 	{
 		MSG_BOX("Trigger_Spawn_Forest_2");
 		return E_FAIL;
 	}
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_3.data"), TEXT("Trigger_Spawn_Forest_3"), pLayerTag)))
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_3.data"), TEXT("Trigger_Spawn_Forest_3"), pLayerTag), TEXT("../../Data/Forest/Trigger/Spawn_Forest_3_SpawnPoint.data")))
 	{
 		MSG_BOX("Trigger_Spawn_Forest_3");
 		return E_FAIL;
@@ -2320,7 +2320,7 @@ HRESULT CLevel_Forest::Ready_Layer_Trigger(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Forest::Load_TriggerData(const _tchar * pDataFilePath, const _tchar * pObjectTag, const _tchar * pLayerTag)
+HRESULT CLevel_Forest::Load_TriggerData(const _tchar * pDataFilePath, const _tchar * pObjectTag, const _tchar * pLayerTag, const _tchar* pEditionFilePath)
 {
 	CGameInstance*			pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
@@ -2352,7 +2352,9 @@ HRESULT CLevel_Forest::Load_TriggerData(const _tchar * pDataFilePath, const _tch
 	ReadFile(hFile, &TriggerDesc.iTriggerID, sizeof(_uint), &dwByte, nullptr);
 	ReadFile(hFile, &TriggerDesc.iTriggerType, sizeof(_uint), &dwByte, nullptr);
 
-
+	if (nullptr != pEditionFilePath)
+		TriggerDesc.pEditionFilePath = pEditionFilePath;
+	
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::TRIGGER,
 		pLayerTag, szObjectTag, &TriggerDesc)))
 	{

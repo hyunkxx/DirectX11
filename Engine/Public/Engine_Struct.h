@@ -447,6 +447,14 @@ namespace Engine
 
 		const _tchar*	pFilePath = { L"" };
 
+		const _tchar*	pEditionFilePath = { L"" };
+
 	}TRIGGER_DESC;
+
+	typedef struct tagSpawnPoint {
+		_float3			vP = { 0.0f, 0.0f, 0.0f };
+		_uint			iCellIndex = { 0 };
+	}SPAWN_POINT;
+
 #pragma endregion TRIGGER
 }

@@ -45,7 +45,7 @@ private:
 
 private:
 	HRESULT Ready_Layer_Trigger(const _tchar* pLayerTag);
-	HRESULT Load_TriggerData(const _tchar* pDataFilePath, const _tchar* pObjectTag, const _tchar* pLayerTag);
+	HRESULT Load_TriggerData(const _tchar* pDataFilePath, const _tchar* pObjectTag, const _tchar* pLayerTa, const _tchar* pEditionFilePath = nullptr);
 
 public:
 	static CLevel_Forest* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
