@@ -221,6 +221,7 @@ void CBoom_Rock::Free()
 	Safe_Release(m_pCollider_Lader);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
+	Safe_Release(m_pModel);
 }
 
 void CBoom_Rock::OnCollisionEnter(CCollider * src, CCollider * dest)
