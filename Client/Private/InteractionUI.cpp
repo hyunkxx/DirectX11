@@ -190,8 +190,8 @@ HRESULT CInteractionUI::Render()
 		if (FAILED(m_pShader->SetRawValue("g_CurrentCount", &m_fCurrentSpriteIndex, sizeof(_float))))
 			return E_FAIL;
 
-		_float3 vColor = { 1.f, 1.f, 0.5f };
-		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+		_float4 vColor = { 1.f, 1.f, 0.5f, 1.f };
+		if (FAILED(m_pShader->SetRawValue("g_vColor4", &vColor, sizeof(_float4))))
 			return E_FAIL;
 		if (FAILED(m_pSpriteTexture->Setup_ShaderResource(m_pShader, "g_DiffuseTexture")))
 			return E_FAIL;

@@ -210,7 +210,10 @@ PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
 	Out.vDiffuse = vMtrlDiffuse;
 
 	if (Out.vDiffuse.a < 0.1f)
+	{
 		Out.vDiffuse.a = 0.0f;
+		Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 1.f);
+	}
 
 	//if (Out.vDiffuse.a < 0.1f)
 		//discard;
@@ -218,6 +221,7 @@ PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 	//Out.vOutNormal = vector(0.f, 0.f, 0.f, 0.f);
+
 
 	return Out;
 }
@@ -403,10 +407,10 @@ PS_OUT_OUTLINE PS_MAIN_MODEL_SPECGLOW(PS_IN In)
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.f, 1.f);
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
-	if (vNormalDesc.g > vNormalDesc.b)
+	if ((vNormalDesc.r + vNormalDesc.g) / 2 >(vNormalDesc.b * 2.f))
 		Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 1.f);
 
-	if (vNormalDesc.g > vNormalDesc.b)
+	if ((vNormalDesc.r + vNormalDesc.g) / 2 > (vNormalDesc.b * 2.f))
 		Out.vGlow = vector(0.f, 0.f, 0.f, 0.f);
 
 	Out.vShaderInfo = float4(0.9f, 0.f, 0.f, 0.f);
@@ -439,7 +443,7 @@ PS_OUT_OUTLINE PS_MAIN_MODEL_EMISSIVE(PS_IN In)
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
-	if (vNormalDesc.g > vNormalDesc.b)
+	if ((vNormalDesc.r + vNormalDesc.g) / 2 >(vNormalDesc.b * 2.f))
 		Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
 
 	float2 uv = { 0.f, 0.f };
@@ -524,6 +528,7 @@ PS_OUT_OUTLINE PS_RimLight(PS_IN In)
 	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
 
+	vNormal = mul(vNormal, WorldMatrix);
 	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	vector vCamDir = normalize(In.vWorldPos - g_vCamPosition);
 	float rim = 0;
@@ -534,12 +539,11 @@ PS_OUT_OUTLINE PS_RimLight(PS_IN In)
 	float4 rimColor = rim * g_RimColor;
 	Out.vDiffuse = rimColor * g_fTimeAcc;
 
-	Out.vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 1.f);
-	Out.vOutNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 
 	Out.vGlow = Out.vDiffuse;
-	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 1.f);
+	Out.vSpecGlow = float4(0.f, 0.f, 0.f, 0.f);
 	Out.vShaderInfo = float4(0.9f, 0.f, 0.f, 0.f);
 
 	return Out;

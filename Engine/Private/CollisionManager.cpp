@@ -125,7 +125,6 @@ void CCollisionManager::PhysicsUpdate()
 			}
 		}
 	}
- 
 }
 
 void CCollisionManager::Render()

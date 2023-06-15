@@ -185,12 +185,10 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL_SSAO(PS_IN In)
 		vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
 		vector vLook = vWorldPos - g_vCamPosition;
 
-		float  fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 5.f);
+		float  fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 8.f);
 		Out.vSpecular = vPrevGlow * (g_vLightSpecular * g_vMtrlSpecular) * fSpecular;
 	}
-
-
-
+	
 	return Out;
 }
 
@@ -337,9 +335,9 @@ PS_OUT PS_MAIN_BLEND_NOSHADOW(PS_IN In)
 	else
 	{
 		if (vShaderInfo.r == 1.f)
-			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.9f));
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 		else if (vShaderInfo.r == 0.1f)//스카이박스
-			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.5f));
+			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.7f));
 		else
 			vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 
@@ -381,9 +379,9 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 		else
 		{
 			if (vShaderInfo.r == 1.f)
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.9f));
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 			else if (vShaderInfo.r == 0.1f)//스카이박스
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.5f));
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.7f));
 			else
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 
@@ -402,9 +400,9 @@ PS_OUT PS_MAIN_BLEND_SHADOW(PS_IN In)
 		else
 		{
 			if (vShaderInfo.r == 1.f)
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 0.9f));
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 			else if (vShaderInfo.r == 0.1f)//스카이박스
-				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.5f));
+				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.7f));
 			else
 				vFinalColor = (vDiffuse * ((vShade + vSpecular) * 1.f));
 

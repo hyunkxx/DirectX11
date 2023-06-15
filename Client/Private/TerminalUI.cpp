@@ -189,11 +189,11 @@ HRESULT CTerminalUI::Initialize(void * pArg)
 	for (int i = 0; i < SLOT_MAX; ++i)
 	{
 		// Slot
-		m_OrthoSlot[i].fWidth = 90.f;
-		m_OrthoSlot[i].fHeight = 100.f;
-		m_OrthoSlot[i].fX = (g_iWinSizeX >> 1) - 50.f + ((i % 4) * 150.f);
+		m_OrthoSlot[i].fWidth = 100.f;
+		m_OrthoSlot[i].fHeight = 110.f;
+		m_OrthoSlot[i].fX = (g_iWinSizeX >> 1) + 50.f + ((i % 3) * 170.f);
 
-		if(i < 4)
+		if(i < 3)
 			m_OrthoSlot[i].fY = (g_iWinSizeY >> 1) - 80.f;
 		else
 			m_OrthoSlot[i].fY = (g_iWinSizeY >> 1) + 80.f;
@@ -211,9 +211,9 @@ HRESULT CTerminalUI::Initialize(void * pArg)
 			m_OrthoSlotIcon[i].fWidth = 45.f;
 			m_OrthoSlotIcon[i].fHeight = 45.f;
 		}
-		m_OrthoSlotIcon[i].fX = (g_iWinSizeX >> 1) - 50.f + ((i % 4) * 150.f);
+		m_OrthoSlotIcon[i].fX = (g_iWinSizeX >> 1) + 50.f + ((i % 3) * 170.f);
 
-		if (i < 4)
+		if (i < 3)
 			m_OrthoSlotIcon[i].fY = (g_iWinSizeY >> 1) - 80.f;
 		else
 			m_OrthoSlotIcon[i].fY = (g_iWinSizeY >> 1) + 80.f;
@@ -223,9 +223,9 @@ HRESULT CTerminalUI::Initialize(void * pArg)
 		// Text
 		m_OrthoSlotText[i].fWidth = 250.f;
 		m_OrthoSlotText[i].fHeight = 30.f;
-		m_OrthoSlotText[i].fX = (g_iWinSizeX >> 1) - 50.f + ((i % 4) * 150.f);
+		m_OrthoSlotText[i].fX = (g_iWinSizeX >> 1) + 50.f + ((i % 3) * 170.f);
 
-		if (i < 4)
+		if (i < 3)
 			m_OrthoSlotText[i].fY = (g_iWinSizeY >> 1) - 10.f;
 		else
 			m_OrthoSlotText[i].fY = (g_iWinSizeY >> 1) + 150.f;
@@ -460,15 +460,9 @@ _int CTerminalUI::getSlotTexture(SLOT_TEXTURE eType, _int iIndex)
 		case SLOT_TERMINAL:
 			iTextureID = STATIC_IMAGE::UI_TERMINAL_TEXT_TERMINAL;
 			break;
-		case SLOT_MISSION:
-			iTextureID = STATIC_IMAGE::UI_TERMINAL_TEXT_MISSION;
-			break;
 
 		case SLOT_TEAM:
 			iTextureID = STATIC_IMAGE::UI_TERMINAL_TEXT_TEAM;
-			break;
-		case SLOT_MERGE:
-			iTextureID = STATIC_IMAGE::UI_TERMINAL_TEXT_MERGE;
 			break;
 		case SLOT_MAP:
 			iTextureID = STATIC_IMAGE::UI_TERMINAL_TEXT_MAP;
@@ -494,15 +488,9 @@ _int CTerminalUI::getSlotTexture(SLOT_TEXTURE eType, _int iIndex)
 		case SLOT_TERMINAL:
 			iTextureID = STATIC_IMAGE::UI_TERMINAL_ICON_TERMINAL;
 			break;
-		case SLOT_MISSION:
-			iTextureID = STATIC_IMAGE::UI_TERMINAL_ICON_MISSION;
-			break;
 
 		case SLOT_TEAM:
 			iTextureID = STATIC_IMAGE::UI_TERMINAL_ICON_TEAM;
-			break;
-		case SLOT_MERGE:
-			iTextureID = STATIC_IMAGE::UI_TERMINAL_ICON_MERGE;
 			break;
 		case SLOT_MAP:
 			iTextureID = STATIC_IMAGE::UI_TERMINAL_ICON_MAP;
@@ -588,6 +576,15 @@ HRESULT CTerminalUI::addGameObjects()
 		return E_FAIL;
 
 	if (FAILED(pGI->Add_GameObjectEx(&m_pSlotUI[1], LEVEL_STATIC, OBJECT::UI_TERMINAL_BACKPACK, L"Terminal_UI", L"Backpack", this)))
+		return E_FAIL;
+
+	if (FAILED(pGI->Add_GameObjectEx(&m_pSlotUI[2], LEVEL_STATIC, OBJECT::UI_TERMINAL_HULU, L"Terminal_UI", L"HuluUI", this)))
+		return E_FAIL;
+
+	if (FAILED(pGI->Add_GameObjectEx(&m_pSlotUI[3], LEVEL_STATIC, OBJECT::UI_TERMINAL_TEAM, L"Terminal_UI", L"TeamUI", this)))
+		return E_FAIL;
+
+	if (FAILED(pGI->Add_GameObjectEx(&m_pSlotUI[4], LEVEL_STATIC, OBJECT::UI_TERMINAL_MAP, L"Terminal_UI", L"MapUI", this)))
 		return E_FAIL;
 
 	return S_OK;

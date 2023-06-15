@@ -61,6 +61,9 @@ public:
 	virtual void RenderGUI();
 
 public:
+	_uint GetActiveEchoCount() const { return m_iActivateEcho; }
+	void SetActiveEcho(ECHO_TYPE eEchoType) { m_Echos[eEchoType].bActive = true; m_iActivateEcho++; }
+
 	_bool BindEcho(ECHO_SLOT eTargetCharacter, ECHO_TYPE eEchoIndex);
 	void ReleaseEcho(ECHO_SLOT eTargetCharacter);
 
@@ -96,6 +99,7 @@ public:
 	virtual void Free() override;
 
 private:
+	_uint m_iActivateEcho = 0;
 	ECHO* m_BindEcho[CHAR_END] = { nullptr, };
 	ECHO  m_Echos[EC_EMPTY];
 

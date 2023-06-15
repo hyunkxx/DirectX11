@@ -62,8 +62,8 @@ HRESULT CBackpackUI::Initialize(void * pArg)
 	m_OrthoBackpackSlot.fY = 180.f;
 	CAppManager::ComputeOrtho(&m_OrthoBackpackSlot);
 
-	m_OrthoBackpackIcon.fWidth = 60.f;
-	m_OrthoBackpackIcon.fHeight = 60.f;
+	m_OrthoBackpackIcon.fWidth = 40.f;
+	m_OrthoBackpackIcon.fHeight = 40.f;
 	m_OrthoBackpackIcon.fX = 100.f;
 	m_OrthoBackpackIcon.fY = 180.f;
 	CAppManager::ComputeOrtho(&m_OrthoBackpackIcon);
@@ -504,14 +504,7 @@ void CBackpackUI::elemAlphaUpdate(_double TimeDelta)
 		if (m_bElemAlphaStart[i])
 		{
 			m_fElemAlpha[i] += (_float)TimeDelta * 2.f;
-
-			//if (!m_bOneFlash[i] && m_fElemAlpha[i + 2] >= 1.0f)
-			/*if (m_fElemAlpha[iTapInvenCount - 1] >= 1.f)
-			{
-				m_bOneFlash[i] = true;
-				m_bFlashBegin[i] = true;
-			}*/
-
+			
 			if (m_fElemAlpha[i] >= 1.f)
 			{
 				m_fElemAlpha[i] = 1.f;

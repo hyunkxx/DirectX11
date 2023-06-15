@@ -101,6 +101,22 @@ PS_OUT PS_FillX(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_FillX_Color(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+	Out.vColor = vDiffuse;
+	Out.vColor.rgb *= g_vColor;
+	Out.vColor.a = Out.vColor.a * g_fTimeAcc;
+
+	if (In.vTexUV.x > g_fFillAmount)
+		discard;
+
+	return Out;
+}
+
+
 PS_OUT PS_FillY(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
@@ -260,7 +276,7 @@ PS_OUT PS_Gray(PS_IN In)
 
 	vector vDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
 	Out.vColor = vDiffuse * g_vColor4;
-	Out.vColor.rgb = float3(0.2f, 0.2f, 0.2f);
+	Out.vColor.rgb = float3(0.2f, 0.2f, 0.2f) * g_fTimeAcc;
 
 	return Out;
 }
@@ -476,5 +492,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_FillY_R();
+	}
+
+	pass FillXColor_Pass15
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_FillX_Color();
 	}
 }

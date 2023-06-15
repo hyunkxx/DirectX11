@@ -75,7 +75,7 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	// SlotText
 	m_OrthoTitleText.fWidth = 512.f * 0.65f;
 	m_OrthoTitleText.fHeight = 64.f * 0.65f;
-	m_OrthoTitleText.fX = 300.f;
+	m_OrthoTitleText.fX = 330.f;
 	m_OrthoTitleText.fY = 120.f;
 	CAppManager::ComputeOrtho(&m_OrthoTitleText);
 

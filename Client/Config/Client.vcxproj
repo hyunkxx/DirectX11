@@ -216,6 +216,7 @@
     <ClInclude Include="..\public\E_Leilie.h" />
     <ClInclude Include="..\public\E_Qunjing.h" />
     <ClInclude Include="..\Public\Guide_Spirit.h" />
+    <ClInclude Include="..\public\HuluUI.h" />
     <ClInclude Include="..\public\Inventory.h" />
     <ClInclude Include="..\Public\Invisible_Chest.h" />
     <ClInclude Include="..\public\Level_City.h" />
@@ -225,6 +226,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\public\MapUI.h" />
     <ClInclude Include="..\Public\Mesh_Effect.h" />
     <ClInclude Include="..\Public\Missile.h" />
     <ClInclude Include="..\Public\MissilePool.h" />
@@ -289,6 +291,7 @@
     <ClInclude Include="..\public\SlowKey.h" />
     <ClInclude Include="..\public\SoundKey.h" />
     <ClInclude Include="..\public\StateKey.h" />
+    <ClInclude Include="..\public\TeamUI.h" />
     <ClInclude Include="..\public\TerminalUI.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\P_PlayerGirl.h" />
@@ -379,6 +382,7 @@
     <ClCompile Include="..\private\E_Leilie.cpp" />
     <ClCompile Include="..\private\E_Qunjing.cpp" />
     <ClCompile Include="..\Private\Guide_Spirit.cpp" />
+    <ClCompile Include="..\private\HuluUI.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />
     <ClCompile Include="..\Private\Invisible_Chest.cpp" />
     <ClCompile Include="..\private\Level_City.cpp" />
@@ -388,6 +392,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\private\MapUI.cpp" />
     <ClCompile Include="..\Private\Mesh_Effect.cpp" />
     <ClCompile Include="..\Private\Missile.cpp" />
     <ClCompile Include="..\Private\MissilePool.cpp" />
@@ -454,6 +459,7 @@
     <ClCompile Include="..\private\SlowKey.cpp" />
     <ClCompile Include="..\private\SoundKey.cpp" />
     <ClCompile Include="..\private\StateKey.cpp" />
+    <ClCompile Include="..\private\TeamUI.cpp" />
     <ClCompile Include="..\private\TerminalUI.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\P_PlayerGirl.cpp" />

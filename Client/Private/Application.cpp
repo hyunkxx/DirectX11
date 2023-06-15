@@ -39,6 +39,9 @@
 #include "TerminalUI.h"
 #include "ResonatorUI.h"
 #include "BackpackUI.h"
+#include "HuluUI.h"
+#include "TeamUI.h"
+#include "MapUI.h"
 
 #include "UICharacter.h"
 #include "EchoSystem.h"
@@ -95,7 +98,7 @@ HRESULT CApplication::Initialize()
 	//UI에 필요한 텍스쳐 원본 생성A
 
 	//콜라이더 보이기/숨기기
-	m_pGameInstance->SetCollisionDebugRender(true);
+	m_pGameInstance->SetCollisionDebugRender(false);
 #ifdef _DEBUG
 	m_pRenderer->DebugBundleRender_Control(false);
 #endif
@@ -862,6 +865,19 @@ HRESULT CApplication::Ready_UI_Data()
 		CBackpackUI::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::UI_TERMINAL_HULU,
+		CHuluUI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::UI_TERMINAL_TEAM,
+		CTeamUI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::UI_TERMINAL_MAP,
+		CMapUI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_SYSTEM,
 		CEchoSystem::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -1108,22 +1124,25 @@ HRESULT CApplication::Ready_Item_Image()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_RESONATOR_STATETEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StatsDetailTitle.dds")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/StatsDetailTitle.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_RESONATOR_WEAPONTEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/WeaponTitle.dds")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/WeaponTitle.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_RESONATOR_ECHOTEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/EchoTitle.dds")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/EchoTitle.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_RESONATOR_RESONANCETEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/ResonanceTitle.dds")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/ResonanceTitle.dds")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_RESONATOR_WUTHERIDETEXT,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/WutherideTitle.dds")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/WutherideTitle.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_TERMINAL_TERMINALDATA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TerminalData.dds")))))
 		return E_FAIL;
 
-
+	
 	// Resonator UI
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_RESONATOR_STATE,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Terminal/StateIcon.dds")))))
@@ -1877,6 +1896,129 @@ HRESULT CApplication::Ready_Item_Image()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_USE_,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Use_.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_HURU,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/HuruUI.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_TEXT_TERMINAL100,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Standard100.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_TEXT_TERMINAL75,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Warrior75.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_TEXT_TERMINAL50,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Elite50.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_TEXT_TERMINAL25,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Calamity25.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_HULU_ICON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/HuluIcon.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TERMINALSUB,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TerminalSubText.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TERMINALLEVEL,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TerminalLevelText.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_ABSORBCLASS,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/AbsorbText.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_TEAM_TITLE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/PartyTitle.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::UI_TEAM_SUB_TITLE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TeamSubTitle.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_CHAR_ROVER,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/RoverChar.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_CHAR_YANGYANG,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/YangYangChar.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_CHAR_CHIXIA,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/ChixiaChar.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_ROVER_ATTRIBUTE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Attribute0.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_YANGYANG_ATTRIBUTE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Attribute1.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_CHIXIA_ATTRIBUTE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Attribute2.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_MAP,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/MapImage.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TELEPORT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Teleport.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_VALLEY,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Valley.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_FOREST,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TheForest.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_VILLAGE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TheVillage.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_CROWNS_NEST,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/CrownNest.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::IMAGE_TELEPORT_BACK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TeleportBack.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_ICON_POS,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/MapCurPos.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_ICON_BATTLE_NONE, 
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/MapBattleIcon.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_ICON_BATTLE_CLICK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/MapBattleIconClick.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_ICON_CITY_NONE, 
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/CityMapIconNone.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_ICON_CITY_CLICK,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/CityMapIconClick.dds")))))
+		return E_FAIL; 
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_ICON_CROWN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/CrownMapIcon.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_IMAGE_DRAGON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Dragon_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_IMAGE_CITY,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/City_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_IMAGE_FOREST,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Forest_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_IMAGE_CROWN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Crown_.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_DESC_DRAGON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/DragonDesc.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_DESC_CITY,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/VillageDesc.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_DESC_FOREST,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/ForestDesc.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_DESC_CROWN,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/CrownDesc.dds")))))
 		return E_FAIL;
 
 	//이미지
