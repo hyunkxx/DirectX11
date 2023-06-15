@@ -45,7 +45,7 @@ HRESULT CTrigger::Initialize(void* pArg)
 
 	SetUp_State();
 
-	if (TRIGGER_TYPE::TYPE_SPAWN == m_TriggerDesc.iTriggerType || nullptr != m_TriggerDesc.pEditionFilePath)
+	if (TRIGGER_TYPE::TYPE_SPAWN == m_TriggerDesc.iTriggerType && nullptr != m_TriggerDesc.pEditionFilePath)
 		Load_SpawnPoint();
 
 	return S_OK;
@@ -103,7 +103,7 @@ void CTrigger::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	if (true == m_IsTrigger)
+	if (true == m_IsTrigger && false == m_IsOnlyOneTrigger)
 		Trigger_Process();
 
 	if (true == m_IsSpawnMonster)
@@ -255,11 +255,12 @@ void CTrigger::Trigger_Potal_Crown()
 void CTrigger::Trigger_Spawn_Forest_0()
 {
 	m_IsSpawnMonster = true;
+	m_IsOnlyOneTrigger = true;
 
-	// 트리거 발동시 4마리 활성화
+	// 트리거 발동 시 4마리 활성화
 	for (auto iter = m_pLayer->m_GameObjects.begin(); iter != m_pLayer->m_GameObjects.end(); ++iter)
 	{
-		if (m_iSpawnMonsterIndex < m_iMonsterSpawnLimitCount)
+		if (m_iMonsterSpawnLimitCount > m_iSpawnMonsterIndex )
 		{
 			if (nullptr != iter->second)
 			{
@@ -279,27 +280,90 @@ void CTrigger::Trigger_Spawn_Forest_0()
 
 void CTrigger::Trigger_Spawn_Forest_1()
 {
-	MSG_BOX("Trigger : Spawn_Forest_1");
+	m_IsSpawnMonster = true;
+	m_IsOnlyOneTrigger = true;
+
+	// 트리거 발동 시 4마리 활성화
+	for (auto iter = m_pLayer->m_GameObjects.begin(); iter != m_pLayer->m_GameObjects.end(); ++iter)
+	{
+		if (m_iMonsterSpawnLimitCount > m_iSpawnMonsterIndex)
+		{
+			if (nullptr != iter->second)
+			{
+				if (iter->second->IsDisable())
+				{
+					static_cast<CCharacter*>(iter->second)->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+
+					Add_SpawnPoint();
+
+					m_iSpawnMonsterIndex++;
+					m_iCurrentSpawnMonsterCount++;
+				}
+			}
+		}
+	}
 }
 
 void CTrigger::Trigger_Spawn_Forest_2()
 {
-	MSG_BOX("Trigger : Spawn_Forest_2");
+	m_IsSpawnMonster = true;
+	m_IsOnlyOneTrigger = true;
+
+	// 트리거 발동 시 4마리 활성화
+	for (auto iter = m_pLayer->m_GameObjects.begin(); iter != m_pLayer->m_GameObjects.end(); ++iter)
+	{
+		if (m_iMonsterSpawnLimitCount > m_iSpawnMonsterIndex)
+		{
+			if (nullptr != iter->second)
+			{
+				if (iter->second->IsDisable())
+				{
+					static_cast<CCharacter*>(iter->second)->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+
+					Add_SpawnPoint();
+
+					m_iSpawnMonsterIndex++;
+					m_iCurrentSpawnMonsterCount++;
+				}
+			}
+		}
+	}
 }
 
 void CTrigger::Trigger_Spawn_Forest_3()
 {
-	MSG_BOX("Trigger : Spawn_Forest_3");
+	m_IsSpawnMonster = true;
+	m_IsOnlyOneTrigger = true;
+
+	// 트리거 발동 시 4마리 활성화
+	for (auto iter = m_pLayer->m_GameObjects.begin(); iter != m_pLayer->m_GameObjects.end(); ++iter)
+	{
+		if (m_iMonsterSpawnLimitCount > m_iSpawnMonsterIndex)
+		{
+			if (nullptr != iter->second)
+			{
+				if (iter->second->IsDisable())
+				{
+					static_cast<CCharacter*>(iter->second)->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+
+					Add_SpawnPoint();
+
+					m_iSpawnMonsterIndex++;
+					m_iCurrentSpawnMonsterCount++;
+				}
+			}
+		}
+	}
 }
 
 void CTrigger::Trigger_Spawn_Crown()
 {
-	MSG_BOX("Trigger : Trigger_Spawn_Crown");
+	//MSG_BOX("Trigger : Trigger_Spawn_Crown");
 }
 
 void CTrigger::Trigger_Interact_Cook()
 {
-	MSG_BOX("Trigger : Interact_Cook");
+	//MSG_BOX("Trigger : Interact_Cook");
 }
 
 void CTrigger::Add_SpawnPoint()
@@ -337,6 +401,7 @@ void CTrigger::Monster_Spawn()
 		// 최대 개체 수가 되었을경우 스폰 중단.
 		if (m_iMaxSpawnMonsterIndex <= m_iSpawnMonsterIndex)
 		{
+			//MSG_BOX("Trigger : Spawn_Forest End");
 			Clear_MonsterSpawnControl();
 			return;
 		}

@@ -2646,7 +2646,6 @@ HRESULT CLevel_Forest::Add_Monstaer(_uint iSpawnPointNum, _uint iMonsterModelNum
 
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMLoadFloat3(&m_SpawnPoints[iSpawnPointNum].vP), m_SpawnPoints[iSpawnPointNum].iCellIndex);
 	static_cast<CCharacter*>(pChar)->Set_State(CCharacter::STATE::DISABLE);
-	static_cast<CCharacter*>(pChar)->KeppInit_State(m_SpawnPoints[iSpawnPointNum].vP, m_SpawnPoints[iSpawnPointNum].iCellIndex);
 
 	return S_OK;
 }

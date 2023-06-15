@@ -167,7 +167,6 @@ HRESULT CP_Chixia::Initialize(void * pArg)
 	// 초기 상태 꺼놓음
 	//m_pAttackCollider->SetActive(false);
 
-	CGameMode* pGameMode = CGameMode::GetInstance();
 	_uint iLevel = pGameMode->GetCurrentLevel();
 
 	if (iLevel == LEVEL_GAMEPLAY)

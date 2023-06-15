@@ -136,34 +136,28 @@ void CCharacter::RenderGUI()
 {
 }
 
-
+void CCharacter::Reset_For_KeepState()
+{
+	if (true == IsDisable())
+	{
+		SetState(STATE::ACTIVE);
+		Set_InitPos(XMLoadFloat3(&m_SpawnPoint.vP), m_SpawnPoint.iCellIndex);
+	}
+}
 
 void CCharacter::Set_State(STATE eState)
 {
 	SetState(eState);
 }
 
-void CCharacter::KeppInit_State(_float3 vPos, _uint iNaviID)
-{
-	m_vPos = vPos;
-	m_iCellIndex = iNaviID;
-}
-
-void CCharacter::Reset_For_KeepState()
-{
-	if (true == IsDisable())
-	{
-		SetState(STATE::ACTIVE);
-		Set_InitPos(XMLoadFloat3(&m_vPos), m_iCellIndex);
-	}
-}
-
 void CCharacter::SetUp_Activate(SPAWN_POINT SpawnPoint)
 {
+	m_SpawnPoint = SpawnPoint;
+
 	if (true == IsDisable())
 	{
-		SetState(STATE::ACTIVE);
 		Set_InitPos(XMLoadFloat3(&SpawnPoint.vP), SpawnPoint.iCellIndex);
+		SetState(STATE::ACTIVE);
 	}
 }
 

@@ -102,6 +102,8 @@ private:
 	_vector						m_vPlayerPos = { 0.0f, 0.0f, 0.0f, 0.0f };
 	_vector						m_vTriggerPos = { 0.0f, 0.0f, 0.0f, 0.0f };
 
+	// 한번만 트리거를 발동해야 할 때.
+	_bool						m_IsOnlyOneTrigger = { false };
 
 public:
 	// 스폰 포인트 증가 + 사이클 돌리기 ( 최대개수 도달시 0으로 초기화 )
@@ -122,13 +124,14 @@ private:
 	_uint						m_iSpawnPointIndex = { 0 };
 	// 몬스터 스폰 시작.
 	_bool						m_IsSpawnMonster = { false };
-
+;
 
 	// 진행중인 몬스터 스폰 인덱스 -> Max 가 되면 스폰 중단.
 	_uint						m_iSpawnMonsterIndex = { 0 };
 	// 한 스폰지점에서의 총 스폰 몬스터 마리수
-	const _uint&				m_iMaxSpawnMonsterIndex = { 8 };
-	
+	//const _uint&				m_iMaxSpawnMonsterIndex = { 8 };
+	const _uint&				m_iMaxSpawnMonsterIndex = { 4 };
+
 	// 현재 소환된 마리수 체크
 	_uint						m_iCurrentSpawnMonsterCount = { 0 };
 	// 몬스터 스폰 마리수 제한 ( 한번에 스폰 가능한 수 )
