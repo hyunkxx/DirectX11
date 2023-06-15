@@ -172,6 +172,7 @@ private:
 	_uint   m_iPass = { 1 };
 	_uint	m_HavePlayerNum = { 1 };
 	_uint	m_HadPlayerNum = { 1 };
+
 	//플레이어 교대
 	_float CurTagCool = { 0.f }, MaxTagCool = { 0.f }, TagRadian = { 0.f };
 

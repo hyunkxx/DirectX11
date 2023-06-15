@@ -102,7 +102,6 @@ private:
 	void	Save();
 
 public:
-	_bool	IsMouseActive() { return m_bMouseActive; }
 	void	Set_SituMeet() { Situation = PANSITUINDEX::MEET; }
 private:
 	PANSITUINDEX Situation = { PANSITUINDEX::SOUEND };

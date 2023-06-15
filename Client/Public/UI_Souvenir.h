@@ -99,14 +99,12 @@ private:
 	void	Save();
 
 public:
-	_bool	IsMouseActive() { return m_bMouseActive; }
 	void	Set_SituMeet() { Situation = SOUSITUINDEX::MEET; }
 private:
 	SOUSITUINDEX Situation = { SOUSITUINDEX::SOUEND };
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint		m_iPass = { 1 };
 	_int		m_Count = {0};
-	_bool		m_bMouseActive = { false };
 	_bool		m_InMenuRenderStart = { true };
 	_bool		m_MenuRenderStart = { true };
 	_bool		m_DetailRenderStart = { true };

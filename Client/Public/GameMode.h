@@ -99,9 +99,13 @@ public:
 	_bool Is_ReserveLevel() { return m_IsReserveLevel; }
 	LEVEL_ID Get_ReserveLevel() { return m_eReserveLevel_ID; }
 	
+public:
+	void  SetMouseActive(_bool bMouse) { m_bMouseActive = bMouse; }
+	_bool GetMouseActive() { return m_bMouseActive; }
 private:
 	_bool				m_IsReserveLevel = { false };
 	LEVEL_ID			m_eReserveLevel_ID = { LEVEL_END };
+	_bool				m_bMouseActive = { false };
 
 private: 
 	class CAcquireSystem* m_pAcquireSystem = nullptr;

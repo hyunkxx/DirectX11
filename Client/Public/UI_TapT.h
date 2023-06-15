@@ -60,8 +60,6 @@ private:
 	HRESULT Add_Components();
 	HRESULT Setup_ShaderResources(_uint Bufferindex);
 
-public:
-	_bool	IsMouseActive() { return m_bMouseActive; }
 private:
 	void	SelectUI();
 
@@ -75,7 +73,6 @@ private:
 	_float m_ShaderY = { 0.f };
 	_bool  m_bHolding = { false };
 	_vector vMousePos;
-	_bool m_bMouseActive = { false };
 public:
 	static CUI_TapT* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

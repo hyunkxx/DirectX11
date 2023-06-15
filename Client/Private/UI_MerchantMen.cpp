@@ -109,6 +109,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CGameMode* pGM = CGameMode::GetInstance();
 	// 레벨에 따라 보상 아이템, 수치 설정
 	switch (SettingLevel)
 	{
@@ -234,7 +235,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 	case Client::CUI_MerchantMen::MEET:
 	{
 		m_pUIMouse->Set_RenderMouse(true);
-		m_bMouseActive = true;
+		pGM->SetMouseActive(true);
 
 		if (SelectUI(&m_MerchantList[0]))
 		{
@@ -1592,7 +1593,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 	case Client::CUI_MerchantMen::BYE:
 	{
 		m_pUIMouse->Set_RenderMouse(false);
-		m_bMouseActive = false;
+		pGM->SetMouseActive(false);
 		SetState(DISABLE);
 	}
 	}

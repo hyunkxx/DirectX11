@@ -382,12 +382,14 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CGameMode* pGM = CGameMode::GetInstance();
 	switch (Situation)
 	{
 	case Client::CUI_Souvenir::MEET:
 	{
 		m_pUIMouse->Set_RenderMouse(true);
-		m_bMouseActive = true;
+		
+		pGM->SetMouseActive(true);
 
 		if (SelectUI(&m_SouList[0]))
 		{
@@ -483,7 +485,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 				m_MenuRenderStart = true;
 				m_MenuList[3].OnRect = false;
 				SetState(DISABLE);
-				//Situation = CUI_Souvenir::MEET;
+				pGM->SetMouseActive(false);
 			}
 		}
 	}

@@ -138,7 +138,14 @@ HRESULT CUI_Cooking::Initialize(void * pArg)
 		XMStoreFloat4x4(&(m_11Slot[i].WorldMatrix), XMMatrixScaling(m_11Slot[i].fWidth, m_11Slot[i].fHeight, 1.f)
 			* XMMatrixTranslation(m_11Slot[i].fX, m_11Slot[i].fY, m_11Slot[i].fZ));
 	}
-
+	pSelectSlot = &m_0Slot[2];
+	pOwnFood = &InvenFlatbread;
+		pNeedMaterial0 = &NeedMaterial0;
+		pNeedMaterial1 = &NeedMaterial1;
+		pNeedMaterial2 = &NeedMaterial2;
+		pOwnMaterial0 = &InvenFlour;
+		pOwnMaterial1 = &InvenRice;
+		pOwnMaterial2 = &InvenTofu;
 	return S_OK;
 }
 
@@ -161,10 +168,14 @@ void CUI_Cooking::Tick(_double TimeDelta)
 
 	__super::Tick(TimeDelta);
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CGameMode* pGM = CGameMode::GetInstance();
 	switch (Situation)
 	{
 	case Client::CUI_Cooking::MEET:
 	{
+		m_pUIMouse->Set_RenderMouse(true);
+		pGM->SetMouseActive(true);
+
 		if (SelectUI(&m_Cookist[0]))
 		{
 			if (false == m_Cookist[0].OnRect)
@@ -259,6 +270,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 				m_MenuOutStart = false;
 				Situation = COOKEND;
 				SetState(DISABLE);
+				pGM->SetMouseActive(false);
 			}
 		}
 		else // 나가고 있을 때가 아니라면
@@ -3379,8 +3391,8 @@ void CUI_Cooking::Load()
 		}
 		//Desc.iPass = 21;
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_Cookist.push_back(Desc);
@@ -3419,8 +3431,8 @@ void CUI_Cooking::Load()
 		}
 		//Desc.iPass = 21;
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_CommonList.push_back(Desc);
@@ -3458,10 +3470,10 @@ void CUI_Cooking::Load()
 			if (0 == dwByte)
 				break;
 		}
-		//Desc.iPass = 21;
+		Desc.iPass = 21;
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_GradeList.push_back(Desc);
@@ -3499,9 +3511,10 @@ void CUI_Cooking::Load()
 			if (0 == dwByte)
 				break;
 		}
+		Desc.iPass = 21;
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_FinalList.push_back(Desc);
@@ -3539,9 +3552,10 @@ void CUI_Cooking::Load()
 			if (0 == dwByte)
 				break;
 		}
+		Desc.iPass = 21;
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_DetailsList.push_back(Desc);
@@ -3580,9 +3594,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_0Slot.push_back(Desc);
@@ -3621,8 +3635,8 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_1Slot.push_back(Desc);
@@ -3661,9 +3675,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_2Slot.push_back(Desc);
@@ -3702,9 +3716,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_3Slot.push_back(Desc);
@@ -3742,9 +3756,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_4Slot.push_back(Desc);
@@ -3782,9 +3796,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_5Slot.push_back(Desc);
@@ -3822,9 +3836,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_6Slot.push_back(Desc);
@@ -3862,9 +3876,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_7Slot.push_back(Desc);
@@ -3902,9 +3916,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_8Slot.push_back(Desc);
@@ -3942,9 +3956,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_9Slot.push_back(Desc);
@@ -3982,9 +3996,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_10Slot.push_back(Desc);
@@ -4022,9 +4036,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_11Slot.push_back(Desc);
@@ -4062,9 +4076,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_12Slot.push_back(Desc);
@@ -4102,9 +4116,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_13Slot.push_back(Desc);
@@ -4144,9 +4158,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_0MaterialSlot.push_back(Desc);
@@ -4185,9 +4199,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_1MaterialSlot.push_back(Desc);
@@ -4226,9 +4240,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_2MaterialSlot.push_back(Desc);
@@ -4267,9 +4281,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_LButtonList.push_back(Desc);
@@ -4308,9 +4322,9 @@ void CUI_Cooking::Load()
 				break;
 		}
 		Desc.bRender = true;
-		//Desc.Color.w = Desc.fColorA;
-		//Desc.fColorA = -255.f;
-		//Desc.iPass = 22;
+		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_RButtonList.push_back(Desc);
@@ -5008,7 +5022,7 @@ HRESULT CUI_Cooking::Setup_GradeShader(_uint index)
 
 HRESULT CUI_Cooking::Setup_DetailsShader(_uint index)
 {
-	if (3 == index)
+	if ((3 == index)||(5 == index)|| (6	 == index))
 	{
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
 		if (FAILED(pGameInstance->SetupSRV(m_DetailsList[index].iTexNum, m_pShader, "g_MyTexture")))

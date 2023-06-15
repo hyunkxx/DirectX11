@@ -112,17 +112,12 @@ void CPlayerCamera::Start()
 	pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
 
 	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
-	m_pUITap = static_cast<CUI_TapT*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_TapT"));
-	m_pUITip = static_cast<CUI_Tip*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
-	m_pUIMen = static_cast<CUI_MerchantMen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MerchantMen"));
-	m_pUISovi = static_cast<CUI_Souvenir*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Souvenir"));
-	m_pUIPanhua = static_cast<CUI_Panhua*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Panhua"));
-	m_pUICook = static_cast<CUI_Cooking*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Cooking"));
 }
 
 void CPlayerCamera::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CGameMode* pGM = CGameMode::GetInstance();
 
 	if (0.0 < m_SoftLerpDuration)
 	{
@@ -134,21 +129,14 @@ void CPlayerCamera::Tick(_double TimeDelta)
 	// CameraCurve
 	if (false == m_bApplyCurve)
 	{
-		/*
 		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
-		/*if (false == m_pTerminalUI->IsActive())
+		if (false == m_pTerminalUI->IsActive())
 		{
-			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || nullptr == m_pUIPanhua || (nullptr == m_pUICook))
-				return;
-
-			m_bFixMouse = (m_pUITap->IsMouseActive() ? false : m_pUITip->IsMouseActive() ? false : m_pUIMen->IsMouseActive() ? false : m_pUISovi->IsMouseActive() ? false : m_pUIPanhua->IsMouseActive() ? false : m_pUICook->IsMouseActive() ? false :true);
+			if (pGM->GetMouseActive())
+				m_bFixMouse = false;
+			else
+				m_bFixMouse = true;
 		}
-		else
-		{
-			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || nullptr == m_pUIPanhua || (nullptr == m_pUICook))
-				return;
-			m_pUITip->SetState(DISABLE);
-		}*/
 
 		if (pGameInstance->InputKey(DIK_LALT) == KEY_STATE::HOLD)
 		{
@@ -156,16 +144,16 @@ void CPlayerCamera::Tick(_double TimeDelta)
 		}
 		
 
-		/* 임시 마우스 고정 혜지 용 */
-		if (pGameInstance->InputKey(DIK_NUMLOCK) == KEY_STATE::TAP)
-		{
-			if (false == m_IsMouse_UnLock)
-				m_IsMouse_UnLock = true;
-			else if (true == m_IsMouse_UnLock)
-				m_IsMouse_UnLock = false;
-		}
-		if (true == m_IsMouse_UnLock)
-			m_bFixMouse = false;
+		///* 임시 마우스 고정 혜지 용 */
+		//if (pGameInstance->InputKey(DIK_NUMLOCK) == KEY_STATE::TAP)
+		//{
+		//	if (false == m_IsMouse_UnLock)
+		//		m_IsMouse_UnLock = true;
+		//	else if (true == m_IsMouse_UnLock)
+		//		m_IsMouse_UnLock = false;
+		//}
+		//if (true == m_IsMouse_UnLock)
+		//	m_bFixMouse = false;
 
 
 

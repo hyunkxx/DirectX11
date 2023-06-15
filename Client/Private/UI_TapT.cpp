@@ -58,6 +58,7 @@ void CUI_TapT::Start()
 	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
 	m_pUIMain = static_cast<CUI_MainScreen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));
 	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
+
 }
 
 void CUI_TapT::Tick(_double TimeDelta)
@@ -121,14 +122,16 @@ void CUI_TapT::Tick(_double TimeDelta)
 	
 
 	m_pUIMouse->Set_Texchange(false);
+	CGameMode* pGM = CGameMode::GetInstance();
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::TAP)
 	{
-		m_bMouseActive = true;
+	
+		pGM->SetMouseActive(true);
 		m_pUIMouse->Set_RenderMouse(true);
 	}
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::AWAY)
 	{
-		m_bMouseActive = false;
+		pGM->SetMouseActive(false);
 		m_pUIMouse->Set_RenderMouse(false);
 	}
 }
@@ -193,7 +196,7 @@ void CUI_TapT::SelectUI()
 
 		if (0 != m_DescList.size())
 		{
-			for (auto& pCutDesc : m_DescList)
+			for (auto& pCutDesc : m_DescList) 
 			{
 				_float Dist = 1.f;
 				// 버퍼의 각 꼭지점

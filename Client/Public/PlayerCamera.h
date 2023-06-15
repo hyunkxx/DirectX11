@@ -133,12 +133,6 @@ public:
 
 private:
 	class CTerminalUI* m_pTerminalUI = nullptr;
-	class CUI_TapT*	   m_pUITap = { nullptr };
-	class CUI_Tip*	   m_pUITip = { nullptr };
-	class CUI_MerchantMen*	m_pUIMen = { nullptr };
-	class CUI_Souvenir*			m_pUISovi = { nullptr };
-	class CUI_Panhua*			m_pUIPanhua = { nullptr };
-	class CUI_Cooking*			m_pUICook = { nullptr };
 };
 
 END

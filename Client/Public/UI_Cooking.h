@@ -97,13 +97,11 @@ private:
 	void	Save();
 
 public:
-	_bool	IsMouseActive() { return m_bMouseActive; }
 	void	Set_SituMeet() { Situation = COOKSITUINDEX::MEET; }
 private:
 	COOKSITUINDEX Situation = { COOKSITUINDEX::COOKEND };
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint		m_iPass = { 21 };
-	_bool		m_bMouseActive = { false };
 	_bool		m_MenuRenderStart = { true };
 	_bool		m_MenuOutStart = { false };
 	_bool		m_ConfirmRenderStart = { true };

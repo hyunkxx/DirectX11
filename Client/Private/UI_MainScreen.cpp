@@ -102,12 +102,12 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	if (pGameInstance->InputKey(DIK_NUMPADENTER) == KEY_STATE::TAP) // 임시
-	{
+	{/*
 		if (nullptr == m_pUIMen)
 			return;
 		m_pUIMen->SetState(ACTIVE);
-		m_pUIMen->Set_SituMeet();
-		//m_pPlayerStateClass->AddPlayer();
+		m_pUIMen->Set_SituMeet();*/
+		m_pPlayerStateClass->AddPlayer();
 	}
 	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::TAP) // 임시
 	{
@@ -133,6 +133,9 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	OtherobjIsActive(TimeDelta);
 
 	SetPlayer(); // 각 슬롯에 맞는 플레이어 색깔 설정, 스킬 텍스처 설정, 보유캐릭터
+	SetHP();
+	SetStaticSkillCoolTime();
+
 	if (m_HadPlayerNum != m_HavePlayerNum)
 	{
 		SetSlotRender();
@@ -532,7 +535,8 @@ _bool CUI_MainScreen::RRFull()
 void CUI_MainScreen::SetHP()
 {
 	m_HP = m_pPlayerStateClass->Get_MainCharacterState()->fMaxHP;
-	m_CurrentHp = m_pPlayerStateClass->Get_MainCharacterState()->fCurHP;
+	m_RedHP = m_CurrentHp = m_pPlayerStateClass->Get_MainCharacterState()->fCurHP;
+	m_fRedBar = m_RedHP / m_HP;
 }
 
 void CUI_MainScreen::SetStaticSkillCoolTime()
@@ -653,16 +657,13 @@ void CUI_MainScreen::SetCurCoolRadian()
 	RCoolRadian = RCoolTime / StaticRSkillTime;
 	RRRadian = RRCurGauge / RRMaxGauge;
 	QTERadian = QTECurGauge / QTEMaxGauge;
-	//QTERadian = 1.f; // 테스트
 	SkillRadian = SkillCurGauge / SkillMaxGauge;
-	//SkillRadian += 0.001f; // 테스트
 	TagRadian = CurTagCool / MaxTagCool;
 }
 
 void CUI_MainScreen::SetPlayer()
 {
 	m_HavePlayerNum = m_pPlayerStateClass->Get_PlayerState()->iCharCount;
-
 	switch (m_pPlayerStateClass->Get_MainCharacterState()->eElement)
 	{
 	case ELEMENT::ELMT_SPECTRA:
@@ -691,9 +692,7 @@ void CUI_MainScreen::SetPlayer()
 		m_CutDescList[70]->fColorGCut = 208.637f;
 		m_CutDescList[70]->fColorBCut = 126.347f;
 
-		m_CutDescList[36]->fColorRCut = 214.959f;
-		m_CutDescList[36]->fColorGCut = 208.637f;
-		m_CutDescList[36]->fColorBCut = 126.347f;
+		m_CutDescList[36]->iTexNum = 202;
 
 		// 스킬 텍스처
 		m_CutDescList[5]->iTexNum = 124;
@@ -727,9 +726,7 @@ void CUI_MainScreen::SetPlayer()
 		m_CutDescList[70]->fColorGCut = 234.f;
 		m_CutDescList[70]->fColorBCut = 219.f;
 
-		m_CutDescList[36]->fColorRCut = 107.f;
-		m_CutDescList[36]->fColorGCut = 234.f;
-		m_CutDescList[36]->fColorBCut = 219.f;
+		m_CutDescList[36]->iTexNum = 201;
 
 		// 스킬 텍스처
 		m_CutDescList[5]->iTexNum = 114;
@@ -746,26 +743,24 @@ void CUI_MainScreen::SetPlayer()
 		m_CutDescList[58]->iTexNum = 206; // 문양
 
 		m_CutDescList[16]->fColorRCut = 158.058f;
-		m_CutDescList[16]->fColorGCut = 255.f;
-		m_CutDescList[16]->fColorBCut = 231.818f;
+		m_CutDescList[16]->fColorGCut = -255.f;
+		m_CutDescList[16]->fColorBCut = -231.818f;
 
 		m_CutDescList[54]->fColorRCut = 158.058f;
-		m_CutDescList[54]->fColorGCut = 255.f;
-		m_CutDescList[54]->fColorBCut = 231.818f;
+		m_CutDescList[54]->fColorGCut = -255.f;
+		m_CutDescList[54]->fColorBCut = -231.818f;
 
 
 		m_CutDescList[8]->fColorRCut = 158.058f;
-		m_CutDescList[8]->fColorGCut = 255.f;
-		m_CutDescList[8]->fColorBCut = 231.818f;
+		m_CutDescList[8]->fColorGCut = -255.f;
+		m_CutDescList[8]->fColorBCut = -231.818f;
 
 
 		m_CutDescList[70]->fColorRCut = 158.058f;
-		m_CutDescList[70]->fColorGCut = 255.f;
-		m_CutDescList[70]->fColorBCut = 231.818f;
+		m_CutDescList[70]->fColorGCut = -255.f;
+		m_CutDescList[70]->fColorBCut = -231.818f;
 
-		m_CutDescList[36]->fColorRCut = 158.058f;
-		m_CutDescList[36]->fColorGCut = 255.f;
-		m_CutDescList[36]->fColorBCut = 231.818f;
+		m_CutDescList[36]->iTexNum = 203;
 
 		// 스킬 텍스처
 		m_CutDescList[5]->iTexNum = 131;
@@ -812,8 +807,8 @@ void CUI_MainScreen::SetPlayer()
 		m_CutDescList[59]->iTexNum = 206; // 문양
 
 		m_CutDescList[55]->fColorRCut = 158.058f * 255.f;
-		m_CutDescList[55]->fColorGCut = 255.f * 255.f;
-		m_CutDescList[55]->fColorBCut = 231.818f * 255.f;
+		m_CutDescList[55]->fColorGCut = -255.f * 255.f;
+		m_CutDescList[55]->fColorBCut = -231.818f * 255.f;
 
 	}
 	break;
@@ -856,8 +851,8 @@ void CUI_MainScreen::SetPlayer()
 		m_CutDescList[60]->iTexNum = 206; // 문양
 
 		m_CutDescList[56]->fColorRCut = 158.058f * 255.f;
-		m_CutDescList[56]->fColorGCut = 255.f * 255.f;
-		m_CutDescList[56]->fColorBCut = 231.818f * 255.f;
+		m_CutDescList[56]->fColorGCut = -255.f * 255.f;
+		m_CutDescList[56]->fColorBCut = -231.818f * 255.f;
 
 	}
 	break;
@@ -1145,10 +1140,9 @@ void CUI_MainScreen::R(_double TimeDelta)
 
 void CUI_MainScreen::HP(_double TimeDelta)
 {
-	if (true == m_bHit)
+	if(true == m_bHit)
 	{
 		HPBar(TimeDelta);
-
 	}
 	if (true == m_bRedStart)
 	{
@@ -1634,7 +1628,7 @@ void CUI_MainScreen::HPBar(_double TimeDelta)
 			m_CurrentHp += m_Damage;
 			m_fWhiteBar = m_CurrentHp / m_HP; // 현재체력/전체체력 
 			m_PreHp = m_CurrentHp;
-			m_bHit = false;
+			m_bHit = false;	
 			m_bRedStart = true;
 		}
 	}
@@ -1644,7 +1638,7 @@ void CUI_MainScreen::HPRedBar(_double TimeDelta)
 {
 	if (m_CurrentHp < m_RedHP)
 	{
-		m_RedHP += (m_CurrentHp - m_RedHP) * (_float)TimeDelta;
+		m_RedHP  += (m_CurrentHp - m_RedHP) * (_float)TimeDelta;
 		m_fRedBar = m_RedHP / m_HP;
 	}
 	else
@@ -1795,11 +1789,11 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 		if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_CutDescList[Bufferindex]->fColorACut), sizeof(_float))))
 			return E_FAIL;
 
-		if (true == m_bRedStart)
-		{
+		//if (true == m_bRedStart)
+		//{
 			if (FAILED(m_pShader->SetRawValue("g_fRedBar", &m_fRedBar, sizeof(_float))))
 				return E_FAIL;
-		}
+		//}
 		if (FAILED(m_pShader->SetRawValue("g_fLoading", &m_fWhiteBar, sizeof(_float))))
 			return E_FAIL;
 
