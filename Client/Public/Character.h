@@ -457,6 +457,12 @@ public: // StateKey 대응 함수 모음
 	//
 	virtual void Shot_Echo(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID) {}
 
+	virtual _bool Get_Dying() { return false; }
+
+	// 포지션 제외한 나머지 변수(체력, 상태 체크용 불값 등) 초기화하는 함수, 몬스터 전용
+	virtual void Regen() {};
+
+
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CCharacter(const CCharacter& rhs);

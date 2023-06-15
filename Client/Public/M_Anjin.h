@@ -128,6 +128,20 @@ public:
 	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
 
+	virtual _bool Get_Dying() { return m_bDying; }
+
+	// 포지션 제외한 나머지 변수(체력, 상태 체크용 불값 등) 초기화하는 함수, 몬스터 전용
+	virtual void Regen()
+	{
+		Set_State(ACTIVE);
+		Shot_DissolveKey(1, 1.5f);
+		m_pHitCollider->SetActive(true);
+		m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
+		m_bDying = false;
+		m_bRender = true;
+		m_bAlert = false;
+	};
+
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
 	CShader*			m_pShaderCom = { nullptr };
@@ -158,7 +172,7 @@ private:
 
 
 	// 몬스터 변수
-	MONINFO			m_tMonsterInfo;
+	MONINFO				m_tMonsterInfo;
 	// 타겟 플레이어 > 생성되는 타이밍에 무조건 플레이어 박음
 	CCharacter*			m_pTarget = { nullptr };
 	CTransform*			m_pTargetTransform = { nullptr };
@@ -179,6 +193,8 @@ private:
 	// MoveCollider 충돌 시 비교할 무게
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))
 	_float				m_fPushWeight = {};
+
+	_bool				m_bDying = { false };
 
 	//UI추가
 	class CUI_Minimap*		m_pUIIcon = { nullptr };

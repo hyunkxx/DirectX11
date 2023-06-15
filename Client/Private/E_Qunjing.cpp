@@ -112,6 +112,14 @@ void CE_Qunjing::Start()
 
 void CE_Qunjing::PreTick(_double TimeDelta)
 {
+	if (nullptr != m_pTarget)
+	{
+		if (m_pTarget->Get_Dying())
+		{
+			m_pTarget = nullptr;
+			m_pTargetTransform = nullptr;
+		}
+	}
 }
 
 void CE_Qunjing::Tick(_double TimeDelta)

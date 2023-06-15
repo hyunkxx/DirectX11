@@ -435,6 +435,18 @@
     <ClCompile Include="..\Private\Guide_Spirit.cpp">
       <Filter>src\02. GameObject\04. InteractionObject</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\E_Anjin.cpp" />
+    <ClCompile Include="..\private\E_Leilie.cpp" />
+    <ClCompile Include="..\private\E_Qunjing.cpp" />
+    <ClCompile Include="..\private\HuluUI.cpp" />
+    <ClCompile Include="..\private\MapUI.cpp" />
+    <ClCompile Include="..\private\TeamUI.cpp" />
+    <ClCompile Include="..\private\E_GAzizi.cpp" />
+    <ClCompile Include="..\private\E_AWukaka.cpp" />
+    <ClCompile Include="..\private\E_FHuxiuxiu.cpp" />
+    <ClCompile Include="..\private\E_Huojin.cpp" />
+    <ClCompile Include="..\private\E_Binglie.cpp" />
+    <ClCompile Include="..\private\E_Fenglie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -848,6 +860,18 @@
     <ClInclude Include="..\Public\Guide_Spirit.h">
       <Filter>src\02. GameObject\04. InteractionObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\E_Anjin.h" />
+    <ClInclude Include="..\public\E_Leilie.h" />
+    <ClInclude Include="..\public\E_Qunjing.h" />
+    <ClInclude Include="..\public\HuluUI.h" />
+    <ClInclude Include="..\public\MapUI.h" />
+    <ClInclude Include="..\public\TeamUI.h" />
+    <ClInclude Include="..\public\E_GAzizi.h" />
+    <ClInclude Include="..\public\E_AWukaka.h" />
+    <ClInclude Include="..\public\E_FHuxiuxiu.h" />
+    <ClInclude Include="..\public\E_Huojin.h" />
+    <ClInclude Include="..\public\E_Binglie.h" />
+    <ClInclude Include="..\public\E_Fenglie.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

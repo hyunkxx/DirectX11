@@ -208,7 +208,6 @@ void CP_Yangyang::Start()
 #ifdef _DEBUG
 	m_pRendererCom->DebugBundleRender_Control(true);
 #endif
-	
 
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
@@ -229,6 +228,7 @@ void CP_Yangyang::PreTick(_double TimeDelta)
 	if (nullptr != m_pFixedTarget)
 	{
 		if (false == m_pFixedTarget->IsActive() ||
+			true == m_pFixedTarget->Get_Dying() ||
 			25.f <  XMVectorGetX(XMVector3Length(m_pFixedTarget->Get_Position() - Get_Position())))
 		{
 			m_pFixedTarget = nullptr;
@@ -277,7 +277,7 @@ void CP_Yangyang::Tick(_double TimeDelta)
 				m_pPlayerStateClass->Set_LockOn(true, m_pFixedTarget);
 			}
 		}
-		else if (nullptr != m_pFixedTarget && 1.0 < m_ReleaseTargetTimeAcc)
+		else if (nullptr != m_pFixedTarget && 0.3 < m_ReleaseTargetTimeAcc)
 		{
 			m_pFixedTarget = nullptr;
 			m_pPlayerStateClass->Set_LockOn(false, nullptr);
@@ -2641,6 +2641,13 @@ void CP_Yangyang::Init_AnimSystem()
 			}
 		}
 	}
+
+	// FramePerSec ¼¼ÆÃ
+	for (_uint i = 0; i < iStateLimit; ++i)
+	{
+		m_pAnimSetCom[ANIMSET_BASE]->Get_Animation(m_tStates[i].iAnimID[ANIMSET_BASE])->Set_TicksPerSecond(m_tStates[i].FramePerSec);
+		m_pAnimSetCom[ANIMSET_RIBBON]->Get_Animation(m_tStates[i].iAnimID[ANIMSET_RIBBON])->Set_TicksPerSecond(m_tStates[i].FramePerSec);
+	}
 }
 
 void CP_Yangyang::Init_AttackInfos()
@@ -2923,6 +2930,7 @@ void CP_Yangyang::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_SKILL_01_1;
 	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
 	tMissilePoolDesc.tMissileDesc.ppNextMissilePool = &m_MissilePools[MISS_SKILL_01_2];
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
 
 	m_MissilePools[MISS_SKILL_01_1] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 4.5f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_SKILL_01_1] = _float3(0.f, 0.f, 0.f);
@@ -2937,8 +2945,8 @@ void CP_Yangyang::Init_Missiles()
 	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
 	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
-	tMissilePoolDesc.tMissileDesc.HitInterval = 0.2;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 0.9;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.15;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.75;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_SKILL_01_2;
 	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
 	tMissilePoolDesc.tMissileDesc.ppNextMissilePool = &m_MissilePools[MISS_SKILL_01_3];
@@ -2957,7 +2965,7 @@ void CP_Yangyang::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 0;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.15;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_SKILL_01_3;
 	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
 

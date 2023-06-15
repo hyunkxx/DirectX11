@@ -92,8 +92,6 @@ public:
 	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
 
-
-
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
 	CShader*			m_pShaderCom = { nullptr };
@@ -109,7 +107,6 @@ private:
 	_float4x4			m_EffectBoneMatrices[EBONE_END] = {};
 	// 매 프레임 이펙트 본 사용중인지 체크해서 저장, 사용중인 본만 행렬 갱신해줌
 	_bool				m_bEffectBoneActive[EBONE_END] = { false, };
-
 
 	// 공격 구조체
 	//TAGATTACK			m_AttackInfos[ATK_END];						// 필요 시 배열로

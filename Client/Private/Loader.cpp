@@ -1001,8 +1001,8 @@ HRESULT CLoader::Load_Level_AnimTool()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_CROWNLESS_P3, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P3.dmdl")))))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_INFERNORIDER, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/InfernoRider/InfernoRider.dmdl")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_ANIMTOOL, DMODEL::DMD_MONSTER_INFERNORIDER, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/InfernoRider/InfernoRider.dmdl")))))
+		return E_FAIL;
 
 	m_pApp->LoadRatio(0.6f);
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
@@ -1252,13 +1252,13 @@ HRESULT CLoader::Load_Level_AnimTool()
 		return E_FAIL;
 	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_CROWNLESS_P3), TEXT("Crownless_P3"));
 
-	//ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
-	//tGenericDesc.iModelID = DMODEL::DMD_MONSTER_INFERNORIDER;
-	//lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_InfernoRider/M_InfernoRider_%d.state"));
+	ZeroMemory(&tGenericDesc, sizeof tGenericDesc);
+	tGenericDesc.iModelID = DMODEL::DMD_MONSTER_INFERNORIDER;
+	lstrcpy(tGenericDesc.szFilePath, TEXT("../../Data/CharState/M_InfernoRider/M_InfernoRider_%d.state"));
 
-	//if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_INFERNORIDER, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
-	//	return E_FAIL;
-	//pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_INFERNORIDER), TEXT("InfernoRider"));
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::TESTGENERIC_INFERNORIDER, CTestGeneric::Create(m_pDevice, m_pContext, &tGenericDesc))))
+		return E_FAIL;
+	pAnimTool->Add_ListBoxItem(CAnimToolManager::MODEL_GENERIC, GENERICID(OBJECT::TESTGENERIC_INFERNORIDER), TEXT("InfernoRider"));
 
 
 	// GENERIC 끝

@@ -234,6 +234,7 @@ void CP_PlayerGirl::PreTick(_double TimeDelta)
 	if (nullptr != m_pFixedTarget)
 	{
 		if (false == m_pFixedTarget->IsActive() ||
+			true == m_pFixedTarget->Get_Dying() ||
 			25.f <  XMVectorGetX(XMVector3Length(m_pFixedTarget->Get_Position() - Get_Position())))
 		{
 			m_pFixedTarget = nullptr;
@@ -1304,7 +1305,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 						m_pPlayerStateClass->Set_LockOn(true, m_pFixedTarget);
 					}
 				}
-				else if (nullptr != m_pFixedTarget && 1.0 < m_ReleaseTargetTimeAcc)
+				else if (nullptr != m_pFixedTarget && 0.3 < m_ReleaseTargetTimeAcc)
 				{
 					m_pFixedTarget = nullptr;
 					m_pPlayerStateClass->Set_LockOn(false, nullptr);

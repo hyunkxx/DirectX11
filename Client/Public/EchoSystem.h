@@ -84,11 +84,11 @@ public:
 	void Shot_Echo(ECHO_SLOT eSlot, CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID)
 	{
 		if (ROVER == eSlot)
-			m_pEchoPtr[EC_RUPTURE_WARRIOR]->Shot_Echo(pTransform, pTarget, iNaviCellID);
+			m_pEchoPtr[EC_FUSHION_WARRIOR]->Shot_Echo(pTransform, pTarget, iNaviCellID);
 		else if(YANGYANG == eSlot)
-			m_pEchoPtr[EC_ELITE_STONE]->Shot_Echo(pTransform, pTarget, iNaviCellID);
+			m_pEchoPtr[EC_GLACIO_PREDATOR]->Shot_Echo(pTransform, pTarget, iNaviCellID);
 		else if (CHIXIA == eSlot)
-			m_pEchoPtr[EC_IMPULSE_PREDATOR]->Shot_Echo(pTransform, pTarget, iNaviCellID);
+			m_pEchoPtr[EC_PNENUMA_PREDATOR]->Shot_Echo(pTransform, pTarget, iNaviCellID);
 		
 		//m_pEchoPtr[m_BindEchoType[eSlot]]->shot_
 	}

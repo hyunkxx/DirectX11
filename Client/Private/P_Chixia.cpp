@@ -226,6 +226,7 @@ void CP_Chixia::PreTick(_double TimeDelta)
 	if (nullptr != m_pFixedTarget)
 	{
 		if (false == m_pFixedTarget->IsActive() ||
+			true == m_pFixedTarget->Get_Dying() ||
 			25.f <  XMVectorGetX(XMVector3Length(m_pFixedTarget->Get_Position() - Get_Position())))
 		{
 			m_pFixedTarget = nullptr;
@@ -274,7 +275,7 @@ void CP_Chixia::Tick(_double TimeDelta)
 				m_pPlayerStateClass->Set_LockOn(true, m_pFixedTarget);
 			}
 		}
-		else if (nullptr != m_pFixedTarget && 1.0 < m_ReleaseTargetTimeAcc)
+		else if (nullptr != m_pFixedTarget && 0.3 < m_ReleaseTargetTimeAcc)
 		{
 			m_pFixedTarget = nullptr;
 			m_pPlayerStateClass->Set_LockOn(false, nullptr);
@@ -306,6 +307,8 @@ void CP_Chixia::Tick(_double TimeDelta)
 			SetUp_SubAnimations(false);
 		}
 	}
+
+	Apply_CoolTime(TimeDelta * m_TimeDelay);
 
 
 	Tick_State(TimeDelta * m_TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
@@ -1787,7 +1790,7 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 				break;
 			case IS_AIMATTACK_START:
 			case IS_AIMATTACK_STAND:
-				if (m_AimChargeAcc > 1.5)
+				if (m_AimChargeAcc > 1.25)
 					m_Scon.iNextState = IS_AIMATTACK_FIRE_B;
 				else
 					m_Scon.iNextState = IS_AIMATTACK_FIRE_S;
@@ -1799,7 +1802,8 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_Chixia::INPUT_AIM:
-			m_Scon.iNextState = IS_AIMATTACK_START;
+			if(false == m_bAiming)
+				m_Scon.iNextState = IS_AIMATTACK_START;
 			break;
 
 		case Client::CP_Chixia::INPUT_SKILL:
@@ -2993,6 +2997,15 @@ void CP_Chixia::Init_AnimSystem()
 			}
 		}
 	}
+
+
+	// FramePerSec 세팅
+	for (_uint i = 0; i < iStateLimit; ++i)
+	{
+		m_pAnimSetCom[ANIMSET_BASE]->Get_Animation(m_tStates[i].iAnimID[ANIMSET_BASE])->Set_TicksPerSecond(m_tStates[i].FramePerSec);
+		m_pAnimSetCom[ANIMSET_RIBBON]->Get_Animation(m_tStates[i].iAnimID[ANIMSET_RIBBON])->Set_TicksPerSecond(m_tStates[i].FramePerSec);
+	}
+
 }
 
 void CP_Chixia::Init_AttackInfos()
@@ -3090,7 +3103,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_AIMATTACK_B].fBPGain = 1.5f;
 	m_AttackInfos[ATK_AIMATTACK_B].fTPGain = 1.5f;
 	m_AttackInfos[ATK_AIMATTACK_B].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
-	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitEffectTag, TEXT("Chixia_Hit_Effect_B"));
+	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitEffectTag, TEXT("Chixia_Hit_Effect_SC"));
 
 	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 0.6f;
 	m_AttackInfos[ATK_AIRATTACK].eHitIntensity = HIT_SMALL;

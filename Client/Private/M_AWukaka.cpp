@@ -346,7 +346,7 @@ HRESULT CM_AWukaka::Add_Components()
 
 	CollDesc.owner = this;
 	CollDesc.vCenter = { 0.f, 0.7f, 0.f };
-	CollDesc.vExtents = { 0.5f, 0.5f, 0.5f };
+	CollDesc.vExtents = { 0.75f, 0.75f, 0.75f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_HitCollider"), (CComponent**)&m_pHitCollider, &CollDesc)))
@@ -609,7 +609,7 @@ void CM_AWukaka::Init_Missiles()
 	CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-	tMissilePoolDesc.pMissilePoolTag = TEXT("GenkiDama_Shoot_%d");
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_03_%d");
 	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
 	tMissilePoolDesc.iNumMissiles = 1;
 
@@ -980,6 +980,8 @@ void CM_AWukaka::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtt
 	{
 		m_tMonsterInfo.fCurHP = 0.f;
 		m_Scon.iNextState = IS_DEAD;
+		m_pHitCollider->SetActive(false);
+		m_bDying = true;
 	}
 	// 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)

@@ -110,6 +110,14 @@ void CE_Anjin::Start()
 
 void CE_Anjin::PreTick(_double TimeDelta)
 {
+	if (nullptr != m_pTarget)
+	{
+		if (m_pTarget->Get_Dying())
+		{
+			m_pTarget = nullptr;
+			m_pTargetTransform = nullptr;
+		}
+	}
 }
 
 void CE_Anjin::Tick(_double TimeDelta)

@@ -333,7 +333,7 @@ HRESULT CM_FHuxiuxiu::Add_Components()
 	// attack Hit / Move
 	CollDesc.owner = this;
 	CollDesc.vCenter = { 0.f, 0.7f, 0.f };
-	CollDesc.vExtents = { 0.5f, 0.5f, 0.5f };
+	CollDesc.vExtents = { 0.75f, 0.75f, 0.75f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_HitCollider"), (CComponent**)&m_pHitCollider, &CollDesc)))
@@ -592,7 +592,7 @@ void CM_FHuxiuxiu::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_01;
 	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
 
-	tMissilePoolDesc.bTargetDir = false;
+	tMissilePoolDesc.bTargetDir = true;
 	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
 	tMissilePoolDesc.fVelocity = 18.f;
 	tMissilePoolDesc.StopTime = 3.0;
@@ -973,6 +973,8 @@ void CM_FHuxiuxiu::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fA
 	{
 		m_tMonsterInfo.fCurHP = 0.f;
 		m_Scon.iNextState = IS_DEAD;
+		m_pHitCollider->SetActive(false);
+		m_bDying = true;
 	}
 	// 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)

@@ -161,6 +161,20 @@ public:
 		m_bAttackHit = bAttackHit;
 	}
 
+	virtual _bool Get_Dying() { return m_bDying; }
+
+	// 포지션 제외한 나머지 변수(체력, 상태 체크용 불값 등) 초기화하는 함수, 몬스터 전용
+	virtual void Regen()
+	{
+		Set_State(ACTIVE);
+		Shot_DissolveKey(1, 1.5f);
+		m_pHitCollider->SetActive(true);
+		m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
+		m_bDying = false;
+		m_bRender = true;
+		m_bAlert = false;
+	};
+
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
 	CShader*			m_pShaderCom = { nullptr };
@@ -210,6 +224,7 @@ private:
 	// 공격 행동에 대한 글로벌 쿨타임 변수
 	_double				m_GlobalCoolTime = { 0.0 };
 	_bool				m_bAttackReady = { false };
+	_bool				m_bDying = { false };
 
 	// MoveCollider 충돌 시 비교할 무게
 	// 밀리는 거리 = 겹친 거리 * (1 - 내 무게 / (상대 무게 + 내 무게))

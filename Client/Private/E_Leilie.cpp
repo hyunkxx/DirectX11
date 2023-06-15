@@ -112,6 +112,14 @@ void CE_Leilie::Start()
 
 void CE_Leilie::PreTick(_double TimeDelta)
 {
+	if (nullptr != m_pTarget)
+	{
+		if (m_pTarget->Get_Dying())
+		{
+			m_pTarget = nullptr;
+			m_pTargetTransform = nullptr;
+		}
+	}
 }
 
 void CE_Leilie::Tick(_double TimeDelta)

@@ -62,6 +62,12 @@ HRESULT CM_GAzizi::Initialize(void * pArg)
 
 	m_pModelCom->Get_Animation(IS_DEAD)->Set_Duration(90);
 
+	// FramePerSec 세팅
+	for (_uint i = 0; i < IS_END; ++i)
+	{
+		m_pModelCom->Get_Animation(m_tStates[i].iAnimID)->Set_TicksPerSecond(m_tStates[i].FramePerSec);
+	}
+
 	// 초기위치 설정
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.974f, 25.767f, 183.063f, 1.f));
 	m_pNaviCom->Set_CurrentIndex(1340);
@@ -321,7 +327,7 @@ HRESULT CM_GAzizi::Add_Components()
 
 	CollDesc.owner = this;
 	CollDesc.vCenter = { 0.f, 0.6f, 0.f };
-	CollDesc.vExtents = { 0.6f, 0.6f, 0.6f };
+	CollDesc.vExtents = { 0.75f, 0.75f, 0.75f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_HitCollider"), (CComponent**)&m_pHitCollider, &CollDesc)))
@@ -536,7 +542,7 @@ void CM_GAzizi::Init_AttackInfos()
 	{
 		ZeroMemory(&m_AttackInfos[i], sizeof TAGATTACK);
 	}
-
+	
 	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_ATTACK_01].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_01].eElementType = ELMT_SPECTRA;
@@ -954,6 +960,8 @@ void CM_GAzizi::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtta
 	{
 		m_tMonsterInfo.fCurHP = 0.f;
 		m_Scon.iNextState = IS_DEAD;
+		m_pHitCollider->SetActive(false);
+		m_bDying = true;
 	}
 	// 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)

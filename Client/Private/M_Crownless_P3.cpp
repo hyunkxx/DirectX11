@@ -850,7 +850,18 @@ void CM_Crownless_P3::Check_AttackHit()
 	}
 	else if (IS_ATTACK07 == m_Scon.iCurState)
 	{
-		if (36.0 <= m_Scon.TrackPos && 40.0 > m_Scon.TrackPos)
+		if (35.0 <= m_Scon.TrackPos && 40.0 > m_Scon.TrackPos)
+		{
+			m_bParryable = true;
+		}
+		else
+		{
+			m_bParryable = false;
+		}
+	}
+	else if (IS_ATTACK08 == m_Scon.iCurState)
+	{
+		if (18.0 <= m_Scon.TrackPos && 23.0 > m_Scon.TrackPos)
 		{
 			m_bParryable = true;
 		}
@@ -866,6 +877,15 @@ void CM_Crownless_P3::Check_AttackHit()
 			m_pAttackCollider->SetCenter_(_float3(2.4f, 0.f, 0.f));
 			m_pAttackCollider->SetExtents_(_float3(4.5f, 1.f, 1.f));
 		}
+
+		if (20.0 <= m_Scon.TrackPos && 25.0 > m_Scon.TrackPos)
+		{
+			m_bParryable = true;
+		}
+		else
+		{
+			m_bParryable = false;
+		}
 	}
 	else if (IS_ATTACK11 == m_Scon.iCurState)
 	{
@@ -873,6 +893,15 @@ void CM_Crownless_P3::Check_AttackHit()
 		{
 			m_pAttackCollider->SetCenter_(_float3(2.4f, 0.f, 0.f));
 			m_pAttackCollider->SetExtents_(_float3(4.5f, 1.f, 1.f));
+		}
+
+		if (20.0 <= m_Scon.TrackPos && 25.0 > m_Scon.TrackPos)
+		{
+			m_bParryable = true;
+		}
+		else
+		{
+			m_bParryable = false;
 		}
 	}
 	else if (IS_ATTACK12 == m_Scon.iCurState)
@@ -1646,6 +1675,8 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 	{
 		m_tMonsterInfo.fCurHP = 0.f;
 		m_Scon.iNextState = IS_DEAD;
+		m_pHitCollider->SetActive(false);
+		m_bDying = true;
 	}
 	// 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)
@@ -1671,6 +1702,7 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 				if (m_bParryable)
 				{
 					m_fParalysisPoint -= 90.f;
+					pGI->Get_Effect(TEXT("Parry_Effect"), EFFECT_ID::COMON)->Play_Effect(&EffectMatrix);
 					if (m_fParalysisPoint < 0.f && PS_GROUND == m_Scon.ePositionState)
 					{
 						m_pCamMovement->StartVibration(20.f, 0.7f);
@@ -1683,7 +1715,6 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 						m_pCamMovement->StartVibration(20.f, 0.7f);
 						pGI->TimeSlowDown(0.3f, 0.1f, 8.f);
 						m_Scon.iNextState = IS_BEHIT_BLOCK;
-						pGI->Get_Effect(TEXT("Parry_Effect"), EFFECT_ID::COMON)->Play_Effect(&EffectMatrix);
 						bHitCheck = true;
 					}
 				}
@@ -1703,6 +1734,7 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 				if (m_bParryable)
 				{
 					m_fParalysisPoint -= 90.f;
+					pGI->Get_Effect(TEXT("Parry_Effect"), EFFECT_ID::COMON)->Play_Effect(&EffectMatrix);
 					if (m_fParalysisPoint < 0.f && PS_GROUND == m_Scon.ePositionState)
 					{
 						m_pCamMovement->StartVibration(20.f, 0.7f);
@@ -1716,7 +1748,6 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 						pGI->TimeSlowDown(0.3f, 0.1f, 8.f);
 						m_Scon.iNextState = IS_BEHIT_BLOCK;
 						bHitCheck = true;
-						pGI->Get_Effect(TEXT("Parry_Effect"), EFFECT_ID::COMON)->Play_Effect(&EffectMatrix);
 					}
 				}
 				else
@@ -1746,6 +1777,7 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 				if (m_bParryable)
 				{
 					m_fParalysisPoint -= 90.f;
+					pGI->Get_Effect(TEXT("Parry_Effect"), EFFECT_ID::COMON)->Play_Effect(&EffectMatrix);
 					if (m_fParalysisPoint < 0.f && PS_GROUND == m_Scon.ePositionState)
 					{
 						m_pCamMovement->StartVibration(20.f, 0.7f);
@@ -1759,7 +1791,6 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 						pGI->TimeSlowDown(0.3f, 0.1f, 8.f);
 						m_Scon.iNextState = IS_BEHIT_BLOCK;
 						bHitCheck = true;
-						pGI->Get_Effect(TEXT("Parry_Effect"), EFFECT_ID::COMON)->Play_Effect(&EffectMatrix);
 					}
 				}
 				else

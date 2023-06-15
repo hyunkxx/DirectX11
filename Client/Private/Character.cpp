@@ -100,11 +100,15 @@ void CCharacter::LateTick(_double TimeDelta)
 	if (m_bDissolve)
 	{
 		m_fDissolveTimeAcc += (_float)TimeDelta * m_fDissolveSpeed;
-		if (2.f <= m_fDissolveTimeAcc)
-		{
-			m_bDissolve = false;
-			m_fDissolveTimeAcc = 0.f;
+		
+		if (m_bDissolveType)
+			m_fDissolveAmount = 1.f - m_fDissolveTimeAcc;
+		else
+			m_fDissolveAmount = m_fDissolveTimeAcc;
 
+
+		if (m_fDissolveAmount > 1.3f)
+		{
 			// Dissolve Out이 끝나면 Render를 끈다. 
 			if (false == m_bDissolveType)
 			{
@@ -114,11 +118,15 @@ void CCharacter::LateTick(_double TimeDelta)
 					SetState(DISABLE);
 			}
 		}
-
-		if (m_bDissolveType)
-			m_fDissolveAmount = 1.f - m_fDissolveTimeAcc;
 		else
-			m_fDissolveAmount = m_fDissolveTimeAcc;
+			m_bRender = true;
+
+		if (2.f <= m_fDissolveTimeAcc)
+		{
+			m_bDissolve = false;
+			m_fDissolveTimeAcc = 0.f;
+		}
+
 	}
 }
 

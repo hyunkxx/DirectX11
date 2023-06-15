@@ -462,7 +462,14 @@ void CM_Binglie::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_UP), m_MissileRotAngles[iMissilePoolID].y)
 		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_LOOK), m_MissileRotAngles[iMissilePoolID].z);
 
-	_vector vTargetPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_vector vTargetPos;
+	if (MISS_ATTACK_02 == iMissilePoolID)
+	{
+		vTargetPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION);
+	}
+	else
+		vTargetPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	
 
 	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot, vTargetPos);
 }
@@ -570,8 +577,8 @@ void CM_Binglie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_GLACIO;
 	m_AttackInfos[ATK_ATTACK_02].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 0;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("M_Blue_Hit"));
+	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 2;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("M_Binglie_Ball_Boom"));
 
 }
 
@@ -615,6 +622,7 @@ void CM_Binglie::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_02;
 	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+	tMissilePoolDesc.tMissileDesc.bDeleteOnHit= true;
 
 	tMissilePoolDesc.bTargetDir = true;
 	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
@@ -972,6 +980,8 @@ void CM_Binglie::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtt
 	{
 		m_tMonsterInfo.fCurHP = 0.f;
 		m_Scon.iNextState = IS_DEAD;
+		m_pHitCollider->SetActive(false);
+		m_bDying = true;
 	}
 	// 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)

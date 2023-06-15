@@ -45,7 +45,14 @@
 
 #include "UICharacter.h"
 #include "EchoSystem.h"
+#include "E_GAzizi.h"
+#include "E_AWukaka.h"
+#include "E_FHuxiuxiu.h"
+
 #include "E_Anjin.h"
+#include "E_Huojin.h"
+#include "E_Binglie.h"
+#include "E_Fenglie.h"
 #include "E_Leilie.h"
 #include "E_Qunjing.h"
 
@@ -98,7 +105,7 @@ HRESULT CApplication::Initialize()
 	//UI에 필요한 텍스쳐 원본 생성A
 
 	//콜라이더 보이기/숨기기
-	m_pGameInstance->SetCollisionDebugRender(false);
+	m_pGameInstance->SetCollisionDebugRender(true);
 #ifdef _DEBUG
 	m_pRenderer->DebugBundleRender_Control(false);
 #endif
@@ -883,8 +890,33 @@ HRESULT CApplication::Ready_UI_Data()
 		return E_FAIL;
 
 	// 에코용 모델, 에코 객체 프로토타입
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, DMODEL::DMD_ECHO_GAZIZI,
+		CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/GAzizi_Echo.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, DMODEL::DMD_ECHO_AWUKAKA,
+		CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/AWukaka_Echo.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, DMODEL::DMD_ECHO_FHUXIUXIU,
+		CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/FHuxiuxiu_Echo.dmdl")))))
+		return E_FAIL;
+
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, DMODEL::DMD_ECHO_ANJIN,
 		CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin_Echo.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, DMODEL::DMD_ECHO_HUOJIN,
+		CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Huojin_Echo.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, DMODEL::DMD_ECHO_BINGLIE,
+		CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Binglie_Echo.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, DMODEL::DMD_ECHO_FENGLIE,
+		CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Fenglie_Echo.dmdl")))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, DMODEL::DMD_ECHO_LEILIE,
@@ -895,8 +927,33 @@ HRESULT CApplication::Ready_UI_Data()
 		CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Qunjing_Echo.dmdl")))))
 		return E_FAIL;
 
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_GAZIZI,
+		CE_GAzizi::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_AWUKAKA,
+		CE_AWukaka::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_FHUXIUXIU,
+		CE_FHuxiuxiu::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_ANJIN,
 		CE_Anjin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_HUOJIN,
+		CE_Huojin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_BINGLIE,
+		CE_Binglie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_FENGLIE,
+		CE_Fenglie::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_LEILIE,
@@ -3954,3 +4011,4 @@ void CApplication::Free()
 	Safe_Release(m_pGameInstance);
 	CGameInstance::Engine_Release();
 }
+

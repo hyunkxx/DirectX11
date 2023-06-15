@@ -226,7 +226,25 @@ HRESULT CLevel_Logo::Ready_StaticGameObject(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	// ¿¡ÄÚ
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_GAZIZI, L"EchoInstance", L"Echo_GAzizi")))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_AWUKAKA, L"EchoInstance", L"Echo_AWukaka")))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_FHUXIUXIU, L"EchoInstance", L"Echo_FHuxiuxiu")))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_ANJIN, L"EchoInstance", L"Echo_Anjin")))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_HUOJIN, L"EchoInstance", L"Echo_Huojin")))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_BINGLIE, L"EchoInstance", L"Echo_Binglie")))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_FENGLIE, L"EchoInstance", L"Echo_Fenglie")))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_LEILIE, L"EchoInstance", L"Echo_Leilie")))

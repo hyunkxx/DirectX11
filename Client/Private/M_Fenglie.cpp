@@ -339,7 +339,6 @@ HRESULT CM_Fenglie::Add_Components()
 	CollDesc.vExtents = { 1.f, 1.f, 1.f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
-
 		TEXT("Com_AttackCollider"), (CComponent**)&m_pAttackCollider, &CollDesc)))
 		return E_FAIL;
 
@@ -915,6 +914,8 @@ void CM_Fenglie::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtt
 	{
 		m_tMonsterInfo.fCurHP = 0.f;
 		m_Scon.iNextState = IS_DEAD;
+		m_pHitCollider->SetActive(false);
+		m_bDying = true;
 	}
 	// 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)

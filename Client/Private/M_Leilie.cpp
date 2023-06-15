@@ -1071,6 +1071,8 @@ void CM_Leilie::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtta
 	{
 		m_tMonsterInfo.fCurHP = 0.f;
 		m_Scon.iNextState = IS_DEAD;
+		m_pHitCollider->SetActive(false);
+		m_bDying = true;
 	}
 	// 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)

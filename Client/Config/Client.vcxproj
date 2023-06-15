@@ -213,6 +213,12 @@
     <ClInclude Include="..\public\E_Anjin.h" />
     <ClInclude Include="..\public\EchoSystem.h" />
     <ClInclude Include="..\Public\Efffect_Tool.h" />
+    <ClInclude Include="..\public\E_AWukaka.h" />
+    <ClInclude Include="..\public\E_Binglie.h" />
+    <ClInclude Include="..\public\E_Fenglie.h" />
+    <ClInclude Include="..\public\E_FHuxiuxiu.h" />
+    <ClInclude Include="..\public\E_GAzizi.h" />
+    <ClInclude Include="..\public\E_Huojin.h" />
     <ClInclude Include="..\public\E_Leilie.h" />
     <ClInclude Include="..\public\E_Qunjing.h" />
     <ClInclude Include="..\Public\Guide_Spirit.h" />
@@ -379,6 +385,12 @@
     <ClCompile Include="..\private\E_Anjin.cpp" />
     <ClCompile Include="..\private\EchoSystem.cpp" />
     <ClCompile Include="..\Private\Efffect_Tool.cpp" />
+    <ClCompile Include="..\private\E_AWukaka.cpp" />
+    <ClCompile Include="..\private\E_Binglie.cpp" />
+    <ClCompile Include="..\private\E_Fenglie.cpp" />
+    <ClCompile Include="..\private\E_FHuxiuxiu.cpp" />
+    <ClCompile Include="..\private\E_GAzizi.cpp" />
+    <ClCompile Include="..\private\E_Huojin.cpp" />
     <ClCompile Include="..\private\E_Leilie.cpp" />
     <ClCompile Include="..\private\E_Qunjing.cpp" />
     <ClCompile Include="..\Private\Guide_Spirit.cpp" />
