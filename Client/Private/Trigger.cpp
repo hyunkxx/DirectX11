@@ -44,8 +44,8 @@ HRESULT CTrigger::Initialize(void* pArg)
 
 	SetUp_State();
 
-	if (TRIGGER_TYPE::TYPE_SPAWN == m_TriggerDesc.iTriggerType)
-		Load_SpawnPoint();
+	//if (TRIGGER_TYPE::TYPE_SPAWN == m_TriggerDesc.iTriggerType)
+		//Load_SpawnPoint();
 
 	return S_OK;
 }

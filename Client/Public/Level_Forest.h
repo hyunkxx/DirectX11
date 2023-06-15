@@ -47,6 +47,22 @@ private:
 	HRESULT Ready_Layer_Trigger(const _tchar* pLayerTag);
 	HRESULT Load_TriggerData(const _tchar* pDataFilePath, const _tchar* pObjectTag, const _tchar* pLayerTa, const _tchar* pEditionFilePath = nullptr);
 
+private:
+	// 로드 -> 로드 하기전 스폰 포인트 정보를 초기화 후 로드 한 데이터에 맞게 세팅함.
+	HRESULT Load_SpawnPoint(const _tchar* pDataFilePath);
+	// 초기화 -> 한 스폰 포인트 데이터를 불러온 개수만큼 적용후 초기화.
+	void Clear_SpawnPoint();
+	// 몇번째 스폰 포인트 , 어떤 몬스터 추가 ( 최대 스폰 포인트 개수 초과시 추가 x , 몬스터 번호 등록 안된거 추가시 추가 x )
+	HRESULT Add_Monstaer(_uint iSpawnPointNum, _uint iMonsterModelNum, const _tchar* pLayerTag);
+
+private:
+	// 스폰 포인트 총 갯수
+	_uint						m_iSpawnPointCount = { 0 };
+	// 스폰 포인트 정보 (위치 , 셀번호)
+	vector<SPAWN_POINT>			m_SpawnPoints = {};
+	// 스폰 포인트 인덱스
+	_uint						m_iSpawnPointIndex = { 0 };
+
 public:
 	static CLevel_Forest* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

@@ -205,6 +205,9 @@ PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
 	if (Out.vDiffuse.a < 0.1f)
 		Out.vDiffuse.a = 0.0f;
 
+	//if (Out.vDiffuse.a < 0.1f)
+		//discard;
+
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 	//Out.vOutNormal = vector(0.f, 0.f, 0.f, 0.f);
