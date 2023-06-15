@@ -91,7 +91,7 @@ HRESULT CM_Huojin::Initialize(void * pArg)
 	m_tMonsterInfo.eElement = ELMT_FUSION;
 	m_tMonsterInfo.iLevel = 1;
 	m_tMonsterInfo.iExp = 0;
-	m_tMonsterInfo.fMaxHP = 2000.f;
+	m_tMonsterInfo.fMaxHP = 4000.f;
 	m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
 	//m_tMonsterInfo.fMaxSP = 100.f;
 	//m_tMonsterInfo.fCurSP = 0.f;

@@ -89,7 +89,7 @@ HRESULT CM_Leilie::Initialize(void * pArg)
 	m_tMonsterInfo.eElement = ELMT_AERO;
 	m_tMonsterInfo.iLevel = 1;
 	m_tMonsterInfo.iExp = 0;
-	m_tMonsterInfo.fMaxHP = 20000.f;
+	m_tMonsterInfo.fMaxHP = 5000.f;
 	m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
 	//m_tMonsterInfo.fMaxSP = 100.f;
 	//m_tMonsterInfo.fCurSP = 0.f;

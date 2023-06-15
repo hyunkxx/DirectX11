@@ -100,7 +100,7 @@ HRESULT CM_Qunjing::Initialize(void * pArg)
 	m_tMonsterInfo.eElement = ELMT_FUSION;
 	m_tMonsterInfo.iLevel = 1;
 	m_tMonsterInfo.iExp = 0;
-	m_tMonsterInfo.fMaxHP = 200000.f;
+	m_tMonsterInfo.fMaxHP = 10000.f;
 	m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
 	//m_tMonsterInfo.fMaxSP = 100.f;
 	//m_tMonsterInfo.fCurSP = 0.f;
