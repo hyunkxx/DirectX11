@@ -2100,11 +2100,11 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-	_float3  vPos = { 42.f, 2.828f, 31.f };
+	_float3  vPos = { 135.5f, 30.75f, 211.f };
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_SIMPLE, pLayerTag, L"Invisivle_chest_simple", &vPos)))
 		return E_FAIL;
 
-	vPos = { 38.f, 2.7f, 35.f };
+	vPos = { 368.f, 71.25f, 286.f };
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_STANDARD, pLayerTag, L"Invisivle_chest_standard", &vPos)))
 		return E_FAIL;
 
@@ -2127,54 +2127,47 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 
 	vector<_float3>* pPosList = new vector<_float3>;
 
-	_float3 Pos1, Pos2, Pos3, Pos4;
-
-	Pos1 = _float3(59.f, 5.f, 37.f);
-	Pos2 = _float3(95.f, 7.f, 58.f);
-	Pos3 = _float3(102.f, 17.f, 68.f);
-	Pos4 = _float3(113.f, 17.f, 93.f);
+	_float3 Pos1 = _float3(59.f, 5.f, 38.f);
+	_float3 Pos2 = _float3(95.f, 6.5f, 54.f);
+	_float3 Pos3 = _float3(102.f, 16.5f, 69.f);
+	_float3 Pos4 = _float3(126.f, 20.5f, 96.f);
+	_float3 Pos5 = _float3(160.f, 25.5f, 105.f);
+	_float3 Pos6 = _float3(175.f, 24.5f, 135.f);
+	_float3 Pos7 = _float3(110.f, 29.f, 211.f);
+	_float3 Pos8 = _float3(155.f, 33.f, 260.f);
+	_float3 Pos9 = _float3(215.f, 35.f, 228.f);
+	_float3 Pos10 = _float3(233.f, 39.5f, 218.f);
+	_float3 Pos11 = _float3(240.f, 39.5f, 241.f);
+	_float3 Pos12 = _float3(257.f, 39.5f, 228.f);
+	_float3 Pos13 = _float3(237.f, 39.5f, 209.f);
+	_float3 Pos14 = _float3(280.f, 49.f, 178.f);
+	_float3 Pos15 = _float3(338.f, 64.2f, 209.f);
+	_float3 Pos16 = _float3(345.f, 73.f, 282.f);
+	_float3 Pos17 = _float3(332.f, 76.5f, 343.f);
+	_float3 Pos18 = _float3(354.f, 77.1f, 372.f);
 
 	pPosList->push_back(Pos1);
 	pPosList->push_back(Pos2);
 	pPosList->push_back(Pos3);
 	pPosList->push_back(Pos4);
+	pPosList->push_back(Pos5);
+	pPosList->push_back(Pos6);
+	pPosList->push_back(Pos7);
+	pPosList->push_back(Pos8);
+	pPosList->push_back(Pos9);
+	pPosList->push_back(Pos10);
+	pPosList->push_back(Pos11);
+	pPosList->push_back(Pos12);
+	pPosList->push_back(Pos13);
+	pPosList->push_back(Pos14);
+	pPosList->push_back(Pos15);
+	pPosList->push_back(Pos16);
+	pPosList->push_back(Pos17);
+	pPosList->push_back(Pos18);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_GUIDE_SPIRIT, pLayerTag, L"Object_Guide_Spirit", pPosList)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY , OBJECT::INTERACTION_GUIDE_SPIRIT, pLayerTag, L"Object_Guide_Spirit", pPosList)))
 		return E_FAIL;
 
-	_float4x4 Matrix1, Matrix2, Matrix3, Matrix4;
-
-	XMStoreFloat4x4(&Matrix1, XMMatrixIdentity());
-	XMStoreFloat4x4(&Matrix2, XMMatrixIdentity());
-	XMStoreFloat4x4(&Matrix3, XMMatrixIdentity());
-	XMStoreFloat4x4(&Matrix4, XMMatrixIdentity());
-
-	Matrix1._41 = 90.f;
-	Matrix1._42 = 4.7f;
-	Matrix1._43 = 42.f;
-
-	Matrix2._41 = 87.f;
-	Matrix2._42 = 4.8f;
-	Matrix2._43 = 48.f;
-
-	Matrix3._41 = 97.f;
-	Matrix3._42 = 4.8f;
-	Matrix3._43 = 46.f;
-
-	Matrix4._41 = 91.f;
-	Matrix4._42 = 5.1f;
-	Matrix4._43 = 57.f;
-
-	vector<_float4x4>* pMatList = new vector<_float4x4>;
-	pMatList->push_back(Matrix1);
-	pMatList->push_back(Matrix2);
-	pMatList->push_back(Matrix3);
-	pMatList->push_back(Matrix4);
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_ROBOT, pLayerTag, L"Object_Robot", pMatList)))
-		return E_FAIL;
-
-	Safe_Delete(pMatList);
 	Safe_Delete(pPosList);
 
 	return S_OK;

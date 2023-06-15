@@ -450,13 +450,13 @@ HRESULT CInvisible_Chest::AddComponents()
 		TEXT("Com_Model"), (CComponent**)&m_pModel)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::BOX_EMISSIVE,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::BOX_EMISSIVE,
 		TEXT("Com_Texture_Emissive"), (CComponent**)&m_pEmissive)))
 		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::BOX_SPECULAR,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::BOX_SPECULAR,
 		TEXT("Com_Texture_Specular"), (CComponent**)&m_pSpecular)))
 		return E_FAIL;
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::BOX_SSAO,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXTURE::BOX_SSAO,
 		TEXT("Com_Texture_SSAO"), (CComponent**)&m_pSSAO)))
 		return E_FAIL;
 

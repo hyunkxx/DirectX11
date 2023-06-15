@@ -45,7 +45,7 @@ private:
 	_float3	m_vPosition;
 	_float3 m_vDestination;
 
-	_float  m_fSpeed = { 5.f };
+	_float  m_fSpeed = { 8.f };
 
 	SPIRIT_STATE m_eSpiritState = { STATE_WAIT };
 	_int		 m_iDestinationCount = { 0 };

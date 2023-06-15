@@ -103,6 +103,9 @@ HRESULT CLevel_Forest::Initialize()
 	if (FAILED(Ready_Layer_Trigger(TEXT("layer_trigger"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Interaction_Object(TEXT("Layer_Interaction_Object_Forest"))))
+		return E_FAIL;
+	
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
 	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
@@ -2404,6 +2407,46 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Tof_Grass(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_TOF_GRASS_14");
 		return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance =  CGameInstance::GetInstance();
+	_float4x4 Matrix1, Matrix2, Matrix3, Matrix4;
+
+	XMStoreFloat4x4(&Matrix1, XMMatrixIdentity());
+	XMStoreFloat4x4(&Matrix2, XMMatrixIdentity());
+	XMStoreFloat4x4(&Matrix3, XMMatrixIdentity());
+	XMStoreFloat4x4(&Matrix4, XMMatrixIdentity());
+
+	Matrix1._41 = 329.549f;
+	Matrix1._42 = 15.160f;
+	Matrix1._43 = 293.931f;
+
+	Matrix2._41 = 329.861f;
+	Matrix2._42 = 15.725f;
+	Matrix2._43 = 308.079f;
+
+	Matrix3._41 = 313.991f;
+	Matrix3._42 = 15.628f;
+	Matrix3._43 = 313.097f;
+
+	Matrix4._41 = 322.916f;
+	Matrix4._42 = 16.009f;
+	Matrix4._43 = 324.425f;
+
+	vector<_float4x4>* pMatList = new vector<_float4x4>;
+	pMatList->push_back(Matrix1);
+	pMatList->push_back(Matrix2);
+	pMatList->push_back(Matrix3);
+	pMatList->push_back(Matrix4);
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_ROBOT, pLayerTag, L"Object_Robot", pMatList)))
+		return E_FAIL;
+
+	Safe_Delete(pMatList);
 
 	return S_OK;
 }

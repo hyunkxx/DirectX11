@@ -6,6 +6,7 @@
 #include "Effect.h"
 
 #include "Invisible_Chest.h"
+#include "CameraMovement.h"
 
 CRobot::CRobot(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CGameObject(pDevice, pContext)
@@ -55,11 +56,13 @@ HRESULT CRobot::Initialize(void * pArg)
 
 	_float3 vPos = _float3(m_BoxMatrix._41, m_BoxMatrix._42, m_BoxMatrix._43);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANYWHERE, OBJECT::INVISIBLE_CHEST_EXPANDED, L"layer_Interaction_Object", ObjectPath, &vPos)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_ANYWHERE, OBJECT::INVISIBLE_CHEST_EXPANDED, L"Layer_Interaction_Object_Forest", ObjectPath, &vPos)))
 		return E_FAIL;
 
 	m_pMyBox = pGameInstance->Find_GameObject(LEVEL_ANYWHERE, m_BoxPath);
 	static_cast<CInvisible_Chest*>(m_pMyBox)->Off_Detection();
+
+	m_pCamera = pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement");
 
 	return S_OK;
 }
@@ -109,12 +112,18 @@ void CRobot::Give_Compensation(_int iLast_Hit_Count)
 
 	for (_int i = 0; 4 > i; i++)
 	{
-		CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"P_Level_Up_Effect", EFFECT_ID::COMON);
+		_float4x4 WorldMatrix = m_RobotMatrix[i];
 
+		CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Robot_Clear_Mark", EFFECT_ID::COMON);
 		if (nullptr == pEffect)
 			return;
 
-		_float4x4 WorldMatrix = m_RobotMatrix[i];
+		pEffect->Play_Effect(&WorldMatrix, false);
+
+		pEffect = CGameInstance::GetInstance()->Get_Effect(L"Robot_Good_Mark", EFFECT_ID::COMON);
+		if (nullptr == pEffect)
+			return;
+
 		pEffect->Play_Effect(&WorldMatrix, false);
 	}
 }
@@ -208,6 +217,8 @@ void CRobot::OnCollisionEnter(CCollider * src, CCollider * dest)
 			WorldMatrix._42 += 1.f;
 			m_pHitEffect[i]->Play_Effect(&WorldMatrix, false);
 			m_bHit[i] = true;
+
+			static_cast<CCameraMovement*>(m_pCamera)->StartVibration(15.f, 0.5f);
 
 			if (All_Hit_Check())
 				Give_Compensation(i);

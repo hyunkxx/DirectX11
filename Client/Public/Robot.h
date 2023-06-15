@@ -33,6 +33,8 @@ private:
 	CEffect*	m_pEffect[4] = { nullptr };
 	CEffect*	m_pHitEffect[4] = { nullptr };
 	CGameObject* m_pMyBox = { nullptr };
+	CGameObject* m_pCamera = { nullptr };
+
 	_float4x4	m_RobotMatrix[4];
 	_float4x4	m_BoxMatrix;
 

@@ -420,15 +420,19 @@
     <ClCompile Include="..\Private\BackpackUI.cpp">
       <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Invisible_Chest.cpp" />
     <ClCompile Include="..\Private\Trigger.cpp">
       <Filter>src\04. MapObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Guide_Spirit.cpp" />
     <ClCompile Include="..\Private\UI_Cooking.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Robot.cpp">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Invisible_Chest.cpp">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Guide_Spirit.cpp">
       <Filter>src\02. GameObject\04. InteractionObject</Filter>
     </ClCompile>
   </ItemGroup>
@@ -829,15 +833,19 @@
     <ClInclude Include="..\Public\BackpackUI.h">
       <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Invisible_Chest.h" />
     <ClInclude Include="..\Public\Trigger.h">
       <Filter>src\04. MapObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Guide_Spirit.h" />
     <ClInclude Include="..\Public\UI_Cooking.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Robot.h">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Invisible_Chest.h">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Guide_Spirit.h">
       <Filter>src\02. GameObject\04. InteractionObject</Filter>
     </ClInclude>
   </ItemGroup>

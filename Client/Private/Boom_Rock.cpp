@@ -4,6 +4,7 @@
 #include "GameMode.h"
 #include "GameInstance.h"
 #include "Effect.h"
+#include "CameraMovement.h"
 
 CBoom_Rock::CBoom_Rock(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CGameObject(pDevice, pContext)
@@ -233,11 +234,16 @@ void CBoom_Rock::OnCollisionEnter(CCollider * src, CCollider * dest)
 			m_bRimLight = true;
 			m_fRimTime = 0.f;
 			m_fBurstRim = 0.3f;
+
+
 		}
 	}
 	else if(m_pCollider == src)
 	{
 		m_bRender = false;
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+		CGameObject* pCamera = pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement");
+		static_cast<CCameraMovement*>(pCamera)->StartVibration(40.f, 1.f);
 		// 여기서 몬스터 소환 및 사운드 변경
 	}
 }

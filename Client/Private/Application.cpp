@@ -77,7 +77,7 @@ HRESULT CApplication::Initialize()
 	m_pDSV->Release();
 	m_pGUIManager->Initialize(m_pDevice, m_pContext, g_hWnd);
 #endif
-	
+
 	if (FAILED(InitializeManager()))
 		return E_FAIL;
 
@@ -342,6 +342,16 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		return E_FAIL;
 
 #pragma endregion GRASS_MASK
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::BOX_EMISSIVE,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Static/Prop/Interaction/SimpleBox/box_emissive.dds"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::BOX_SPECULAR,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Static/Prop/Interaction/SimpleBox/box_spec.dds"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXTURE::BOX_SSAO,
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resource/Model/Static/Prop/Interaction/SimpleBox/box_ssao.dds"))))
+		return E_FAIL;
 
 #pragma region ROCK_MASK
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ROCK_SUB_D,
@@ -2823,6 +2833,16 @@ HRESULT CApplication::Ready_Static_Effect()
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
 			TEXT("../../Resource/Effect/Comon/Box_Robot_Mark_04.bin"),
+			"../../Resource/Effect/Comon/Robot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Robot_Clear_Mark.bin"),
+			"../../Resource/Effect/Comon/Level/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Robot_Good_Mark.bin"),
 			"../../Resource/Effect/Comon/Robot/")))
 			return E_FAIL;
 
