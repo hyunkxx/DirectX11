@@ -250,6 +250,7 @@
     <ClInclude Include="..\Public\Rader.h" />
     <ClInclude Include="..\Public\Rect_Effect.h" />
     <ClInclude Include="..\public\ResonatorUI.h" />
+    <ClInclude Include="..\Public\Robot.h" />
     <ClInclude Include="..\public\Sandbag.h" />
     <ClInclude Include="..\public\DissolveKey.h" />
     <ClInclude Include="..\public\DynamicCamera.h" />
@@ -409,6 +410,7 @@
     <ClCompile Include="..\Private\Rader.cpp" />
     <ClCompile Include="..\Private\Rect_Effect.cpp" />
     <ClCompile Include="..\private\ResonatorUI.cpp" />
+    <ClCompile Include="..\Private\Robot.cpp" />
     <ClCompile Include="..\private\Sandbag.cpp" />
     <ClCompile Include="..\private\DissolveKey.cpp" />
     <ClCompile Include="..\private\DynamicCamera.cpp" />

@@ -45,7 +45,7 @@ public:
 	void Invisible_LateTick(_double TimeDelta);
 	void Appear_LateTick(_double TimeDelta);
 	void Visivle_LateTick(_double TimeDelta);
-
+	void Set_Position(_float3 vPos);
 public:
 	virtual void Interaction(void* pArg = nullptr);
 

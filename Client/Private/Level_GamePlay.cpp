@@ -2133,6 +2133,39 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_GUIDE_SPIRIT, pLayerTag, L"Object_Guide_Spirit", pPosList)))
 		return E_FAIL;
 
+	_float4x4 Matrix1, Matrix2, Matrix3, Matrix4;
+
+	XMStoreFloat4x4(&Matrix1, XMMatrixIdentity());
+	XMStoreFloat4x4(&Matrix2, XMMatrixIdentity());
+	XMStoreFloat4x4(&Matrix3, XMMatrixIdentity());
+	XMStoreFloat4x4(&Matrix4, XMMatrixIdentity());
+
+	Matrix1._41 = 90.f;
+	Matrix1._42 = 4.7f;
+	Matrix1._43 = 42.f;
+
+	Matrix2._41 = 87.f;
+	Matrix2._42 = 4.8f;
+	Matrix2._43 = 48.f;
+
+	Matrix3._41 = 97.f;
+	Matrix3._42 = 4.8f;
+	Matrix3._43 = 46.f;
+
+	Matrix4._41 = 91.f;
+	Matrix4._42 = 5.1f;
+	Matrix4._43 = 57.f;
+
+	vector<_float4x4>* pMatList = new vector<_float4x4>;
+	pMatList->push_back(Matrix1);
+	pMatList->push_back(Matrix2);
+	pMatList->push_back(Matrix3);
+	pMatList->push_back(Matrix4);
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_ROBOT, pLayerTag, L"Object_Robot", pMatList)))
+		return E_FAIL;
+
+	Safe_Delete(pMatList);
 	Safe_Delete(pPosList);
 
 	return S_OK;

@@ -428,6 +428,9 @@
     <ClCompile Include="..\Private\UI_Cooking.cpp">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Robot.cpp">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -833,6 +836,9 @@
     <ClInclude Include="..\Public\Guide_Spirit.h" />
     <ClInclude Include="..\Public\UI_Cooking.h">
       <Filter>src\02. GameObject\99. UI\02. IngameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Robot.h">
+      <Filter>src\02. GameObject\04. InteractionObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

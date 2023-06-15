@@ -265,8 +265,8 @@ void CMesh_Effect::RenderGUI()
 	ImGui::InputInt("RederGroup", &m_EffectDesc.iRenderGroup);
 
 	if (0 > m_EffectDesc.iPass)
-		m_EffectDesc.iPass = 10;
-	else if (10 < m_EffectDesc.iPass)
+		m_EffectDesc.iPass = 11;
+	else if (11 < m_EffectDesc.iPass)
 		m_EffectDesc.iPass = 0;
 
 	if (0 == m_EffectDesc.iPass)
@@ -291,6 +291,8 @@ void CMesh_Effect::RenderGUI()
 		ImGui::Text("Pass: Mix_Distortion_No_Clamp");
 	else if (10 == m_EffectDesc.iPass)
 		ImGui::Text("Pass: Deafulat_Clamp_Discard");
+	else if (11 == m_EffectDesc.iPass)
+		ImGui::Text("Pass: NO_COLOR_NO_ALPHA_SET");
 
 	ImGui::InputInt("Pass", &m_EffectDesc.iPass);
 

@@ -369,6 +369,11 @@ void CInvisible_Chest::Visivle_LateTick(_double TimeDelta)
 	m_pRenderer->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 }
 
+void CInvisible_Chest::Set_Position(_float3 vPos)
+{
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
+}
+
 void CInvisible_Chest::Interaction(void * pArg)
 {//interactionUIActive(false);
 

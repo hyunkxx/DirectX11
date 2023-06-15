@@ -8,8 +8,7 @@ END
 
 BEGIN(Client)
 
-class CGuide_Spirit :
-	public CGameObject
+class CGuide_Spirit final : public CGameObject
 {
 public:
 	enum SPIRIT_STATE
@@ -36,6 +35,7 @@ private:
 	void	Stop_Tick(_double TimeDelta);
 
 	void	Particle(double TimeDelta);
+
 private:
 	CEffect*	m_pEffect = { nullptr };
 	

@@ -27,6 +27,8 @@
 #include "Object_Bomer.h"
 #include "Boom_Rock.h"
 #include "Guide_Spirit.h"
+#include "Robot.h"
+
 // Item
 #include "Item.h"
 
@@ -733,6 +735,10 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::INTERACTION_GUIDE_SPIRIT,
 		CGuide_Spirit::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::INTERACTION_ROBOT,
+		CRobot::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Static_Effect()))
@@ -2770,7 +2776,7 @@ HRESULT CApplication::Ready_Static_Effect()
 			return E_FAIL;
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
-			TEXT("../../Resource/Effect/Comon/Giude_Spirit_Particle.bin"),
+			TEXT("../../Resource/Effect/Comon/Guide_Spirit_Particle.bin"),
 			"../../Resource/Effect/Comon/Spirit/")))
 			return E_FAIL;
 
@@ -2782,6 +2788,32 @@ HRESULT CApplication::Ready_Static_Effect()
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
 			TEXT("../../Resource/Effect/Comon/Spilit_Mark.bin"),
 			"../../Resource/Effect/Comon/Spirit/")))
+			return E_FAIL;
+
+		//Robot_Effect
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Box_Robot.bin"),
+			"../../Resource/Effect/Comon/Robot/")))
+			return E_FAIL;
+	
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Box_Robot_Mark_01.bin"),
+			"../../Resource/Effect/Comon/Robot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Box_Robot_Mark_02.bin"),
+			"../../Resource/Effect/Comon/Robot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Box_Robot_Mark_03.bin"),
+			"../../Resource/Effect/Comon/Robot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Box_Robot_Mark_04.bin"),
+			"../../Resource/Effect/Comon/Robot/")))
 			return E_FAIL;
 
 		for (_int j = 0; 3 > j; j++)

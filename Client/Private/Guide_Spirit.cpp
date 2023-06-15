@@ -230,7 +230,11 @@ void CGuide_Spirit::Particle(double TimeDelta)
 	if (2.f <= m_fParticle_Count)
 	{
 		m_fParticle_Count = 0.f;
-		CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Giude_Spirit_Particle", EFFECT_ID::COMON);
+		CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Guide_Spirit_Particle", EFFECT_ID::COMON);
+
+		if (nullptr == pEffect)
+			return;
+
 		pEffect->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
 
 	}
