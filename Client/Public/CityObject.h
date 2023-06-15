@@ -8,7 +8,6 @@ class CRenderer;
 class CShader;
 class CModel;
 class CTexture;
-class CCollider;
 END
 
 BEGIN(Client)
@@ -38,6 +37,8 @@ public:
 
 	HRESULT Render_Floor();
 
+	HRESULT Render_Interect();
+
 public:
 	void SetUp_State(_float3 vP, _float3 vS, _float3 vA);
 
@@ -56,8 +57,6 @@ private:
 	CRenderer*					m_pRendererCom = { nullptr };
 	CShader*					m_pShaderCom = { nullptr };
 	CModel*						m_pModelCom = { nullptr };
-
-	CCollider*					m_pCollider = { nullptr };
 
 private:
 	HRESULT Add_Components();

@@ -103,7 +103,7 @@ HRESULT CCityObject::Render()
 			return E_FAIL;
 		break;
 	case Client::CCityObject::OP_INTERACT:
-		if (FAILED(Render_Default()))
+		if (FAILED(Render_Interect()))
 			return E_FAIL;
 		break;
 	case Client::CCityObject::OP_END:
@@ -208,6 +208,45 @@ HRESULT CCityObject::Render_Floor()
 	return S_OK;
 }
 
+HRESULT CCityObject::Render_Interect()
+{
+	_uint iNumMesh = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMesh; ++i)
+	{
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		// Model 중 NormalTextrue 가 없는 Model 은 m_IsNormalTex 이 false 가 되어서 노말맵 을 적용시키지 않음.
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsNormalTex)))
+			return E_FAIL;
+
+		if (CCityObject::TYPE_ID::ID_STA == m_CityObject_Desc.iType_ID)
+		{
+			if (1 == iNumMesh)
+				m_CityObject_Desc.Use_Glow = true;
+			else
+				m_CityObject_Desc.Use_Glow = false;
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_IsUseGlow", &m_CityObject_Desc.Use_Glow, sizeof(_bool))))
+				return E_FAIL;
+		}
+
+		m_iShaderPassID = 0;
+
+		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseNormalTex", &m_IsNormalTex, sizeof(_bool))))
+			return E_FAIL;
+
+		m_IsNormalTex = false;
+
+		m_pShaderCom->Begin(m_iShaderPassID);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
 void CCityObject::SetUp_State(_float3 vP, _float3 vS, _float3 vA)
 {
 	m_CityObject_Desc.PSA.vP = vP;
@@ -238,14 +277,14 @@ HRESULT CCityObject::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pMainTransform, &TransformDesc)))
 		return E_FAIL;
 
-	CCollider::COLLIDER_DESC CollDesc;
+	/*CCollider::COLLIDER_DESC CollDesc;
 	CollDesc.owner = this;
 	CollDesc.vCenter = { 0.f, 0.f, 0.f };
 	CollDesc.vExtents = { 0.4f, 0.f, 0.4f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("com_collider_sphere"), (CComponent**)&m_pCollider, &CollDesc)))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, m_CityObject_Desc.iSMD_ID,
@@ -335,5 +374,4 @@ void CCityObject::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pCollider);
 }
