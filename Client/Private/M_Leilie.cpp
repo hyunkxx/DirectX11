@@ -334,8 +334,8 @@ HRESULT CM_Leilie::Add_Components()
 
 	// attack Hit / Move
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 0.7f, 0.f };
-	CollDesc.vExtents = { 0.5f, 0.5f, 0.5f };
+	CollDesc.vCenter = { 0.f, 1.f, 0.f };
+	CollDesc.vExtents = { 1.f, 1.f, 1.f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("Com_HitCollider"), (CComponent**)&m_pHitCollider, &CollDesc)))
