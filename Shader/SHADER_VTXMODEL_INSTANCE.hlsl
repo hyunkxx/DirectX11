@@ -19,6 +19,12 @@ texture2D	g_SubDiffuseTexture;
 
 bool		g_IsUseGlow;
 
+float		g_fTimeAcc;
+
+bool		m_IsUseShake;
+float		g_fShakePower;
+float		g_fShakeRange_Ratio;
+
 struct VS_IN
 {
 	float3 vPosition : POSITION;
@@ -91,6 +97,12 @@ VS_OUT VS_MAIN(VS_IN In)
 	matWVP = mul(matWV, g_ProjMatrix);
 
 	float4x4	TransformMatrix = float4x4(In.vRight, In.vUp, In.vLook, In.vTranslation);
+
+
+	//In.vPosition += sin(g_fTimeAcc) * In.vPosition.y * 0.06;
+
+	if (true == m_IsUseShake)
+		In.vPosition += sin(g_fTimeAcc * g_fShakePower) * In.vPosition.y * g_fShakeRange_Ratio;
 
 	vector	vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
 

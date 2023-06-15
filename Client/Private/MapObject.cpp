@@ -54,6 +54,8 @@ HRESULT CMapObject::Initialize(void * pArg)
 
 	m_EditionDesc.fCullingRatio = 0.f;
 
+	SetUp_ShakeDesc();
+	
 	return S_OK;
 }
 
@@ -69,6 +71,8 @@ void CMapObject::Start()
 void CMapObject::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	m_fTimeeAcc += (_float)TimeDelta;
 }
 
 void CMapObject::LateTick(_double TimeDelta)
@@ -497,6 +501,69 @@ void CMapObject::Load_SubEditionColor_Mask(HANDLE& _hFile, DWORD& _dwByte)
 	ReadFile(_hFile, &m_EditionDesc.vSubEditionColor, sizeof(_float3), &_dwByte, nullptr);
 }
 
+void CMapObject::SetUp_ShakeDesc()
+{
+	ZeroMemory(&m_ShakeDesc, sizeof(CMapObject::SHAKE_DESC));
+
+	switch (m_EditionDesc.iTypeID)
+	{
+	case CMapObject::MAPOBJECT_TYPEID::ID_TREE:
+		m_ShakeDesc.IsUse_Shake = true;
+		m_ShakeDesc.fShakePower = 0.5f;
+		m_ShakeDesc.fShakeRange_Ratio = 0.04f;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_ROCK:
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_FLOOR:
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_STAIRS:
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS:
+		m_ShakeDesc.IsUse_Shake = true;
+		m_ShakeDesc.fShakePower = 1.3f;
+		m_ShakeDesc.fShakeRange_Ratio = 0.06f;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK:
+		m_ShakeDesc.IsUse_Shake = true;
+		m_ShakeDesc.fShakePower = 1.5f;
+		m_ShakeDesc.fShakeRange_Ratio = 0.06f;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_VIN:
+		m_ShakeDesc.IsUse_Shake = true;
+		m_ShakeDesc.fShakePower = 1.0f;
+		m_ShakeDesc.fShakeRange_Ratio = 0.04f;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_VEG:
+		m_ShakeDesc.IsUse_Shake = true;
+		m_ShakeDesc.fShakePower = 1.3f;
+		m_ShakeDesc.fShakeRange_Ratio = 0.06f;
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_SHR:
+		m_ShakeDesc.IsUse_Shake = true;
+		m_ShakeDesc.fShakePower = 1.0f;
+		m_ShakeDesc.fShakeRange_Ratio = 0.06f;
+		break;
+
+	case CMapObject::MAPOBJECT_TYPEID::ID_STRUCTURE:
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_PIL:
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_STATUE:
+		break;
+
+	case CMapObject::MAPOBJECT_TYPEID::ID_NOIROCK:
+		break;
+	case CMapObject::MAPOBJECT_TYPEID::ID_TOF_GRASS:
+		m_ShakeDesc.IsUse_Shake = true;
+		m_ShakeDesc.fShakePower = 1.5f;
+		m_ShakeDesc.fShakeRange_Ratio = 0.06f;
+		break;
+
+	default:
+		break;
+	}
+}
+
 HRESULT CMapObject::Add_Components()
 {
 	/* For.Com_Renderer*/
@@ -590,6 +657,16 @@ HRESULT CMapObject::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->SetRawValue("g_IsUseGlow", &m_EditionDesc.UseGlow, sizeof(_bool))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetRawValue("g_fTimeAcc", &m_fTimeeAcc, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetRawValue("m_IsUseShake", &m_ShakeDesc.IsUse_Shake, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->SetRawValue("g_fShakePower", &m_ShakeDesc.fShakePower, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->SetRawValue("g_fShakeRange_Ratio", &m_ShakeDesc.fShakeRange_Ratio, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;

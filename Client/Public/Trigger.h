@@ -105,7 +105,7 @@ private:
 	// 한번만 트리거를 발동해야 할 때.
 	_bool						m_IsOnlyOneTrigger = { false };
 
-public:
+public: /* For. Spawn Trigger */
 	// 스폰 포인트 증가 + 사이클 돌리기 ( 최대개수 도달시 0으로 초기화 )
 	void Add_SpawnPoint();
 
