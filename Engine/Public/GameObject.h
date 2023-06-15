@@ -42,6 +42,7 @@ protected:
 
 protected:
 	HRESULT Add_Component(_uint iLevelIndex, _int iComponent, _tchar* pComponentTag, class CComponent** ppOut, void* pArg = nullptr);
+	void Erase_Component(_tchar* pComponentTag);
 
 public:
 	_bool IsClone() const { return m_bClone; }

@@ -464,12 +464,25 @@ HRESULT CLoader::Load_Level_City()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_SIMPLE_BOX, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Prop/Interaction/SimpleBox/SimpleBox.smdl")))))
 		return E_FAIL;
 
+	m_pApp->LoadRatio(0.6f);
+
 	// DMODEL
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
 		return E_FAIL;
-	m_pApp->LoadRatio(0.6f);
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_YANGYANG_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Ribbon.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_CHIXIA_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Base.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
 		return E_FAIL;
 
 
@@ -589,16 +602,10 @@ HRESULT CLoader::Load_Level_Forest()
 
 	// DMODEL
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_PLAYERGIRL_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Base.dmdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : DMD_PLAYERGIRL_ANIMSET_BASE");
 		return E_FAIL;
-	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_PLAYERGIRL_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/PlayerGirl/nvzhu_AnimSet_Ribbon.dmdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : DMD_PLAYERGIRL_ANIMSET_RIBBON");
 		return E_FAIL;
-	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_YANGYANG_ANIMSET_BASE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/yangyang/yangyang_AnimSet_Base.dmdl")))))
 		return E_FAIL;
@@ -611,6 +618,7 @@ HRESULT CLoader::Load_Level_Forest()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
 		return E_FAIL;
+
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_HUOJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Huojin.dmdl")))))
 		return E_FAIL;
@@ -764,6 +772,16 @@ HRESULT CLoader::Load_Level_Crown()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
 		return E_FAIL;
 
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_CROWNLESS_P1, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P1.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TEST, DMODEL::DMD_MONSTER_CROWNLESS_P2, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P2.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, DMODEL::DMD_MONSTER_CROWNLESS_P3, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Boss/Crownless/Crownless_P3.dmdl")))))
+		return E_FAIL;
+
 	m_pApp->LoadRatio(0.6f);
 
 	if (FAILED(Load_MapResource_Crown()))
@@ -794,8 +812,19 @@ HRESULT CLoader::Load_Level_Crown()
 
 #pragma region GAMEOBJECTS
 
+
 	m_pApp->LoadRatio(1.f);
 	m_szLoadingStateText = L"객체원본을 로딩중입니다.";
+
+
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P1, CM_Crownless_P1::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P2, CM_Crownless_P2::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P3, CM_Crownless_P3::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 #pragma endregion GAMEOBJECTS
 

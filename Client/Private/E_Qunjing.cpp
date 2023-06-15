@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Public\E_Anjin.h"
+#include "..\Public\E_Qunjing.h"
 
 #include "GameMode.h"
 #include "GameInstance.h"
@@ -20,18 +20,19 @@
 //UI추가
 #include "UI_Monster.h"
 #include "UI_Minimap.h"
+#include "..\Public\E_Leilie.h"
 
-CE_Anjin::CE_Anjin(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CE_Qunjing::CE_Qunjing(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCharacter(pDevice, pContext)
 {
 }
 
-CE_Anjin::CE_Anjin(const CE_Anjin & rhs)
+CE_Qunjing::CE_Qunjing(const CE_Qunjing & rhs)
 	: CCharacter(rhs)
 {
 }
 
-HRESULT CE_Anjin::Initialize_Prototype()
+HRESULT CE_Qunjing::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -39,7 +40,7 @@ HRESULT CE_Anjin::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CE_Anjin::Initialize(void * pArg)
+HRESULT CE_Qunjing::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -54,7 +55,8 @@ HRESULT CE_Anjin::Initialize(void * pArg)
 		return E_FAIL;
 
 	Init_AttackInfos();
-	
+
+
 	m_pModelCom->Get_Animation(0)->Set_TicksPerSecond(m_tCurState.FramePerSec);
 
 	// 루트모션용 본찾기
@@ -69,7 +71,7 @@ HRESULT CE_Anjin::Initialize(void * pArg)
 	// StateController 초기화
 	m_Scon.iCurState = 0;
 	m_Scon.iNextState = 0;
-	
+
 	m_Scon.ePositionState = PS_GROUND;
 	m_Scon.iPrevCellState = 0;
 	SetUp_State();
@@ -82,7 +84,7 @@ HRESULT CE_Anjin::Initialize(void * pArg)
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
 	m_pEchoSystem = static_cast<CEchoSystem*>(pGame->Find_GameObject(LEVEL_STATIC, L"Echo"));
-	m_pEchoSystem->Register_EchoPtr(CEchoSystem::EC_RUPTURE_WARRIOR, this);
+	m_pEchoSystem->Register_EchoPtr(CEchoSystem::EC_ELITE_STONE, this);
 
 
 #ifdef _DEBUG
@@ -93,12 +95,12 @@ HRESULT CE_Anjin::Initialize(void * pArg)
 
 	SetState(DISABLE);
 
-	
+
 
 	return S_OK;
 }
 
-void CE_Anjin::Start()
+void CE_Qunjing::Start()
 {
 	//CGameInstance* pGame = CGameInstance::GetInstance();
 	// Find ActivePlayer
@@ -108,11 +110,11 @@ void CE_Anjin::Start()
 
 }
 
-void CE_Anjin::PreTick(_double TimeDelta)
+void CE_Qunjing::PreTick(_double TimeDelta)
 {
 }
 
-void CE_Anjin::Tick(_double TimeDelta)
+void CE_Qunjing::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
@@ -161,7 +163,7 @@ void CE_Anjin::Tick(_double TimeDelta)
 
 }
 
-void CE_Anjin::LateTick(_double TimeDelta)
+void CE_Qunjing::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
@@ -172,7 +174,7 @@ void CE_Anjin::LateTick(_double TimeDelta)
 	Update_EffectBones();
 }
 
-HRESULT CE_Anjin::Render()
+HRESULT CE_Qunjing::Render()
 {
 	if (false == m_bRender)
 		return S_OK;
@@ -222,7 +224,7 @@ HRESULT CE_Anjin::Render()
 	return S_OK;
 }
 
-HRESULT CE_Anjin::RenderShadow()
+HRESULT CE_Qunjing::RenderShadow()
 {
 	if (false == m_bRender)
 		return S_OK;
@@ -246,11 +248,11 @@ HRESULT CE_Anjin::RenderShadow()
 	return S_OK;
 }
 
-void CE_Anjin::RenderGUI()
+void CE_Qunjing::RenderGUI()
 {
 }
 
-HRESULT CE_Anjin::Add_Components()
+HRESULT CE_Qunjing::Add_Components()
 {
 	/* For.Com_Renderer*/
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
@@ -271,16 +273,16 @@ HRESULT CE_Anjin::Add_Components()
 	CGameMode* pGM = CGameMode::GetInstance();
 	_uint nCurrentLevel = pGM->GetCurrentLevel();
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, DMODEL::DMD_ECHO_ANJIN,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, DMODEL::DMD_ECHO_QUNJING,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	
+
 	CCollider::COLLIDER_DESC CollDesc;
 	// attack Hit / Move
 	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.5f, 0.f, -0.5f };
-	CollDesc.vExtents = { 0.5f, 0.1f, 1.f };
+	CollDesc.vCenter = { 0.f, 0.f, 0.f };
+	CollDesc.vExtents = { 0.8f, 0.5f, 0.5f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::OBB,
 
@@ -298,13 +300,13 @@ HRESULT CE_Anjin::Add_Components()
 	return S_OK;
 }
 
-HRESULT CE_Anjin::Init_State(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+HRESULT CE_Qunjing::Init_State(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	ZeroMemory(&m_tCurState, sizeof(SINGLESTATE));
 
 	// 로드하는 코드
 	_tchar szBuffer[MAX_PATH];
-	wsprintf(szBuffer, TEXT("../../Data/CharState/Echos/Anjin_12.state"));
+	wsprintf(szBuffer, TEXT("../../Data/CharState/Echos/Qunjing_16.state"));
 	HANDLE hFile = CreateFile(szBuffer, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
 	if (INVALID_HANDLE_VALUE == hFile)
@@ -357,13 +359,13 @@ HRESULT CE_Anjin::Init_State(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 		m_tCurState.ppStateKeys = nullptr;
 
 	CloseHandle(hFile);
-	
+
 
 
 	return S_OK;
 }
 
-void CE_Anjin::Release_State()
+void CE_Qunjing::Release_State()
 {
 	if (0 == m_tCurState.iKeyCount)
 		return;
@@ -374,10 +376,10 @@ void CE_Anjin::Release_State()
 			Safe_Release(m_tCurState.ppStateKeys[j]);
 	}
 	Safe_Delete_Array(m_tCurState.ppStateKeys);
-	
+
 }
 
-HRESULT CE_Anjin::Reload_Components()
+HRESULT CE_Qunjing::Reload_Components()
 {
 	// For.Com_Shader_ModelAnim
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODELANIM,
@@ -397,26 +399,31 @@ HRESULT CE_Anjin::Reload_Components()
 		m_pNaviCom = nullptr;
 	}
 
+	Init_Missiles();
+
 	return S_OK;
 }
 
-void CE_Anjin::Release_Reloadable()
+void CE_Qunjing::Release_Reloadable()
 {
 	if (nullptr != m_pShaderCom)
 	{
 		Safe_Release(m_pShaderCom);
 		Erase_Component(TEXT("Com_Shader_ModelAnim"));
 	}
-		
+
 
 	if (nullptr != m_pNaviCom)
 	{
 		Safe_Release(m_pNaviCom);
 		Erase_Component(TEXT("Com_Navigation"));
 	}
+
+	if (nullptr != m_MissilePool)
+		Safe_Release(m_MissilePool);
 }
 
-void CE_Anjin::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _uint iEffectTypeID, _bool bTracking/*iInt1*/)
+void CE_Qunjing::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _uint iEffectTypeID, _bool bTracking/*iInt1*/)
 {
 	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag, Engine::EFFECT_ID(iEffectTypeID));
 	if (nullptr == pEffect || EBONE_END <= EffectBoneID)
@@ -424,53 +431,52 @@ void CE_Anjin::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneI
 
 	pEffect->Play_Effect(&m_EffectBoneMatrices[EffectBoneID], bTracking);
 }
-//
-//void CE_Anjin::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
-//{
-//	if (MISS_END <= iMissilePoolID || EBONE_END <= iEffectBoneID)
-//		return;
-//
-//	_vector vInitPos;
-//	if (0 != iEffectBoneID)
-//	{
-//		vInitPos = XMVector3TransformCoord(
-//			XMVector3TransformCoord(m_EffectBones[iEffectBoneID]->Get_CombinedPosition(), XMMatrixRotationY(XMConvertToRadians(180.f))),
-//			XMLoadFloat4x4(m_pMainTransform->Get_WorldMatrixPtr()));
-//	}
-//	else
-//		vInitPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
-//
-//	_matrix matRot = XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_RIGHT), m_MissileRotAngles[iMissilePoolID].x)
-//		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_UP), m_MissileRotAngles[iMissilePoolID].y)
-//		* XMMatrixRotationAxis(m_pMainTransform->Get_State(CTransform::STATE_LOOK), m_MissileRotAngles[iMissilePoolID].z);
-//
-//	_vector vTargetPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.f, 0.f, 0.f);
-//
-//	m_MissilePools[iMissilePoolID]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot, vTargetPos);
-//}
 
-void CE_Anjin::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
+void CE_Qunjing::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
+{
+	//if (MISS_END <= iMissilePoolID || EBONE_END <= iEffectBoneID)
+	//	return;
+
+	_vector vInitPos;
+
+	if (0 != iEffectBoneID)
+	{
+		vInitPos = XMVector3TransformCoord(
+		XMVector3TransformCoord(m_EffectBones[iEffectBoneID]->Get_CombinedPosition(), XMMatrixRotationY(XMConvertToRadians(180.f))),
+		XMLoadFloat4x4(m_pMainTransform->Get_WorldMatrixPtr()));
+	}
+	else
+	vInitPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+
+	_matrix matRot = XMMatrixIdentity();
+
+	_vector vTargetPos = vInitPos + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	m_MissilePool->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot, vTargetPos);
+}
+
+void CE_Qunjing::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
 {
 	m_pAttackCollider->SetActive(bOBB);
 	//m_iCurAttackID = iAttackInfoID;
 }
 
-void CE_Anjin::Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed)
+void CE_Qunjing::Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed)
 {
 	__super::Shot_DissolveKey(bDissolveType, fDissolveSpeed);
 
-	if(bDissolveType == 0)
+	if (bDissolveType == 0)
 		m_bDisableAfterDissolve = true;
 
 }
 
-void CE_Anjin::Shot_Echo(CTransform * pTransform,  CCharacter * pTarget, _uint iNaviCellID)
+void CE_Qunjing::Shot_Echo(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID)
 {
 	SetState(ACTIVE);
 
 	m_pMainTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix());
 	m_pTarget = pTarget;
-	if(nullptr != m_pTarget)
+	if (nullptr != m_pTarget)
 		m_pTargetTransform = m_pTarget->GetTransform();
 	m_pNaviCom->Set_CurrentIndex(iNaviCellID);
 
@@ -486,10 +492,10 @@ void CE_Anjin::Shot_Echo(CTransform * pTransform,  CCharacter * pTarget, _uint i
 			m_pMainTransform->Set_LookDir(XMVectorSetY(m_pTargetTransform->Get_State(CTransform::STATE_POSITION) - m_pMainTransform->Get_State(CTransform::STATE_POSITION), 0.f));
 		}
 	}
-	
+
 }
 
-void CE_Anjin::SetUp_State()
+void CE_Qunjing::SetUp_State()
 {
 	// 키 리셋
 	for (_uint i = 0; i < m_tCurState.iKeyCount; ++i)
@@ -518,78 +524,61 @@ void CE_Anjin::SetUp_State()
 	}
 }
 
-void CE_Anjin::Change_Target(CCharacter * pActiveCharacter)
+void CE_Qunjing::Change_Target(CCharacter * pActiveCharacter)
 {
 	m_pTarget = pActiveCharacter;
 	m_pTargetTransform = m_pTarget->GetTransform();
 }
 
-void CE_Anjin::Init_AttackInfos()
+void CE_Qunjing::Init_AttackInfos()
 {
-	ZeroMemory(&m_AttackInfo, sizeof TAGATTACK);
+	ZeroMemory(&m_AttackInfos, sizeof TAGATTACK * ATK_END);
 
-	m_AttackInfo.fDamageFactor = 3.5f;
-	m_AttackInfo.eHitIntensity = HIT_FLY;
-	m_AttackInfo.eElementType = ELMT_HAVOC;
-	m_AttackInfo.fSPGain = 0.f;
-	m_AttackInfo.fTPGain = 0.f;
-	m_AttackInfo.iHitEffectID = 2;
-	lstrcpy(m_AttackInfo.szHitEffectTag, TEXT("Anjin_Hit"));
+	m_AttackInfos[ATK_ATTACK08_1].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_ATTACK08_1].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK08_1].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK08_1].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK08_1].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK08_1].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_1].szHitEffectTag, TEXT("M_Yellow_Hit"));
+
+	m_AttackInfos[ATK_ATTACK08_2].fDamageFactor = 3.f;
+	m_AttackInfos[ATK_ATTACK08_2].eHitIntensity = HIT_FLY;
+	m_AttackInfos[ATK_ATTACK08_2].eElementType = ELMT_NONE;
+	m_AttackInfos[ATK_ATTACK08_2].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK08_2].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK08_2].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_2].szHitEffectTag, TEXT("M_Yellow_Hit"));
+
 }
-//
-//void CE_Anjin::Init_Missiles()
-//{
-//	// Attack01
-//	//CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
-//	//ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
-//
-//	//tMissilePoolDesc.pMissilePoolTag = TEXT("GenkiDama_Shoot_%d");
-//	//tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-//	//tMissilePoolDesc.iNumMissiles = 3;
-//
-//	//lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("GenkiDama_Shoot"));
-//	//tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial / GAzizi
-//	//tMissilePoolDesc.tMissileDesc.pOwner = this;
-//	//tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-//	//tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
-//	//tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_01;
-//	//tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
-//
-//	//tMissilePoolDesc.bTargetDir = false;
-//	//tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-//	//tMissilePoolDesc.fVelocity = 18.f;
-//	//tMissilePoolDesc.StopTime = 3.0;
-//	//tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
-//
-//	//m_MissilePools[MISS_ATTACK_01] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.2f, 0.f, 0.f), &tMissilePoolDesc);
-//	//m_MissileRotAngles[MISS_ATTACK_01] = _float3(0.f, 0.f, 0.f);
-//
-//	//// Attack03
-//	//ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
-//
-//	//tMissilePoolDesc.pMissilePoolTag = TEXT("GenkiDama_Shoot2_%d");
-//	//tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
-//	//tMissilePoolDesc.iNumMissiles = 3;
-//
-//	//lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("GenkiDama_Shoot_02"));
-//	//tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial / GAzizi
-//	//tMissilePoolDesc.tMissileDesc.pOwner = this;
-//	//tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-//	//tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
-//	//tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_03;
-//	//tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
-//
-//	//tMissilePoolDesc.bTargetDir = true;
-//	//tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
-//	//tMissilePoolDesc.fVelocity = 18.f;
-//	//tMissilePoolDesc.StopTime = 3.0;
-//	//tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
-//
-//	//m_MissilePools[MISS_ATTACK_03] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 1.2f, 0.f, 0.f), &tMissilePoolDesc);
-//	//m_MissileRotAngles[MISS_ATTACK_03] = _float3(0.f, 0.f, 0.f);
-//}
+void CE_Qunjing::Init_Missiles()
+{
+	CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
-HRESULT CE_Anjin::SetUp_ShaderResources()
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack08_2_Echo_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 2;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT(""));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK08_2;
+	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
+
+	m_MissilePool = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+}
+
+void CE_Qunjing::Release_Missiles()
+{
+	if (nullptr != m_MissilePool)
+		Safe_Release(m_MissilePool);
+}
+
+HRESULT CE_Qunjing::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -608,7 +597,7 @@ HRESULT CE_Anjin::SetUp_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CE_Anjin::Setup_ShadowShaderResource()
+HRESULT CE_Qunjing::Setup_ShadowShaderResource()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -624,7 +613,7 @@ HRESULT CE_Anjin::Setup_ShadowShaderResource()
 	return S_OK;
 }
 
-void CE_Anjin::Tick_State(_double TimeDelta)
+void CE_Qunjing::Tick_State(_double TimeDelta)
 {
 	//
 	if (false == m_Scon.bAnimFinished)
@@ -697,7 +686,7 @@ void CE_Anjin::Tick_State(_double TimeDelta)
 	}
 }
 
-void CE_Anjin::On_Cell()
+void CE_Qunjing::On_Cell()
 {
 	_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
 	_float fPosY = XMVectorGetY(vPos);
@@ -709,7 +698,7 @@ void CE_Anjin::On_Cell()
 	}
 }
 
-HRESULT CE_Anjin::Init_EffectBones()
+HRESULT CE_Qunjing::Init_EffectBones()
 {
 	//NONE은 걍 월드 매트릭스를 저장해놨다가 던짐
 	m_EffectBones[EBONE_SPINE] = nullptr;
@@ -720,7 +709,7 @@ HRESULT CE_Anjin::Init_EffectBones()
 	return S_OK;
 }
 
-void CE_Anjin::Update_EffectBones()
+void CE_Qunjing::Update_EffectBones()
 {
 	memcpy(&m_EffectBoneMatrices[EBONE_NONE], &m_pMainTransform->Get_WorldMatrix(), sizeof(_float4x4));
 
@@ -735,37 +724,37 @@ void CE_Anjin::Update_EffectBones()
 	}
 }
 
-CE_Anjin * CE_Anjin::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CE_Qunjing * CE_Qunjing::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CE_Anjin* pInstance = new CE_Anjin(pDevice, pContext);
+	CE_Qunjing* pInstance = new CE_Qunjing(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Create : CE_Anjin");
+		MSG_BOX("Failed to Create : CE_Qunjing");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CE_Anjin::Clone(void * pArg)
+CGameObject * CE_Qunjing::Clone(void * pArg)
 {
-	CE_Anjin* pInstance = new CE_Anjin(*this);
+	CE_Qunjing* pInstance = new CE_Qunjing(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Clone : CE_Anjin");
+		MSG_BOX("Failed to Clone : CE_Qunjing");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CE_Anjin::Free()
+void CE_Qunjing::Free()
 {
 	__super::Free();
 
-	if(true == m_bClone)
+	if (true == m_bClone)
 		Release_State();
 
 	Safe_Release(m_pNaviCom);
@@ -779,7 +768,7 @@ void CE_Anjin::Free()
 
 }
 
-void CE_Anjin::OnCollisionEnter(CCollider * src, CCollider * dest)
+void CE_Qunjing::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
 	CGameMode* pGM = CGameMode::GetInstance();
 	CCharacter* pOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
@@ -850,7 +839,7 @@ void CE_Anjin::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 }
 
-void CE_Anjin::OnCollisionStay(CCollider * src, CCollider * dest)
+void CE_Qunjing::OnCollisionStay(CCollider * src, CCollider * dest)
 {
 	CCharacter* pOpponent = dynamic_cast<CCharacter*>(dest->GetOwner());
 
@@ -891,6 +880,6 @@ void CE_Anjin::OnCollisionStay(CCollider * src, CCollider * dest)
 	}
 }
 
-void CE_Anjin::OnCollisionExit(CCollider * src, CCollider * dest)
+void CE_Qunjing::OnCollisionExit(CCollider * src, CCollider * dest)
 {
 }

@@ -43,6 +43,8 @@
 #include "UICharacter.h"
 #include "EchoSystem.h"
 #include "E_Anjin.h"
+#include "E_Leilie.h"
+#include "E_Qunjing.h"
 
 CApplication::CApplication()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -869,8 +871,24 @@ HRESULT CApplication::Ready_UI_Data()
 		CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin_Echo.dmdl")))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, DMODEL::DMD_ECHO_LEILIE,
+		CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leilie_Echo.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, DMODEL::DMD_ECHO_QUNJING,
+		CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Qunjing_Echo.dmdl")))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_ANJIN,
 		CE_Anjin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_LEILIE,
+		CE_Leilie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_QUNJING,
+		CE_Qunjing::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//오브젝트

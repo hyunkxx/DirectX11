@@ -3235,43 +3235,46 @@ void CP_PlayerGirl::OnCollisionStay(CCollider * src, CCollider * dest)
 #pragma region Move
 		// pushWeight 값에 따라 서로를 밀어냄
 		// 밀어내는 로직은 플레이어 쪽에서 처리?
-		if (true == src->Compare(GetMoveCollider()) &&
-			true == dest->Compare(pOpponent->GetMoveCollider()))
+		if (CT_MONSTER == pOpponent->Get_CollType())
 		{
-			_float fTargetDistance = src->GetExtents().x + dest->GetExtents().x;
-			_float fPushDistance = fTargetDistance - XMVectorGetX(XMVector3Length(pOpponent->Get_Position() - this->Get_Position()));
-			_float fPushRatio = 1 - m_fPushWeight / (pOpponent->Get_PushWeight() + m_fPushWeight);
-			_vector vPushDir = XMVector3Normalize(XMVectorSetY(this->Get_Position() - pOpponent->Get_Position(), 0.f));
-
-			//_vector vTargetDir = XMLoadFloat3(&m_vTargetDir);
-
-			//// 이번 프레임에 특정 타겟을 기준으로 이동했을 경우
-			//if (!XMVector3Equal(XMVectorZero(), vTargetDir) && fTargetDistance * 0.5f < XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_Scon.vPrevMovement))))
-			//{
-			//	// 이동 전 타겟 방향과 밀어내는 방향의 끼인각이 45도 미만이라면
-			//	if (45.f > fabs(acosf(XMVectorGetX(XMVector3Dot(vPushDir, vTargetDir)))))
-			//	{
-			//		vPushDir *= -1.f;
-			//	}
-			//}
-
-			// TODO: 내비메쉬 관련 예외처리 해야 함
-			m_pMainTransform->Push_OnNavi(vPushDir * fPushDistance * fPushRatio, m_pNaviCom);
-			pOpponent->Push_OnNavi(vPushDir * -1.f * fPushDistance * (1 - fPushRatio));
-
-			//// 전진형 공격을 정지시킴
-			if (IS_ATTACK_01 == m_Scon.iCurState ||
-				IS_ATTACK_02 == m_Scon.iCurState ||
-				IS_ATTACK_03 == m_Scon.iCurState ||
-				IS_ATTACK_04 == m_Scon.iCurState ||
-				IS_ATTACK_05 == m_Scon.iCurState ||
-				IS_ATTACK_PO_2 == m_Scon.iCurState ||
-				IS_ATTACK_PO_3 == m_Scon.iCurState ||
-				IS_SKILL_01 == m_Scon.iCurState ||
-				IS_SKILL_02 == m_Scon.iCurState)
+			if (true == src->Compare(GetMoveCollider()) &&
+				true == dest->Compare(pOpponent->GetMoveCollider()))
 			{
-				m_tCurState.bRootMotion = false;
-				m_Scon.vMovement = _float3(0.f, 0.f, 0.f);
+				_float fTargetDistance = src->GetExtents().x + dest->GetExtents().x;
+				_float fPushDistance = fTargetDistance - XMVectorGetX(XMVector3Length(pOpponent->Get_Position() - this->Get_Position()));
+				_float fPushRatio = 1 - m_fPushWeight / (pOpponent->Get_PushWeight() + m_fPushWeight);
+				_vector vPushDir = XMVector3Normalize(XMVectorSetY(this->Get_Position() - pOpponent->Get_Position(), 0.f));
+
+				//_vector vTargetDir = XMLoadFloat3(&m_vTargetDir);
+
+				//// 이번 프레임에 특정 타겟을 기준으로 이동했을 경우
+				//if (!XMVector3Equal(XMVectorZero(), vTargetDir) && fTargetDistance * 0.5f < XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_Scon.vPrevMovement))))
+				//{
+				//	// 이동 전 타겟 방향과 밀어내는 방향의 끼인각이 45도 미만이라면
+				//	if (45.f > fabs(acosf(XMVectorGetX(XMVector3Dot(vPushDir, vTargetDir)))))
+				//	{
+				//		vPushDir *= -1.f;
+				//	}
+				//}
+
+				// TODO: 내비메쉬 관련 예외처리 해야 함
+				m_pMainTransform->Push_OnNavi(vPushDir * fPushDistance * fPushRatio, m_pNaviCom);
+				pOpponent->Push_OnNavi(vPushDir * -1.f * fPushDistance * (1 - fPushRatio));
+
+				//// 전진형 공격을 정지시킴
+				if (IS_ATTACK_01 == m_Scon.iCurState ||
+					IS_ATTACK_02 == m_Scon.iCurState ||
+					IS_ATTACK_03 == m_Scon.iCurState ||
+					IS_ATTACK_04 == m_Scon.iCurState ||
+					IS_ATTACK_05 == m_Scon.iCurState ||
+					IS_ATTACK_PO_2 == m_Scon.iCurState ||
+					IS_ATTACK_PO_3 == m_Scon.iCurState ||
+					IS_SKILL_01 == m_Scon.iCurState ||
+					IS_SKILL_02 == m_Scon.iCurState)
+				{
+					m_tCurState.bRootMotion = false;
+					m_Scon.vMovement = _float3(0.f, 0.f, 0.f);
+				}
 			}
 		}
 #pragma endregion 

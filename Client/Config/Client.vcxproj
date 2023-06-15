@@ -213,6 +213,8 @@
     <ClInclude Include="..\public\E_Anjin.h" />
     <ClInclude Include="..\public\EchoSystem.h" />
     <ClInclude Include="..\Public\Efffect_Tool.h" />
+    <ClInclude Include="..\public\E_Leilie.h" />
+    <ClInclude Include="..\public\E_Qunjing.h" />
     <ClInclude Include="..\Public\Guide_Spirit.h" />
     <ClInclude Include="..\public\Inventory.h" />
     <ClInclude Include="..\Public\Invisible_Chest.h" />
@@ -374,6 +376,8 @@
     <ClCompile Include="..\private\E_Anjin.cpp" />
     <ClCompile Include="..\private\EchoSystem.cpp" />
     <ClCompile Include="..\Private\Efffect_Tool.cpp" />
+    <ClCompile Include="..\private\E_Leilie.cpp" />
+    <ClCompile Include="..\private\E_Qunjing.cpp" />
     <ClCompile Include="..\Private\Guide_Spirit.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />
     <ClCompile Include="..\Private\Invisible_Chest.cpp" />

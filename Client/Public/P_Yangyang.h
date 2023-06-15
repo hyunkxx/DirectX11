@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "MissilePool.h"
 #include "PlayerState.h"
+#include "EchoSystem.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -399,6 +400,8 @@ public:
 	class CInventory* m_pInven = nullptr;
 	class CCameraMovement* m_pCamMovement = nullptr;
 	class CUI_MainScreen* m_pUIMain = { nullptr };
+
+	CEchoSystem*	m_pEchoSystem = { nullptr };
 };
 
 END

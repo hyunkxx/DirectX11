@@ -229,6 +229,12 @@ HRESULT CLevel_Logo::Ready_StaticGameObject(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_ANJIN, L"EchoInstance", L"Echo_Anjin")))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_LEILIE, L"EchoInstance", L"Echo_Leilie")))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_QUNJING, L"EchoInstance", L"Echo_Qunjing")))
+		return E_FAIL;
+
 	return S_OK;
 }
 

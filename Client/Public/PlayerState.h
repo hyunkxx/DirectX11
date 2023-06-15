@@ -226,7 +226,10 @@ public: // Set
 			m_CharSlot[SLOT_SUB2] = eTemp;
 	}
 
-	void Set_PlayerCamera(class CPlayerCamera* pPCam) { m_pPlayerCam = pPCam; }
+	void Set_PlayerCamera(class CPlayerCamera* pPCam) 
+	{ 
+		m_pPlayerCam = pPCam; 
+	}
 
 
 public:

@@ -17,6 +17,7 @@
 #include "M_Qunjing.h"
 #include "AcquireSystem.h"
 #include "TerminalUI.h"
+#include "Layer.h"
 
 #include "UICharacter.h"
 #include "MapObject.h"
@@ -106,6 +107,14 @@ HRESULT CLevel_Forest::Initialize()
 	if (FAILED(Ready_Interaction_Object(TEXT("Layer_Interaction_Object_Forest"))))
 		return E_FAIL;
 	
+	CLayer* pEchoLayer = pGameInstance->Find_Layer(LEVEL_STATIC, TEXT("EchoInstance"));
+
+	if (nullptr != pEchoLayer)
+	{
+		for (auto& pMonster : pEchoLayer->m_GameObjects)
+			static_cast<CCharacter*>(pMonster.second)->Reload_Components();
+	}
+
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
 	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
@@ -2698,6 +2707,17 @@ CLevel_Forest* CLevel_Forest::Create(ID3D11Device * pDevice, ID3D11DeviceContext
 
 void CLevel_Forest::Free()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	CLayer* pEchoLayer = pGameInstance->Find_Layer(LEVEL_STATIC, TEXT("EchoInstance"));
+
+	if (nullptr != pEchoLayer)
+	{
+		for (auto& pMonster : pEchoLayer->m_GameObjects)
+			static_cast<CCharacter*>(pMonster.second)->Release_Reloadable();
+	}
+
+
 	__super::Free();
 
 	CP_PlayerGirl::Release_States();

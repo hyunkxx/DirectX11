@@ -8,6 +8,8 @@
 #include "PlayerCamera.h"
 #include "Character.h"
 #include "P_PlayerGirl.h"
+#include "P_Yangyang.h"
+#include "P_Chixia.h"
 #include "M_GAzizi.h"
 #include "M_Anjin.h"
 #include "M_AWukaka.h"
@@ -22,6 +24,7 @@
 #include "CityObject.h"
 
 #include "Level_Loading.h"
+#include "Layer.h"
 
 CLevel_City::CLevel_City(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -35,14 +38,16 @@ HRESULT CLevel_City::Initialize()
 
 	// 몬스터들 상태 초기화 해놓기
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
+	CP_Yangyang::Init_States(m_pDevice, m_pContext);
+	CP_Chixia::Init_States(m_pDevice, m_pContext);
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
+	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
+	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Monster(TEXT("layer_monster"))))
@@ -56,6 +61,15 @@ HRESULT CLevel_City::Initialize()
 
 	if (FAILED(Ready_Layer_Trigger(TEXT("layer_trigger"))))
 		return E_FAIL;
+
+	CLayer* pEchoLayer = pGameInstance->Find_Layer(LEVEL_STATIC, TEXT("EchoInstance"));
+
+	if (nullptr != pEchoLayer)
+	{
+		for (auto& pMonster : pEchoLayer->m_GameObjects)
+			static_cast<CCharacter*>(pMonster.second)->Reload_Components();
+	}
+
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
@@ -279,6 +293,12 @@ HRESULT CLevel_City::Ready_Layer_Player(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::PLAYER_YANGYANG, pLayerTag, TEXT("Player"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::PLAYER_CHIXIA, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -539,7 +559,19 @@ CLevel_City* CLevel_City::Create(ID3D11Device * pDevice, ID3D11DeviceContext * p
 
 void CLevel_City::Free()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	CLayer* pEchoLayer = pGameInstance->Find_Layer(LEVEL_STATIC, TEXT("EchoInstance"));
+
+	if (nullptr != pEchoLayer)
+	{
+		for (auto& pMonster : pEchoLayer->m_GameObjects)
+			static_cast<CCharacter*>(pMonster.second)->Release_Reloadable();
+	}
+
 	__super::Free();
 
 	CP_PlayerGirl::Release_States();
+	CP_Yangyang::Release_States();
+	CP_Chixia::Release_States();
 }

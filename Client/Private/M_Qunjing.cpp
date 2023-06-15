@@ -1006,7 +1006,7 @@ void CM_Qunjing::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.3;
-	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK07_2;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK08_2;
 	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
 	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
 

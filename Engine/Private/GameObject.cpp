@@ -85,6 +85,25 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, _int iComponent, _tchar* p
 	return S_OK;
 }
 
+void CGameObject::Erase_Component(_tchar * pComponentTag)
+{
+	CComponent* pComponent = Find_Component(pComponentTag);
+	if (nullptr != pComponent)
+	{
+		Safe_Release(pComponent);
+
+
+		for (auto& pair : m_Components)
+		{
+			if (!lstrcmp(pComponentTag, pair.first))
+			{
+				m_Components.erase(pair.first);
+				break;
+			}
+		}
+	}
+}
+
 _float CGameObject::ComputeCameraLength()
 {
 	if (nullptr == m_pMainTransform)

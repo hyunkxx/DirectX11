@@ -60,9 +60,7 @@ HRESULT CPlayerCamera::Initialize(void * pArg)
 	m_pMainTransform = CTransform::Create(m_pDevice, m_pContext);
 	m_pMainTransform->Set_TransformDesc(m_CameraDesc.TransformDesc);
 
-	// 플레이어 스테이트 세팅
-	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
-	m_pPlayerStateClass->Set_PlayerCamera(this);
+	
 
 #ifdef _DEBUG
 	m_ShakeDesc.fPower = 2.f;
@@ -82,6 +80,10 @@ void CPlayerCamera::Start()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
 	_uint nCurrentLevel = pGM->GetCurrentLevel();
+
+	// 플레이어 스테이트 세팅
+	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pPlayerStateClass->Set_PlayerCamera(this);
 
 	m_pPlayerTransform = m_pPlayerStateClass->Get_ActiveCharacter()->GetTransform();
 	m_pPlayerNavigation = static_cast<CNavigation*>(m_pPlayerStateClass->Get_ActiveCharacter()->Find_Component(TEXT("Com_Navigation")));
@@ -134,7 +136,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 	{
 		/*
 		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
-		if (false == m_pTerminalUI->IsActive())
+		/*if (false == m_pTerminalUI->IsActive())
 		{
 			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || nullptr == m_pUIPanhua || (nullptr == m_pUICook))
 				return;
@@ -146,7 +148,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 			if (nullptr == m_pUITap || nullptr == m_pUITip || nullptr == m_pUIMen || nullptr == m_pUISovi || nullptr == m_pUIPanhua || (nullptr == m_pUICook))
 				return;
 			m_pUITip->SetState(DISABLE);
-		}
+		}*/
 
 		if (pGameInstance->InputKey(DIK_LALT) == KEY_STATE::HOLD)
 		{

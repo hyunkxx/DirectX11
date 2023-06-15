@@ -110,8 +110,32 @@ HRESULT CP_Yangyang::Initialize(void * pArg)
 	//m_pMainTransform->Set_Scale(_float3(10.f, 10.f, 10.f));
 	//m_pNaviCom->Set_CurrentIndex(90);
 
-	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 30.776f, 1.f));
-	m_pNaviCom->Set_CurrentIndex(0);
+	CGameMode* pGameMode = CGameMode::GetInstance();
+
+	switch (pGameMode->GetCurrentLevel())
+	{
+	case LEVEL_TEST:
+	case LEVEL_GAMEPLAY:
+		m_pNaviCom->Set_CurrentIndex(0);
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(39.125f, 2.290f, 30.776f, 1.f));
+		break;
+	case LEVEL_CITY:
+		m_pNaviCom->Set_CurrentIndex(0);
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(70.f, 15.50f, 118.f, 1.f));
+		break;
+
+		// 추가됨
+	case LEVEL_FOREST:
+		m_pNaviCom->Set_CurrentIndex(0);
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(271.8380f, 5.9810f, 201.0880f, 1.f));
+		break;
+
+		// 추가됨
+	case LEVEL_CROWN:
+		m_pNaviCom->Set_CurrentIndex(0);
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(33.0f, 17.6140f, 30.0f, 1.f));
+		break;
+	}
 
 	//m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(180.f));
 
@@ -155,6 +179,9 @@ HRESULT CP_Yangyang::Initialize(void * pArg)
 		m_pMainTransform->SetRotation(VECTOR_UP, XMConvertToRadians(55.f));
 
 	CGameInstance* pGame = CGameInstance::GetInstance();
+
+	m_pEchoSystem = static_cast<CEchoSystem*>(pGame->Find_GameObject(LEVEL_STATIC, L"Echo"));
+
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pPlayerStateClass->Register_Character(CPlayerState::CHARACTER_YANGYANG, this, &m_bOnControl);
 	m_pCharacterState = m_pPlayerStateClass->Get_CharState_byChar(CPlayerState::CHARACTER_YANGYANG);
@@ -1428,7 +1455,14 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 		// Echo Summon
 		if (pGame->InputKey(DIK_Q) == KEY_STATE::TAP)
 		{
-			eCurFrameInput = INPUT_SUMMON;
+			CCharacter* pTarget = nullptr;
+
+			if (nullptr != m_pFixedTarget)
+				pTarget = m_pFixedTarget;
+			else if (nullptr != m_pNearst)
+				pTarget = m_pNearst;
+
+			m_pEchoSystem->Shot_Echo(CEchoSystem::YANGYANG, m_pMainTransform, pTarget, m_pNaviCom->Get_CurrentIndex());
 		}
 
 		if (pGame->InputKey(DIK_1) == KEY_STATE::TAP)
@@ -3209,45 +3243,49 @@ void CP_Yangyang::OnCollisionStay(CCollider * src, CCollider * dest)
 
 	if (pOpponent)
 	{
-#pragma region Move
-		// pushWeight 값에 따라 서로를 밀어냄
-		// 밀어내는 로직은 플레이어 쪽에서 처리?
-		if (true == src->Compare(GetMoveCollider()) &&
-			true == dest->Compare(pOpponent->GetMoveCollider()))
+		if (CT_MONSTER == pOpponent->Get_CollType())
 		{
-			_float fTargetDistance = src->GetExtents().x + dest->GetExtents().x;
-			_float fPushDistance = fTargetDistance - XMVectorGetX(XMVector3Length(pOpponent->Get_Position() - this->Get_Position()));
-			_float fPushRatio = 1 - m_fPushWeight / (pOpponent->Get_PushWeight() + m_fPushWeight);
-			_vector vPushDir = XMVector3Normalize(XMVectorSetY(this->Get_Position() - pOpponent->Get_Position(), 0.f));
 
-			//_vector vTargetDir = XMLoadFloat3(&m_vTargetDir);
-
-			//// 이번 프레임에 특정 타겟을 기준으로 이동했을 경우
-			//if (!XMVector3Equal(XMVectorZero(), vTargetDir) && fTargetDistance * 0.5f < XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_Scon.vPrevMovement))))
-			//{
-			//	// 이동 전 타겟 방향과 밀어내는 방향의 끼인각이 45도 미만이라면
-			//	if (45.f > fabs(acosf(XMVectorGetX(XMVector3Dot(vPushDir, vTargetDir)))))
-			//	{
-			//		vPushDir *= -1.f;
-			//	}
-			//}
-
-			// TODO: 내비메쉬 관련 예외처리 해야 함
-			m_pMainTransform->Push_OnNavi(vPushDir * fPushDistance * fPushRatio, m_pNaviCom);
-			pOpponent->Push_OnNavi(vPushDir * -1.f * fPushDistance * (1 - fPushRatio));
-
-			//// 전진형 공격을 정지시킴
-			if (IS_ATTACK_01 == m_Scon.iCurState ||
-				IS_ATTACK_02 == m_Scon.iCurState ||
-				IS_ATTACK_03 == m_Scon.iCurState ||
-				IS_ATTACK_04 == m_Scon.iCurState ||
-				IS_ATTACK_05 == m_Scon.iCurState)
+#pragma region Move
+			// pushWeight 값에 따라 서로를 밀어냄
+			// 밀어내는 로직은 플레이어 쪽에서 처리?
+			if (true == src->Compare(GetMoveCollider()) &&
+				true == dest->Compare(pOpponent->GetMoveCollider()))
 			{
-				m_tCurState.bRootMotion = false;
-				m_Scon.vMovement = _float3(0.f, 0.f, 0.f);
+				_float fTargetDistance = src->GetExtents().x + dest->GetExtents().x;
+				_float fPushDistance = fTargetDistance - XMVectorGetX(XMVector3Length(pOpponent->Get_Position() - this->Get_Position()));
+				_float fPushRatio = 1 - m_fPushWeight / (pOpponent->Get_PushWeight() + m_fPushWeight);
+				_vector vPushDir = XMVector3Normalize(XMVectorSetY(this->Get_Position() - pOpponent->Get_Position(), 0.f));
+
+				//_vector vTargetDir = XMLoadFloat3(&m_vTargetDir);
+
+				//// 이번 프레임에 특정 타겟을 기준으로 이동했을 경우
+				//if (!XMVector3Equal(XMVectorZero(), vTargetDir) && fTargetDistance * 0.5f < XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_Scon.vPrevMovement))))
+				//{
+				//	// 이동 전 타겟 방향과 밀어내는 방향의 끼인각이 45도 미만이라면
+				//	if (45.f > fabs(acosf(XMVectorGetX(XMVector3Dot(vPushDir, vTargetDir)))))
+				//	{
+				//		vPushDir *= -1.f;
+				//	}
+				//}
+
+				// TODO: 내비메쉬 관련 예외처리 해야 함
+				m_pMainTransform->Push_OnNavi(vPushDir * fPushDistance * fPushRatio, m_pNaviCom);
+				pOpponent->Push_OnNavi(vPushDir * -1.f * fPushDistance * (1 - fPushRatio));
+
+				//// 전진형 공격을 정지시킴
+				if (IS_ATTACK_01 == m_Scon.iCurState ||
+					IS_ATTACK_02 == m_Scon.iCurState ||
+					IS_ATTACK_03 == m_Scon.iCurState ||
+					IS_ATTACK_04 == m_Scon.iCurState ||
+					IS_ATTACK_05 == m_Scon.iCurState)
+				{
+					m_tCurState.bRootMotion = false;
+					m_Scon.vMovement = _float3(0.f, 0.f, 0.f);
+				}
 			}
-		}
 #pragma endregion 
+		}
 	}
 
 }
