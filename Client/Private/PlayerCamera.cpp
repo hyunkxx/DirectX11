@@ -132,7 +132,7 @@ void CPlayerCamera::Tick(_double TimeDelta)
 	// CameraCurve
 	if (false == m_bApplyCurve)
 	{
-		
+		/*
 		m_bFixMouse = m_pTerminalUI->IsActive() ? false : true;
 		if (false == m_pTerminalUI->IsActive())
 		{
@@ -152,18 +152,18 @@ void CPlayerCamera::Tick(_double TimeDelta)
 		{
 			m_bFixMouse = false;
 		}
-		
+		*/
 
-		///* 임시 마우스 고정 혜지 용 */
-		//if (pGameInstance->InputKey(DIK_NUMLOCK) == KEY_STATE::TAP)
-		//{
-		//	if (false == m_IsMouse_UnLock)
-		//		m_IsMouse_UnLock = true;
-		//	else if (true == m_IsMouse_UnLock)
-		//		m_IsMouse_UnLock = false;
-		//}
-		//if (true == m_IsMouse_UnLock)
-		//	m_bFixMouse = false;
+		/* 임시 마우스 고정 혜지 용 */
+		if (pGameInstance->InputKey(DIK_NUMLOCK) == KEY_STATE::TAP)
+		{
+			if (false == m_IsMouse_UnLock)
+				m_IsMouse_UnLock = true;
+			else if (true == m_IsMouse_UnLock)
+				m_IsMouse_UnLock = false;
+		}
+		if (true == m_IsMouse_UnLock)
+			m_bFixMouse = false;
 
 
 

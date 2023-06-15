@@ -491,6 +491,19 @@ protected:
 	_bool	m_bDisableAfterDissolve = { false };
 
 public:
+	void Set_State(STATE eState);
+
+	void KeppInit_State(_float3 vPos, _uint iNaviID);
+	void Reset_For_KeepState();
+
+	void SetUp_Activate(SPAWN_POINT SpawnPoint);
+
+private:
+	SPAWN_POINT					m_SpawnPoint = {};
+	_float3						m_vPos = { 0.0f, 0.0f, 0.0f };
+	_uint						m_iCellIndex = { 0 };
+
+public:
 	virtual void Free() override;
 };
 

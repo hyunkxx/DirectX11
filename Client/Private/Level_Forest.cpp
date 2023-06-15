@@ -51,7 +51,7 @@ HRESULT CLevel_Forest::Initialize()
 	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Monster(TEXT("layer_monster"))))
+	if (FAILED(Ready_Layer_Monster()))
 		return E_FAIL;
 
 	// 플레이어 이후에 카메라를 초기화해야함
@@ -337,7 +337,7 @@ HRESULT CLevel_Forest::Ready_Layer_Player(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar * pLayerTag)
+HRESULT CLevel_Forest::Ready_Layer_Monster()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
@@ -347,21 +347,20 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar * pLayerTag)
 	// 스폰 포인트 갯수 : [ 0 ] : 4 , [ 1 ] : 4 , [ 2 ] : 4 , [ 3 ] : 4 
 	// 몬스터 종류 : MONSTER_HUOJIN , MONSTER_BINGLIE , MONSTER_FENGLIE , MONSTER_LEILIE , MONSTER_QUNJING
 	
-	CGameObject* pChar = nullptr;
-
+	
 	// 스폰 0
 	if (FAILED(Load_SpawnPoint(TEXT("../../Data/Forest/Trigger/Spawn_Forest_0_SpawnPoint.data"))))
 	{
 		MSG_BOX("Spawn_Forest_0_SpawnPoint");
 		return E_FAIL;
 	}
-	if (FAILED(Add_Monstaer(0, OBJECT::MONSTER_HUOJIN, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_HUOJIN, TEXT("layer_monster_Spawn_0"))))
 		return E_FAIL;
-	if (FAILED(Add_Monstaer(1, OBJECT::MONSTER_BINGLIE, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_BINGLIE, TEXT("layer_monster_Spawn_0"))))
 		return E_FAIL;
-	if (FAILED(Add_Monstaer(2, OBJECT::MONSTER_FENGLIE, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_FENGLIE, TEXT("layer_monster_Spawn_0"))))
 		return E_FAIL;
-	if (FAILED(Add_Monstaer(3, OBJECT::MONSTER_LEILIE, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_LEILIE, TEXT("layer_monster_Spawn_0"))))
 		return E_FAIL;
 
 	// 스폰 1
@@ -370,13 +369,13 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar * pLayerTag)
 		MSG_BOX("Spawn_Forest_1_SpawnPoint");
 		return E_FAIL;
 	}
-	if (FAILED(Add_Monstaer(0, OBJECT::MONSTER_HUOJIN, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_HUOJIN, TEXT("layer_monster_Spawn_1"))))
 		return E_FAIL;
-	if (FAILED(Add_Monstaer(1, OBJECT::MONSTER_BINGLIE, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_BINGLIE, TEXT("layer_monster_Spawn_1"))))
 		return E_FAIL;
-	if (FAILED(Add_Monstaer(2, OBJECT::MONSTER_FENGLIE, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_FENGLIE, TEXT("layer_monster_Spawn_1"))))
 		return E_FAIL;
-	if (FAILED(Add_Monstaer(3, OBJECT::MONSTER_LEILIE, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_LEILIE, TEXT("layer_monster_Spawn_1"))))
 		return E_FAIL;
 
 	// 스폰 2
@@ -385,13 +384,13 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar * pLayerTag)
 		MSG_BOX("Spawn_Forest_2_SpawnPoint");
 		return E_FAIL;
 	}
-	if (FAILED(Add_Monstaer(0, OBJECT::MONSTER_HUOJIN, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_HUOJIN, TEXT("layer_monster_Spawn_2"))))
 		return E_FAIL;
-	if (FAILED(Add_Monstaer(1, OBJECT::MONSTER_BINGLIE, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_BINGLIE, TEXT("layer_monster_Spawn_2"))))
 		return E_FAIL;
-	if (FAILED(Add_Monstaer(2, OBJECT::MONSTER_FENGLIE, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_FENGLIE, TEXT("layer_monster_Spawn_2"))))
 		return E_FAIL;
-	if (FAILED(Add_Monstaer(3, OBJECT::MONSTER_LEILIE, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_LEILIE, TEXT("layer_monster_Spawn_2"))))
 		return E_FAIL;
 
 	// 스폰 3
@@ -400,14 +399,78 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar * pLayerTag)
 		MSG_BOX("Spawn_Forest_3_SpawnPoint");
 		return E_FAIL;
 	}
-	if (FAILED(Add_Monstaer(0, OBJECT::MONSTER_HUOJIN, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_HUOJIN, TEXT("layer_monster_Spawn_3"))))
 		return E_FAIL;
-	if (FAILED(Add_Monstaer(1, OBJECT::MONSTER_BINGLIE, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_BINGLIE, TEXT("layer_monster_Spawn_3"))))
 		return E_FAIL;
-	if (FAILED(Add_Monstaer(2, OBJECT::MONSTER_FENGLIE, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_FENGLIE, TEXT("layer_monster_Spawn_3"))))
 		return E_FAIL;
-	if (FAILED(Add_Monstaer(3, OBJECT::MONSTER_LEILIE, pLayerTag)))
+	if (FAILED(Add_Monstaer(OBJECT::MONSTER_LEILIE, TEXT("layer_monster_Spawn_3"))))
 		return E_FAIL;
+
+
+	/*
+	// 스폰 0
+	if (FAILED(Load_SpawnPoint(TEXT("../../Data/Forest/Trigger/Spawn_Forest_0_SpawnPoint.data"))))
+	{
+		MSG_BOX("Spawn_Forest_0_SpawnPoint");
+		return E_FAIL;
+	}
+	if (FAILED(Add_Monstaer(0, OBJECT::MONSTER_HUOJIN, TEXT("layer_monster_Spawn_0"))))
+		return E_FAIL;
+	if (FAILED(Add_Monstaer(1, OBJECT::MONSTER_BINGLIE, TEXT("layer_monster_Spawn_0"))))
+		return E_FAIL;
+	if (FAILED(Add_Monstaer(2, OBJECT::MONSTER_FENGLIE, TEXT("layer_monster_Spawn_0"))))
+		return E_FAIL;
+	if (FAILED(Add_Monstaer(3, OBJECT::MONSTER_LEILIE, TEXT("layer_monster_Spawn_0"))))
+		return E_FAIL;
+
+	// 스폰 1
+	if (FAILED(Load_SpawnPoint(TEXT("../../Data/Forest/Trigger/Spawn_Forest_1_SpawnPoint.data"))))
+	{
+		MSG_BOX("Spawn_Forest_1_SpawnPoint");
+		return E_FAIL;
+	}
+	if (FAILED(Add_Monstaer(0, OBJECT::MONSTER_HUOJIN, TEXT("layer_monster_Spawn_1"))))
+		return E_FAIL;
+	if (FAILED(Add_Monstaer(1, OBJECT::MONSTER_BINGLIE, TEXT("layer_monster_Spawn_1"))))
+		return E_FAIL;
+	if (FAILED(Add_Monstaer(2, OBJECT::MONSTER_FENGLIE, TEXT("layer_monster_Spawn_1"))))
+		return E_FAIL;
+	if (FAILED(Add_Monstaer(3, OBJECT::MONSTER_LEILIE, TEXT("layer_monster_Spawn_1"))))
+		return E_FAIL;
+
+	// 스폰 2
+	if (FAILED(Load_SpawnPoint(TEXT("../../Data/Forest/Trigger/Spawn_Forest_2_SpawnPoint.data"))))
+	{
+		MSG_BOX("Spawn_Forest_2_SpawnPoint");
+		return E_FAIL;
+	}
+	if (FAILED(Add_Monstaer(0, OBJECT::MONSTER_HUOJIN, TEXT("layer_monster_Spawn_2"))))
+		return E_FAIL;
+	if (FAILED(Add_Monstaer(1, OBJECT::MONSTER_BINGLIE, TEXT("layer_monster_Spawn_2"))))
+		return E_FAIL;
+	if (FAILED(Add_Monstaer(2, OBJECT::MONSTER_FENGLIE, TEXT("layer_monster_Spawn_2"))))
+		return E_FAIL;
+	if (FAILED(Add_Monstaer(3, OBJECT::MONSTER_LEILIE, TEXT("layer_monster_Spawn_2"))))
+		return E_FAIL;
+
+	// 스폰 3
+	if (FAILED(Load_SpawnPoint(TEXT("../../Data/Forest/Trigger/Spawn_Forest_3_SpawnPoint.data"))))
+	{
+		MSG_BOX("Spawn_Forest_3_SpawnPoint");
+		return E_FAIL;
+	}
+	if (FAILED(Add_Monstaer(0, OBJECT::MONSTER_HUOJIN, TEXT("layer_monster_Spawn_3"))))
+		return E_FAIL;
+	if (FAILED(Add_Monstaer(1, OBJECT::MONSTER_BINGLIE, TEXT("layer_monster_Spawn_3"))))
+		return E_FAIL;
+	if (FAILED(Add_Monstaer(2, OBJECT::MONSTER_FENGLIE, TEXT("layer_monster_Spawn_3"))))
+		return E_FAIL;
+	if (FAILED(Add_Monstaer(3, OBJECT::MONSTER_LEILIE, TEXT("layer_monster_Spawn_3"))))
+		return E_FAIL;
+	*/
+	
 
 	/*CGameObject* pChar = nullptr;
 
@@ -430,6 +493,7 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_QUNJING, pLayerTag, TEXT("Qunjing"))))
 		return E_FAIL;
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(409.052f, 19.020f, 187.768f, 1.f), 1047);*/
+	
 
 	return S_OK;
 }
@@ -2358,22 +2422,26 @@ HRESULT CLevel_Forest::Ready_Layer_Trigger(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_0.data"), TEXT("Trigger_Spawn_Forest_0"), pLayerTag, TEXT("../../Data/Forest/Trigger/Spawn_Forest_0_SpawnPoint.data"))))
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_0.data"), TEXT("Trigger_Spawn_Forest_0"), pLayerTag, 
+		TEXT("../../Data/Forest/Trigger/Spawn_Forest_0_SpawnPoint.data"), TEXT("layer_monster_Spawn_0"))))
 	{
 		MSG_BOX("Trigger_Spawn_Forest_0");
 		return E_FAIL;
 	}
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_1.data"), TEXT("Trigger_Spawn_Forest_1"), pLayerTag, TEXT("../../Data/Forest/Trigger/Spawn_Forest_1_SpawnPoint.data"))))
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_1.data"), TEXT("Trigger_Spawn_Forest_1"), pLayerTag,
+		TEXT("../../Data/Forest/Trigger/Spawn_Forest_1_SpawnPoint.data"), TEXT("layer_monster_Spawn_1"))))
 	{
 		MSG_BOX("Trigger_Spawn_Forest_1");
 		return E_FAIL;
 	}
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_2.data"), TEXT("Trigger_Spawn_Forest_2"), pLayerTag, TEXT("../../Data/Forest/Trigger/Spawn_Forest_2_SpawnPoint.data"))))
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_2.data"), TEXT("Trigger_Spawn_Forest_2"), pLayerTag,
+		TEXT("../../Data/Forest/Trigger/Spawn_Forest_2_SpawnPoint.data"), TEXT("layer_monster_Spawn_2"))))
 	{
 		MSG_BOX("Trigger_Spawn_Forest_2");
 		return E_FAIL;
 	}
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_3.data"), TEXT("Trigger_Spawn_Forest_3"), pLayerTag, TEXT("../../Data/Forest/Trigger/Spawn_Forest_3_SpawnPoint.data"))))
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_3.data"), TEXT("Trigger_Spawn_Forest_3"), pLayerTag,
+		TEXT("../../Data/Forest/Trigger/Spawn_Forest_3_SpawnPoint.data"), TEXT("layer_monster_Spawn_3"))))
 	{
 		MSG_BOX("Trigger_Spawn_Forest_3");
 		return E_FAIL;
@@ -2382,7 +2450,7 @@ HRESULT CLevel_Forest::Ready_Layer_Trigger(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Forest::Load_TriggerData(const _tchar * pDataFilePath, const _tchar * pObjectTag, const _tchar * pLayerTag, const _tchar* pEditionFilePath)
+HRESULT CLevel_Forest::Load_TriggerData(const _tchar * pDataFilePath, const _tchar * pObjectTag, const _tchar * pLayerTag, const _tchar* pEditionFilePath, const _tchar* pMonsterLayerTag)
 {
 	CGameInstance*			pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
@@ -2416,6 +2484,9 @@ HRESULT CLevel_Forest::Load_TriggerData(const _tchar * pDataFilePath, const _tch
 
 	if (nullptr != pEditionFilePath)
 		TriggerDesc.pEditionFilePath = pEditionFilePath;
+
+	if (nullptr != pMonsterLayerTag)
+		TriggerDesc.pMonsterLayerTag = pMonsterLayerTag;
 	
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::TRIGGER,
 		pLayerTag, szObjectTag, &TriggerDesc)))
@@ -2522,6 +2593,48 @@ HRESULT CLevel_Forest::Add_Monstaer(_uint iSpawnPointNum, _uint iMonsterModelNum
 	}
 
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMLoadFloat3(&m_SpawnPoints[iSpawnPointNum].vP), m_SpawnPoints[iSpawnPointNum].iCellIndex);
+	static_cast<CCharacter*>(pChar)->Set_State(CCharacter::STATE::DISABLE);
+	static_cast<CCharacter*>(pChar)->KeppInit_State(m_SpawnPoints[iSpawnPointNum].vP, m_SpawnPoints[iSpawnPointNum].iCellIndex);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Forest::Add_Monstaer(_uint iMonsterModelNum, const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	CGameObject* pChar = nullptr;
+
+	switch (iMonsterModelNum)
+	{
+	case OBJECT::MONSTER_HUOJIN:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_HUOJIN, pLayerTag, TEXT("Huojin"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_BINGLIE:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_BINGLIE, pLayerTag, TEXT("Binglie"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_FENGLIE:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_FENGLIE, pLayerTag, TEXT("Fenglie"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_LEILIE:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_LEILIE, pLayerTag, TEXT("Leilie"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_QUNJING:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_QUNJING, pLayerTag, TEXT("Qunjing"))))
+			return E_FAIL;
+		break;
+	default:
+		return S_OK;
+		break;
+	}
+
+	static_cast<CCharacter*>(pChar)->Set_State(CCharacter::STATE::DISABLE);
 
 	return S_OK;
 }

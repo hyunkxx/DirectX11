@@ -63,7 +63,7 @@ HRESULT CTexture::Initialize(void* pArg)
 
 HRESULT CTexture::Setup_ShaderResource(CShader* pShaderComponent, const char* pConstantName, _uint iTextureIndex)
 {
-1	if (nullptr == pShaderComponent || iTextureIndex >= m_Textures.size())
+	if (nullptr == pShaderComponent || iTextureIndex >= m_Textures.size())
 		return E_FAIL;
 
 	return pShaderComponent->SetShaderResourceView(pConstantName, m_Textures[iTextureIndex]);

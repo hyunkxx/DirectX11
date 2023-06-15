@@ -429,6 +429,8 @@ namespace Engine
 		// 몇번째 오브젝트인지 구분
 		_uint				iSelf_ID = { 0 };
 
+		_bool				Use_Glow = { false };
+
 	}SCITY_OBJECT_DESC;
 #pragma endregion CITY_OBJECT
 
@@ -448,6 +450,8 @@ namespace Engine
 		const _tchar*	pFilePath = { L"" };
 
 		const _tchar*	pEditionFilePath = { L"" };
+
+		const _tchar*	pMonsterLayerTag = { L"" };
 
 	}TRIGGER_DESC;
 

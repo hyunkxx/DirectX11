@@ -427,6 +427,8 @@ HRESULT CLevel_City::Load_CityObject(const _tchar* pDataFilePath, const _tchar* 
 		ReadFile(hFile, &CityObject_Desc.iOption_ID, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &CityObject_Desc.iSelf_ID, sizeof(_uint), &dwByte, nullptr);
 
+		ReadFile(hFile, &CityObject_Desc.Use_Glow, sizeof(_bool), &dwByte, nullptr);
+
 		switch (CityObject_Desc.iOption_ID)
 		{
 		case Client::CCityObject::OP_DECO:

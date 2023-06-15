@@ -61,6 +61,7 @@ void CCharacter::Set_InitPos(_fvector vPos, _uint iNaviID)
 
 }
 
+
 CCharacter::CCharacter(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -133,6 +134,37 @@ HRESULT CCharacter::RenderShadow()
 
 void CCharacter::RenderGUI()
 {
+}
+
+
+
+void CCharacter::Set_State(STATE eState)
+{
+	SetState(eState);
+}
+
+void CCharacter::KeppInit_State(_float3 vPos, _uint iNaviID)
+{
+	m_vPos = vPos;
+	m_iCellIndex = iNaviID;
+}
+
+void CCharacter::Reset_For_KeepState()
+{
+	if (true == IsDisable())
+	{
+		SetState(STATE::ACTIVE);
+		Set_InitPos(XMLoadFloat3(&m_vPos), m_iCellIndex);
+	}
+}
+
+void CCharacter::SetUp_Activate(SPAWN_POINT SpawnPoint)
+{
+	if (true == IsDisable())
+	{
+		SetState(STATE::ACTIVE);
+		Set_InitPos(XMLoadFloat3(&SpawnPoint.vP), SpawnPoint.iCellIndex);
+	}
 }
 
 void CCharacter::Free()

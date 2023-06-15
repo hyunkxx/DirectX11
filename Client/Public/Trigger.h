@@ -4,6 +4,7 @@
 #include "GameObject.h"
 
 #include "PlayerState.h"
+#include "Layer.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -101,9 +102,41 @@ private:
 	_vector						m_vPlayerPos = { 0.0f, 0.0f, 0.0f, 0.0f };
 	_vector						m_vTriggerPos = { 0.0f, 0.0f, 0.0f, 0.0f };
 
+
+public:
+	// 스폰 포인트 증가 + 사이클 돌리기 ( 최대개수 도달시 0으로 초기화 )
+	void Add_SpawnPoint();
+
+	void Clear_SpawnPoint();
+	void Clear_MonsterSpawnControl();
+
+	void Monster_Spawn();
+	void Check_ActiveMonster();
+
 private:
+	// 최대 스폰 포인트 개수
 	_uint						m_iSpawnPointCount = { 0 };
 	vector<SPAWN_POINT>			m_SpawnPoints = {};
+
+	// 스폰 포인트 인덱스
+	_uint						m_iSpawnPointIndex = { 0 };
+	// 몬스터 스폰 시작.
+	_bool						m_IsSpawnMonster = { false };
+
+
+	// 진행중인 몬스터 스폰 인덱스 -> Max 가 되면 스폰 중단.
+	_uint						m_iSpawnMonsterIndex = { 0 };
+	// 한 스폰지점에서의 총 스폰 몬스터 마리수
+	const _uint&				m_iMaxSpawnMonsterIndex = { 8 };
+	
+	// 현재 소환된 마리수 체크
+	_uint						m_iCurrentSpawnMonsterCount = { 0 };
+	// 몬스터 스폰 마리수 제한 ( 한번에 스폰 가능한 수 )
+	const _uint&				m_iMonsterSpawnLimitCount = { 4 };
+
+
+	// 몬스터 찾아올 레이어
+	CLayer*						m_pLayer = { nullptr };
 
 public:
 	HRESULT Load_SpawnPoint();

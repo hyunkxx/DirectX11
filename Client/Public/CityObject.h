@@ -36,6 +36,8 @@ public:
 public:
 	HRESULT Render_Default();
 
+	HRESULT Render_Floor();
+
 public:
 	void SetUp_State(_float3 vP, _float3 vS, _float3 vA);
 

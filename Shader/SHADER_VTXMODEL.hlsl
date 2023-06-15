@@ -20,6 +20,8 @@ float		g_fTimeAcc;
 
 bool		g_IsUseNormalTex;
 
+bool		g_IsUseGlow;
+
 //Rim Light
 float4 g_RimColor = float4(1.f, 0.7f, 0.4f, 1.f);
 float g_RimPower = 5.f;
@@ -200,6 +202,11 @@ PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
 		In.vNormal.xyz = vNormal;
 	}
 
+	if (true == g_IsUseGlow)
+	{
+
+	}
+
 	Out.vDiffuse = vMtrlDiffuse;
 
 	if (Out.vDiffuse.a < 0.1f)
@@ -210,6 +217,41 @@ PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+	//Out.vOutNormal = vector(0.f, 0.f, 0.f, 0.f);
+
+	return Out;
+}
+
+PS_OUT_OUTLINE	PS_MAIN_FLOOR(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (true == g_IsUseNormalTex)
+	{
+		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+		float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+		float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+		vNormal = mul(vNormal, WorldMatrix);
+		In.vNormal.xyz = vNormal;
+	}
+
+	if (true == g_IsUseGlow)
+	{
+
+	}
+
+	Out.vDiffuse = vMtrlDiffuse;
+
+	if (Out.vDiffuse.a < 0.1f)
+		Out.vDiffuse.a = 0.0f;
+
+	//if (Out.vDiffuse.a < 0.1f)
+	//discard;
+
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.0f, 1.f);
 	//Out.vOutNormal = vector(0.f, 0.f, 0.f, 0.f);
 
 	return Out;
@@ -670,5 +712,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_RimLight();
+	}
+	// ¸¶À» ¹Ù´Ú
+	pass Model_Floor_Pass12
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_FLOOR();
 	}
 }

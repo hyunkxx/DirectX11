@@ -92,8 +92,25 @@ HRESULT CCityObject::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	if (FAILED(Render_Default()))
-		return E_FAIL;
+	switch (m_CityObject_Desc.iOption_ID)
+	{
+	case Client::CCityObject::OP_DECO:
+		if (FAILED(Render_Default()))
+			return E_FAIL;
+		break;
+	case Client::CCityObject::OP_FLOOR:
+		if (FAILED(Render_Floor()))
+			return E_FAIL;
+		break;
+	case Client::CCityObject::OP_INTERACT:
+		if (FAILED(Render_Default()))
+			return E_FAIL;
+		break;
+	case Client::CCityObject::OP_END:
+		break;
+	default:
+		break;
+	}
 
 	switch (m_CityObject_Desc.iType_ID)
 	{
@@ -149,6 +166,34 @@ HRESULT CCityObject::Render_Default()
 			return E_FAIL;
 
 		m_iShaderPassID = 0;
+
+		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseNormalTex", &m_IsNormalTex, sizeof(_bool))))
+			return E_FAIL;
+
+		m_IsNormalTex = false;
+
+		m_pShaderCom->Begin(m_iShaderPassID);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+HRESULT CCityObject::Render_Floor()
+{
+	_uint iNumMesh = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMesh; ++i)
+	{
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		// Model 중 NormalTextrue 가 없는 Model 은 m_IsNormalTex 이 false 가 되어서 노말맵 을 적용시키지 않음.
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsNormalTex)))
+			return E_FAIL;
+
+		m_iShaderPassID = 12;
 
 		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseNormalTex", &m_IsNormalTex, sizeof(_bool))))
 			return E_FAIL;
@@ -229,6 +274,9 @@ HRESULT CCityObject::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetRawValue("g_IsUseGlow", &m_CityObject_Desc.Use_Glow, sizeof(_bool))))
 		return E_FAIL;
 
 	return S_OK;
