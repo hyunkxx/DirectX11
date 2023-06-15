@@ -426,6 +426,10 @@ public:
 
 	virtual void Recover_Gauge(_float fSP, _float fBP, _float fTP) {}
 
+	// 에코용 함수
+	virtual HRESULT	Reload_Components() { return S_OK; }
+	virtual void Release_Reloadable() {}
+
 	// 몬스터가 잡고 있는 타겟 플레이어 포인터 변경하는 함수
 	virtual void Change_Target(CCharacter* pActiveCharacter) {}
 
@@ -449,6 +453,9 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_DissolveKey(_bool bDissolveType, _float fDissolveSpeed);
 
 	virtual void Set_InitPos(_fvector vPos, _uint iNaviID);
+
+	//
+	virtual void Shot_Echo(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID) {}
 
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

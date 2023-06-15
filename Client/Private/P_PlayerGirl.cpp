@@ -31,6 +31,8 @@
 #include "Rader.h"
 
 
+
+
 const _int CP_PlayerGirl::iStateLimit = CP_PlayerGirl::IS_END;
 
 const char CP_PlayerGirl::szIndividualStateTag[CP_PlayerGirl::IS_END - CP_PlayerGirl::IS_START][MAX_PATH] =
@@ -186,6 +188,8 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 
 
 	CGameInstance* pGame = CGameInstance::GetInstance();
+
+	m_pEchoSystem = static_cast<CEchoSystem*>(pGame->Find_GameObject(LEVEL_STATIC, L"Echo"));
 
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pPlayerStateClass->Register_Character(CPlayerState::CHARACTER_ROVER, this, &m_bOnControl);
@@ -950,20 +954,34 @@ void CP_PlayerGirl::Shot_PartsKey(_uint iParts/*int0*/, _uint iState/*int1*/, _u
 			m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(false, fDissSpeed, true);
 		}
 	}
-	//// Hulu
-	//else if (1 == iParts)
-	//{
-	//	// 안보이게 한다.
-	//	if (0 == iState)
-	//	{
+	// Hulu
+	else if (1 == iParts)
+	{
+		// 등으로
+		if (0 == iState)
+		{
+			m_Parts[PARTS_HULU]->Set_Parent(PBONE_WEAPON2);
+		}
+		// 손으로
+		else if (1 == iState)
+		{
+			m_Parts[PARTS_HULU]->Set_Parent(PBONE_HULU);
+		}
 
-	//	}
-	//	//보이게 한다.
-	//	else if (1 == iState)
-	//	{
-	//		
-	//	}
-	//}
+		// Dissolve In
+		if (0 == iDissolve)
+		{
+			if (0 == iState)
+			{
+				m_Parts[PARTS_HULU]->Start_Dissolve(true, fDissSpeed, true);
+			}
+		}
+		// Dissolve Out
+		else if (1 == iDissolve)
+		{
+			m_Parts[PARTS_HULU]->Start_Dissolve(false, fDissSpeed, true);
+		}
+	}
 }
 
 void CP_PlayerGirl::Shot_PriorityKey(_uint iLeavePriority)
@@ -1437,7 +1455,14 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		// Echo Summon
 		if (pGame->InputKey(DIK_Q) == KEY_STATE::TAP)
 		{
-			eCurFrameInput = INPUT_SUMMON;
+			CCharacter* pTarget = nullptr;
+
+			if (nullptr != m_pFixedTarget)
+				pTarget = m_pFixedTarget;
+			else if (nullptr != m_pNearst)
+				pTarget = m_pNearst;
+
+			m_pEchoSystem->Shot_Echo(CEchoSystem::ROVER, m_pMainTransform, pTarget, m_pNaviCom->Get_CurrentIndex());
 		}
 
 

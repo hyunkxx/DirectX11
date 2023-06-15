@@ -5,6 +5,7 @@
 #include "AppManager.h"
 #include "GameInstance.h"
 
+
 CEchoSystem::CEchoSystem(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -24,6 +25,8 @@ HRESULT CEchoSystem::Initialize(void * pArg)
 {
 	ZeroMemory(m_BindEcho, sizeof m_BindEcho);
 	ZeroMemory(m_Echos, sizeof m_Echos);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	// Á¤·É
 	m_Echos[EC_ZIGZAG].bActive = true;

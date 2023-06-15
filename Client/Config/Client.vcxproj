@@ -210,6 +210,7 @@
     <ClInclude Include="..\Public\Client_ObjectEnum.h" />
     <ClInclude Include="..\Public\Client_ShaderEnum.h" />
     <ClInclude Include="..\Public\Client_TextureEnum.h" />
+    <ClInclude Include="..\public\E_Anjin.h" />
     <ClInclude Include="..\public\EchoSystem.h" />
     <ClInclude Include="..\Public\Efffect_Tool.h" />
     <ClInclude Include="..\Public\Guide_Spirit.h" />
@@ -370,6 +371,7 @@
     <ClCompile Include="..\private\CharacterSelect_Terrain.cpp" />
     <ClCompile Include="..\private\Chest.cpp" />
     <ClCompile Include="..\Private\CityObject.cpp" />
+    <ClCompile Include="..\private\E_Anjin.cpp" />
     <ClCompile Include="..\private\EchoSystem.cpp" />
     <ClCompile Include="..\Private\Efffect_Tool.cpp" />
     <ClCompile Include="..\Private\Guide_Spirit.cpp" />

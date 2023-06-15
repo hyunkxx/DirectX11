@@ -184,6 +184,7 @@ private:
 	class CUI_Minimap*		m_pUIIcon = { nullptr };
 	_int					m_UIIndex = { 0 };
 	CUI_Monster*			m_pUIMon = { nullptr };
+
 private:
 	HRESULT Add_Components();
 	void SetUp_State();

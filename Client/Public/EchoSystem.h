@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "Character.h"
 
 BEGIN(Client)
 
@@ -72,6 +73,17 @@ public:
 	_uint GetEchoLevel(ECHO_TYPE eEchoType);
 	_bool Levelup(ECHO_TYPE eEchoType);
 
+	void Register_EchoPtr(ECHO_TYPE eEchoType, CCharacter* pEcho)
+	{
+		m_pEchoPtr[eEchoType] = pEcho;
+	}
+
+	void Shot_Echo(ECHO_SLOT eSlot, CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID)
+	{
+		m_pEchoPtr[EC_RUPTURE_WARRIOR]->Shot_Echo(pTransform, pTarget, iNaviCellID);
+		//m_pEchoPtr[m_BindEchoType[eSlot]]->shot_
+	}
+
 public:
 	static CEchoSystem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject * Clone(void * pArg = nullptr) override;
@@ -82,6 +94,8 @@ private:
 	ECHO  m_Echos[EC_EMPTY];
 
 	ECHO_TYPE m_BindEchoType[CHAR_END] = { EC_EMPTY, };
+	
+	CCharacter* m_pEchoPtr[EC_EMPTY] = { nullptr, };
 };
 
 END

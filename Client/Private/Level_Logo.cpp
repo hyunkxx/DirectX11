@@ -225,6 +225,10 @@ HRESULT CLevel_Logo::Ready_StaticGameObject(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ACQUIRE_SYSTEM, pLayerTag, TEXT("AcquireSystem"))))
 		return E_FAIL;
 
+	// ¿¡ÄÚ
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ECHO_ANJIN, L"EchoInstance", L"Echo_Anjin")))
+		return E_FAIL;
+
 	return S_OK;
 }
 

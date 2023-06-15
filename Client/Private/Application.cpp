@@ -42,6 +42,7 @@
 
 #include "UICharacter.h"
 #include "EchoSystem.h"
+#include "E_Anjin.h"
 
 CApplication::CApplication()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -851,6 +852,15 @@ HRESULT CApplication::Ready_UI_Data()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_SYSTEM,
 		CEchoSystem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	// 에코용 모델, 에코 객체 프로토타입
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, DMODEL::DMD_ECHO_ANJIN,
+		CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin_Echo.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_ANJIN,
+		CE_Anjin::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//오브젝트
