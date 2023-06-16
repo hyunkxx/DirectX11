@@ -99,7 +99,7 @@ HRESULT CApplication::Initialize()
 	if (FAILED(Ready_Prototype_Static_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_ANIMTOOL)))
 		return E_FAIL;
 
 	//UI에 필요한 텍스쳐 원본 생성A
@@ -2533,7 +2533,7 @@ HRESULT CApplication::Ready_Static_Effect()
 
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_CHIXIA,
 			TEXT("../../Resource/Effect/Player_Chixia/Chixia_Hit_Effect_SC.bin"),
-			"../../Resource/Effect/Player_Chixia/Hit/")))
+			"../../Resource/Effect/Player_Chixia/Charge/")))
 			return E_FAIL;
 
 		//기본 총알
@@ -3061,6 +3061,16 @@ HRESULT CApplication::Ready_Static_Effect()
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
 			TEXT("../../Resource/Effect/Comon/Robot_Good_Mark.bin"),
 			"../../Resource/Effect/Comon/Robot/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Potal_Effect_01.bin"),
+			"../../Resource/Effect/Comon/Potal/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/Potal_Effect_02.bin"),
+			"../../Resource/Effect/Comon/Potal/")))
 			return E_FAIL;
 
 		for (_int j = 0; 3 > j; j++)
@@ -3777,6 +3787,8 @@ HRESULT CApplication::Ready_Static_Effect()
 #pragma endregion
 
 	}
+
+#pragma region Crownless_Hit
 	for (_int i = 0; 5 > i; i++)
 	{
 
@@ -3875,7 +3887,7 @@ HRESULT CApplication::Ready_Static_Effect()
 			"../../Resource/Effect/B_Crownless/Attack/")))
 			return E_FAIL;
 	}
-
+#pragma endregion
 
 #pragma region Qunjing
 
