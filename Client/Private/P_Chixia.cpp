@@ -212,7 +212,7 @@ void CP_Chixia::Start()
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 	m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
-	m_pCamMovement->SetupBone(CCameraMovement::CAM_CHIXIA, m_pModelCom->Get_BonePtr(L"Bip001"));
+	m_pCamMovement->SetupBone(CCameraMovement::CAM_CHIXIA, m_pModelCom->Get_BonePtr(L"WeaponProp02"));
 	m_pUIMain = static_cast<CUI_MainScreen*>(pGame->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));
 
 	if (false == m_bOnControl)
@@ -2204,7 +2204,7 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 
 			//±Ã±Ø±â Ä«¸Þ¶ó ¸ð¼Ç ½ÇÇà
 			if (IS_BURST == m_Scon.iCurState)
-				m_pCamMovement->UseCamera(CCameraMovement::CAM_BANGSUN);
+				m_pCamMovement->UseCamera(CCameraMovement::CAM_CHIXIA);
 		}
 		else if ((true == m_bAiming || true == m_bHolding) && INPUT_MOVE >= eCurFrameInput)
 		{

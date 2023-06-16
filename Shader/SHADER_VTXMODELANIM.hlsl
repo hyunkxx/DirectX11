@@ -24,6 +24,8 @@ float4 g_RimColor = float4(1.f, 0.7f, 0.4f, 1.f);
 float g_RimPower = 5.f;
 float g_fTimeAcc = 0.f;
 
+float3 g_vColor;
+
 //Dessolve
 
 //±âÁ¸ µðÆúÆ® º§·ù
@@ -556,6 +558,37 @@ PS_OUT PS_TraceFade(PS_IN In)
 	return Out;
 }
 
+//±Ã±Ø±â ´« ÆÐ½º
+PS_OUT_OUTLINE PS_Eye_BurstGlow(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector vEyeMask = g_EyeMaskTexture.Sample(LinearClampSampler, In.vTexUV);
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, In.vTexUV);
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+
+	vMtrlDiffuse.r = vMtrlDiffuse.r + vEyeMask.r;
+	vMtrlDiffuse.g = vMtrlDiffuse.g + vEyeMask.r;
+
+	vMtrlDiffuse.a = 1.f;
+
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+	vEyeMask.g = 0.f;
+
+	vector vEyeBust = g_EyeBurstTexture.Sample(LinearClampSampler, In.vTexUV) * g_vEyeColor;
+	Out.vSpecGlow = vEyeBust + vEyeMask;
+
+	Out.vGlow = float4(vEyeBust.xyz * g_vColor.xyz, 1.f);
+	Out.vShaderInfo = float4(0.9f, 0.f, 0.f, 0.f);
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass Default_0
@@ -782,4 +815,29 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Eye_Burst();
 	}
 
+	pass VTF_EYE_BURST_COLORGLOW_17
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZTest_NoZWrite, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_VTF();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Eye_BurstGlow();
+	}
+
+	pass VTF_YANGYANG_EYE_BURST_COLORGLOW_18
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_VTF();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Eye_BurstGlow();
+	}
 }

@@ -44,7 +44,7 @@ HRESULT CLevel_Logo::Initialize()
 	pGameInstance->OutlineToggle();
 	pGameInstance->SSAOToggle();
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 3.f);
-
+	
 	if (FAILED(pGameInstance->AddLight(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
 

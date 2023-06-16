@@ -526,7 +526,18 @@ HRESULT CP_Yangyang::Render()
 				m_pShaderCom->Begin(13);
 			}
 			else
-				m_pShaderCom->Begin(16);		//Burst
+			{
+				if (IS_BURST == m_Scon.iCurState)
+				{
+					_float3 vColor = { 40.f / 255.f, 120.f / 255.f, 255.f / 255.f };
+					if (FAILED(m_pShaderCom->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+						return E_FAIL;
+
+					m_pShaderCom->Begin(18);		//Burst
+				}
+				else
+					m_pShaderCom->Begin(16);
+			}
 		}
 		else
 		{
@@ -539,7 +550,7 @@ HRESULT CP_Yangyang::Render()
 		m_pModelCom->Render(i);
 
 		//Rim Light
-		if (m_bRimToggle && m_Scon.iCurState != IS_BURST && i != 5)
+		if (m_bRimToggle && m_Scon.iCurState != IS_BURST && i != 6)
 		{
 			/* H키 누르면 활성화/비활성화 토글
 			* g_RimPower : 일반적으로 5정도 주고 값이 높을수록 Rim의 라인 굵기가 얇아짐
@@ -562,7 +573,7 @@ HRESULT CP_Yangyang::Render()
 		}
 
 		// Burst Rim
-		if (m_fBurstRim > 0.f)
+		if (i != 6 && m_fBurstRim > 0.f)
 		{
 			_float vRimPower = 10.f;
 			_float3 vColor = { 40.f / 255.f, 120.f / 255.f, 255.f / 255.f };
@@ -574,18 +585,7 @@ HRESULT CP_Yangyang::Render()
 			if (FAILED(m_pShaderCom->SetRawValue("g_fTimeAcc", &m_fBurstRim, sizeof(_float))))
 				return E_FAIL;
 
-			if (i == 6)
-			{
-				if (FAILED(m_pEyeBurstTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeBurstTexture")))
-					return E_FAIL;
-				if (FAILED(m_pEyeMaskTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeMaskTexture")))
-					return E_FAIL;
-
-				m_pShaderCom->Begin(16);
-			}
-			else
-				m_pShaderCom->Begin(8);
-
+			m_pShaderCom->Begin(8);
 			m_pModelCom->Render(i);
 		}
 	}
@@ -1061,7 +1061,7 @@ void CP_Yangyang::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 		return;
 
 	m_bAttack = true;
-
+	
 	if (iMissilePoolID == MISS_BURST_1)
 	{
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();

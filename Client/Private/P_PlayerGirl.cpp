@@ -479,15 +479,24 @@ HRESULT CP_PlayerGirl::Render()
 
 				if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
 					return E_FAIL;
-
 				if (FAILED(m_pShaderCom->SetRawValue("g_vDessolveColor", &m_vDissolveColor, sizeof(_float3))))
 					return E_FAIL;
 
 				m_pShaderCom->Begin(13);
 			}
-				
 			else
-				m_pShaderCom->Begin(7);		//Burst
+			{
+				if (IS_BURST == m_Scon.iCurState)
+				{
+					_float3 vColor = LEGEND_COLOR;
+					if (FAILED(m_pShaderCom->SetRawValue("g_vColor", &vColor , sizeof(_float3))))
+						return E_FAIL;
+
+					m_pShaderCom->Begin(17);		//Burst
+				}
+				else
+					m_pShaderCom->Begin(7);
+			}
 		}
 		else
 		{
