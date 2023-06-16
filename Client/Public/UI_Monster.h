@@ -98,7 +98,7 @@ public:
 
 public:
 	void Set_MonHP(_float HP) { m_HP = m_CurrentHp = m_RedHP = HP; }
-	void Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage); }
+	void Set_Damage(_float fDamage, _bool bCrit) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage); m_bCrit = bCrit; }
 	void Set_CharacterPos(_fvector vCharacterPos) { m_vCharacterPos = vCharacterPos; }
 	void Set_ElementType(ELEMENT ElementType) { ElementType = ElementType; }
 	void Set_Render(_bool brender) { m_bRender = brender; }
@@ -118,6 +118,7 @@ private:
 private:
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	//Hp
+	_bool m_bCrit = { false }; // 크리티컬 판정
 	_bool m_bHit = { false };
 	_bool m_bRedStart = { false };
 	_float m_Damage = { 0.f }; // 공통

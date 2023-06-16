@@ -111,7 +111,7 @@ HRESULT CM_Leilie::Initialize(void * pArg)
 	wsprintf(szIndex, TEXT("UI_Monster%d"), Monindex);
 	CUI_Monster::MONINFO MonInfo;
 	MonInfo.Level = 3;
-	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE1;
+	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
 	CGameObject * pUIMon = nullptr;
 	if (pGame->Add_GameObjectEx(&pUIMon, LEVEL_ANYWHERE, OBJECT::UIMONSTER, TEXT("layer_UI"), szIndex, &MonInfo))
 		return E_FAIL;
@@ -136,9 +136,9 @@ void CM_Leilie::Start()
 	m_pTargetTransform = m_pTarget->GetTransform();
 
 	//UI추가
-	/*m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
-	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 44);
-	m_pUIIcon->SetRender(m_UIIndex, true);*/
+	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
+	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::MOSTER);
+	m_pUIIcon->SetRender(m_UIIndex, false);
 }
 
 void CM_Leilie::PreTick(_double TimeDelta)
@@ -186,13 +186,19 @@ void CM_Leilie::Tick(_double TimeDelta)
 	m_pMoveCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 
 	//UI추가
-	if (false == this->IsDisable())
+	if (true == this->IsActive())
 	{
+		if (false == m_pUIMon->IsActive())
+			m_pUIMon->SetState(ACTIVE);
+
 		_float4 Head;
 		XMStoreFloat4(&Head, XMLoadFloat4x4(&m_EffectBoneMatrices[EBONE_HEAD]).r[3]);
 		Head.y += 0.7f;
 		m_pUIMon->Set_CharacterPos(XMLoadFloat4(&Head));
-		//m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+
+		if (false == m_pUIIcon->GetRenderState(m_UIIndex))
+			m_pUIIcon->SetRender(m_UIIndex, true);
+		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 	}
 }
 
@@ -964,7 +970,7 @@ void CM_Leilie::Tick_State(_double TimeDelta)
 		{
 			SetState(DISABLE);
 			m_pUIMon->SetState(DISABLE);
-			//m_pUIIcon->Set_Disable(m_UIIndex);
+			m_pUIIcon->SetRender(m_UIIndex, false);
 		}
 
 
@@ -1061,9 +1067,9 @@ void CM_Leilie::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtta
 	m_tMonsterInfo.fCurHP -= fFinalDamage;
 
 	// TODO: 여기서 대미지 폰트 출력
-	if (false == m_pUIMon->IsDisable())
+	if (true == this->IsActive())
 	{
-		m_pUIMon->Set_Damage(fFinalDamage);
+		m_pUIMon->Set_Damage(fFinalDamage, bCrit);
 	}
 
 	// 사망 시 사망 애니메이션 실행 

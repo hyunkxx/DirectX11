@@ -22,9 +22,10 @@ float  g_ERadianAcc;
 float  g_RRadianAcc;
 float  g_QRadianAcc;
 float  g_SkillRadian;
-float2  g_GraphUV;
+float2 g_GraphUV;
 float  g_MonsterGauge;
 float2 g_TitleUV;
+float  g_fChixia;
 
 //Sprite Image
 float  g_CurrentCount;		//ÇöÀç ÀÎµ¦½º
@@ -262,7 +263,7 @@ PS_OUT PS_MAIN_COOLTIME(PS_IN In)
 	Out.vColor = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
 	Out.vColor *= fcolor.a;
 
-	if(In.vTexUV.y < g_fCoolTime )
+	if(In.vTexUV.y < 1.f - g_fCoolTime )
 	discard;
 
 	Out.vColor.r += g_fColorR/255.f;
@@ -513,6 +514,32 @@ PS_OUT PS_MAIN_EDIT(PS_IN In)
 	Out.vColor.g += g_fColorG/255.f;
 	Out.vColor.b += g_fColorB/255.f;
 	Out.vColor.a += g_fColorA/255.f;
+	return Out;
+}
+
+PS_OUT PS_CHIXIA(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_MyTexture.Sample(LinearSampler, In.vTexUV);
+
+	if(In.vTexUV.x > g_fChixia)
+	   discard;
+
+    // ÇÈ¼¿ »ö»óÀÌ Èò»öÀÌ ¾Æ´Ò °æ¿ì discard
+    //if (Out.vColor.xyz != float3(1.0, 1.0, 1.0))
+     // discard;
+	//if((Out.vColor.r < 0.8f)&&(Out.vColor.g < 0.8f)&&(Out.vColor.b < 0.8f))
+	//   discard;
+
+	Out.vColor.x += g_fColorR/255.f;
+	Out.vColor.y += g_fColorG/255.f;
+	Out.vColor.z += g_fColorB/255.f;
+	Out.vColor.w += g_fColorA/255.f;
+
+	if(Out.vColor.w < 0.5)
+	discard;
+
 	return Out;
 }
 
@@ -816,6 +843,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN2Scroll();
+	}
+
+			pass UI_CHIXIA // 23
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_CHIXIA();
 	}
 }
 	

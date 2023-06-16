@@ -73,6 +73,7 @@ private:
 	_float m_ShaderY = { 0.f };
 	_bool  m_bHolding = { false };
 	_vector vMousePos;
+	_int	Index = { 0 };
 public:
 	static CUI_TapT* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
@@ -91,13 +92,14 @@ private:
 	void	Load();
 
 private:
-	CUI_MainScreen* m_pUIMain = { nullptr };
-	CUI_Mouse*		m_pUIMouse = { nullptr };
-	CRenderer*		m_pRenderer = { nullptr };
-	CShader*		m_pShader = { nullptr };
+	class CPlayerState*			m_pPlayerStateClass = { nullptr };
+	CUI_MainScreen*				m_pUIMain = { nullptr };
+	CUI_Mouse*					m_pUIMouse = { nullptr };
+	CRenderer*					m_pRenderer = { nullptr };
+	CShader*					m_pShader = { nullptr };
 
-	CVIBuffer_Rect* m_pVIBuffer = { nullptr }; // 생성, list푸시백용
-	CTexture*		m_pTexture = { nullptr };
+	CVIBuffer_Rect*				m_pVIBuffer = { nullptr }; // 생성, list푸시백용
+	CTexture*					m_pTexture = { nullptr };
 
 	vector<TAPDESC*>		  m_DescList;
 

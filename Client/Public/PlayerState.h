@@ -233,6 +233,7 @@ public: // Set
 
 
 public:
+	void SetToolID(_int CurToolID) { m_PlayerState.iCurToolID = CurToolID; }
 	_uint* GetFoodIconID() { return m_iFoodIconID; };
 	_float* GetFoodDutation() { return m_fFoodBuffTimeAcc; }
 	_bool IsActivateFoodBuff(FOOD_BUFF eFoodType) { return m_bFoodBuff[eFoodType]; }

@@ -103,7 +103,7 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			m_DefaultIconRB[i].y = m_TerrainRB.y;
 		}
 
-		//
+		//미니맵아이콘
 		for (auto& pDesc : m_IconDescList)
 		{
 			_vector vPlayerPos, vWorldPos;
@@ -113,9 +113,11 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			_float Y = XMVectorGetZ(vPlayerPos - vWorldPos);
 			_float Dist = XMVectorGetX(XMVector4Length(vPlayerPos - vWorldPos));
 
-			if ((190.f <= Dist) || ((_int)pDesc.IconLU.x == -1))
+			//if ((190.f <= Dist) || ((_int)pDesc.IconLU.x == -1))
+			if (190.f <= Dist)
 				pDesc.bRender = false;
-			if ((190.f > Dist) && ((_int)pDesc.IconLU.x != -1))
+			//if ((190.f > Dist) && ((_int)pDesc.IconLU.x != -1))
+			if (190.f > Dist)
 				pDesc.bRender = true;
 
 			XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)
@@ -287,7 +289,7 @@ HRESULT CUI_Minimap::Render()
 		//메인화면아이콘
 		for (auto& Desc : m_DescList)
 		{
-			if ((true == Desc.bRender) && (Desc.Dist > 50.f) && (Desc.Dist < 250.f))
+			if ((true == Desc.bRender) && (Desc.Dist > 50.f) && (Desc.Dist < 150.f))
 			{
 				if (FAILED(Setup_ShaderResourcesIcons(&Desc)))
 					return E_FAIL;
@@ -342,22 +344,17 @@ HRESULT CUI_Minimap::Add_Components()
 
 void CUI_Minimap::OtherobjIsActive()
 {
-	if ((nullptr == m_pTerminalUI) || (nullptr == m_pTip) || (nullptr == m_pUIMen) || (nullptr == m_pUISovi) || (nullptr == m_pUIPanhua) || (nullptr == m_pUICook))
-		return;
-	if (m_pTerminalUI->IsActive())
-		m_bRender = false;
-	else if (m_pTip->IsActive())
-		m_bRender = false;
-	else if (m_pUIMen->IsActive())
-		m_bRender = false;
-	else if (m_pUISovi->IsActive())
-		m_bRender = false;
-	else if (m_pUIPanhua->IsActive())
-		m_bRender = false; 
-	else if (m_pUICook->IsActive())
+	CGameMode* pGM = CGameMode::GetInstance();
+	if (pGM->GetMouseActive())
 		m_bRender = false;
 	else
 		m_bRender = true;
+
+	if (m_pTerminalUI != nullptr)
+	{
+		if (m_pTerminalUI->IsActive())
+			m_bRender = false;
+	}
 
 }
 
@@ -365,15 +362,22 @@ void CUI_Minimap::Set_ObjectPos(_int Index, _fvector vObjectPos)
 {
 	m_DescList[Index].vObjectPos = vObjectPos;
 }
-void CUI_Minimap::Set_Disable(_int Index)
+//void CUI_Minimap::Set_Disable(_int Index)
+//{
+//	// 오브젝트가 disable일 경우
+//	m_IconDescList[Index].IconLU.x = -1.f;//미니맵 아이콘
+//	m_DescList[Index].bRender = false; // 메인아이콘
+//}
+
+_bool CUI_Minimap::GetRenderState(_int Index)
 {
-	m_IconDescList[Index].IconLU.x = -1.f;
+	return m_IconDescList[Index].bRender;
 }
 
 void CUI_Minimap::SetRender(_int index, _bool bRender)
 {
-	m_IconDescList[index].bRender = bRender;
-	m_DescList[index].bRender = bRender;
+	m_IconDescList[index].bRender = bRender; //미니맵 아이콘
+	m_DescList[index].bRender = bRender; // 메인아이콘
 }
 
 _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
@@ -389,14 +393,50 @@ _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 	MiniMapDesc.fZ = XMVectorGetZ(vObjectPos);
 	MiniMapDesc.fHeight = 15.f;
 	MiniMapDesc.fWidth = 15.f;
-	if (44 == TextureNum)
+	switch (m_Num)
 	{
-		MiniMapDesc.iTexNum = 5;
+		case ICONNUM::MOSTER:
+		{
+			MiniMapDesc.iTexNum = 27;
+		}
+		break;
+		case ICONNUM::BOSS:
+		{
+			MiniMapDesc.iTexNum = 1;
+		}
+		break;
+		case ICONNUM::BOX:
+		{
+			MiniMapDesc.iTexNum = 35;
+		}
+		break;
+		case ICONNUM::ROBOT:
+		{
+			MiniMapDesc.iTexNum = 34;
+		}
+		break;
+		case ICONNUM::MERCHANTMEN:
+		{
+			MiniMapDesc.iTexNum = 25;
+		}
+		break;
+		case ICONNUM::SOUVENIR:
+		{
+			MiniMapDesc.iTexNum = 31;
+		}
+		break;
+		case ICONNUM::PANHUA:
+		{
+			MiniMapDesc.iTexNum = 32;
+		}
+		break;
+		case ICONNUM::POTAL:
+		{
+			MiniMapDesc.iTexNum = 9;
+		}
+		break;
 	}
-	if (45 == TextureNum)
-	{
-		MiniMapDesc.iTexNum = 35;
-	}
+	
 	XMStoreFloat4x4(&MiniMapDesc.WorldMatrix, WorldMat);
 	m_IconDescList.push_back(MiniMapDesc);
 
@@ -405,7 +445,7 @@ _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 	XMStoreFloat4x4(&fWorldMat, WorldMat);
 	ICONDESC Desc;
 	Desc.vObjectPos = vObjectPos;
-	Desc.TextureNum = TextureNum;
+	Desc.TextureNum = MiniMapDesc.iTexNum;
 	Desc.IconWorldMatrix = fWorldMat;
 	Desc.Index = Index;
 	m_DescList.push_back(Desc);

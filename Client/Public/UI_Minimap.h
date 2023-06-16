@@ -39,7 +39,7 @@ public:
 	}MAPDESC;
 
 public:
-	enum ICONNUM { ARROW, MISSION, MONSTER, BOX, ICONEND };
+	enum ICONNUM {MOSTER, BOSS, BOX, ROBOT, MERCHANTMEN, SOUVENIR, PANHUA, POTAL, ICONEND };
 
 	typedef struct tagIconDesc
 	{
@@ -81,8 +81,9 @@ public:
 
 public:
 	void Set_ObjectPos(_int Index, _fvector vObjectPos);
-	void Set_Disable(_int Index);
-	void SetRender(_int index, _bool bRender);
+	//void Set_Disable(_int Index);
+	_bool GetRenderState(_int Index); // 미니맵 아이콘만 리턴
+	void SetRender(_int index, _bool bRender); //미니맵, 메인아이콘 둘다 on
 	_int Add_Icon(_fvector vObjectPos, _int	TextureNum);
 private:
 	void DecideRender();
@@ -90,7 +91,7 @@ private:
 
 
 private:
-	_int m_Num = { 0 };
+	_int m_Num = { 0 }; // 미니맵 오브젝트 아이콘 enum
 	//미니맵 기능
 	_bool m_bNull = { true };
 	_bool	m_bRender = { true }; // 전체 랜더onoff

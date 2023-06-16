@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "UI_MainScreen.h"
 #include "UI_Mouse.h"
+#include "PlayerState.h"
 
 CUI_TapT::CUI_TapT(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -58,7 +59,7 @@ void CUI_TapT::Start()
 	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
 	m_pUIMain = static_cast<CUI_MainScreen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));
 	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
-
+	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 }
 
 void CUI_TapT::Tick(_double TimeDelta)
@@ -82,26 +83,38 @@ void CUI_TapT::Tick(_double TimeDelta)
 			{
 				if (true == m_DescList[i]->OnRect)
 				{
-					m_DescList[1]->iTexNum = m_DescList[i]->iTexNum;
+					m_DescList[i + 6]->OnRect = true;
+					m_bHolding = true;
+					Index = i;
 				}
-
+			}
+			if ((true == m_bHolding) && (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::HOLD))
+			{
+				m_DescList[Index]->fX = m_pUIMouse->Get_MousePos().x;
+				m_DescList[Index]->fY = m_pUIMouse->Get_MousePos().y;
+			}
 
 				_float Dist = Distance(vMousePos, XMLoadFloat3(&_float3{ 0.f, 0.f, 0.f }));
-				if ((Dist < 110.f) && (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::HOLD))
+				if ((true == m_bHolding) && (Dist < 110.f) && (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::AWAY))
 				{
-					m_bHolding = true;
-				}
-
-				if ((true == m_bHolding) && (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::AWAY))
-				{
+					m_DescList[1]->iTexNum = m_DescList[Index]->iTexNum;
+					m_DescList[Index]->fX = m_DescList[Index]->OriPos.x;
+					m_DescList[Index]->fY = m_DescList[Index]->OriPos.y;
 					m_bHolding = false;
 					_int Texindex = m_DescList[1]->iTexNum;
 					// 포인터 저장해놓고 쓰기
 					m_pUIMain->Set_Texchange(Texindex);
-					m_DescList[i + 6]->OnRect = true;
-					break;
+					// 0 = TOOL_FIXHOOK, 1 = TOOL_LAVITATION, 2 = TOOL_SCANNER
+					if (170 == Texindex)
+					{
+						m_pPlayerStateClass->SetToolID(CPlayerState::TOOL_FIXHOOK);
+					}
+					if (173 == Texindex)
+					{
+						m_pPlayerStateClass->SetToolID(CPlayerState::TOOL_SCANNER);
+					}
 				}
-			}
+			
 		}
 
 	}

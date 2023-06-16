@@ -78,7 +78,8 @@ void CInvisible_Chest::Start()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, TEXT("Inventory")));
-	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 45);
+	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::BOX);
+	m_pUIIcon->SetRender(m_UIIndex, false); // 보이지 않는 박스 -> 미니맵, 메인에 뜨는 미니 아이콘 랜더off
 }
 
 void CInvisible_Chest::PreTick(_double TimeDelta)
@@ -281,7 +282,7 @@ void CInvisible_Chest::Visivle_Tick(_double TimeDelta)
 				CEffect* pOpenEffect = pGameInstance->Get_Effect(L"Get_Item_Effect_02", EFFECT_ID::COMON);
 				pOpenEffect->Play_Effect(&matrix);
 
-				m_pUIIcon->Set_Disable(m_UIIndex);
+				m_pUIIcon->SetRender(m_UIIndex, false);
 			}
 		}
 		else
@@ -334,8 +335,11 @@ void CInvisible_Chest::Visivle_Tick(_double TimeDelta)
 		}
 	}
 
-	if ((nullptr != m_pUIIcon) && (false == this->IsDisable()))
+	if ((nullptr != m_pUIIcon) && (true == this->IsActive()))
 	{
+		if(false ==m_pUIIcon->GetRenderState(m_UIIndex)) // 보이기 시작하면 미니맵 랜더on
+			m_pUIIcon->SetRender(m_UIIndex, true);
+
 		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
 		m_pUIIcon->SetRender(m_UIIndex, true);
 	}

@@ -21,6 +21,7 @@ private:
 public:
 	virtual HRESULT	Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
+	virtual void Start();
 	virtual void Tick(_double TimeDelta);
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render();
@@ -42,7 +43,9 @@ private:
 	_bool		m_bHit[4];
 
 	CCollider*  m_pCollider[4] = { nullptr };
-	
+
+	class CUI_Minimap* m_pUIIcon = nullptr;
+	_int	m_UIIndex = { 0 };
 protected:
 	HRESULT Add_Components();
 

@@ -107,6 +107,7 @@ private:
 	void	OnRender(_double TimeDelta);
 	void	Counting();
 	void	SetStaticSkillCoolTime();
+	void	SetStaticToolCoolTime();
 	void	SetCurCoolTime();
 	void	SetCurCoolRadian();
 	void	SetPlayer();
@@ -125,13 +126,15 @@ private:
 	void	E(_double TimeDelta);
 	void	Q(_double TimeDelta);
 	void	R(_double TimeDelta);
+	void	PlayerTag(_double TimeDelta);
 
 
 	void	AlphaM(CUTRECT* pDesc, _double TimeDelta);
 	void	AlphaP(CUTRECT* pDesc, _double TimeDelta);
 
 	void	CoolTimeEnd(_double TimeDelta);
-	_bool	CoolTime(CUTRECT* pDesc, _double TimeDelta);
+	void	PlayerTagoOn();
+	void	PlayerTagoOff();
 
 
 	_float	Distance(_fvector TargetPos, _fvector CurrentPos);
@@ -172,10 +175,11 @@ private:
 	_uint   m_iPass = { 1 };
 	_uint	m_HavePlayerNum = { 1 };
 	_uint	m_HadPlayerNum = { 1 };
-
+	ELEMENT m_eCurElement = { ELEMENT::ELMT_SPECTRA };
 	//플레이어 교대
 	_float CurTagCool = { 0.f }, MaxTagCool = { 0.f }, TagRadian = { 0.f };
-
+	_int CurPlayerLevel = { 0 };
+	_int iCurToolID = { 0 };
 	//Hp
 	_bool m_bHit = { false };
 	_bool m_bRedStart = { false };
@@ -189,7 +193,7 @@ private:
 
 	//쿨타임
 	_bool  Coolend = { false };
-	_bool  bTEnd = { false }, bEEnd = { false }, bQEnd = { false }, bREnd = { false };
+	_bool  bTEnd = { false }, bEEnd = { false }, bQEnd = { false }, bREnd = { false }, bTagEnd = { false };
 	_float StaticHookCoolTime = { 0.f }, StaticLevitationCoolTime = { 0.f }, StaticScannerCoolTimel = { 0.f };
 	_float StaticESkillTime = { 0.f }, StaticQSkillTime = { 0.f }, StaticRSkillTime = { 0.f };
 	_float TCoolTime = { 0.f }, ECoolTime = { 0.f }, QCoolTime = { 0.f }, RCoolTime = { 0.f };

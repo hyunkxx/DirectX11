@@ -47,6 +47,7 @@ void CUI_Monster::Start()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	SetState(DISABLE);
 }
 
 void CUI_Monster::Tick(_double TimeDelta)
@@ -326,7 +327,7 @@ void	CUI_Monster::Damage(_float Damage)
 
 	if (0 == m_HitCount % 2)
 	{
-		pos = (_float)(pos * 1.3);
+		pos = (_float)(pos * 1.5);
 	}
 
 	if (0 != Damage1000)
@@ -337,8 +338,6 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc1000.Size = _float2{ 30.f, 30.f };
 		Desc1000.TextureNum = -Damage1000 + 33;
 		Desc1000.Color = fFontColor;
-		if (0 == m_HitCount / 2)
-			Desc1000.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc1000.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc1000);
 
@@ -348,8 +347,6 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc100.Size = _float2{ 30.f, 30.f };
 		Desc100.TextureNum = -Damage100 + 33;
 		Desc100.Color = fFontColor;
-		if (0 == m_HitCount / 2)
-			Desc100.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc100.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc100);
 
@@ -359,29 +356,25 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc10.Size = _float2{ 30.f, 30.f };
 		Desc10.TextureNum = -Damage10 + 33;
 		Desc10.Color = fFontColor;
-		if (0 == m_HitCount / 2)
-			Desc10.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc10.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc10);
 
 		DAMAGEDESC Desc1;
 		Desc1.HitCount = m_HitCount;
-		Desc1.Pos = _float3{ Desc1000.Pos.x + (45.f), Desc1000.Pos.y, 0.f };
+		Desc1.Pos = _float3{ Desc1000.Pos.x + (48.f), Desc1000.Pos.y, 0.f };
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
 		Desc1.Color = fFontColor;
-		if (0 == m_HitCount / 2)
-			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc1);
-		if (0 == m_HitCount / 3)
+		if (true == m_bCrit)
 		{
 			DAMAGEDESC Desc;
 			Desc.HitCount = m_HitCount;
 			Desc.Pos = _float3{ (Desc1000.Pos.x + Desc1.Pos.x) / 2.f, Desc1000.Pos.y , 0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };
+			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };;
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
@@ -396,8 +389,6 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc100.Size = _float2{ 30.f, 30.f };
 		Desc100.TextureNum = -Damage100 + 33;
 		Desc100.Color = fFontColor;
-		if (0 == m_HitCount / 3)
-			Desc100.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc100.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc100);
 
@@ -407,29 +398,25 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc10.Size = _float2{ 30.f, 30.f };
 		Desc10.TextureNum = -Damage10 + 33;
 		Desc10.Color = fFontColor;
-		if (0 == m_HitCount / 3)
-			Desc10.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc10.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc10);
 
 		DAMAGEDESC Desc1;
 		Desc1.HitCount = m_HitCount;
-		Desc1.Pos = _float3{ Desc100.Pos.x + (30.f), Desc100.Pos.y, 0.f };
+		Desc1.Pos = _float3{ Desc100.Pos.x + (33.f), Desc100.Pos.y, 0.f };
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
 		Desc1.Color = fFontColor;
-		if (0 == m_HitCount / 3)
-			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
 		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc1);
-		if (0 == m_HitCount / 3)
+		if (true == m_bCrit)
 		{
 			DAMAGEDESC Desc;
 			Desc.HitCount = m_HitCount;
 			Desc.Pos = _float3{ (Desc100.Pos.x + Desc1.Pos.x) / 2.f, Desc100.Pos.y, 0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = fFontColor;
+			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };;
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
@@ -442,30 +429,26 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc10.Pos = _float3{ m_DescList[0].fX + pos, m_DescList[0].fY + pos, 0.f };
 		Desc10.Size = _float2{ 30.f, 30.f };
 		Desc10.TextureNum = -Damage10 + 33;
-		Desc10.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (0 == m_HitCount / 3)
-			Desc10.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		Desc10.Color = fFontColor;
 		XMStoreFloat4x4(&Desc10.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc10);
 
 		DAMAGEDESC Desc1;
 		Desc1.HitCount = m_HitCount;
-		Desc1.Pos = _float3{ Desc10.Pos.x + (15.f), Desc10.Pos.y, 0.f };
+		Desc1.Pos = _float3{ Desc10.Pos.x + (18.f), Desc10.Pos.y, 0.f };
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
-		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (0 == m_HitCount / 3)
-			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		Desc1.Color = fFontColor;
 		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc1);
-		if (0 == m_HitCount / 3)
+		if (true == m_bCrit)
 		{
 			DAMAGEDESC Desc;
 			Desc.HitCount = m_HitCount;
 			Desc.Pos = _float3{ (Desc10.Pos.x + Desc1.Pos.x) / 2.f,Desc10.Pos.y,0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };
+			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };;
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
@@ -478,19 +461,17 @@ void	CUI_Monster::Damage(_float Damage)
 		Desc1.Pos = _float3{ m_DescList[0].fX + pos, m_DescList[0].fY + pos, 0.f };
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
-		Desc1.Color = _float4{ 0.f, 0.f,0.f,0.f };
-		if (0 == m_HitCount / 2)
-			Desc1.Color = _float4{ -10.f, -7.f, -90.f, 0.f };
+		Desc1.Color = fFontColor;
 		XMStoreFloat4x4(&Desc1.WorldMat, XMMatrixIdentity());
 		DamageList.push_back(Desc1);
-		if (0 == m_HitCount / 3)
+		if (true == m_bCrit)
 		{
 			DAMAGEDESC Desc;
 			Desc.HitCount = m_HitCount;
 			Desc.Pos = _float3{ Desc1.Pos.x, Desc1.Pos.y ,0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };
+			Desc.Color = fFontColor;
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
@@ -500,25 +481,31 @@ void	CUI_Monster::Damage(_float Damage)
 
 void CUI_Monster::FontColor()
 {
-	switch (m_pPlayerStateClass->Get_MainCharacterState()->eElement)
+	if (true == m_bCrit)
 	{
-	case ELEMENT::ELMT_SPECTRA:
+		switch (m_pPlayerStateClass->Get_MainCharacterState()->eElement)
+		{
+		case ELEMENT::ELMT_SPECTRA:
+		{
+			fFontColor = _float4(214.959f, 208.637f, 126.347f, 0.f);
+		}
+		break;
+		case ELEMENT::ELMT_CONDUCTO:
+		{
+			fFontColor = _float4(107.f, 234.f, 219.f, 0.f);
+		}
+		break;
+		case ELEMENT::ELMT_FUSION:
+		{
+			fFontColor = _float4(158.058f, -255.f, -231.818f, 0.f);
+		}
+		break;
+		}
+	}
+	else
 	{
-		fFontColor = _float4(214.959f , 208.637f , 126.347f , 0.f );
+		fFontColor =  _float4( 255.f, 255.f, 255.f, 0.f);
 	}
-	break;
-	case ELEMENT::ELMT_CONDUCTO:
-	{
-		fFontColor = _float4( 107.f, 234.f, 219.f, 0.f );
-	}
-	break;
-	case ELEMENT::ELMT_FUSION:
-	{
-		fFontColor = _float4(158.058f, -255.f, -231.818f, 0.f);
-	}
-	break;
-	}
-
 }
 HRESULT CUI_Monster::Add_Components()
 {
