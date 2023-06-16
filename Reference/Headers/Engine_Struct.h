@@ -459,8 +459,6 @@ namespace Engine
 
 		const _tchar*	pEditionFilePath = { L"" };
 
-		const _tchar*	pMonsterLayerTag = { L"" };
-
 	}TRIGGER_DESC;
 
 	typedef struct tagSpawnPoint {

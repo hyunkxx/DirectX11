@@ -63,16 +63,6 @@ void CTrigger::Start()
 		MSG_BOX("Failed to Find GameObject In Trigger : CharacterState");
 		return;
 	}
-
-	if (nullptr != m_TriggerDesc.pMonsterLayerTag)
-	{
-		m_pLayer = pGameInstance->Find_Layer(LEVEL_ANYWHERE, m_TriggerDesc.pMonsterLayerTag);
-		if (nullptr == m_pLayer)
-		{
-			MSG_BOX("Failed to Find Layer In Trigger : MonterLayer");
-			return;
-		}
-	}
 }
 
 void CTrigger::PreTick(_double TimeDelta)
@@ -258,21 +248,19 @@ void CTrigger::Trigger_Spawn_Forest_0()
 	m_IsOnlyOneTrigger = true;
 
 	// 트리거 발동 시 4마리 활성화
-	for (auto iter = m_pLayer->m_GameObjects.begin(); iter != m_pLayer->m_GameObjects.end(); ++iter)
+	for (auto& pMonster : m_pMonsters)
 	{
-		if (m_iMonsterSpawnLimitCount > m_iSpawnMonsterIndex )
+		if (m_iMonsterSpawnLimitCount <= m_iSpawnMonsterIndex)
+			return;
+		if (nullptr != pMonster)
 		{
-			if (nullptr != iter->second)
+			if (pMonster->IsDisable())
 			{
-				if (iter->second->IsDisable())
-				{
-					static_cast<CCharacter*>(iter->second)->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+				pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+				Add_SpawnPoint();
 
-					Add_SpawnPoint();
-
-					m_iSpawnMonsterIndex++;
-					m_iCurrentSpawnMonsterCount++;
-				}
+				m_iSpawnMonsterIndex++;
+				m_iCurrentSpawnMonsterCount++;
 			}
 		}
 	}
@@ -284,21 +272,19 @@ void CTrigger::Trigger_Spawn_Forest_1()
 	m_IsOnlyOneTrigger = true;
 
 	// 트리거 발동 시 4마리 활성화
-	for (auto iter = m_pLayer->m_GameObjects.begin(); iter != m_pLayer->m_GameObjects.end(); ++iter)
+	for (auto& pMonster : m_pMonsters)
 	{
-		if (m_iMonsterSpawnLimitCount > m_iSpawnMonsterIndex)
+		if (m_iMonsterSpawnLimitCount <= m_iSpawnMonsterIndex)
+			return;
+		if (nullptr != pMonster)
 		{
-			if (nullptr != iter->second)
+			if (pMonster->IsDisable())
 			{
-				if (iter->second->IsDisable())
-				{
-					static_cast<CCharacter*>(iter->second)->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+				pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+				Add_SpawnPoint();
 
-					Add_SpawnPoint();
-
-					m_iSpawnMonsterIndex++;
-					m_iCurrentSpawnMonsterCount++;
-				}
+				m_iSpawnMonsterIndex++;
+				m_iCurrentSpawnMonsterCount++;
 			}
 		}
 	}
@@ -310,21 +296,19 @@ void CTrigger::Trigger_Spawn_Forest_2()
 	m_IsOnlyOneTrigger = true;
 
 	// 트리거 발동 시 4마리 활성화
-	for (auto iter = m_pLayer->m_GameObjects.begin(); iter != m_pLayer->m_GameObjects.end(); ++iter)
+	for (auto& pMonster : m_pMonsters)
 	{
-		if (m_iMonsterSpawnLimitCount > m_iSpawnMonsterIndex)
+		if (m_iMonsterSpawnLimitCount <= m_iSpawnMonsterIndex)
+			return;
+		if (nullptr != pMonster)
 		{
-			if (nullptr != iter->second)
+			if (pMonster->IsDisable())
 			{
-				if (iter->second->IsDisable())
-				{
-					static_cast<CCharacter*>(iter->second)->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+				pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+				Add_SpawnPoint();
 
-					Add_SpawnPoint();
-
-					m_iSpawnMonsterIndex++;
-					m_iCurrentSpawnMonsterCount++;
-				}
+				m_iSpawnMonsterIndex++;
+				m_iCurrentSpawnMonsterCount++;
 			}
 		}
 	}
@@ -336,21 +320,19 @@ void CTrigger::Trigger_Spawn_Forest_3()
 	m_IsOnlyOneTrigger = true;
 
 	// 트리거 발동 시 4마리 활성화
-	for (auto iter = m_pLayer->m_GameObjects.begin(); iter != m_pLayer->m_GameObjects.end(); ++iter)
+	for (auto& pMonster : m_pMonsters)
 	{
-		if (m_iMonsterSpawnLimitCount > m_iSpawnMonsterIndex)
+		if (m_iMonsterSpawnLimitCount <= m_iSpawnMonsterIndex)
+			return;
+		if (nullptr != pMonster)
 		{
-			if (nullptr != iter->second)
+			if (pMonster->IsDisable())
 			{
-				if (iter->second->IsDisable())
-				{
-					static_cast<CCharacter*>(iter->second)->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+				pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+				Add_SpawnPoint();
 
-					Add_SpawnPoint();
-
-					m_iSpawnMonsterIndex++;
-					m_iCurrentSpawnMonsterCount++;
-				}
+				m_iSpawnMonsterIndex++;
+				m_iCurrentSpawnMonsterCount++;
 			}
 		}
 	}
@@ -396,7 +378,7 @@ void CTrigger::Monster_Spawn()
 {
 	Check_ActiveMonster();
 
-	for (auto iter = m_pLayer->m_GameObjects.begin(); iter != m_pLayer->m_GameObjects.end(); ++iter)
+	for (auto& pMonster : m_pMonsters)
 	{
 		// 최대 개체 수가 되었을경우 스폰 중단.
 		if (m_iMaxSpawnMonsterIndex <= m_iSpawnMonsterIndex)
@@ -409,11 +391,11 @@ void CTrigger::Monster_Spawn()
 		// 몬스터가 비활성화 -> 죽으면 다시 스폰 후 인덱스 증가.
 		if (m_iMonsterSpawnLimitCount > m_iCurrentSpawnMonsterCount)
 		{
-			if (nullptr != iter->second)
+			if (nullptr != pMonster)
 			{
-				if (iter->second->IsDisable())
+				if (pMonster->IsDisable())
 				{
-					static_cast<CCharacter*>(iter->second)->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+					pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
 
 					Add_SpawnPoint();
 
@@ -427,16 +409,29 @@ void CTrigger::Monster_Spawn()
 void CTrigger::Check_ActiveMonster()
 {
 	m_iCurrentSpawnMonsterCount = 0;
-	for (auto iter = m_pLayer->m_GameObjects.begin(); iter != m_pLayer->m_GameObjects.end(); ++iter)
+	for (auto& pMonster : m_pMonsters)
 	{
-		// 몬스터가 비활성화 -> 죽으면 다시 스폰 후 인덱스 증가.
-
-		if (nullptr != iter->second)
+		if (nullptr != pMonster)
 		{
-			if (iter->second->IsActive())
+			if (pMonster->IsActive())
 				m_iCurrentSpawnMonsterCount++;
 		}
 	}
+}
+
+void CTrigger::Link_Monster(CCharacter * pCharacter)
+{
+	if (nullptr == pCharacter)
+		return;
+
+	m_pMonsters.push_back(pCharacter);
+}
+
+void CTrigger::ClearLink_Monster()
+{
+	for (auto& pMonster : m_pMonsters)
+		Safe_Release(pMonster);
+	m_pMonsters.clear();
 }
 
 HRESULT CTrigger::Load_SpawnPoint()
@@ -560,4 +555,6 @@ void CTrigger::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
+
+	ClearLink_Monster();
 }

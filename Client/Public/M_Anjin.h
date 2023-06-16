@@ -134,6 +134,7 @@ public:
 	virtual void Regen()
 	{
 		Set_State(ACTIVE);
+		//m_playerstate
 		Shot_DissolveKey(1, 1.5f);
 		m_pHitCollider->SetActive(true);
 		m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;

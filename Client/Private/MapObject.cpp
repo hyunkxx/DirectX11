@@ -534,7 +534,7 @@ void CMapObject::Load_SubEditionColor_Mask(HANDLE& _hFile, DWORD& _dwByte)
 
 void CMapObject::SetUp_Random_Shake()
 {
-	// 초기 랜덤 값으로 세팅.wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+	// 초기 랜덤 값으로 세팅.
 	m_EditionDesc.fShakePower = m_EditionDesc.fShakePower * fabsf(sinf(_float(rand()))) * m_EditionDesc.fShakePower;
 	m_EditionDesc.fShakeRange_Ratio = m_EditionDesc.fShakeRange_Ratio * fabsf(sinf(_float(rand()))) * m_EditionDesc.fShakeRange_Ratio;
 }

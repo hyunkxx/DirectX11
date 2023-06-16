@@ -164,8 +164,8 @@ void CCharacter::SetUp_Activate(SPAWN_POINT SpawnPoint)
 
 	if (true == IsDisable())
 	{
+		Regen();
 		Set_InitPos(XMLoadFloat3(&SpawnPoint.vP), SpawnPoint.iCellIndex);
-		SetState(STATE::ACTIVE);
 	}
 }
 

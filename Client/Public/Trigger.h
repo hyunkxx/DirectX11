@@ -129,17 +129,19 @@ private:
 	// 진행중인 몬스터 스폰 인덱스 -> Max 가 되면 스폰 중단.
 	_uint						m_iSpawnMonsterIndex = { 0 };
 	// 한 스폰지점에서의 총 스폰 몬스터 마리수
-	//const _uint&				m_iMaxSpawnMonsterIndex = { 8 };
-	const _uint&				m_iMaxSpawnMonsterIndex = { 4 };
+	const _uint&				m_iMaxSpawnMonsterIndex = { 8 };
+	//const _uint&				m_iMaxSpawnMonsterIndex = { 4 };
 
 	// 현재 소환된 마리수 체크
 	_uint						m_iCurrentSpawnMonsterCount = { 0 };
 	// 몬스터 스폰 마리수 제한 ( 한번에 스폰 가능한 수 )
 	const _uint&				m_iMonsterSpawnLimitCount = { 4 };
 
-
-	// 몬스터 찾아올 레이어
-	CLayer*						m_pLayer = { nullptr };
+public:
+	void Link_Monster(CCharacter* pCharacter);
+	void ClearLink_Monster();
+private:
+	vector<CCharacter*>			m_pMonsters = { nullptr };
 
 public:
 	HRESULT Load_SpawnPoint();

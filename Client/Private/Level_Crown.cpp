@@ -2337,9 +2337,6 @@ HRESULT CLevel_Crown::Load_TriggerData(const _tchar * pDataFilePath, const _tcha
 	if (nullptr != pEditionFilePath)
 		TriggerDesc.pEditionFilePath = pEditionFilePath;
 
-	if (nullptr != pMonsterLayerTag)
-		TriggerDesc.pMonsterLayerTag = pMonsterLayerTag;
-
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CROWN, OBJECT::TRIGGER,
 		pLayerTag, szObjectTag, &TriggerDesc)))
 	{
