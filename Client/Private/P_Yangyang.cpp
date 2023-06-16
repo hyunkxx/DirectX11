@@ -1726,7 +1726,7 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 		case Client::CP_Yangyang::INPUT_ATTACK:
 			if (IS_SKILL_QTE == m_Scon.iCurState)
 				m_Scon.iNextState = IS_AIRATTACK_2_QTE_START;
-			if (m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] <= m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] || IS_SKILL_QTE == m_Scon.iCurState)
+			else if (m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] <= m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] || IS_SKILL_QTE == m_Scon.iCurState)
 				m_Scon.iNextState = IS_AIRATTACK_2_START;
 			else
 				m_Scon.iNextState = IS_AIRATTACK_1_START;
