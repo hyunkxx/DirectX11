@@ -211,12 +211,9 @@ void CP_Yangyang::Start()
 
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
-	m_pCamMovement->BindTransform(m_pMainTransform);
 	m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
-	m_pCamMovement->SetupBone(CCameraMovement::CAM_BANGSUN, m_pModelCom->Get_BonePtr(L"Bip001RFinger21"));
+	m_pCamMovement->SetupBone(CCameraMovement::CAM_YANGYANG, m_pModelCom->Get_BonePtr(L"WeaponProp02"));
 	m_pUIMain = static_cast<CUI_MainScreen*>(pGame->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));
-
-	m_pInven->AddItem(ITEM::GEM, 100);
 
 	if (false == m_bOnControl)
 		SetState(DISABLE);
@@ -524,7 +521,6 @@ HRESULT CP_Yangyang::Render()
 
 				m_pShaderCom->Begin(13);
 			}
-
 			else
 				m_pShaderCom->Begin(16);		//Burst
 		}
@@ -562,10 +558,10 @@ HRESULT CP_Yangyang::Render()
 		}
 
 		// Burst Rim
-		if (i != 5 && m_fBurstRim > 0.f)
+		if (m_fBurstRim > 0.f)
 		{
 			_float vRimPower = 10.f;
-			_float3 vColor = LEGEND_COLOR;
+			_float3 vColor = { 40.f / 255.f, 120.f / 255.f, 255.f / 255.f };
 			_float4 vRimColor = _float4(vColor.x, vColor.y, vColor.z, 1.f);
 			if (FAILED(m_pShaderCom->SetRawValue("g_RimPower", &vRimPower, sizeof(_float))))
 				return E_FAIL;
@@ -574,7 +570,18 @@ HRESULT CP_Yangyang::Render()
 			if (FAILED(m_pShaderCom->SetRawValue("g_fTimeAcc", &m_fBurstRim, sizeof(_float))))
 				return E_FAIL;
 
-			m_pShaderCom->Begin(8);
+			if (i == 6)
+			{
+				if (FAILED(m_pEyeBurstTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeBurstTexture")))
+					return E_FAIL;
+				if (FAILED(m_pEyeMaskTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeMaskTexture")))
+					return E_FAIL;
+
+				m_pShaderCom->Begin(16);
+			}
+			else
+				m_pShaderCom->Begin(8);
+
 			m_pModelCom->Render(i);
 		}
 	}
@@ -1688,8 +1695,8 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_Yangyang::INPUT_BURST:
-			if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] &&
-				m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] == m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST])
+			//if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] &&
+			//	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] == m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST])
 				m_Scon.iNextState = IS_BURST;
 			break;
 
@@ -2038,7 +2045,7 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 
 			//±Ã±Ø±â Ä«¸Þ¶ó ¸ð¼Ç ½ÇÇà
 			if (IS_BURST == m_Scon.iCurState)
-				m_pCamMovement->UseCamera(CCameraMovement::CAM_BANGSUN);
+				m_pCamMovement->UseCamera(CCameraMovement::CAM_YANGYANG);
 
 		}
 	}

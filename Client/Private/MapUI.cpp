@@ -106,13 +106,13 @@ HRESULT CMapUI::Initialize(void * pArg)
 	m_OrthoPreDesc.fWidth = 720.f * 0.4f;
 	m_OrthoPreDesc.fHeight = 360.f * 0.4f;
 	m_OrthoPreDesc.fX = (g_iWinSizeX >> 1) + (g_iWinSizeX >> 2);
-	m_OrthoPreDesc.fY = g_iWinSizeY - 245.f;
+	m_OrthoPreDesc.fY = g_iWinSizeY - 240.f;
 	CAppManager::ComputeOrtho(&m_OrthoPreDesc);
 
 	m_OrthoMapName.fWidth = 512.f * 0.65f;
 	m_OrthoMapName.fHeight = 64.f * 0.65f;
 	m_OrthoMapName.fX = (g_iWinSizeX >> 1) + (g_iWinSizeX >> 2);
-	m_OrthoMapName.fY = (g_iWinSizeY >> 1) - 175.f;
+	m_OrthoMapName.fY = (g_iWinSizeY >> 1) - 185.f;
 	CAppManager::ComputeOrtho(&m_OrthoMapName);
 
 	m_OrthoButton.fWidth = 200.f;
@@ -148,8 +148,27 @@ HRESULT CMapUI::Initialize(void * pArg)
 		CAppManager::ComputeOrtho(&m_OrthoCoinAmount[i]);
 	}
 
+	for (_uint i = 0; i < 8; ++i)
+	{
+		m_OrthoPayAmount[i].fWidth = 16.f  * 0.8f;
+		m_OrthoPayAmount[i].fHeight = 25.f * 0.8f;
+		m_OrthoPayAmount[i].fX = (g_iWinSizeX >> 1) + (g_iWinSizeX >> 2) - 120.f + (i * (15.f * 0.8f));
+		m_OrthoPayAmount[i].fY = g_iWinSizeY - 190.f;
+		CAppManager::ComputeOrtho(&m_OrthoPayAmount[i]);
+	}
+
+	m_OrthoPayIcon.fWidth = 40.f;
+	m_OrthoPayIcon.fHeight = 40.f;
+	m_OrthoPayIcon.fX = (g_iWinSizeX >> 1) + (g_iWinSizeX >> 2) - 140.f;
+	m_OrthoPayIcon.fY = g_iWinSizeY - 190.f;
+	CAppManager::ComputeOrtho(&m_OrthoPayIcon);
 
 #pragma endregion
+	ZeroMemory(m_iPay, sizeof m_iPay);
+	m_iPay[PAY_VALLEY]  = 5000;
+	m_iPay[PAY_CITY]	= 8000;
+	m_iPay[PAY_FOREST]  = 10000;
+	m_iPay[PAY_CROWN]   = 20000;
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	m_pPlayerState = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
@@ -266,6 +285,7 @@ void CMapUI::stateActive()
 
 void CMapUI::stateDisable()
 {
+	m_bActive = false;
 	m_bRender = false;
 }
 
@@ -311,7 +331,10 @@ void CMapUI::keyInput(_double TimeDelta)
 		if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			if (m_eLevel != VALLEY)
+			{
 				m_fElemAlpha[6] = 0.f;
+				m_fElemAlpha[7] = 0.f;
+			}
 
 			m_eLevel = VALLEY;
 		}
@@ -321,7 +344,10 @@ void CMapUI::keyInput(_double TimeDelta)
 		if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			if (m_eLevel != CITY)
+			{
 				m_fElemAlpha[6] = 0.f;
+				m_fElemAlpha[7] = 0.f;
+			}
 
 			m_eLevel = CITY;
 		}
@@ -331,7 +357,10 @@ void CMapUI::keyInput(_double TimeDelta)
 		if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			if (m_eLevel != FOREST)
+			{
 				m_fElemAlpha[6] = 0.f;
+				m_fElemAlpha[7] = 0.f;
+			}
 
 			m_eLevel = FOREST;
 		}
@@ -341,7 +370,10 @@ void CMapUI::keyInput(_double TimeDelta)
 		if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			if (m_eLevel != CROWN)
+			{
 				m_fElemAlpha[6] = 0.f;
+				m_fElemAlpha[7] = 0.f;
+			}
 
 			m_eLevel = CROWN;
 		}
@@ -357,7 +389,14 @@ void CMapUI::keyInput(_double TimeDelta)
 		{
 			if (m_eLevel != SELECT_END)
 			{
-				pGM->ReserveLevel((LEVEL_ID)m_eLevel);
+				_uint iOwnCoin = m_pInven->GetCoin();
+				if (iOwnCoin >= m_iPay[m_eLevel])
+				{
+					pGM->ReserveLevel((LEVEL_ID)m_eLevel);
+					m_pInven->DeleteCoin(m_iPay[m_eLevel]);
+					stateDisable();
+					m_pTerminal->ManualShutDown();
+				}
 			}
 		}
 	}
@@ -671,6 +710,32 @@ HRESULT CMapUI::mainRender()
 			return E_FAIL;
 		m_pShader->Begin(10);
 		m_pVIBuffer->Render();
+
+		string strNumber = to_string(m_iPay[m_eLevel]);
+		_uint iDigit = (_uint)strNumber.size();
+
+		
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoPayIcon.WorldMatrix)))
+			return E_FAIL;
+		if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::ITEM_TACTITE_COIN, m_pShader, "g_DiffuseTexture")))
+			return E_FAIL;
+		m_pShader->Begin(10);
+		m_pVIBuffer->Render();
+
+		for (_uint iIndex = 0; iIndex < iDigit; ++iIndex)
+		{
+			if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoPayAmount[iIndex].WorldMatrix)))
+				return E_FAIL;
+			if (FAILED(pGameInstance->SetupSRV(strNumber[iIndex] - '0', m_pShader, "g_DiffuseTexture")))
+				return E_FAIL;
+			m_pShader->Begin(10);
+			m_pVIBuffer->Render();
+		}
+
 	}
 
 	vColor3 = { 0.3f, 0.3f, 0.3f };
@@ -686,7 +751,7 @@ HRESULT CMapUI::mainRender()
 	m_pShader->Begin(13);
 	m_pVIBuffer->Render();
 
-	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[3], sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoCoinIcon.WorldMatrix)))
 		return E_FAIL;
@@ -697,12 +762,12 @@ HRESULT CMapUI::mainRender()
 
 	string strNumber = to_string(m_pInven->GetCoin());
 	_uint iDigit = (_uint)strNumber.size();
-	vColor3 = { 0.8f, 0.8f, 0.8f };
+	vColor3 = { 0.7f, 0.7f, 0.7f };
 	for (_uint i = 0; i < iDigit; ++i)
 	{
 		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor3, sizeof(_float3))))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[3], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoCoinAmount[i].WorldMatrix)))
 			return E_FAIL;

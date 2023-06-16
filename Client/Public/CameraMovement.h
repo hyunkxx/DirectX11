@@ -14,7 +14,7 @@ BEGIN(Client)
 class CCameraMovement final : public CGameObject
 {
 public:
-	enum CAM_TYPE { CAM_DYNAMIC, CAM_MAINPLAYER, CAM_UI, CAM_BANGSUN, CAM_END };
+	enum CAM_TYPE { CAM_DYNAMIC, CAM_MAINPLAYER, CAM_UI, CAM_BANGSUN, CAM_YANGYANG, CAM_CHIXIA, CAM_END };
 
 private:
 	CCameraMovement(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -32,8 +32,6 @@ public:
 
 public:
 	HRESULT BindCamera(CAM_TYPE eCamType, CCamera* pCamera);
-	HRESULT BindTransform(CTransform* pTransform);
-
 	HRESULT AddCamera(CAM_TYPE eCameraType, CCamera* pCamera);
 	void UseCamera(CAM_TYPE eCameraType);
 	void SetupBone(CAM_TYPE eCameraType, CBone* pBone);
@@ -76,9 +74,6 @@ public:
 	static CCameraMovement* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject * Clone(void * pArg = nullptr) override;
 	virtual void Free() override;
-
-private:
-	CTransform* m_pTargetTransform = nullptr;
 
 private:
 	CAM_TYPE m_eCurCamType = CAM_END;

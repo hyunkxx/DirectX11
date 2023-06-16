@@ -42,6 +42,7 @@
 #include "HuluUI.h"
 #include "TeamUI.h"
 #include "MapUI.h"
+#include "SettingUI.h"
 
 #include "UICharacter.h"
 #include "EchoSystem.h"
@@ -715,6 +716,10 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 	if (FAILED(Ready_Item_Data()))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::STATIC_CHARACTER_STATE,
+		CPlayerState::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::FLOOR, CFloor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
@@ -740,12 +745,16 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 		CActionCam::Create(m_pDevice, m_pContext, CCameraMovement::CAM_BANGSUN))))	
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::UI_CAM,
-		CUICam::Create(m_pDevice, m_pContext, CCameraMovement::CAM_UI))))
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ACTION_CAM_YANGYANG,
+		CActionCam::Create(m_pDevice, m_pContext, CCameraMovement::CAM_YANGYANG))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::STATIC_CHARACTER_STATE,
-		CPlayerState::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ACTION_CAM_CHIXIA,
+		CActionCam::Create(m_pDevice, m_pContext, CCameraMovement::CAM_CHIXIA))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::UI_CAM,
+		CUICam::Create(m_pDevice, m_pContext, CCameraMovement::CAM_UI))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::INTERACTION_OBJECT_BOMBER,
@@ -884,6 +893,9 @@ HRESULT CApplication::Ready_UI_Data()
 		CMapUI::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::UI_TERMINAL_SETTING,
+		CSettingUI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ECHO_SYSTEM,
 		CEchoSystem::Create(m_pDevice, m_pContext))))

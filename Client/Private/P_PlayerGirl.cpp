@@ -219,7 +219,6 @@ void CP_PlayerGirl::Start()
 #endif
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
-	m_pCamMovement->BindTransform(m_pMainTransform);
 	m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
 	m_pCamMovement->SetupBone(CCameraMovement::CAM_BANGSUN, m_pModelCom->Get_BonePtr(L"Bip001RFinger21"));
 	m_pUIMain = static_cast<CUI_MainScreen*>(pGame->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));

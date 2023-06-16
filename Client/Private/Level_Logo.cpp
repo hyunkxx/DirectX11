@@ -48,6 +48,9 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(pGameInstance->AddLight(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::STATIC_CHARACTER_STATE, L"StaticObject", L"CharacterState")))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
 
@@ -173,7 +176,13 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 		return E_FAIL;
 	
 	// Action Ä· »ý¼º : Action Cam ÀÚµ¿À¸·Î µî·ÏµÊ
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ACTION_CAM_BANGSUN, pLayerTag, L"ActionCam", &CameraDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ACTION_CAM_BANGSUN, pLayerTag, L"ActionCam_Rover", &CameraDesc)))
+		return E_FAIL;
+	// Action Ä· »ý¼º : Action Cam ÀÚµ¿À¸·Î µî·ÏµÊ
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ACTION_CAM_YANGYANG, pLayerTag, L"ActionCam_YangYang", &CameraDesc)))
+		return E_FAIL;
+	// Action Ä· »ý¼º : Action Cam ÀÚµ¿À¸·Î µî·ÏµÊ
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ACTION_CAM_CHIXIA, pLayerTag, L"ActionCam_Chixia", &CameraDesc)))
 		return E_FAIL;
 
 	CameraDesc.vEye = _float3(-1000.3f, 1.2f, -999.7f);
@@ -195,9 +204,6 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 HRESULT CLevel_Logo::Ready_Layer_Character(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::STATIC_CHARACTER_STATE, L"StaticObject", TEXT("CharacterState"))))
-		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, OBJECT::LOBBY_CHARACTER_LEFT, pLayerTag, L"LobbyCharacter_Left")))
 		return E_FAIL;

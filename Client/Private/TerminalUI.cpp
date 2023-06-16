@@ -551,6 +551,15 @@ void CTerminalUI::PushActiveUI(IActivate * pActivateUI)
 	m_pActivateList.top()->SetRender(true);
 }
 
+void CTerminalUI::ManualShutDown()
+{
+	while(!m_pActivateList.empty())
+		m_pActivateList.pop();
+
+	m_bSlotActive[0] = m_bActive[TERMINAL_MAINFRAME] = m_bMainActive = !m_bMainActive;
+	ShowCursor(m_bMainActive);
+}
+
 HRESULT CTerminalUI::addComponents()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
@@ -585,6 +594,9 @@ HRESULT CTerminalUI::addGameObjects()
 		return E_FAIL;
 
 	if (FAILED(pGI->Add_GameObjectEx(&m_pSlotUI[4], LEVEL_STATIC, OBJECT::UI_TERMINAL_MAP, L"Terminal_UI", L"MapUI", this)))
+		return E_FAIL;
+
+	if (FAILED(pGI->Add_GameObjectEx(&m_pSlotUI[5], LEVEL_STATIC, OBJECT::UI_TERMINAL_SETTING, L"Terminal_UI", L"SettingUI", this)))
 		return E_FAIL;
 
 	return S_OK;

@@ -66,33 +66,6 @@ HRESULT CCameraMovement::BindCamera(CAM_TYPE eCamType, CCamera * pCamera)
 	return S_OK;
 }
 
-HRESULT CCameraMovement::BindTransform(CTransform * pTransform)
-{
-	assert(pTransform);
-
-	if (!pTransform)
-		return E_FAIL;
-
-	m_pTargetTransform = pTransform;
-
-	for (size_t i = 0; i < CAM_END; ++i)
-	{
-		if (i == CAM_MAINPLAYER)
-			continue;
-
-		if (m_pCams[i] == nullptr)
-		{
-			continue;
-		}
-
-		IAttachTargetTransform* pAttachment = dynamic_cast<IAttachTargetTransform*>(m_pCams[i]);
-		if (pAttachment)
-			pAttachment->AttachTargetTransform(m_pTargetTransform);
-	}
-
-	return S_OK;
-}
-
 HRESULT CCameraMovement::AddCamera(CAM_TYPE eCameraType, CCamera * pCamera)
 {
  	if (!pCamera)

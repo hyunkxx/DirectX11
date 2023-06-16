@@ -202,26 +202,27 @@ PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
 		In.vNormal.xyz = vNormal;
 	}
 
-	if (true == g_IsUseGlow)
-	{
-
-	}
-
 	Out.vDiffuse = vMtrlDiffuse;
 
-	if (Out.vDiffuse.a < 0.1f)
+	if (true == g_IsUseGlow)
 	{
-		Out.vDiffuse.a = 0.0f;
-		Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 1.f);
+		if (Out.vDiffuse.a < 0.1f)
+		{
+			Out.vDiffuse.a = 0.0f;
+			Out.vGlow = float4(vMtrlDiffuse.xyz, 1.f);
+		}
 	}
-
-	//if (Out.vDiffuse.a < 0.1f)
-		//discard;
+	else
+	{
+		if (Out.vDiffuse.a < 0.1f)
+		{
+			Out.vDiffuse.a = 0.0f;
+			Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 1.f);
+		}
+	}
 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
-	//Out.vOutNormal = vector(0.f, 0.f, 0.f, 0.f);
-
 
 	return Out;
 }
@@ -241,15 +242,23 @@ PS_OUT_OUTLINE	PS_MAIN_FLOOR(PS_IN In)
 		In.vNormal.xyz = vNormal;
 	}
 
+	Out.vDiffuse = vMtrlDiffuse;
 	if (true == g_IsUseGlow)
 	{
-
+		if (Out.vDiffuse.a < 0.1f)
+		{
+			Out.vDiffuse.a = 0.0f;
+			Out.vGlow = Out.vDiffuse;
+		}
 	}
-
-	Out.vDiffuse = vMtrlDiffuse;
-
-	if (Out.vDiffuse.a < 0.1f)
-		Out.vDiffuse.a = 0.0f;
+	else
+	{
+		if (Out.vDiffuse.a < 0.1f)
+		{
+			Out.vDiffuse.a = 0.0f;
+			Out.vSpecGlow = Out.vDiffuse;
+		}
+	}
 
 	//if (Out.vDiffuse.a < 0.1f)
 	//discard;

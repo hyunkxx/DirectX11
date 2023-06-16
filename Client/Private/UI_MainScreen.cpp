@@ -32,10 +32,9 @@ CUI_MainScreen::CUI_MainScreen(const CUI_MainScreen& rhs)
 	, m_Mini2MaskNum2(rhs.m_Mini2MaskNum2)
 
 {
-	for (auto& Desc : rhs.m_CutDescList)
-	{
-		m_CutDescList.push_back(Desc);
-	}
+	m_CutDescList.clear();
+	for (auto Desc : rhs.m_CutDescList)
+		m_CutDescList.emplace_back(Desc);
 
 }
 
@@ -2340,19 +2339,21 @@ CGameObject* CUI_MainScreen::Clone(void* pArg)
 void CUI_MainScreen::Free()
 {
 	__super::Free();
+
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pTexFunc);
 	Safe_Release(m_pVIBuffer);
+
 	Safe_Release(m_pSubShader);
 
-	if (!m_bClone)
+	if (!IsClone())
 	{
 		for (auto& Desc : m_CutDescList)
 		{
-			delete Desc;
-			Desc = nullptr;
+			Safe_Delete(Desc);
 		}
+
 		m_CutDescList.clear();
 
 	}

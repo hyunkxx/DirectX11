@@ -47,6 +47,7 @@ public:
 	_bool IsActive() const { return m_bMainActive; }
 	_uint AddActiveCount() { m_iActiveUICount++; }
 	void PushActiveUI(struct IActivate* pActivateUI);
+	void ManualShutDown();
 
 private:
 	HRESULT addComponents();
@@ -59,7 +60,7 @@ private:
 	void smoothScaleup(TERMINAL_UI eTerminal, _double TimeDelta);
 	void activeSlot(_double TimeDelta);
 	_int getSlotTexture(SLOT_TEXTURE eType, _int iIndex);
-	
+
 private: // Render
 	HRESULT renderMainFrame();
 	HRESULT renderLeftPivot();

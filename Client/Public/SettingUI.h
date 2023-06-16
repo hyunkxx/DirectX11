@@ -13,15 +13,15 @@ END
 
 BEGIN(Client)
 
-class CMapUI final
+class CSettingUI final
 	: public CGameObject
 	, public IOnClick
 	, public IActivate
 {
 protected:
-	explicit CMapUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	explicit CMapUI(const CMapUI& rhs);
-	virtual ~CMapUI() = default;
+	explicit CSettingUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	explicit CSettingUI(const CSettingUI& rhs);
+	virtual ~CSettingUI() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -52,7 +52,7 @@ private:
 	HRESULT mainRender();
 
 public:
-	static CMapUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CSettingUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject * Clone(void * pArg = nullptr) override;
 	virtual void Free() override;
 
@@ -76,37 +76,6 @@ private:
 	enum { SMOOTH_MAX = 30 };
 	_float m_fElemAlpha[SMOOTH_MAX];
 	_bool m_bElemAlphaStart[SMOOTH_MAX];
-
-private:
-	ORTHO_DESC m_OrthoMap;
-	ORTHO_DESC m_OrthoTitle;
-
-	ORTHO_DESC m_OrthoValleyIcon;
-	ORTHO_DESC m_OrthoCityIcon;
-	ORTHO_DESC m_OrthoForestIcon;
-	ORTHO_DESC m_OrthoCrownIcon;
-
-	ORTHO_DESC m_OrthoPreView;
-	ORTHO_DESC m_OrthoPreDescBack;
-	ORTHO_DESC m_OrthoPreDesc;
-
-	ORTHO_DESC m_OrthoMapName;
-	ORTHO_DESC m_OrthoButton;
-	ORTHO_DESC m_OrthoButtonText;
-
-	ORTHO_DESC m_OrthoCoinBack;
-	ORTHO_DESC m_OrthoCoinIcon;
-	ORTHO_DESC m_OrthoCoinAmount[8];
-	ORTHO_DESC m_OrthoPayAmount[8];
-	ORTHO_DESC m_OrthoPayIcon;
-
-	_bool m_bButtonPush = false;
-
-	enum SELECT_LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, VALLEY, CITY, FOREST, CROWN, SELECT_END };
-	SELECT_LEVEL m_eLevel = SELECT_END;
-
-	enum { NO_USE0, NO_USE1, NO_USE2, PAY_VALLEY, PAY_CITY, PAY_FOREST, PAY_CROWN, PAY_END };
-	_uint m_iPay[PAY_END] = { 0, };
 
 private:
 	_bool m_bActive = false;

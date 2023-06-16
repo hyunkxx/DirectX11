@@ -40,6 +40,12 @@ public:
 private:
 	void RevertPrevCam(_double TimeDelta);
 	void actionInit_Bangsun();
+	void actionInit_Yangyang();
+	void actionInit_Chixia();
+
+	void actionLoop_Bangsung(_double TimeDelta);
+	void actionLoop_Yangyang(_double TimeDelta);
+	void actionLoop_Chixia(_double TimeDelta);
 
 public:
 	static CActionCam* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CCameraMovement::CAM_TYPE eActionType);
@@ -49,10 +55,10 @@ public:
 private:
 	CBone* m_pTargetBone = nullptr;
 	CTransform* m_pTargetTransform = nullptr;
-
 private:
 	CCameraMovement::CAM_TYPE m_eCamType;
 	CCameraMovement* m_pCamMovement = nullptr;
+	class CPlayerState* m_pPlayerState = nullptr;
 
 private:
 	// ¿¢¼ÇÄ· »óÅÂ
