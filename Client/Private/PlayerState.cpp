@@ -238,6 +238,7 @@ _bool CPlayerState::Change_ActiveCharacter(_uint iSubID)
 	{
 		m_pCharacter[m_CharSlot[SLOT_MAIN]]->Disappear_QTE(&pOriginTransform, &pTarget, &iCurrentCellID);
 		m_pCharacter[m_CharSlot[iSubID]]->Appear_QTE(pOriginTransform, pTarget, iCurrentCellID);
+		m_PlayerState.fCurQTEGauge -= 10.f;
 	}
 	else
 	{

@@ -1160,6 +1160,12 @@ void CM_Anjin::Free()
 {
 	__super::Free();
 
+	//if (m_bClone)
+	//{
+	//	for (_uint i = 0; i < MISS_END; ++i)
+	//		Safe_Release(m_MissilePools[i]);
+	//}
+
 
 	Safe_Release(m_pNaviCom);
 	Safe_Release(m_pModelCom);

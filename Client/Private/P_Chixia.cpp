@@ -1179,22 +1179,19 @@ void CP_Chixia::SetUp_State()
 		Set_WeaponUse(true);
 
 	// 쿨타임, 게이지 적용
-	if (true == m_tCurState.bApplyCoolTime)
-	{
-		if (IS_SKILL_01_B == m_Scon.iCurState ||
-			IS_SKILL_01_F == m_Scon.iCurState ||
-			IS_SKILL_03_B == m_Scon.iCurState ||
-			IS_SKILL_03_F == m_Scon.iCurState)
-			m_pCharacterState->fCurCooltime[CPlayerState::COOL_SKILL] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL];
-		else if (IS_BURST == m_Scon.iCurState)
-			m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST];
-		else if (SS_SUMMON == m_Scon.iCurState)
-			m_pCharacterState->fCurCooltime[CPlayerState::COOL_ECHO] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO];
-		else if (SS_FIXHOOK_END_UP == m_Scon.iCurState)
-			m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_FIXHOOK);
-		else if (SS_THROW_F == m_Scon.iCurState)
-			m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_LAVITATION);
-	}
+	if (IS_SKILL_01_B == m_Scon.iCurState ||
+		IS_SKILL_01_F == m_Scon.iCurState ||
+		IS_SKILL_03_B == m_Scon.iCurState ||
+		IS_SKILL_03_F == m_Scon.iCurState)
+		m_pCharacterState->fCurCooltime[CPlayerState::COOL_SKILL] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL];
+	else if (IS_BURST == m_Scon.iCurState)
+		m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST];
+	else if (SS_SUMMON == m_Scon.iCurState)
+		m_pCharacterState->fCurCooltime[CPlayerState::COOL_ECHO] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO];
+	else if (SS_FIXHOOK_END_UP == m_Scon.iCurState)
+		m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_FIXHOOK);
+	else if (SS_THROW_F == m_Scon.iCurState)
+		m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_LAVITATION);
 
 	// 게이지 차감
 	if (IS_BURST == m_Scon.iCurState)

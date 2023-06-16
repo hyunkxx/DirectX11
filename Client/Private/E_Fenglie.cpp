@@ -733,6 +733,8 @@ void CE_Fenglie::Free()
 	if (true == m_bClone)
 		Release_State();
 
+	Safe_Release(m_MissilePool);
+
 	Safe_Release(m_pNaviCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pMainTransform);
