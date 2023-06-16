@@ -69,12 +69,11 @@ HRESULT CLevel_City::Initialize()
 		for (auto& pMonster : pEchoLayer->m_GameObjects)
 			static_cast<CCharacter*>(pMonster.second)->Reload_Components();
 	}
-
-
+	
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
 	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
-
+	
 	pGM->ResetStaticShadowBake();
 
 	return S_OK;

@@ -121,6 +121,11 @@ private:
 	_double						m_EffectTime = { 0.0 };
 	_bool						m_OnlyOnePlay = { false };
 
+	_double						m_FadeStartTime = { 0.0 };
+	_double						m_FadeTime = { 0.0 };
+	_bool						m_IsFade = { false };
+
+
 public: /* For. Spawn Trigger */
 	// 스폰 포인트 증가 + 사이클 돌리기 ( 최대개수 도달시 0으로 초기화 )
 	void Add_SpawnPoint();

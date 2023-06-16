@@ -76,11 +76,14 @@ HRESULT CTrigger::Initialize(void* pArg)
 		break;
 	}
 
-	m_EffectTime = 5.0;
+	m_EffectTime = { 5.0 };
 
 	m_fFloating_Power = { 0.10f };
 
 	m_fFloating_Speed = { 2.0f };
+
+	m_FadeStartTime = { 3.0 };
+	m_FadeTime = { 2.0 };
 
 	return S_OK;
 }
@@ -402,6 +405,10 @@ void CTrigger::Trigger_Interact_Cook()
 
 void CTrigger::ShowEffect(_double TimeDelta)
 {
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return;
+
 	if (false == m_OnlyOnePlay)
 	{
 		m_pPotalEffect->Play_Effect(&m_WorldMatrix_Origin);
@@ -410,12 +417,19 @@ void CTrigger::ShowEffect(_double TimeDelta)
 
 	m_EffectTimeAcc += TimeDelta;
 
+	if (m_FadeStartTime <= m_EffectTimeAcc && false == m_IsFade)
+	{
+		pGameInstance->StartFade(CRenderSetting::FADE_OUT, m_FadeTime);
+		m_IsFade = true;
+	}
+
 	if (m_EffectTime <= m_EffectTimeAcc)
 	{
 		m_EffectTimeAcc = 0.0;
 		m_IsTriggerEffect = false;
 		m_IsTrigger = true;
 		m_OnlyOnePlay = false;
+		m_IsFade = false;
 	}
 }
 
