@@ -33,7 +33,7 @@ public:
 		_float2     AimPos;
 		_float2		OriPos;
 		_bool		bRender;
-
+		_float      Dist;
 		_float4x4	WorldMatrix;
 		_float4     ColorIcon;
 	}MAPDESC;

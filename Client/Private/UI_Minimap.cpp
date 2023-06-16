@@ -111,13 +111,13 @@ void CUI_Minimap::Tick(_double TimeDelta)
 			vPlayerPos = XMLoadFloat4(&fPlayerPos);
 			_float X = XMVectorGetX(vPlayerPos - vWorldPos);
 			_float Y = XMVectorGetZ(vPlayerPos - vWorldPos);
-			_float Dist = XMVectorGetX(XMVector4Length(vPlayerPos - vWorldPos));
+			pDesc.Dist = XMVectorGetX(XMVector4Length(vPlayerPos - vWorldPos));
 
 			//if ((190.f <= Dist) || ((_int)pDesc.IconLU.x == -1))
-			if (190.f <= Dist)
+			if (190.f <= pDesc.Dist)
 				pDesc.bRender = false;
 			//if ((190.f > Dist) && ((_int)pDesc.IconLU.x != -1))
-			if (190.f > Dist)
+			if (190.f > pDesc.Dist)
 				pDesc.bRender = true;
 
 			XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)
@@ -276,7 +276,7 @@ HRESULT CUI_Minimap::Render()
 		_uint Descindex = 0;
 		for (auto& Desc : m_IconDescList)
 		{
-			if (true == Desc.bRender)
+			if (true == Desc.bRender && 190.f > Desc.Dist)
 			{
 				if (FAILED(Setup_ShaderResourcesIcon(Descindex)))
 					return E_FAIL;
@@ -289,7 +289,7 @@ HRESULT CUI_Minimap::Render()
 		//메인화면아이콘
 		for (auto& Desc : m_DescList)
 		{
-			if ((true == Desc.bRender) && (Desc.Dist > 50.f) && (Desc.Dist < 150.f))
+			if (true == Desc.bRender && Desc.Dist > 50.f && Desc.Dist < 150.f)
 			{
 				if (FAILED(Setup_ShaderResourcesIcons(&Desc)))
 					return E_FAIL;
