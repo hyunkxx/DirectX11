@@ -20,6 +20,7 @@
 
 #include "UICharacter.h"
 #include "MapObject.h"
+#include "Trigger.h"
 
 #include "Item.h"
 
@@ -349,9 +350,10 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-	if (FAILED(Load_SpawnPoint(TEXT("../../Data/Crown/Trigger/Spawn_Crown_SpawnPoint.data"))))
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Crown/Trigger/Spawn_Crown.data"), TEXT("Trigger_Spawn_Crown"),
+		TEXT("layer_trigger"), TEXT("../../Data/Crown/Trigger/Spawn_Crown_SpawnPoint.data"))))
 	{
-		MSG_BOX("Spawn_Crown_SpawnPoint");
+		MSG_BOX("Trigger_Spawn_Crown");
 		return E_FAIL;
 	}
 
@@ -366,8 +368,16 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P3, pLayerTag, TEXT("Crownless_P3"))))
 		return E_FAIL;
 
-	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
+	//static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
+	static_cast<CCharacter*>(pChar)->Set_State(CCharacter::STATE::DISABLE);
 
+	CGameObject*		pGameObject = { nullptr };
+	pGameObject = pGameInstance->Find_GameObject(LEVEL_CROWN, TEXT("Trigger_Spawn_Crown"));
+	if (nullptr == pGameObject)
+		return E_FAIL;
+
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(static_cast<CCharacter*>(pChar))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -2285,24 +2295,10 @@ HRESULT CLevel_Crown::Ready_Layer_MapObject_Tof_Grass(const _tchar * pLayerTag)
 
 HRESULT CLevel_Crown::Ready_Layer_Trigger(const _tchar * pLayerTag)
 {
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Crown/Trigger/Potal_Forest.data"), TEXT("Trigger_Potal_Forest"), pLayerTag)))
-	{
-		MSG_BOX("Trigger_Potal_Forest");
-		return E_FAIL;
-	}
-
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Crown/Trigger/Spawn_Crown.data"), TEXT("Trigger_Spawn_Crown"), pLayerTag,
-		TEXT("../../Data/Crown/Trigger/Spawn_Crown_SpawnPoint.data"), TEXT("layer_monster"))))
-	{
-		MSG_BOX("Trigger_Spawn_Crown");
-		return E_FAIL;
-	}
-
 	return S_OK;
 }
 
-HRESULT CLevel_Crown::Load_TriggerData(const _tchar * pDataFilePath, const _tchar * pObjectTag, const _tchar * pLayerTag,
-	const _tchar* pEditionFilePath, const _tchar* pMonsterLayerTag)
+HRESULT CLevel_Crown::Load_TriggerData(const _tchar * pDataFilePath, const _tchar * pObjectTag, const _tchar * pLayerTag, const _tchar* pEditionFilePath)
 {
 	CGameInstance*			pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
@@ -2347,52 +2343,6 @@ HRESULT CLevel_Crown::Load_TriggerData(const _tchar * pDataFilePath, const _tcha
 	CloseHandle(hFile);
 
 	return S_OK;
-}
-
-HRESULT CLevel_Crown::Load_SpawnPoint(const _tchar * pDataFilePath)
-{
-	TEXT("../../Data/Crown/Trigger/Spawn_Crown_SpawnPoint.data");
-
-	HANDLE		hFile = CreateFile(pDataFilePath, GENERIC_READ, 0, 0,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-
-	if (INVALID_HANDLE_VALUE == hFile)
-	{
-		MSG_BOX("Failed to Load Data in CLevel_Crown : SpawnPoint");
-		return E_FAIL;
-	}
-
-	Clear_SpawnPoint();
-
-	DWORD		dwByte = 0;
-
-	SPAWN_POINT		SpawnPoint = {};
-	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
-
-	ReadFile(hFile, &m_iSpawnPointCount, sizeof(_uint), &dwByte, nullptr);
-
-	m_SpawnPoints.resize(m_iSpawnPointCount);
-
-	for (_uint i = 0; i < m_iSpawnPointCount; ++i)
-	{
-		ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
-
-		ReadFile(hFile, &SpawnPoint.vP, sizeof(_float3), &dwByte, nullptr);
-		ReadFile(hFile, &SpawnPoint.iCellIndex, sizeof(_uint), &dwByte, nullptr);
-
-		m_SpawnPoints[i].vP = SpawnPoint.vP;
-		m_SpawnPoints[i].iCellIndex = SpawnPoint.iCellIndex;
-	}
-
-	CloseHandle(hFile);
-
-	return S_OK;
-}
-
-void CLevel_Crown::Clear_SpawnPoint()
-{
-	m_iSpawnPointCount = 0;
-	m_SpawnPoints.clear();
 }
 
 CLevel_Crown* CLevel_Crown::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

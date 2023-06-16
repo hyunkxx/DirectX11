@@ -5,6 +5,7 @@
 #include "GameMode.h"
 
 #include "Character.h"
+#include "Effect.h"
 
 CTrigger::CTrigger(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -45,8 +46,41 @@ HRESULT CTrigger::Initialize(void* pArg)
 
 	SetUp_State();
 
-	if (TRIGGER_TYPE::TYPE_SPAWN == m_TriggerDesc.iTriggerType && nullptr != m_TriggerDesc.pEditionFilePath)
-		Load_SpawnPoint();
+	switch (m_TriggerDesc.iTriggerType)
+	{
+	case Client::CTrigger::TYPE_PORTAL:
+		m_pPotal = CGameInstance::GetInstance()->Get_Effect(L"Potal_Effect_01", EFFECT_ID::COMON);
+		m_pPotalEffect = CGameInstance::GetInstance()->Get_Effect(L"Potal_Effect_02", EFFECT_ID::COMON);
+
+		if (nullptr == m_pPotal || nullptr == m_pPotalEffect)
+			return E_FAIL;
+
+		ZeroMemory(&m_WorldMatrix_Origin, sizeof(_float4x4));
+		ZeroMemory(&m_WorldMatrix_Potal, sizeof(_float4x4));
+		m_WorldMatrix_Potal = m_WorldMatrix_Origin = m_pMainTransform->Get_WorldMatrix();
+		XMStoreFloat3(&m_vOrigin_Pos, m_pMainTransform->Get_State(CTransform::STATE::STATE_POSITION));
+		memcpy(&m_WorldMatrix_Potal.m[3], &m_vOrigin_Pos, sizeof(_float3));
+
+		m_pPotal->Play_Effect(&m_WorldMatrix_Potal, true);
+
+		break;
+	case Client::CTrigger::TYPE_SPAWN:
+		if (nullptr != m_TriggerDesc.pEditionFilePath)
+			Load_SpawnPoint();
+		break;
+	case Client::CTrigger::TYPE_INTERACT:
+		break;
+	case Client::CTrigger::TYPE_END:
+		break;
+	default:
+		break;
+	}
+
+	m_EffectTime = 5.0;
+
+	m_fFloating_Power = { 0.10f };
+
+	m_fFloating_Speed = { 2.0f };
 
 	return S_OK;
 }
@@ -73,65 +107,34 @@ void CTrigger::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	if (nullptr != m_pMainTransform)
-		m_vTriggerPos = m_pMainTransform->Get_State(CTransform::STATE::STATE_POSITION);
-	if (nullptr != m_pPlayerState)
-		m_vPlayerPos = m_pPlayerState->Get_ActiveCharacter()->Get_Position();
-	
-	m_fDistance = XMVectorGetX(XMVector3Length(m_vPlayerPos - m_vTriggerPos));
-
-	if (m_TriggerDesc.fRange >= m_fDistance)
-		m_IsInTrigger = true;
-	else
-		m_IsInTrigger = false;
+	Distance_Check();
 
 	if (true == m_IsInTrigger)
 		Trigger_Condition();
+
+	if (CTrigger::TRIGGER_TYPE::TYPE_PORTAL ==  m_TriggerDesc.iTriggerType)
+		Floating(TimeDelta);
 }
 
 void CTrigger::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
+	if (true == m_IsTriggerEffect)
+		ShowEffect(TimeDelta);
+
 	if (true == m_IsTrigger && false == m_IsOnlyOneTrigger)
 		Trigger_Process();
 
-	if (true == m_IsSpawnMonster)
-		Monster_Spawn();
-
-
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC, this);
+	if (TRIGGER_TYPE::TYPE_SPAWN == m_TriggerDesc.iTriggerType)
+	{
+		if (true == m_IsSpawnMonster)
+			Monster_Spawn();
+	}
 }
 
 HRESULT CTrigger::Render()
 {
-	if (FAILED(__super::Render()))
-		return E_FAIL;
-
-	if (FAILED(SetUp_ShaderResources()))
-		return E_FAIL;
-
-	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (_uint i = 0; i < iNumMeshes; ++i)
-	{
-		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
-			return E_FAIL;
-
-		// Model 중 NormalTextrue 가 없는 Model 은 m_IsNormalTex 이 false 가 되어서 노말맵 을 적용시키지 않음.
-		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsNormalTex)))
-			return E_FAIL;
-		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseNormalTex", &m_IsNormalTex, sizeof(_bool))))
-			return E_FAIL;
-
-		m_IsNormalTex = false;
-
-		m_pShaderCom->Begin(0);
-
-		m_pModelCom->Render(i);
-	}
-
 	return S_OK;
 }
 
@@ -141,6 +144,36 @@ void CTrigger::SetUp_State()
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vPos));
 	m_pMainTransform->Set_Scale(m_TriggerDesc.vS);
 	m_pMainTransform->SetRotationXYZ(m_TriggerDesc.vA);
+}
+
+void CTrigger::Distance_Check()
+{
+	if (nullptr != m_pMainTransform)
+		m_vTriggerPos = m_pMainTransform->Get_State(CTransform::STATE::STATE_POSITION);
+	if (nullptr != m_pPlayerState)
+		m_vPlayerPos = m_pPlayerState->Get_ActiveCharacter()->Get_Position();
+
+	m_fDistance = XMVectorGetX(XMVector3Length(m_vPlayerPos - m_vTriggerPos));
+
+	if (m_TriggerDesc.fRange >= m_fDistance)
+		m_IsInTrigger = true;
+	else
+		m_IsInTrigger = false;
+}
+
+void CTrigger::Floating(_double TimeDelta)
+{
+	m_fFloatingTimeAcc += (_float)TimeDelta;
+
+	_float fHeight = sinf(m_fFloatingTimeAcc) * m_fFloating_Power;
+
+	_vector		vP = m_pMainTransform->Get_State(CTransform::STATE::STATE_POSITION);
+
+	vP = vP + VECTOR_UP * fHeight * (_float)TimeDelta * m_fFloating_Speed;
+
+	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vP);
+
+	memcpy(&m_WorldMatrix_Potal.m[3], &vP, sizeof(_float3));
 }
 
 void CTrigger::Trigger_Condition()
@@ -155,7 +188,7 @@ void CTrigger::Trigger_Condition()
 	case CTrigger::TRIGGER_ID::ID_POTAL_FOREST:
 	case CTrigger::TRIGGER_ID::ID_POTAL_CROWN:
 		if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F))
-			m_IsTrigger = true;
+			m_IsTriggerEffect = true;
 		break;
 
 	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_0:
@@ -340,12 +373,50 @@ void CTrigger::Trigger_Spawn_Forest_3()
 
 void CTrigger::Trigger_Spawn_Crown()
 {
-	//MSG_BOX("Trigger : Trigger_Spawn_Crown");
+	m_IsOnlyOneTrigger = true;
+
+	for (auto& pMonster : m_pMonsters)
+	{
+		if (nullptr != pMonster)
+		{
+			if (pMonster->IsDisable())
+			{
+				pMonster->SetState(STATE::ACTIVE);
+				pMonster->Set_InitPos(XMLoadFloat3(&m_SpawnPoints[m_iSpawnPointIndex].vP), m_SpawnPoints[m_iSpawnPointIndex].iCellIndex);
+				//pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+				Add_SpawnPoint();
+
+				m_iSpawnMonsterIndex++;
+				m_iCurrentSpawnMonsterCount++;
+			}
+		}
+	}
+
+	Clear_MonsterSpawnControl();
 }
 
 void CTrigger::Trigger_Interact_Cook()
 {
 	//MSG_BOX("Trigger : Interact_Cook");
+}
+
+void CTrigger::ShowEffect(_double TimeDelta)
+{
+	if (false == m_OnlyOnePlay)
+	{
+		m_pPotalEffect->Play_Effect(&m_WorldMatrix_Origin);
+		m_OnlyOnePlay = true;
+	}
+
+	m_EffectTimeAcc += TimeDelta;
+
+	if (m_EffectTime <= m_EffectTimeAcc)
+	{
+		m_EffectTimeAcc = 0.0;
+		m_IsTriggerEffect = false;
+		m_IsTrigger = true;
+		m_OnlyOnePlay = false;
+	}
 }
 
 void CTrigger::Add_SpawnPoint()
@@ -419,12 +490,17 @@ void CTrigger::Check_ActiveMonster()
 	}
 }
 
-void CTrigger::Link_Monster(CCharacter * pCharacter)
+HRESULT CTrigger::Link_Monster(CCharacter * pCharacter)
 {
 	if (nullptr == pCharacter)
-		return;
+	{
+		MSG_BOX("Failed To Link Monster : CTrigger");
+		return E_FAIL;
+	}
 
 	m_pMonsters.push_back(pCharacter);
+
+	return S_OK;
 }
 
 void CTrigger::ClearLink_Monster()
@@ -472,11 +548,6 @@ HRESULT CTrigger::Load_SpawnPoint()
 
 HRESULT CTrigger::Add_Components()
 {
-	/* For.Com_Renderer*/
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::RENDERER,
-		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
-		return E_FAIL;
-
 	/* For.Com_Transform */
 	CTransform::TRANSFORM_DESC	TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof TransformDesc);
@@ -489,22 +560,13 @@ HRESULT CTrigger::Add_Components()
 		return E_FAIL;
 	m_pMainTransform->Set_Scale(_float3(1.0f, 1.0f, 1.0f));
 
-	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SMODEL::SMD_POTAL,
-		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-		return E_FAIL;
-
-	/* For.Com_Shader */ // MODEL_INSTANCE MODEL
-	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODEL,
-		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
 
 HRESULT CTrigger::SetUp_ShaderResources()
 {
+	/*
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -517,6 +579,7 @@ HRESULT CTrigger::SetUp_ShaderResources()
 
 	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
 		return E_FAIL;
+		*/
 
 	return S_OK;
 }
@@ -552,11 +615,9 @@ void CTrigger::Free()
 	__super::Free();
 
 	Safe_Release(m_pMainTransform);
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pRendererCom);
-
-	Safe_Release(m_pPlayerState);
 
 	ClearLink_Monster();
+
+	Safe_Release(m_pPotal);
+	Safe_Release(m_pPotalEffect);
 }

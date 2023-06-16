@@ -356,7 +356,6 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-
 	// 스폰 포인트 위치 : [ 0 ] : (산)오른쪽 위 , [ 1 ] : (산)왼쪽 위 , [ 2 ] : (들판)왼쪽 아래 , [ 3 ] : (크라운 전 방)오른쪽 아래
 	// 스폰 포인트 갯수 : [ 0 ] : 4 , [ 1 ] : 4 , [ 2 ] : 4 , [ 3 ] : 4 
 	
@@ -413,37 +412,53 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_0);
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_1);
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_2);
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_3);
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_0)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_1)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_2)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_3)))
+		return E_FAIL;
 
 	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_1"));
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_0);
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_1);
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_3);
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_4);
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_0)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_2)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_3)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_4)))
+		return E_FAIL;
 
 	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_2"));
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_0);
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_2);
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_3);
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_4);
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_0)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_1)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_3)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_4)))
+		return E_FAIL;
 
 	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_3"));
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_1);
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_2);
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_3);
-	static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_4);
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_1)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_2)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_3)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_4)))
+		return E_FAIL;
 
 	/*CGameObject* pChar = nullptr;
 
@@ -2426,12 +2441,6 @@ HRESULT CLevel_Forest::Ready_Layer_Trigger(const _tchar * pLayerTag)
 	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Potal_City.data"), TEXT("Trigger_Poatal_City"), pLayerTag)))
 	{
 		MSG_BOX("Trigger_Poatal_City");
-		return E_FAIL;
-	}
-
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Potal_Crown.data"), TEXT("Trigger_Potal_Crown"), pLayerTag)))
-	{
-		MSG_BOX("Trigger_Potal_Crown");
 		return E_FAIL;
 	}
 

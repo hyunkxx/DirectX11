@@ -45,13 +45,7 @@ private:
 
 private:
 	HRESULT Ready_Layer_Trigger(const _tchar* pLayerTag);
-	HRESULT Load_TriggerData(const _tchar* pDataFilePath, const _tchar* pObjectTag, const _tchar* pLayerTag,
-		const _tchar* pEditionFilePath = nullptr, const _tchar* pMonsterLayerTag = nullptr);
-
-private:
-	// 로드 -> 로드 하기전 스폰 포인트 정보를 초기화 후 로드 한 데이터에 맞게 세팅함.
-	HRESULT Load_SpawnPoint(const _tchar* pDataFilePath);
-	void Clear_SpawnPoint();
+	HRESULT Load_TriggerData(const _tchar* pDataFilePath, const _tchar* pObjectTag, const _tchar* pLayerTag, const _tchar* pEditionFilePath = nullptr);
 
 private:
 	// 스폰 포인트 총 갯수

@@ -7,12 +7,7 @@
 #include "Layer.h"
 
 BEGIN(Engine)
-class CRenderer;
-class CShader;
-class CModel;
-class CTexture;
-
-class CVIBuffer_PointBox;
+class CEffect;
 END
 
 BEGIN(Client)
@@ -63,6 +58,20 @@ public:
 
 public:
 	void SetUp_State();
+	void Distance_Check();
+
+	void Floating(_double TimeDelta);
+
+private:
+	_float4x4					m_WorldMatrix_Origin = {};
+	_float3						m_vOrigin_Pos = { 0.0f, 0.0f, 0.0f };
+
+	_float4x4					m_WorldMatrix_Potal = {};
+
+	_float						m_fFloatingTimeAcc = { 0.0 };
+
+	_float						m_fFloating_Power = { 0.0f };
+	_float						m_fFloating_Speed = { 0.0f };
 
 public:
 	// 트리거 종류 별로 발동 조건 구분 ( 키입력 )
@@ -70,7 +79,6 @@ public:
 
 	// 발동조건 충족후 트리거 종류별로 처리 구분. -> 처리 한뒤에 m_IsTrigger false 로 초기화.
 	void Trigger_Process(); 
-
 
 public: // 트리거 별 처리 함수
 	void Trigger_Potal_City();
@@ -84,7 +92,9 @@ public: // 트리거 별 처리 함수
 
 	void Trigger_Spawn_Crown();
 
-	void Trigger_Interact_Cook();
+	void Trigger_Interact_Cook();;
+
+	void ShowEffect(_double TimeDelta);
 
 private:
 	TRIGGER_DESC				m_TriggerDesc = {};
@@ -104,6 +114,12 @@ private:
 
 	// 한번만 트리거를 발동해야 할 때.
 	_bool						m_IsOnlyOneTrigger = { false };
+
+	// 트리거 이펙트 보여주고 작동시키기.
+	_bool						m_IsTriggerEffect = { false };
+	_double						m_EffectTimeAcc = { 0.0 };
+	_double						m_EffectTime = { 0.0 };
+	_bool						m_OnlyOnePlay = { false };
 
 public: /* For. Spawn Trigger */
 	// 스폰 포인트 증가 + 사이클 돌리기 ( 최대개수 도달시 0으로 초기화 )
@@ -138,7 +154,7 @@ private:
 	const _uint&				m_iMonsterSpawnLimitCount = { 4 };
 
 public:
-	void Link_Monster(CCharacter* pCharacter);
+	HRESULT Link_Monster(CCharacter* pCharacter);
 	void ClearLink_Monster();
 private:
 	vector<CCharacter*>			m_pMonsters = { nullptr };
@@ -147,11 +163,10 @@ public:
 	HRESULT Load_SpawnPoint();
 
 private:
-	CRenderer*					m_pRendererCom = { nullptr };
-	CShader*					m_pShaderCom = { nullptr };
-	CModel*						m_pModelCom = { nullptr };
-
 	CPlayerState*				m_pPlayerState = { nullptr };
+
+	CEffect*					m_pPotal = { nullptr };
+	CEffect*					m_pPotalEffect = { nullptr };
 
 private:
 	HRESULT Add_Components();
