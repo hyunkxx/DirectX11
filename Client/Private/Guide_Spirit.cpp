@@ -35,11 +35,11 @@ HRESULT CGuide_Spirit::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pRouteList = new vector<_float3*>;
+	m_pRouteList = new vector<_float4*>;
 
-	for (auto& iter : *((vector<_float3>*)pArg))
+	for (auto& iter : *((vector<_float4>*)pArg))
 	{
-		_float3* pPos = new _float3;
+		_float4* pPos = new _float4;
 		*(pPos) = iter;
 		m_pRouteList->push_back(pPos);
 	}
@@ -49,7 +49,7 @@ HRESULT CGuide_Spirit::Initialize(void * pArg)
 	m_fStopCount = 0.f;
 
 	m_eSpiritState = STATE_WAIT;
-	m_vPosition = **(m_pRouteList->begin());
+	m_vPosition = _float3((**(m_pRouteList->begin())).x, (**(m_pRouteList->begin())).y, (**(m_pRouteList->begin())).z);
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_vPosition));
 
 	m_pEffect = CGameInstance::GetInstance()->Get_Effect(L"Guide_Spirit_R",EFFECT_ID::COMON);
@@ -63,7 +63,7 @@ HRESULT CGuide_Spirit::Initialize(void * pArg)
 
 	wsprintf(m_BoxPath, L"%d", iSize);
 
-	_float3 vPos = *(*iter);
+	_float4 vPos = *(*iter);
 	vPos.y -= 1.5f;
 	_tchar ObjectPath[MAX_PATH];
 	lstrcpy(ObjectPath, m_BoxPath);
@@ -156,7 +156,13 @@ void CGuide_Spirit::Wait_Tick(_double TimeDelta)
 			m_eSpiritState = STATE_GUIDE;
 			auto iter = m_pRouteList->begin();
 			iter += m_iDestinationCount;
-			m_vDestination = *(*iter);
+			m_vDestination = _float3((*(*iter)).x, (*(*iter)).y, (*(*iter)).z);
+			
+			if (1.f == (*(*iter)).w)
+				m_bStop = true;
+			else
+				m_bStop = false;
+
 		}
 	}
 
@@ -176,8 +182,22 @@ void CGuide_Spirit::Guide_Tick(_double TimeDelta)
 
 	if (fDist <= 0.1f)
 	{
-		m_fStopCount = 0.f;
-		m_eSpiritState = STATE_WAIT;
+		if (m_bStop)
+		{
+			m_fStopCount = 0.f;
+			m_eSpiritState = STATE_WAIT;
+		}
+		else
+		{
+			++m_iDestinationCount;
+			auto iter = m_pRouteList->begin();
+			iter += m_iDestinationCount;
+			m_vDestination = _float3((*(*iter)).x, (*(*iter)).y, (*(*iter)).z);
+			if (1.f == (*(*iter)).w)
+				m_bStop = true;
+			else
+				m_bStop = false;
+		}
 	}
 	
 }
@@ -217,7 +237,7 @@ void CGuide_Spirit::Stop_Tick(_double TimeDelta)
 
 	auto iter = m_pRouteList->begin();
 	iter += m_iDestinationCount;
-	m_vDestination = *(*iter);
+	m_vDestination = _float3((*(*iter)).x, (*(*iter)).y, (*(*iter)).z);
 
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_vDestination));
 

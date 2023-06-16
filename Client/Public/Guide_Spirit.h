@@ -53,10 +53,12 @@ private:
 	_float		 m_fParticle_Count = { 0.f };
 	_bool		 m_bBoxAppear = { false };
 
+	_bool		 m_bStop = { false };
+
 	CGameObject* m_pMyBox = { nullptr };
 	_tchar		 m_BoxPath[MAX_PATH] = { L"" };
 
-	vector<_float3*>* m_pRouteList = { nullptr };
+	vector<_float4*>* m_pRouteList = { nullptr };
 
 protected:
 	HRESULT Add_Components();

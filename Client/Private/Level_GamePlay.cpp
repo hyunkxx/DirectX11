@@ -2125,26 +2125,26 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock", &vWorldMatrix)))
 		return E_FAIL;
 
-	vector<_float3>* pPosList = new vector<_float3>;
+	vector<_float4>* pPosList = new vector<_float4>;
 
-	_float3 Pos1 = _float3(59.f, 5.f, 38.f);
-	_float3 Pos2 = _float3(95.f, 6.5f, 54.f);
-	_float3 Pos3 = _float3(102.f, 16.5f, 69.f);
-	_float3 Pos4 = _float3(126.f, 20.5f, 96.f);
-	_float3 Pos5 = _float3(160.f, 25.5f, 105.f);
-	_float3 Pos6 = _float3(175.f, 24.5f, 135.f);
-	_float3 Pos7 = _float3(110.f, 29.f, 211.f);
-	_float3 Pos8 = _float3(155.f, 33.f, 260.f);
-	_float3 Pos9 = _float3(215.f, 35.f, 228.f);
-	_float3 Pos10 = _float3(233.f, 39.5f, 218.f);
-	_float3 Pos11 = _float3(240.f, 39.5f, 241.f);
-	_float3 Pos12 = _float3(257.f, 39.5f, 228.f);
-	_float3 Pos13 = _float3(237.f, 39.5f, 209.f);
-	_float3 Pos14 = _float3(280.f, 49.f, 178.f);
-	_float3 Pos15 = _float3(338.f, 64.2f, 209.f);
-	_float3 Pos16 = _float3(345.f, 73.f, 282.f);
-	_float3 Pos17 = _float3(332.f, 76.5f, 343.f);
-	_float3 Pos18 = _float3(354.f, 77.1f, 372.f);
+	_float4 Pos1 = _float4(59.f, 5.f, 38.f,1.f);
+	_float4 Pos2 = _float4(95.f, 6.5f, 54.f, 0.f);
+	_float4 Pos3 = _float4(102.f, 16.5f, 69.f, 1.f);
+	_float4 Pos4 = _float4(126.f, 20.5f, 96.f, 1.f);
+	_float4 Pos5 = _float4(160.f, 25.5f, 105.f, 1.f);
+	_float4 Pos6 = _float4(175.f, 24.5f, 135.f, 1.f);
+	_float4 Pos7 = _float4(110.f, 29.f, 211.f, 1.f);
+	_float4 Pos8 = _float4(155.f, 33.f, 260.f, 1.f);
+	_float4 Pos9 = _float4(215.f, 35.f, 228.f, 1.f);
+	_float4 Pos10 = _float4(233.f, 39.5f, 218.f, 1.f);
+	_float4 Pos11 = _float4(240.f, 39.5f, 241.f, 1.f);
+	_float4 Pos12 = _float4(257.f, 39.5f, 228.f, 1.f);
+	_float4 Pos13 = _float4(237.f, 39.5f, 209.f, 1.f);
+	_float4 Pos14 = _float4(280.f, 49.f, 178.f, 1.f);
+	_float4 Pos15 = _float4(338.f, 64.2f, 209.f, 1.f);
+	_float4 Pos16 = _float4(345.f, 73.f, 282.f, 1.f);
+	_float4 Pos17 = _float4(332.f, 76.5f, 343.f, 1.f);
+	_float4 Pos18 = _float4(354.f, 77.1f, 372.f, 1.f);
 
 	pPosList->push_back(Pos1);
 	pPosList->push_back(Pos2);
