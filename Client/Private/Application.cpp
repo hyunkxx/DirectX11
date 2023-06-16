@@ -2832,6 +2832,12 @@ HRESULT CApplication::Ready_Static_Effect()
 
 	for (_int i = 0; 10 > i; i++)
 	{
+		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
+			TEXT("../../Resource/Effect/Comon/UI_Particle_Effect.bin"),
+			"../../Resource/Effect/Comon/Hook/")))
+			return E_FAIL;
+
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::COMON,
 			TEXT("../../Resource/Effect/Comon/P_Hook_Effect_C.bin"),
 			"../../Resource/Effect/Comon/Hook/")))
