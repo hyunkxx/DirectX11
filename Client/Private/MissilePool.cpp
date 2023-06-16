@@ -115,4 +115,9 @@ CMissilePool * CMissilePool::Create(ID3D11Device * pDevice, ID3D11DeviceContext 
 void CMissilePool::Free()
 {
 	__super::Free();
+
+	// 미사일 풀 릭 같아서 추가함. -> 그래도 릭 나옴.
+	for (auto pMissaile : m_Missiles)
+		Safe_Release(pMissaile);
+	m_Missiles.clear();
 }

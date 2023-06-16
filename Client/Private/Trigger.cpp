@@ -556,5 +556,7 @@ void CTrigger::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 
+	Safe_Release(m_pPlayerState);
+
 	ClearLink_Monster();
 }
