@@ -401,6 +401,14 @@ namespace Engine
 
 		// Glow 사용 유무
 		_bool				UseGlow = { false };
+
+		_bool				UseShake = { false };
+
+		_float				fShakePower = { 0.0f };
+		_float				fShakeRange_Ratio = { 0.0f };
+
+		_bool				IsDetail_Shake = { false };
+		_uint				iShake_MeshNum = { 0 };
 	}SMAP_OBJECT_EDITION_DESC;
 #pragma endregion STATIC_OBJECT
 

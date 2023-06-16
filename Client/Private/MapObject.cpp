@@ -54,7 +54,8 @@ HRESULT CMapObject::Initialize(void * pArg)
 
 	m_EditionDesc.fCullingRatio = 0.f;
 
-	SetUp_ShakeDesc();
+	//SetUp_Random_Shake();
+	//SetUp_Shake();
 	
 	return S_OK;
 }
@@ -335,6 +336,17 @@ HRESULT CMapObject::Render_Default_SelfShadow()
 		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseEditionColor", &m_IsUse_EdtionColor, sizeof(_bool))))
 			return E_FAIL;
 
+		if (true == m_EditionDesc.IsDetail_Shake)
+		{
+			if (i == m_EditionDesc.iShake_MeshNum)
+				m_EditionDesc.UseShake = true;
+			else
+				m_EditionDesc.UseShake = false;
+
+			if (FAILED(m_pShaderCom->SetRawValue("m_IsUseShake", &m_EditionDesc.UseShake, sizeof(_bool))))
+				return E_FAIL;
+		}
+
 		m_pShaderCom->Begin(m_iShaderPassID);
 
 		m_pModelCom->Render(i);
@@ -370,6 +382,17 @@ HRESULT CMapObject::Render_Grass()
 
 		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseEditionColor", &m_IsUse_EdtionColor, sizeof(_bool))))
 			return E_FAIL;
+
+		if (true == m_EditionDesc.IsDetail_Shake)
+		{
+			if (i == m_EditionDesc.iShake_MeshNum)
+				m_EditionDesc.UseShake = true;
+			else
+				m_EditionDesc.UseShake = false;
+
+			if (FAILED(m_pShaderCom->SetRawValue("m_IsUseShake", &m_EditionDesc.UseShake, sizeof(_bool))))
+				return E_FAIL;
+		}
 
 		m_pShaderCom->Begin(m_iShaderPassID);
 
@@ -480,6 +503,14 @@ void CMapObject::Load_EditionID(HANDLE& _hFile, DWORD& _dwByte)
 	ReadFile(_hFile, &m_EditionDesc.iTypeID, sizeof(_uint), &_dwByte, nullptr);
 
 	ReadFile(_hFile, &m_EditionDesc.UseGlow, sizeof(_bool), &_dwByte, nullptr);
+
+	ReadFile(_hFile, &m_EditionDesc.UseShake, sizeof(_bool), &_dwByte, nullptr);
+
+	ReadFile(_hFile, &m_EditionDesc.fShakePower, sizeof(_float), &_dwByte, nullptr);
+	ReadFile(_hFile, &m_EditionDesc.fShakeRange_Ratio, sizeof(_float), &_dwByte, nullptr);
+
+	ReadFile(_hFile, &m_EditionDesc.IsDetail_Shake, sizeof(_bool), &_dwByte, nullptr);
+	ReadFile(_hFile, &m_EditionDesc.iShake_MeshNum, sizeof(_uint), &_dwByte, nullptr);
 }
 
 void CMapObject::Load_EditionColor(HANDLE& _hFile, DWORD& _dwByte)
@@ -501,16 +532,25 @@ void CMapObject::Load_SubEditionColor_Mask(HANDLE& _hFile, DWORD& _dwByte)
 	ReadFile(_hFile, &m_EditionDesc.vSubEditionColor, sizeof(_float3), &_dwByte, nullptr);
 }
 
-void CMapObject::SetUp_ShakeDesc()
+void CMapObject::SetUp_Random_Shake()
 {
-	ZeroMemory(&m_ShakeDesc, sizeof(CMapObject::SHAKE_DESC));
+	// 초기 랜덤 값으로 세팅.wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+	m_EditionDesc.fShakePower = m_EditionDesc.fShakePower * fabsf(sinf(_float(rand()))) * m_EditionDesc.fShakePower;
+	m_EditionDesc.fShakeRange_Ratio = m_EditionDesc.fShakeRange_Ratio * fabsf(sinf(_float(rand()))) * m_EditionDesc.fShakeRange_Ratio;
+}
+
+void CMapObject::SetUp_Shake()
+{
+	// 나중에 급하게 클라에서 수정할때.
+	m_EditionDesc.UseShake;
+	m_EditionDesc.fShakePower;
+	m_EditionDesc.fShakeRange_Ratio;
+	m_EditionDesc.IsDetail_Shake;
+	m_EditionDesc.iShake_MeshNum;
 
 	switch (m_EditionDesc.iTypeID)
 	{
 	case CMapObject::MAPOBJECT_TYPEID::ID_TREE:
-		m_ShakeDesc.IsUse_Shake = true;
-		m_ShakeDesc.fShakePower = 0.5f;
-		m_ShakeDesc.fShakeRange_Ratio = 0.04f;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_ROCK:
 		break;
@@ -519,29 +559,14 @@ void CMapObject::SetUp_ShakeDesc()
 	case CMapObject::MAPOBJECT_TYPEID::ID_STAIRS:
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS:
-		m_ShakeDesc.IsUse_Shake = true;
-		m_ShakeDesc.fShakePower = 1.3f;
-		m_ShakeDesc.fShakeRange_Ratio = 0.06f;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK:
-		m_ShakeDesc.IsUse_Shake = true;
-		m_ShakeDesc.fShakePower = 1.5f;
-		m_ShakeDesc.fShakeRange_Ratio = 0.06f;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_VIN:
-		m_ShakeDesc.IsUse_Shake = true;
-		m_ShakeDesc.fShakePower = 1.0f;
-		m_ShakeDesc.fShakeRange_Ratio = 0.04f;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_VEG:
-		m_ShakeDesc.IsUse_Shake = true;
-		m_ShakeDesc.fShakePower = 1.3f;
-		m_ShakeDesc.fShakeRange_Ratio = 0.06f;
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_SHR:
-		m_ShakeDesc.IsUse_Shake = true;
-		m_ShakeDesc.fShakePower = 1.0f;
-		m_ShakeDesc.fShakeRange_Ratio = 0.06f;
 		break;
 
 	case CMapObject::MAPOBJECT_TYPEID::ID_STRUCTURE:
@@ -554,9 +579,6 @@ void CMapObject::SetUp_ShakeDesc()
 	case CMapObject::MAPOBJECT_TYPEID::ID_NOIROCK:
 		break;
 	case CMapObject::MAPOBJECT_TYPEID::ID_TOF_GRASS:
-		m_ShakeDesc.IsUse_Shake = true;
-		m_ShakeDesc.fShakePower = 1.5f;
-		m_ShakeDesc.fShakeRange_Ratio = 0.06f;
 		break;
 
 	default:
@@ -662,11 +684,11 @@ HRESULT CMapObject::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->SetRawValue("g_fTimeAcc", &m_fTimeeAcc, sizeof(_float))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->SetRawValue("m_IsUseShake", &m_ShakeDesc.IsUse_Shake, sizeof(_bool))))
+	if (FAILED(m_pShaderCom->SetRawValue("m_IsUseShake", &m_EditionDesc.UseShake, sizeof(_bool))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->SetRawValue("g_fShakePower", &m_ShakeDesc.fShakePower, sizeof(_float))))
+	if (FAILED(m_pShaderCom->SetRawValue("g_fShakePower", &m_EditionDesc.fShakePower, sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->SetRawValue("g_fShakeRange_Ratio", &m_ShakeDesc.fShakeRange_Ratio, sizeof(_float))))
+	if (FAILED(m_pShaderCom->SetRawValue("g_fShakeRange_Ratio", &m_EditionDesc.fShakeRange_Ratio, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;

@@ -22,12 +22,6 @@ public:
 
 	enum GRASS_MASK_KINDS { GM_1, GM_2, GM_3, GM_4, GM_5, GM_6, GM_END };
 
-	typedef struct tagShakeDesc {
-		_bool		IsUse_Shake = { false };
-		_float		fShakePower = { false };
-		_float		fShakeRange_Ratio = { false };
-	}SHAKE_DESC;
-
 private:
 	CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMapObject(const CMapObject& rhs);
@@ -75,11 +69,11 @@ private:
 	_bool						m_IsUse_EdtionColor = { false };
 
 public:
-	void SetUp_ShakeDesc();
+	void SetUp_Random_Shake();
+	void SetUp_Shake();
 
 private:
 	_float						m_fTimeeAcc = { 0.0 };
-	SHAKE_DESC					m_ShakeDesc = {};
 
 private:
 	CRenderer*					m_pRendererCom = { nullptr };
