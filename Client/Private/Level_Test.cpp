@@ -59,10 +59,10 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
+	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
+	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Monster(TEXT("layer_monster"))))

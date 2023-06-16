@@ -2411,16 +2411,6 @@ CLevel_Crown* CLevel_Crown::Create(ID3D11Device * pDevice, ID3D11DeviceContext *
 
 void CLevel_Crown::Free()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	CLayer* pEchoLayer = pGameInstance->Find_Layer(LEVEL_STATIC, TEXT("EchoInstance"));
-
-	if (nullptr != pEchoLayer)
-	{
-		for (auto& pMonster : pEchoLayer->m_GameObjects)
-			static_cast<CCharacter*>(pMonster.second)->Release_Reloadable();
-	}
-
 	__super::Free();
 
 	CP_PlayerGirl::Release_States();

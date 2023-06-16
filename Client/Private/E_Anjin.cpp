@@ -387,6 +387,8 @@ void CE_Anjin::Release_State()
 
 HRESULT CE_Anjin::Reload_Components()
 {
+	Release_Reloadable();
+
 	// For.Com_Shader_ModelAnim
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODELANIM,
 		TEXT("Com_Shader_ModelAnim"), (CComponent**)&m_pShaderCom)))

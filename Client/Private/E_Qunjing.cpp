@@ -389,6 +389,7 @@ void CE_Qunjing::Release_State()
 
 HRESULT CE_Qunjing::Reload_Components()
 {
+	Release_Reloadable();
 	// For.Com_Shader_ModelAnim
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, SHADER::MODELANIM,
 		TEXT("Com_Shader_ModelAnim"), (CComponent**)&m_pShaderCom)))
