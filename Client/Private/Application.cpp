@@ -2508,6 +2508,22 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/Player_Nvzhu/Hit_Effect_R.bin"),
 			"../../Resource/Effect/Player_Nvzhu/Hit_Effect/")))
 			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/P_Nvzhu_QTE_Effect_01.bin"),
+			"../../Resource/Effect/Player_Nvzhu/QTE/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/P_Nvzhu_QTE_Effect_02.bin"),
+			"../../Resource/Effect/Player_Nvzhu/QTE/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_NVZHU,
+			TEXT("../../Resource/Effect/Player_Nvzhu/P_Nvzhu_QTE_Sphere.bin"),
+			"../../Resource/Effect/Player_Nvzhu/QTE/")))
+			return E_FAIL;
+
 	}
 
 #pragma endregion
@@ -2797,6 +2813,21 @@ HRESULT CApplication::Ready_Static_Effect()
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
 			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_Sheath_Effect.bin"),
 			"../../Resource/Effect/Player_Yangyang/Prop/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_QTE_Effect_01.bin"),
+			"../../Resource/Effect/Player_Yangyang/QTE/")))
+			return E_FAIL;
+		
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_QTE_Effect_02.bin"),
+			"../../Resource/Effect/Player_Yangyang/QTE/")))
+			return E_FAIL;
+
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::PLAYER_YANGYANG,
+			TEXT("../../Resource/Effect/Player_Yangyang/P_Yangyang_QTE_Sphere.bin"),
+			"../../Resource/Effect/Player_Yangyang/QTE/")))
 			return E_FAIL;
 
 	}

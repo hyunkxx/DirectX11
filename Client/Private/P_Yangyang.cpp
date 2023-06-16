@@ -28,6 +28,8 @@
 //CamMovement
 #include "CameraMovement.h"
 
+#include "Rader.h"
+
 const _int CP_Yangyang::iStateLimit = CP_Yangyang::IS_END;
 
 const char CP_Yangyang::szIndividualStateTag[CP_Yangyang::IS_END - CP_Yangyang::IS_START][MAX_PATH] =
@@ -245,6 +247,7 @@ void CP_Yangyang::Tick(_double TimeDelta)
 	updateAttackDesc();
 
 	__super::Tick(TimeDelta * m_TimeDelay);
+	m_pRader->Tick(TimeDelta);
 
 	if (pGameInstance->InputKey(DIK_NUMPAD1) == KEY_STATE::TAP)
 	{
@@ -320,6 +323,7 @@ void CP_Yangyang::Tick(_double TimeDelta)
 void CP_Yangyang::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta * m_TimeDelay);
+	m_pRader->LateTick(TimeDelta);
 
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -707,6 +711,10 @@ HRESULT CP_Yangyang::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::EYE_MASK,
 		TEXT("Com_Eye_Mask_Texture"), (CComponent**)&m_pEyeMaskTexture)))
+		return E_FAIL;
+
+	m_pRader = CRader::Create(m_pDevice, m_pContext);
+	if (nullptr == m_pRader)
 		return E_FAIL;
 
 	CCollider::COLLIDER_DESC CollDesc;
@@ -1479,7 +1487,10 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
 		}
 	}
-
+	if (pGame->InputKey(DIK_N) == KEY_STATE::TAP)
+	{
+		m_pRader->Play_Rader(m_pMainTransform);
+	}
 
 
 	// ≈∏∞Ÿ πÊ«‚
@@ -3155,7 +3166,7 @@ void CP_Yangyang::Free()
 	Safe_Release(m_pAttackCollider);
 	Safe_Release(m_pHitCollider);
 	Safe_Release(m_pMoveCollider);
-
+	Safe_Release(m_pRader);
 }
 
 void CP_Yangyang::OnCollisionEnter(CCollider * src, CCollider * dest)
