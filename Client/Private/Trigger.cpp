@@ -631,7 +631,4 @@ void CTrigger::Free()
 	Safe_Release(m_pMainTransform);
 
 	ClearLink_Monster();
-
-	Safe_Release(m_pPotal);
-	Safe_Release(m_pPotalEffect);
 }
