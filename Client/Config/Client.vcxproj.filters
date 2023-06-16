@@ -435,18 +435,45 @@
     <ClCompile Include="..\Private\Guide_Spirit.cpp">
       <Filter>src\02. GameObject\04. InteractionObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\E_Anjin.cpp" />
-    <ClCompile Include="..\private\E_Leilie.cpp" />
-    <ClCompile Include="..\private\E_Qunjing.cpp" />
-    <ClCompile Include="..\private\HuluUI.cpp" />
-    <ClCompile Include="..\private\MapUI.cpp" />
-    <ClCompile Include="..\private\TeamUI.cpp" />
-    <ClCompile Include="..\private\E_GAzizi.cpp" />
-    <ClCompile Include="..\private\E_AWukaka.cpp" />
-    <ClCompile Include="..\private\E_FHuxiuxiu.cpp" />
-    <ClCompile Include="..\private\E_Huojin.cpp" />
-    <ClCompile Include="..\private\E_Binglie.cpp" />
-    <ClCompile Include="..\private\E_Fenglie.cpp" />
+    <ClCompile Include="..\private\E_Anjin.cpp">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\E_AWukaka.cpp">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\E_Binglie.cpp">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\E_Fenglie.cpp">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\E_FHuxiuxiu.cpp">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\E_GAzizi.cpp">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\E_Huojin.cpp">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\E_Leilie.cpp">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\E_Qunjing.cpp">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HuluUI.cpp">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapUI.cpp">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SettingUI.cpp">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TeamUI.cpp">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -860,18 +887,45 @@
     <ClInclude Include="..\Public\Guide_Spirit.h">
       <Filter>src\02. GameObject\04. InteractionObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\E_Anjin.h" />
-    <ClInclude Include="..\public\E_Leilie.h" />
-    <ClInclude Include="..\public\E_Qunjing.h" />
-    <ClInclude Include="..\public\HuluUI.h" />
-    <ClInclude Include="..\public\MapUI.h" />
-    <ClInclude Include="..\public\TeamUI.h" />
-    <ClInclude Include="..\public\E_GAzizi.h" />
-    <ClInclude Include="..\public\E_AWukaka.h" />
-    <ClInclude Include="..\public\E_FHuxiuxiu.h" />
-    <ClInclude Include="..\public\E_Huojin.h" />
-    <ClInclude Include="..\public\E_Binglie.h" />
-    <ClInclude Include="..\public\E_Fenglie.h" />
+    <ClInclude Include="..\public\E_Anjin.h">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\E_AWukaka.h">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\E_Binglie.h">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\E_Fenglie.h">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\E_FHuxiuxiu.h">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\E_GAzizi.h">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\E_Huojin.h">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\E_Leilie.h">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\E_Qunjing.h">
+      <Filter>src\02. GameObject\03. Character\03. Echo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TeamUI.h">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HuluUI.h">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapUI.h">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SettingUI.h">
+      <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1027,6 +1081,9 @@
     </Filter>
     <Filter Include="src\01. Level\05. BossRoom">
       <UniqueIdentifier>{62a97694-e3fb-4bac-93e5-3391b2ec912a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\03. Character\03. Echo">
+      <UniqueIdentifier>{c183074e-0198-448a-9297-f334d13affd4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
