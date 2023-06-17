@@ -407,6 +407,8 @@ HRESULT CLevel_City::Ready_Layer_CityObject()
 	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bri_3.data"), TEXT("CityObejct_Bri_3_%d"))))
 		return E_FAIL;
 
+
+
 	return S_OK;
 }
 
@@ -489,6 +491,8 @@ HRESULT CLevel_City::Load_CityObject(const _tchar* pDataFilePath, const _tchar* 
 
 	CloseHandle(hFile);
 
+
+
 	return S_OK;
 }
 
@@ -505,6 +509,16 @@ HRESULT CLevel_City::Ready_Layer_Trigger(const _tchar * pLayerTag)
 		MSG_BOX("Trigger_Interact_Cook");
 		return E_FAIL;
 	}
+
+	_float3 vPos;
+
+	vPos = { 162.55f,  16.85f,  145.24f };
+	if (FAILED(CGameInstance::GetInstance()->Add_GameObject(LEVEL_CITY, OBJECT::CHEST_SIMPLE, pLayerTag, L"chest_simple", &vPos)))
+		return E_FAIL;
+
+	vPos = { 142.96f,  16.63f,  156.67f };
+	if (FAILED(CGameInstance::GetInstance()->Add_GameObject(LEVEL_CITY, OBJECT::INVISIBLE_CHEST_STANDARD, pLayerTag, L"Invisivle_chest_standard", &vPos)))
+		return E_FAIL;
 
 	return S_OK;
 }

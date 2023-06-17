@@ -2525,11 +2525,44 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 	pMatList->push_back(Matrix3);
 	pMatList->push_back(Matrix4);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_ROBOT, pLayerTag, L"Object_Robot", pMatList)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_ROBOT, pLayerTag, L"Object_Robot_01", pMatList)))
+		return E_FAIL;
+
+
+	_float4x4 Matrix5, Matrix6, Matrix7, Matrix8;
+
+	XMStoreFloat4x4(&Matrix5, XMMatrixIdentity());
+	XMStoreFloat4x4(&Matrix6, XMMatrixIdentity());
+	XMStoreFloat4x4(&Matrix7, XMMatrixIdentity());
+	XMStoreFloat4x4(&Matrix8, XMMatrixIdentity());
+
+	vector<_float4x4>* pMatList2 = new vector<_float4x4>;
+	Matrix5._41 = 266.415f;
+	Matrix5._42 = 16.010f;
+	Matrix5._43 = 376.420f;
+
+	Matrix6._41 = 220.820f;
+	Matrix6._42 = 8.996f;
+	Matrix6._43 = 384.103f;
+
+	Matrix7._41 = 213.815f;
+	Matrix7._42 = 6.976f;
+	Matrix7._43 = 355.765f;
+
+	Matrix8._41 = 181.387f;
+	Matrix8._42 = 7.656f;
+	Matrix8._43 = 328.314f;
+
+	pMatList2->push_back(Matrix5);
+	pMatList2->push_back(Matrix6);
+	pMatList2->push_back(Matrix7);
+	pMatList2->push_back(Matrix8);
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_ROBOT, pLayerTag, L"Object_Robot_02", pMatList2)))
 		return E_FAIL;
 
 	Safe_Delete(pMatList);
-
+	Safe_Delete(pMatList2);
+	
 #pragma endregion
 
 #pragma region Boom_Rock
@@ -2636,6 +2669,11 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_04", &vWorldMatrix)))
 		return E_FAIL;
 #pragma endregion
+
+	_float3 vPos;
+	vPos = { 397.53f , 19.87f , 207.68f };
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INVISIBLE_CHEST_EXPANDED, pLayerTag, L"chest_expanded", &vPos)))
+		return E_FAIL;
 
 	return S_OK;
 }

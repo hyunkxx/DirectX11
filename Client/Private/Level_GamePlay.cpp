@@ -283,17 +283,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SKY, pLayerTag, L"sky")))
 		return E_FAIL;
 
-	_float3 vPos = { 32.f, 1.828f, 21.f };
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_SIMPLE, pLayerTag, L"chest_simple", &vPos)))
-		return E_FAIL;
-
-	vPos = { 28.f, 1.7f, 25.f };
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_STANDARD, pLayerTag, L"chest_standard", &vPos)))
-		return E_FAIL;
-
-	vPos = { 29.f, 1.83f, 31.f };
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_EXPANDED, pLayerTag, L"chest_expanded", &vPos)))
-		return E_FAIL;
 #pragma endregion
 
 	return S_OK;
@@ -2151,6 +2140,14 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 
 	vPos = { 368.f, 71.25f, 286.f };
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_STANDARD, pLayerTag, L"Invisivle_chest_standard", &vPos)))
+		return E_FAIL;
+
+	vPos = { 212.91f,  42.80f,  259.54f, };
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_EXPANDED, pLayerTag, L"chest_expanded", &vPos)))
+		return E_FAIL;
+
+	vPos = { 259.55f , 38.30f , 227.42f };
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_STANDARD, pLayerTag, L"chest_standard", &vPos)))
 		return E_FAIL;
 
 	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);

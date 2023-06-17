@@ -3203,7 +3203,7 @@ HRESULT CApplication::Ready_Static_Effect()
 	for (_int i = 0; 5 > i; i++)
 	{
 		//Monster_Gazizi
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL ,
+		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
 			TEXT("../../Resource/Effect/M_GAzizi/GenkiDama_Boom.bin"),
 			"../../Resource/Effect/M_GAzizi/GenkiDama/")))
 			return E_FAIL;
@@ -3291,11 +3291,15 @@ HRESULT CApplication::Ready_Static_Effect()
 			TEXT("../../Resource/Effect/M_Anjin/Attack_Mark.bin"),
 			"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
 			return E_FAIL;
-		//Hit ÀÌÆåÆ®
-		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
-			TEXT("../../Resource/Effect/M_Anjin/Anjin_Hit.bin"),
-			"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
-			return E_FAIL;
+
+		for (_int j = 0; 10 > j; j++)
+		{
+			//Hit ÀÌÆåÆ®
+			if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
+				TEXT("../../Resource/Effect/M_Anjin/Anjin_Hit.bin"),
+				"../../Resource/Effect/M_Anjin/Anjin_Attack/")))
+				return E_FAIL;
+		}
 
 		//È°½î´Â ¸ó½ºÅÍ Leilie
 		if (FAILED(pGameModeInst->Add_Effect(m_pDevice, m_pContext, g_hWnd, EFFECT_ID::TUTORIAL,
