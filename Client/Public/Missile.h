@@ -73,6 +73,7 @@ public:
 protected:
 	CRenderer* m_pRendererCom = { nullptr };
 	CCollider* m_pCollider = { nullptr };
+	
 
 protected:
 	MISSILEDESC m_tMissileDesc;

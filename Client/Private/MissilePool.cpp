@@ -4,6 +4,7 @@
 #include "GameMode.h"
 #include "Missile_Constant.h"
 #include "Missile_RotAround.h"
+#include "Missile_NaviBoom.h"
 
 CMissilePool::CMissilePool(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -67,6 +68,25 @@ HRESULT CMissilePool::Initialize(_fvector vLocalPos, MISSILEPOOLDESC* pMissilePo
 			tRotDesc.fRotSpeed = pMissilePoolDesc->fRotSpeed;
 
 			if (FAILED(pGI->Add_GameObjectEx((CGameObject**)(&pMissile), LEVEL_ANYWHERE, OBJECT::MISSILE_ROTAROUND, TEXT("Layer_Missile"), szBuffer, &tRotDesc)))
+				return E_FAIL;
+
+			m_Missiles.push_back(pMissile);
+		}
+		else if (MISS_NAVIBOOM == pMissilePoolDesc->iMissileType)
+		{
+			CMissile_NaviBoom::NAVIBOOMMISSILEDESC tNaviBoomDesc;
+			ZeroMemory(&tNaviBoomDesc, sizeof(CMissile_NaviBoom::NAVIBOOMMISSILEDESC));
+
+			tNaviBoomDesc.tConstMissileDesc.tMissileDesc = pMissilePoolDesc->tMissileDesc;
+			tNaviBoomDesc.tConstMissileDesc.bTargetDir = pMissilePoolDesc->bTargetDir;
+			tNaviBoomDesc.tConstMissileDesc.vFixMoveDir = pMissilePoolDesc->vFixMoveDir;
+			tNaviBoomDesc.tConstMissileDesc.fVelocity = pMissilePoolDesc->fVelocity;
+			tNaviBoomDesc.tConstMissileDesc.StopTime = pMissilePoolDesc->StopTime;
+			tNaviBoomDesc.tConstMissileDesc.iStopCondition = pMissilePoolDesc->iStopCondition;
+
+			tNaviBoomDesc.pNavigation = pMissilePoolDesc->pNavigation;
+
+			if (FAILED(pGI->Add_GameObjectEx((CGameObject**)(&pMissile), LEVEL_ANYWHERE, OBJECT::MISSILE_NAVIBOOM, TEXT("Layer_Missile"), szBuffer, &tNaviBoomDesc)))
 				return E_FAIL;
 
 			m_Missiles.push_back(pMissile);

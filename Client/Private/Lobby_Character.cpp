@@ -192,7 +192,7 @@ void CLobbyCharacter::SetMouseInRect(_bool bValue)
 
 	if (!m_bOnMoused && bValue)
 	{
-		pGameInstance->PlaySoundEx(L"Intro_Click.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);
+		pGameInstance->PlaySoundEx(L"Intro_Click.wav", SOUND_CHANNEL::SOUND_VFX, VOLUME_VFX);
 	}
 
 	m_bOnMoused = bValue;

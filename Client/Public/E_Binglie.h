@@ -44,7 +44,6 @@ public:
 	enum Missiles
 	{
 		MISS_ATTACK_02,
-
 		MISS_END
 	};
 

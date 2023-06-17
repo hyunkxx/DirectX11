@@ -36,7 +36,7 @@ HRESULT CIntro::Initialize(void * pArg)
 		return E_FAIL;
 
 	CGameInstance* pGI = CGameInstance::GetInstance();
-	pGI->PlaySoundEx(L"Intro_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
+	pGI->PlaySoundEx(L"Intro_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 
 	
 

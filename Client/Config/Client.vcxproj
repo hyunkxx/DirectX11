@@ -237,6 +237,7 @@
     <ClInclude Include="..\Public\Missile.h" />
     <ClInclude Include="..\Public\MissilePool.h" />
     <ClInclude Include="..\Public\Missile_Constant.h" />
+    <ClInclude Include="..\public\Missile_NaviBoom.h" />
     <ClInclude Include="..\Public\Missile_RotAround.h" />
     <ClInclude Include="..\public\M_Anjin.h" />
     <ClInclude Include="..\public\M_AWukaka.h" />
@@ -410,6 +411,7 @@
     <ClCompile Include="..\Private\Missile.cpp" />
     <ClCompile Include="..\Private\MissilePool.cpp" />
     <ClCompile Include="..\Private\Missile_Constant.cpp" />
+    <ClCompile Include="..\private\Missile_NaviBoom.cpp" />
     <ClCompile Include="..\Private\Missile_RotAround.cpp" />
     <ClCompile Include="..\private\M_Anjin.cpp" />
     <ClCompile Include="..\private\M_AWukaka.cpp" />

@@ -6,6 +6,7 @@
 BEGIN(Engine)
 class CTransform;
 class CBone;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -18,6 +19,7 @@ public:
 		MISS_NOMOVE,	// 움직이지 않는 공격 범위
 		MISS_CONSTANT,	// 등속 운동을 하는 투사체
 		MISS_ROTAROUND, // 특정 대상 주위를 선회하는 투사체
+		MISS_NAVIBOOM,	// CONSTANT랑 동일한데 바닥에 닿으면 터지는 투사체
 		MISS_END
 	};
 
@@ -43,7 +45,11 @@ public:
 		_float		fInitAngle;
 		_float		fDistance;
 		_float		fRotSpeed;	// 회전 각속도
+
+		//Binglie 거시기용
+		CNavigation* pNavigation;
 	}MISSILEPOOLDESC;
+
 private:
 	CMissilePool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMissilePool(const CMissilePool& rhs);

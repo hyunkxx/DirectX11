@@ -134,9 +134,9 @@ void CM_Binglie::Start()
 	m_pTargetTransform = m_pTarget->GetTransform();
 
 	//UIÃß°¡
-	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
-	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::MOSTER);
-	m_pUIIcon->SetRender(m_UIIndex, false);
+	//m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
+	//m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::MOSTER);
+	//m_pUIIcon->SetRender(m_UIIndex, false);
 }
 
 void CM_Binglie::PreTick(_double TimeDelta)
@@ -193,9 +193,9 @@ void CM_Binglie::Tick(_double TimeDelta)
 		Head.y += 0.7f;
 		m_pUIMon->Set_CharacterPos(XMLoadFloat4(&Head));
 
-		if (false == m_pUIIcon->GetRenderState(m_UIIndex))
+	/*	if (false == m_pUIIcon->GetRenderState(m_UIIndex))
 			m_pUIIcon->SetRender(m_UIIndex, true);
-		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));*/
 	}
 }
 
@@ -577,13 +577,21 @@ void CM_Binglie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("M_Blue_Hit"));
 
-	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 2.f;
-	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 1.5f;
+	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_GLACIO;
 	m_AttackInfos[ATK_ATTACK_02].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("M_Binglie_Ball_Boom"));
+	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("M_Blue_Hit"));
+
+	m_AttackInfos[ATK_ATTACK_02_BOOM].fDamageFactor = 2.5f;
+	m_AttackInfos[ATK_ATTACK_02_BOOM].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK_02_BOOM].eElementType = ELMT_GLACIO;
+	m_AttackInfos[ATK_ATTACK_02_BOOM].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_02_BOOM].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_02_BOOM].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02_BOOM].szHitEffectTag, TEXT("M_Blue_Hit"));
 
 }
 
@@ -604,7 +612,7 @@ void CM_Binglie::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_01;
 	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
 
-	tMissilePoolDesc.bTargetDir = false;
+	tMissilePoolDesc.bTargetDir = true;
 	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
 	tMissilePoolDesc.fVelocity = 18.f;
 	tMissilePoolDesc.StopTime = 3.0;
@@ -613,11 +621,36 @@ void CM_Binglie::Init_Missiles()
 	m_MissilePools[MISS_ATTACK_01] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_ATTACK_01] = _float3(0.f, 0.f, 0.f);
 
+	//// Attack02
+	//ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	//tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_02_%d");
+	//tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	//tMissilePoolDesc.iNumMissiles = 3;
+
+	//lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Binglie_Ball"));
+	//tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	//tMissilePoolDesc.tMissileDesc.pOwner = this;
+	//tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	//tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
+	//tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_02;
+	//tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
+	//tMissilePoolDesc.tMissileDesc.bDeleteOnHit= true;
+
+	//tMissilePoolDesc.bTargetDir = true;
+	//tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
+	//tMissilePoolDesc.fVelocity = 18.f;
+	//tMissilePoolDesc.StopTime = 3.0;
+	//tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+
+	//m_MissilePools[MISS_ATTACK_02] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	//m_MissileRotAngles[MISS_ATTACK_02] = _float3(0.f, 0.f, 0.f);
+
 	// Attack02
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
 	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_02_%d");
-	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NAVIBOOM;
 	tMissilePoolDesc.iNumMissiles = 3;
 
 	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Binglie_Ball"));
@@ -627,16 +660,37 @@ void CM_Binglie::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_02;
 	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
-	tMissilePoolDesc.tMissileDesc.bDeleteOnHit= true;
-
+	tMissilePoolDesc.tMissileDesc.bDeleteOnHit = false;
+	tMissilePoolDesc.tMissileDesc.ppNextMissilePool = &m_MissilePools[MISS_ATTACK_02_BOOM];
+	
 	tMissilePoolDesc.bTargetDir = true;
 	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
 	tMissilePoolDesc.fVelocity = 18.f;
 	tMissilePoolDesc.StopTime = 3.0;
 	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+	tMissilePoolDesc.pNavigation = m_pNaviCom;
 
 	m_MissilePools[MISS_ATTACK_02] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_ATTACK_02] = _float3(0.f, 0.f, 0.f);
+
+	// Attack02_Boom
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_02_Boom_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 3;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Binglie_Ball_Boom"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 1.0;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_02_BOOM;
+	tMissilePoolDesc.tMissileDesc.fExtents = 2.5f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
+
+	m_MissilePools[MISS_ATTACK_02_BOOM] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissileRotAngles[MISS_ATTACK_02_BOOM] = _float3(0.f, 0.f, 0.f);
 }
 
 void CM_Binglie::Apply_CoolTime(_double TimeDelta)

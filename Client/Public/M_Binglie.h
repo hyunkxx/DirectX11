@@ -70,6 +70,7 @@ public:
 	{
 		ATK_ATTACK_01,
 		ATK_ATTACK_02,
+		ATK_ATTACK_02_BOOM,
 		ATK_END
 	};
 
@@ -78,7 +79,7 @@ public:
 	{
 		MISS_ATTACK_01,
 		MISS_ATTACK_02,
-		//MISS_ATTACK_02_EX,
+		MISS_ATTACK_02_BOOM,
 		MISS_END
 	};
 

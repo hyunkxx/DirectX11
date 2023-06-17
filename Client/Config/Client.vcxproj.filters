@@ -474,6 +474,9 @@
     <ClCompile Include="..\private\TeamUI.cpp">
       <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Missile_NaviBoom.cpp">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -925,6 +928,9 @@
     </ClInclude>
     <ClInclude Include="..\public\SettingUI.h">
       <Filter>src\02. GameObject\99. UI\04. Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Missile_NaviBoom.h">
+      <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

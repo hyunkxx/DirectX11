@@ -63,6 +63,7 @@
 #include "Missile.h"
 #include "Missile_Constant.h"
 #include "Missile_RotAround.h"
+#include "Missile_NaviBoom.h"
 
 //AnimTool
 #include "AnimToolManager.h"
@@ -1475,89 +1476,6 @@ HRESULT CLoader::Load_Level_Test()
 	//GamePlay GameObject
 #pragma region GAMEOBJECTS
 
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CAMERA, CPlayerCamera::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_PLAYERGIRL, CP_PlayerGirl::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_YANGYANG, CP_Yangyang::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PLAYER_CHIXIA, CP_Chixia::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE, CMissile::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_CONSTANT, CMissile_Constant::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_ROTAROUND, CMissile_RotAround::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SANDBAG, CSandbag::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_ANJIN, CM_Anjin::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_HUOJIN, CM_Huojin::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_BINGLIE, CM_Binglie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FENGLIE, CM_Fenglie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_LEILIE, CM_Leilie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_QUNJING, CM_Qunjing::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_FHUXIUXIU, CM_FHuxiuxiu::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P1, CM_Crownless_P1::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P2, CM_Crownless_P2::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MONSTER_CROWNLESS_P3, CM_Crownless_P3::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_MAIN, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_MAIN))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_SWORD_5_SUB, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_SWORD_5_SUB))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_GUN_5, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_GUN_5))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_3, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_3))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_1, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_1))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::PARTS_HULU_2, CParts::Create(m_pDevice, m_pContext, SMODEL::SMD_HULU_2))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MAP_OBJECT, CMapObject::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_SIMPLE, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_SIMPLE))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_STANDARD, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_STANDARD))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::CHEST_EXPANDED, CChest::Create(m_pDevice, m_pContext, CChest::CHEST_EXPANDED))))
-		return E_FAIL;
-
-	//UIUI
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UI, CUI_MainScreen::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(OBJECT::UIMONSTER, CUI_Monster::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 #pragma endregion
 
 	m_Start = (_uint)time(nullptr);
@@ -1706,6 +1624,8 @@ HRESULT CLoader::Load_Prototype_GameObject()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_CONSTANT, CMissile_Constant::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_ROTAROUND, CMissile_RotAround::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::MISSILE_NAVIBOOM, CMissile_NaviBoom::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SANDBAG, CSandbag::Create(m_pDevice, m_pContext))))

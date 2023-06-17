@@ -29,7 +29,7 @@ public:
 		_uint		iStopCondition;
 	}CONSTMISSILEDESC;
 
-private:
+protected:
 	CMissile_Constant(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMissile_Constant(const CMissile_Constant& rhs);
 	virtual ~CMissile_Constant() = default;
@@ -49,9 +49,7 @@ public:
 		return m_bTargetDir;
 	}
 
-	
-
-private:
+protected:
 	// °íÁ¤°ª
 	_float3 m_vLocalMoveDir = {};
 	_double m_StopTime = { 0.0 };

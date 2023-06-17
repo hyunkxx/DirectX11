@@ -215,7 +215,7 @@ void CIntroCamera::StateCheck(_double TimeDelta)
 			m_bChooseRender = false;
 			m_bApplyRenderStart = false;
 			pLobbyCharacter[m_eCurrentState]->PlaySelectedAnimation();
-			pGameInstance->PlaySoundEx(L"Intro_Select_Enter.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);
+			pGameInstance->PlaySoundEx(L"Intro_Select_Enter.wav", SOUND_CHANNEL::SOUND_VFX, VOLUME_VFX);
 		}
 	}
 
@@ -285,7 +285,7 @@ void CIntroCamera::CameraMovement(_double TimeDelta)
 
 		pGameInstance->SetSplitDesc(SplitDesc);
 		pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DEFAULT, 0.7f);
-		pGameInstance->PlaySoundEx(L"Intro_CameraMove.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);
+		pGameInstance->PlaySoundEx(L"Intro_CameraMove.wav", SOUND_CHANNEL::SOUND_VFX, VOLUME_VFX);
 		m_eCurrentState = CAM_ORIGIN;
 		m_bMoveLock = true;
 	}
@@ -308,8 +308,8 @@ void CIntroCamera::CameraMovement(_double TimeDelta)
 				}
 
 				m_bMoveLock = true;
-				pGameInstance->PlaySoundEx(L"Intro_Selet.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);
-				pGameInstance->PlaySoundEx(L"Intro_CameraMove.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);
+				pGameInstance->PlaySoundEx(L"Intro_Selet.wav", SOUND_CHANNEL::SOUND_VFX, VOLUME_VFX);
+				pGameInstance->PlaySoundEx(L"Intro_CameraMove.wav", SOUND_CHANNEL::SOUND_VFX, VOLUME_VFX);
 				m_eCurrentState = CAM_LEFT;
 				pLobbyCharacter[CHAR_LEFT]->SetMouseInRect(false);
 			}
@@ -327,8 +327,8 @@ void CIntroCamera::CameraMovement(_double TimeDelta)
 				}
 
 				m_bMoveLock = true;
-				pGameInstance->PlaySoundEx(L"Intro_Selet.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);
-				pGameInstance->PlaySoundEx(L"Intro_CameraMove.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);
+				pGameInstance->PlaySoundEx(L"Intro_Selet.wav", SOUND_CHANNEL::SOUND_VFX, VOLUME_VFX);
+				pGameInstance->PlaySoundEx(L"Intro_CameraMove.wav", SOUND_CHANNEL::SOUND_VFX, VOLUME_VFX);
 				m_eCurrentState = CAM_RIGHT;
 				pLobbyCharacter[CHAR_RIGHT]->SetMouseInRect(false);
 			}
@@ -339,7 +339,7 @@ void CIntroCamera::CameraMovement(_double TimeDelta)
 			m_eCurrentState = CAM_ORIGIN;
 			m_bOnMouse[CHAR_LEFT] = false;
 			m_bOnMouse[CHAR_RIGHT] = false;
-			pGameInstance->PlaySoundEx(L"Intro_CameraMove.wav", SOUND_CHANNEL::VFX, VOLUME_VFX);
+			pGameInstance->PlaySoundEx(L"Intro_CameraMove.wav", SOUND_CHANNEL::SOUND_VFX, VOLUME_VFX);
 		}
 	}
 
