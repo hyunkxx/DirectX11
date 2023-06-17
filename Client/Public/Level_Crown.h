@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Level.h"
+#include "PhaseChanger.h"
 
 BEGIN(Engine)
 class CCamera;
@@ -52,6 +53,8 @@ private:
 	_uint						m_iSpawnPointCount = { 0 };
 	// 스폰 포인트 정보 (위치 , 셀번호)
 	vector<SPAWN_POINT>			m_SpawnPoints = {};
+
+	
 
 public:
 	static CLevel_Crown* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

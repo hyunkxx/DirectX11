@@ -8,6 +8,7 @@ class CRenderer;
 class CShader;
 class CTransform;
 class CModel_Anim;
+class CModel_VTF;
 class CSphereCollider;
 class CBone;
 END
@@ -15,6 +16,8 @@ END
 BEGIN(Client)
 
 // AnimTool에서 플레이어 외의 모든 캐릭터들의 모델을 출력하고 편집하기 위한 클래스
+
+// #define NVZHUACT
 
 class CTestGeneric : public CTestChar
 {
@@ -78,10 +81,17 @@ public:
 	virtual HRESULT RenderShadow() override;
 	virtual void RenderGUI() override;
 
+#ifdef NVZHUACT
+	CModel_VTF*	Get_Action()
+	{
+		return m_pModelCom;
+	}
+#else
 	CModel_Anim*	Get_Action()
 	{
 		return m_pModelCom;
 	}
+#endif
 
 	_float*  Get_TrackPos()
 	{
@@ -143,12 +153,19 @@ public: // StateKey 대응 함수 모음
 		}
 	}
 
+
 	
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };
 	CShader*			m_pShaderCom = { nullptr };
+#ifdef NVZHUACT
+	CModel_VTF*		m_pModelCom = { nullptr };
+#else
 	CModel_Anim*		m_pModelCom = { nullptr };
+#endif // NVZHUACT
+
+	
 
 private:
 	// 오브젝트 프로토타입 분기용

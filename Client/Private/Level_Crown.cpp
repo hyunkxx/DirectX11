@@ -378,6 +378,15 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, static_cast<CCharacter*>(pChar))))
 		return E_FAIL;
 
+
+	
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::PHASECHANGER, pLayerTag, TEXT("PhaseChanger"))))
+		return E_FAIL;
+
+	CGameMode* pGM = CGameMode::GetInstance();
+	pGM->Set_PhaseChanger(static_cast<CPhaseChanger*>(pChar));
+
+
 	return S_OK;
 }
 

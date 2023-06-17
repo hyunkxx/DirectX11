@@ -170,6 +170,137 @@ void CTestGeneric::LateTick(_double TimeDelta)
 	Update_EffectBones();
 }
 
+#ifdef NVZHUACT
+
+HRESULT CTestGeneric::Render()
+{
+	if (false == m_bRender)
+		return S_OK;
+
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	if (FAILED(__super::Render()))
+		return E_FAIL;
+
+	if (FAILED(SetUp_ShaderResources()))
+		return E_FAIL;
+
+
+	int iPass;
+	if (10.f <= ComputeCameraLength())
+	{
+		iPass = 3;
+		for (_uint i = 0; i < PARTS_END; ++i)
+		{
+			if (nullptr != m_Parts[i])
+				m_Parts[i]->Set_Outline(false);
+		}
+	}
+	else
+	{
+		iPass = 4;
+		for (_uint i = 0; i < PARTS_END; ++i)
+		{
+			if (nullptr != m_Parts[i])
+				m_Parts[i]->Set_Outline(true);
+		}
+	}
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes() - 2;
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
+			return E_FAIL;
+
+		if (i == iNumMeshes - 1)
+		{
+			/*if (FAILED(m_pEyeBurstTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeBurstTexture")))
+			return E_FAIL;
+			if (FAILED(m_pEyeMaskTexture->Setup_ShaderResource(m_pShaderCom, "g_EyeMaskTexture")))
+			return E_FAIL;*/
+
+			if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i + 1, MyTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			// Eye
+			if (m_bDissolve)
+			{
+				// Dissolve 변수
+				if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->SetRawValue("g_vDessolveColor", &m_vDissolveColor, sizeof(_float3))))
+					return E_FAIL;
+
+				m_pShaderCom->Begin(13);
+			}
+			else
+				if (DMODEL::DMD_YANGYANG_MODEL == m_tDesc.iModelID)
+					m_pShaderCom->Begin(15);
+				else
+					m_pShaderCom->Begin(6);		//Burst
+		}
+		else
+		{
+			if (m_bDissolve)
+			{
+				// Dissolve 변수
+				if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->SetRawValue("g_vDessolveColor", &m_vDissolveColor, sizeof(_float3))))
+					return E_FAIL;
+
+				m_pShaderCom->Begin(13);
+			}
+			else
+				m_pShaderCom->Begin(iPass);
+		}
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+HRESULT CTestGeneric::RenderShadow()
+{
+	if (false == m_bRender)
+		return S_OK;
+
+	if (FAILED(__super::RenderShadow()))
+		return E_FAIL;
+
+	if (FAILED(Setup_ShadowShaderResource()))
+		return E_FAIL;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes() - 2;
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pModelCom->SetUp_VertexTexture(m_pShaderCom, "g_VertexTexture", i)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(5);
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+#else
+
 HRESULT CTestGeneric::Render()
 {
 	if (false == m_bRender)
@@ -251,6 +382,7 @@ HRESULT CTestGeneric::Render()
 	return S_OK;
 }
 
+
 HRESULT CTestGeneric::RenderShadow()
 {
 	if (false == m_bRender)
@@ -274,6 +406,10 @@ HRESULT CTestGeneric::RenderShadow()
 
 	return S_OK;
 }
+
+
+
+#endif // NVZHUACT
 
 void CTestGeneric::RenderGUI()
 {

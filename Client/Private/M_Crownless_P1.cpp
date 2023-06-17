@@ -22,6 +22,7 @@
 //UIÃß°¡
 #include "UI_Monster.h"
 #include "UI_Minimap.h"
+#include "PhaseChanger.h"
 
 #define DIST_MELEE 3.f
 #define DIST_MIDRANGE 12.f
@@ -1293,8 +1294,14 @@ void CM_Crownless_P1::Tick_State(_double TimeDelta)
 	{
 		if (IS_DEAD == m_Scon.iCurState)
 		{
+			CGameMode* pGM = CGameMode::GetInstance();
+
+			CPhaseChanger* pPC = pGM->Get_PhaseChanger();
+			if (pPC != nullptr)
+				pPC->CutScene1_Ready();
+
+			//m_pUIMon->SetState(DISABLE);
 			//SetState(DISABLE);
-			m_pUIMon->SetState(DISABLE);
 			//m_pUIIcon->SetRender(m_UIIndex, false);
 			
 		}

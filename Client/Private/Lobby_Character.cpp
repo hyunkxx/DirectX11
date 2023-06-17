@@ -243,7 +243,6 @@ HRESULT CLobbyCharacter::Add_Components()
 		return E_FAIL;
 
 	return S_OK;
-
 }
 
 void CLobbyCharacter::Init_AnimSystem()
