@@ -1046,7 +1046,7 @@ void CM_Fenglie::Free()
 	Safe_Release(m_pCollider);
 	Safe_Release(m_pHitCollider);
 	Safe_Release(m_pMoveCollider);
-
+	Safe_Release(m_pAttackCollider);
 }
 
 void CM_Fenglie::OnCollisionEnter(CCollider * src, CCollider * dest)

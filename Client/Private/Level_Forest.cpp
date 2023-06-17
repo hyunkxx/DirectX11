@@ -423,7 +423,7 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 
 	CCharacter*		pAnjin = { nullptr }; // 낫멘 
 	CCharacter*		pHuojin = { nullptr }; // 질럿
-	CCharacter*		pBinglie = { nullptr }; // 얼멘
+	CCharacter*		pBinglie = { nullptr }; // 빙멘
 	CCharacter*		pFenglie = { nullptr }; // 부멘
 	CCharacter*		pLeilei = { nullptr }; // 활멘
 	CCharacter*		pQunjing = { nullptr }; // 돌멘
@@ -478,9 +478,11 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pFhuxiuxiu)))
 		return E_FAIL;
 
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pHuojin)))
+		return E_FAIL;
 	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pFenglie)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pAwukaka)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pGazizi)))
 		return E_FAIL;
 
 	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_2"));
@@ -494,14 +496,14 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 
 	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pBinglie)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pFhuxiuxiu)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pAnjin)))
 		return E_FAIL;
 
 	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pHuojin)))
 		return E_FAIL;
 	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pLeilei)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pFhuxiuxiu)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pAwukaka)))
 		return E_FAIL;
 
 	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_3"));
@@ -546,6 +548,148 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(409.052f, 19.020f, 187.768f, 1.f), 1047);*/
 
 #pragma endregion
+
+	SPAWN_POINT			SpawnPoint = {};
+
+	// [ 산 1스폰 지역 ] 
+
+	// (올라가는길 중간)
+	/*
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 376.089f, 18.009f, 281.913f };
+	SpawnPoint.iCellIndex = 486;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_GAZIZI, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+	*/
+	// (거의 다 올라와서 오른쪽)
+	/*
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 386.148f, 18.035f, 256.148f };
+	SpawnPoint.iCellIndex = 532;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_GAZIZI, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+	*/
+
+	// (거의 다 올라와서 왼쪽)
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 408.268f, 18.127f, 259.209f };
+	SpawnPoint.iCellIndex = 626;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_FHUXIUXIU, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// (올라와서 중앙 나무지역)
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 396.930f, 19.670f, 230.683f };
+	SpawnPoint.iCellIndex = 765;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_GAZIZI, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// ( 뭉칠 시 1 )
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 403.750f, 19.014f, 236.483f };
+	SpawnPoint.iCellIndex = 687;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_AWUKAKA, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// ( 뭉칠 시 2 )
+	/*
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 394.473f, 18.865f, 239.949f };
+	SpawnPoint.iCellIndex = 660;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_GAZIZI, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+	*/
+
+	// (올라와서 오른쪽)
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 360.813f, 19.019f, 219.478f };
+	SpawnPoint.iCellIndex = 848;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_GAZIZI, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// ( 뭉칠 시 1 )
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 371.643f, 19.019f, 214.411f };
+	SpawnPoint.iCellIndex = 878;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_AWUKAKA, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// ( 뭉칠 시 2 )
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 369.669f, 19.009f, 225.221f };
+	SpawnPoint.iCellIndex = 834;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_FHUXIUXIU, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// (올라와서 왼쪽)
+	/*
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 429.436f, 19.159f, 232.645f };
+	SpawnPoint.iCellIndex = 1214;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_GAZIZI, pLayerTag, SpawnPoint)))
+	return E_FAIL;
+	*/
+
+
+	// [ 1스폰 ~ 2스폰 사이 로봇 아래 벽부수는 지역  ]
+
+	// ( 돌 부수는 2개 사이 )
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 279.303f, 11.643f, 280.662f };
+	SpawnPoint.iCellIndex = 1602;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_GAZIZI, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// ( 2스폰 벽타기 근접 )
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 296.426f, 13.317f, 306.432f };
+	SpawnPoint.iCellIndex = 1475;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_AWUKAKA, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// [ 3스폰 ] ( 벽 부수기 전 들판길 )
+
+	// ( 왼쪽 )
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 255.862f , 5.011f, 172.386f };
+	SpawnPoint.iCellIndex = 3218;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_AWUKAKA, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// ( 오른쪽 )
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 242.476f, 5.196f, 171.918f };
+	SpawnPoint.iCellIndex = 3223;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_FHUXIUXIU, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// ( 벽 부수고 나서 진입길 )
+
+	// 1
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 206.397F, 8.077f, 84.499f };
+	SpawnPoint.iCellIndex = 3645;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_ANJIN, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 209.379f, 8.087f, 82.458f };
+	SpawnPoint.iCellIndex = 3643;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_FENGLIE, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// 2
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 158.504f, 8.038f, 84.636f };
+	SpawnPoint.iCellIndex = 3806;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_HUOJIN, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 171.459f, 8.216f, 88.495f };
+	SpawnPoint.iCellIndex = 3760;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_LEILIE, pLayerTag, SpawnPoint)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -2822,6 +2966,63 @@ HRESULT CLevel_Forest::Add_Monster(_uint iMonsterNum, const _tchar * pLayerTag, 
 
 	return S_OK;
 }
+
+HRESULT CLevel_Forest::Add_StreetMonster(_uint iMonsterNum, const _tchar * pLayerTag, SPAWN_POINT SpawnPoint)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	CGameObject* pChar = nullptr;
+
+	switch (iMonsterNum)
+	{
+	case OBJECT::MONSTER_GAZIZI:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_GAZIZI, pLayerTag, TEXT("Gazizi"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_AWUKAKA:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_AWUKAKA, pLayerTag, TEXT("Awukaka"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_FHUXIUXIU:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_FHUXIUXIU, pLayerTag, TEXT("Fhuxiuxiu"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_ANJIN:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_ANJIN, pLayerTag, TEXT("Anjin"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_HUOJIN:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_HUOJIN, pLayerTag, TEXT("Huojin"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_BINGLIE:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_BINGLIE, pLayerTag, TEXT("Binglie"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_FENGLIE:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_FENGLIE, pLayerTag, TEXT("Fenglie"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_LEILIE:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_LEILIE, pLayerTag, TEXT("Leilie"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_QUNJING:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_QUNJING, pLayerTag, TEXT("Qunjing"))))
+			return E_FAIL;
+		break;
+	default:
+		return S_OK;
+		break;
+	}
+
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMLoadFloat3(&SpawnPoint.vP), SpawnPoint.iCellIndex);
+
+	return S_OK;
+}
+
 
 CLevel_Forest* CLevel_Forest::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {

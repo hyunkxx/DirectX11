@@ -3114,7 +3114,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_AIMATTACK_B].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitEffectTag, TEXT("Chixia_Hit_Effect_SC"));
 
-	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 0.6f;
+	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 600.6f;
 	m_AttackInfos[ATK_AIRATTACK].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_AIRATTACK].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_AIRATTACK].fSPGain = 1.f;

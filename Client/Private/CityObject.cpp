@@ -53,6 +53,8 @@ HRESULT CCityObject::Initialize(void * pArg)
 		break;
 	}
 
+	m_fCullingRatio = { 0.0f };
+
 	return S_OK;
 }
 
@@ -276,15 +278,6 @@ HRESULT CCityObject::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
 		TEXT("Com_Transform"), (CComponent**)&m_pMainTransform, &TransformDesc)))
 		return E_FAIL;
-
-	/*CCollider::COLLIDER_DESC CollDesc;
-	CollDesc.owner = this;
-	CollDesc.vCenter = { 0.f, 0.f, 0.f };
-	CollDesc.vExtents = { 0.4f, 0.f, 0.4f };
-	CollDesc.vRotation = { 0.f, 0.f, 0.f };
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
-		TEXT("com_collider_sphere"), (CComponent**)&m_pCollider, &CollDesc)))
-		return E_FAIL;*/
 
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, m_CityObject_Desc.iSMD_ID,

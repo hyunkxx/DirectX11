@@ -932,7 +932,7 @@ void CM_Binglie::Tick_State(_double TimeDelta)
 		{
 			SetState(DISABLE);
 			m_pUIMon->SetState(DISABLE);
-			m_pUIIcon->SetRender(m_UIIndex, false);
+			//m_pUIIcon->SetRender(m_UIIndex, false);
 		}
 
 
