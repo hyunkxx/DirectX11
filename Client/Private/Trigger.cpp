@@ -282,115 +282,39 @@ void CTrigger::Trigger_Spawn_Forest_0()
 {
 	m_IsSpawnMonster = true;
 	m_IsOnlyOneTrigger = true;
-
-	// 트리거 발동 시 4마리 활성화
-	for (auto& pMonster : m_pMonsters)
-	{
-		if (m_iMonsterSpawnLimitCount <= m_iSpawnMonsterIndex)
-			return;
-		if (nullptr != pMonster)
-		{
-			if (pMonster->IsDisable())
-			{
-				pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
-				Add_SpawnPoint();
-
-				m_iSpawnMonsterIndex++;
-				m_iCurrentSpawnMonsterCount++;
-			}
-		}
-	}
 }
 
 void CTrigger::Trigger_Spawn_Forest_1()
 {
 	m_IsSpawnMonster = true;
 	m_IsOnlyOneTrigger = true;
-
-	// 트리거 발동 시 4마리 활성화
-	for (auto& pMonster : m_pMonsters)
-	{
-		if (m_iMonsterSpawnLimitCount <= m_iSpawnMonsterIndex)
-			return;
-		if (nullptr != pMonster)
-		{
-			if (pMonster->IsDisable())
-			{
-				pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
-				Add_SpawnPoint();
-
-				m_iSpawnMonsterIndex++;
-				m_iCurrentSpawnMonsterCount++;
-			}
-		}
-	}
 }
 
 void CTrigger::Trigger_Spawn_Forest_2()
 {
 	m_IsSpawnMonster = true;
 	m_IsOnlyOneTrigger = true;
-
-	// 트리거 발동 시 4마리 활성화
-	for (auto& pMonster : m_pMonsters)
-	{
-		if (m_iMonsterSpawnLimitCount <= m_iSpawnMonsterIndex)
-			return;
-		if (nullptr != pMonster)
-		{
-			if (pMonster->IsDisable())
-			{
-				pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
-				Add_SpawnPoint();
-
-				m_iSpawnMonsterIndex++;
-				m_iCurrentSpawnMonsterCount++;
-			}
-		}
-	}
 }
 
 void CTrigger::Trigger_Spawn_Forest_3()
 {
 	m_IsSpawnMonster = true;
 	m_IsOnlyOneTrigger = true;
-
-	// 트리거 발동 시 4마리 활성화
-	for (auto& pMonster : m_pMonsters)
-	{
-		if (m_iMonsterSpawnLimitCount <= m_iSpawnMonsterIndex)
-			return;
-		if (nullptr != pMonster)
-		{
-			if (pMonster->IsDisable())
-			{
-				pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
-				Add_SpawnPoint();
-
-				m_iSpawnMonsterIndex++;
-				m_iCurrentSpawnMonsterCount++;
-			}
-		}
-	}
 }
 
 void CTrigger::Trigger_Spawn_Crown()
 {
 	m_IsOnlyOneTrigger = true;
 
-	for (auto& pMonster : m_pMonsters)
+	// 트리거 발동 시 현재 웨이브로 등록된 몬스터를 활성화.
+	for (auto& pMonster : m_pMonsters[m_iCurrent_Wave])
 	{
 		if (nullptr != pMonster)
 		{
 			if (pMonster->IsDisable())
 			{
-				pMonster->SetState(STATE::ACTIVE);
-				pMonster->Set_InitPos(XMLoadFloat3(&m_SpawnPoints[m_iSpawnPointIndex].vP), m_SpawnPoints[m_iSpawnPointIndex].iCellIndex);
-				//pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+				pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
 				Add_SpawnPoint();
-
-				m_iSpawnMonsterIndex++;
-				m_iCurrentSpawnMonsterCount++;
 			}
 		}
 	}
@@ -453,73 +377,95 @@ void CTrigger::Clear_MonsterSpawnControl()
 {
 	Clear_SpawnPoint();
 
-	m_iSpawnMonsterIndex = 0;
 	m_IsSpawnMonster = false;
 
-	m_iCurrentSpawnMonsterCount = 0;
+	ClearLink_Monster();
+
+	m_iCurrent_Wave = 0;
+	m_iLimitWave = 0;
+
+	m_IsWave = false;
+	m_IsWave_End = false;
+
+	
+}
+
+void CTrigger::Wave_Start()
+{
+	if (true == m_IsWave || m_iLimitWave < m_iCurrent_Wave || SPAWN_WAVE::WAVE_END <= m_iCurrent_Wave)
+		return;
+
+	for (auto& pMonster : m_pMonsters[m_iCurrent_Wave])
+	{
+		if (nullptr != pMonster)
+		{
+			if (pMonster->IsDisable())
+			{
+				pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
+				Add_SpawnPoint();
+			}
+		}
+	}
+
+	m_IsWave = true;
 }
 
 void CTrigger::Monster_Spawn()
 {
-	Check_ActiveMonster();
+	// 리미트 웨이브 체크
+	if (m_iLimitWave < m_iCurrent_Wave || SPAWN_WAVE::WAVE_END <= m_iCurrent_Wave || m_pMonsters[m_iCurrent_Wave].empty())
+		return;
 
-	for (auto& pMonster : m_pMonsters)
+	// 웨이브 발동.
+	if (false == m_IsWave)
+		Wave_Start();
+
+	// 끝이 났나 판단하기 위해 true
+	m_IsWave_End = true;
+
+	for (auto& pMonster : m_pMonsters[m_iCurrent_Wave])
 	{
-		// 최대 개체 수가 되었을경우 스폰 중단.
-		if (m_iMaxSpawnMonsterIndex <= m_iSpawnMonsterIndex)
-		{
-			//MSG_BOX("Trigger : Spawn_Forest End");
+		// 몬스터가 하나라도 활성화 ㅅ항태면 false 세팅.
+		if (pMonster->IsActive())
+			m_IsWave_End = false;
+	}
+
+	// 한 웨이브가 끝나면 다음 웨이브 진행 -> LimitWave 에 도달하면 스폰을 끝낸다.
+	if (true == m_IsWave_End)
+	{
+		// 웨이브 전체가 끝 -> 초기화.
+		if (m_iLimitWave <= m_iCurrent_Wave)
 			Clear_MonsterSpawnControl();
-			return;
-		}
-
-		// 몬스터가 비활성화 -> 죽으면 다시 스폰 후 인덱스 증가.
-		if (m_iMonsterSpawnLimitCount > m_iCurrentSpawnMonsterCount)
+		else
 		{
-			if (nullptr != pMonster)
-			{
-				if (pMonster->IsDisable())
-				{
-					pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
-
-					Add_SpawnPoint();
-
-					m_iSpawnMonsterIndex++;
-				}
-			}
+			// 한웨이브 끝 -> 다음웨이브 진행.
+			m_iCurrent_Wave++;
+			m_IsWave = false;
 		}
 	}
 }
 
-void CTrigger::Check_ActiveMonster()
-{
-	m_iCurrentSpawnMonsterCount = 0;
-	for (auto& pMonster : m_pMonsters)
-	{
-		if (nullptr != pMonster)
-		{
-			if (pMonster->IsActive())
-				m_iCurrentSpawnMonsterCount++;
-		}
-	}
-}
 
-HRESULT CTrigger::Link_Monster(CCharacter * pCharacter)
+
+HRESULT CTrigger::Link_WaveMonster(SPAWN_WAVE eWave, CCharacter * pCharacter)
 {
-	if (nullptr == pCharacter || TRIGGER_TYPE::TYPE_SPAWN != m_TriggerDesc.iTriggerType)
+	if (nullptr == pCharacter || TRIGGER_TYPE::TYPE_SPAWN != m_TriggerDesc.iTriggerType || SPAWN_WAVE::WAVE_END <= eWave)
 	{
 		MSG_BOX("Failed To Link Monster : CTrigger");
 		return E_FAIL;
 	}
 
-	m_pMonsters.push_back(pCharacter);
+	m_pMonsters[eWave].push_back(pCharacter);
+	// 리미트 웨이브 갱신 -> 가장 높은 웨이브가 저장된다.
+	m_iLimitWave = eWave;
 
 	return S_OK;
 }
 
 void CTrigger::ClearLink_Monster()
 {
-	m_pMonsters.clear();
+	for (_uint i = 0; i < SPAWN_WAVE::WAVE_END; ++i)
+		m_pMonsters[i].clear();
 }
 
 HRESULT CTrigger::Load_SpawnPoint()

@@ -376,7 +376,7 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(static_cast<CCharacter*>(pChar))))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, static_cast<CCharacter*>(pChar))))
 		return E_FAIL;
 
 	return S_OK;

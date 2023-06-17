@@ -34,6 +34,13 @@ public:
 		ID_END
 	};
 
+	enum SPAWN_WAVE {
+		WAVE_1,
+		WAVE_2,
+		WAVE_3,
+		WAVE_END
+	};
+
 private:
 	CTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CTrigger(const CTrigger& rhs);
@@ -133,8 +140,8 @@ public: /* For. Spawn Trigger */
 	void Clear_SpawnPoint();
 	void Clear_MonsterSpawnControl();
 
+	void Wave_Start();
 	void Monster_Spawn();
-	void Check_ActiveMonster();
 
 private:
 	// 최대 스폰 포인트 개수
@@ -145,24 +152,22 @@ private:
 	_uint						m_iSpawnPointIndex = { 0 };
 	// 몬스터 스폰 시작.
 	_bool						m_IsSpawnMonster = { false };
-;
-
-	// 진행중인 몬스터 스폰 인덱스 -> Max 가 되면 스폰 중단.
-	_uint						m_iSpawnMonsterIndex = { 0 };
-	// 한 스폰지점에서의 총 스폰 몬스터 마리수
-	const _uint&				m_iMaxSpawnMonsterIndex = { 8 };
-	//const _uint&				m_iMaxSpawnMonsterIndex = { 4 };
-
-	// 현재 소환된 마리수 체크
-	_uint						m_iCurrentSpawnMonsterCount = { 0 };
-	// 몬스터 스폰 마리수 제한 ( 한번에 스폰 가능한 수 )
-	const _uint&				m_iMonsterSpawnLimitCount = { 3 };
+	
+	// 웨이브가 진행중임을 체크
+	_bool						m_IsWave = { false };
+	// 현재 웨이브가 끝났는지를 체크.
+	_bool						m_IsWave_End = { false };
+	// 현재 웨이브.
+	_uint						m_iCurrent_Wave = { 0 };
+	// 최대 웨이브
+	_uint						m_iLimitWave = { 0 };
 
 public:
-	HRESULT Link_Monster(CCharacter* pCharacter);
+	HRESULT Link_WaveMonster(SPAWN_WAVE eWave, CCharacter* pCharacter);
 	void ClearLink_Monster();
+
 private:
-	vector<CCharacter*>			m_pMonsters = { nullptr };
+	vector<CCharacter*>			m_pMonsters[SPAWN_WAVE::WAVE_END] = {};
 
 public:
 	HRESULT Load_SpawnPoint();

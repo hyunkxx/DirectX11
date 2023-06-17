@@ -162,11 +162,8 @@ void CCharacter::SetUp_Activate(SPAWN_POINT SpawnPoint)
 {
 	m_SpawnPoint = SpawnPoint;
 
-	if (true == IsDisable())
-	{
-		Regen();
-		Set_InitPos(XMLoadFloat3(&SpawnPoint.vP), SpawnPoint.iCellIndex);
-	}
+	Regen();
+	Set_InitPos(XMLoadFloat3(&SpawnPoint.vP), SpawnPoint.iCellIndex);
 }
 
 void CCharacter::Free()

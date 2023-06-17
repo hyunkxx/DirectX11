@@ -10,11 +10,18 @@
 #include "P_PlayerGirl.h"
 #include "P_Yangyang.h"
 #include "P_Chixia.h"
+
+#include "M_GAzizi.h"
+#include "M_AWukaka.h"
+#include "M_FHuxiuxiu.h"
+
+#include "M_Anjin.h"
 #include "M_Huojin.h"
 #include "M_Binglie.h"
 #include "M_Fenglie.h"
 #include "M_Leilie.h"
 #include "M_Qunjing.h"
+
 #include "AcquireSystem.h"
 #include "TerminalUI.h"
 #include "Layer.h"
@@ -43,6 +50,12 @@ HRESULT CLevel_Forest::Initialize()
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
 	CP_Yangyang::Init_States(m_pDevice, m_pContext);
 	CP_Chixia::Init_States(m_pDevice, m_pContext);
+
+	CM_GAzizi::Init_States(m_pDevice, m_pContext);
+	CM_AWukaka::Init_States(m_pDevice, m_pContext);
+	CM_FHuxiuxiu::Init_States(m_pDevice, m_pContext);
+
+	CM_Anjin::Init_States(m_pDevice, m_pContext);
 	CM_Huojin::Init_States(m_pDevice, m_pContext);
 	CM_Binglie::Init_States(m_pDevice, m_pContext);
 	CM_Fenglie ::Init_States(m_pDevice, m_pContext);
@@ -404,16 +417,17 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 		return E_FAIL;
 	}
 
-	CCharacter*		pGazizi = { nullptr };
-	CCharacter*		pAwukaka = { nullptr };
-	CCharacter*		pFhuxiuxiu = { nullptr };
+	
+	CCharacter*		pGazizi = { nullptr }; // °¡ÁöÁö
+	CCharacter*		pAwukaka = { nullptr }; // ÀÚÆø
+	CCharacter*		pFhuxiuxiu = { nullptr }; // ¹Ù¶÷
 
-	CCharacter*		pAnjin = { nullptr };
-	CCharacter*		pHuojin = { nullptr };
-	CCharacter*		pBinglie = { nullptr };
-	CCharacter*		pFenglie = { nullptr };
-	CCharacter*		pLeilei = { nullptr };
-	CCharacter*		pQunjing = { nullptr };
+	CCharacter*		pAnjin = { nullptr }; // ³´¸à 
+	CCharacter*		pHuojin = { nullptr }; // Áú·µ
+	CCharacter*		pBinglie = { nullptr }; // ¾ó¸à
+	CCharacter*		pFenglie = { nullptr }; // ºÎ¸à
+	CCharacter*		pLeilei = { nullptr }; // È°¸à
+	CCharacter*		pQunjing = { nullptr }; // µ¹¸à
 
 	if (FAILED(Add_Monster(OBJECT::MONSTER_GAZIZI, pLayerTag, &pGazizi)))
 		return E_FAIL;
@@ -441,56 +455,73 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pGazizi)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pHuojin)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pFhuxiuxiu)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pFhuxiuxiu)))
 		return E_FAIL;
-
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pHuojin)))
+	
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pBinglie)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pAnjin)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pAwukaka)))
 		return E_FAIL;
 
 	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_1"));
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pFhuxiuxiu)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pFenglie)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pAwukaka)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pAwukaka)))
 		return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pAnjin)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pAnjin)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pBinglie)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pFhuxiuxiu)))
+		return E_FAIL;
+
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pFenglie)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pAwukaka)))
 		return E_FAIL;
 
 	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_2"));
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pGazizi)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pLeilei)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pAwukaka)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pGazizi)))
 		return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pHuojin)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pBinglie)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pFenglie)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pFhuxiuxiu)))
+		return E_FAIL;
+
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pHuojin)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pLeilei)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pFhuxiuxiu)))
 		return E_FAIL;
 
 	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_3"));
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pAnjin)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pAnjin)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pBinglie)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pLeilei)))
 		return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pLeilei)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pHuojin)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pQunjing)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pFenglie)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pBinglie)))
+		return E_FAIL;
+
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pQunjing)))
 		return E_FAIL;
 
 	/*CGameObject* pChar = nullptr;
@@ -2776,6 +2807,12 @@ void CLevel_Forest::Free()
 	CP_PlayerGirl::Release_States();
 	CP_Yangyang::Release_States();
 	CP_Chixia::Release_States();
+
+	CM_GAzizi::Release_States();
+	CM_AWukaka::Release_States();
+	CM_FHuxiuxiu::Release_States();
+
+	CM_Anjin::Release_States();
 	CM_Huojin::Release_States();
 	CM_Binglie::Release_States();
 	CM_Fenglie::Release_States();
