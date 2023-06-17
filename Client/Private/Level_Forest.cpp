@@ -2499,10 +2499,10 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 
 	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
 	matScale = XMMatrixScaling(3.f, 3.f, 3.f);
-	RotationMatrix = XMMatrixRotationAxis(vUp, XMConvertToRadians(75.f));
-	vWorldMatrix._41 = 223.f;
+	RotationMatrix = XMMatrixRotationAxis(vUp, XMConvertToRadians(80.f));
+	vWorldMatrix._41 = 238.f;
 	vWorldMatrix._42 = 8.f;
-	vWorldMatrix._43 = 104.f;
+	vWorldMatrix._43 = 100.f;
 
 	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_04", &Rock_State)))

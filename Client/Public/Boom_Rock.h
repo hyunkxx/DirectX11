@@ -25,7 +25,7 @@ public:
 		_float4x4 vWorldMatrix;
 		_float3	  vExtents;
 		_int	  iPass;
-	};
+	}RockState;
 
 private:
 	CBoom_Rock(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

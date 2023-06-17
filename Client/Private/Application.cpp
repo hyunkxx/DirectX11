@@ -694,6 +694,10 @@ HRESULT CApplication::Ready_Prototype_Static_Component()
 		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/2/SM_Com_Roc_07AS.smdl")))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, SMODEL::INTERACTION_ROCK_02,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/Rocks/39/SM_Com_Roc_52AS.smdl")))))
+		return E_FAIL;
+	
 	// 각 레벨마다 네비게이션 생성해서 사용하도록 수정
 	// TEXT("../../Data/GamePlay/Navigation/Navigation.data")
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, COMPONENT::NAVIGATION,
