@@ -84,7 +84,6 @@ private:
 	CEffect* m_Invisible_Effect = nullptr;
 
 	class CInventory* m_pInven = nullptr;
-	class CUI_Minimap* m_pUIIcon = nullptr;
 private:
 	CHEST_TYPE m_eChestType = CHEST_SIMPLE;
 	_bool m_bOverlapedPlayer = false;
@@ -99,10 +98,6 @@ private:
 	_float m_fResetTimeAcc = 0.f;
 
 	_float3 m_vColor = { 1.f, 1.f, 1.f };
-
-	//UI Ãß°¡
-	_int	m_UIIndex = { 0 };
-
 
 	_bool  m_bRimLight = { false };
 	_float m_fRimTime = { 0.f };

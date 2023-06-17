@@ -1229,22 +1229,46 @@ void CUI_MainScreen::R(_double TimeDelta)
 
 void CUI_MainScreen::PlayerTag(_double TimeDelta)
 {
-
-	if (0.f < CurTagCool)
+	switch (m_HavePlayerNum)
 	{
-		PlayerTagoOn();
-		_int TUnits = _int(CurTagCool * 10 / 10); // 1의자리
-		_int TTenths = _int(CurTagCool * 10); //0.1자리
-		m_CutDescList[47]->iTexNum = m_CutDescList[49]->iTexNum = 190 + TUnits;
-		m_CutDescList[48]->iTexNum = m_CutDescList[50]->iTexNum = 190 + TTenths;
+	case 2:
+	{
+		if (0.f < CurTagCool)
+		{
+			PlayerTagoOn1();
+			_int TUnits = _int(CurTagCool * 10 / 10); // 1의자리
+			_int TTenths = _int(CurTagCool * 10); //0.1자리
+			m_CutDescList[47]->iTexNum = 190 + TUnits;
+			m_CutDescList[48]->iTexNum = 190 + TTenths;
+		}
+		if ((0.1f > CurTagCool) && (CurTagCool > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
+			bTagEnd = true;
+		if (true == bTagEnd)
+		{
+			PlayerTagoOff1();
+			CoolTimeEnd1(TimeDelta);
+		}
 	}
-	if ((0.1f > CurTagCool) && (CurTagCool > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		bTagEnd = true;
-
-	if (true == bTagEnd)
+	break;
+	case 3:
 	{
-		PlayerTagoOff();
-		CoolTimeEnd(TimeDelta);
+		if (0.f < CurTagCool)
+		{
+			PlayerTagoOn2();
+			_int TUnits = _int(CurTagCool * 10 / 10); // 1의자리
+			_int TTenths = _int(CurTagCool * 10); //0.1자리
+			m_CutDescList[47]->iTexNum = m_CutDescList[49]->iTexNum = 190 + TUnits;
+			m_CutDescList[48]->iTexNum = m_CutDescList[50]->iTexNum = 190 + TTenths;
+		}
+		if ((0.1f > CurTagCool) && (CurTagCool > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
+			bTagEnd = true;
+		if (true == bTagEnd)
+		{
+			PlayerTagoOff2();
+			CoolTimeEnd2(TimeDelta);
+		}
+	}
+	break;
 	}
 }
 
@@ -1331,7 +1355,39 @@ void CUI_MainScreen::AlphaP(CUTRECT* pDesc, _double TimeDelta)
 
 
 
-void CUI_MainScreen::CoolTimeEnd(_double TimeDelta)
+void CUI_MainScreen::CoolTimeEnd1(_double TimeDelta)
+{
+
+	CUTRECT* pDesc1 = m_CutDescList[1];
+
+	pDesc1->TimeAcc += (_float)TimeDelta;
+
+	if (pDesc1->TimeAcc < (pDesc1->Duration) / 2.f)
+	{
+		_float fWidth = pDesc1->fWidthCut + pDesc1->fSpeedWidth * (_float)TimeDelta * 40.f;
+		pDesc1->fWidthCut = pDesc1->WorldMatrixCut._11 = fWidth;
+
+		_float fHeight = pDesc1->fHeightCut + pDesc1->fSpeedHeight * (_float)TimeDelta * 40.f;
+		pDesc1->fHeightCut = pDesc1->WorldMatrixCut._22 = fHeight;
+	}
+	else if ((pDesc1->TimeAcc < pDesc1->Duration) && (pDesc1->TimeAcc >(pDesc1->Duration) / 2.f))
+	{
+		_float fWidth = pDesc1->fWidthCut - pDesc1->fSpeedWidth * (_float)TimeDelta * 40.f;
+		pDesc1->fWidthCut = pDesc1->WorldMatrixCut._11 = fWidth;
+
+		_float fHeight = pDesc1->fHeightCut - pDesc1->fSpeedHeight * (_float)TimeDelta * 40.f;
+		pDesc1->fHeightCut = pDesc1->WorldMatrixCut._22 = fHeight;
+	}
+	else
+	{
+		pDesc1->fWidthCut = 60.f;
+		pDesc1->fHeightCut = 60.f;
+		pDesc1->TimeAcc = 0.f;
+		bTagEnd = false;
+	}
+}
+
+void CUI_MainScreen::CoolTimeEnd2(_double TimeDelta)
 {
 
 	CUTRECT* pDesc1 = m_CutDescList[1];
@@ -1349,7 +1405,7 @@ void CUI_MainScreen::CoolTimeEnd(_double TimeDelta)
 
 		pDesc2->fWidthCut = pDesc2->WorldMatrixCut._11 = fWidth;
 		pDesc2->fHeightCut = pDesc2->WorldMatrixCut._22 = fHeight;
-		
+
 	}
 	else if ((pDesc1->TimeAcc < pDesc1->Duration) && (pDesc1->TimeAcc >(pDesc1->Duration) / 2.f))
 	{
@@ -1374,7 +1430,18 @@ void CUI_MainScreen::CoolTimeEnd(_double TimeDelta)
 		bTagEnd = false;
 	}
 }
-void CUI_MainScreen::PlayerTagoOn()
+
+
+void CUI_MainScreen::PlayerTagoOn1()
+{
+	m_CutDescList[14]->bCoolTime = true;
+	m_CutDescList[14]->bRender = true;
+	m_CutDescList[47]->bRender = true;
+	m_CutDescList[48]->bRender = true;
+	m_CutDescList[65]->bRender = true;
+}
+
+void CUI_MainScreen::PlayerTagoOn2()
 {
 	m_CutDescList[14]->bCoolTime = true;
 	m_CutDescList[14]->bRender = true;
@@ -1389,23 +1456,34 @@ void CUI_MainScreen::PlayerTagoOn()
 	m_CutDescList[64]->bRender = true;
 }
 
-void CUI_MainScreen::PlayerTagoOff()
-{
-		m_CutDescList[14]->bCoolTime = false;
-		m_CutDescList[14]->bRender = false;
-		m_CutDescList[47]->bRender = false;
-		m_CutDescList[48]->bRender = false;
-		m_CutDescList[65]->bRender = false;
-		m_CutDescList[47]->iTexNum = 190;
-		m_CutDescList[48]->iTexNum = 199;
 
-		m_CutDescList[15]->bCoolTime = false;
-		m_CutDescList[15]->bRender = false;
-		m_CutDescList[49]->bRender = false;
-		m_CutDescList[50]->bRender = false;
-		m_CutDescList[64]->bRender = false;
-		m_CutDescList[49]->iTexNum = 190;
-		m_CutDescList[50]->iTexNum = 199;
+void CUI_MainScreen::PlayerTagoOff1()
+{
+	m_CutDescList[14]->bCoolTime = false;
+	m_CutDescList[14]->bRender = false;
+	m_CutDescList[47]->bRender = false;
+	m_CutDescList[48]->bRender = false;
+	m_CutDescList[65]->bRender = false;
+	m_CutDescList[47]->iTexNum = 190;
+	m_CutDescList[48]->iTexNum = 199;
+}
+void CUI_MainScreen::PlayerTagoOff2()
+{
+	m_CutDescList[14]->bCoolTime = false;
+	m_CutDescList[14]->bRender = false;
+	m_CutDescList[47]->bRender = false;
+	m_CutDescList[48]->bRender = false;
+	m_CutDescList[65]->bRender = false;
+	m_CutDescList[47]->iTexNum = 190;
+	m_CutDescList[48]->iTexNum = 199;
+
+	m_CutDescList[15]->bCoolTime = false;
+	m_CutDescList[15]->bRender = false;
+	m_CutDescList[49]->bRender = false;
+	m_CutDescList[50]->bRender = false;
+	m_CutDescList[64]->bRender = false;
+	m_CutDescList[49]->iTexNum = 190;
+	m_CutDescList[50]->iTexNum = 199;
 }
 
 

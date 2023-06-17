@@ -8,7 +8,6 @@
 #include "P_PlayerGirl.h"
 
 #include "ItemDB.h"
-#include "UI_Minimap.h"
 #include "Inventory.h"
 #include "Effect.h"
 
@@ -76,10 +75,7 @@ HRESULT CInvisible_Chest::Initialize(void * pArg)
 void CInvisible_Chest::Start()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	m_pUIIcon = static_cast<CUI_Minimap*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, TEXT("Inventory")));
-	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::BOX);
-	m_pUIIcon->SetRender(m_UIIndex, false); // 보이지 않는 박스 -> 미니맵, 메인에 뜨는 미니 아이콘 랜더off
 }
 
 void CInvisible_Chest::PreTick(_double TimeDelta)
@@ -281,8 +277,6 @@ void CInvisible_Chest::Visivle_Tick(_double TimeDelta)
 				matrix._42 = matrix._42 + 1.f;
 				CEffect* pOpenEffect = pGameInstance->Get_Effect(L"Get_Item_Effect_02", EFFECT_ID::COMON);
 				pOpenEffect->Play_Effect(&matrix);
-
-				m_pUIIcon->SetRender(m_UIIndex, false);
 			}
 		}
 		else
@@ -333,15 +327,6 @@ void CInvisible_Chest::Visivle_Tick(_double TimeDelta)
 			m_bInteractionUIRender = false;
 			interactionUIActive(false);
 		}
-	}
-
-	if ((nullptr != m_pUIIcon) && (true == this->IsActive()))
-	{
-		if(false ==m_pUIIcon->GetRenderState(m_UIIndex)) // 보이기 시작하면 미니맵 랜더on
-			m_pUIIcon->SetRender(m_UIIndex, true);
-
-		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
-		m_pUIIcon->SetRender(m_UIIndex, true);
 	}
 }
 
