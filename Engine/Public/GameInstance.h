@@ -137,9 +137,11 @@ public: // RenderSetting
 	SHADOW_LEVEL GetShadowLevel() const;
 
 	void SSAOToggle();
+	void SetSSAO(_bool bValue);
 	_bool IsActiveSSAO() const;
 
 	void OutlineToggle();
+	void SetOutline(_bool bValue);
 	_bool IsActiveOutline() const;
 
 	void SetLUT(CRenderer::LUT eLUT);
@@ -157,6 +159,9 @@ public: // RenderSetting
 	_bool IsActiveRGBSplit() const;
 	_float GetRGBSplitRatio() const;
 	
+	void SetFog(_bool bValue);
+	_bool IsActiveFog() const;
+
 	void StartFade(CRenderSetting::FADE_STATE eState, _double FadeTime);
 
 public:/*For.Save_Loader*/

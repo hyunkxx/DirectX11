@@ -57,6 +57,8 @@ private:
 	CTransform* m_pTargetTransform = nullptr;
 	CTransform* m_pSubTransform = nullptr;
 
+	CTransform* m_pOriginTransform = nullptr; // 회전전 원본적용
+
 private:
 	CCameraMovement::CAM_TYPE m_eCamType;
 	CCameraMovement* m_pCamMovement = nullptr;

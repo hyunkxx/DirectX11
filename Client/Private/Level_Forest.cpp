@@ -138,7 +138,6 @@ HRESULT CLevel_Forest::Initialize()
 	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
 
 	pGM->ResetStaticShadowBake();
-	ShowCursor(false);
 
 	return S_OK;
 }

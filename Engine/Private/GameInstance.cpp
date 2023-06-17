@@ -698,12 +698,28 @@ void CGameInstance::SSAOToggle()
 	m_pRenderSetting->SSAOToggle();
 }
 
+void CGameInstance::SetSSAO(_bool bValue)
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	m_pRenderSetting->SetSSAO(bValue);
+}
+
 void CGameInstance::OutlineToggle()
 {
 	if (nullptr == m_pRenderSetting)
 		return;
 
 	m_pRenderSetting->OutlineToggle();
+}
+
+void CGameInstance::SetOutline(_bool bValue)
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	m_pRenderSetting->SetOutline(bValue);
 }
 
 _bool CGameInstance::IsActiveOutline() const
@@ -862,6 +878,22 @@ _float CGameInstance::GetRGBSplitRatio() const
 		return false;
 
 	return m_pRenderSetting->GetRGBSplitRatio();
+}
+
+void CGameInstance::SetFog(_bool bValue)
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	return m_pRenderSetting->SetFog(bValue);
+}
+
+_bool CGameInstance::IsActiveFog() const
+{
+	if (nullptr == m_pRenderSetting)
+		return false;
+
+	return m_pRenderSetting->IsActiveFog();
 }
 
 void CGameInstance::StartFade(CRenderSetting::FADE_STATE eState, _double FadeTime)

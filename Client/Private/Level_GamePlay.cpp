@@ -25,7 +25,7 @@
 
 #include "Item.h"
 #include "Layer.h"
-
+#include "LightManager.h"
 #include "Level_Loading.h"
 
 #include "Boom_Rock.h"

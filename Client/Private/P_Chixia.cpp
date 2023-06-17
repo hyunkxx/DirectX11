@@ -1574,13 +1574,6 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 			eCurFrameInput = INPUT_AIM;
 		}
 
-
-		if (!pGM->IsActiveUI())
-		{
-			if (pGame->InputMouse(DIMK_RB) == KEY_STATE::TAP)
-				pGame->TimeSlowDown(0.5f, 0.1f);
-		}
-
 		// Tool
 		if (pGame->InputKey(DIK_T) == KEY_STATE::TAP)
 		{
@@ -1849,8 +1842,8 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_Chixia::INPUT_BURST:
-			/*if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] &&
-				m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] == m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST])*/
+			if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] &&
+				m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] == m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST])
 				m_Scon.iNextState = IS_BURST;
 			break;
 

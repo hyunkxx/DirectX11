@@ -2091,6 +2091,69 @@ HRESULT CApplication::Ready_Item_Image()
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::MAP_DESC_CROWN,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/CrownDesc.dds")))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::HALF_BACK_GRAD,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/HalfBackGrad.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_TERMINAL_SETTING,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Setting_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::PANEL_EX,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/PagePanelEx.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SHADOW,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Shadow_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_SSAO,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/SSAO_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_OUTLINE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Outline_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_FILTER,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Filter.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_FOG,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Fog_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::LEFT_ARROW_GLOW,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/LeftGlow.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::RIGHT_ARROW_GLOW,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/RightGlow.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_ON,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/On_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_OFF,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Off_.dds")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LUT_MINUS,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Minus_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LUT_PLUS,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Plus_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LUT_FUJI,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Fuji_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LUT_GRUNGY,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Grungy_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LUT_SOUTH,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/South_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LUT_KURO,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Kuro_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LUT_DEFAULT,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Default_.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LUT_ACHROMATIC,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Achromatic_.dds")))))
+		return E_FAIL;
 
 	//이미지
 	//요리 재료 아이콘

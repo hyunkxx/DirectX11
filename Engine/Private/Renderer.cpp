@@ -1528,8 +1528,10 @@ void CRenderer::FinalExtraction()
 
 	if (m_pRenderSetting->IsActiveBlackWhite())
 		m_pShader_Extraction->Begin(1);
-	else
+	else if(m_pRenderSetting->IsActiveFog())
 		m_pShader_Extraction->Begin(5);
+	else
+		m_pShader_Extraction->Begin(6);
 
 	m_pVIBuffer->Render();
 }

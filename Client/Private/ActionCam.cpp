@@ -51,11 +51,16 @@ HRESULT CActionCam::Initialize(void * pArg)
 	ZeroMemory(&TransformDesc, sizeof TransformDesc);
 
 	TransformDesc.fMoveSpeed = 15.f;
-	TransformDesc.fRotationSpeed = XMConvertToRadians(400.f);
+	TransformDesc.fRotationSpeed = XMConvertToRadians(395.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
 		TEXT("Com_Transform"), (CComponent**)&m_pSubTransform, &TransformDesc)))
 		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
+		TEXT("Com_Transform_origin"), (CComponent**)&m_pOriginTransform, &TransformDesc)))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -82,7 +87,15 @@ void CActionCam::Tick(_double TimeDelta)
 		break;
 	}
 
+	//_vector vDir = XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_LOOK));
+	//_vector vPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
+	//m_pOriginTransform->Set_WorldMatrix(m_pMainTransform->Get_WorldMatrix());
+
+	//_matrix vMat = XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()) * XMMatrixRotationAxis(vDir, XMConvertToRadians(15.f));
+	//m_pMainTransform->Set_WorldMatrix(vMat);
+
 	__super::Tick(TimeDelta);
+	//m_pMainTransform->Set_WorldMatrix(m_pOriginTransform->Get_WorldMatrix());
 }
 
 void CActionCam::LateTick(_double TimeDelta)
@@ -125,6 +138,7 @@ void CActionCam::Free()
 	__super::Free();
 	Safe_Release(m_pMainTransform);
 	Safe_Release(m_pSubTransform);
+	Safe_Release(m_pOriginTransform);
 }
 
 void CActionCam::AttachTargetTransform(CTransform * pTransform)

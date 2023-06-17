@@ -144,6 +144,14 @@ PS_OUT PS_EXTRACTION_FINAL_FOG(PS_IN In)
 	return Out;
 }   
 
+PS_OUT PS_EXTRACTION_FINAL_NO_FOG(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+	
+	vector vSourColor = g_SourTexture.Sample(LinearBorderSampler, In.vTexUV);
+	Out.vColor = vSourColor;
+	return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -225,4 +233,16 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_EXTRACTION_FINAL_FOG();
 	}
 
+	pass Extraction_Final_NoFog_Pass6
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_EXTRACTION_FINAL_NO_FOG();
+	}
 }

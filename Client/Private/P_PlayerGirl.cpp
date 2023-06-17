@@ -1449,12 +1449,6 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 		else
 			m_AimChargeAcc = 0.0;
 
-		if (!pGM->IsActiveUI())
-		{
-			if (pGame->InputMouse(DIMK_RB) == KEY_STATE::TAP)
-				pGame->TimeSlowDown(0.5f, 0.1f);
-		}
-
 		// Tool
 		if (pGame->InputKey(DIK_T) == KEY_STATE::TAP)
 		{

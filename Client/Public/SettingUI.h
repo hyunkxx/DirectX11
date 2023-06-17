@@ -40,6 +40,9 @@ public://Interface
 	virtual void SetRender(_bool bValue) override;
 
 private:
+	enum SETTING_TYPE { SET_GRAPHIC, SET_AUDIO };
+	enum GRAPHIC_BTN { GRAPHIC_SHADOW, GRAPHIC_SSAO, GRAPHIC_OUTLINE, GRAPHIC_FILTER, GRAPHIC_FOG, GRAPHIC_END };
+
 	HRESULT addComponents();
 	void stateActive();
 	void stateDisable();
@@ -48,9 +51,16 @@ private:
 	void elemAlphaReset(_uint iStartIndex = 0);
 	void keyInput(_double TimeDelta);
 
+	//Input
+	void graphicInput(_double TimeDelta);
+	void audioInput(_double TimeDelta);
+	void onColickGraphicLeftButton(GRAPHIC_BTN eGraphicButton);
+	void onColickGraphicRightButton(GRAPHIC_BTN eGraphicButton);
+
 	//Render
 	HRESULT mainRender();
-
+	HRESULT graphicRender();
+	HRESULT audioRender();
 public:
 	static CSettingUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject * Clone(void * pArg = nullptr) override;
@@ -76,6 +86,23 @@ private:
 	enum { SMOOTH_MAX = 30 };
 	_float m_fElemAlpha[SMOOTH_MAX];
 	_bool m_bElemAlphaStart[SMOOTH_MAX];
+
+private:
+	ORTHO_DESC m_OrthoTitle;
+	ORTHO_DESC m_OrthoGraphicSlot[GRAPHIC_END];
+	ORTHO_DESC m_OrthoGraphicText[GRAPHIC_END];
+
+	ORTHO_DESC m_OrthoGraphicBtnLeftBtn[GRAPHIC_END];
+	ORTHO_DESC m_OrthoGraphicBtnRightBtn[GRAPHIC_END];
+	ORTHO_DESC m_OrthoGraphicBtnLeft[GRAPHIC_END];
+	ORTHO_DESC m_OrthoGraphicBtnRight[GRAPHIC_END];
+	ORTHO_DESC m_OrthoGraphicBtnText[GRAPHIC_END];
+
+	_float m_fSmoothMove[GRAPHIC_END];
+	_uint m_iGraphicState[GRAPHIC_END];
+
+private:
+	SETTING_TYPE m_eCurType = SETTING_TYPE::SET_GRAPHIC;
 
 private:
 	_bool m_bActive = false;

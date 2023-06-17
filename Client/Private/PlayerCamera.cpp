@@ -143,6 +143,20 @@ void CPlayerCamera::Tick(_double TimeDelta)
 			m_bFixMouse = false;
 		}
 
+
+		if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::HOLD)
+			m_bFixMouse = true;
+		else if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::TAP)
+		{
+			m_bFixMouse = true;
+			ShowCursor(false);
+		}
+		else if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::AWAY)
+		{
+			m_bFixMouse = false;
+			ShowCursor(true);
+		}
+
 		///* 임시 마우스 고정 혜지 용 */
 		//if (pGameInstance->InputKey(DIK_NUMLOCK) == KEY_STATE::TAP)
 		//{

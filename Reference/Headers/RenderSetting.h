@@ -56,10 +56,12 @@ public:
 	// SSAO
 	void SSAOToggle() { m_bSSAO = !m_bSSAO; }
 	_bool IsActiveSSAO() const { return m_bSSAO; }
+	void SetSSAO(_bool bValue) { m_bSSAO = bValue; }
 
 	// Outline
 	void OutlineToggle() { m_bOutline = !m_bOutline; };
 	_bool IsActiveOutline() const { return m_bOutline; }
+	void SetOutline(_bool bValue) { m_bOutline = bValue; }
 
 	// LUT
 	void SetLUT(CRenderer::LUT eLUT) { 
@@ -154,6 +156,11 @@ public:
 		return m_FadeDesc.m_eFadeState != FADE_STATE::FADE_NONE;
 	}
 
+	void SetFog(_bool bValue) { m_bFog = bValue; }
+	_bool IsActiveFog() const {
+		return m_bFog;
+	}
+
 private:
 	_bool m_bDebugRenderTarget = false;
 
@@ -182,6 +189,8 @@ private:
 	// 페이드 인&아웃
 	FADE_DESC m_FadeDesc;
 
+	// Fog
+	_bool m_bFog = true;
 };
 
 END
