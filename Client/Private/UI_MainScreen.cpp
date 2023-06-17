@@ -96,7 +96,11 @@ void CUI_MainScreen::Start()
 	SetPlayer();
 	SetHP();
 	SetStaticSkillCoolTime(); // 메인캐릭터로 전체 쿨타임 설정
-	
+	memcpy(m_CutDescList[38], m_CutDescList[57], sizeof(CUTRECT));
+	m_CutDescList[75]->iTexNum = m_CutDescList[37]->iTexNum = 50;
+	XMStoreFloat4x4(&m_CutDescList[37]->WorldMatrixCut, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_CutDescList[75]->WorldMatrixCut, XMMatrixIdentity());
+	m_CutDescList[75]->eKeyType = m_CutDescList[37]->eKeyType = 10;
 }
 
 void CUI_MainScreen::Tick(_double TimeDelta)
@@ -106,10 +110,10 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	if (pGameInstance->InputKey(DIK_NUMPADENTER) == KEY_STATE::TAP) // 임시
 	{/*
-		if (nullptr == m_pUIMen)
-			return;
-		m_pUIMen->SetState(ACTIVE);
-		m_pUIMen->Set_SituMeet();*/
+	 if (nullptr == m_pUIMen)
+	 return;
+	 m_pUIMen->SetState(ACTIVE);
+	 m_pUIMen->Set_SituMeet();*/
 		m_pPlayerStateClass->AddPlayer();
 	}
 	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::TAP) // 임시
@@ -136,7 +140,7 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	OtherobjIsActive(TimeDelta);
 
 	SetPlayer(); // 각 슬롯에 맞는 플레이어 색깔 설정, 스킬 텍스처 설정, 보유캐릭터
-	// 캐릭터가 바뀌면 갱신
+				 // 캐릭터가 바뀌면 갱신
 	if (m_eCurElement != m_pPlayerStateClass->Get_MainCharacterState()->eElement)
 	{
 		m_eCurElement = m_pPlayerStateClass->Get_MainCharacterState()->eElement;
@@ -189,7 +193,7 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 				m_fFlashAcc[i] -= (_float)TimeDelta * 2.f;
 				if (m_fFlashAcc[i] < 0.f)
 				{
-					m_fFlashAcc[i] = 0.f; 
+					m_fFlashAcc[i] = 0.f;
 					m_bSoonToggle[i] = !m_bSoonToggle[i];
 				}
 			}
@@ -235,7 +239,7 @@ HRESULT CUI_MainScreen::Render()
 			return E_FAIL;
 
 		renderFoodBuff();
-		
+
 		for (auto& Desc : DamageList)
 		{
 			if (FAILED(__super::Render()))
@@ -248,6 +252,10 @@ HRESULT CUI_MainScreen::Render()
 
 		for (_uint i = 0; i < (_uint)m_CutDescList.size(); ++i)
 		{
+			if (i == 37)
+			{
+				int i = 0;
+			}
 			if (true == m_CutDescList[i]->bRender)
 			{
 				if (3 > m_CutDescList[i]->eKeyType)
@@ -344,14 +352,14 @@ HRESULT CUI_MainScreen::Render()
 					m_pShader->Begin(m_iPass);
 					m_pVIBuffer->Render();
 				}
-				else if (i ==14 || i ==15)
+				else if (i == 14 || i == 15)
 				{
 					if (FAILED(Setup_ShaderResourcesPlayer(i)))
 						return E_FAIL;
 					m_pShader->Begin(m_iPass);
 					m_pVIBuffer->Render();
 				}
-				
+
 			}
 		}
 	}
@@ -377,7 +385,7 @@ HRESULT CUI_MainScreen::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, SHADER::UI_SUB,
 		TEXT("com_subui_shader"), (CComponent**)&m_pSubShader)))
 		return E_FAIL;
-	
+
 	if (FAILED(__super::Add_Component(LEVEL_ANYWHERE, TEXTURE::UI,
 		TEXT("com_texFunc"), (CComponent**)&m_pTexFunc)))
 		return E_FAIL;
@@ -409,33 +417,33 @@ void CUI_MainScreen::OtherobjIsActive(_double TimeDelta)
 
 	/*if (m_pTerminalUI != nullptr)
 	{
-		if (m_pTerminalUI->IsActive())
-			m_bRender = false;
-	}
-	if (m_pTerminalUI != nullptr)
-	{
-		if (m_pTip->IsActive())
-			m_bRender = false;
-	}
-	if (m_pTerminalUI != nullptr)
-	{
-	 if (m_pUIMen->IsActive())
+	if (m_pTerminalUI->IsActive())
 	m_bRender = false;
-	 if (m_pTerminalUI != nullptr)
-	 {
-		 if (m_pUISovi->IsActive())
-			 m_bRender = false;
-	 }
-	 if (m_pTerminalUI != nullptr)
-	 {
-		 if (m_pUIPanhua->IsActive())
-			 m_bRender = false;
-	 }
-	 if (m_pTerminalUI != nullptr)
-	 {
-		 if (m_pUICook->IsActive())
-			 m_bRender = false;
-	 }
+	}
+	if (m_pTerminalUI != nullptr)
+	{
+	if (m_pTip->IsActive())
+	m_bRender = false;
+	}
+	if (m_pTerminalUI != nullptr)
+	{
+	if (m_pUIMen->IsActive())
+	m_bRender = false;
+	if (m_pTerminalUI != nullptr)
+	{
+	if (m_pUISovi->IsActive())
+	m_bRender = false;
+	}
+	if (m_pTerminalUI != nullptr)
+	{
+	if (m_pUIPanhua->IsActive())
+	m_bRender = false;
+	}
+	if (m_pTerminalUI != nullptr)
+	{
+	if (m_pUICook->IsActive())
+	m_bRender = false;
+	}
 	*/
 }
 
@@ -505,17 +513,30 @@ void CUI_MainScreen::Counting()
 void CUI_MainScreen::QTEAct(_double TimeDelta)
 {
 	// 38 사이즈 알파 100 * 100
-	if (-255.f < m_CutDescList[38]->fColorACut)
+	//if (-255.f < m_CutDescList[38]->fColorACut)
+	//{
+	//	m_CutDescList[38]->fColorACut -= (_float)TimeDelta * 100.f;
+	//	m_CutDescList[38]->fWidthCut += (_float)TimeDelta * 100.f;
+	//	m_CutDescList[38]->fHeightCut += (_float)TimeDelta * 100.f;
+	//}
+	//else
+	//{
+	//	m_CutDescList[38]->fColorACut = 0.f;
+	//	m_CutDescList[38]->fWidthCut = 100.f;
+	//	m_CutDescList[38]->fHeightCut = 100.f;
+	//}
+
+	if (-255.f < m_CutDescList[57]->fColorACut)
 	{
-		m_CutDescList[38]->fColorACut -= (_float)TimeDelta * 100.f;
-		m_CutDescList[38]->fWidthCut += (_float)TimeDelta * 100.f;
-		m_CutDescList[38]->fHeightCut += (_float)TimeDelta * 100.f;
+		m_CutDescList[57]->fColorACut -= (_float)TimeDelta * 300.f;
+		m_CutDescList[57]->fWidthCut += (_float)TimeDelta * 60.f;
+		m_CutDescList[57]->fHeightCut += (_float)TimeDelta * 60.f;
 	}
 	else
 	{
-		m_CutDescList[38]->fColorACut = 0.f;
-		m_CutDescList[38]->fWidthCut = 100.f;
-		m_CutDescList[38]->fHeightCut = 100.f;
+		m_CutDescList[57]->fColorACut = 0.f;
+		m_CutDescList[57]->fWidthCut = 60.f;
+		m_CutDescList[57]->fHeightCut = 60.f;
 	}
 }
 
@@ -523,31 +544,34 @@ _bool CUI_MainScreen::QTEFull()
 {
 	if (1.f <= QTERadian)
 	{
-		m_CutDescList[38]->bRender = true;
 		m_CutDescList[51]->bRender = true;
 		return true;
 	}
-	m_CutDescList[38]->bRender = false;
+
 	m_CutDescList[51]->bRender = false;
+	m_CutDescList[57]->fColorACut = 0.f;
+	m_CutDescList[57]->fWidthCut = 60.f;
+	m_CutDescList[57]->fHeightCut = 60.f;
 	return false;
 }
+
 void CUI_MainScreen::RRAct(_double TimeDelta)
 {
 	// 37사이즈 알파 94*94
 
 
-	if (-255.f < m_CutDescList[37]->fColorACut)
-	{
-		m_CutDescList[37]->fColorACut -= (_float)TimeDelta * 200.f;
-		m_CutDescList[37]->fWidthCut += (_float)TimeDelta * 300.f;
-		m_CutDescList[37]->fHeightCut += (_float)TimeDelta * 300.f;
-	}
-	else
-	{
-		m_CutDescList[37]->fColorACut = 0.f;
-		m_CutDescList[37]->fWidthCut = 110.f;
-		m_CutDescList[37]->fHeightCut = 110.f;
-	}
+	//if (-255.f < m_CutDescList[37]->fColorACut)
+	//{
+	//	m_CutDescList[37]->fColorACut -= (_float)TimeDelta * 200.f;
+	//	m_CutDescList[37]->fWidthCut += (_float)TimeDelta * 300.f;
+	//	m_CutDescList[37]->fHeightCut += (_float)TimeDelta * 300.f;
+	//}
+	//else
+	//{
+	//	m_CutDescList[37]->fColorACut = 0.f;
+	//	m_CutDescList[37]->fWidthCut = 110.f;
+	//	m_CutDescList[37]->fHeightCut = 110.f;
+	//}
 
 	if (-255.f < m_CutDescList[9]->fColorACut)
 	{
@@ -561,6 +585,8 @@ void CUI_MainScreen::RRAct(_double TimeDelta)
 		m_CutDescList[9]->fWidthCut = 56.f;
 		m_CutDescList[9]->fHeightCut = 56.f;
 	}
+
+	Degree += (_float)TimeDelta * 80.f;
 }
 
 _bool CUI_MainScreen::RRFull()
@@ -568,17 +594,20 @@ _bool CUI_MainScreen::RRFull()
 	if (1.f <= RRRadian)
 	{
 		m_CutDescList[37]->bRender = true;
+		m_CutDescList[75]->bRender = true;
 		return true;
 	}
-	m_CutDescList[37]->fColorACut = 0.f;
+	/*m_CutDescList[37]->fColorACut = 0.f;
 	m_CutDescList[37]->fWidthCut = 56.f;
 	m_CutDescList[37]->fHeightCut = 56.f;
-
+	*/
 	m_CutDescList[9]->fColorACut = 0.f;
 	m_CutDescList[9]->fWidthCut = 56.f;
 	m_CutDescList[9]->fHeightCut = 56.f;
 
 	m_CutDescList[37]->bRender = false;
+	m_CutDescList[75]->bRender = false;
+	Degree = 0.f;
 	return false;
 }
 
@@ -735,7 +764,7 @@ void CUI_MainScreen::SetPlayer()
 		}
 	}
 
-	
+
 	if (100 > CurPlayerLevel)
 	{
 		m_CutDescList[68]->bRender = true;
@@ -755,7 +784,7 @@ void CUI_MainScreen::SetPlayer()
 		_float3{ 214.959f * 255.f, 208.637f * 255.f, 126.347f * 255.f }; // 노란색
 		m_CutDescList[0]->iTexNum = 4;
 		m_CutDescList[51]->iTexNum = 209; // 체크
-		m_CutDescList[57]->iTexNum = 205; // 문양
+		m_CutDescList[57]->iTexNum = m_CutDescList[38]->iTexNum = 205; // 문양
 		m_CutDescList[58]->iTexNum = 205; // 문양
 
 		m_CutDescList[16]->fColorRCut = 214.959f;
@@ -792,7 +821,7 @@ void CUI_MainScreen::SetPlayer()
 		_float3{ 107.f * 255.f, 234.f * 255.f, 219.f * 255.f };
 		m_CutDescList[0]->iTexNum = 3;
 		m_CutDescList[51]->iTexNum = 208; // 체크
-		m_CutDescList[57]->iTexNum = 204; // 문양
+		m_CutDescList[57]->iTexNum = m_CutDescList[38]->iTexNum = 204; // 문양
 		m_CutDescList[58]->iTexNum = 204; // 문양
 
 		m_CutDescList[16]->fColorRCut = 107.f;
@@ -829,7 +858,7 @@ void CUI_MainScreen::SetPlayer()
 		_float3{ 158.058f * 255.f, -255.f * 255.f, -231.818f * 255.f };
 		m_CutDescList[0]->iTexNum = 5;
 		m_CutDescList[51]->iTexNum = 207; // 체크
-		m_CutDescList[57]->iTexNum = 206; // 문양
+		m_CutDescList[57]->iTexNum = m_CutDescList[38]->iTexNum = 206; // 문양
 		m_CutDescList[58]->iTexNum = 206; // 문양
 
 		m_CutDescList[16]->fColorRCut = 158.058f;
@@ -1229,28 +1258,52 @@ void CUI_MainScreen::R(_double TimeDelta)
 
 void CUI_MainScreen::PlayerTag(_double TimeDelta)
 {
-
-	if (0.f < CurTagCool)
+	switch (m_HavePlayerNum)
 	{
-		PlayerTagoOn();
-		_int TUnits = _int(CurTagCool * 10 / 10); // 1의자리
-		_int TTenths = _int(CurTagCool * 10); //0.1자리
-		m_CutDescList[47]->iTexNum = m_CutDescList[49]->iTexNum = 190 + TUnits;
-		m_CutDescList[48]->iTexNum = m_CutDescList[50]->iTexNum = 190 + TTenths;
+	case 2:
+	{
+		if (0.f < CurTagCool)
+		{
+			PlayerTagoOn1();
+			_int TUnits = _int(CurTagCool * 10 / 10); // 1의자리
+			_int TTenths = _int(CurTagCool * 10); //0.1자리
+			m_CutDescList[47]->iTexNum = 190 + TUnits;
+			m_CutDescList[48]->iTexNum = 190 + TTenths;
+		}
+		if ((0.1f > CurTagCool) && (CurTagCool > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
+			bTagEnd = true;
+		if (true == bTagEnd)
+		{
+			PlayerTagoOff1();
+			CoolTimeEnd1(TimeDelta);
+		}
 	}
-	if ((0.1f > CurTagCool) && (CurTagCool > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
-		bTagEnd = true;
-
-	if (true == bTagEnd)
+	break;
+	case 3:
 	{
-		PlayerTagoOff();
-		CoolTimeEnd(TimeDelta);
+		if (0.f < CurTagCool)
+		{
+			PlayerTagoOn2();
+			_int TUnits = _int(CurTagCool * 10 / 10); // 1의자리
+			_int TTenths = _int(CurTagCool * 10); //0.1자리
+			m_CutDescList[47]->iTexNum = m_CutDescList[49]->iTexNum = 190 + TUnits;
+			m_CutDescList[48]->iTexNum = m_CutDescList[50]->iTexNum = 190 + TTenths;
+		}
+		if ((0.1f > CurTagCool) && (CurTagCool > 0.f)) // 현재 플레이어가 쓴 쿨타임이 끝났다면
+			bTagEnd = true;
+		if (true == bTagEnd)
+		{
+			PlayerTagoOff2();
+			CoolTimeEnd2(TimeDelta);
+		}
+	}
+	break;
 	}
 }
 
 void CUI_MainScreen::HP(_double TimeDelta)
 {
-	if(true == m_bHit)
+	if (true == m_bHit)
 	{
 		HPBar(TimeDelta);
 	}
@@ -1331,7 +1384,39 @@ void CUI_MainScreen::AlphaP(CUTRECT* pDesc, _double TimeDelta)
 
 
 
-void CUI_MainScreen::CoolTimeEnd(_double TimeDelta)
+void CUI_MainScreen::CoolTimeEnd1(_double TimeDelta)
+{
+
+	CUTRECT* pDesc1 = m_CutDescList[1];
+
+	pDesc1->TimeAcc += (_float)TimeDelta;
+
+	if (pDesc1->TimeAcc < (pDesc1->Duration) / 2.f)
+	{
+		_float fWidth = pDesc1->fWidthCut + pDesc1->fSpeedWidth * (_float)TimeDelta * 40.f;
+		pDesc1->fWidthCut = pDesc1->WorldMatrixCut._11 = fWidth;
+
+		_float fHeight = pDesc1->fHeightCut + pDesc1->fSpeedHeight * (_float)TimeDelta * 40.f;
+		pDesc1->fHeightCut = pDesc1->WorldMatrixCut._22 = fHeight;
+	}
+	else if ((pDesc1->TimeAcc < pDesc1->Duration) && (pDesc1->TimeAcc >(pDesc1->Duration) / 2.f))
+	{
+		_float fWidth = pDesc1->fWidthCut - pDesc1->fSpeedWidth * (_float)TimeDelta * 40.f;
+		pDesc1->fWidthCut = pDesc1->WorldMatrixCut._11 = fWidth;
+
+		_float fHeight = pDesc1->fHeightCut - pDesc1->fSpeedHeight * (_float)TimeDelta * 40.f;
+		pDesc1->fHeightCut = pDesc1->WorldMatrixCut._22 = fHeight;
+	}
+	else
+	{
+		pDesc1->fWidthCut = 60.f;
+		pDesc1->fHeightCut = 60.f;
+		pDesc1->TimeAcc = 0.f;
+		bTagEnd = false;
+	}
+}
+
+void CUI_MainScreen::CoolTimeEnd2(_double TimeDelta)
 {
 
 	CUTRECT* pDesc1 = m_CutDescList[1];
@@ -1349,7 +1434,7 @@ void CUI_MainScreen::CoolTimeEnd(_double TimeDelta)
 
 		pDesc2->fWidthCut = pDesc2->WorldMatrixCut._11 = fWidth;
 		pDesc2->fHeightCut = pDesc2->WorldMatrixCut._22 = fHeight;
-		
+
 	}
 	else if ((pDesc1->TimeAcc < pDesc1->Duration) && (pDesc1->TimeAcc >(pDesc1->Duration) / 2.f))
 	{
@@ -1374,7 +1459,18 @@ void CUI_MainScreen::CoolTimeEnd(_double TimeDelta)
 		bTagEnd = false;
 	}
 }
-void CUI_MainScreen::PlayerTagoOn()
+
+
+void CUI_MainScreen::PlayerTagoOn1()
+{
+	m_CutDescList[14]->bCoolTime = true;
+	m_CutDescList[14]->bRender = true;
+	m_CutDescList[47]->bRender = true;
+	m_CutDescList[48]->bRender = true;
+	m_CutDescList[65]->bRender = true;
+}
+
+void CUI_MainScreen::PlayerTagoOn2()
 {
 	m_CutDescList[14]->bCoolTime = true;
 	m_CutDescList[14]->bRender = true;
@@ -1389,23 +1485,34 @@ void CUI_MainScreen::PlayerTagoOn()
 	m_CutDescList[64]->bRender = true;
 }
 
-void CUI_MainScreen::PlayerTagoOff()
-{
-		m_CutDescList[14]->bCoolTime = false;
-		m_CutDescList[14]->bRender = false;
-		m_CutDescList[47]->bRender = false;
-		m_CutDescList[48]->bRender = false;
-		m_CutDescList[65]->bRender = false;
-		m_CutDescList[47]->iTexNum = 190;
-		m_CutDescList[48]->iTexNum = 199;
 
-		m_CutDescList[15]->bCoolTime = false;
-		m_CutDescList[15]->bRender = false;
-		m_CutDescList[49]->bRender = false;
-		m_CutDescList[50]->bRender = false;
-		m_CutDescList[64]->bRender = false;
-		m_CutDescList[49]->iTexNum = 190;
-		m_CutDescList[50]->iTexNum = 199;
+void CUI_MainScreen::PlayerTagoOff1()
+{
+	m_CutDescList[14]->bCoolTime = false;
+	m_CutDescList[14]->bRender = false;
+	m_CutDescList[47]->bRender = false;
+	m_CutDescList[48]->bRender = false;
+	m_CutDescList[65]->bRender = false;
+	m_CutDescList[47]->iTexNum = 190;
+	m_CutDescList[48]->iTexNum = 199;
+}
+void CUI_MainScreen::PlayerTagoOff2()
+{
+	m_CutDescList[14]->bCoolTime = false;
+	m_CutDescList[14]->bRender = false;
+	m_CutDescList[47]->bRender = false;
+	m_CutDescList[48]->bRender = false;
+	m_CutDescList[65]->bRender = false;
+	m_CutDescList[47]->iTexNum = 190;
+	m_CutDescList[48]->iTexNum = 199;
+
+	m_CutDescList[15]->bCoolTime = false;
+	m_CutDescList[15]->bRender = false;
+	m_CutDescList[49]->bRender = false;
+	m_CutDescList[50]->bRender = false;
+	m_CutDescList[64]->bRender = false;
+	m_CutDescList[49]->iTexNum = 190;
+	m_CutDescList[50]->iTexNum = 199;
 }
 
 
@@ -1535,7 +1642,6 @@ _bool CUI_MainScreen::REnd(_double TimeDelta)
 	return false;
 }
 
-
 void CUI_MainScreen::RenderPlayer1()
 {
 
@@ -1589,7 +1695,7 @@ void CUI_MainScreen::RenderPlayer3()
 
 void CUI_MainScreen::Load()
 {
-	_uint index = 75;
+	_uint index = 76;
 	for (_uint i = 0; i<index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -1653,7 +1759,7 @@ void CUI_MainScreen::Load()
 		{
 			Desc->ColorCut.w = Desc->fColorACut;
 			Desc->OriPos = _float2(Desc->fXCut, Desc->fYCut);
-			Desc->AimPos = _float2(640.f + Desc->fWidthCut /2.f , -360.f - Desc->fHeightCut / 2.f);
+			Desc->AimPos = _float2(640.f + Desc->fWidthCut / 2.f, -360.f - Desc->fHeightCut / 2.f);
 			XMStoreFloat4x4(&(Desc->WorldMatrixCut), XMMatrixScaling(Desc->fWidthCut, Desc->fHeightCut, 1.f)
 				* XMMatrixTranslation(Desc->fXCut, Desc->fYCut, Desc->fZCut));
 
@@ -1711,7 +1817,7 @@ void CUI_MainScreen::HPBar(_double TimeDelta)
 			m_CurrentHp += m_Damage;
 			m_fWhiteBar = m_CurrentHp / m_HP; // 현재체력/전체체력 
 			m_PreHp = m_CurrentHp;
-			m_bHit = false;	
+			m_bHit = false;
 			m_bRedStart = true;
 		}
 	}
@@ -1721,7 +1827,7 @@ void CUI_MainScreen::HPRedBar(_double TimeDelta)
 {
 	if (m_CurrentHp < m_RedHP)
 	{
-		m_RedHP  += (m_CurrentHp - m_RedHP) * (_float)TimeDelta;
+		m_RedHP += (m_CurrentHp - m_RedHP) * (_float)TimeDelta;
 		m_fRedBar = m_RedHP / m_HP;
 	}
 	else
@@ -1842,7 +1948,7 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture", m_CutDescList[Bufferindex]->iTexNum)))
 			return E_FAIL;
 		if (70 == Bufferindex)
-			{
+		{
 			if (10 == m_CutDescList[Bufferindex]->iPass)
 			{
 				if (FAILED(m_pShader->SetRawValue("g_GraphUV", &m_fUV, sizeof(_float2))))
@@ -1861,8 +1967,8 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 					return E_FAIL;
 			}
 		}
-		
-		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f) 
+
+		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
 
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
@@ -1882,8 +1988,8 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesCut(_uint Bufferindex)
 
 		//if (true == m_bRedStart)
 		//{
-			if (FAILED(m_pShader->SetRawValue("g_fRedBar", &m_fRedBar, sizeof(_float))))
-				return E_FAIL;
+		if (FAILED(m_pShader->SetRawValue("g_fRedBar", &m_fRedBar, sizeof(_float))))
+			return E_FAIL;
 		//}
 		if (FAILED(m_pShader->SetRawValue("g_fLoading", &m_fWhiteBar, sizeof(_float))))
 			return E_FAIL;
@@ -2145,10 +2251,21 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesRR(_uint Bufferindex)
 		if (FAILED(m_pShader->SetRawValue("g_RadianAcc", &RRRadian, sizeof(_float))))
 			return E_FAIL;
 
+		if (37 == Bufferindex || 75 == Bufferindex)
+		{
+			XMStoreFloat4x4(&(m_CutDescList[37]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[37]->fWidthCut, m_CutDescList[37]->fHeightCut, 1.f)
+				* XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(Degree))
+				* XMMatrixTranslation(m_CutDescList[37]->fXCut, m_CutDescList[37]->fYCut, m_CutDescList[37]->fZCut));
 
-		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
-			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
-
+			XMStoreFloat4x4(&(m_CutDescList[75]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[75]->fWidthCut, m_CutDescList[75]->fHeightCut, 1.f)
+				* XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-Degree))
+				* XMMatrixTranslation(m_CutDescList[75]->fXCut, m_CutDescList[75]->fYCut, m_CutDescList[75]->fZCut));
+		}
+		else
+		{
+			XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
+				* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
+		}
 		if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_CutDescList[Bufferindex]->WorldMatrixCut))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_CutDescList[Bufferindex]->fColorRCut), sizeof(_float))))
@@ -2175,7 +2292,7 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesI0(_uint Bufferindex)
 		if (FAILED(m_pShader->SetRawValue("g_RadianAcc", &QTERadian, sizeof(_float)))) // 8번 QTE
 			return E_FAIL;
 
-		
+
 
 		XMStoreFloat4x4(&(m_CutDescList[Bufferindex]->WorldMatrixCut), XMMatrixScaling(m_CutDescList[Bufferindex]->fWidthCut, m_CutDescList[Bufferindex]->fHeightCut, 1.f)
 			* XMMatrixTranslation(m_CutDescList[Bufferindex]->fXCut, m_CutDescList[Bufferindex]->fYCut, m_CutDescList[Bufferindex]->fZCut));
@@ -2266,9 +2383,9 @@ HRESULT CUI_MainScreen::Setup_ShaderResourcesPlayer(_uint Bufferindex)
 	{
 		if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture", m_CutDescList[Bufferindex]->iTexNum)))
 			return E_FAIL;
-		
+
 		// 쿨타임시 보낼 텍스처
-		if ((14 == Bufferindex)&&(m_CutDescList[14]->bCoolTime))
+		if ((14 == Bufferindex) && (m_CutDescList[14]->bCoolTime))
 		{
 			if (FAILED(m_pTexFunc->Setup_ShaderResource(m_pShader, "g_MyTexture2", m_CutDescList[1]->iTexNum)))
 				return E_FAIL;
@@ -2336,7 +2453,7 @@ HRESULT CUI_MainScreen::renderFoodBuff()
 	iActiveIconIndex = 0;
 	if (iActiveCount > 0)
 	{
-		
+
 		for (_uint i = 0; i < iActiveCount; ++i)
 		{
 			vColor3 = { 1.f, 1.f, 1.f };

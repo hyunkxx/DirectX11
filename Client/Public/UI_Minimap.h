@@ -39,7 +39,7 @@ public:
 	}MAPDESC;
 
 public:
-	enum ICONNUM {MOSTER, BOSS, BOX, ROBOT, MERCHANTMEN, SOUVENIR, PANHUA, POTAL, ICONEND };
+	enum ICONNUM { MOSTER, BOSS, BOX, ROBOT, MERCHANTMEN, SOUVENIR, PANHUA, POTAL, ICONEND };
 
 	typedef struct tagIconDesc
 	{
@@ -92,10 +92,10 @@ private:
 
 private:
 	_int m_Num = { 0 }; // 미니맵 오브젝트 아이콘 enum
-	//미니맵 기능
+						//미니맵 기능
 	_bool m_bNull = { true };
 	_bool	m_bRender = { true }; // 전체 랜더onoff
-	// 전체맵에서 내가 출력하려고 지정한 uv좌표
+								  // 전체맵에서 내가 출력하려고 지정한 uv좌표
 	_float2			m_TerrainLU = { 0.f,0.f };
 	_float2			m_TerrainRB = { 0.f,0.f };
 
@@ -108,7 +108,7 @@ private:
 	_float2			OriPosMiniMap = { -540.f , 260.f };
 	_float			m_fXMiniMap = { -540.f };
 	_float			m_fYMiniMap = { 260.f };
-	_float			m_fZMiniMap = { 0.f };
+	_float			m_fZMiniMap = { 0.01f };
 	_float			m_fWidthMiniMap = { 190.f };
 	_float			m_fHeightMiniMap = { 190.f };
 	_float4x4		m_WorldMatrixMiniMap;
@@ -130,7 +130,7 @@ private:
 
 	_float			m_fXDefaultIcon[2] = { -540.f,-540.f };
 	_float			m_fYDefaultIcon[2] = { 260.f ,260.f };
-	_float			m_fZDefaultIcon[2] = { 0.f,0.f };
+	_float			m_fZDefaultIcon[2] = { 0.01f,0.01f };
 	_float			m_fWidthDefaultIcon[2] = { 30.f ,100.f };
 	_float			m_fHeightDefaultIcon[2] = { 30.f,120.f };
 	_float4x4		m_WorldMatrixDefaultIcon[2];

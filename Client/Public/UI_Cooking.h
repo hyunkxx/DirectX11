@@ -13,7 +13,7 @@ END
 BEGIN(Client)
 class CUI_Cooking final : public CGameObject
 {
-	enum COOKSITUINDEX { MEET, SETTINGNUM, MENU, READYCONFRIM, CONFRIM, BYE, COOKEND};
+	enum COOKSITUINDEX { MEET, SETTINGNUM, MENU, READYCONFRIM, CONFRIM, BYE, COOKEND };
 
 	typedef struct tagSou
 	{
@@ -49,7 +49,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Start() override;
 	virtual void Tick(_double TimeDelta) override;
-	
+
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual void RenderGUI() override;
@@ -91,7 +91,7 @@ private:
 	_bool	MinusAlphaW(vector<COOKDESC>* pDesc, _double TimeDelta);
 	void	ColorP(COOKDESC* pDesc, _float4 fcolor, _double TimeDelta);
 	void	ColorM(COOKDESC * pDesc, _float4 fcolor, _double TimeDelta);
-	
+
 	_bool	SelectUI(COOKDESC* pDesc);
 	void	Load();
 	void	Save();
@@ -104,6 +104,7 @@ private:
 	_uint		m_iPass = { 21 };
 	_bool		m_MenuRenderStart = { true };
 	_bool		m_MenuOutStart = { false };
+	_bool		m_ReadyConfirmRender = { false };
 	_bool		m_ConfirmRenderStart = { true };
 	_int		m_Count = { 0 };
 	COOKDESC*   pSelectSlot = { nullptr };
@@ -114,56 +115,62 @@ private:
 	_int*		pOwnMaterial0 = { nullptr };
 	_int*		pOwnMaterial1 = { nullptr };
 	_int*		pOwnMaterial2 = { nullptr };
-	_int		MakeNum = { 0 };	// 만들 요리의 수량
+	_int		MakeNum = { 1 };	// 만들 요리의 수량
 	_bool		bMake = { false };
+	_bool		bEnoughMaterial0 = { false };
+	_bool		bEnoughMaterial1 = { false };
+	_bool		bEnoughMaterial2 = { false };
+	_bool		bUsedRecipe0 = false;
+	_bool		bUsedRecipe1 = false;
+
 	// 임시값 설정 나중에 인벤에 연결시키기
 	_int    GradeIndex = { 0 }; // 0 = all, 1 = 1
-	// 요리에 필요한 재료 수량
+								// 요리에 필요한 재료 수량
 	_int	NeedMaterial0 = { 0 };
 	_int    NeedMaterial1 = { 0 };
 	_int    NeedMaterial2 = { 0 };
 
 	// 인벤토리에 있는 재료 수량
-	_int	InvenRice		= { 0 };
-	_int    InvenTofu		= { 0 };
-	_int    InvenFlour		= { 0 };
-	_int    InvenMushroom	= { 0 };
-	_int    InvenChicken	= { 0 };
-	_int    InvenEgg		= { 0 };
-	_int    InvenMeat		= { 0 };
-	_int    InvenHerb		= { 0 };
-	_int    InvenViolet		= { 0 };
-	_int    InvenDandelion	= { 0 };
-	_int    InvenPepper		= { 0 };
-	_int    InvenSugar		= { 0 };
-	_int    InvenSalt		= { 0 };
-	_int    InvenOil		= { 0 };
-	_int    InvenSoysauce	= { 0 };
-	_int    InvenRecipe0	= { 0 };
-	_int    InvenRecipe1	= { 0 };
+	_int	InvenRice = { 0 };
+	_int    InvenTofu = { 0 };
+	_int    InvenFlour = { 0 };
+	_int    InvenMushroom = { 0 };
+	_int    InvenChicken = { 0 };
+	_int    InvenEgg = { 0 };
+	_int    InvenMeat = { 0 };
+	_int    InvenHerb = { 0 };
+	_int    InvenViolet = { 0 };
+	_int    InvenDandelion = { 0 };
+	_int    InvenPepper = { 0 };
+	_int    InvenSugar = { 0 };
+	_int    InvenSalt = { 0 };
+	_int    InvenOil = { 0 };
+	_int    InvenSoysauce = { 0 };
+	_int    InvenRecipe0 = { 0 };
+	_int    InvenRecipe1 = { 0 };
 
 	// 인벤토리에 있는 요리 수량 ->Own:
-	_int    InvenFlatbread			= { 0 };
-	_int    InvenSalad				= { 0 };
-	_int    InvenFriedTofu			= { 0 };
-	_int    InvenSaltedTea			= { 0 };
-	_int    InvenHerbTea			= { 0 };
-	_int    InvenDragonNoodle		= { 0 };
-	_int    InvenOmurice			= { 0 };
-	_int    InvenFriedrice			= { 0 };
-	_int    InvenFriedchicken		= { 0 };
-	_int    InvenRabbitbread		= { 0 };
-	_int    InvenFriedMushroom		= { 0 };
-	_int    InvenMapotofu			= { 0 };
-	_int    InvenPorkBelly			= { 0 };
-	_int    InvenDucknoodles		= { 0 };
+	_int    InvenFlatbread = { 0 };
+	_int    InvenSalad = { 0 };
+	_int    InvenFriedTofu = { 0 };
+	_int    InvenSaltedTea = { 0 };
+	_int    InvenHerbTea = { 0 };
+	_int    InvenDragonNoodle = { 0 };
+	_int    InvenOmurice = { 0 };
+	_int    InvenFriedrice = { 0 };
+	_int    InvenFriedchicken = { 0 };
+	_int    InvenRabbitbread = { 0 };
+	_int    InvenFriedMushroom = { 0 };
+	_int    InvenMapotofu = { 0 };
+	_int    InvenPorkBelly = { 0 };
+	_int    InvenDucknoodles = { 0 };
 
 	// 컬러
-	_float3 color0 = {0.f ,0.f, 0.f};
-	_float3 color1 = {0.f ,0.f, 0.f};
-	_float3 color2 = {0.f ,0.f, 0.f};
-	_float3 color3 = {0.f ,0.f, 0.f};
-	_float3 color4 = {0.f ,0.f, 0.f};
+	_float3 color0 = { 0.f ,0.f, 0.f };
+	_float3 color1 = { 0.f ,0.f, 0.f };
+	_float3 color2 = { 0.f ,0.f, 0.f };
+	_float3 color3 = { 0.f ,0.f, 0.f };
+	_float3 color4 = { 0.f ,0.f, 0.f };
 
 	//툴
 	_int iSituation = { 0 };

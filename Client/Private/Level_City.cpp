@@ -337,6 +337,12 @@ HRESULT CLevel_City::Ready_Layer_UI(const _tchar * pLayerTag)
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::UIMERCHANTMEN, pLayerTag, TEXT("UI_MerchantMen"))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::UISOUVI, pLayerTag, TEXT("UI_Souvenir"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::UIPANHUA, pLayerTag, TEXT("UI_Panhua"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::UICOOKING, pLayerTag, TEXT("UI_Cooking"))))
+		return E_FAIL;
 
 	return S_OK;
 }

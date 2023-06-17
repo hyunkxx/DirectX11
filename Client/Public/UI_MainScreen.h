@@ -97,7 +97,7 @@ private:
 
 public:
 	void	Set_Texchange(_int Texindex);
-	void	Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage);}
+	void	Set_Damage(_float fDamage) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage); }
 
 
 private:
@@ -132,17 +132,20 @@ private:
 	void	AlphaM(CUTRECT* pDesc, _double TimeDelta);
 	void	AlphaP(CUTRECT* pDesc, _double TimeDelta);
 
-	void	CoolTimeEnd(_double TimeDelta);
-	void	PlayerTagoOn();
-	void	PlayerTagoOff();
+	void	CoolTimeEnd1(_double TimeDelta);
+	void	CoolTimeEnd2(_double TimeDelta);
+	void	PlayerTagoOn1();
+	void	PlayerTagoOn2();
+	void	PlayerTagoOff1();
+	void	PlayerTagoOff2();
 
 
 	_float	Distance(_fvector TargetPos, _fvector CurrentPos);
 	_bool	SizeXYP(CUTRECT* pDesc, _double TimeDelta);
 	_bool	SizeXYM(CUTRECT* pDesc, _double TimeDelta);
 
-	
-	
+
+
 	void RenderPlayer1();
 	void RenderPlayer2();
 	void RenderPlayer3();
@@ -157,16 +160,17 @@ private:
 	void QCoolRenderOff();
 	void RCoolRenderOff();
 
-	
+
 
 	_bool TEnd(_double TimeDelta);
 	_bool EEnd(_double TimeDelta);
 	_bool QEnd(_double TimeDelta);
 	_bool REnd(_double TimeDelta);
-
 	void	Load();
+
 private:
 	_int m_Index = { 0 }; // 임시
+	_float Degree = { 0.f }; // RRfull효과
 	_bool m_bRenderCheck = { true };
 	_int  m_EntireCount = { 0 };
 	_int  m_Count = { 0 };
@@ -202,7 +206,7 @@ private:
 	_float QTERadian = { 0.f }, QTECurGauge = { 0.f }, QTEMaxGauge = { 0.f }; // 체력바옆에육각형
 	_float SkillRadian = { 0.f }, SkillCurGauge = { 0.f }, SkillMaxGauge = { 0.f }; // 메인그래프
 
-	//그레프
+																					//그레프
 	_float2 m_fUV = { 0.f, 0.f }; // 텍스처uv흘리는애
 	_int m_MainMaskNum;
 	_int m_MainMaskNum2;
@@ -235,7 +239,7 @@ private:
 	CRenderer*					m_pRenderer = { nullptr };
 	CShader*					m_pShader = { nullptr };
 	CTexture*					m_pTexFunc = { nullptr };
-	CVIBuffer_Rect*				m_pVIBuffer = { nullptr }; 
+	CVIBuffer_Rect*				m_pVIBuffer = { nullptr };
 
 	vector<CUTRECT*>	  m_CutDescList;
 	list<DAMAGEDESC>	  DamageList;
@@ -243,7 +247,7 @@ private:
 private://FOOD Duration
 	ORTHO_DESC m_OrthoFoodSlot[3];
 	ORTHO_DESC m_OrthoFoodIcon[3];
-	CShader* m_pSubShader = nullptr;
+	CShader* m_pSubShader;
 
 	_bool m_bSoon[3] = { false, false, false };
 	_bool m_bSoonToggle[3] = { false, false, false };

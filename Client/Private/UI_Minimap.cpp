@@ -122,7 +122,7 @@ void CUI_Minimap::Tick(_double TimeDelta)
 
 			XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)
 				* XMMatrixTranslation(-540.f - X * (m_fWidthMiniMap / g_iWinSizeX) * 1.5f
-					, 260.f - Y  * (m_fHeightMiniMap / g_iWinSizeY) * 1.5f, 0.f));
+					, 260.f - Y  * (m_fHeightMiniMap / g_iWinSizeY) * 1.5f, 0.01f));
 		}
 
 
@@ -272,6 +272,7 @@ HRESULT CUI_Minimap::Render()
 			}
 		}
 
+
 		//미니맵아이콘
 		_uint Descindex = 0;
 		for (auto& Desc : m_IconDescList)
@@ -289,7 +290,7 @@ HRESULT CUI_Minimap::Render()
 		//메인화면아이콘
 		for (auto& Desc : m_DescList)
 		{
-			if (true == Desc.bRender && Desc.Dist > 50.f && Desc.Dist < 150.f)
+			if ((true == Desc.bRender) && (Desc.Dist > 50.f) && (Desc.Dist < 150.f))
 			{
 				if (FAILED(Setup_ShaderResourcesIcons(&Desc)))
 					return E_FAIL;
@@ -395,48 +396,48 @@ _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)
 	MiniMapDesc.fWidth = 15.f;
 	switch (m_Num)
 	{
-		case ICONNUM::MOSTER:
-		{
-			MiniMapDesc.iTexNum = 27;
-		}
-		break;
-		case ICONNUM::BOSS:
-		{
-			MiniMapDesc.iTexNum = 1;
-		}
-		break;
-		case ICONNUM::BOX:
-		{
-			MiniMapDesc.iTexNum = 35;
-		}
-		break;
-		case ICONNUM::ROBOT:
-		{
-			MiniMapDesc.iTexNum = 34;
-		}
-		break;
-		case ICONNUM::MERCHANTMEN:
-		{
-			MiniMapDesc.iTexNum = 25;
-		}
-		break;
-		case ICONNUM::SOUVENIR:
-		{
-			MiniMapDesc.iTexNum = 31;
-		}
-		break;
-		case ICONNUM::PANHUA:
-		{
-			MiniMapDesc.iTexNum = 32;
-		}
-		break;
-		case ICONNUM::POTAL:
-		{
-			MiniMapDesc.iTexNum = 9;
-		}
-		break;
+	case ICONNUM::MOSTER:
+	{
+		MiniMapDesc.iTexNum = 27;
 	}
-	
+	break;
+	case ICONNUM::BOSS:
+	{
+		MiniMapDesc.iTexNum = 1;
+	}
+	break;
+	case ICONNUM::BOX:
+	{
+		MiniMapDesc.iTexNum = 35;
+	}
+	break;
+	case ICONNUM::ROBOT:
+	{
+		MiniMapDesc.iTexNum = 34;
+	}
+	break;
+	case ICONNUM::MERCHANTMEN:
+	{
+		MiniMapDesc.iTexNum = 25;
+	}
+	break;
+	case ICONNUM::SOUVENIR:
+	{
+		MiniMapDesc.iTexNum = 31;
+	}
+	break;
+	case ICONNUM::PANHUA:
+	{
+		MiniMapDesc.iTexNum = 32;
+	}
+	break;
+	case ICONNUM::POTAL:
+	{
+		MiniMapDesc.iTexNum = 9;
+	}
+	break;
+	}
+
 	XMStoreFloat4x4(&MiniMapDesc.WorldMatrix, WorldMat);
 	m_IconDescList.push_back(MiniMapDesc);
 
