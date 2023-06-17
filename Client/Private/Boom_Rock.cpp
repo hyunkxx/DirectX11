@@ -29,15 +29,12 @@ HRESULT CBoom_Rock::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	memcpy(&m_Rock_State, (ROCK_STATE*)pArg, sizeof(ROCK_STATE));
+	
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	_float4x4 WorldMatrix;
-	memcpy(&WorldMatrix, (_float4x4*)pArg, sizeof(_float4x4));
-	m_pMainTransform->Set_WorldMatrix(WorldMatrix);
-	m_pMainTransform->Set_Scale(_float3(0.25f, 0.25f, 0.25f));
-	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	m_pMainTransform->SetRotation(vUp, XMConvertToRadians(-60.f));
+	m_pMainTransform->Set_WorldMatrix(m_Rock_State.vWorldMatrix);
 
 	return S_OK;
 }
@@ -111,7 +108,7 @@ HRESULT CBoom_Rock::Render()
 		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &fAlpha, sizeof(_float))))
 			return E_FAIL;
 
-		m_pShader->Begin(11);
+		m_pShader->Begin(m_Rock_State.iPass);
 		m_pModel->Render(0);
 	}
 
@@ -137,7 +134,7 @@ HRESULT CBoom_Rock::Add_Components()
 	CCollider::COLLIDER_DESC CollDesc;
 	CollDesc.owner = this;
 	CollDesc.vCenter = { 0.f, 0.f, 0.f };
-	CollDesc.vExtents = { 17.f , 25.f , 8.f };
+	CollDesc.vExtents = m_Rock_State.vExtents;
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::OBB,
@@ -152,7 +149,7 @@ HRESULT CBoom_Rock::Add_Components()
 		TEXT("com_shader"), (CComponent**)&m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, SMODEL::INTERACTION_ROCK,
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, m_Rock_State.Rick_ID,
 		TEXT("com_model"), (CComponent**)&m_pModel)))
 		return E_FAIL;
 

@@ -462,6 +462,28 @@ PS_OUT_STONE PS_MAIN_NO_COLOR_NO_ALPHA(PS_IN_DISTORTION In)
 
 	return Out;
 }
+PS_OUT_STONE PS_MAIN_NO_COLOR_NO_ALPHA_NO_GLOW(PS_IN_DISTORTION In)
+{
+	PS_OUT_STONE Out = (PS_OUT_STONE)0;;
+
+	float2 vUV = In.vTexUV + g_vUV;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vUV);
+
+	vector			vNormalDesc = g_NoiseTexture.Sample(LinearSampler, In.vTexUV);
+	float3			vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3x3		WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
+
+	vMtrlDiffuse.a = 1.f;
+	Out.vDiffuse.rgb = vMtrlDiffuse.rgb;
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.0f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+
+	return Out;
+}
+
+
 
 PS_OUT	PS_MAIN_MIX_DISTORTION_N0_CLAMP(PS_IN_DISTORTION In)
 {
@@ -669,5 +691,16 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_NO_COLOR_NO_ALPHA();
 	}
+	pass NO_COLOR_NO_ALPHA_NO_GLOW_SET
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
+		VertexShader = compile vs_5_0 VS_MAIN_DISTORTION();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_NO_COLOR_NO_ALPHA_NO_GLOW();
+	}
 }

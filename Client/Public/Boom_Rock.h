@@ -18,6 +18,15 @@ class CBoom_Rock :
 	public CGameObject
 	, public IOnCollisionEnter
 {
+public:
+	typedef struct ROCK_STATE
+	{
+		_int Rick_ID;
+		_float4x4 vWorldMatrix;
+		_float3	  vExtents;
+		_int	  iPass;
+	};
+
 private:
 	CBoom_Rock(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CBoom_Rock(const CBoom_Rock& rhs);
@@ -45,7 +54,7 @@ protected:
 	_float m_fRimTime = { 0.f };
 	_float m_fBurstRim = { 0.3f };
 
-
+	ROCK_STATE m_Rock_State;
 protected:
 	HRESULT Add_Components();
 	HRESULT Setup_ShaderResource();

@@ -543,13 +543,13 @@ void CPlayerCamera::Tick(_double TimeDelta)
 
 #ifdef _DEBUG
 	// 카메라 쉐이크 강도 체크용
-	if (pGameInstance->InputKey(DIK_V) == KEY_STATE::HOLD)
+	/*if (pGameInstance->InputKey(DIK_V) == KEY_STATE::HOLD)
 	{
 		if (m_bShakeToggle)
 			StartWave(m_ShakeDesc);
 		else
 			StartVibration(m_fVibeRange, m_fVibeDuration);
-	}
+	}*/
 #endif
 
 	if (false == m_bUse)

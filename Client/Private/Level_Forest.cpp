@@ -27,6 +27,7 @@
 
 #include "Level_Loading.h"
 
+#include "Boom_Rock.h"
 CLevel_Forest::CLevel_Forest(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
 {
@@ -2433,6 +2434,108 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 
 	Safe_Delete(pMatList);
 
+
+
+	_float4x4 vWorldMatrix;
+	_vector vUp = XMVectorSet(0.f,1.f,0.f,0.f);
+	CBoom_Rock::ROCK_STATE Rock_State;
+	ZeroMemory(&Rock_State, sizeof(CBoom_Rock::ROCK_STATE));
+
+	Rock_State.Rick_ID = (_int)(SMODEL::INTERACTION_ROCK_02);
+	Rock_State.vExtents = _float3(2.f, 4.f, 2.f);
+	Rock_State.iPass = 12;
+
+	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
+	_matrix matScale = XMMatrixScaling(2.f, 2.f, 2.f);
+	_matrix RotationMatrix = XMMatrixRotationAxis(vUp, XMConvertToRadians(-20.f));
+	vWorldMatrix._41 = 263.f;
+	vWorldMatrix._42 = 10.f;
+	vWorldMatrix._43 = 286.f;
+
+	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_01", &Rock_State)))
+		return E_FAIL;
+	
+
+	ZeroMemory(&Rock_State, sizeof(CBoom_Rock::ROCK_STATE));
+
+	Rock_State.Rick_ID = (_int)(SMODEL::INTERACTION_ROCK_02);
+	Rock_State.vExtents = _float3(2.3f, 4.6f, 2.3f);
+	Rock_State.iPass = 12;
+
+	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
+	matScale = XMMatrixScaling(2.3f, 2.3f, 2.3f);
+	RotationMatrix = XMMatrixRotationAxis(vUp, XMConvertToRadians(-40.f));
+	vWorldMatrix._41 = 292.f;
+	vWorldMatrix._42 = 10.f;
+	vWorldMatrix._43 = 270.f;
+
+	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_02", &Rock_State)))
+		return E_FAIL;
+
+	ZeroMemory(&Rock_State, sizeof(CBoom_Rock::ROCK_STATE));
+
+	Rock_State.Rick_ID = (_int)(SMODEL::INTERACTION_ROCK_02);
+	Rock_State.vExtents = _float3(1.6f, 3.2f, 1.6f);
+	Rock_State.iPass = 12;
+
+	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
+	matScale = XMMatrixScaling(1.6f, 1.6f, 1.6f);
+	RotationMatrix = XMMatrixRotationAxis(vUp, XMConvertToRadians(-1.f));
+	vWorldMatrix._41 = 223.f;
+	vWorldMatrix._42 = 5.3f;
+	vWorldMatrix._43 = 252.f;
+
+	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_03", &Rock_State)))
+		return E_FAIL;
+
+	ZeroMemory(&Rock_State, sizeof(CBoom_Rock::ROCK_STATE));
+
+	Rock_State.Rick_ID = (_int)(SMODEL::INTERACTION_ROCK_02);
+	Rock_State.vExtents = _float3(3.f, 6.f, 3.f);
+	Rock_State.iPass = 12;
+
+	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
+	matScale = XMMatrixScaling(3.f, 3.f, 3.f);
+	RotationMatrix = XMMatrixRotationAxis(vUp, XMConvertToRadians(75.f));
+	vWorldMatrix._41 = 223.f;
+	vWorldMatrix._42 = 8.f;
+	vWorldMatrix._43 = 104.f;
+
+	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_04", &Rock_State)))
+		return E_FAIL;
+
+	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
+	vWorldMatrix._41 = 247.251f;
+	vWorldMatrix._42 = 9.259f;
+	vWorldMatrix._43 = 279.32f;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_01", &vWorldMatrix)))
+		return E_FAIL;
+
+	vWorldMatrix._41 = 319.878f;
+	vWorldMatrix._42 = 12.831f;
+	vWorldMatrix._43 = 260.354f;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_02", &vWorldMatrix)))
+		return E_FAIL;
+
+	vWorldMatrix._41 = 217.5f;
+	vWorldMatrix._42 = 7.852f;
+	vWorldMatrix._43 = 288.187f;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_03", &vWorldMatrix)))
+		return E_FAIL;
+
+	vWorldMatrix._41 = 240.878f;
+	vWorldMatrix._42 = 9.259f;
+	vWorldMatrix._43 = 133.421f;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_04", &vWorldMatrix)))
+		return E_FAIL;
 	return S_OK;
 }
 

@@ -28,6 +28,8 @@
 
 #include "Level_Loading.h"
 
+#include "Boom_Rock.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
 {
@@ -2108,6 +2110,7 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_STANDARD, pLayerTag, L"Invisivle_chest_standard", &vPos)))
 		return E_FAIL;
 
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 
 	_float4x4 vWorldMatrix;
 	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
@@ -2118,52 +2121,190 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber", &vWorldMatrix)))
 		return E_FAIL;
 
+	CBoom_Rock::ROCK_STATE Rock_State;
+	ZeroMemory(&Rock_State, sizeof(CBoom_Rock::ROCK_STATE));
+
+	Rock_State.Rick_ID = (_int)(SMODEL::INTERACTION_ROCK);
+	Rock_State.vExtents = _float3( 17.f , 25.f , 8.f ); 
+	Rock_State.iPass = 11;
+
+	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
+	_matrix matScale = XMMatrixScaling(0.25f, 0.25f, 0.25f);
+	_matrix RotationMatrix = XMMatrixRotationAxis(vUp, XMConvertToRadians(-60.f));
 	vWorldMatrix._41 = 260.f;
 	vWorldMatrix._42 = 38.f;
 	vWorldMatrix._43 = 227.f;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock", &vWorldMatrix)))
+	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
+	
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock", &Rock_State)))
 		return E_FAIL;
 
 	vector<_float4>* pPosList = new vector<_float4>;
 
-	_float4 Pos1 = _float4(59.f, 5.f, 38.f,1.f);
-	_float4 Pos2 = _float4(95.f, 6.5f, 54.f, 0.f);
-	_float4 Pos3 = _float4(102.f, 16.5f, 69.f, 1.f);
-	_float4 Pos4 = _float4(126.f, 20.5f, 96.f, 1.f);
-	_float4 Pos5 = _float4(160.f, 25.5f, 105.f, 1.f);
-	_float4 Pos6 = _float4(175.f, 24.5f, 135.f, 1.f);
-	_float4 Pos7 = _float4(110.f, 29.f, 211.f, 1.f);
-	_float4 Pos8 = _float4(155.f, 33.f, 260.f, 1.f);
-	_float4 Pos9 = _float4(215.f, 35.f, 228.f, 1.f);
-	_float4 Pos10 = _float4(233.f, 39.5f, 218.f, 1.f);
-	_float4 Pos11 = _float4(240.f, 39.5f, 241.f, 1.f);
-	_float4 Pos12 = _float4(257.f, 39.5f, 228.f, 1.f);
-	_float4 Pos13 = _float4(237.f, 39.5f, 209.f, 1.f);
-	_float4 Pos14 = _float4(280.f, 49.f, 178.f, 1.f);
-	_float4 Pos15 = _float4(338.f, 64.2f, 209.f, 1.f);
-	_float4 Pos16 = _float4(345.f, 73.f, 282.f, 1.f);
-	_float4 Pos17 = _float4(332.f, 76.5f, 343.f, 1.f);
-	_float4 Pos18 = _float4(354.f, 77.1f, 372.f, 1.f);
+	_float4 vPos1 = _float4(59.f, 5.f, 38.f,1.f);
+
+	_float4 Pos1 = _float4(60.39f, 4.91f, 35.86f, 0.f);
+	_float4 Pos2 = _float4(79.51f, 5.32f, 35.41f, 0.f);
+	_float4 Pos3 = _float4(91.13f, 6.43f, 47.46f, 0.f);
+
+	_float4 vPos2 = _float4(95.f, 6.5f, 54.f, 1.f);
+
+	_float4 Pos4 = _float4(98.24f , 7.04f, 61.94f, 0.f);
+	_float4 Pos5 = _float4(98.24f, 17.26f, 61.94f, 0.f);
+	_float4 Pos6 = _float4(100.78f, 17.26f, 66.38f, 0.f);
+
+	_float4 vPos3 = _float4(102.f, 16.5f, 69.f, 1.f);
+
+	_float4 Pos7 = _float4(109.46f , 16.85f, 90.43f, 0.f);
+	_float4 Pos8 = _float4(120.70f, 17.12f,  94.78f, 0.f);
+	_float4 Pos9 = _float4(120.70f, 20.68f,  94.78f, 0.f);
+
+	_float4 vPos4 = _float4(126.f, 20.5f, 96.f, 1.f);
+
+	_float4 Pos10 = _float4(154.38f, 20.68f, 99.41f, 0.f);
+	_float4 Pos11 = _float4(154.38f, 25.79f, 99.41f, 0.f);
+
+	_float4 vPos5 = _float4(162.13f, 25.79f, 104.14f, 1.f);
+
+	_float4 Pos12 = _float4(172.77f, 25.79f, 117.25f, 0.f);
+
+	_float4 vPos6 = _float4(175.f, 24.5f, 135.f, 1.f);
+
+	_float4 Pos13 = _float4(172.95f, 25.42f, 150.47f, 0.f);
+	_float4 Pos14 = _float4(154.13f, 25.55f, 168.53f, 0.f);
+	_float4 Pos15 = _float4(149.71f, 27.24f, 172.51f, 0.f);
+	_float4 Pos16 = _float4(135.76f, 27.25f, 181.42f, 0.f);
+	_float4 Pos17 = _float4(122.21f, 27.37f, 195.94f, 0.f);
+	_float4 Pos18 = _float4(118.27f, 29.03f, 199.81f, 0.f);
+
+	_float4 vPos7 = _float4(110.f, 29.f, 211.f, 1.f);
+
+	_float4 Pos19 = _float4(129.60f, 29.07f, 222.26f, 0.f);
+	_float4 Pos20 = _float4(134.78f, 31.11f, 226.97f, 0.f);
+	_float4 Pos21 = _float4(145.02f, 31.20f, 251.89f, 0.f);
+	_float4 Pos22 = _float4(148.85f, 32.79f, 255.92f, 0.f);
+
+	_float4 vPos8 = _float4(155.f, 33.f, 260.f, 1.f);
+
+	_float4 Pos23 = _float4(168.63f, 32.59f, 254.70f, 0.f);
+	_float4 Pos24 = _float4(174.30f, 34.37f, 250.32f, 0.f);
+
+	_float4 vPos9 = _float4(215.f, 35.f, 228.f, 1.f);
+
+	_float4 Pos25 = _float4(226.37f, 39.85f, 221.41f, 0.f);
+
+	_float4 vPos10 = _float4(233.f, 39.5f, 218.f, 1.f);
+	_float4 vPos11 = _float4(240.f, 39.5f, 241.f, 1.f);
+	_float4 vPos12 = _float4(257.f, 39.5f, 228.f, 1.f);
+
+	_float4 Pos26 = _float4(241.52f, 39.69f, 236.27f, 0.f);
+
+	_float4 vPos13 = _float4(237.f, 39.5f, 209.f, 1.f);
+
+	_float4 Pos27 = _float4(241.91f, 41.75f, 202.92f, 0.f);
+	_float4 Pos28 = _float4(250.55f, 44.63f, 192.59f, 0.f);
+	_float4 Pos29 = _float4(255.86f, 45.40f, 188.37f, 0.f);
+	_float4 Pos30 = _float4(264.65f, 46.07f, 183.20f, 0.f);
+	_float4 Pos31 = _float4(270.21f, 48.03f, 180.00f, 0.f);
+
+	_float4 vPos14 = _float4(280.f, 49.f, 178.f, 1.f);
+
+	_float4 Pos32 = _float4(304.16f, 54.08f, 188.37f, 0.f);
+	_float4 Pos33 = _float4(310.00f, 55.58f, 186.55f, 0.f);
+	_float4 Pos34 = _float4(323.22f, 60.58f, 197.45f, 0.f);
+
+	_float4 vPos15 = _float4(338.f, 64.2f, 209.f, 1.f);
+
+	_float4 Pos35 = _float4(340.56f, 65.52f, 227.78f, 0.f);
+	_float4 Pos36 = _float4(336.85f, 73.81f, 295.63f, 0.f);
+	_float4 Pos37 = _float4(330.17f, 74.57f, 327.33f, 0.f);
+
+	_float4 vPos16 = _float4(345.f, 73.f, 282.f, 1.f);
+	_float4 vPos17 = _float4(332.f, 76.5f, 343.f, 1.f);
+	_float4 vPos18 = _float4(354.f, 77.1f, 372.f, 1.f);
+
+	pPosList->push_back(vPos1);
 
 	pPosList->push_back(Pos1);
 	pPosList->push_back(Pos2);
 	pPosList->push_back(Pos3);
+
+	pPosList->push_back(vPos2);
+
 	pPosList->push_back(Pos4);
 	pPosList->push_back(Pos5);
 	pPosList->push_back(Pos6);
+
+	pPosList->push_back(vPos3);
+
 	pPosList->push_back(Pos7);
 	pPosList->push_back(Pos8);
 	pPosList->push_back(Pos9);
+
+	pPosList->push_back(vPos4);
+
 	pPosList->push_back(Pos10);
 	pPosList->push_back(Pos11);
+
+	pPosList->push_back(vPos5);
+
 	pPosList->push_back(Pos12);
+
+	pPosList->push_back(vPos6);
+
 	pPosList->push_back(Pos13);
 	pPosList->push_back(Pos14);
 	pPosList->push_back(Pos15);
 	pPosList->push_back(Pos16);
 	pPosList->push_back(Pos17);
 	pPosList->push_back(Pos18);
+
+	pPosList->push_back(vPos7);
+
+	pPosList->push_back(Pos19);
+	pPosList->push_back(Pos20);
+	pPosList->push_back(Pos21);
+	pPosList->push_back(Pos22);
+
+	pPosList->push_back(vPos8);
+
+	pPosList->push_back(Pos23);
+	pPosList->push_back(Pos24);
+
+	pPosList->push_back(vPos9);
+
+	pPosList->push_back(Pos25);
+
+	pPosList->push_back(vPos10);
+	pPosList->push_back(vPos11);
+	pPosList->push_back(vPos12);
+
+	pPosList->push_back(Pos26);
+
+	pPosList->push_back(vPos13);
+
+	pPosList->push_back(Pos27);
+	pPosList->push_back(Pos28);
+	pPosList->push_back(Pos29);
+	pPosList->push_back(Pos30);
+	pPosList->push_back(Pos31);
+
+	pPosList->push_back(vPos14);
+
+	pPosList->push_back(Pos32);
+	pPosList->push_back(Pos33);
+	pPosList->push_back(Pos34);        
+
+	pPosList->push_back(vPos15);
+
+	pPosList->push_back(Pos35);
+	pPosList->push_back(Pos36);
+	pPosList->push_back(Pos37);
+
+	pPosList->push_back(vPos16);
+	pPosList->push_back(vPos17);
+	pPosList->push_back(vPos18);
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY , OBJECT::INTERACTION_GUIDE_SPIRIT, pLayerTag, L"Object_Guide_Spirit", pPosList)))
 		return E_FAIL;
