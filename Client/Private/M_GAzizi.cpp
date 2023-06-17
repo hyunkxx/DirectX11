@@ -13,6 +13,7 @@
 #include "Missile_Constant.h"
 #include "DissolveKey.h"
 #include "PlayerState.h"
+#include "SoundKey.h"
 
 #include "Chest.h"
 #include "CameraMovement.h"
@@ -400,7 +401,7 @@ HRESULT CM_GAzizi::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 					m_tStates[i].ppStateKeys[j] = CMissileKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_SOUND:
-
+					m_tStates[i].ppStateKeys[j] = CSoundKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				default:
 					break;

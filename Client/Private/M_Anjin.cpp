@@ -14,6 +14,7 @@
 #include "OBBKey.h"
 #include "DissolveKey.h"
 #include "PlayerState.h"
+#include "SoundKey.h"
 
 #include "CameraMovement.h"
 #include "Chest.h"
@@ -423,7 +424,7 @@ HRESULT CM_Anjin::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 					m_tStates[i].ppStateKeys[j] = CMissileKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_SOUND:
-
+					m_tStates[i].ppStateKeys[j] = CSoundKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				default:
 					break;

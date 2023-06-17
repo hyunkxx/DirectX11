@@ -1330,7 +1330,7 @@ void CAnimToolManager::Create_Key()
 		pStateKey = CTraceKey::Create(m_pDevice, m_pContext, &m_tKeyData);
 		break;
 	case CStateKey::TYPE_SOUND:
-
+		pStateKey = CSoundKey::Create(m_pDevice, m_pContext, &m_tKeyData);
 		break;	
 	default:
 		break;

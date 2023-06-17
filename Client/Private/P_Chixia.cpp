@@ -18,6 +18,7 @@
 #include "MissileKey.h"
 #include "DissolveKey.h"
 #include "SlowKey.h"
+#include "SoundKey.h"
 
 #include "Missile_Constant.h"
 #include "Missile_RotAround.h"
@@ -812,7 +813,7 @@ HRESULT CP_Chixia::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 					m_tStates[i].ppStateKeys[j] = CSlowKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_SOUND:
-
+					m_tStates[i].ppStateKeys[j] = CSoundKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				default:
 					break;

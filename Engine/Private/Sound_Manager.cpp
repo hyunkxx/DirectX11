@@ -28,6 +28,81 @@ HRESULT CSound_Manager::Initialize()
 	if (FAILED(Load_SoundFile()))
 		return E_FAIL;
 
+	if (FAILED(Load_SFX_Ambience()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Footstep()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Sequence()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_UI()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Monster_Anjin()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Monster_AWukaka()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Monster_Binglie()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Monster_Fenglie()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Monster_FHuxiuxiu()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Monster_GAzizi()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Monster_Huojin()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Monster_Leilie()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Monster_Qunjing()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Monster_Wuguanzhe()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_Monster_MonImpact()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_PC_Chixia()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_PC_Common()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_PC_Foley()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_PC_Rover()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_PC_Yangyang()))
+		return E_FAIL;
+
+	if (FAILED(Load_SFX_PC_PlayerImpact()))
+		return E_FAIL;
+
+	if (FAILED(Load_Voice_Chixia()))
+		return E_FAIL;
+
+	if (FAILED(Load_Voice_Rover()))
+		return E_FAIL;
+
+	if (FAILED(Load_Voice_Yangyang()))
+		return E_FAIL;
+
+
+
+
 	return S_OK;
 }
 
@@ -1240,9 +1315,9 @@ HRESULT CSound_Manager::Load_Voice_Chixia()
 	_finddatai64_t tFD;
 	intptr_t hFile;
 
-	char szCurPath[128] = "../../Sounds/SFX/Voice/Chixia/";
+	char szCurPath[128] = "../../Sounds/Voice/Chixia/";
 	char szFullPath[128] = "";
-	hFile = _findfirsti64("../../Sounds/SFX/Voice/Chixia/*.*", &tFD);
+	hFile = _findfirsti64("../../Sounds/Voice/Chixia/*.*", &tFD);
 
 	if (-1 == hFile)
 		return E_FAIL;
@@ -1288,9 +1363,9 @@ HRESULT CSound_Manager::Load_Voice_Rover()
 	_finddatai64_t tFD;
 	intptr_t hFile;
 
-	char szCurPath[128] = "../../Sounds/SFX/Voice/Rover/";
+	char szCurPath[128] = "../../Sounds/Voice/Rover/";
 	char szFullPath[128] = "";
-	hFile = _findfirsti64("../../Sounds/SFX/Voice/Rover/*.*", &tFD);
+	hFile = _findfirsti64("../../Sounds/Voice/Rover/*.*", &tFD);
 
 	if (-1 == hFile)
 		return E_FAIL;
@@ -1336,9 +1411,9 @@ HRESULT CSound_Manager::Load_Voice_Yangyang()
 	_finddatai64_t tFD;
 	intptr_t hFile;
 
-	char szCurPath[128] = "../../Sounds/SFX/Voice/Yangyang/";
+	char szCurPath[128] = "../../Sounds/Voice/Yangyang/";
 	char szFullPath[128] = "";
-	hFile = _findfirsti64("../../Sounds/SFX/Voice/Yangyang/*.*", &tFD);
+	hFile = _findfirsti64("../../Sounds/Voice/Yangyang/*.*", &tFD);
 
 	if (-1 == hFile)
 		return E_FAIL;

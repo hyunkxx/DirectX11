@@ -12,7 +12,7 @@ HRESULT CEffectKey::Initialize(BaseData * pData)
 
 	MultiByteToWideChar(CP_ACP, 0,
 		pData->szTag,
-		int(strlen(pData->szTag)), m_szEffectTag,
+		int(strlen(pData->szTag)) + 1, m_szEffectTag,
 		sizeof(_tchar) * MAX_PATH);
 	
 	m_iEffectBoneID = pData->iInt0;

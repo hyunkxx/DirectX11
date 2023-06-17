@@ -14,6 +14,7 @@
 #include "OBBKey.h"
 #include "DissolveKey.h"
 #include "PlayerState.h"
+#include "SoundKey.h"
 
 #include "CameraMovement.h"
 #include "Chest.h"
@@ -353,7 +354,7 @@ HRESULT CE_Binglie::Init_State(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 				m_tCurState.ppStateKeys[j] = CMissileKey::Create(pDevice, pContext, &tBaseData);
 				break;
 			case CStateKey::TYPE_SOUND:
-
+				m_tCurState.ppStateKeys[j] = CSoundKey::Create(pDevice, pContext, &tBaseData);
 				break;
 			default:
 				break;

@@ -11,6 +11,7 @@
 #include "MissileKey.h"
 #include "DissolveKey.h"
 #include "SlowKey.h"
+#include "SoundKey.h"
 
 CTestVTF::CTestVTF(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CTestChar(pDevice, pContext)
@@ -501,7 +502,7 @@ HRESULT CTestVTF::Init_States()
 					tMultiState.ppStateKeys[j] = CSlowKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_SOUND:
-
+					tMultiState.ppStateKeys[j] = CSoundKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				default:
 					break;

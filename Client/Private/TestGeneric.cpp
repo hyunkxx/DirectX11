@@ -12,6 +12,7 @@
 #include "DissolveKey.h"
 #include "SlowKey.h"
 #include "TraceKey.h"
+#include "SoundKey.h"
 
 const _double CTestGeneric::m_TraceInterval = 0.09;
 
@@ -525,7 +526,7 @@ HRESULT CTestGeneric::Init_States()
 					tSingleState.ppStateKeys[j] = CTraceKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_SOUND:
-
+					tSingleState.ppStateKeys[j] = CSoundKey::Create(m_pDevice, m_pContext, &tBaseData);
 					break;
 				default:
 					break;

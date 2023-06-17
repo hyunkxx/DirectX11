@@ -16,6 +16,7 @@
 #include "DissolveKey.h"
 #include "TraceKey.h"
 #include "PlayerState.h"
+#include "SoundKey.h"
 
 #include "CameraMovement.h"
 #include "Chest.h"
@@ -524,7 +525,7 @@ HRESULT CM_Crownless_P3::Init_States(ID3D11Device* pDevice, ID3D11DeviceContext*
 					m_tStates[i].ppStateKeys[j] = CTraceKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				case CStateKey::TYPE_SOUND:
-
+					m_tStates[i].ppStateKeys[j] = CSoundKey::Create(pDevice, pContext, &tBaseData);
 					break;
 				default:
 					break;
