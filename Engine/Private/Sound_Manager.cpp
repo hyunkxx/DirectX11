@@ -227,6 +227,1158 @@ HRESULT CSound_Manager::Load_BgmFile()
 	return S_OK;
 }
 
+HRESULT CSound_Manager::Load_SFX_Ambience()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Ambience/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Ambience/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Footstep()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Footstep/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Footstep/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Sequence()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Sequence/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Sequence/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_UI()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/UI/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/UI/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Monster_Anjin()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Monster/Anjin/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Monster/Anjin/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Monster_AWukaka()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Monster/AWukaka/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Monster/AWukaka/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Monster_Binglie()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Monster/Binglie/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Monster/Binglie/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Monster_Fenglie()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Monster/Fenglie/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Monster/Fenglie/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Monster_FHuxiuxiu()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Monster/FHuxiuxiu/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Monster/FHuxiuxiu/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Monster_GAzizi()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Monster/GAzizi/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Monster/GAzizi/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Monster_Huojin()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Monster/Huojin/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Monster/Huojin/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Monster_Leilie()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Monster/Leilie/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Monster/Leilie/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Monster_Qunjing()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Monster/Qunjing/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Monster/Qunjing/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Monster_Wuguanzhe()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Monster/Wuguanzhe/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Monster/Wuguanzhe/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_Monster_MonImpact()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Monster/MonImpact/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Monster/MonImpact/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_PC_Chixia()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/PC/Chixia/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/PC/Chixia/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_PC_Common()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/PC/Common/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/PC/Common/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_PC_Foley()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/PC/Foley/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/PC/Foley/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_PC_Rover()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/PC/Rover/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/PC/Rover/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_PC_Yangyang()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/PC/Yangyang/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/PC/Yangyang/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_SFX_PC_PlayerImpact()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/PC/PlayerImpact/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/PC/PlayerImpact/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_Voice_Chixia()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Voice/Chixia/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Voice/Chixia/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_Voice_Rover()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Voice/Rover/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Voice/Rover/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
+HRESULT CSound_Manager::Load_Voice_Yangyang()
+{
+	_finddatai64_t tFD;
+	intptr_t hFile;
+
+	char szCurPath[128] = "../../Sounds/SFX/Voice/Yangyang/";
+	char szFullPath[128] = "";
+	hFile = _findfirsti64("../../Sounds/SFX/Voice/Yangyang/*.*", &tFD);
+
+	if (-1 == hFile)
+		return E_FAIL;
+
+	_int iResult = 0;
+
+	while (-1 != iResult)
+	{
+		strcpy_s(szFullPath, szCurPath);
+		/* 사운드 파일이름 결합 (최종 경로) */
+		strcat_s(szFullPath, tFD.name);
+
+		FMOD::Sound*     pSound = nullptr;
+
+		/* 사운드 생성 */
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+
+		if (FMOD_OK == m_eResult)
+		{
+			/* null 문자 까지 + 1 해서 길이 책정 */
+			_int iLength = static_cast<_int>(strlen(tFD.name) + 1);
+
+			TCHAR* pSoundKey = new TCHAR[iLength];
+			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
+
+			/* 아스키 코드 -> 유니코드 로 변환 */
+			MultiByteToWideChar(CP_ACP, 0, tFD.name, iLength, pSoundKey, iLength);
+
+			m_umapSound.emplace(pSoundKey, pSound);
+		}
+		/* 다음 위치의 파일을 찾는다. 더이상 없을시 -1 리턴 */
+		iResult = _findnexti64(hFile, &tFD);
+	}
+
+	_findclose(hFile);
+	m_pSystem->update();
+
+	return S_OK;
+}
+
 void CSound_Manager::Free()
 {
 	for (auto& Pair : m_umapSound)

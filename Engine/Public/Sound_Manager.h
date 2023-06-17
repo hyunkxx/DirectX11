@@ -113,6 +113,38 @@ private:
 private:
 	/* 사운드 폴더에서 폴더 분할후 로드 할 때 (종류별로 하나씩 만들어주면 됨) */
 	HRESULT Load_BgmFile();
+	HRESULT Load_SFX_Ambience();
+	HRESULT Load_SFX_Footstep();
+	HRESULT Load_SFX_Sequence();
+	HRESULT Load_SFX_UI();
+
+	//SFX_Monster
+	HRESULT Load_SFX_Monster_Anjin();
+	HRESULT Load_SFX_Monster_AWukaka();
+	HRESULT Load_SFX_Monster_Binglie();
+	HRESULT Load_SFX_Monster_Fenglie();
+	HRESULT Load_SFX_Monster_FHuxiuxiu();
+	HRESULT Load_SFX_Monster_GAzizi();
+	HRESULT Load_SFX_Monster_Huojin();
+	HRESULT Load_SFX_Monster_Leilie();
+	HRESULT Load_SFX_Monster_Qunjing();
+	HRESULT Load_SFX_Monster_Wuguanzhe();
+	HRESULT Load_SFX_Monster_MonImpact();
+	
+	//SFX_PC
+	HRESULT Load_SFX_PC_Chixia();
+	HRESULT Load_SFX_PC_Common();
+	HRESULT Load_SFX_PC_Foley();
+	HRESULT Load_SFX_PC_Rover();
+	HRESULT Load_SFX_PC_Yangyang();
+	HRESULT Load_SFX_PC_PlayerImpact();
+
+	//Voice
+	HRESULT Load_Voice_Chixia();
+	HRESULT Load_Voice_Rover();
+	HRESULT Load_Voice_Yangyang();
+
+
 
 private:
 	typedef unordered_map<TCHAR*, FMOD::Sound*>		UMAP_SOUND;

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\SoundKey.h"
 
+#include "Sound_Manager.h"
+
 
 CSoundKey::CSoundKey(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CStateKey(pDevice, pContext)
