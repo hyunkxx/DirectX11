@@ -62,7 +62,7 @@ void CCityObject::Start()
 {
 	__super::Start();
 
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC_SHADOW, this);
+	//m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC_SHADOW, this);
 }
 
 void CCityObject::Tick(_double TimeDelta)
@@ -232,18 +232,30 @@ HRESULT CCityObject::Render_Interect()
 
 			if (FAILED(m_pShaderCom->SetRawValue("g_IsUseGlow", &m_CityObject_Desc.Use_Glow, sizeof(_bool))))
 				return E_FAIL;
+			
+			if (FAILED(m_pShaderCom->SetRawValue("g_IsUseNormalTex", &m_IsNormalTex, sizeof(_bool))))
+				return E_FAIL;
+
+			m_IsNormalTex = false;
+
+			m_pShaderCom->Begin(13);
+			m_pModelCom->Render(i);
+			
+		}
+		else
+		{
+			m_iShaderPassID = 0;
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_IsUseNormalTex", &m_IsNormalTex, sizeof(_bool))))
+				return E_FAIL;
+
+			m_IsNormalTex = false;
+
+			m_pShaderCom->Begin(m_iShaderPassID);
+			m_pModelCom->Render(i);
+
 		}
 
-		m_iShaderPassID = 0;
-
-		if (FAILED(m_pShaderCom->SetRawValue("g_IsUseNormalTex", &m_IsNormalTex, sizeof(_bool))))
-			return E_FAIL;
-
-		m_IsNormalTex = false;
-
-		m_pShaderCom->Begin(m_iShaderPassID);
-
-		m_pModelCom->Render(i);
 	}
 
 	return S_OK;
@@ -319,16 +331,16 @@ HRESULT CCityObject::SetUp_ShadowShaderResources()
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	if (nullptr == pGameInstance)
-		return E_FAIL;
+	//CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	//if (nullptr == pGameInstance)
+	//	return E_FAIL;
 
-	if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->GetBakeLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_PROJ))))
-		return E_FAIL;
+	//if (FAILED(m_pShaderCom->SetMatrix("g_WorldMatrix", &m_pMainTransform->Get_WorldMatrix())))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->SetMatrix("g_ViewMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_VIEW))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->SetMatrix("g_ProjMatrix", &pGameInstance->GetLightFloat4x4(LIGHT_MATRIX::LIGHT_PROJ))))
+	//	return E_FAIL;
 
 	return S_OK;
 }

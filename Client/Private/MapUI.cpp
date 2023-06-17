@@ -767,7 +767,7 @@ HRESULT CMapUI::mainRender()
 	{
 		if (FAILED(m_pShader->SetRawValue("g_vColor", &vColor3, sizeof(_float3))))
 			return E_FAIL;
-		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[7], sizeof(_float))))
+		if (FAILED(m_pShader->SetRawValue("g_fTimeAcc", &m_fElemAlpha[1], sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoCoinAmount[i].WorldMatrix)))
 			return E_FAIL;

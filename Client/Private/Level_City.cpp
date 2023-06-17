@@ -62,6 +62,9 @@ HRESULT CLevel_City::Initialize()
 	if (FAILED(Ready_Layer_Trigger(TEXT("layer_trigger"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Character(TEXT("layer_npc"))))
+		return E_FAIL;
+
 	CLayer* pEchoLayer = pGameInstance->Find_Layer(LEVEL_STATIC, TEXT("EchoInstance"));
 
 	if (nullptr != pEchoLayer)
@@ -333,6 +336,17 @@ HRESULT CLevel_City::Ready_Layer_UI(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::UITIP, pLayerTag, TEXT("UI_Tip"))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::UIMERCHANTMEN, pLayerTag, TEXT("UI_MerchantMen"))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_City::Ready_Layer_Character(const _tchar * pLayerTag)
+{
+	CGameMode* pGameMode = CGameMode::GetInstance();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::SHOP_GIRL, pLayerTag, TEXT("ShopGirl"))))
 		return E_FAIL;
 
 	return S_OK;

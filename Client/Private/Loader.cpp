@@ -65,6 +65,10 @@
 #include "Missile_RotAround.h"
 #include "Missile_NaviBoom.h"
 
+//NPC
+#include "NonPlayer.h"
+#include "ShopGirl.h"
+
 //AnimTool
 #include "AnimToolManager.h"
 #include "TestVTF.h"
@@ -486,6 +490,14 @@ HRESULT CLoader::Load_Level_City()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_CHIXIA_ANIMSET_RIBBON, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/PlayerChar/chixia/chixia_AnimSet_Ribbon.dmdl")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_SHOP_GIRL, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/NPC/ShopGirl/ShopGirl.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_COOK_GIRL, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/NPC/Panhua/Panhua.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, DMODEL::DMD_DELIVER, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/NPC/Deliver/Deliver.dmdl")))))
+		return E_FAIL;
 
 	m_pApp->LoadRatio(0.9f);
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
@@ -504,6 +516,9 @@ HRESULT CLoader::Load_Level_City()
 
 	m_pApp->LoadRatio(1.f);
 	m_szLoadingStateText = L"객체원본을 로딩중입니다.";
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SHOP_GIRL, CShopGirl::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma endregion GAMEOBJECTS
 

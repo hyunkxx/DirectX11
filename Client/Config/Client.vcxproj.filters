@@ -477,6 +477,12 @@
     <ClCompile Include="..\private\Missile_NaviBoom.cpp">
       <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\ShopGirl.cpp">
+      <Filter>src\02. GameObject\03. Character\04. NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\NonPlayer.cpp">
+      <Filter>src\02. GameObject\03. Character\04. NPC</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -932,6 +938,12 @@
     <ClInclude Include="..\public\Missile_NaviBoom.h">
       <Filter>src\02. GameObject\03. Character\00. Base\Missile</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ShopGirl.h">
+      <Filter>src\02. GameObject\03. Character\04. NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\NonPlayer.h">
+      <Filter>src\02. GameObject\03. Character\04. NPC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1090,6 +1102,9 @@
     </Filter>
     <Filter Include="src\02. GameObject\03. Character\03. Echo">
       <UniqueIdentifier>{c183074e-0198-448a-9297-f334d13affd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02. GameObject\03. Character\04. NPC">
+      <UniqueIdentifier>{5bf5e3cc-e505-42ff-9158-5a798ad02f13}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

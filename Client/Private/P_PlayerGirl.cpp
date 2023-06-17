@@ -282,6 +282,9 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 
 	pGameInstance->AddCollider(m_pMoveCollider, COLL_MOVE);
 	m_pMoveCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+
+	pGameInstance->AddCollider(m_pMoveCollider, COLL_NPC);
+	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 }
 
 void CP_PlayerGirl::LateTick(_double TimeDelta)

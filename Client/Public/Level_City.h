@@ -25,6 +25,7 @@ private:
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Monster(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UI(const _tchar * pLayerTag);
+	HRESULT Ready_Layer_Character(const _tchar * pLayerTag);
 
 private:
 	HRESULT Ready_Layer_CityObject();

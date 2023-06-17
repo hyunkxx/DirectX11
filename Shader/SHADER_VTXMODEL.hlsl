@@ -227,6 +227,30 @@ PS_OUT_OUTLINE	PS_MAIN(PS_IN In)
 	return Out;
 }
 
+
+PS_OUT_OUTLINE	PS_MAIN_SPA(PS_IN In)
+{
+	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
+
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (true == g_IsUseNormalTex)
+	{
+		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+		float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+		float3x3 WorldMatrix = float3x3(In.vTangent, In.vBiNormal, In.vNormal.xyz);
+		vNormal = mul(vNormal, WorldMatrix);
+		In.vNormal.xyz = vNormal;
+	}
+
+	Out.vDiffuse = vMtrlDiffuse;
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.0f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
+
+	return Out;
+}
+
+
 PS_OUT_OUTLINE	PS_MAIN_FLOOR(PS_IN In)
 {
 	PS_OUT_OUTLINE Out = (PS_OUT_OUTLINE)0;
@@ -285,7 +309,7 @@ PS_OUT_OUTLINE	PS_Outline(PS_IN In)
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_Far, 0.5f, 1.f);
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
-	if (vNormalDesc.g > vNormalDesc.b)
+	if ((vNormalDesc.r + vNormalDesc.g) / 2 > (vNormalDesc.b * 2.f))
 		Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 1.f);
 
 	return Out;
@@ -738,5 +762,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_FLOOR();
+	}
+
+	pass PS_MAIN_SPA_Pass13
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SPA();
 	}
 }

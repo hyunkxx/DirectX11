@@ -302,7 +302,7 @@ PS_OUT_OUTLINE PS_Outline(PS_IN In)
 
 	Out.vOutNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 1.f);
 
-	if (vNormalDesc.g > vNormalDesc.b)
+	if ((vNormalDesc.r + vNormalDesc.g) / 2 > (vNormalDesc.b * 2.f))
 		Out.vSpecGlow = float4(vMtrlDiffuse.xyz, 1.f);
 
 	Out.vGlow = float4(0.f, 0.f, 0.f, 1.f);

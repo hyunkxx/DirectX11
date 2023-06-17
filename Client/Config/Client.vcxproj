@@ -254,6 +254,7 @@
     <ClInclude Include="..\public\M_Huojin.h" />
     <ClInclude Include="..\public\M_Leilie.h" />
     <ClInclude Include="..\public\M_Qunjing.h" />
+    <ClInclude Include="..\public\NonPlayer.h" />
     <ClInclude Include="..\Public\Object_Bomer.h" />
     <ClInclude Include="..\Public\Particle_Effect.h" />
     <ClInclude Include="..\public\PlayerState.h" />
@@ -295,6 +296,7 @@
     <ClInclude Include="..\public\PriorityKey.h" />
     <ClInclude Include="..\Public\Rect_Effect_P.h" />
     <ClInclude Include="..\public\SettingUI.h" />
+    <ClInclude Include="..\public\ShopGirl.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\public\SlowKey.h" />
     <ClInclude Include="..\public\SoundKey.h" />
@@ -428,6 +430,7 @@
     <ClCompile Include="..\private\M_Huojin.cpp" />
     <ClCompile Include="..\private\M_Leilie.cpp" />
     <ClCompile Include="..\private\M_Qunjing.cpp" />
+    <ClCompile Include="..\private\NonPlayer.cpp" />
     <ClCompile Include="..\Private\Object_Bomer.cpp" />
     <ClCompile Include="..\Private\Particle_Effect.cpp" />
     <ClCompile Include="..\private\PlayerState.cpp" />
@@ -471,6 +474,7 @@
     <ClCompile Include="..\private\PriorityKey.cpp" />
     <ClCompile Include="..\Private\Rect_Effect_P.cpp" />
     <ClCompile Include="..\private\SettingUI.cpp" />
+    <ClCompile Include="..\private\ShopGirl.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\private\SlowKey.cpp" />
     <ClCompile Include="..\private\SoundKey.cpp" />
