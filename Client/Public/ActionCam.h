@@ -51,10 +51,12 @@ public:
 	static CActionCam* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CCameraMovement::CAM_TYPE eActionType);
 	virtual CGameObject * Clone(void * pArg = nullptr) override;
 	virtual void Free() override;
-
+ 
 private:
 	CBone* m_pTargetBone = nullptr;
 	CTransform* m_pTargetTransform = nullptr;
+	CTransform* m_pSubTransform = nullptr;
+
 private:
 	CCameraMovement::CAM_TYPE m_eCamType;
 	CCameraMovement* m_pCamMovement = nullptr;
@@ -67,7 +69,7 @@ private:
 
 	// Revert
 	_float m_fRevertAcc = 0.f;
-
+	_float m_fChixiaValue = 2.f;
 };
 
 END

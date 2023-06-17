@@ -212,7 +212,7 @@ void CP_Chixia::Start()
 	m_pInven = static_cast<CInventory*>(pGame->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 	m_pCamMovement->UseCamera(CCameraMovement::CAM_MAINPLAYER);
-	m_pCamMovement->SetupBone(CCameraMovement::CAM_CHIXIA, m_pModelCom->Get_BonePtr(L"WeaponProp02"));
+	m_pCamMovement->SetupBone(CCameraMovement::CAM_CHIXIA, m_pModelCom->Get_BonePtr(L"Bip001Spine1"));
 	m_pUIMain = static_cast<CUI_MainScreen*>(pGame->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));
 
 	if (false == m_bOnControl)
@@ -540,7 +540,18 @@ HRESULT CP_Chixia::Render()
 			}
 
 			else
-				m_pShaderCom->Begin(7);		//Burst
+			{
+				if (IS_BURST == m_Scon.iCurState)
+				{
+					_float3 vColor = { 0.8f, 0.2f, 0.2f }; 
+					if (FAILED(m_pShaderCom->SetRawValue("g_vColor", &vColor, sizeof(_float3))))
+						return E_FAIL;
+
+					m_pShaderCom->Begin(17);		//Burst
+				}
+				else
+					m_pShaderCom->Begin(7);
+			}
 		}
 		else
 		{
@@ -579,7 +590,7 @@ HRESULT CP_Chixia::Render()
 		if (i != 5 && m_fBurstRim > 0.f)
 		{
 			_float vRimPower = 10.f;
-			_float3 vColor = LEGEND_COLOR;
+			_float3 vColor = { 0.8f, 0.2f, 0.2f };
 			_float4 vRimColor = _float4(vColor.x, vColor.y, vColor.z, 1.f);
 			if (FAILED(m_pShaderCom->SetRawValue("g_RimPower", &vRimPower, sizeof(_float))))
 				return E_FAIL;

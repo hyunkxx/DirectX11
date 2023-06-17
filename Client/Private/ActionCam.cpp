@@ -46,6 +46,17 @@ HRESULT CActionCam::Initialize(void * pArg)
 	if (!m_pPlayerState)
 		return E_FAIL;
 	
+	/* For.Com_Transform */
+	CTransform::TRANSFORM_DESC	TransformDesc;
+	ZeroMemory(&TransformDesc, sizeof TransformDesc);
+
+	TransformDesc.fMoveSpeed = 15.f;
+	TransformDesc.fRotationSpeed = XMConvertToRadians(400.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::TRANSFORM,
+		TEXT("Com_Transform"), (CComponent**)&m_pSubTransform, &TransformDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -113,6 +124,7 @@ void CActionCam::Free()
 {
 	__super::Free();
 	Safe_Release(m_pMainTransform);
+	Safe_Release(m_pSubTransform);
 }
 
 void CActionCam::AttachTargetTransform(CTransform * pTransform)
@@ -205,9 +217,11 @@ void CActionCam::actionInit_Chixia()
 
 	vPos = XMVectorSetY(vPos, XMVectorGetY(vPos) + 1.35f);
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vPos);
+	m_pSubTransform->Set_WorldMatrix(m_pTargetTransform->Get_WorldMatrix());
 
 	m_iAction = 0;
 	m_fTimeAcc = 0.f;
+	m_fChixiaValue = 2.f;
 }
 
 void CActionCam::actionLoop_Bangsung(_double TimeDelta)
@@ -373,13 +387,19 @@ void CActionCam::actionLoop_Chixia(_double TimeDelta)
 	if (m_iAction < 2)
 	{
 		m_fTimeAcc += (_float)TimeDelta;
-
 		if (m_iAction == 1)
 		{
-			if (!bSlowMotion && m_fTimeAcc > 0.4f)
+			if (!bSlowMotion && m_fTimeAcc > 0.6f)
 			{
 				bSlowMotion = true;
 				pGameInstance->TimeSlowDown(0.125f, 0.1f, 10.f);
+
+				CRenderSetting::RGB_SPLIT_DESC Split;
+				Split.m_fDistortion = 3.2f;
+				Split.m_fStrength = 1.f;
+				Split.m_fSeparation = 0.5f;
+				pGameInstance->SetSplitDesc(Split);
+				pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DIR::SPLIT_DEFAULT, 0.5f);
 			}
 
 			if (m_fTimeAcc > 0.8f)
@@ -390,43 +410,64 @@ void CActionCam::actionLoop_Chixia(_double TimeDelta)
 		}
 		else
 		{
-			if (m_fTimeAcc > 0.5f)
+			_vector vSrc = XMVectorSet(m_fChixiaValue, m_fChixiaValue, m_fChixiaValue, 1.f);
+			_vector vDes = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+
+			m_fChixiaValue = XMVectorGetX(XMVectorLerp(vSrc, vDes, (_float)TimeDelta * 2.f));
+			
+			m_pSubTransform->Rotate(VECTOR_UP, -(TimeDelta * m_fChixiaValue));
+			if (m_fTimeAcc > 1.5f)
 			{
 				m_fTimeAcc = 0.f;
 				m_iAction++;
 			}
 		}
 	}
+	else
+	{
+		m_fTimeAcc += (_float)TimeDelta;
+		if (m_fTimeAcc > 1.7f)
+		{
+			m_fTimeAcc = 0.f;
+			m_iAction++;
+		}
+	}
 
 	_vector vBonePos = XMVector3TransformCoord(XMVector3TransformCoord(m_pTargetBone->Get_CombinedPosition()
 		, XMMatrixRotationY(180.f)), XMLoadFloat4x4(m_pTargetTransform->Get_WorldMatrixPtr()));
+
+	_matrix pBoneMatrix = XMLoadFloat4x4(&m_pTargetBone->Get_CombinedTransfromationMatrix()) * XMMatrixRotationY(180.f) * XMLoadFloat4x4(m_pTargetTransform->Get_WorldMatrixPtr());
 
 	_vector vLook = m_pMainTransform->Get_State(CTransform::STATE_LOOK);
 	_vector vCurPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);
 	_vector vTargetPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION);
 	_vector vTargetLook = m_pTargetTransform->Get_State(CTransform::STATE_LOOK);
 	_vector vTargetRight = m_pTargetTransform->Get_State(CTransform::STATE_RIGHT);
+	_vector vBoneDir1 = XMVector3Normalize(pBoneMatrix.r[2]);
 
-	vTargetPos = XMVectorSetY(vTargetPos, XMVectorGetY(vTargetPos) + 1.35f);
+	//vTargetPos = XMVectorSetY(vTargetPos, XMVectorGetY(vTargetPos) + 1.35f);
+	vTargetPos = XMVectorSetY(vTargetPos, XMVectorGetY(vTargetPos) + 4.f);
+	vBonePos = XMVectorSetY(vBonePos, XMVectorGetY(vBonePos) + 0.15f);
+
+	_vector vSubPos = m_pSubTransform->Get_State(CTransform::STATE_POSITION);
+	vSubPos = XMVectorSetY(vSubPos, XMVectorGetY(vSubPos) + 0.9f + (m_fTimeAcc * 0.45f));
+	_vector vSubDir = m_pSubTransform->Get_State(CTransform::STATE_LOOK);
 
 	switch (m_iAction)
 	{
 	case 0:
-		vCurPos = XMVectorLerp(vCurPos, vBonePos + XMVector3Normalize(vLook), (_float)TimeDelta * 0.5f);
-		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
-
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vSubPos - vSubDir * (0.8f * m_fTimeAcc));
 		break;
 	case 1:
-		vCurPos = XMVectorLerp(vCurPos, vBonePos + XMVector3Normalize(vTargetLook * 1.5f), (_float)TimeDelta * 0.75f);
+		vCurPos = XMVectorLerp(vCurPos, vSubPos - vSubDir * 1.3f, (_float)TimeDelta * 0.75f);
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
-
 		break;
 	case 2:
-		vCurPos = XMVectorLerp(vCurPos, vTargetPos - vTargetLook * 8.f, (_float)TimeDelta * 3.f);
-		m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
-
-		if (XMVectorGetX(XMVector3Length(vCurPos - (vTargetPos - vTargetLook * 8.f))) < 0.1f)
-			m_iAction++;
+		if (XMVectorGetX(XMVector3Length(vCurPos - (vTargetPos - vTargetLook * 9.f))) > 0.1f)
+		{
+			vCurPos = XMVectorLerp(vCurPos, vTargetPos - vTargetLook * 9.f, (_float)TimeDelta * 3.f);
+			m_pMainTransform->Set_State(CTransform::STATE_POSITION, vCurPos);
+		}
 
 		break;
 	case 3:
