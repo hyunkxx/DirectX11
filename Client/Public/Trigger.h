@@ -156,7 +156,7 @@ private:
 	// 현재 소환된 마리수 체크
 	_uint						m_iCurrentSpawnMonsterCount = { 0 };
 	// 몬스터 스폰 마리수 제한 ( 한번에 스폰 가능한 수 )
-	const _uint&				m_iMonsterSpawnLimitCount = { 4 };
+	const _uint&				m_iMonsterSpawnLimitCount = { 3 };
 
 public:
 	HRESULT Link_Monster(CCharacter* pCharacter);

@@ -51,7 +51,7 @@ private:
 
 private:
 	// 몬스터 추가만 해놓는다. -> 레이어에서 하나씩 부를때.
-	HRESULT Add_Monster(_uint iMonsterModelNum, const _tchar* pLayerTag, class CCharacter** ppChar);
+	HRESULT Add_Monster(_uint iMonsterNum, const _tchar* pLayerTag, class CCharacter** ppChar);
 
 public:
 	static CLevel_Forest* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

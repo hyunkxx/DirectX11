@@ -391,74 +391,93 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 		return E_FAIL;
 	}
 
-	CCharacter*		pChar_0 = { nullptr };
-	CCharacter*		pChar_1 = { nullptr };
-	CCharacter*		pChar_2 = { nullptr };
-	CCharacter*		pChar_3 = { nullptr };
-	CCharacter*		pChar_4 = { nullptr };
+	CCharacter*		pGazizi = { nullptr };
+	CCharacter*		pAwukaka = { nullptr };
+	CCharacter*		pFhuxiuxiu = { nullptr };
 
-	// 몬스터 종류 : MONSTER_HUOJIN - pChar_0 , MONSTER_BINGLIE - pChar_1 , MONSTER_FENGLIE - pChar_2 , MONSTER_LEILIE - pChar_3 , MONSTER_QUNJING - pChar_4
-	if (FAILED(Add_Monster(OBJECT::MONSTER_HUOJIN, pLayerTag, &pChar_0)))
+	CCharacter*		pAnjin = { nullptr };
+	CCharacter*		pHuojin = { nullptr };
+	CCharacter*		pBinglie = { nullptr };
+	CCharacter*		pFenglie = { nullptr };
+	CCharacter*		pLeilei = { nullptr };
+	CCharacter*		pQunjing = { nullptr };
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_GAZIZI, pLayerTag, &pGazizi)))
 		return E_FAIL;
-	if (FAILED(Add_Monster(OBJECT::MONSTER_BINGLIE, pLayerTag, &pChar_1)))
+	if (FAILED(Add_Monster(OBJECT::MONSTER_AWUKAKA, pLayerTag, &pAwukaka)))
 		return E_FAIL;
-	if (FAILED(Add_Monster(OBJECT::MONSTER_FENGLIE, pLayerTag, &pChar_2)))
+	if (FAILED(Add_Monster(OBJECT::MONSTER_FHUXIUXIU, pLayerTag, &pFhuxiuxiu)))
 		return E_FAIL;
-	if (FAILED(Add_Monster(OBJECT::MONSTER_LEILIE, pLayerTag, &pChar_3)))
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_ANJIN, pLayerTag, &pAnjin)))
 		return E_FAIL;
-	if (FAILED(Add_Monster(OBJECT::MONSTER_QUNJING, pLayerTag, &pChar_4)))
+	if (FAILED(Add_Monster(OBJECT::MONSTER_HUOJIN, pLayerTag, &pHuojin)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_BINGLIE, pLayerTag, &pBinglie)))
+		return E_FAIL;
+	if (FAILED(Add_Monster(OBJECT::MONSTER_FENGLIE, pLayerTag, &pFenglie)))
+		return E_FAIL;
+	if (FAILED(Add_Monster(OBJECT::MONSTER_LEILIE, pLayerTag, &pLeilei)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_QUNJING, pLayerTag, &pQunjing)))
 		return E_FAIL;
 
 	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_0"));
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_0)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pGazizi)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_1)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pFhuxiuxiu)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_2)))
+
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pHuojin)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_3)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pAnjin)))
 		return E_FAIL;
 
 	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_1"));
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_0)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pFhuxiuxiu)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_2)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pAwukaka)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_3)))
+
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pAnjin)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_4)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pBinglie)))
 		return E_FAIL;
 
 	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_2"));
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_0)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pGazizi)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_1)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pAwukaka)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_3)))
+
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pHuojin)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_4)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pFenglie)))
 		return E_FAIL;
 
 	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_3"));
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_1)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pAnjin)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_2)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pBinglie)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_3)))
+
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pLeilei)))
 		return E_FAIL;
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pChar_4)))
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_Monster(pQunjing)))
 		return E_FAIL;
 
 	/*CGameObject* pChar = nullptr;
@@ -2453,7 +2472,7 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 	vWorldMatrix._43 = 286.f;
 
 	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_01", &Rock_State)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_01", &Rock_State)))
 		return E_FAIL;
 	
 
@@ -2471,7 +2490,7 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 	vWorldMatrix._43 = 270.f;
 
 	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_02", &Rock_State)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_02", &Rock_State)))
 		return E_FAIL;
 
 	ZeroMemory(&Rock_State, sizeof(CBoom_Rock::ROCK_STATE));
@@ -2488,7 +2507,7 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 	vWorldMatrix._43 = 252.f;
 
 	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_03", &Rock_State)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_03", &Rock_State)))
 		return E_FAIL;
 
 	ZeroMemory(&Rock_State, sizeof(CBoom_Rock::ROCK_STATE));
@@ -2505,7 +2524,7 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 	vWorldMatrix._43 = 100.f;
 
 	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_04", &Rock_State)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_04", &Rock_State)))
 		return E_FAIL;
 
 	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
@@ -2513,28 +2532,28 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 	vWorldMatrix._42 = 9.259f;
 	vWorldMatrix._43 = 279.32f;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_01", &vWorldMatrix)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_01", &vWorldMatrix)))
 		return E_FAIL;
 
 	vWorldMatrix._41 = 319.878f;
 	vWorldMatrix._42 = 12.831f;
 	vWorldMatrix._43 = 260.354f;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_02", &vWorldMatrix)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_02", &vWorldMatrix)))
 		return E_FAIL;
 
 	vWorldMatrix._41 = 217.5f;
 	vWorldMatrix._42 = 7.852f;
 	vWorldMatrix._43 = 288.187f;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_03", &vWorldMatrix)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_03", &vWorldMatrix)))
 		return E_FAIL;
 
 	vWorldMatrix._41 = 240.878f;
 	vWorldMatrix._42 = 9.259f;
 	vWorldMatrix._43 = 133.421f;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_04", &vWorldMatrix)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_04", &vWorldMatrix)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -2625,7 +2644,7 @@ HRESULT CLevel_Forest::Load_TriggerData(const _tchar * pDataFilePath, const _tch
 }
 
 
-HRESULT CLevel_Forest::Add_Monster(_uint iMonsterModelNum, const _tchar * pLayerTag, CCharacter** ppChar)
+HRESULT CLevel_Forest::Add_Monster(_uint iMonsterNum, const _tchar * pLayerTag, CCharacter** ppChar)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
@@ -2633,8 +2652,24 @@ HRESULT CLevel_Forest::Add_Monster(_uint iMonsterModelNum, const _tchar * pLayer
 
 	CGameObject* pChar = nullptr;
 
-	switch (iMonsterModelNum)
+	switch (iMonsterNum)
 	{
+	case OBJECT::MONSTER_GAZIZI:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_GAZIZI, pLayerTag, TEXT("Gazizi"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_AWUKAKA:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_AWUKAKA, pLayerTag, TEXT("Awukaka"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_FHUXIUXIU:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_FHUXIUXIU, pLayerTag, TEXT("Fhuxiuxiu"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_ANJIN:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_ANJIN, pLayerTag, TEXT("Anjin"))))
+			return E_FAIL;
+		break;
 	case OBJECT::MONSTER_HUOJIN:
 		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_HUOJIN, pLayerTag, TEXT("Huojin"))))
 			return E_FAIL;

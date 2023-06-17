@@ -519,8 +519,6 @@ HRESULT CTrigger::Link_Monster(CCharacter * pCharacter)
 
 void CTrigger::ClearLink_Monster()
 {
-	for (auto& pMonster : m_pMonsters)
-		pMonster = nullptr;
 	m_pMonsters.clear();
 }
 
@@ -629,11 +627,6 @@ void CTrigger::Free()
 	__super::Free();
 
 	Safe_Release(m_pMainTransform);
-
-	m_pPlayerState = { nullptr };
-
-	m_pPotal = { nullptr };
-	m_pPotalEffect = { nullptr };
 
 	if (TRIGGER_TYPE::TYPE_SPAWN == m_TriggerDesc.iTriggerType)
 		ClearLink_Monster();

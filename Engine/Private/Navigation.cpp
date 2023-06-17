@@ -375,8 +375,6 @@ CNavigation::NAVISTATE CNavigation::Climb_OnNavigation(_fvector vPosition, _fvec
 						break;
 				}
 
-
-				// 릴리즈 모드 때 터졌던곳. ( 무조건은 아님 ) : iHeadNeighborIndex 가 -1 이여서. -> 한번 더 터지면 확인해볼것. -> 포탈 타고 Wall 옵션 네비에 안박으면 안터지는듯.
 				// 이동한 이웃이 Wall이 아니라면
 				if (1 != m_Cells[iHeadNeighborIndex]->Get_State() && -1 != iHeadNeighborIndex)
 				{

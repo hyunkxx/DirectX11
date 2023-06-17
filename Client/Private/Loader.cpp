@@ -620,19 +620,43 @@ HRESULT CLoader::Load_Level_Forest()
 		return E_FAIL;
 
 
+#pragma region MONSTER
+	// 4속성 정령 컨셉 몬스터들
+	// GAzizi == 원기옥 == 광속성, AWukaka == 자폭 동글이 == 암속성, FHuxiuxiu == 풍속성
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_GAZIZI, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/GAzizi.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_AWUKAKA, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/AWukaka.dmdl")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_FHUXIUXIU, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Spirit/FHuxiuxiu.dmdl")))))
+		return E_FAIL;
+
+	// 인간형 유령? 컨셉 몬스터들
+	// ANJIN == 낫맨, HUOJIN == 칼맨, BingLie == 얼음창맨, FengLie == 선풍기맨, LeiLie == 번개활맨 QunJing == 껍질 골렘
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_ANJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Anjin.dmdl")))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_HUOJIN, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Huojin.dmdl")))))
 		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_BINGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Binglie.dmdl")))))
 		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_FENGLIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Fenglie.dmdl")))))
 		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_LEILIE, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Leilie.dmdl")))))
 		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, DMODEL::DMD_MONSTER_QUNJING, CModel_Anim::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Dynamic/Monster/Common/Ghost/Qunjing.dmdl")))))
 		return E_FAIL;
-
-
+#pragma endregion MONSTER
+	 
   
+
+
 	m_pApp->LoadRatio(0.9f);
 	m_szLoadingStateText = L"셰이더를 로딩중입니다.";
 
