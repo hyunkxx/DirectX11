@@ -223,9 +223,9 @@ HRESULT CCityObject::Render_Interect()
 		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource_Distinction(m_pShaderCom, "g_NormalTexture", i, MyTextureType_NORMALS, &m_IsNormalTex)))
 			return E_FAIL;
 
-		if (CCityObject::TYPE_ID::ID_STA == m_CityObject_Desc.iType_ID)
+		if (CCityObject::TYPE_ID::ID_STO == m_CityObject_Desc.iType_ID)
 		{
-			if (1 == iNumMesh)
+			if (1 == i)
 				m_CityObject_Desc.Use_Glow = true;
 			else
 				m_CityObject_Desc.Use_Glow = false;

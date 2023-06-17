@@ -510,6 +510,24 @@ HRESULT CLevel_City::Ready_Layer_Trigger(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
+	if (FAILED(Load_TriggerData(TEXT("../../Data/City/Trigger/Interact_CookNpc.data"), TEXT("Trigger_Interact_CookNpc"), pLayerTag)))
+	{
+		MSG_BOX("Trigger_Interact_CookNpc");
+		return E_FAIL;
+	}
+
+	if (FAILED(Load_TriggerData(TEXT("../../Data/City/Trigger/Interact_Shop_1.data"), TEXT("Trigger_Interact_Shop_1"), pLayerTag)))
+	{
+		MSG_BOX("Trigger_Interact_Shop_1");
+		return E_FAIL;
+	}
+
+	if (FAILED(Load_TriggerData(TEXT("../../Data/City/Trigger/Interact_Shop_2.data"), TEXT("Trigger_Interact_Shop_2"), pLayerTag)))
+	{
+		MSG_BOX("Trigger_Interact_Shop_2");
+		return E_FAIL;
+	}
+
 	_float3 vPos;
 
 	vPos = { 162.55f,  16.85f,  145.24f };

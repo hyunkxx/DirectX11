@@ -200,6 +200,9 @@ void CTrigger::Trigger_Condition()
 	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_3:
 	case CTrigger::TRIGGER_ID::ID_SPAWN_CROWN:
 	case CTrigger::TRIGGER_ID::ID_INTERACT_COOK:
+	case CTrigger::TRIGGER_ID::ID_INTERACT_COOKNPC:
+	case CTrigger::TRIGGER_ID::ID_INTERACT_SHOP_1:
+	case CTrigger::TRIGGER_ID::ID_INTERACT_SHOP_2:
 		if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F))
 			m_IsTrigger = true;
 		break;
@@ -239,6 +242,15 @@ void CTrigger::Trigger_Process()
 		break;
 	case CTrigger::TRIGGER_ID::ID_INTERACT_COOK:
 		Trigger_Interact_Cook();
+		break;
+	case CTrigger::TRIGGER_ID::ID_INTERACT_COOKNPC:
+		Trigger_Interact_CookNpc();
+		break;
+	case CTrigger::TRIGGER_ID::ID_INTERACT_SHOP_1:
+		Trigger_Interact_Shop_1();
+		break;
+	case CTrigger::TRIGGER_ID::ID_INTERACT_SHOP_2:
+		Trigger_Interact_Shop_2();
 		break;
 
 	default:
@@ -324,7 +336,22 @@ void CTrigger::Trigger_Spawn_Crown()
 
 void CTrigger::Trigger_Interact_Cook()
 {
-	//MSG_BOX("Trigger : Interact_Cook");
+	MSG_BOX("Trigger : Interact_Cook");
+}
+
+void CTrigger::Trigger_Interact_CookNpc()
+{
+	MSG_BOX("Trigger : Interact_CookNpc");
+}
+
+void CTrigger::Trigger_Interact_Shop_1()
+{
+	MSG_BOX("Trigger : Interact_Shop_1");
+}
+
+void CTrigger::Trigger_Interact_Shop_2()
+{
+	MSG_BOX("Trigger : Interact_Shop_2");
 }
 
 void CTrigger::ShowEffect(_double TimeDelta)

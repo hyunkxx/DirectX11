@@ -102,7 +102,10 @@ public: // 트리거 별 처리 함수
 
 	void Trigger_Spawn_Crown();
 
-	void Trigger_Interact_Cook();;
+	void Trigger_Interact_Cook();
+	void Trigger_Interact_CookNpc();
+	void Trigger_Interact_Shop_1();
+	void Trigger_Interact_Shop_2();
 
 	void ShowEffect(_double TimeDelta);
 
