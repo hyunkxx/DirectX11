@@ -506,7 +506,7 @@ void CTrigger::Check_ActiveMonster()
 
 HRESULT CTrigger::Link_Monster(CCharacter * pCharacter)
 {
-	if (nullptr == pCharacter)
+	if (nullptr == pCharacter || TRIGGER_TYPE::TYPE_SPAWN != m_TriggerDesc.iTriggerType)
 	{
 		MSG_BOX("Failed To Link Monster : CTrigger");
 		return E_FAIL;
@@ -520,7 +520,7 @@ HRESULT CTrigger::Link_Monster(CCharacter * pCharacter)
 void CTrigger::ClearLink_Monster()
 {
 	for (auto& pMonster : m_pMonsters)
-		Safe_Release(pMonster);
+		pMonster = nullptr;
 	m_pMonsters.clear();
 }
 
@@ -630,5 +630,11 @@ void CTrigger::Free()
 
 	Safe_Release(m_pMainTransform);
 
-	ClearLink_Monster();
+	m_pPlayerState = { nullptr };
+
+	m_pPotal = { nullptr };
+	m_pPotalEffect = { nullptr };
+
+	if (TRIGGER_TYPE::TYPE_SPAWN == m_TriggerDesc.iTriggerType)
+		ClearLink_Monster();
 }

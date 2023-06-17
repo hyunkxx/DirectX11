@@ -421,8 +421,8 @@ HRESULT CLevel_City::Load_CityObject(const _tchar* pDataFilePath, const _tchar* 
 
 	if (INVALID_HANDLE_VALUE == hFile)
 	{
-		MSG_BOX("Failed to Load Data in Level_GamePlay : City_Object");
-		return E_FAIL;
+		//MSG_BOX("Failed to Load Data in Level_City : City_Object");
+		return S_OK;
 	}
 
 	const _tchar*			pLayerTag = { TEXT("") };
@@ -475,6 +475,9 @@ HRESULT CLevel_City::Load_CityObject(const _tchar* pDataFilePath, const _tchar* 
 		}
 
 		wsprintf(szCityObjectTag, pCityObejctTag, i);
+
+		if (0.0f == (CityObject_Desc.PSA.vP.x + CityObject_Desc.PSA.vP.y + CityObject_Desc.PSA.vP.z))
+			return S_OK;
 
 		if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::CITY_OBJECT,
 			pLayerTag, szCityObjectTag, &CityObject_Desc)))
