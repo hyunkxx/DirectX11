@@ -72,7 +72,7 @@ void CRobot::Start()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
-	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::BOX);
+	m_UIIndex = m_pUIIcon->Add_Icon(XMVectorSet(m_BoxMatrix._41, m_BoxMatrix._42, m_BoxMatrix._43, 1.f), CUI_Minimap::BOX);
 	m_pUIIcon->SetRender(m_UIIndex, false);
 }
 
@@ -95,7 +95,7 @@ void CRobot::Tick(_double TimeDelta)
 		if (false == m_pUIIcon->GetRenderState(m_UIIndex))
 			m_pUIIcon->SetRender(m_UIIndex, true);
 
-		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+		m_pUIIcon->Set_ObjectPos(m_UIIndex, XMVectorSet(m_BoxMatrix._41, m_BoxMatrix._42, m_BoxMatrix._43, 1.f));
 		m_pUIIcon->SetRender(m_UIIndex, true);
 	}
 }
