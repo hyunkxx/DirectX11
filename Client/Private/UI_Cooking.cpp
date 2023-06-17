@@ -140,33 +140,12 @@ HRESULT CUI_Cooking::Initialize(void * pArg)
 	}
 	pSelectSlot = &m_0Slot[2];
 	pOwnFood = &InvenFlatbread;
-	pNeedMaterial0 = &NeedMaterial0;
-	pNeedMaterial1 = &NeedMaterial1;
-	pNeedMaterial2 = &NeedMaterial2;
-	pOwnMaterial0 = &InvenFlour;
-	pOwnMaterial1 = &InvenRice;
-	pOwnMaterial2 = &InvenTofu;
-
-	m_RButtonList[0].fX += 10.f;
-	// 배우기 텍스트 위치 ->456.f 원래 위치로 돌아올때 사용
-	m_RButtonList[1].OriPos.x = m_RButtonList[1].fX = 438.f;
-	m_FinalList[13].OriPos.x = m_FinalList[13].fX;
-
-	m_0Slot[0].bRender = false;
-	m_1Slot[0].bRender = false;
-	m_2Slot[0].bRender = false;
-	m_3Slot[0].bRender = false;
-	m_4Slot[0].bRender = false;
-	m_5Slot[0].bRender = false;
-	m_6Slot[0].bRender = false;
-	m_7Slot[0].bRender = false;
-	m_8Slot[0].bRender = false;
-	m_9Slot[0].bRender = false;
-	m_10Slot[0].bRender = false;
-	m_11Slot[0].bRender = false;
-	m_12Slot[0].bRender = false;
-	m_13Slot[0].bRender = false;
-
+		pNeedMaterial0 = &NeedMaterial0;
+		pNeedMaterial1 = &NeedMaterial1;
+		pNeedMaterial2 = &NeedMaterial2;
+		pOwnMaterial0 = &InvenFlour;
+		pOwnMaterial1 = &InvenRice;
+		pOwnMaterial2 = &InvenTofu;
 	return S_OK;
 }
 
@@ -229,59 +208,37 @@ void CUI_Cooking::Tick(_double TimeDelta)
 	case Client::CUI_Cooking::SETTINGNUM:
 	{
 		//// 인벤토리에 있는 요리관련 아이템들 수량 가져오기
-
-		m_pInven->AddItem(ITEM::RECIPE0, 1);
-		m_pInven->AddItem(ITEM::RECIPE1, 1);
-		m_pInven->AddItem(ITEM::RICE, 5);
-		m_pInven->AddItem(ITEM::TOFU, 5);
-		m_pInven->AddItem(ITEM::FLOUR, 5);
-		m_pInven->AddItem(ITEM::MUSHROOM, 50);
-		m_pInven->AddItem(ITEM::CHICKEN, 5);
-		m_pInven->AddItem(ITEM::EGG, 5);
-		m_pInven->AddItem(ITEM::MEAT, 5);
-		m_pInven->AddItem(ITEM::HERB, 5);
-		m_pInven->AddItem(ITEM::VIOLET, 5);
-		m_pInven->AddItem(ITEM::DANDELION, 5);
-		m_pInven->AddItem(ITEM::PEPPER, 5);
-		m_pInven->AddItem(ITEM::SUGAR, 5);
-		m_pInven->AddItem(ITEM::SALT, 5);
-		m_pInven->AddItem(ITEM::OIL, 5);
-		m_pInven->AddItem(ITEM::SOYSAUCE, 5);
-
-		InvenRice = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::RICE);
-		InvenTofu = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::TOFU);
-		InvenFlour = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::FLOUR);
-		InvenMushroom = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::MUSHROOM);
-		InvenChicken = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::CHICKEN);
-		InvenEgg = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::EGG);
-		InvenMeat = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::MEAT);
-		InvenHerb = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::HERB);
-		InvenViolet = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::VIOLET);
-		InvenDandelion = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::DANDELION);
-		InvenPepper = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::PEPPER);
-		InvenSugar = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SUGAR);
-		InvenSalt = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SALT);
-		InvenOil = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::OIL);
-		InvenSoysauce = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SOYSAUCE);
-		InvenRecipe0 = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::RECIPE0);
-		InvenRecipe1 = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::RECIPE1);
-		InvenFlatbread = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FLATBREAD);
-		InvenSalad = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::SALAD);
-		InvenFriedTofu = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDTOFU);
-		InvenSaltedTea = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::SALTEDTEA);
-		InvenHerbTea = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::HERBTEA);
-		InvenDragonNoodle = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::DRAGONNOODLE);
-		InvenOmurice = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::OMURICE);
-		InvenFriedrice = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDRICE);
-		InvenFriedchicken = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDCHICKEN);
-		InvenRabbitbread = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::RABBITBREAD);
-		InvenFriedMushroom = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDMUSHROOM);
-		InvenMapotofu = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::MAPOTOFU);
-		InvenPorkBelly = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::PORKBELLY);
-		InvenDucknoodles = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::DUCKNOODLES);
-
-
-
+		//InvenRice		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::RICE);
+		//InvenTofu		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::TOFU);
+		//InvenFlour		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::FLOUR);
+		//InvenMushroom	= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::MUSHROOM);
+		//InvenChicken	= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::CHICKEN);
+		//InvenEgg		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::EGG);
+		//InvenMeat		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::MEAT);
+		//InvenHerb		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::HERB);
+		//InvenViolet		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::VIOLET);
+		//InvenDandelion	= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::DANDELION);
+		//InvenPepper		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::PEPPER);
+		//InvenSugar		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SUGAR);
+		//InvenSalt		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SALT);
+		//InvenOil		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::OIL);
+		//InvenSoysauce	= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SOYSAUCE);
+		//InvenRecipe0	= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::RECIPE0);
+		//InvenRecipe1	= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::RECIPE1);
+		//InvenFlatbread			= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FLATBREAD);
+		//InvenSalad				= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::SALAD);
+		//InvenFriedTofu			= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDTOFU);
+		//InvenSaltedTea			= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::SALTEDTEA);
+		//InvenHerbTea			= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::HERBTEA);
+		//InvenDragonNoodle		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::DRAGONNOODLE);
+		//InvenOmurice			= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::OMURICE);
+		//InvenFriedrice			= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDRICE);
+		//InvenFriedchicken		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDCHICKEN);
+		//InvenRabbitbread		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::RABBITBREAD);
+		//InvenFriedMushroom		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDMUSHROOM);
+		//InvenMapotofu			= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::MAPOTOFU);
+		//InvenPorkBelly			= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::PORKBELLY);
+		//InvenDucknoodles		= m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::DUCKNOODLES);
 		// 처음 메뉴 랜더는 등급: all , 디테일 : 노말의 첫번째 메뉴
 		// 등급 all에 선택 텍스처 떠있고 나머지는 흰색
 		// 스위치 등급 -> 슬롯마다 요리 텍스처 [2], 컬러 설정[1], 뉴[3]은 끄기 -> 레시피 해제됐을때만 킴
@@ -291,27 +248,25 @@ void CUI_Cooking::Tick(_double TimeDelta)
 	break;
 	case Client::CUI_Cooking::MENU:
 	{
-		if (m_MenuRenderStart)
-		{
-			InMenuOpen(TimeDelta);
-		}
 		if (SelectUI(&m_CommonList[9]))
 		{
 			m_CommonList[9].iTexNum = 8;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				m_MenuOutStart = true;
+				m_MenuOutStart = true;;
 			}
 		}
 		else
 			m_CommonList[9].iTexNum = 7;
 
+		if(m_MenuRenderStart)
+		{
+			InMenuOpen(TimeDelta);
+		}
 		if (m_MenuOutStart)
 		{
 			if (InMenuEnd(TimeDelta))
 			{
-				MakeNum = 1;
-				m_MenuRenderStart = true;
 				m_MenuOutStart = false;
 				Situation = COOKEND;
 				SetState(DISABLE);
@@ -320,63 +275,19 @@ void CUI_Cooking::Tick(_double TimeDelta)
 		}
 		else // 나가고 있을 때가 아니라면
 		{
+
 			// 메뉴 누르면 디테일 변경
 			SelectGreade();
 			SettingSlot();
 			SelectSlot();
 			SettingNumbers();
-			SettingTotal(MakeNum);
-			// 레시피 사용 유무에 따라 우버튼 텍스트 사진이 바뀜 마스터 16번, 배우기 17번, 확인 26번
-			if (ITEM::PORKBELLY == pSelectSlot->SlotItemId)
-			{
-				if (false == bUsedRecipe0)
-				{
-					m_RButtonList[1].iTexNum = 17;
-					m_RButtonList[1].fX = 458.f;
-					m_RButtonList[1].fY = -296.f;
-					m_RButtonList[1].fWidth = 204.8f; m_RButtonList[1].fHeight = 25.6f;
-				}
-				else
-				{
-					m_RButtonList[1].iTexNum = 26;
-					m_RButtonList[1].fX = 432.f;
-					m_RButtonList[1].fY = -292.f;
-					m_RButtonList[1].fWidth = 184.32f; m_RButtonList[1].fHeight = 23.04f;
-				}
-			}
-			else if (ITEM::DUCKNOODLES == pSelectSlot->SlotItemId)
-			{
-				if (false == bUsedRecipe1)
-				{
-					m_RButtonList[1].iTexNum = 17;
-					m_RButtonList[1].fX = 458.f;
-					m_RButtonList[1].fY = -296.f;
-					m_RButtonList[1].fWidth = 204.8f; m_RButtonList[1].fHeight = 25.6f;
-				}
-				else
-				{
-					m_RButtonList[1].iTexNum = 26;
-					m_RButtonList[1].fX = 432.f;
-					m_RButtonList[1].fWidth = 184.32f; m_RButtonList[1].fHeight = 23.04f;
-				}
-			}
-			else
-			{
-				m_RButtonList[1].iTexNum = 26;
-				m_RButtonList[1].fX = m_RButtonList[1].OriPos.x;
-				m_RButtonList[1].fWidth = 184.32f; m_RButtonList[1].fHeight = 23.04f;
-			}
 
 			// 수량 조절 버튼-> 보유 수량봅다 많으면 빨간색
 			if (SelectUI(&m_LButtonList[1]))
 			{
 				if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 				{
-					if (1<MakeNum)
-						--MakeNum;
-
-					// 라스트  수량
-					//SettingTotal(MakeNum);
+					--MakeNum;
 				}
 			}
 
@@ -385,8 +296,6 @@ void CUI_Cooking::Tick(_double TimeDelta)
 				if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 				{
 					++MakeNum;
-					// 라스트  수량
-					//SettingTotal(MakeNum);
 				}
 			}
 
@@ -399,7 +308,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 					m_RButtonList[0].iTexNum = 20;
 					if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 					{
-						m_ReadyConfirmRender = true;
+						Situation = CUI_Cooking::READYCONFRIM;
 					}
 				}
 				else
@@ -409,15 +318,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 			{
 				m_RButtonList[0].iTexNum = 22;
 			}
-		}
-		if (m_ReadyConfirmRender)
-		{
-			if (InMenuEnd(TimeDelta))
-			{
-				m_ReadyConfirmRender = false;
-				m_ConfirmRenderStart = true;
-				Situation = CUI_Cooking::READYCONFRIM;
-			}
+
 		}
 	}
 	break;
@@ -425,46 +326,13 @@ void CUI_Cooking::Tick(_double TimeDelta)
 	{
 		// 라스트  수량
 		SettingTotal(MakeNum);
-		// 여기서 랜더 안되면 랜더 스위치에 READYCONFRIM 추가해주고 랜더함수들 추가하기
-		Situation = CUI_Cooking::CONFRIM;
+		if (InMenuEnd(TimeDelta))
+		{// 여기서 랜더 안되면 랜더 스위치에 READYCONFRIM 추가해주고 랜더함수들 추가하기
+			Situation = CUI_Cooking::CONFRIM;
+		}
 	}
 	case Client::CUI_Cooking::CONFRIM:
 	{
-		//레시피를 배웠다면
-		if (ITEM::PORKBELLY == pSelectSlot->SlotItemId)
-		{
-			if (false == bUsedRecipe0)
-			{
-				m_FinalList[13].iTexNum = 16; //텍스트 마스터로 변경
-				m_FinalList[13].fX = 14.f;
-			}
-			else
-			{
-				m_FinalList[13].iTexNum = 19;
-				m_FinalList[13].fX = m_FinalList[13].OriPos.x;
-			}
-
-		}
-		if (ITEM::DUCKNOODLES == pSelectSlot->SlotItemId)
-		{
-			if (false == bUsedRecipe1)
-			{
-				m_FinalList[13].iTexNum = 16;
-				m_FinalList[13].fX = 14.f;
-			}
-			else
-			{
-				m_FinalList[13].iTexNum = 19;
-				m_FinalList[13].fX = m_FinalList[13].OriPos.x;
-			}
-		}
-		if (ITEM::DUCKNOODLES != pSelectSlot->SlotItemId && ITEM::PORKBELLY != pSelectSlot->SlotItemId)
-		{
-			//다른 메뉴들일때
-			m_FinalList[13].iTexNum = 19;
-			m_FinalList[13].fX = m_FinalList[13].OriPos.x;
-		}
-
 		if (m_ConfirmRenderStart)
 			(AddAlphaW(&m_FinalList, TimeDelta) ? m_ConfirmRenderStart = false : m_ConfirmRenderStart = true);
 
@@ -491,11 +359,10 @@ void CUI_Cooking::Tick(_double TimeDelta)
 
 	case Client::CUI_Cooking::BYE:
 	{
-		MinusAlphaW(&m_FinalList, TimeDelta);
 		m_pInven->AddItem((*pSelectSlot).SlotItemId, MakeNum); // 만든 요리
 
-															   // 인벤에 아이템 넣기
-															   //사용 재료 감소시키기
+		// 인벤에 아이템 넣기
+		//사용 재료 감소시키기
 		switch ((*pSelectSlot).SlotItemId)
 		{
 		case ITEM::FLATBREAD:
@@ -511,7 +378,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 		case ITEM::FRIEDTOFU:
 		{
 			m_pInven->AddItem(ITEM::TOFU, -1 * MakeNum);
-			m_pInven->AddItem(ITEM::OIL, -1 * MakeNum);
+			m_pInven->AddItem(ITEM::OIL,  -1 * MakeNum);
 		}
 		break;
 		case ITEM::SALTEDTEA:
@@ -527,82 +394,64 @@ void CUI_Cooking::Tick(_double TimeDelta)
 		case ITEM::DRAGONNOODLE:
 		{
 			m_pInven->AddItem(ITEM::FLOUR, -2 * MakeNum);
-			m_pInven->AddItem(ITEM::MEAT, -2 * MakeNum);
-			m_pInven->AddItem(ITEM::SALT, -2 * MakeNum);
+			m_pInven->AddItem(ITEM::MEAT,  -2 * MakeNum);
+			m_pInven->AddItem(ITEM::SALT,  -2 * MakeNum);
 		}
 		break;
 		case ITEM::OMURICE:
 		{
-			m_pInven->AddItem(ITEM::RICE, -2 * MakeNum);
-			m_pInven->AddItem(ITEM::EGG, -3 * MakeNum);
+			m_pInven->AddItem(ITEM::RICE,  -2 * MakeNum);
+			m_pInven->AddItem(ITEM::EGG,   -3 * MakeNum);
 			m_pInven->AddItem(ITEM::SUGAR, -1 * MakeNum);
 		}
 		break;
 		case ITEM::FRIEDRICE:
 		{
-			m_pInven->AddItem(ITEM::RICE, -2 * MakeNum);
-			m_pInven->AddItem(ITEM::EGG, -2 * MakeNum);
-			m_pInven->AddItem(ITEM::OIL, -2 * MakeNum);
+			m_pInven->AddItem(ITEM::RICE,  -2 * MakeNum);
+			m_pInven->AddItem(ITEM::EGG,   -2 * MakeNum);
+			m_pInven->AddItem(ITEM::OIL,   -2 * MakeNum);
 		}
 		break;
 		case ITEM::FRIEDCHICKEN:
 		{
 			m_pInven->AddItem(ITEM::CHICKEN, -2 * MakeNum);
-			m_pInven->AddItem(ITEM::SALT, -1 * MakeNum);
-			m_pInven->AddItem(ITEM::OIL, -3 * MakeNum);
+			m_pInven->AddItem(ITEM::SALT,    -1 * MakeNum);
+			m_pInven->AddItem(ITEM::OIL,     -3 * MakeNum);
 		}
 		break;
 		case ITEM::RABBITBREAD:
 		{
-			m_pInven->AddItem(ITEM::FLOUR, -5 * MakeNum);
-			m_pInven->AddItem(ITEM::EGG, -3 * MakeNum);
-			m_pInven->AddItem(ITEM::SUGAR, -3 * MakeNum);
+			m_pInven->AddItem(ITEM::FLOUR,  -5 * MakeNum);
+			m_pInven->AddItem(ITEM::EGG,    -3 * MakeNum);
+			m_pInven->AddItem(ITEM::SUGAR,  -3 * MakeNum);
 		}
 		break;
 		case ITEM::FRIEDMUSHROOM:
 		{
 			m_pInven->AddItem(ITEM::MUSHROOM, -5 * MakeNum);
-			m_pInven->AddItem(ITEM::OIL, -4 * MakeNum);
-			m_pInven->AddItem(ITEM::SALT, -2 * MakeNum);
+			m_pInven->AddItem(ITEM::OIL,      -4 * MakeNum);
+			m_pInven->AddItem(ITEM::SALT,     -2 * MakeNum);
 		}
 		break;
 		case ITEM::MAPOTOFU:
 		{
-			m_pInven->AddItem(ITEM::TOFU, -5 * MakeNum);
+			m_pInven->AddItem(ITEM::TOFU,   -5 * MakeNum);
 			m_pInven->AddItem(ITEM::PEPPER, -3 * MakeNum);
-			m_pInven->AddItem(ITEM::MEAT, -3 * MakeNum);
+			m_pInven->AddItem(ITEM::MEAT,   -3 * MakeNum);
 		}
 		break;
 		case ITEM::PORKBELLY:
 		{
-			if (false == bUsedRecipe0)
-			{
-				bUsedRecipe0 = true;
-				m_pInven->AddItem(ITEM::RECIPE0, -1);
-				m_pInven->AddItem((*pSelectSlot).SlotItemId, -1);
-			}
-			else
-			{
-				m_pInven->AddItem(ITEM::MEAT, -5 * MakeNum);
-				m_pInven->AddItem(ITEM::PEPPER, -2 * MakeNum);
-				m_pInven->AddItem(ITEM::SOYSAUCE, -4 * MakeNum);
-			}
+			m_pInven->AddItem(ITEM::MEAT,     -5 * MakeNum);
+			m_pInven->AddItem(ITEM::PEPPER,   -2 * MakeNum);
+			m_pInven->AddItem(ITEM::SOYSAUCE, -4 * MakeNum);
 		}
 		break;
 		case ITEM::DUCKNOODLES:
 		{
-			if (false == bUsedRecipe1)
-			{
-				bUsedRecipe1 = true;
-				m_pInven->AddItem(ITEM::RECIPE1, -1);
-				m_pInven->AddItem((*pSelectSlot).SlotItemId, -1);
-			}
-			else
-			{
-				m_pInven->AddItem(ITEM::CHICKEN, -5 * MakeNum);
-				m_pInven->AddItem(ITEM::FLOUR, -2 * MakeNum);
-				m_pInven->AddItem(ITEM::SOYSAUCE, -3 * MakeNum);
-			}
+			m_pInven->AddItem(ITEM::CHICKEN,  -5 * MakeNum);
+			m_pInven->AddItem(ITEM::FLOUR,    -2 * MakeNum);
+			m_pInven->AddItem(ITEM::SOYSAUCE, -3 * MakeNum);
 		}
 		break;
 		}
@@ -610,12 +459,12 @@ void CUI_Cooking::Tick(_double TimeDelta)
 		Situation = CUI_Cooking::MENU;
 		m_MenuRenderStart = true;
 		m_ConfirmRenderStart = true;
-		MakeNum = 1;
+		MakeNum = 0;
 		bMake = false;
 		GradeIndex = 0;
 		pSelectSlot = &m_0Slot[2];
 	}
-	break;
+		break;
 	}
 }
 
@@ -682,22 +531,8 @@ void CUI_Cooking::SettingNumbers()
 		// 보유 재료 숫자 셋팅
 		SettingOwnMaterial0(pOwnMaterial0);
 
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-		{
-			bEnoughMaterial0 = false;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial0 = true;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-		bMake = bEnoughMaterial0;
+
+		
 	}
 	break;
 	case ITEM::SALAD:
@@ -756,23 +591,6 @@ void CUI_Cooking::SettingNumbers()
 
 		// 보유 재료 숫자 셋팅
 		SettingOwnMaterial0(pOwnMaterial0);
-
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-		{
-			bEnoughMaterial0 = false;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial0 = true;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-		bMake = bEnoughMaterial0;
 	}
 	break;
 	case ITEM::FRIEDTOFU:
@@ -840,45 +658,7 @@ void CUI_Cooking::SettingNumbers()
 
 		// 보유 재료 숫자 셋팅
 		SettingOwnMaterial0(pOwnMaterial0);
-		SettingOwnMaterial1(pOwnMaterial1);
-
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-		{
-			bEnoughMaterial0 = false;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial0 = true;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-
-		}
-
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial1 < *pNeedMaterial1) // 살 수 없다
-		{
-			bEnoughMaterial1 = false;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 0.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial1 = true;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-		if (true == bEnoughMaterial0 && true == bEnoughMaterial1)
-			bMake = true;
-		else
-			bMake = false;
-
+		SettingOwnMaterial0(pOwnMaterial1);
 	}
 	break;
 	case ITEM::SALTEDTEA:
@@ -936,23 +716,6 @@ void CUI_Cooking::SettingNumbers()
 
 		// 보유 재료 숫자 셋팅
 		SettingOwnMaterial0(pOwnMaterial0);
-
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-		{
-			bEnoughMaterial0 = false;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial0 = true;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-		bMake = bEnoughMaterial0;
 	}
 	break;
 	case ITEM::HERBTEA:
@@ -1010,23 +773,6 @@ void CUI_Cooking::SettingNumbers()
 
 		// 보유 재료 숫자 셋팅
 		SettingOwnMaterial0(pOwnMaterial0);
-
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-		{
-			bEnoughMaterial0 = false;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial0 = true;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-		bMake = bEnoughMaterial0;
 	}
 	break;
 	case ITEM::DRAGONNOODLE:
@@ -1103,58 +849,6 @@ void CUI_Cooking::SettingNumbers()
 		SettingOwnMaterial0(pOwnMaterial0);
 		SettingOwnMaterial1(pOwnMaterial1);
 		SettingOwnMaterial2(pOwnMaterial2);
-
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-		{
-			bEnoughMaterial0 = false;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial0 = true;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-
-		}
-
-		if (*pOwnMaterial1 < *pNeedMaterial1)
-		{
-			bEnoughMaterial1 = false;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 0.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 0.f;
-		}
-		else
-		{
-			bEnoughMaterial1 = true;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-
-		if (*pOwnMaterial2 < *pNeedMaterial2)
-		{
-			bEnoughMaterial1 = false;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 0.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 0.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial1 = true;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-		if (true == bEnoughMaterial0 && true == bEnoughMaterial1 && true == bEnoughMaterial2)
-			bMake = true;
-		else
-			bMake = false;
-
 	}
 	break;
 	case ITEM::OMURICE:
@@ -1162,10 +856,10 @@ void CUI_Cooking::SettingNumbers()
 		InvenRice = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::RICE);
 		InvenEgg = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::EGG);
 		InvenSugar = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SUGAR);
-		InvenOmurice = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::OMURICE);
+		InvenFlatbread = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::OMURICE);
 
 		// 요리 현재보유 숫자 셋팅 Own
-		pOwnFood = &InvenOmurice;
+		pOwnFood = &InvenFlatbread;
 		SettingOwnNum(pOwnFood);
 
 		// 만들 요리 아이콘 셋팅
@@ -1232,57 +926,6 @@ void CUI_Cooking::SettingNumbers()
 		SettingOwnMaterial0(pOwnMaterial0);
 		SettingOwnMaterial1(pOwnMaterial1);
 		SettingOwnMaterial2(pOwnMaterial2);
-
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-		{
-			bEnoughMaterial0 = false;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial0 = true;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-
-		}
-
-		if (*pOwnMaterial1 < *pNeedMaterial1)
-		{
-			bEnoughMaterial1 = false;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 0.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 0.f;
-		}
-		else
-		{
-			bEnoughMaterial1 = true;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-
-		if (*pOwnMaterial2 < *pNeedMaterial2)
-		{
-			bEnoughMaterial1 = false;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 0.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 0.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial1 = true;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-		if (true == bEnoughMaterial0 && true == bEnoughMaterial1 && true == bEnoughMaterial2)
-			bMake = true;
-		else
-			bMake = false;
 	}
 	break;
 	case ITEM::FRIEDRICE:
@@ -1290,10 +933,10 @@ void CUI_Cooking::SettingNumbers()
 		InvenRice = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::RICE);
 		InvenOil = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::OIL);
 		InvenEgg = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::EGG);
-		InvenFriedrice = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDRICE);
+		InvenFlatbread = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDRICE);
 
 		// 요리 현재보유 숫자 셋팅 Own
-		pOwnFood = &InvenFriedrice;
+		pOwnFood = &InvenFlatbread;
 		SettingOwnNum(pOwnFood);
 
 		// 만들 요리 아이콘 셋팅
@@ -1360,58 +1003,6 @@ void CUI_Cooking::SettingNumbers()
 		SettingOwnMaterial0(pOwnMaterial0);
 		SettingOwnMaterial1(pOwnMaterial1);
 		SettingOwnMaterial2(pOwnMaterial2);
-
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-		{
-			bEnoughMaterial0 = false;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial0 = true;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-
-		}
-
-		if (*pOwnMaterial1 < *pNeedMaterial1)
-		{
-			bEnoughMaterial1 = false;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 0.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 0.f;
-		}
-		else
-		{
-			bEnoughMaterial1 = true;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-
-		if (*pOwnMaterial2 < *pNeedMaterial2)
-		{
-			bEnoughMaterial1 = false;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 0.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 0.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial1 = true;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-		if (true == bEnoughMaterial0 && true == bEnoughMaterial1 && true == bEnoughMaterial2)
-			bMake = true;
-		else
-			bMake = false;
-
 	}
 	break;
 	case ITEM::FRIEDCHICKEN:
@@ -1419,10 +1010,10 @@ void CUI_Cooking::SettingNumbers()
 		InvenChicken = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::CHICKEN);
 		InvenOil = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::OIL);
 		InvenSalt = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SALT);
-		InvenFriedchicken = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDCHICKEN);
+		InvenFlatbread = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDCHICKEN);
 
 		// 요리 현재보유 숫자 셋팅 Own
-		pOwnFood = &InvenFriedchicken;
+		pOwnFood = &InvenFlatbread;
 		SettingOwnNum(pOwnFood);
 
 		// 만들 요리 아이콘 셋팅
@@ -1489,57 +1080,6 @@ void CUI_Cooking::SettingNumbers()
 		SettingOwnMaterial0(pOwnMaterial0);
 		SettingOwnMaterial1(pOwnMaterial1);
 		SettingOwnMaterial2(pOwnMaterial2);
-
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-		{
-			bEnoughMaterial0 = false;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial0 = true;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-
-		}
-
-		if (*pOwnMaterial1 < *pNeedMaterial1)
-		{
-			bEnoughMaterial1 = false;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 0.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 0.f;
-		}
-		else
-		{
-			bEnoughMaterial1 = true;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-
-		if (*pOwnMaterial2 < *pNeedMaterial2)
-		{
-			bEnoughMaterial1 = false;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 0.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 0.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial1 = true;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-		if (true == bEnoughMaterial0 && true == bEnoughMaterial1 && true == bEnoughMaterial2)
-			bMake = true;
-		else
-			bMake = false;
 	}
 	break;
 	case ITEM::RABBITBREAD:
@@ -1547,10 +1087,10 @@ void CUI_Cooking::SettingNumbers()
 		InvenFlour = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::FLOUR);
 		InvenEgg = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::EGG);
 		InvenSugar = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SUGAR);
-		InvenRabbitbread = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::RABBITBREAD);
+		InvenFlatbread = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::RABBITBREAD);
 
 		// 요리 현재보유 숫자 셋팅 Own
-		pOwnFood = &InvenRabbitbread;
+		pOwnFood = &InvenFlatbread;
 		SettingOwnNum(pOwnFood);
 
 		// 만들 요리 아이콘 셋팅
@@ -1617,57 +1157,6 @@ void CUI_Cooking::SettingNumbers()
 		SettingOwnMaterial0(pOwnMaterial0);
 		SettingOwnMaterial1(pOwnMaterial1);
 		SettingOwnMaterial2(pOwnMaterial2);
-
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-		{
-			bEnoughMaterial0 = false;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial0 = true;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-
-		}
-
-		if (*pOwnMaterial1 < *pNeedMaterial1)
-		{
-			bEnoughMaterial1 = false;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 0.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 0.f;
-		}
-		else
-		{
-			bEnoughMaterial1 = true;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-
-		if (*pOwnMaterial2 < *pNeedMaterial2)
-		{
-			bEnoughMaterial1 = false;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 0.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 0.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial1 = true;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-		if (true == bEnoughMaterial0 && true == bEnoughMaterial1 && true == bEnoughMaterial2)
-			bMake = true;
-		else
-			bMake = false;
 	}
 	break;
 	case ITEM::FRIEDMUSHROOM:
@@ -1675,10 +1164,10 @@ void CUI_Cooking::SettingNumbers()
 		InvenMushroom = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::MUSHROOM);
 		InvenOil = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::OIL);
 		InvenSalt = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SALT);
-		InvenFriedMushroom = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDMUSHROOM);
+		InvenFlatbread = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::FRIEDMUSHROOM);
 
 		// 요리 현재보유 숫자 셋팅 Own
-		pOwnFood = &InvenFriedMushroom;
+		pOwnFood = &InvenFlatbread;
 		SettingOwnNum(pOwnFood);
 
 		// 만들 요리 아이콘 셋팅
@@ -1745,57 +1234,6 @@ void CUI_Cooking::SettingNumbers()
 		SettingOwnMaterial0(pOwnMaterial0);
 		SettingOwnMaterial1(pOwnMaterial1);
 		SettingOwnMaterial2(pOwnMaterial2);
-
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-		{
-			bEnoughMaterial0 = false;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial0 = true;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-
-		}
-
-		if (*pOwnMaterial1 < *pNeedMaterial1)
-		{
-			bEnoughMaterial1 = false;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 0.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 0.f;
-		}
-		else
-		{
-			bEnoughMaterial1 = true;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-
-		if (*pOwnMaterial2 < *pNeedMaterial2)
-		{
-			bEnoughMaterial1 = false;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 0.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 0.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial1 = true;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-		if (true == bEnoughMaterial0 && true == bEnoughMaterial1 && true == bEnoughMaterial2)
-			bMake = true;
-		else
-			bMake = false;
 	}
 	break;
 	case ITEM::MAPOTOFU:
@@ -1803,10 +1241,10 @@ void CUI_Cooking::SettingNumbers()
 		InvenTofu = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::TOFU);
 		InvenPepper = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::PEPPER);
 		InvenMeat = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::MEAT);
-		InvenMapotofu = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::MAPOTOFU);
+		InvenFlatbread = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::MAPOTOFU);
 
 		// 요리 현재보유 숫자 셋팅 Own
-		pOwnFood = &InvenMapotofu;
+		pOwnFood = &InvenFlatbread;
 		SettingOwnNum(pOwnFood);
 
 		// 만들 요리 아이콘 셋팅
@@ -1873,475 +1311,204 @@ void CUI_Cooking::SettingNumbers()
 		SettingOwnMaterial0(pOwnMaterial0);
 		SettingOwnMaterial1(pOwnMaterial1);
 		SettingOwnMaterial2(pOwnMaterial2);
-
-		// 구매할 수 있는지 bMake 체크
-		if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-		{
-			bEnoughMaterial0 = false;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial0 = true;
-			m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-
-		}
-
-		if (*pOwnMaterial1 < *pNeedMaterial1)
-		{
-			bEnoughMaterial1 = false;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 0.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 0.f;
-		}
-		else
-		{
-			bEnoughMaterial1 = true;
-			m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-
-		if (*pOwnMaterial2 < *pNeedMaterial2)
-		{
-			bEnoughMaterial1 = false;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 0.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 0.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 0.f;
-		}
-		else // 살 수 있다
-		{
-			bEnoughMaterial1 = true;
-			m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 255.f - 189.f;
-			m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 255.f - 172.f;
-			m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 255.f - 100.f;
-		}
-		if (true == bEnoughMaterial0 && true == bEnoughMaterial1 && true == bEnoughMaterial2)
-			bMake = true;
-		else
-			bMake = false;
 	}
 	break;
 	case ITEM::PORKBELLY:
 	{
+		InvenMeat = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::MEAT);
+		InvenPepper = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::PEPPER);
+		InvenSoysauce = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SOYSAUCE);
+		InvenFlatbread = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::PORKBELLY);
 
-		if (bUsedRecipe0)
+		// 요리 현재보유 숫자 셋팅 Own
+		pOwnFood = &InvenFlatbread;
+		SettingOwnNum(pOwnFood);
+
+		// 만들 요리 아이콘 셋팅
+		m_FinalList[4].iTexNum = m_DetailsList[3].iTexNum = STATIC_IMAGE::ICON_PORKBELLY;
+		m_DetailsList[4].iTexNum = STATIC_IMAGE::TEXT_PORKBELLY;
+		m_DetailsList[5].iTexNum = 44;
+		m_DetailsList[6].iTexNum = STATIC_IMAGE::ITEM_DESC_FOODLEGEND;
+
+		m_FinalList[3].fColorR = -(255.f - (color4.x * 255.f));
+		m_FinalList[3].fColorG = -(255.f - (color4.y * 255.f));
+		m_FinalList[3].fColorB = -(255.f - (color4.z * 255.f));
+
+		// 필요 재료 아이콘 셋팅
+		m_0MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_MEAT;
+		m_0MaterialSlot[0].fColorR = -(255.f - (color1.x * 255.f));
+		m_0MaterialSlot[0].fColorG = -(255.f - (color1.y * 255.f));
+		m_0MaterialSlot[0].fColorB = -(255.f - (color1.z * 255.f));
+
+		m_1MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_PEPPER;
+		m_1MaterialSlot[0].fColorR = -(255.f - (color2.x * 255.f));
+		m_1MaterialSlot[0].fColorG = -(255.f - (color2.y * 255.f));
+		m_1MaterialSlot[0].fColorB = -(255.f - (color2.z * 255.f));
+
+		m_2MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_SOYSAUCE;
+		m_2MaterialSlot[0].fColorR = -(255.f - (color2.x * 255.f));
+		m_2MaterialSlot[0].fColorG = -(255.f - (color2.y * 255.f));
+		m_2MaterialSlot[0].fColorB = -(255.f - (color2.z * 255.f));
+
+
+		// 필요한 재료 셋팅
+		NeedMaterial0 = 5 * MakeNum;
+		pNeedMaterial0 = &NeedMaterial0;
+
+		NeedMaterial1 = 2 * MakeNum;
+		pNeedMaterial1 = &NeedMaterial1;
+
+		NeedMaterial2 = 4 * MakeNum;
+		pNeedMaterial2 = &NeedMaterial2;
+
+		for (auto& Desc0 : m_1MaterialSlot)
 		{
-			InvenMeat = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::MEAT);
-			InvenPepper = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::PEPPER);
-			InvenSoysauce = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SOYSAUCE);
-			InvenPorkBelly = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::PORKBELLY);
-
-			// 요리 현재보유 숫자 셋팅 Own
-			pOwnFood = &InvenPorkBelly;
-			SettingOwnNum(pOwnFood);
-
-			// 만들 요리 아이콘 셋팅
-			m_FinalList[4].iTexNum = m_DetailsList[3].iTexNum = STATIC_IMAGE::ICON_PORKBELLY;
-			m_DetailsList[4].iTexNum = STATIC_IMAGE::TEXT_PORKBELLY;
-			m_DetailsList[5].iTexNum = 44;
-			m_DetailsList[6].iTexNum = STATIC_IMAGE::ITEM_DESC_FOODLEGEND;
-
-			m_FinalList[3].fColorR = -(255.f - (color4.x * 255.f));
-			m_FinalList[3].fColorG = -(255.f - (color4.y * 255.f));
-			m_FinalList[3].fColorB = -(255.f - (color4.z * 255.f));
-
-			// 필요 재료 아이콘 셋팅
-			m_0MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_MEAT;
-			m_0MaterialSlot[0].fColorR = -(255.f - (color1.x * 255.f));
-			m_0MaterialSlot[0].fColorG = -(255.f - (color1.y * 255.f));
-			m_0MaterialSlot[0].fColorB = -(255.f - (color1.z * 255.f));
-
-			m_1MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_PEPPER;
-			m_1MaterialSlot[0].fColorR = -(255.f - (color2.x * 255.f));
-			m_1MaterialSlot[0].fColorG = -(255.f - (color2.y * 255.f));
-			m_1MaterialSlot[0].fColorB = -(255.f - (color2.z * 255.f));
-
-			m_2MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_SOYSAUCE;
-			m_2MaterialSlot[0].fColorR = -(255.f - (color2.x * 255.f));
-			m_2MaterialSlot[0].fColorG = -(255.f - (color2.y * 255.f));
-			m_2MaterialSlot[0].fColorB = -(255.f - (color2.z * 255.f));
-
-
-			// 필요한 재료 셋팅
-			NeedMaterial0 = 5 * MakeNum;
-			pNeedMaterial0 = &NeedMaterial0;
-
-			NeedMaterial1 = 2 * MakeNum;
-			pNeedMaterial1 = &NeedMaterial1;
-
-			NeedMaterial2 = 4 * MakeNum;
-			pNeedMaterial2 = &NeedMaterial2;
-
-			for (auto& Desc0 : m_1MaterialSlot)
-			{
-				Desc0.bRender = true;
-			}
-			for (auto& Desc1 : m_1MaterialSlot)
-			{
-				Desc1.bRender = true;
-			}
-			for (auto& Desc2 : m_2MaterialSlot)
-			{
-				Desc2.bRender = true;
-			}
-
-
-			// 필요 재료 숫자 셋팅
-			SettingNeedMaterial0(pNeedMaterial0);
-			SettingNeedMaterial1(pNeedMaterial1);
-			SettingNeedMaterial2(pNeedMaterial2);
-
-			// 보유 재료 셋팅
-			pOwnMaterial0 = &InvenMeat;
-			pOwnMaterial1 = &InvenPepper;
-			pOwnMaterial2 = &InvenSoysauce;
-
-			// 보유 재료 숫자 셋팅
-			SettingOwnMaterial0(pOwnMaterial0);
-			SettingOwnMaterial1(pOwnMaterial1);
-			SettingOwnMaterial2(pOwnMaterial2);
-
-			// 구매할 수 있는지 bMake 체크
-			if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-			{
-				bEnoughMaterial0 = false;
-				m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-				m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-				m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-			}
-			else // 살 수 있다
-			{
-				bEnoughMaterial0 = true;
-				m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-				m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-				m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-
-			}
-
-			if (*pOwnMaterial1 < *pNeedMaterial1)
-			{
-				bEnoughMaterial1 = false;
-				m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
-				m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 0.f;
-				m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 0.f;
-			}
-			else
-			{
-				bEnoughMaterial1 = true;
-				m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f - 189.f;
-				m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 255.f - 172.f;
-				m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 255.f - 100.f;
-			}
-
-			if (*pOwnMaterial2 < *pNeedMaterial2)
-			{
-				bEnoughMaterial1 = false;
-				m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 0.f;
-				m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 0.f;
-				m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 0.f;
-			}
-			else // 살 수 있다
-			{
-				bEnoughMaterial1 = true;
-				m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 255.f - 189.f;
-				m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 255.f - 172.f;
-				m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 255.f - 100.f;
-			}
-			if (true == bEnoughMaterial0 && true == bEnoughMaterial1 && true == bEnoughMaterial2)
-				bMake = true;
-			else
-				bMake = false;
+			Desc0.bRender = true;
 		}
-		else
-		{ //레시피 사용전
-			InvenRecipe0 = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::RECIPE0);
-			InvenPorkBelly = 0;
-
-			// 요리 현재보유 숫자 셋팅 Own
-			pOwnFood = &InvenPorkBelly;
-			SettingOwnNum(pOwnFood);
-
-			// 만들 요리 아이콘 셋팅
-			m_DetailsList[3].iTexNum = STATIC_IMAGE::ICON_RECIPE;
-			m_FinalList[4].iTexNum = STATIC_IMAGE::ICON_RECIPE;
-			m_DetailsList[4].iTexNum = STATIC_IMAGE::TEXT_PORKBELLY;
-			m_DetailsList[5].iTexNum = 44;
-			m_DetailsList[6].iTexNum = STATIC_IMAGE::ITEM_DESC_FOODLEGEND;
-
-			m_FinalList[3].fColorR = -(255.f - (color4.x * 255.f));
-			m_FinalList[3].fColorG = -(255.f - (color4.y * 255.f));
-			m_FinalList[3].fColorB = -(255.f - (color4.z * 255.f));
-
-			// 필요 재료 아이콘 셋팅
-			m_0MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_RECIPE;
-			m_0MaterialSlot[0].fColorR = -(255.f - (color4.x * 255.f));
-			m_0MaterialSlot[0].fColorG = -(255.f - (color4.y * 255.f));
-			m_0MaterialSlot[0].fColorB = -(255.f - (color4.z * 255.f));
-
-			// 필요한 재료 셋팅
-			NeedMaterial0 = 1 * MakeNum;
-			pNeedMaterial0 = &NeedMaterial0;
-
-			NeedMaterial1 = 0 * MakeNum;
-			pNeedMaterial1 = &NeedMaterial1;
-
-			NeedMaterial2 = 0 * MakeNum;
-			pNeedMaterial2 = &NeedMaterial2;
-
-			for (auto& Desc0 : m_1MaterialSlot)
-			{
-				Desc0.bRender = true;
-			}
-			for (auto& Desc1 : m_1MaterialSlot)
-			{
-				Desc1.bRender = false;
-			}
-			for (auto& Desc2 : m_2MaterialSlot)
-			{
-				Desc2.bRender = false;
-			}
-
-			// 필요 재료 숫자 셋팅
-			SettingNeedMaterial0(pNeedMaterial0);
-
-			// 보유 재료 셋팅
-			pOwnMaterial0 = &InvenRecipe0;
-
-			// 보유 재료 숫자 셋팅
-			SettingOwnMaterial0(pOwnMaterial0);
-
-			// 만들 수 있는지 bMake 체크
-			if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-			{
-				bEnoughMaterial0 = false;
-				m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-				m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-				m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-			}
-			else // 살 수 있다
-			{
-				bEnoughMaterial0 = true;
-				m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-				m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-				m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-			}
-			bMake = bEnoughMaterial0;
-
+		for (auto& Desc1 : m_1MaterialSlot)
+		{
+			Desc1.bRender = true;
 		}
+		for (auto& Desc2 : m_2MaterialSlot)
+		{
+			Desc2.bRender = true;
+		}
+
+
+		// 필요 재료 숫자 셋팅
+		SettingNeedMaterial0(pNeedMaterial0);
+		SettingNeedMaterial1(pNeedMaterial1);
+		SettingNeedMaterial2(pNeedMaterial2);
+
+		// 보유 재료 셋팅
+		pOwnMaterial0 = &InvenMeat;
+		pOwnMaterial1 = &InvenPepper;
+		pOwnMaterial2 = &InvenSoysauce;
+
+		// 보유 재료 숫자 셋팅
+		SettingOwnMaterial0(pOwnMaterial0);
 	}
 	break;
 	case ITEM::DUCKNOODLES:
 	{
-		if (bUsedRecipe1)
+		InvenChicken = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::CHICKEN);
+		InvenSoysauce = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SOYSAUCE);
+		InvenFlour = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::FLOUR);
+		InvenFlatbread = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::DUCKNOODLES);
+
+		// 요리 현재보유 숫자 셋팅 Own
+		pOwnFood = &InvenFlatbread;
+		SettingOwnNum(pOwnFood);
+
+		// 만들 요리 아이콘 셋팅
+		m_FinalList[4].iTexNum = m_DetailsList[3].iTexNum = STATIC_IMAGE::ICON_DUCKNOODLES;
+		m_DetailsList[4].iTexNum = STATIC_IMAGE::TEXT_DUCKNOODLES;;
+		m_DetailsList[5].iTexNum = 44;
+		m_DetailsList[6].iTexNum = STATIC_IMAGE::ITEM_DESC_FOODLEGEND;
+
+		m_FinalList[3].fColorR = -(255.f - (color4.x * 255.f));
+		m_FinalList[3].fColorG = -(255.f - (color4.y * 255.f));
+		m_FinalList[3].fColorB = -(255.f - (color4.z * 255.f));
+
+		// 필요 재료 아이콘 셋팅
+		m_0MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_CHICKEN;
+		m_0MaterialSlot[0].fColorR = -(255.f - (color0.x * 255.f));
+		m_0MaterialSlot[0].fColorG = -(255.f - (color0.y * 255.f));
+		m_0MaterialSlot[0].fColorB = -(255.f - (color0.z * 255.f));
+
+		m_1MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_SOYSAUCE;
+		m_1MaterialSlot[0].fColorR = -(255.f - (color2.x * 255.f));
+		m_1MaterialSlot[0].fColorG = -(255.f - (color2.y * 255.f));
+		m_1MaterialSlot[0].fColorB = -(255.f - (color2.z * 255.f));
+
+		m_2MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_FLOUR;
+		m_2MaterialSlot[0].fColorR = -(255.f - (color0.x * 255.f));
+		m_2MaterialSlot[0].fColorG = -(255.f - (color0.y * 255.f));
+		m_2MaterialSlot[0].fColorB = -(255.f - (color0.z * 255.f));
+
+		// 필요한 재료 셋팅
+		NeedMaterial0 = 5 * MakeNum;
+		pNeedMaterial0 = &NeedMaterial0;
+
+		NeedMaterial1 = 3 * MakeNum;
+		pNeedMaterial1 = &NeedMaterial1;
+
+		NeedMaterial1 = 3 * MakeNum;
+		pNeedMaterial1 = &NeedMaterial1;
+
+		for (auto& Desc0 : m_1MaterialSlot)
 		{
-			InvenChicken = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::CHICKEN);
-			InvenSoysauce = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::SOYSAUCE);
-			InvenFlour = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::FLOUR);
-			InvenDucknoodles = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_COOK, ITEM::DUCKNOODLES);
-
-			// 요리 현재보유 숫자 셋팅 Own
-			pOwnFood = &InvenDucknoodles;
-			SettingOwnNum(pOwnFood);
-
-			// 만들 요리 아이콘 셋팅
-			m_FinalList[4].iTexNum = m_DetailsList[3].iTexNum = STATIC_IMAGE::ICON_DUCKNOODLES;
-			m_DetailsList[4].iTexNum = STATIC_IMAGE::TEXT_DUCKNOODLES;;
-			m_DetailsList[5].iTexNum = 44;
-			m_DetailsList[6].iTexNum = STATIC_IMAGE::ITEM_DESC_FOODLEGEND;
-
-			m_FinalList[3].fColorR = -(255.f - (color4.x * 255.f));
-			m_FinalList[3].fColorG = -(255.f - (color4.y * 255.f));
-			m_FinalList[3].fColorB = -(255.f - (color4.z * 255.f));
-
-			// 필요 재료 아이콘 셋팅
-			m_0MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_CHICKEN;
-			m_0MaterialSlot[0].fColorR = -(255.f - (color0.x * 255.f));
-			m_0MaterialSlot[0].fColorG = -(255.f - (color0.y * 255.f));
-			m_0MaterialSlot[0].fColorB = -(255.f - (color0.z * 255.f));
-
-			m_1MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_SOYSAUCE;
-			m_1MaterialSlot[0].fColorR = -(255.f - (color2.x * 255.f));
-			m_1MaterialSlot[0].fColorG = -(255.f - (color2.y * 255.f));
-			m_1MaterialSlot[0].fColorB = -(255.f - (color2.z * 255.f));
-
-			m_2MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_FLOUR;
-			m_2MaterialSlot[0].fColorR = -(255.f - (color0.x * 255.f));
-			m_2MaterialSlot[0].fColorG = -(255.f - (color0.y * 255.f));
-			m_2MaterialSlot[0].fColorB = -(255.f - (color0.z * 255.f));
-
-			// 필요한 재료 셋팅
-			NeedMaterial0 = 5 * MakeNum;
-			pNeedMaterial0 = &NeedMaterial0;
-
-			NeedMaterial1 = 3 * MakeNum;
-			pNeedMaterial1 = &NeedMaterial1;
-
-			NeedMaterial1 = 3 * MakeNum;
-			pNeedMaterial1 = &NeedMaterial1;
-
-			for (auto& Desc0 : m_1MaterialSlot)
-			{
-				Desc0.bRender = true;
-			}
-			for (auto& Desc1 : m_1MaterialSlot)
-			{
-				Desc1.bRender = true;
-			}
-			for (auto& Desc2 : m_2MaterialSlot)
-			{
-				Desc2.bRender = true;
-
-			}
-			// 필요 재료 숫자 셋팅
-			SettingNeedMaterial0(pNeedMaterial0);
-			SettingNeedMaterial1(pNeedMaterial1);
-			SettingNeedMaterial2(pNeedMaterial2);
-
-			// 보유 재료 셋팅
-			pOwnMaterial0 = &InvenChicken;
-			pOwnMaterial1 = &InvenSoysauce;
-			pOwnMaterial2 = &InvenFlour;
-
-			// 보유 재료 숫자 셋팅
-			SettingOwnMaterial0(pOwnMaterial0);
-			SettingOwnMaterial1(pOwnMaterial1);
-			SettingOwnMaterial2(pOwnMaterial2);
-
-			// 구매할 수 있는지 bMake 체크
-			if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-			{
-				bEnoughMaterial0 = false;
-				m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-				m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-				m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-			}
-			else // 살 수 있다
-			{
-				bEnoughMaterial0 = true;
-				m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-				m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-				m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-
-			}
-
-			if (*pOwnMaterial1 < *pNeedMaterial1)
-			{
-				bEnoughMaterial1 = false;
-				m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
-				m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 0.f;
-				m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 0.f;
-			}
-			else
-			{
-				bEnoughMaterial1 = true;
-				m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f - 189.f;
-				m_1MaterialSlot[4].fColorG = m_1MaterialSlot[5].fColorG = m_1MaterialSlot[6].fColorG = 255.f - 172.f;
-				m_1MaterialSlot[4].fColorB = m_1MaterialSlot[5].fColorB = m_1MaterialSlot[6].fColorB = 255.f - 100.f;
-			}
-
-			if (*pOwnMaterial2 < *pNeedMaterial2)
-			{
-				bEnoughMaterial1 = false;
-				m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 0.f;
-				m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 0.f;
-				m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 0.f;
-			}
-			else // 살 수 있다
-			{
-				bEnoughMaterial1 = true;
-				m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 255.f - 189.f;
-				m_2MaterialSlot[4].fColorG = m_2MaterialSlot[5].fColorG = m_2MaterialSlot[6].fColorG = 255.f - 172.f;
-				m_2MaterialSlot[4].fColorB = m_2MaterialSlot[5].fColorB = m_2MaterialSlot[6].fColorB = 255.f - 100.f;
-			}
-			if (true == bEnoughMaterial0 && true == bEnoughMaterial1 && true == bEnoughMaterial2)
-				bMake = true;
-			else
-				bMake = false;
+			Desc0.bRender = true;
 		}
-		else // 레시피 사용전
+		for (auto& Desc1 : m_1MaterialSlot)
 		{
-			//레시피 사용전
-			InvenRecipe1 = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::RECIPE1);
-			InvenDucknoodles = 0;
-
-			// 요리 현재보유 숫자 셋팅 Own
-			pOwnFood = &InvenDucknoodles;
-			SettingOwnNum(pOwnFood);
-
-			// 만들 요리 아이콘 셋팅
-			m_DetailsList[3].iTexNum = STATIC_IMAGE::ICON_RECIPE;
-			m_FinalList[4].iTexNum = STATIC_IMAGE::ICON_RECIPE;
-			m_DetailsList[4].iTexNum = STATIC_IMAGE::TEXT_DUCKNOODLES;
-			m_DetailsList[5].iTexNum = 44;
-			m_DetailsList[6].iTexNum = STATIC_IMAGE::ITEM_DESC_FOODLEGEND;
-
-			m_FinalList[3].fColorR = -(255.f - (color4.x * 255.f));
-			m_FinalList[3].fColorG = -(255.f - (color4.y * 255.f));
-			m_FinalList[3].fColorB = -(255.f - (color4.z * 255.f));
-
-			// 필요 재료 아이콘 셋팅
-			m_0MaterialSlot[1].iTexNum = STATIC_IMAGE::ICON_RECIPE;
-			m_0MaterialSlot[0].fColorR = -(255.f - (color4.x * 255.f));
-			m_0MaterialSlot[0].fColorG = -(255.f - (color4.y * 255.f));
-			m_0MaterialSlot[0].fColorB = -(255.f - (color4.z * 255.f));
-
-			// 필요한 재료 셋팅
-			NeedMaterial0 = 1 * MakeNum;
-			pNeedMaterial0 = &NeedMaterial0;
-
-			NeedMaterial1 = 0 * MakeNum;
-			pNeedMaterial1 = &NeedMaterial1;
-
-			NeedMaterial2 = 0 * MakeNum;
-			pNeedMaterial2 = &NeedMaterial2;
-
-			for (auto& Desc0 : m_1MaterialSlot)
-			{
-				Desc0.bRender = true;
-			}
-			for (auto& Desc1 : m_1MaterialSlot)
-			{
-				Desc1.bRender = false;
-			}
-			for (auto& Desc2 : m_2MaterialSlot)
-			{
-				Desc2.bRender = false;
-			}
-
-			// 필요 재료 숫자 셋팅
-			SettingNeedMaterial0(pNeedMaterial0);
-
-			// 보유 재료 셋팅
-			pOwnMaterial0 = &InvenRecipe0;
-
-			// 보유 재료 숫자 셋팅
-			SettingOwnMaterial0(pOwnMaterial0);
-
-			// 만들 수 있는지 bMake 체크
-			if (*pOwnMaterial0 < *pNeedMaterial0) // 살 수 없다
-			{
-				bEnoughMaterial0 = false;
-				m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
-				m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 0.f;
-				m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 0.f;
-			}
-			else // 살 수 있다
-			{
-				bEnoughMaterial0 = true;
-				m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f - 189.f;
-				m_0MaterialSlot[4].fColorG = m_0MaterialSlot[5].fColorG = m_0MaterialSlot[6].fColorG = 255.f - 172.f;
-				m_0MaterialSlot[4].fColorB = m_0MaterialSlot[5].fColorB = m_0MaterialSlot[6].fColorB = 255.f - 100.f;
-			}
-			bMake = bEnoughMaterial0;
+			Desc1.bRender = true;
 		}
+		for (auto& Desc2 : m_2MaterialSlot)
+		{
+			Desc2.bRender = true;
+
+		}
+		// 필요 재료 숫자 셋팅
+		SettingNeedMaterial0(pNeedMaterial0);
+		SettingNeedMaterial1(pNeedMaterial1);
+		SettingNeedMaterial2(pNeedMaterial2);
+
+		// 보유 재료 셋팅
+		pOwnMaterial0 = &InvenChicken;
+		pOwnMaterial1 = &InvenSoysauce;
+		pOwnMaterial2 = &InvenFlour;
+
+		// 보유 재료 숫자 셋팅
+		SettingOwnMaterial0(pOwnMaterial0);
+		SettingOwnMaterial1(pOwnMaterial1);
+		SettingOwnMaterial2(pOwnMaterial2);
 	}
 	break;
 	}
+
+	if (*pOwnMaterial0 < *pNeedMaterial0) 
+	{
+		bMake = false;
+		m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f * 0.8f;
+		m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f * 0.2f;
+		m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 255.f * 0.2f;
+	}
+	if (*pOwnMaterial1 < *pNeedMaterial1)
+	{
+		bMake = false;
+
+		m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f * 0.8f;
+		m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f * 0.2f;
+		m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 255.f * 0.2f;
+	}
+	if (*pOwnMaterial2 < *pNeedMaterial2)
+	{
+		bMake = false;
+
+		m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 255.f * 0.8f;
+		m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 255.f * 0.2f;
+		m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 255.f * 0.2f;
+
+	}
+	if ((*pOwnMaterial0 >= *pNeedMaterial0) || (*pOwnMaterial1 >= *pNeedMaterial1) || (*pOwnMaterial2 >= *pNeedMaterial2))
+	{
+		bMake = true;
+
+		m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
+		m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
+		m_0MaterialSlot[4].fColorR = m_0MaterialSlot[5].fColorR = m_0MaterialSlot[6].fColorR = 0.f;
+
+		m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
+		m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
+		m_1MaterialSlot[4].fColorR = m_1MaterialSlot[5].fColorR = m_1MaterialSlot[6].fColorR = 0.f;
+
+		m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 0.f;
+		m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 0.f;
+		m_2MaterialSlot[4].fColorR = m_2MaterialSlot[5].fColorR = m_2MaterialSlot[6].fColorR = 0.f;
+
+	}
+
 
 }
 
@@ -2355,9 +1522,9 @@ void CUI_Cooking::SettingTotal(_int MakeNum) //총 수량
 		_int Num = i;
 		switch (Num)
 		{
-		case 0: { m_LButtonList[3].iTexNum = m_FinalList[6].iTexNum = (strCoint[i] - '0') + 27; }
+		case 0: {m_FinalList[6].iTexNum = (strCoint[i] - '0') + 27; }
 				break;
-		case 1: { m_LButtonList[4].iTexNum = m_FinalList[7].iTexNum = (strCoint[i] - '0') + 27; }
+		case 1: {m_FinalList[7].iTexNum = (strCoint[i] - '0') + 27; }
 				break;
 		}
 	}
@@ -2365,9 +1532,6 @@ void CUI_Cooking::SettingTotal(_int MakeNum) //총 수량
 
 	if (100 > MakeNum)
 	{
-		m_LButtonList[3].bRender = true;
-		m_LButtonList[4].bRender = true;
-
 		m_FinalList[6].bRender = true;
 		m_FinalList[7].bRender = true;
 		m_FinalList[8].bRender = false;
@@ -2375,17 +1539,10 @@ void CUI_Cooking::SettingTotal(_int MakeNum) //총 수량
 	}
 	if (10 > MakeNum)
 	{
-		m_LButtonList[3].bRender = true;
-		m_LButtonList[4].bRender = false;
-
 		m_FinalList[6].bRender = true;
 		m_FinalList[7].bRender = false;
 		m_FinalList[8].bRender = false;
 		m_FinalList[9].bRender = false;
-		if (1 < MakeNum)
-		{
-			MakeNum = 1;
-		}
 	}
 
 }
@@ -2426,11 +1583,6 @@ void CUI_Cooking::SettingOwnMaterial0(_int* pFood) //보유재료 숫자
 		m_0MaterialSlot[4].bRender = true;
 		m_0MaterialSlot[5].bRender = false;
 		m_0MaterialSlot[6].bRender = false;
-		if (0 >= (*pFood))
-		{
-			(*pFood) = 0;
-			m_0MaterialSlot[4].iTexNum = 27;
-		}
 	}
 
 }
@@ -2470,11 +1622,6 @@ void CUI_Cooking::SettingOwnMaterial1(_int* pFood) //보유재료 숫자
 		m_1MaterialSlot[4].bRender = true;
 		m_1MaterialSlot[5].bRender = false;
 		m_1MaterialSlot[6].bRender = false;
-		if (0 >= (*pFood))
-		{
-			(*pFood) = 0;
-			m_1MaterialSlot[4].iTexNum = 27;
-		}
 	}
 
 }
@@ -2515,13 +1662,8 @@ void CUI_Cooking::SettingOwnMaterial2(_int* pFood) //보유재료 숫자
 		m_2MaterialSlot[4].bRender = true;
 		m_2MaterialSlot[5].bRender = false;
 		m_2MaterialSlot[6].bRender = false;
-		if (0 >= (*pFood))
-		{
-			(*pFood) = 0;
-			m_2MaterialSlot[4].iTexNum = 27;
-		}
 	}
-
+	
 }
 
 
@@ -2550,11 +1692,6 @@ void CUI_Cooking::SettingNeedMaterial0(_int* pFood) //필요재료 숫자
 	{
 		m_0MaterialSlot[2].bRender = true;
 		m_0MaterialSlot[3].bRender = false;
-		if (0 >= (*pFood))
-		{
-			(*pFood) = 0;
-			m_0MaterialSlot[2].iTexNum = 27;
-		}
 	}
 }
 
@@ -2583,11 +1720,6 @@ void CUI_Cooking::SettingNeedMaterial1(_int* pFood) //필요재료 숫자
 	{
 		m_1MaterialSlot[2].bRender = true;
 		m_1MaterialSlot[3].bRender = false;
-		if (0 >= (*pFood))
-		{
-			(*pFood) = 0;
-			m_1MaterialSlot[2].iTexNum = 27;
-		}
 	}
 }
 
@@ -2617,11 +1749,6 @@ void CUI_Cooking::SettingNeedMaterial2(_int* pFood) //필요재료 숫자
 	{
 		m_2MaterialSlot[2].bRender = true;
 		m_2MaterialSlot[3].bRender = false;
-		if (0 >= (*pFood))
-		{
-			(*pFood) = 0;
-			m_2MaterialSlot[2].iTexNum = 27;
-		}
 	}
 }
 
@@ -2652,11 +1779,6 @@ void CUI_Cooking::SettingOwnNum(_int* pFood) // 보유 요리 수
 	{
 		m_DetailsList[1].bRender = true;
 		m_DetailsList[2].bRender = false;
-		if (0 >= (*pFood))
-		{
-			(*pFood) = 0;
-			m_DetailsList[1].iTexNum = 27;
-		}
 	}
 }
 
@@ -2664,26 +1786,12 @@ void CUI_Cooking::SettingOwnNum(_int* pFood) // 보유 요리 수
 void CUI_Cooking::SelectSlot()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	if (bUsedRecipe0)
-		m_12Slot[3].bRender = false;
-	else
-		m_12Slot[3].bRender = true;
-
-	if (bUsedRecipe1)
-		m_13Slot[3].bRender = false;
-	else
-		m_13Slot[3].bRender = true;
-
-
 	if (SelectUI(&m_0Slot[0]))
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			// 슬롯을 선택했을 때,
 			pSelectSlot = &m_0Slot[2];
-			if (m_0Slot[3].bRender)
-				m_0Slot[3].bRender = false;
 		}
 	}
 	if (SelectUI(&m_1Slot[0]))
@@ -2691,8 +1799,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_1Slot[2];
-			if (m_1Slot[3].bRender)
-				m_1Slot[3].bRender = false;
 		}
 	}
 	if (SelectUI(&m_2Slot[0]))
@@ -2700,8 +1806,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_2Slot[2];
-			if (m_2Slot[3].bRender)
-				m_2Slot[3].bRender = false;
 		}
 	}
 	if (SelectUI(&m_3Slot[0]))
@@ -2709,8 +1813,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_3Slot[2];
-			if (m_3Slot[3].bRender)
-				m_3Slot[3].bRender = false;
 		}
 	}
 	if (SelectUI(&m_4Slot[0]))
@@ -2718,8 +1820,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_4Slot[2];
-			if (m_4Slot[3].bRender)
-				m_4Slot[3].bRender = false;
 		}
 	}
 	if (SelectUI(&m_5Slot[0]))
@@ -2727,8 +1827,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_5Slot[2];
-			if (m_5Slot[3].bRender)
-				m_5Slot[3].bRender = false;
 		}
 	}
 	if (SelectUI(&m_6Slot[0]))
@@ -2736,8 +1834,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_6Slot[2];
-			if (m_6Slot[3].bRender)
-				m_6Slot[3].bRender = false;
 		}
 	}
 	if (SelectUI(&m_7Slot[0]))
@@ -2745,8 +1841,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_7Slot[2];
-			if (m_7Slot[3].bRender)
-				m_7Slot[3].bRender = false;
 		}
 	}
 	if (SelectUI(&m_8Slot[0]))
@@ -2754,8 +1848,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_8Slot[2];
-			if (m_8Slot[3].bRender)
-				m_8Slot[3].bRender = false;
 		}
 	}
 	if (SelectUI(&m_9Slot[0]))
@@ -2763,8 +1855,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_9Slot[2];
-			if (m_9Slot[3].bRender)
-				m_9Slot[3].bRender = false;
 		}
 	}
 	if (SelectUI(&m_10Slot[0]))
@@ -2772,8 +1862,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_10Slot[2];
-			if (m_10Slot[3].bRender)
-				m_10Slot[3].bRender = false;
 		}
 	}
 	if (SelectUI(&m_11Slot[0]))
@@ -2781,8 +1869,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_11Slot[2];
-			if (m_11Slot[3].bRender)
-				m_11Slot[3].bRender = false;
 		}
 	}
 	if (SelectUI(&m_12Slot[0]))
@@ -2790,10 +1876,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_12Slot[2];
-
-			if (m_12Slot[3].bRender)
-				m_12Slot[3].bRender = false;
-
 		}
 	}
 	if (SelectUI(&m_13Slot[0]))
@@ -2801,9 +1883,6 @@ void CUI_Cooking::SelectSlot()
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
 			pSelectSlot = &m_13Slot[2];
-
-			if (m_13Slot[3].bRender)
-				m_13Slot[3].bRender = false;
 		}
 	}
 }
@@ -2863,7 +1942,7 @@ void CUI_Cooking::SelectGreade()
 		m_GradeList[4].iTexNum = 54;
 		m_GradeList[6].iTexNum = 54;
 		m_GradeList[8].iTexNum = 54;
-		m_GradeList[10].iTexNum = 54;
+		m_GradeList[10].iTexNum= 54;
 	}
 	break;
 	case 1:
@@ -2926,7 +2005,7 @@ void CUI_Cooking::SettingSlot()
 	{
 	case 0:
 	{
-		m_0Slot[2].iTexNum = STATIC_IMAGE::ICON_FLATBREAD;
+		m_0Slot[2].iTexNum = STATIC_IMAGE::ICON_FLATBREAD; 
 		m_1Slot[2].iTexNum = STATIC_IMAGE::ICON_SALAD;
 		m_2Slot[2].iTexNum = STATIC_IMAGE::ICON_FRIEDTOFU;
 		m_3Slot[2].iTexNum = STATIC_IMAGE::ICON_SALTEDTEA;
@@ -2938,10 +2017,8 @@ void CUI_Cooking::SettingSlot()
 		m_9Slot[2].iTexNum = STATIC_IMAGE::ICON_RABBITBREAD;
 		m_10Slot[2].iTexNum = STATIC_IMAGE::ICON_FRIEDMUSHROOM;
 		m_11Slot[2].iTexNum = STATIC_IMAGE::ICON_MAPOTOFU;
-		//레시피0를 사용했다면
-		(bUsedRecipe0 ? m_12Slot[2].iTexNum = STATIC_IMAGE::ICON_PORKBELLY : m_12Slot[2].iTexNum = STATIC_IMAGE::ICON_RECIPE);
-		//레시피1를 사용했다면
-		(bUsedRecipe1 ? m_13Slot[2].iTexNum = STATIC_IMAGE::ICON_DUCKNOODLES : m_13Slot[2].iTexNum = STATIC_IMAGE::ICON_RECIPE);
+		m_12Slot[2].iTexNum = STATIC_IMAGE::ICON_PORKBELLY;
+		m_13Slot[2].iTexNum = STATIC_IMAGE::ICON_DUCKNOODLES;
 
 		m_0Slot[2].SlotItemId = ITEM::FLATBREAD;
 		m_1Slot[2].SlotItemId = ITEM::SALAD;
@@ -2982,7 +2059,7 @@ void CUI_Cooking::SettingSlot()
 	break;
 	case 1:
 	{
-		m_0Slot[2].iTexNum = STATIC_IMAGE::ICON_FLATBREAD;
+		m_0Slot[2].iTexNum = STATIC_IMAGE::ICON_FLATBREAD; 
 		m_1Slot[2].iTexNum = STATIC_IMAGE::ICON_SALAD;
 		m_2Slot[2].iTexNum = STATIC_IMAGE::ICON_FRIEDTOFU;
 
@@ -3013,7 +2090,7 @@ void CUI_Cooking::SettingSlot()
 	break;
 	case 3:
 	{
-		m_0Slot[2].iTexNum = STATIC_IMAGE::ICON_DRAGONNOODLE;
+		m_0Slot[2].iTexNum = STATIC_IMAGE::ICON_DRAGONNOODLE; 
 		m_1Slot[2].iTexNum = STATIC_IMAGE::ICON_OMURICE;
 		m_2Slot[2].iTexNum = STATIC_IMAGE::ICON_FRIEDRICE;
 		m_3Slot[2].iTexNum = STATIC_IMAGE::ICON_FRIEDCHICKEN;
@@ -3049,11 +2126,8 @@ void CUI_Cooking::SettingSlot()
 	break;
 	case 5:
 	{
-		//레시피0를 사용했다면
-		(bUsedRecipe0 ? m_0Slot[2].iTexNum = STATIC_IMAGE::ICON_PORKBELLY : m_0Slot[2].iTexNum = STATIC_IMAGE::ICON_RECIPE);
-		//레시피1를 사용했다면
-		(bUsedRecipe1 ? m_1Slot[2].iTexNum = STATIC_IMAGE::ICON_DUCKNOODLES : m_1Slot[2].iTexNum = STATIC_IMAGE::ICON_RECIPE);
-
+		m_0Slot[2].iTexNum = STATIC_IMAGE::ICON_PORKBELLY;
+		m_1Slot[2].iTexNum = STATIC_IMAGE::ICON_DUCKNOODLES;
 
 		m_0Slot[2].SlotItemId = ITEM::PORKBELLY;
 		m_1Slot[2].SlotItemId = ITEM::DUCKNOODLES;
@@ -3621,11 +2695,10 @@ HRESULT CUI_Cooking::Render()
 				}
 			}
 		}
+		break;
 		}
 	}
 	case Client::CUI_Cooking::READYCONFRIM:
-	{
-	}
 	break;
 	case Client::CUI_Cooking::CONFRIM:
 	{
@@ -3643,16 +2716,7 @@ HRESULT CUI_Cooking::Render()
 	break;
 	case Client::CUI_Cooking::BYE:
 	{
-		for (_uint i = 0; i < (_int)m_FinalList.size(); ++i)
-		{
-			if (m_FinalList[i].bRender)
-			{
-				if (FAILED(Setup_FinalShader(i)))
-					return E_FAIL;
-				m_pShader->Begin(m_iPass);
-				m_pVIBuffer->Render();
-			}
-		}
+
 	}
 	break;
 	}
@@ -4195,7 +3259,7 @@ _bool CUI_Cooking::AddAlphaW(vector<COOKDESC>* pDesc, _double TimeDelta)
 {
 	for (_uint i = 0; i < (_int)(*pDesc).size(); ++i)
 	{
-		if ((*pDesc)[i].Color.w >(*pDesc)[i].fColorA)
+		if ((*pDesc)[i].Color.w > (*pDesc)[i].fColorA)
 		{
 			(*pDesc)[i].fColorA += (_float)TimeDelta * 400.f;
 		}
@@ -4327,7 +3391,7 @@ void CUI_Cooking::Load()
 		}
 		//Desc.iPass = 21;
 		Desc.bRender = true;
-		Desc.Color.w = Desc.fColorA = 0.f;
+		Desc.Color.w = Desc.fColorA;
 		Desc.fColorA = -255.f;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
@@ -4447,7 +3511,7 @@ void CUI_Cooking::Load()
 			if (0 == dwByte)
 				break;
 		}
-		//Desc.iPass = 21;
+		Desc.iPass = 21;
 		Desc.bRender = true;
 		Desc.Color.w = Desc.fColorA;
 		Desc.fColorA = -255.f;
@@ -4488,7 +3552,7 @@ void CUI_Cooking::Load()
 			if (0 == dwByte)
 				break;
 		}
-		//Desc.iPass = 21;
+		Desc.iPass = 21;
 		Desc.bRender = true;
 		Desc.Color.w = Desc.fColorA;
 		Desc.fColorA = -255.f;
@@ -4500,11 +3564,11 @@ void CUI_Cooking::Load()
 	}
 
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
-		wsprintf(szFileName, L"../../Data/UI/0CookSlot%d.dat", i);
+		wsprintf(szFileName, L"../../Data/UI/Cook0Slot%d.dat", i);
 		HANDLE hFile = CreateFile(
 			szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
@@ -4541,7 +3605,7 @@ void CUI_Cooking::Load()
 	}
 
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -4581,7 +3645,7 @@ void CUI_Cooking::Load()
 	}
 
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -4622,7 +3686,7 @@ void CUI_Cooking::Load()
 	}
 
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -4662,7 +3726,7 @@ void CUI_Cooking::Load()
 
 	}
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -4702,7 +3766,7 @@ void CUI_Cooking::Load()
 
 	}
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -4742,7 +3806,7 @@ void CUI_Cooking::Load()
 
 	}
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -4782,7 +3846,7 @@ void CUI_Cooking::Load()
 
 	}
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -4822,7 +3886,7 @@ void CUI_Cooking::Load()
 
 	}
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -4862,7 +3926,7 @@ void CUI_Cooking::Load()
 
 	}
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -4902,7 +3966,7 @@ void CUI_Cooking::Load()
 
 	}
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -4942,7 +4006,7 @@ void CUI_Cooking::Load()
 
 	}
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -4982,7 +4046,7 @@ void CUI_Cooking::Load()
 
 	}
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -5022,7 +4086,7 @@ void CUI_Cooking::Load()
 
 	}
 	//
-	index = 4;
+	index = 5;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -5064,7 +4128,7 @@ void CUI_Cooking::Load()
 
 
 	//
-	index = 7;
+	index = 8;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -5096,7 +4160,7 @@ void CUI_Cooking::Load()
 		Desc.bRender = true;
 		Desc.Color.w = Desc.fColorA;
 		Desc.fColorA = -255.f;
-		//Desc.iPass = 21;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_0MaterialSlot.push_back(Desc);
@@ -5105,7 +4169,7 @@ void CUI_Cooking::Load()
 	}
 
 	//
-	index = 7;
+	index = 8;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -5137,7 +4201,7 @@ void CUI_Cooking::Load()
 		Desc.bRender = true;
 		Desc.Color.w = Desc.fColorA;
 		Desc.fColorA = -255.f;
-		//Desc.iPass = 21;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_1MaterialSlot.push_back(Desc);
@@ -5146,7 +4210,7 @@ void CUI_Cooking::Load()
 	}
 
 	//
-	index = 7;
+	index = 8;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -5178,7 +4242,7 @@ void CUI_Cooking::Load()
 		Desc.bRender = true;
 		Desc.Color.w = Desc.fColorA;
 		Desc.fColorA = -255.f;
-		//Desc.iPass = 21;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_2MaterialSlot.push_back(Desc);
@@ -5187,7 +4251,7 @@ void CUI_Cooking::Load()
 	}
 
 	//
-	index = 5;
+	index = 6;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -5219,7 +4283,7 @@ void CUI_Cooking::Load()
 		Desc.bRender = true;
 		Desc.Color.w = Desc.fColorA;
 		Desc.fColorA = -255.f;
-		//Desc.iPass = 21;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_LButtonList.push_back(Desc);
@@ -5228,7 +4292,7 @@ void CUI_Cooking::Load()
 	}
 
 	//
-	index = 2;
+	index = 3;
 	for (_uint i = 0; i < index; ++i)
 	{
 		TCHAR	szFileName[128] = L"";
@@ -5260,7 +4324,7 @@ void CUI_Cooking::Load()
 		Desc.bRender = true;
 		Desc.Color.w = Desc.fColorA;
 		Desc.fColorA = -255.f;
-		//Desc.iPass = 21;
+		Desc.iPass = 21;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_RButtonList.push_back(Desc);
@@ -5268,6 +4332,12 @@ void CUI_Cooking::Load()
 
 	}
 }
+
+
+
+
+
+
 
 
 void CUI_Cooking::Save()
@@ -5952,7 +5022,7 @@ HRESULT CUI_Cooking::Setup_GradeShader(_uint index)
 
 HRESULT CUI_Cooking::Setup_DetailsShader(_uint index)
 {
-	if ((3 == index) || (4 == index) || (6 == index))
+	if ((3 == index)||(5 == index)|| (6	 == index))
 	{
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
 		if (FAILED(pGameInstance->SetupSRV(m_DetailsList[index].iTexNum, m_pShader, "g_MyTexture")))
@@ -6142,9 +5212,6 @@ HRESULT CUI_Cooking::Setup_LButtonShader(_uint index)
 
 HRESULT CUI_Cooking::Setup_RButtonShader(_uint index)
 {
-	XMStoreFloat4x4(&(m_RButtonList[index].WorldMatrix), XMMatrixScaling(m_RButtonList[index].fWidth, m_RButtonList[index].fHeight, 1.f)
-		* XMMatrixTranslation(m_RButtonList[index].fX, m_RButtonList[index].fY, m_RButtonList[index].fZ));
-
 	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_RButtonList[index].iTexNum)))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_RButtonList[index].WorldMatrix))))
@@ -6170,19 +5237,8 @@ HRESULT CUI_Cooking::Setup_RButtonShader(_uint index)
 
 HRESULT CUI_Cooking::Setup_FinalShader(_uint index)
 {
-	XMStoreFloat4x4(&(m_FinalList[index].WorldMatrix), XMMatrixScaling(m_FinalList[index].fWidth, m_FinalList[index].fHeight, 1.f)
-		* XMMatrixTranslation(m_FinalList[index].fX, m_FinalList[index].fY, m_FinalList[index].fZ));
-	if (4 == index)
-	{
-		CGameInstance* pGameInstance = CGameInstance::GetInstance();
-		if (FAILED(pGameInstance->SetupSRV(m_FinalList[index].iTexNum, m_pShader, "g_MyTexture")))
-			return E_FAIL;
-	}
-	else
-	{
-		if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_FinalList[index].iTexNum)))
-			return E_FAIL;
-	}
+	if (FAILED(m_pTexture->Setup_ShaderResource(m_pShader, "g_MyTexture", m_FinalList[index].iTexNum)))
+		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyWorldMatrix", &(m_FinalList[index].WorldMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyViewMatrix", &m_ViewMatrix)))

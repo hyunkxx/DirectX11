@@ -132,12 +132,9 @@ private:
 	void	AlphaM(CUTRECT* pDesc, _double TimeDelta);
 	void	AlphaP(CUTRECT* pDesc, _double TimeDelta);
 
-	void	CoolTimeEnd1(_double TimeDelta);
-	void	CoolTimeEnd2(_double TimeDelta);
-	void	PlayerTagoOn1();
-	void	PlayerTagoOn2();
-	void	PlayerTagoOff1();
-	void	PlayerTagoOff2();
+	void	CoolTimeEnd(_double TimeDelta);
+	void	PlayerTagoOn();
+	void	PlayerTagoOff();
 
 
 	_float	Distance(_fvector TargetPos, _fvector CurrentPos);

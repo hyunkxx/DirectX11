@@ -131,7 +131,6 @@ public:
 		m_bDying = false;
 		m_bRender = true;
 		m_bAlert = false;
-		m_pUIMon->Set_MonHP(m_tMonsterInfo.fCurHP);
 	};
 
 

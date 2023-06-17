@@ -7,6 +7,7 @@
 
 #include "Invisible_Chest.h"
 #include "CameraMovement.h"
+#include "UI_Minimap.h"
 
 CRobot::CRobot(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CGameObject(pDevice, pContext)
@@ -67,6 +68,14 @@ HRESULT CRobot::Initialize(void * pArg)
 	return S_OK;
 }
 
+void CRobot::Start()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	m_pUIIcon = static_cast<CUI_Minimap*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
+	m_UIIndex = m_pUIIcon->Add_Icon(XMVectorSet(m_BoxMatrix._41, m_BoxMatrix._42, m_BoxMatrix._43, 1.f), CUI_Minimap::BOX);
+	m_pUIIcon->SetRender(m_UIIndex, false);
+}
+
 void CRobot::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
@@ -80,6 +89,14 @@ void CRobot::Tick(_double TimeDelta)
 			pGameInstance->AddCollider(m_pCollider[i], COLL_PLAYERATTACK);
 			m_pCollider[i]->Update(XMLoadFloat4x4(&m_RobotMatrix[i]));
 		}
+	}
+	if ((nullptr != m_pUIIcon) && (true == this->IsActive()))
+	{
+		if (false == m_pUIIcon->GetRenderState(m_UIIndex))
+			m_pUIIcon->SetRender(m_UIIndex, true);
+
+		m_pUIIcon->Set_ObjectPos(m_UIIndex, XMVectorSet(m_BoxMatrix._41, m_BoxMatrix._42, m_BoxMatrix._43, 1.f));
+		m_pUIIcon->SetRender(m_UIIndex, true);
 	}
 }
 
@@ -222,7 +239,10 @@ void CRobot::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 
 			if (All_Hit_Check())
+			{
 				Give_Compensation(i);
+				m_pUIIcon->SetRender(m_UIIndex, false);
+			}
 		}
 	}
 }
