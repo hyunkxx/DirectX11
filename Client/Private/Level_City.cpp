@@ -398,6 +398,15 @@ HRESULT CLevel_City::Ready_Layer_CityObject()
 	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Sto_0.data"), TEXT("CityObejct_Sto_0_%d"))))
 		return E_FAIL;
 
+	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bri_0.data"), TEXT("CityObejct_Bri_0_%d"))))
+		return E_FAIL;
+	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bri_1.data"), TEXT("CityObejct_Bri_1_%d"))))
+		return E_FAIL;
+	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bri_2.data"), TEXT("CityObejct_Bri_2_%d"))))
+		return E_FAIL;
+	if (FAILED(Load_CityObject(TEXT("../../Data/City/CityObject/Cit_Bri_3.data"), TEXT("CityObejct_Bri_3_%d"))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -470,7 +479,7 @@ HRESULT CLevel_City::Load_CityObject(const _tchar* pDataFilePath, const _tchar* 
 		if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::CITY_OBJECT,
 			pLayerTag, szCityObjectTag, &CityObject_Desc)))
 		{
-			MSG_BOX("Failed to Add_GameObject In Level_GamePlay : City_Object");
+			MSG_BOX("Failed to Add_GameObject In LEVEL_CITY : City_Object");
 			return E_FAIL;
 		}
 	}

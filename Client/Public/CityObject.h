@@ -15,7 +15,7 @@ BEGIN(Client)
 class CCityObject : public CGameObject
 {
 public:
-	enum TYPE_ID { ID_BUI, ID_ELE, ID_RAI, ID_GRO, ID_STA, ID_DES, ID_STO, ID_END };
+	enum TYPE_ID { ID_BUI, ID_ELE, ID_RAI, ID_GRO, ID_STA, ID_DES, ID_STO, ID_BRI, ID_END };
 	enum OPTION_ID { OP_DECO, OP_FLOOR, OP_INTERACT, OP_END };
 
 private:

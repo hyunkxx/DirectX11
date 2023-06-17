@@ -83,7 +83,11 @@ namespace SMODEL
 		SMD_CIT_DES_0,
 		SMD_CIT_STO_0,
 
-		SMD_POTAL = 52000,
+		// ´Ù¸®
+		SMD_CIT_BRI_0,
+		SMD_CIT_BRI_1,
+		SMD_CIT_BRI_2,
+		SMD_CIT_BRI_3,
 
 		SMD_END
 	};

@@ -1873,12 +1873,6 @@ HRESULT CLoader::Load_MapResource_GamePlay()
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, SMODEL::SMD_POTAL, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Trigger/nvzhu.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_GAMEPLAY : SMD_POTAL");
-		return E_FAIL;
-	}
-
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, COMPONENT::NAVIGATION,
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/GamePlay/Navigation/Navigation.data")))))
 	{
@@ -3185,12 +3179,6 @@ HRESULT CLoader::Load_MapResource_City()
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_POTAL, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Trigger/nvzhu.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CITY : SMD_POTAL");
-		return E_FAIL;
-	}
-
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, COMPONENT::NAVIGATION,
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/City/Navigation/Navigation.data")))))
 	{
@@ -3445,6 +3433,32 @@ HRESULT CLoader::Load_MapResource_City()
 		return E_FAIL;
 	}
 
+	// BRI
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BRI_0,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bri/0/SM_Cit_Bri_01AM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BRI_0");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BRI_1,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bri/1/SM_Cit_Bri_02AL.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BRI_1");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BRI_2,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bri/2/SM_Cit_Bri_03AM.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BRI_2");
+		return E_FAIL;
+	}
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, SMODEL::SMD_CIT_BRI_3,
+		CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Object/TianCheng/Bri/3/SM_Cit_Bri_04AL_04BL.smdl")))))
+	{
+		MSG_BOX("Failed to Prototype In Loader : SMD_CIT_BRI_3");
+		return E_FAIL;
+	}
+
 #pragma endregion CITY_OBJECT
 
 	return S_OK;
@@ -3455,12 +3469,6 @@ HRESULT CLoader::Load_MapResource_Forest()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, SMODEL::SMD_POTAL, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Trigger/nvzhu.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_FOREST : SMD_POTAL");
-		return E_FAIL;
-	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, COMPONENT::NAVIGATION,
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Forest/Navigation/Navigation.data")))))
@@ -4844,12 +4852,6 @@ HRESULT CLoader::Load_MapResource_Crown()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, SMODEL::SMD_POTAL, CModel::Create(m_pDevice, m_pContext, TEXT("../../Resource/Model/Static/Map/Trigger/nvzhu.smdl")))))
-	{
-		MSG_BOX("Failed to Prototype In Loader LEVEL_CROWN : SMD_POTAL");
-		return E_FAIL;
-	}
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, COMPONENT::NAVIGATION,
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/Crown/Navigation/Navigation.data")))))
