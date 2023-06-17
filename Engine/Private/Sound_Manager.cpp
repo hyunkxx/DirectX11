@@ -373,7 +373,7 @@ HRESULT CSound_Manager::Load_SFX_Footstep()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -421,7 +421,7 @@ HRESULT CSound_Manager::Load_SFX_Sequence()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -469,7 +469,7 @@ HRESULT CSound_Manager::Load_SFX_UI()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -517,7 +517,7 @@ HRESULT CSound_Manager::Load_SFX_Monster_Anjin()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -565,7 +565,7 @@ HRESULT CSound_Manager::Load_SFX_Monster_AWukaka()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -613,7 +613,7 @@ HRESULT CSound_Manager::Load_SFX_Monster_Binglie()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -661,7 +661,7 @@ HRESULT CSound_Manager::Load_SFX_Monster_Fenglie()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -709,7 +709,7 @@ HRESULT CSound_Manager::Load_SFX_Monster_FHuxiuxiu()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -757,7 +757,7 @@ HRESULT CSound_Manager::Load_SFX_Monster_GAzizi()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -805,7 +805,7 @@ HRESULT CSound_Manager::Load_SFX_Monster_Huojin()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -853,7 +853,7 @@ HRESULT CSound_Manager::Load_SFX_Monster_Leilie()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -901,7 +901,7 @@ HRESULT CSound_Manager::Load_SFX_Monster_Qunjing()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -949,7 +949,7 @@ HRESULT CSound_Manager::Load_SFX_Monster_Wuguanzhe()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -997,7 +997,7 @@ HRESULT CSound_Manager::Load_SFX_Monster_MonImpact()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -1045,7 +1045,7 @@ HRESULT CSound_Manager::Load_SFX_PC_Chixia()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -1093,7 +1093,7 @@ HRESULT CSound_Manager::Load_SFX_PC_Common()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -1141,7 +1141,7 @@ HRESULT CSound_Manager::Load_SFX_PC_Foley()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -1189,7 +1189,7 @@ HRESULT CSound_Manager::Load_SFX_PC_Rover()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -1237,7 +1237,7 @@ HRESULT CSound_Manager::Load_SFX_PC_Yangyang()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -1285,7 +1285,7 @@ HRESULT CSound_Manager::Load_SFX_PC_PlayerImpact()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -1333,7 +1333,7 @@ HRESULT CSound_Manager::Load_Voice_Chixia()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -1381,7 +1381,7 @@ HRESULT CSound_Manager::Load_Voice_Rover()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
@@ -1429,7 +1429,7 @@ HRESULT CSound_Manager::Load_Voice_Yangyang()
 		FMOD::Sound*     pSound = nullptr;
 
 		/* 荤款靛 积己 */
-		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_NORMAL, 0, &pSound);
+		m_eResult = m_pSystem->createSound(szFullPath, FMOD_LOOP_OFF, 0, &pSound);
 
 		if (FMOD_OK == m_eResult)
 		{
