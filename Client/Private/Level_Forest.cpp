@@ -28,6 +28,7 @@
 #include "Level_Loading.h"
 
 #include "Boom_Rock.h"
+
 CLevel_Forest::CLevel_Forest(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
 {
@@ -48,6 +49,7 @@ HRESULT CLevel_Forest::Initialize()
 	CM_Leilie::Init_States(m_pDevice, m_pContext);
 	CM_Qunjing::Init_States(m_pDevice, m_pContext);
 
+#pragma region Ready_Layer
 	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
 
@@ -108,7 +110,8 @@ HRESULT CLevel_Forest::Initialize()
 
 	if (FAILED(Ready_Interaction_Object(TEXT("Layer_Interaction_Object_Forest"))))
 		return E_FAIL;
-	
+#pragma endregion
+
 	CLayer* pEchoLayer = pGameInstance->Find_Layer(LEVEL_STATIC, TEXT("EchoInstance"));
 
 	if (nullptr != pEchoLayer)
@@ -139,6 +142,7 @@ void CLevel_Forest::Tick(_double TimeDelta)
 
 	//pGameInstance->BGMSmoothOn(TimeDelta);
 
+#pragma region Key_Input
 	//임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것
 	static _uint iShadowLevel = 0;
 	if (pGameInstance->InputKey(DIK_0) == KEY_STATE::TAP)
@@ -196,7 +200,7 @@ void CLevel_Forest::Tick(_double TimeDelta)
 
 	if (pGameInstance->InputKey(DIK_K) == KEY_STATE::TAP)
 		pGameInstance->TimeSlowDown(0.5f, 0.1f);
-
+#pragma endregion
 
 	if (true == pGameMode->Is_ReserveLevel())
 	{
@@ -275,6 +279,7 @@ HRESULT CLevel_Forest::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region BackGround
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 
@@ -284,6 +289,7 @@ HRESULT CLevel_Forest::Ready_Layer_BackGround(const _tchar* pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::SKY, pLayerTag, L"sky")))
 		return E_FAIL;
+#pragma endregion
 
 	return S_OK;
 }
@@ -292,6 +298,8 @@ HRESULT CLevel_Forest::Ready_Layer_Camera(const _tchar* pLayerTag)
 {
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+#pragma region  Camera
 
 	//Camera Setting
 	CCamera::CAMERA_DESC CameraDesc;
@@ -329,6 +337,7 @@ HRESULT CLevel_Forest::Ready_Layer_Camera(const _tchar* pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::PLAYER_CAMERA, pLayerTag, L"player_camera", &PCamDesc)))
 		return E_FAIL;
+#pragma endregion
 
 	return S_OK;
 }
@@ -339,6 +348,7 @@ HRESULT CLevel_Forest::Ready_Layer_Player(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region Player
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
 
@@ -347,6 +357,7 @@ HRESULT CLevel_Forest::Ready_Layer_Player(const _tchar * pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::PLAYER_CHIXIA, pLayerTag, TEXT("Player2"))))
 		return E_FAIL;
+#pragma endregion
 
 	return S_OK;
 }
@@ -357,27 +368,29 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region Monster
+
 	// 스폰 포인트 위치 : [ 0 ] : (산)오른쪽 위 , [ 1 ] : (산)왼쪽 위 , [ 2 ] : (들판)왼쪽 아래 , [ 3 ] : (크라운 전 방)오른쪽 아래
 	// 스폰 포인트 갯수 : [ 0 ] : 4 , [ 1 ] : 4 , [ 2 ] : 4 , [ 3 ] : 4 
-	
+
 	CGameObject*	pGameObject = { nullptr };
 
 	// 트리거0만들었씸 >>나 레이어 태그 대신 vector<CCharacter*> m_Monsters들거임
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_0.data"), TEXT("Trigger_Spawn_Forest_0"), 
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_0.data"), TEXT("Trigger_Spawn_Forest_0"),
 		TEXT("layer_trigger"), TEXT("../../Data/Forest/Trigger/Spawn_Forest_0_SpawnPoint.data"))))
 	{
 		MSG_BOX("Trigger_Spawn_Forest_0");
 		return E_FAIL;
 	}
 
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_1.data"), TEXT("Trigger_Spawn_Forest_1"), 
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_1.data"), TEXT("Trigger_Spawn_Forest_1"),
 		TEXT("layer_trigger"), TEXT("../../Data/Forest/Trigger/Spawn_Forest_1_SpawnPoint.data"))))
 	{
 		MSG_BOX("Trigger_Spawn_Forest_1");
 		return E_FAIL;
 	}
 
-	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_2.data"), TEXT("Trigger_Spawn_Forest_2"), 
+	if (FAILED(Load_TriggerData(TEXT("../../Data/Forest/Trigger/Spawn_Forest_2.data"), TEXT("Trigger_Spawn_Forest_2"),
 		TEXT("layer_trigger"), TEXT("../../Data/Forest/Trigger/Spawn_Forest_2_SpawnPoint.data"))))
 	{
 		MSG_BOX("Trigger_Spawn_Forest_2");
@@ -483,25 +496,26 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 	/*CGameObject* pChar = nullptr;
 
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_HUOJIN, pLayerTag, TEXT("Huojin"))))
-		return E_FAIL;
+	return E_FAIL;
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(397.004f, 19.020f, 184.340f, 1.f), 1022);
 
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_BINGLIE, pLayerTag, TEXT("Binglie"))))
-		return E_FAIL;
+	return E_FAIL;
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(396.381f, 19.134f, 196.303f, 1.f), 989);
 
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_FENGLIE, pLayerTag, TEXT("Fenglie"))))
-		return E_FAIL;
+	return E_FAIL;
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(405.227f, 19.020f, 195.202f, 1.f), 1048);
 
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_LEILIE, pLayerTag, TEXT("Leilie"))))
-		return E_FAIL;
+	return E_FAIL;
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(406.052f, 19.020f, 184.768f, 1.f), 1046);
 
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_FOREST, OBJECT::MONSTER_QUNJING, pLayerTag, TEXT("Qunjing"))))
-		return E_FAIL;
+	return E_FAIL;
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(409.052f, 19.020f, 187.768f, 1.f), 1047);*/
-	
+
+#pragma endregion
 
 	return S_OK;
 }
@@ -512,6 +526,7 @@ HRESULT CLevel_Forest::Ready_Layer_UI(const _tchar * pLayerTag)
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+#pragma region UI
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::UIWeapon, pLayerTag, TEXT("UIWeapon"))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::UICharacter, pLayerTag, TEXT("UI_Character"))))
@@ -529,6 +544,7 @@ HRESULT CLevel_Forest::Ready_Layer_UI(const _tchar * pLayerTag)
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::UIMERCHANTMEN, pLayerTag, TEXT("UI_MerchantMen"))))
 		return E_FAIL;
+#pragma endregion
 
 	return S_OK;
 }
@@ -539,6 +555,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region MapObject_Tree
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -803,6 +820,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_TREE_31");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -813,6 +831,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region MapObject_Rock
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -1302,6 +1321,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_ROCK_52");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -1311,6 +1331,8 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Floor(const _tchar * pLayerTag)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
+
+#pragma region MapObject_Floor
 
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
@@ -1355,6 +1377,8 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Floor(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
+#pragma endregion
+
 	return S_OK;
 }
 
@@ -1363,7 +1387,8 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
-
+	
+#pragma region MapObject_Stairs
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -1446,6 +1471,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_STAIRS_9");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -1456,6 +1482,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region MapObject_Grass
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -1601,6 +1628,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_GRASS_16");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -1611,6 +1639,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region MapObject_Vin
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -1710,6 +1739,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_VIN_11");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -1720,6 +1750,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region MapObject_Veg
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -1990,6 +2021,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_VEG_32");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -2000,6 +2032,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region MapObject_Shr
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -2082,6 +2115,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_SHR_9");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -2092,6 +2126,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Structure(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region MapObject_Structure
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -2129,6 +2164,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Structure(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_STRUCTURE_3");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -2139,6 +2175,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Pil(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region MapObject_Pil
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -2174,6 +2211,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Pil(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_PIL_3");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -2184,6 +2222,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Statue(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region MapObject_Statue
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -2203,6 +2242,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Statue(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_STATUE_1");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -2213,6 +2253,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_NoiRock(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region MapObject_NoiRock
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -2279,6 +2320,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_NoiRock(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_NOIROCK_7");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -2289,6 +2331,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Tof_Grass(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region MapObject_Tof_Grass(
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -2412,6 +2455,7 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Tof_Grass(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In LEVEL_FOREST : SIMD_TOF_GRASS_14");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -2419,6 +2463,9 @@ HRESULT CLevel_Forest::Ready_Layer_MapObject_Tof_Grass(const _tchar * pLayerTag)
 HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance =  CGameInstance::GetInstance();
+
+#pragma region Robot
+
 	_float4x4 Matrix1, Matrix2, Matrix3, Matrix4;
 
 	XMStoreFloat4x4(&Matrix1, XMMatrixIdentity());
@@ -2453,10 +2500,11 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 
 	Safe_Delete(pMatList);
 
+#pragma endregion
 
-
+#pragma region Boom_Rock
 	_float4x4 vWorldMatrix;
-	_vector vUp = XMVectorSet(0.f,1.f,0.f,0.f);
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	CBoom_Rock::ROCK_STATE Rock_State;
 	ZeroMemory(&Rock_State, sizeof(CBoom_Rock::ROCK_STATE));
 
@@ -2474,7 +2522,7 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_01", &Rock_State)))
 		return E_FAIL;
-	
+
 
 	ZeroMemory(&Rock_State, sizeof(CBoom_Rock::ROCK_STATE));
 
@@ -2526,7 +2574,9 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock_04", &Rock_State)))
 		return E_FAIL;
+#pragma endregion
 
+#pragma region Bomber
 	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
 	vWorldMatrix._41 = 247.251f;
 	vWorldMatrix._42 = 9.259f;
@@ -2555,6 +2605,8 @@ HRESULT CLevel_Forest::Ready_Interaction_Object(const _tchar * pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_FOREST, OBJECT::INTERACTION_OBJECT_BOMBER, pLayerTag, L"Object_Bomber_04", &vWorldMatrix)))
 		return E_FAIL;
+#pragma endregion
+
 	return S_OK;
 }
 

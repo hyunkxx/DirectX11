@@ -13,7 +13,7 @@ class CModel;
 END
 
 BEGIN(Client)
-//260 38 227
+
 class CBoom_Rock :
 	public CGameObject
 	, public IOnCollisionEnter

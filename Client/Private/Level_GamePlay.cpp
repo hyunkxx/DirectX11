@@ -49,7 +49,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	CM_AWukaka::Init_States(m_pDevice, m_pContext);
 	CM_FHuxiuxiu::Init_States(m_pDevice, m_pContext);
 
-	if(FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
+#pragma region Ready_Layer
+	if (FAILED(Ready_Layer_BackGround(TEXT("layer_background"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Player(TEXT("layer_character"))))
@@ -60,12 +61,12 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_Camera(TEXT("layer_camera"))))
 		return E_FAIL;
-	
+
 	if (FAILED(Ready_Layer_UI(TEXT("layer_UI"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_tree"))))
-		return E_FAIL;	
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_MapObject_Rock(TEXT("layer_rock"))))
 		return E_FAIL;
@@ -75,7 +76,7 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_MapObject_Stairs(TEXT("layer_stairs"))))
 		return E_FAIL;
-	
+
 	if (FAILED(Ready_Layer_MapObject_Grass(TEXT("layer_grass"))))
 		return E_FAIL;
 
@@ -99,9 +100,10 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Interaction_Object(TEXT("layer_Interaction_Object"))))
 		return E_FAIL;
-	
+
 	if (FAILED(Ready_Layer_Trigger(TEXT("layer_trigger"))))
 		return E_FAIL;
+#pragma endregion
 
 	CLayer* pEchoLayer = pGameInstance->Find_Layer(LEVEL_STATIC, TEXT("EchoInstance"));
 
@@ -133,6 +135,7 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 
 	//pGameInstance->BGMSmoothOn(TimeDelta);
 
+#pragma region  Key_Input
 	//임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것
 	static _uint iShadowLevel = 0;
 	if (pGameInstance->InputKey(DIK_0) == KEY_STATE::TAP)
@@ -159,7 +162,7 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 	if (pGameInstance->InputKey(DIK_7) == KEY_STATE::TAP)
 	{
 		iIndexLUT++;
-		if(iIndexLUT >= CRenderer::LUT_DEFAULT + 1)
+		if (iIndexLUT >= CRenderer::LUT_DEFAULT + 1)
 			iIndexLUT = 0;
 
 		pGameInstance->SetLUT((CRenderer::LUT)iIndexLUT);
@@ -190,6 +193,7 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 
 	if (pGameInstance->InputKey(DIK_K) == KEY_STATE::TAP)
 		pGameInstance->TimeSlowDown(0.5f, 0.1f);
+#pragma endregion
 
 	if (true == pGameMode->Is_ReserveLevel())
 	{
@@ -268,6 +272,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region BackGround
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 
@@ -289,6 +294,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	vPos = { 29.f, 1.83f, 31.f };
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_EXPANDED, pLayerTag, L"chest_expanded", &vPos)))
 		return E_FAIL;
+#pragma endregion
 
 	return S_OK;
 }
@@ -298,6 +304,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+#pragma region  Camera
 	//Camera Setting
 	CCamera::CAMERA_DESC CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERA_DESC));
@@ -313,7 +320,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
 	CameraDesc.fFar = 1000.f;
-	
+
 	//Light Setting
 	_matrix vLightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), CameraDesc.fAspect, CameraDesc.fNear, CameraDesc.fFar);
 	pGameInstance->SetLightMatrix(vLightProjMatrix, LIGHT_MATRIX::LIGHT_PROJ);
@@ -335,6 +342,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYER_CAMERA, pLayerTag, L"player_camera", &PCamDesc)))
 		return E_FAIL;
 
+#pragma endregion
+
 	return S_OK;
 }
 
@@ -342,11 +351,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	
+#pragma region  Player
 	/*int j = 0;
 	_tchar szTag[MAX_TAG];
 	wsprintf(szTag, L"Texture%d", j);
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHARACTER, pLayerTag, szTag, &j)))
-		return E_FAIL;*/
+	return E_FAIL;*/
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::PLAYER_PLAYERGIRL, pLayerTag, TEXT("Player"))))
 		return E_FAIL;
@@ -359,6 +369,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::SANDBAG, pLayerTag, TEXT("Sandbag"))))
 	//	return E_FAIL;
+#pragma endregion
 
 	return S_OK;
 }
@@ -369,6 +380,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 
 	CGameObject* pChar = nullptr;
 
+#pragma region Monster
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_GAZIZI, pLayerTag, TEXT("GAzizi"))))
 		return E_FAIL;
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(139.f, 29.f, 237.f, 1.f), 1927);
@@ -386,6 +398,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(130.f, 29.f, 244.f, 1.f), 1897);
 
 
+#pragma endregion
+
 	return S_OK;
 }
 
@@ -395,6 +409,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+#pragma region UI
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UIWeapon, pLayerTag, TEXT("UIWeapon"))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UICharacter, pLayerTag, TEXT("UI_Character"))))
@@ -418,6 +433,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::UICOOKING, pLayerTag, TEXT("UI_Cooking"))))
 		return E_FAIL;
+#pragma endregion
+
 	return S_OK;
 }
 
@@ -429,6 +446,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 	
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
+#pragma region Map_Object
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_0_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
@@ -445,7 +463,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_TREE_1");
 		return E_FAIL;
 	}
-	
+
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Trees/Tree_2_EditionColor.data");
 	EditionDesc.fCullingRatio = 30.0f;
@@ -691,6 +709,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Tree(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_TREE_31");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -702,7 +721,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
-
+	
+#pragma region Map_Obejct_Rock
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_0_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
@@ -803,7 +823,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
-	
+
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Rocks/Rock_11_DiffuseTexID.data");
 	EditionDesc.fCullingRatio = 50.0f;
@@ -1191,6 +1211,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Rock(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_ROCK_52");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -1203,6 +1224,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Floor(const _tchar * pLayerTag)
 
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
+#pragma region Floor
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Floors/Floor_0_Edition.data");;
 	EditionDesc.fCullingRatio = 30.0f;
@@ -1243,6 +1265,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Floor(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_FLOOR_4");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -1255,6 +1278,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
+#pragma region MapObject_Stairs
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Stairs/Stairs_0_Edition.data");
 	EditionDesc.fCullingRatio = 30.0f;
@@ -1335,6 +1359,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Stairs(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STAIRS_9");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -1346,6 +1371,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
+
+#pragma region MapObject_Grass
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Grass/Grass_0_Edition.data");
@@ -1490,6 +1517,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Grass(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_GRASS_16");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -1501,7 +1529,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
-
+	
+#pragma region MapObject_Vin
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Vin/Vin_0_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
@@ -1599,6 +1628,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Vin(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VIN_11");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -1610,6 +1640,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
+
+#pragma region MapObject_Veg
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Veg/Veg_0_Edition.data");
@@ -1879,6 +1911,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Veg(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_VEG_32");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -1891,6 +1924,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
+#pragma region MapObject_Shr
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Shr/Shr_0_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
@@ -1971,6 +2005,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Shr(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_SHR_9");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -1983,6 +2018,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Structure(const _tchar * pLayerTa
 
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
+#pragma region MapObject_Structure
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Structure/Structure_0_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
@@ -2018,6 +2054,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Structure(const _tchar * pLayerTa
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STRUCTURE_3");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -2030,6 +2067,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Pil(const _tchar * pLayerTag)
 
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
+#pragma region MapObject_Pil
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
 	EditionDesc.pEditionFilePath = TEXT("MapObject/Pil/Pil_0_Edition.data");
 	EditionDesc.fCullingRatio = 20.0f;
@@ -2064,6 +2102,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Pil(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
+#pragma endregion
+
 	return S_OK;
 }
 
@@ -2073,6 +2113,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Statue(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region MapObject_Statue
 	SMAP_OBJECT_EDITION_DESC		EditionDesc = {};
 
 	ZeroMemory(&EditionDesc, sizeof(SMAP_OBJECT_EDITION_DESC));
@@ -2092,6 +2133,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_MapObject_Statue(const _tchar * pLayerTag)
 		MSG_BOX("Failed to AddGameObejct In Level_GamePlay : SIMD_STATUE_1");
 		return E_FAIL;
 	}
+#pragma endregion
 
 	return S_OK;
 }
@@ -2102,6 +2144,7 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+#pragma region Interaction_Object
 	_float3  vPos = { 135.5f, 30.75f, 211.f };
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_SIMPLE, pLayerTag, L"Invisivle_chest_simple", &vPos)))
 		return E_FAIL;
@@ -2125,7 +2168,7 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 	ZeroMemory(&Rock_State, sizeof(CBoom_Rock::ROCK_STATE));
 
 	Rock_State.Rick_ID = (_int)(SMODEL::INTERACTION_ROCK);
-	Rock_State.vExtents = _float3( 17.f , 25.f , 8.f ); 
+	Rock_State.vExtents = _float3(17.f, 25.f, 8.f);
 	Rock_State.iPass = 11;
 
 	XMStoreFloat4x4(&vWorldMatrix, XMMatrixIdentity());
@@ -2136,29 +2179,31 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 	vWorldMatrix._43 = 227.f;
 
 	XMStoreFloat4x4(&Rock_State.vWorldMatrix, matScale * RotationMatrix * XMLoadFloat4x4(&vWorldMatrix));
-	
+
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_OBJECT_ROCK, pLayerTag, L"Object_Rock", &Rock_State)))
 		return E_FAIL;
+#pragma endregion
 
+#pragma region PosList
 	vector<_float4>* pPosList = new vector<_float4>;
 
-	_float4 vPos1 = _float4(59.f, 5.f, 38.f,1.f);
+	_float4 vPos1 = _float4(59.f, 5.f, 38.f, 1.f);
 
 	_float4 Pos1 = _float4(60.39f, 4.91f, 35.86f, 0.f);
 	_float4 Pos2 = _float4(79.51f, 5.32f, 35.41f, 0.f);
-	_float4 Pos3 = _float4(91.13f, 6.43f, 47.46f, 0.f);
+	_float4 Pos3 = _float4(80.13f, 6.43f, 41.46f, 0.f);
 
 	_float4 vPos2 = _float4(95.f, 6.5f, 54.f, 1.f);
 
-	_float4 Pos4 = _float4(98.24f , 7.04f, 61.94f, 0.f);
+	_float4 Pos4 = _float4(98.24f, 7.04f, 61.94f, 0.f);
 	_float4 Pos5 = _float4(98.24f, 17.26f, 61.94f, 0.f);
 	_float4 Pos6 = _float4(100.78f, 17.26f, 66.38f, 0.f);
 
 	_float4 vPos3 = _float4(102.f, 16.5f, 69.f, 1.f);
 
-	_float4 Pos7 = _float4(109.46f , 16.85f, 90.43f, 0.f);
-	_float4 Pos8 = _float4(120.70f, 17.12f,  94.78f, 0.f);
-	_float4 Pos9 = _float4(120.70f, 20.68f,  94.78f, 0.f);
+	_float4 Pos7 = _float4(109.46f, 16.85f, 90.43f, 0.f);
+	_float4 Pos8 = _float4(120.70f, 17.12f, 94.78f, 0.f);
+	_float4 Pos9 = _float4(120.70f, 20.68f, 94.78f, 0.f);
 
 	_float4 vPos4 = _float4(126.f, 20.5f, 96.f, 1.f);
 
@@ -2169,7 +2214,7 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 
 	_float4 Pos12 = _float4(172.77f, 25.79f, 117.25f, 0.f);
 
-	_float4 vPos6 = _float4(175.f, 24.5f, 135.f, 1.f);
+	_float4 vPos6 = _float4(175.f, 24.5f, 135.f, 0.f);
 
 	_float4 Pos13 = _float4(172.95f, 25.42f, 150.47f, 0.f);
 	_float4 Pos14 = _float4(154.13f, 25.55f, 168.53f, 0.f);
@@ -2210,17 +2255,21 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 
 	_float4 vPos14 = _float4(280.f, 49.f, 178.f, 1.f);
 
-	_float4 Pos32 = _float4(304.16f, 54.08f, 188.37f, 0.f);
-	_float4 Pos33 = _float4(310.00f, 55.58f, 186.55f, 0.f);
+	_float4 Pos32 = _float4(299.26f, 54.08f, 182.30f, 0.f);
+	_float4 Pos33 = _float4(299.26f, 54.58f, 182.30f, 0.f);
 	_float4 Pos34 = _float4(323.22f, 60.58f, 197.45f, 0.f);
 
 	_float4 vPos15 = _float4(338.f, 64.2f, 209.f, 1.f);
 
 	_float4 Pos35 = _float4(340.56f, 65.52f, 227.78f, 0.f);
+	_float4 Pos38 = _float4(343.56f, 66.02f, 227.78f, 0.f);
+
+	_float4 vPos16 = _float4(345.f, 73.f, 282.f, 1.f);
+
+
 	_float4 Pos36 = _float4(336.85f, 73.81f, 295.63f, 0.f);
 	_float4 Pos37 = _float4(330.17f, 74.57f, 327.33f, 0.f);
 
-	_float4 vPos16 = _float4(345.f, 73.f, 282.f, 1.f);
 	_float4 vPos17 = _float4(332.f, 76.5f, 343.f, 1.f);
 	_float4 vPos18 = _float4(354.f, 77.1f, 372.f, 1.f);
 
@@ -2294,22 +2343,26 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 
 	pPosList->push_back(Pos32);
 	pPosList->push_back(Pos33);
-	pPosList->push_back(Pos34);        
+	pPosList->push_back(Pos34);
 
 	pPosList->push_back(vPos15);
 
 	pPosList->push_back(Pos35);
+	pPosList->push_back(Pos38);
+
+	pPosList->push_back(vPos16);
+
 	pPosList->push_back(Pos36);
 	pPosList->push_back(Pos37);
 
-	pPosList->push_back(vPos16);
 	pPosList->push_back(vPos17);
 	pPosList->push_back(vPos18);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY , OBJECT::INTERACTION_GUIDE_SPIRIT, pLayerTag, L"Object_Guide_Spirit", pPosList)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INTERACTION_GUIDE_SPIRIT, pLayerTag, L"Object_Guide_Spirit", pPosList)))
 		return E_FAIL;
 
 	Safe_Delete(pPosList);
+#pragma endregion
 
 	return S_OK;
 }
