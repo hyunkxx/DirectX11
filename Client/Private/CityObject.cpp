@@ -53,6 +53,8 @@ HRESULT CCityObject::Initialize(void * pArg)
 		break;
 	}
 
+	m_fCullingRatio = { 0.0f };
+
 	return S_OK;
 }
 

@@ -46,6 +46,11 @@ private:
 	HRESULT Ready_Layer_Trigger(const _tchar* pLayerTag);
 	HRESULT Load_TriggerData(const _tchar* pDataFilePath, const _tchar* pObjectTag, const _tchar* pLayerTag);
 
+
+private:
+	// 길거리에 놓을 몬스터.
+	HRESULT Add_StreetMonster(_uint iMonsterNum, const _tchar* pLayerTag, SPAWN_POINT SpawnPoint);
+
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

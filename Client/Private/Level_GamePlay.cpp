@@ -367,25 +367,64 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	CGameObject* pChar = nullptr;
-
 #pragma region Monster
-	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_GAZIZI, pLayerTag, TEXT("GAzizi"))))
-		return E_FAIL;
-	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(139.f, 29.f, 237.f, 1.f), 1927);
+	SPAWN_POINT			SpawnPoint = {};
 
-	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_ANJIN, pLayerTag, TEXT("Anjin"))))
+	// 돌판 1
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 145.898f, 25.767f, 183.038f };
+	SpawnPoint.iCellIndex = 1340;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_GAZIZI, pLayerTag, SpawnPoint)))
 		return E_FAIL;
-	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(141.f, 29.f, 237.f, 1.f), 1906);
-
-	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_AWUKAKA, pLayerTag, TEXT("AWukaka"))))
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 130.752f, 25.751f, 186.065f };
+	SpawnPoint.iCellIndex = 1460;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_AWUKAKA, pLayerTag, SpawnPoint)))
 		return E_FAIL;
-	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(145.f, 29.f, 244.f, 1.f), 1927);
 
-	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_FHUXIUXIU, pLayerTag, TEXT("FHuxiuxiu"))))
+	// 돌판 2
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 112.537f, 27.586f, 221.782f };
+	SpawnPoint.iCellIndex = 1681;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_AWUKAKA, pLayerTag, SpawnPoint)))
 		return E_FAIL;
-	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(130.f, 29.f, 244.f, 1.f), 1897);
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 104.934f, 27.727f, 228.272f };
+	SpawnPoint.iCellIndex = 1668;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_FHUXIUXIU, pLayerTag, SpawnPoint)))
+		return E_FAIL;
 
+	// 돌판 3
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 142.984f, 29.651f, 243.750f };
+	SpawnPoint.iCellIndex = 1926;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_GAZIZI, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 133.843f, 29.642f, 246.874f };
+	SpawnPoint.iCellIndex = 1900;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_FHUXIUXIU, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// 용계
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 186.600f, 32.838f, 242.434f };
+	SpawnPoint.iCellIndex = 2214;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_ANJIN, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 197.877f, 32.839f, 232.986f };
+	SpawnPoint.iCellIndex = 2220;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_ANJIN, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// 랏 동굴
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 328.355f, 75.063f, 336.669f };
+	SpawnPoint.iCellIndex = 4049;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_ANJIN, pLayerTag, SpawnPoint)))
+		return E_FAIL;
 
 #pragma endregion
 
@@ -2416,6 +2455,43 @@ HRESULT CLevel_GamePlay::Load_TriggerData(const _tchar * pDataFilePath, const _t
 	}
 
 	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Add_StreetMonster(_uint iMonsterNum, const _tchar * pLayerTag, SPAWN_POINT SpawnPoint)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	CGameObject* pChar = nullptr;
+
+	switch (iMonsterNum)
+	{
+	case OBJECT::MONSTER_GAZIZI:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_GAZIZI, pLayerTag, TEXT("Gazizi"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_AWUKAKA:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_AWUKAKA, pLayerTag, TEXT("Awukaka"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_FHUXIUXIU:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_FHUXIUXIU, pLayerTag, TEXT("Fhuxiuxiu"))))
+			return E_FAIL;
+		break;
+	case OBJECT::MONSTER_ANJIN:
+		if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_ANJIN, pLayerTag, TEXT("Anjin"))))
+			return E_FAIL;
+		break;
+	
+	default:
+		return S_OK;
+		break;
+	}
+
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMLoadFloat3(&SpawnPoint.vP), SpawnPoint.iCellIndex);
 
 	return S_OK;
 }
