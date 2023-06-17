@@ -3,6 +3,7 @@
 #include "Character.h"
 #include "Renderer.h"
 #include "MissilePool.h"
+#include "UI_Monster.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -121,6 +122,7 @@ public:
 		m_bDying = false;
 		m_bRender = true;
 		m_bAlert = false;
+		m_pUIMon->Set_MonHP(m_tMonsterInfo.fCurHP);
 	};
 
 
