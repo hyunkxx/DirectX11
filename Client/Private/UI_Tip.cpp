@@ -400,6 +400,10 @@ HRESULT CUI_Tip::Setup_ShaderResources(_uint index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_OpeningDescList[index].fColorB), sizeof(_float))))
 		return E_FAIL;
+	if (m_OpeningDescList[index].fColorA > m_OpeningDescList[index].Color.w)
+	{
+		m_OpeningDescList[index].fColorA = m_OpeningDescList[index].Color.w;
+	}
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_OpeningDescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 
@@ -428,6 +432,10 @@ HRESULT CUI_Tip::Setup_ShaderResourcesCity(_uint index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_CityDescList[index].fColorB), sizeof(_float))))
 		return E_FAIL;
+	if (m_CityDescList[index].fColorA > m_CityDescList[index].Color.w)
+	{
+		m_CityDescList[index].fColorA = m_CityDescList[index].Color.w;
+	}
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_CityDescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 
@@ -456,6 +464,10 @@ HRESULT CUI_Tip::Setup_ShaderResourcesDungeon(_uint index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_DungeonDescList[index].fColorB), sizeof(_float))))
 		return E_FAIL;
+	if (m_DungeonDescList[index].fColorA > m_DungeonDescList[index].Color.w)
+	{
+		m_DungeonDescList[index].fColorA = m_DungeonDescList[index].Color.w;
+	}
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DungeonDescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 
@@ -485,6 +497,10 @@ HRESULT CUI_Tip::Setup_ShaderResourcesYang(_uint index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_YangyanDescList[index].fColorB), sizeof(_float))))
 		return E_FAIL;
+	if (m_YangyanDescList[index].fColorA > m_YangyanDescList[index].Color.w)
+	{
+		m_YangyanDescList[index].fColorA = m_YangyanDescList[index].Color.w;
+	}
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_YangyanDescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 
@@ -514,6 +530,10 @@ HRESULT CUI_Tip::Setup_ShaderResourcesChixia(_uint index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_ChixiaDescList[index].fColorB), sizeof(_float))))
 		return E_FAIL;
+	if (m_ChixiaDescList[index].fColorA > m_ChixiaDescList[index].Color.w)
+	{
+		m_ChixiaDescList[index].fColorA = m_ChixiaDescList[index].Color.w;
+	}
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_ChixiaDescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 
@@ -543,6 +563,10 @@ HRESULT CUI_Tip::Setup_ShaderResourcesBoss(_uint index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorB", &(m_BossDescList[index].fColorB), sizeof(_float))))
 		return E_FAIL;
+	if (m_BossDescList[index].fColorA > m_BossDescList[index].Color.w)
+	{
+		m_BossDescList[index].fColorA = m_BossDescList[index].Color.w;
+	}
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_BossDescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 

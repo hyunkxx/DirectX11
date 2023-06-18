@@ -124,11 +124,9 @@ void CUI_Minimap::Tick(_double TimeDelta)
 				_float Y = XMVectorGetZ(vPlayerPos - vWorldPos);
 				pDesc.Dist = XMVectorGetX(XMVector4Length(vPlayerPos - vWorldPos));
 
-				//if ((190.f <= Dist) || ((_int)pDesc.IconLU.x == -1))
-				if (190.f <= pDesc.Dist)
+				if ((190.f <= pDesc.Dist) || ((_int)pDesc.IconLU.x == -1))
 					pDesc.bRender = false;
-				//if ((190.f > Dist) && ((_int)pDesc.IconLU.x != -1))
-				if (190.f > pDesc.Dist)
+				if ((190.f > pDesc.Dist) && ((_int)pDesc.IconLU.x != -1))
 					pDesc.bRender = true;
 
 				XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)
@@ -218,11 +216,9 @@ void CUI_Minimap::Tick(_double TimeDelta)
 				_float Y = XMVectorGetZ(vPlayerPos - vWorldPos);
 				pDesc.Dist = XMVectorGetX(XMVector4Length(vPlayerPos - vWorldPos));
 
-				//if ((190.f <= Dist) || ((_int)pDesc.IconLU.x == -1))
-				if (190.f <= pDesc.Dist)
+				if ((190.f <= pDesc.Dist) || ((_int)pDesc.IconLU.x == -1))
 					pDesc.bRender = false;
-				//if ((190.f > Dist) && ((_int)pDesc.IconLU.x != -1))
-				if (190.f > pDesc.Dist)
+				if ((190.f > pDesc.Dist) && ((_int)pDesc.IconLU.x != -1))
 					pDesc.bRender = true;
 
 				XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)
@@ -312,11 +308,9 @@ void CUI_Minimap::Tick(_double TimeDelta)
 				_float Y = XMVectorGetZ(vPlayerPos - vWorldPos);
 				pDesc.Dist = XMVectorGetX(XMVector4Length(vPlayerPos - vWorldPos));
 
-				//if ((190.f <= Dist) || ((_int)pDesc.IconLU.x == -1))
-				if (190.f <= pDesc.Dist)
+				if ((190.f <= pDesc.Dist) || ((_int)pDesc.IconLU.x == -1))
 					pDesc.bRender = false;
-				//if ((190.f > Dist) && ((_int)pDesc.IconLU.x != -1))
-				if (190.f > pDesc.Dist)
+				if ((190.f > pDesc.Dist) && ((_int)pDesc.IconLU.x != -1))
 					pDesc.bRender = true;
 
 				XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)
@@ -574,8 +568,18 @@ _bool CUI_Minimap::GetRenderState(_int Index)
 
 void CUI_Minimap::SetRender(_int index, _bool bRender)
 {
-	m_IconDescList[index].bRender = bRender; //미니맵 아이콘
-	m_DescList[index].bRender = bRender; // 메인아이콘
+	
+	if (false == bRender)
+	{
+		m_IconDescList[index].IconLU.x = -1.1f;
+		m_DescList[index].bRender = bRender;
+	}
+	else
+	{
+		m_IconDescList[index].IconLU.x = 0.f;
+		m_IconDescList[index].bRender = bRender; //미니맵 아이콘
+		m_DescList[index].bRender = bRender; // 메인아이콘
+	}
 }
 
 _int CUI_Minimap::Add_Icon(_fvector vObjectPos, _int TextureNum)

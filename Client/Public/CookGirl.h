@@ -85,6 +85,7 @@ private:
 private:
 	class CPlayerState* m_pPlayerState = nullptr;
 	class CUI_Panhua* m_pTargetUI = nullptr;
+	class CUI_Cooking* m_pTargetUI2 = nullptr;
 
 	queue<CLIP> m_AnimQueue;
 	_uint m_iCurClip = CLIP_IDLE;

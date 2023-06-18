@@ -44,7 +44,7 @@ void CDeliver::Start()
 	CGameInstance* pGI = CGameInstance::GetInstance();
 
 	m_pPlayerState = static_cast<CPlayerState*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
-	m_pTargetUI = static_cast<CUI_MerchantMen*>(pGI->Find_GameObject(LEVEL_ANYWHERE, L"UI_MerchantMen"));
+	m_pTargetUI = static_cast<CUI_MerchantMen*>(pGI->Find_GameObject(LEVEL_CITY, L"UI_MerchantMen"));
 
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGI->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::MERCHANTMEN);
@@ -325,5 +325,5 @@ void CDeliver::OnCollisionExit(CCollider * src, CCollider * dest)
 		m_AnimQueue.push(CLIP_IDLE);
 
 	}
-	m_pTargetUI->Set_END();
+	m_pTargetUI->Call_END();
 }
