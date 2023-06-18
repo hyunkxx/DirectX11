@@ -245,7 +245,11 @@ private:
 private://FOOD Duration
 	ORTHO_DESC m_OrthoFoodSlot[3];
 	ORTHO_DESC m_OrthoFoodIcon[3];
+<<<<<<< Updated upstream
 	CShader* m_pSubShader = nullptr;
+=======
+	CShader* m_pSubShader = { nullptr };
+>>>>>>> Stashed changes
 
 	_bool m_bSoon[3] = { false, false, false };
 	_bool m_bSoonToggle[3] = { false, false, false };
