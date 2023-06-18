@@ -5,14 +5,15 @@
 #include "GameMode.h"
 #include "EffectKey.h"
 #include "SoundKey.h"
+#include "Effect.h"
 
 CPhaseChanger::CPhaseChanger(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	: CGameObject(pDevice, pContext)
+	: CCharacter(pDevice, pContext)
 {
 }
 
 CPhaseChanger::CPhaseChanger(const CPhaseChanger & rhs)
-	: CGameObject(rhs)
+	: CCharacter(rhs)
 {
 }
 
@@ -31,6 +32,10 @@ HRESULT CPhaseChanger::Initialize(void * pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	Init_States(m_pDevice, m_pContext);
+
+	Init_EffectBones();
 
 	// 
 	for (auto& pAnimation : m_pRoverModel->Get_Animations())
@@ -68,6 +73,7 @@ HRESULT CPhaseChanger::Initialize(void * pArg)
 
 void CPhaseChanger::Start()
 {
+	Update_EffectBones();
 }
 
 void CPhaseChanger::Tick(_double TimeDelta)
@@ -109,6 +115,12 @@ void CPhaseChanger::Tick(_double TimeDelta)
 		m_pRoverModel->Play_Animation(TimeDelta, nullptr, nullptr, &m_TrackPos, &m_bAnimFinished, nullptr);
 		m_pCrownlessModel->Play_Animation(TimeDelta);
 
+		for (_uint i = 0; i < m_tStates[0].iKeyCount; ++i)
+		{
+			if (nullptr != m_tStates[0].ppStateKeys[i])
+				m_tStates[0].ppStateKeys[i]->Check(m_TrackPos, this);
+		}
+
 		m_pRoverModel->Invalidate_CombinedMatrices();
 		m_pCrownlessModel->Invalidate_CombinedMatrices();
 
@@ -127,6 +139,12 @@ void CPhaseChanger::Tick(_double TimeDelta)
 		if (!XMVector4Equal(XMQuaternionIdentity(), XMLoadFloat4(&vRotation)))
 			m_pCrownlessTransform->Rotate_Quaternion(XMLoadFloat4(&vRotation));
 
+		for (_uint i = 0; i < m_tStates[1].iKeyCount; ++i)
+		{
+			if (nullptr != m_tStates[1].ppStateKeys[i])
+				m_tStates[1].ppStateKeys[i]->Check(m_TrackPos, this);
+		}
+
 		m_pCrownlessTransform->Move_Anim(&vMovement, 0);
 
 		if (true == m_bAnimFinished)
@@ -136,11 +154,13 @@ void CPhaseChanger::Tick(_double TimeDelta)
 	
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 
+	
 }
 
 void CPhaseChanger::LateTick(_double TimeDelta)
 {
 
+	Update_EffectBones();
 }
 
 HRESULT CPhaseChanger::Render()
@@ -327,7 +347,7 @@ HRESULT CPhaseChanger::Init_States(ID3D11Device * pDevice, ID3D11DeviceContext *
 	for (_int i = 0; i < 2; ++i)
 	{
 		_tchar szBuffer[MAX_PATH];
-		wsprintf(szBuffer, TEXT("../../Data/CharState/Act_Crownless/Qunjing_%d.state"), i);
+		wsprintf(szBuffer, TEXT("../../Data/CharState/Act_Crownless/Act_Crownless_%d.state"), i);
 		HANDLE hFile = CreateFile(szBuffer, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
 		if (INVALID_HANDLE_VALUE == hFile)
@@ -373,6 +393,52 @@ HRESULT CPhaseChanger::Init_States(ID3D11Device * pDevice, ID3D11DeviceContext *
 
 void CPhaseChanger::Release_States()
 {
+	for (_int i = 0; i < 2; ++i)
+	{
+		if (0 == m_tStates[i].iKeyCount)
+			continue;
+		for (_uint j = 0; j < m_tStates[i].iKeyCount; ++j)
+		{
+			if (nullptr != m_tStates[i].ppStateKeys[j])
+				Safe_Release(m_tStates[i].ppStateKeys[j]);
+		}
+		Safe_Delete_Array(m_tStates[i].ppStateKeys);
+	}
+}
+
+HRESULT CPhaseChanger::Init_EffectBones()
+{
+	//NONE은 걍 월드 매트릭스를 저장해놨다가 던짐
+	m_EffectBones[EBONE_SPINE] = m_pCrownlessModel->Get_BonePtr(TEXT("Bip001Spine"));
+	m_EffectBones[EBONE_LHAND] = m_pCrownlessModel->Get_BonePtr(TEXT("Bip001LHand"));
+	m_EffectBones[EBONE_RHAND] = m_pCrownlessModel->Get_BonePtr(TEXT("Bip001RHand"));
+	m_EffectBones[EBONE_HEAD] = m_pCrownlessModel->Get_BonePtr(TEXT("Bip001Head"));
+
+	return S_OK;
+}
+
+void CPhaseChanger::Update_EffectBones()
+{
+	memcpy(&m_EffectBoneMatrices[EBONE_NONE], &m_pCrownlessTransform->Get_WorldMatrix(), sizeof(_float4x4));
+
+	for (_uint i = 1; i < EBONE_END; ++i)
+	{
+		if (nullptr != m_EffectBones[i])
+		{
+			XMStoreFloat4x4(&m_EffectBoneMatrices[i], XMLoadFloat4x4(&m_EffectBones[i]->Get_CombinedTransfromationMatrix())
+				* XMMatrixRotationY(XMConvertToRadians(180.f))
+				* XMLoadFloat4x4(&m_pCrownlessTransform->Get_WorldMatrix()));
+		}
+	}
+}
+
+void CPhaseChanger::Shot_EffectKey(_tchar * szEffectTag, _uint iEffectBoneID, _uint iTypeID, _bool bTracking)
+{
+	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag, Engine::EFFECT_ID(iTypeID));
+	if (nullptr == pEffect || EBONE_END <= iEffectBoneID)
+		return;
+
+	pEffect->Play_Effect(&m_EffectBoneMatrices[iEffectBoneID], bTracking);
 }
 
 HRESULT CPhaseChanger::Add_Components()
@@ -460,6 +526,8 @@ CGameObject * CPhaseChanger::Clone(void * pArg)
 void CPhaseChanger::Free()
 {
 	__super::Free();
+
+	Release_States();
 
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);

@@ -1,7 +1,4 @@
 #pragma once
-#include "GameObject.h"
-#include "Client_Defines.h"
-
 #include "Character.h"
 #include "PlayerState.h"
 
@@ -11,11 +8,12 @@ class CShader;
 class CModel_Anim;
 class CModel_VTF;
 class CTransform;
+class CBone;
 END
 
 BEGIN(Client)
 
-class CPhaseChanger : public CGameObject
+class CPhaseChanger : public CCharacter
 {
 public:
 	enum STATE 
@@ -26,6 +24,17 @@ public:
 		STATE_2_READY,
 		STATE_2_ONGOING,
 		STATE_END
+	};
+
+	enum EffectBone
+	{
+		EBONE_NONE,
+		EBONE_SPINE,
+		EBONE_LHAND,
+		EBONE_RHAND,
+		EBONE_HEAD,
+		// 여기까지 몬스터 공통으로 고정
+		EBONE_END
 	};
 
 private:
@@ -65,6 +74,10 @@ public:
 	HRESULT Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	void Release_States();
 
+	HRESULT	Init_EffectBones();
+	void	Update_EffectBones();
+	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint iEffectBoneID, _uint iTypeID, _bool bTracking);
+
 private:
 	CRenderer*		m_pRendererCom = { nullptr };
 	CShader*		m_pShaderCom = { nullptr };
@@ -82,6 +95,10 @@ private:
 	CPlayerState*	m_pPlayerStateClass = { nullptr };
 
 	CCharacter::SINGLESTATE m_tStates[2];
+
+	//
+	CBone*				m_EffectBones[EBONE_END] = { nullptr, };
+	_float4x4			m_EffectBoneMatrices[EBONE_END] = {};
 		
 
 	//
@@ -102,6 +119,11 @@ public:
 	static CPhaseChanger* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free() override;
+
+	// CCharacter을(를) 통해 상속됨
+	virtual void OnCollisionEnter(CCollider * src, CCollider * dest) override {}
+	virtual void OnCollisionStay(CCollider * src, CCollider * dest) override {}
+	virtual void OnCollisionExit(CCollider * src, CCollider * dest) override {}
 };
 
 END
