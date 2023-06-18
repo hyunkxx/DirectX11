@@ -245,6 +245,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 				m_MerchantList[0].OnRect = true;
 			}
 		}
@@ -268,7 +269,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		if (m_MenuRenderStart)
 		{
 			if (AddAlphaW(&m_MenuList, TimeDelta))
+			{
 				m_MenuRenderStart = false;
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
+			}
 		}
 		if (SelectUI(&m_MenuList[0])) // 랜더 도중에 메뉴에 마우스를 올리면
 		{
@@ -286,6 +290,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 				m_MenuList[0].OnRect = true;
 			}
 		}
@@ -304,6 +310,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 				pActiveCharacter->Set_OnControl(true);
 				m_MenuList[3].OnRect = true;
 			}
@@ -317,6 +325,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		{
 			if (MinusAlphaW(&m_MenuList, TimeDelta))
 			{
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
+
 				m_MenuRenderStart = true;
 				m_MenuList[0].OnRect = false;
 				Situation = CUI_MerchantMen::INMENU;
@@ -326,6 +336,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		{
 			if (MinusAlphaW(&m_MenuList, TimeDelta))
 			{
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 닫는 소리, NPC나가는 소리
+
 				m_MenuRenderStart = true;
 				m_MenuList[3].OnRect = false;
 				Situation = CUI_MerchantMen::BYE;
@@ -342,7 +354,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		{
 			if (0.f > m_CommonList[11].fColorA)
 			{
-				AddAlpha(&m_CommonList[11], TimeDelta*2.f);
+				if (AddAlpha(&m_CommonList[11], TimeDelta*2.f))
+				{
+					pGameInstance->PlaySoundEx(L"Play_AE_UI_Time_Pass.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 시계형ui회전소리
+				}
 			}
 			else
 			{
@@ -436,6 +451,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 					m_DeliverList[0].iTexNum = 54;
 					if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 					{
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 						m_MsgboxRender = true;
 					}
 				}
@@ -454,6 +471,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[1].iTexNum = 12;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+
 							m_CancelMsgbox = true;
 						}
 					}
@@ -464,6 +483,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[4].iTexNum = 54;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+
 							m_CancelMsgbox = true;
 						}
 					}
@@ -475,6 +496,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[5].iTexNum = 54;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 							m_RewardboxRender = true;
 							ItemNum = CurrentOwn / NeedNum;
 						}
@@ -504,7 +527,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[i].bRender = false;
 					}
 
-					AddAlphaW(&m_FinalList, TimeDelta);
+					if (AddAlphaW(&m_FinalList, TimeDelta))
+					{
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 물건 구매나 보상획득 소리
+					}
 
 					if (SelectUI(&m_FinalList[27])) // confrim 누르면
 					{
@@ -513,6 +539,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 							m_RewardboxRender = false;
 							m_bRewardReceived[0] = true;
 							m_MessageList[0].bRender = false;
@@ -636,6 +664,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 					m_DeliverList[0].iTexNum = 54;
 					if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 					{
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 						m_MsgboxRender = true;
 					}
 				}
@@ -654,6 +684,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[1].iTexNum = 12;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+
 							m_CancelMsgbox = true;
 						}
 					}
@@ -664,6 +696,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[4].iTexNum = 54;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+
 							m_CancelMsgbox = true;
 						}
 					}
@@ -675,6 +709,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[5].iTexNum = 54;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 							m_RewardboxRender = true;
 							ItemNum = CurrentOwn / NeedNum; // 임시 설정
 						}
@@ -704,7 +740,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[i].bRender = false; // 나갈때 켜줘야하며
 					}
 
-					AddAlphaW(&m_FinalList, TimeDelta);
+					if (AddAlphaW(&m_FinalList, TimeDelta))
+					{
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 물건 구매나 보상획득 소리
+					}
 
 					if (SelectUI(&m_FinalList[27])) // confrim 누르면
 					{
@@ -712,6 +751,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						ColorP(&m_FinalList[28], _float4(150.f, -30.f, -140.f, 0.f), TimeDelta);
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 							m_RewardboxRender = false;
 							m_bRewardReceived[1] = true;
 							m_MessageList[0].bRender = false;
@@ -833,6 +874,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 					if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 					{
 						m_MsgboxRender = true;
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 					}
 				}
 				else
@@ -850,6 +893,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[1].iTexNum = 12;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+
 							m_CancelMsgbox = true;
 						}
 					}
@@ -860,6 +905,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[4].iTexNum = 54;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+
 							m_CancelMsgbox = true;
 						}
 					}
@@ -871,6 +918,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[5].iTexNum = 54;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 							m_RewardboxRender = true;
 							ItemNum = CurrentOwn / NeedNum; // 임시 설정
 						}
@@ -900,14 +949,20 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[i].bRender = false; // 나갈때 켜줘야하며
 					}
 
-					AddAlphaW(&m_FinalList, TimeDelta);
+					if (AddAlphaW(&m_FinalList, TimeDelta))
+					{
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 물건 구매나 보상획득 소리
+					}
 
 					if (SelectUI(&m_FinalList[27])) // confrim 누르면
 					{
+						
 						ColorP(&m_FinalList[27], _float4(150.f, -30.f, -140.f, 0.f), TimeDelta);
 						ColorP(&m_FinalList[28], _float4(150.f, -30.f, -140.f, 0.f), TimeDelta);
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 							m_RewardboxRender = false;
 							m_bRewardReceived[2] = true;
 							m_MessageList[0].bRender = false;
@@ -1027,6 +1082,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 					m_DeliverList[0].iTexNum = 54;
 					if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 					{
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 						m_MsgboxRender = true;
 					}
 				}
@@ -1045,6 +1101,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[1].iTexNum = 12;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+
 							m_CancelMsgbox = true;
 						}
 					}
@@ -1055,6 +1113,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[4].iTexNum = 54;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+
 							m_CancelMsgbox = true;
 						}
 					}
@@ -1066,6 +1126,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[5].iTexNum = 54;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 							m_RewardboxRender = true;
 							ItemNum = CurrentOwn / NeedNum; // 임시 설정
 						}
@@ -1095,7 +1157,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[i].bRender = false; // 나갈때 켜줘야하며
 					}
 
-					AddAlphaW(&m_FinalList, TimeDelta);
+					if (AddAlphaW(&m_FinalList, TimeDelta))
+					{
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 물건 구매나 보상획득 소리
+					}
 
 					if (SelectUI(&m_FinalList[27])) // confrim 누르면
 					{
@@ -1103,6 +1168,9 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						ColorP(&m_FinalList[28], _float4(150.f, -30.f, -140.f, 0.f), TimeDelta);
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
+
 							m_RewardboxRender = false;
 							m_bRewardReceived[3] = true;
 							m_MessageList[0].bRender = false;
@@ -1222,6 +1290,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 					m_DeliverList[0].iTexNum = 54;
 					if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 					{
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 						m_MsgboxRender = true;
 					}
 				}
@@ -1241,6 +1310,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[1].iTexNum = 12;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+
 							m_CancelMsgbox = true;
 						}
 					}
@@ -1251,6 +1322,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[4].iTexNum = 54;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+
 							m_CancelMsgbox = true;
 						}
 					}
@@ -1262,6 +1335,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[5].iTexNum = 54;
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 							m_RewardboxRender = true;
 							ItemNum = CurrentOwn / NeedNum; // 임시 설정
 						}
@@ -1291,7 +1365,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 						m_MessageList[i].bRender = false;
 					}
 
-					AddAlphaW(&m_FinalList, TimeDelta);
+					if (AddAlphaW(&m_FinalList, TimeDelta))
+					{
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 물건 구매나 보상획득 소리
+					}
 
 					if (SelectUI(&m_FinalList[27])) // confrim 누르면
 					{
@@ -1300,6 +1377,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 
 						if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
+							pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+
 							m_RewardboxRender = false;
 							m_bRewardReceived[4] = true;
 							m_MessageList[0].bRender = false;
@@ -1457,6 +1536,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 
 		if (pGameInstance->InputKey(DIK_Q) == KEY_STATE::TAP)
 		{
+			pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+
 			if (50 == SettingLevel)
 			{
 				m_RButtonList[0].bRender = true;
@@ -1479,6 +1560,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		{
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+
 				if (50 == SettingLevel)
 				{
 					m_RButtonList[0].bRender = true;
@@ -1518,6 +1601,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 
 		if (pGameInstance->InputKey(DIK_E) == KEY_STATE::TAP)
 		{
+			pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+
 			if (10 == SettingLevel)
 			{
 				m_LButtonList[0].bRender = true;
@@ -1538,6 +1623,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		{
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+
 				if (10 == SettingLevel)
 				{
 					m_LButtonList[0].bRender = true;
@@ -1568,6 +1655,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			m_CommonList[10].iTexNum = 12;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 닫는 소리, NPC나가는 소리
+
 				pActiveCharacter->Set_OnControl(true);
 				m_CommonList[10].OnRect = true;
 			}
@@ -1745,7 +1834,13 @@ void CUI_MerchantMen::InMenuOpen(_double TimeDelta)
 		++Count;
 
 	if (14 == Count)
+	{
 		m_InMenuRenderStart = false;
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+		pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
+
+	}
 }
 
 _bool CUI_MerchantMen::InMenuEnd(_double TimeDelta)

@@ -815,7 +815,9 @@ void CUI_Tip::Load()
 			if (0 == dwByte)
 				break;
 		}
+
 		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_OpeningDescList.push_back(Desc);
@@ -853,6 +855,7 @@ void CUI_Tip::Load()
 				break;
 		}
 		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_DungeonDescList.push_back(Desc);
@@ -890,6 +893,7 @@ void CUI_Tip::Load()
 				break;
 		}
 		Desc.Color.w = Desc.fColorA;
+		Desc.fColorA = -255.f;
 		XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
 			* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
 		m_CityDescList.push_back(Desc);
