@@ -94,16 +94,29 @@ void CParts::LateTick(_double TimeDelta)
 	if (m_bDissolve)
 	{
 		m_fDissolveTimeAcc += (_float)TimeDelta * m_fDissolveSpeed;
-		if (1.f <= m_fDissolveTimeAcc)
-		{
-			m_bDissolve = false;
-			m_fDissolveTimeAcc = 0.f;
-		}
 
 		if (m_bDissolveType)
 			m_fDissolveAmount = 1.f - m_fDissolveTimeAcc;
 		else
 			m_fDissolveAmount = m_fDissolveTimeAcc;
+
+		if (m_fDissolveAmount > 1.3f)
+		{
+			// Dissolve Out이 끝나면 Render를 끈다. 
+			if (false == m_bDissolveType)
+			{
+				m_bRender = false;
+			}
+		}
+		else
+			m_bRender = true;
+
+
+		if (2.f <= m_fDissolveTimeAcc)
+		{
+			m_bDissolve = false;
+			m_fDissolveTimeAcc = 0.f;
+		}
 	}
 
 }
@@ -132,15 +145,15 @@ HRESULT CParts::Render()
 		//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE);
 		//m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
-		// Dissolve 변수
-		if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
-			return E_FAIL;
-
-		if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
-			return E_FAIL;
-
 		if (m_bDissolve)
 		{
+			// Dissolve 변수
+			if (FAILED(pGame->SetupSRV(STATIC_IMAGE::MASK_DESSOLVE, m_pShaderCom, "g_DissolveTexture")))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_fDissolveAmount", &m_fDissolveAmount, sizeof(_float))))
+				return E_FAIL;
+
 			if (FAILED(m_pShaderCom->SetRawValue("g_vDessolveColor", &m_vDissolveColor, sizeof(_float3))))
 				return E_FAIL;
 

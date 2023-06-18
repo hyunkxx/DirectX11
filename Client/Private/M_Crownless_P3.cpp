@@ -200,11 +200,13 @@ void CM_Crownless_P3::Tick(_double TimeDelta)
 		150.f > m_fHitPoint)
 		m_fHitPoint += (_float)TimeDelta * 2.f;
 
-	Select_State(TimeDelta * TimeDelay3); // 상태 확인
+	if (!m_bDying)
+		Select_State(TimeDelta * TimeDelay3); // 상태 확인
 
 	Tick_State(TimeDelta * TimeDelay3); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 
-	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
+	if (!m_bDying)
+		On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
 
 	pGameInstance->AddCollider(m_pCollider);
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
@@ -240,9 +242,9 @@ void CM_Crownless_P3::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 
+
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
-
 
 
 	// 돌진기 스킬 예외처리 // 거리비교해서

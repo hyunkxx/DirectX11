@@ -329,6 +329,8 @@ private:
 	//파괴 오브젝트 확인용 레이더
 	class CRader* m_pRader = { nullptr };
 
+	_double				m_IdleTimeAcc = { 0.0 };
+
 private:
 	HRESULT Add_Components();
 	void Init_AnimSystem();

@@ -54,7 +54,18 @@ public:
 
 	void Set_Render(_bool bRender)
 	{
+		m_bDissolve = false;
 		m_bRender = bRender;
+	}
+
+	_bool Get_Render()
+	{
+		return m_bRender;
+	}
+
+	_bool Get_Dissolve()
+	{
+		return m_bDissolve;
 	}
 
 	void Set_Outline(_bool bValue)
@@ -81,6 +92,9 @@ public:
 
 		m_fDissolveSpeed = fDissSpeed;
 		m_bDissolveType = bDissType;
+
+
+		m_bRender = true;
 		m_bDissolve = true;
 		m_fDissolveTimeAcc = 0.f;
 	}

@@ -211,13 +211,14 @@ void CM_Crownless_P2::Tick(_double TimeDelta)
 
 
 
-
-	Select_State(TimeDelta * TimeDelay2); // 상태 확인
+	if (!m_bDying)
+		Select_State(TimeDelta * TimeDelay2); // 상태 확인
 
 
 	Tick_State(TimeDelta * TimeDelay2); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 
-	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
+	if (!m_bDying)
+		On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
 
 	pGameInstance->AddCollider(m_pCollider);
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));

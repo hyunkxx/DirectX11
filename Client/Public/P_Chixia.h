@@ -361,6 +361,8 @@ private:
 	_double				m_SubTrackPos = { 0.0 };
 	_bool				m_SubAnimFinished = { false };
 
+	_double				m_IdleTimeAcc = { 0.0 };
+
 	
 
 	//파괴 오브젝트 확인용 레이더

@@ -255,6 +255,11 @@ void CP_PlayerGirl::Tick(_double TimeDelta)
 
 	__super::Tick(TimeDelta * m_TimeDelay);
 	m_pRader->Tick(TimeDelta);
+
+	if (SS_STAND1 == m_Scon.iCurState)
+		m_IdleTimeAcc += TimeDelta;
+	else
+		m_IdleTimeAcc = 0.0;
 		
 	if(true == m_bOnControl)
 		Key_Input(TimeDelta * m_TimeDelay); // 입력 > 다음 상태 확인 > 갱신될 경우 Setup_state, setup_animation
@@ -1174,10 +1179,15 @@ void CP_PlayerGirl::SetUp_State()
 		--m_iAirJumpCount;
 
 	// 무기 위치 잡기
-	if (false == m_tCurState.bWeaponState)
-		Set_WeaponUse(false);
+	if(m_bWeaponUsing != m_tCurState.bWeaponState)
+		Set_WeaponUse(m_tCurState.bWeaponState);
 	else
-		Set_WeaponUse(true);
+	{
+		/*m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true , 200.f, true);
+		m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, 200.f, true);*/
+		m_Parts[PARTS_WEAPON_SUB]->Set_Render(true);
+		m_Parts[PARTS_WEAPON_MAIN]->Set_Render(true);
+	}
 
 	// 쿨타임, 게이지 적용
 	if (true == m_tCurState.bApplyCoolTime)
@@ -1252,28 +1262,22 @@ void CP_PlayerGirl::Set_WeaponUse(_bool bBool)
 {
 	if (true == bBool)
 	{
-		if (m_bWeaponUsing != bBool)
-		{
-			m_bWeaponUsing = bBool;
-			m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true, 5.f, true);
-			m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, 5.f, true);
+		m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true, 5.f, true);
+		m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, 5.f, true);
 
-			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON1);
-			m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON2);
-		}
+		m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON1);
+		m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON2);
 	}
 	else
 	{
-		if (m_bWeaponUsing != bBool)
-		{
-			m_bWeaponUsing = bBool;
-			m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true, 1.5f, false);
-			m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, 1.5f, false);
+		m_Parts[PARTS_WEAPON_SUB]->Start_Dissolve(true, 1.5f, false);
+		m_Parts[PARTS_WEAPON_MAIN]->Start_Dissolve(true, 1.5f, false);
 
-			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON3);
-			m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON4);
-		}
+		m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON3);
+		m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON4);
 	}
+
+	m_bWeaponUsing = bBool;
 }
 
 void CP_PlayerGirl::Apply_CoolTime(_double TimeDelta)
@@ -1555,6 +1559,9 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				m_Scon.iNextState = SS_SPRINT_STOP_L;
 				break;
 
+			case SS_STAND1:
+				m_Scon.iNextState = SS_STAND1_ACTION01;
+				break;
 			default:
 				m_Scon.iNextState = SS_STAND1;
 				break;
@@ -2338,20 +2345,11 @@ void CP_PlayerGirl::On_Cell()
 					{
 						_float fGap = m_vJumpPos.y - fCellHeight;
 						if (fGap > 4.f)
-						{
-							m_pCamMovement->StartWave(2);
 							m_Scon.iNextState = SS_LAND_ROLL;
-						}
 						else if (fGap > 2.f)
-						{
-							m_pCamMovement->StartWave(1);
 							m_Scon.iNextState = SS_LAND_HEAVY;
-						}
 						else
-						{
-							m_pCamMovement->StartWave(0);
 							m_Scon.iNextState = SS_LAND_LIGHT;
-						}
 					}
 
 					SetUp_State();

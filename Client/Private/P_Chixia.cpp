@@ -1474,6 +1474,11 @@ void CP_Chixia::Apply_CoolTime(_double TimeDelta)
 		m_AimChargeAcc += TimeDelta;
 	else
 		m_AimChargeAcc = 0.0;
+
+	if (SS_STAND1 == m_Scon.iCurState)
+		m_IdleTimeAcc += TimeDelta;
+	else
+		m_IdleTimeAcc = 0.0;
 }
 
 void CP_Chixia::Key_Input(_double TimeDelta)
@@ -1694,6 +1699,12 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 				m_Scon.iNextState = SS_SPRINT_STOP_L;
 				break;
 
+			case SS_STAND1:
+				if (3.0 < m_IdleTimeAcc)
+					m_Scon.iNextState = SS_STAND1_ACTION01;
+				else
+					m_Scon.iNextState = SS_STAND1;
+				break;
 			default:
 				m_Scon.iNextState = SS_STAND1;
 				break;
@@ -2632,20 +2643,11 @@ void CP_Chixia::On_Cell()
 					{
 						_float fGap = m_vJumpPos.y - fCellHeight;
 						if (fGap > 4.f)
-						{
-							m_pCamMovement->StartWave(2);
 							m_Scon.iNextState = SS_LAND_ROLL;
-						}
 						else if (fGap > 2.f)
-						{
-							m_pCamMovement->StartWave(1);
 							m_Scon.iNextState = SS_LAND_HEAVY;
-						}
 						else
-						{
-							m_pCamMovement->StartWave(0);
 							m_Scon.iNextState = SS_LAND_LIGHT;
-						}
 					}
 
 					SetUp_State();

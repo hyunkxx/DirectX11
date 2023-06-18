@@ -165,11 +165,13 @@ void CM_GAzizi::Tick(_double TimeDelta)
 
 	Apply_CoolTime(TimeDelta); // 쿨타임 갱신
 
-	Select_State(TimeDelta); // 상태 확인
+	if (!m_bDying)
+		Select_State(TimeDelta); // 상태 확인
 
 	Tick_State(TimeDelta); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 
-	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
+	if (!m_bDying)
+		On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
 
 	pGameInstance->AddCollider(m_pCollider);
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
@@ -200,6 +202,9 @@ void CM_GAzizi::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (false == pGameInstance->InWorldSpace(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 5.f))
+		return;
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);

@@ -1349,6 +1349,12 @@ void CP_Yangyang::Apply_CoolTime(_double TimeDelta)
 				m_StateCoolTimes[i] = 0.0;
 		}
 	}
+
+	if (SS_STAND1 == m_Scon.iCurState)
+		m_IdleTimeAcc += TimeDelta;
+	else
+		m_IdleTimeAcc = 0.0;
+
 }
 
 void CP_Yangyang::Key_Input(_double TimeDelta)
@@ -1568,6 +1574,10 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 			case SS_SPRINT:
 			case SS_SPRINT_IMPULSE_F:
 				m_Scon.iNextState = SS_SPRINT_STOP_L;
+				break;
+
+			case SS_STAND1:
+				m_Scon.iNextState = SS_STAND1_ACTION01; 
 				break;
 
 			default:
@@ -2351,21 +2361,11 @@ void CP_Yangyang::On_Cell()
 					{
 						_float fGap = m_vJumpPos.y - fCellHeight;
 						if (fGap > 4.f)
-						{
-							m_pCamMovement->StartWave(2);
 							m_Scon.iNextState = SS_LAND_ROLL;
-						}
 						else if (fGap > 2.f)
-						{
-							m_pCamMovement->StartWave(1);
 							m_Scon.iNextState = SS_LAND_HEAVY;
-						}
 						else
-						{
-							m_pCamMovement->StartWave(0);
 							m_Scon.iNextState = SS_LAND_LIGHT;
-						}
-							
 					}
 
 					SetUp_State();

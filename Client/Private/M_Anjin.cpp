@@ -22,6 +22,8 @@
 #include "UI_Monster.h"
 #include "UI_Minimap.h"
 
+#include "Frustum.h"
+
 CCharacter::SINGLESTATE CM_Anjin::m_tStates[IS_END];
 
 CM_Anjin::CM_Anjin(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -174,11 +176,13 @@ void CM_Anjin::Tick(_double TimeDelta)
 
 	Apply_CoolTime(TimeDelta * TimeDelay); // 쿨타임 갱신
 
-	Select_State(TimeDelta * TimeDelay); // 상태 확인
+	if(!m_bDying)
+		Select_State(TimeDelta * TimeDelay); // 상태 확인
 
 	Tick_State(TimeDelta * TimeDelay); // PlayAnimation, 애니메이션에 따른 이동, 애니메이션 종료 시 처리
 
-	On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
+	if (!m_bDying)
+		On_Cell(); // 자발적인 움직임 후처리 >> 주로 내비 메쉬
 
 	pGameInstance->AddCollider(m_pCollider);
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
@@ -211,6 +215,9 @@ void CM_Anjin::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (false == pGameInstance->InWorldSpace(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 5.f))
+		return;
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
