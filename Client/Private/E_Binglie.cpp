@@ -11,6 +11,7 @@
 #include "Missile.h"
 #include "MissileKey.h"
 #include "Missile_Constant.h"
+#include "Missile_NaviBoom.h"
 #include "OBBKey.h"
 #include "DissolveKey.h"
 #include "PlayerState.h"
@@ -426,8 +427,9 @@ void CE_Binglie::Release_Reloadable()
 		Erase_Component(TEXT("Com_Navigation"));
 	}
 
-	if (nullptr != m_MissilePool)
-		Safe_Release(m_MissilePool);
+	for(auto& pMissilePool : m_MissilePools)
+		if (nullptr != pMissilePool)
+			Safe_Release(pMissilePool);
 }
 
 void CE_Binglie::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _uint iEffectTypeID, _bool bTracking/*iInt1*/)
@@ -459,7 +461,7 @@ void CE_Binglie::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	else
 		vTargetPos = vInitPos + XMVector3Normalize(m_pMainTransform->Get_State(CTransform::STATE_LOOK));
 
-	m_MissilePool->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot, vTargetPos);
+	m_MissilePools[0]->Shot(vInitPos, m_pMainTransform->Get_State(CTransform::STATE_LOOK), matRot, vTargetPos);
 }
 
 void CE_Binglie::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
@@ -483,8 +485,10 @@ void CE_Binglie::Shot_Echo(CTransform * pTransform, CCharacter * pTarget, _uint 
 
 	m_pMainTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix());
 	m_pTarget = pTarget;
+
 	if (nullptr != m_pTarget)
 		m_pTargetTransform = m_pTarget->GetTransform();
+
 	m_pNaviCom->Set_CurrentIndex(iNaviCellID);
 
 	m_bDisableAfterDissolve = false;
@@ -539,23 +543,34 @@ void CE_Binglie::Change_Target(CCharacter * pActiveCharacter)
 
 void CE_Binglie::Init_AttackInfos()
 {
-	ZeroMemory(&m_AttackInfo, sizeof TAGATTACK);
+	ZeroMemory(&m_AttackInfos, sizeof TAGATTACK * ATK_END);
 
-	m_AttackInfo.fDamageFactor = 2.f;
-	m_AttackInfo.eHitIntensity = HIT_BIG;
-	m_AttackInfo.eElementType = ELMT_GLACIO;
-	m_AttackInfo.fSPGain = 0.f;
-	m_AttackInfo.fTPGain = 0.f;
-	m_AttackInfo.iHitEffectID = 2;
-	lstrcpy(m_AttackInfo.szHitEffectTag, TEXT("M_Binglie_Ball_Boom"));
+	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 1.5f;
+	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
+	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_GLACIO;
+	m_AttackInfos[ATK_ATTACK_02].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_02].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("M_Blue_Hit"));
+
+
+	m_AttackInfos[ATK_ATTACK_02_BOOM].fDamageFactor = 2.5f;
+	m_AttackInfos[ATK_ATTACK_02_BOOM].eHitIntensity = HIT_BIG;
+	m_AttackInfos[ATK_ATTACK_02_BOOM].eElementType = ELMT_GLACIO;
+	m_AttackInfos[ATK_ATTACK_02_BOOM].fSPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_02_BOOM].fTPGain = 0.f;
+	m_AttackInfos[ATK_ATTACK_02_BOOM].iHitEffectID = 0;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02_BOOM].szHitEffectTag, TEXT("M_Blue_Hit"));
 }
 void CE_Binglie::Init_Missiles()
 {
 	CMissilePool::MISSILEPOOLDESC tMissilePoolDesc;
+
+	// Attack02
 	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
 
 	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_02_%d");
-	tMissilePoolDesc.iMissileType = CMissilePool::MISS_CONSTANT;
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NAVIBOOM;
 	tMissilePoolDesc.iNumMissiles = 3;
 
 	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Binglie_Ball"));
@@ -565,21 +580,42 @@ void CE_Binglie::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_02;
 	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
-	tMissilePoolDesc.tMissileDesc.bDeleteOnHit = true;
+	tMissilePoolDesc.tMissileDesc.bDeleteOnHit = false;
+	tMissilePoolDesc.tMissileDesc.ppNextMissilePool = &m_MissilePools[MISS_ATTACK_02_BOOM];
 
 	tMissilePoolDesc.bTargetDir = true;
 	tMissilePoolDesc.vFixMoveDir = _float3(0.f, 0.f, 1.f);
 	tMissilePoolDesc.fVelocity = 18.f;
 	tMissilePoolDesc.StopTime = 3.0;
 	tMissilePoolDesc.iStopCondition = CMissile_Constant::STOP_NONE;
+	tMissilePoolDesc.pNavigation = m_pNaviCom;
 
-	m_MissilePool = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+	m_MissilePools[MISS_ATTACK_02] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+
+	// Attack02_Boom
+	ZeroMemory(&tMissilePoolDesc, sizeof(tMissilePoolDesc));
+
+	tMissilePoolDesc.pMissilePoolTag = TEXT("Attack_02_Boom_%d");
+	tMissilePoolDesc.iMissileType = CMissilePool::MISS_NOMOVE;
+	tMissilePoolDesc.iNumMissiles = 3;
+
+	lstrcpy(tMissilePoolDesc.tMissileDesc.szLoopEffectTag, TEXT("M_Binglie_Ball_Boom"));
+	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = 2; //Tutorial 
+	tMissilePoolDesc.tMissileDesc.pOwner = this;
+	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 1.0;
+	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_ATTACK_02_BOOM;
+	tMissilePoolDesc.tMissileDesc.fExtents = 2.5f;
+	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
+
+	m_MissilePools[MISS_ATTACK_02_BOOM] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
 }
 
 void CE_Binglie::Release_Missiles()
 {
-	if (nullptr != m_MissilePool)
-		Safe_Release(m_MissilePool);
+	for(_uint i = 0; i < MISS_END; ++i)
+		if (nullptr != m_MissilePools[i])
+			Safe_Release(m_MissilePools[i]);
 }
 
 HRESULT CE_Binglie::SetUp_ShaderResources()
@@ -761,8 +797,8 @@ void CE_Binglie::Free()
 	if (true == m_bClone)
 		Release_State();
 
-
-	Safe_Release(m_MissilePool);
+	for(_uint i = 0; i < MISS_END; ++i)
+		Safe_Release(m_MissilePools[i]);
 
 	Safe_Release(m_pNaviCom);
 	Safe_Release(m_pModelCom);

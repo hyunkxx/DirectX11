@@ -247,7 +247,7 @@ private:
 private://FOOD Duration
 	ORTHO_DESC m_OrthoFoodSlot[3];
 	ORTHO_DESC m_OrthoFoodIcon[3];
-	CShader* m_pSubShader;
+	CShader* m_pSubShader = nullptr;
 
 	_bool m_bSoon[3] = { false, false, false };
 	_bool m_bSoonToggle[3] = { false, false, false };

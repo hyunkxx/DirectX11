@@ -95,6 +95,7 @@ HRESULT CM_Crownless_P3::Initialize(void * pArg)
 
 	// 고유 변수 초기화
 	m_fAlertRange = 15.f;
+	m_bAlert = true;
 	m_bAttackReady = true;
 
 	// CharInfo 초기화
@@ -153,6 +154,8 @@ void CM_Crownless_P3::Start()
 	//m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	//m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::BOSS);
 	//m_pUIIcon->SetRender(m_UIIndex, false);
+
+	Update_EffectBones();
 }
 
 void CM_Crownless_P3::PreTick(_double TimeDelta)
@@ -603,6 +606,14 @@ void CM_Crownless_P3::Release_Traces()
 	}
 }
 
+void CM_Crownless_P3::Set_ForceIdle()
+{
+	m_Scon.iNextState = IS_IDLE;
+	SetUp_State();
+	m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, false);
+	m_tCurState.iLeavePriority = 15;
+}
+
 void CM_Crownless_P3::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _uint iEffectTypeID, _bool bTracking/*iInt1*/)
 {
 	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag, Engine::EFFECT_ID(iEffectTypeID));
@@ -815,9 +826,9 @@ void CM_Crownless_P3::Find_Target()
 		if (m_fAlertRange > m_fTargetDistance)
 		{
 			m_bAlert = true;
-			m_Scon.iNextState = IS_ATTACK01;
+			/*m_Scon.iNextState = IS_ATTACK01;
 			SetUp_State();
-			m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true, false);
+			m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, true, false);*/
 			m_pMainTransform->Set_LookDir(XMVectorSetY(m_pTargetTransform->Get_State(CTransform::STATE_POSITION) - m_pMainTransform->Get_State(CTransform::STATE_POSITION), 0.f));
 
 			m_fHitPoint = 150;
@@ -1614,8 +1625,7 @@ void CM_Crownless_P3::On_Cell()
 
 	if (PS_GROUND == m_Scon.ePositionState)
 	{
-		if (0 != m_Scon.iCurState)
-			m_pMainTransform->Set_PosY(fCellHeight);
+		m_pMainTransform->Set_PosY(fCellHeight);
 	}
 	else if (PS_AIR == m_Scon.ePositionState)
 	{
@@ -1684,6 +1694,7 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 		m_Scon.iNextState = IS_DEAD;
 		m_pHitCollider->SetActive(false);
 		m_bDying = true;
+		bHitCheck = true;
 	}
 	// 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)
@@ -1844,7 +1855,7 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 	}
 
 
-	if (true == bHitCheck || m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
+	if (true == bHitCheck && m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
 	{
 		m_pMainTransform->Set_LookDir(XMVectorSetY(pChar->Get_Position() - this->Get_Position(), 0.f));
 		SetUp_State();

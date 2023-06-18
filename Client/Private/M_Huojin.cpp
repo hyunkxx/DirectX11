@@ -142,6 +142,8 @@ void CM_Huojin::Start()
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::MOSTER);
 	m_pUIIcon->SetRender(m_UIIndex, false);
+
+	Update_EffectBones();
 }
 
 void CM_Huojin::PreTick(_double TimeDelta)
@@ -495,6 +497,7 @@ void CM_Huojin::Release_States()
 void CM_Huojin::Shot_EffectKey(_tchar * szEffectTag/* szTag1*/, _uint EffectBoneID /* iInt0 */, _uint iEffectTypeID, _bool bTracking/*iInt1*/)
 {
 	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(szEffectTag, Engine::EFFECT_ID(iEffectTypeID));
+
 	if (nullptr == pEffect || EBONE_END <= EffectBoneID)
 		return;
 

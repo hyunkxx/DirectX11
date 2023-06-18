@@ -190,6 +190,8 @@ HRESULT CP_Yangyang::Initialize(void * pArg)
 
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = 2.f;
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST] = 9.f;
+	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO] = 5.f;
+	
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 3.f;
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
@@ -197,9 +199,8 @@ HRESULT CP_Yangyang::Initialize(void * pArg)
 	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
 
-	// TODO: 에코 쿨타임, 에코 착용 시 변경하도록 바꿔야 함
-	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO] = 5.f;
-	//
+
+
 
 	return S_OK;
 }
@@ -874,7 +875,7 @@ void CP_Yangyang::Check_TimeDelay(_double TimeDelta)
 	}
 }
 
-void CP_Yangyang::Appear(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID)
+void CP_Yangyang::Appear(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID, _float fDissolveSpeed)
 {
 	SetState(ACTIVE);
 
@@ -891,16 +892,20 @@ void CP_Yangyang::Appear(CTransform * pTransform, CCharacter * pTarget, _uint iN
 	m_pMoveCollider->SetActive(true);
 	m_pHitCollider->SetActive(true);
 	m_bDisableAfterDissolve = false;
-	Shot_DissolveKey(true, 5.f);
+	Shot_DissolveKey(true, fDissolveSpeed);
 	for (auto& pParts : m_Parts)
-		pParts->Start_Dissolve(true, 5.f, true);
+		pParts->Start_Dissolve(true, fDissolveSpeed, true);
 }
 
 void CP_Yangyang::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget, _uint* pNaviCellID)
 {
-	*ppTarget = m_pFixedTarget;
-	*ppTransform = m_pMainTransform;
-	*pNaviCellID = m_pNaviCom->Get_CurrentIndex();
+	if (nullptr != ppTarget)
+		*ppTarget = m_pFixedTarget;
+	if (nullptr != ppTransform)
+		*ppTransform = m_pMainTransform;
+	if (nullptr != pNaviCellID)
+		*pNaviCellID = m_pNaviCom->Get_CurrentIndex();
+
 	m_pFixedTarget = nullptr;
 
 	m_bOnControl = false;
@@ -1221,7 +1226,7 @@ void CP_Yangyang::SetUp_State()
 		else if (SS_SUMMON == m_Scon.iCurState)
 			m_pCharacterState->fCurCooltime[CPlayerState::COOL_ECHO] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO];
 		else if (SS_FIXHOOK_END_UP == m_Scon.iCurState)
-			m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_FIXHOOK);
+			m_pPlayerStateClass->Set_ToolUsed();
 	
 	if (false == m_bRender)
 		if (IS_AIRATTACK_2_END == m_Scon.iCurState ||
@@ -1694,7 +1699,8 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_Yangyang::INPUT_SKILL:
-			m_Scon.iNextState = IS_SKILL_01;
+			if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::COOL_SKILL])
+				m_Scon.iNextState = IS_SKILL_01;
 			break;
 
 		case Client::CP_Yangyang::INPUT_BURST:
@@ -1708,13 +1714,12 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 			{
 				if (CPlayerState::TOOL_FIXHOOK == m_pPlayerStateClass->Get_CurToolID())
 					m_Scon.iNextState = SS_FIXHOOK_END_UP;
-				else if (CPlayerState::TOOL_LAVITATION == m_pPlayerStateClass->Get_CurToolID())
-					m_Scon.iNextState = SS_CONTROL_F;
 				else if (CPlayerState::TOOL_SCANNER == m_pPlayerStateClass->Get_CurToolID())
-					int a = 1; // 즉발 후 쿨타임 세팅을 할 수도 있음 
-
+				{
+					m_pRader->Play_Rader(m_pMainTransform);
+					m_pPlayerStateClass->Set_ToolUsed();
+				}
 			}
-
 			break;
 		default:
 			break;

@@ -171,6 +171,8 @@ public:
 
 	virtual _bool Get_Dying() { return m_bDying; }
 
+	virtual void Set_ForceIdle();
+
 	// 포지션 제외한 나머지 변수(체력, 상태 체크용 불값 등) 초기화하는 함수, 몬스터 전용
 	// 보스는 리젠 안할 듯?
 	//virtual void Regen()

@@ -30,6 +30,7 @@
 #include "MapObject.h"
 
 #include "Item.h"
+#include "Layer.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -73,6 +74,15 @@ HRESULT CLevel_Test::Initialize()
 
 	//if (FAILED(Ready_Layer_MapObject_Tree(TEXT("layer_tree"))))
 	//return E_FAIL;
+
+	CLayer* pEchoLayer = pGameInstance->Find_Layer(LEVEL_STATIC, TEXT("EchoInstance"));
+
+	if (nullptr != pEchoLayer)
+	{
+		for (auto& pMonster : pEchoLayer->m_GameObjects)
+			static_cast<CCharacter*>(pMonster.second)->Reload_Components();
+	}
+
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);

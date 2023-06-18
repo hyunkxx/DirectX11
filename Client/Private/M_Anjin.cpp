@@ -141,6 +141,9 @@ void CM_Anjin::Start()
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::MOSTER);
 	m_pUIIcon->SetRender(m_UIIndex, false);
+
+	// 한번 초기화 해놓기
+	Update_EffectBones();
 }
 
 void CM_Anjin::PreTick(_double TimeDelta)

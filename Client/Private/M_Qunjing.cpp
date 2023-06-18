@@ -151,6 +151,8 @@ void CM_Qunjing::Start()
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::MOSTER);
 	m_pUIIcon->SetRender(m_UIIndex, false);
+
+	Update_EffectBones();
 }
 
 void CM_Qunjing::PreTick(_double TimeDelta)
@@ -763,7 +765,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK03_2].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK03_2].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK03_2].iHitEffectID = 0;
-	lstrcpy(m_AttackInfos[ATK_ATTACK03_2].szHitEffectTag, TEXT("Anjin_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK03_2].szHitEffectTag, TEXT("M_Yellow_Hit"));
 
 	m_AttackInfos[ATK_ATTACK03_4].fDamageFactor = 2.8f;
 	m_AttackInfos[ATK_ATTACK03_4].eHitIntensity = HIT_FLY;

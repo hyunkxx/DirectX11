@@ -135,6 +135,7 @@ public:
 	virtual void Regen()
 	{
 		Set_State(ACTIVE);
+		__super::Regen();
 		//m_playerstate
 		Shot_DissolveKey(1, 1.5f);
 		m_pHitCollider->SetActive(true);

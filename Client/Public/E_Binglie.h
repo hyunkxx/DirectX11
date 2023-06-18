@@ -37,6 +37,7 @@ public:
 	enum Attacks
 	{
 		ATK_ATTACK_02,
+		ATK_ATTACK_02_BOOM,
 		ATK_END
 	};
 
@@ -44,6 +45,7 @@ public:
 	enum Missiles
 	{
 		MISS_ATTACK_02,
+		MISS_ATTACK_02_BOOM,
 		MISS_END
 	};
 
@@ -87,7 +89,7 @@ public:
 	virtual _uint Get_AttackID() override { return 0; }
 	virtual void Get_AttackInfo(_uint iAttackID, TAGATTACK* pAttackInfoOut, _float* pAttackOut) override
 	{
-		memcpy(pAttackInfoOut, &m_AttackInfo, sizeof(TAGATTACK));
+		memcpy(pAttackInfoOut, &m_AttackInfos[iAttackID], sizeof(TAGATTACK));
 		*pAttackOut = m_pEchoSystem->GetEcho(CEchoSystem::EC_GLACIO_PREDATOR).fAttack;
 	}
 	virtual _float Get_PushWeight() override { return m_fPushWeight; }
@@ -114,10 +116,10 @@ private:
 	// 공격 구조체
 	//TAGATTACK			m_AttackInfos[ATK_END];						// 필요 시 배열로
 	//CMissilePool*		m_MissilePools[MISS_END] = { nullptr, };	// 필요 시 배열로
-	TAGATTACK			m_AttackInfo;
+	TAGATTACK			m_AttackInfos[ATK_END];
 
 	// 미사일 풀
-	CMissilePool*		m_MissilePool = { nullptr, };
+	CMissilePool*		m_MissilePools[MISS_END] = { nullptr, };
 
 	// 타겟 플레이어 > 생성되는 타이밍에 무조건 플레이어 박음
 	CCharacter*			m_pTarget = { nullptr };

@@ -17,6 +17,7 @@
 #include "TraceKey.h"
 #include "PlayerState.h"
 #include "SoundKey.h"
+#include "PhaseChanger.h"
 
 #include "CameraMovement.h"
 #include "Chest.h"
@@ -101,6 +102,7 @@ HRESULT CM_Crownless_P2::Initialize(void * pArg)
 
 	// 고유 변수 초기화
 	m_fAlertRange = 15.f;
+	m_bAlert = true;
 	m_bAttackReady = true;
 
 	// CharInfo 초기화
@@ -159,6 +161,8 @@ void CM_Crownless_P2::Start()
 	//m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	//m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::BOSS);
 	//m_pUIIcon->SetRender(m_UIIndex, false);
+
+	Update_EffectBones();
 }
 
 void CM_Crownless_P2::PreTick(_double TimeDelta)
@@ -680,6 +684,14 @@ void CM_Crownless_P2::Shot_Trace_Pose(_double Duration, _double FadeInRate, _dou
 	{
 		int a = 1;
 	}
+}
+
+void CM_Crownless_P2::Set_ForceIdle()
+{
+	m_Scon.iNextState = IS_IDLE;
+	SetUp_State();
+	m_pModelCom->SetUp_Animation(m_tCurState.iAnimID, false);
+	m_tCurState.iLeavePriority = 15;
 }
 
 
@@ -1468,6 +1480,13 @@ void CM_Crownless_P2::Tick_State(_double TimeDelta)
 	{
 		if (IS_DEAD == m_Scon.iCurState)
 		{
+
+			CGameMode* pGM = CGameMode::GetInstance();
+
+			CPhaseChanger* pPC = pGM->Get_PhaseChanger();
+			if (pPC != nullptr)
+				pPC->CutScene2_Ready();
+
 			//SetState(DISABLE);
 			m_pUIMon->SetState(DISABLE);
 			//m_pUIIcon->SetRender(m_UIIndex, false);
@@ -1597,6 +1616,7 @@ void CM_Crownless_P2::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 		m_Scon.iNextState = IS_DEAD;
 		m_pHitCollider->SetActive(false);
 		m_bDying = true;
+		bHitCheck = true;
 	}
 	// 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)
@@ -1659,7 +1679,7 @@ void CM_Crownless_P2::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 	}
 
 
-	if (true == bHitCheck || m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
+	if (true == bHitCheck && m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
 	{
 		m_pMainTransform->Set_LookDir(XMVectorSetY(pChar->Get_Position() - this->Get_Position(), 0.f));
 		SetUp_State();

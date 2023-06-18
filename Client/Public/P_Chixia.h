@@ -204,11 +204,23 @@ public:
 	}
 
 	// 교대 처리용 함수
-	virtual void Appear(CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID);
+	virtual void Appear(CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID, _float fDissolveSpeed = 5.f);
 	virtual void Disappear(class CTransform** ppTransform, CCharacter** ppTarget, _uint* pNaviCellID);
 
 	virtual void Appear_QTE(CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID);
 	virtual void Disappear_QTE(class CTransform** ppTransform, CCharacter** ppTarget, _uint* pNaviCellID);
+
+	virtual void Set_OnControl(_bool bControl) 
+	{
+		m_bOnControl = bControl;
+	}
+
+	virtual void Set_ForceIdle()
+	{
+		m_Scon.iNextState = SS_STAND1_ACTION02;
+		SetUp_State();
+		SetUp_Animations(false);
+	}
 
 
 public: // StateKey 대응 함수 모음

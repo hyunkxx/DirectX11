@@ -196,9 +196,9 @@ public: // Get
 	_bool Change_ActiveCharacter(_uint iSubID); 
 
 public: // Set
-	void Set_ToolUsed(_uint iToolID)
+	void Set_ToolUsed()
 	{
-		m_PlayerState.fCurToolCooltime[iToolID] = m_PlayerState.fMaxToolCooltime[iToolID];
+		m_PlayerState.fCurToolCooltime[m_PlayerState.iCurToolID] = m_PlayerState.fMaxToolCooltime[m_PlayerState.iCurToolID];
 	}
 
 	void Set_LockOn(_bool bLockOn, CCharacter* pTarget)

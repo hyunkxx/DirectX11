@@ -49,7 +49,7 @@ HRESULT CPlayerState::Initialize_Prototype()
 		m_CharacterState[i].fMaxHP = 500.f;
 		m_CharacterState[i].fCurHP = m_CharacterState[i].fMaxHP;
 
-		m_CharacterState[i].fAttack[STAT_BASE] = 50.f;
+		m_CharacterState[i].fAttack[STAT_BASE] = 1000000.f;
 		m_CharacterState[i].fDefense[STAT_BASE] = 80.f;
 		m_CharacterState[i].fCriticalRate[STAT_BASE] = 5.f;
 		m_CharacterState[i].fCriticalDamage[STAT_BASE] = 150.f;

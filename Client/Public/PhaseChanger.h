@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 
 #include "Character.h"
+#include "PlayerState.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -48,6 +49,22 @@ public:
 	virtual void CutScene2_Start();
 	virtual void CutScene2_End();
 
+	void Set_Phase1(CCharacter* pChar)
+	{
+		m_pCrownless_P1 = pChar;
+	}
+	void Set_Phase2(CCharacter* pChar)
+	{
+		m_pCrownless_P2 = pChar;
+	}
+	void Set_Phase3(CCharacter* pChar)
+	{
+		m_pCrownless_P3 = pChar;
+	}
+
+	HRESULT Init_States(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void Release_States();
+
 private:
 	CRenderer*		m_pRendererCom = { nullptr };
 	CShader*		m_pShaderCom = { nullptr };
@@ -62,7 +79,10 @@ private:
 	CCharacter*		m_pCrownless_P2 = { nullptr };
 	CCharacter*		m_pCrownless_P3 = { nullptr };
 	//Playercharacter는 PlayerState에서 실시간으로 포인터 받아서 처리
+	CPlayerState*	m_pPlayerStateClass = { nullptr };
 
+	CCharacter::SINGLESTATE m_tStates[2];
+		
 
 	//
 	_uint			m_eState = { STATE_WAIT };

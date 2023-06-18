@@ -168,17 +168,17 @@ public:
 	virtual _bool Get_Dying() { return m_bDying; }
 
 	// 포지션 제외한 나머지 변수(체력, 상태 체크용 불값 등) 초기화하는 함수, 몬스터 전용
-	// 보스는 리젠 안할 듯?
-	/*virtual void Regen()
+	virtual void Regen()
 	{
 		Set_State(ACTIVE);
+		__super::Regen();
 		Shot_DissolveKey(1, 1.5f);
 		m_pHitCollider->SetActive(true);
 		m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
 		m_bDying = false;
 		m_bRender = true;
 		m_bAlert = false;
-	};*/
+	};
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };

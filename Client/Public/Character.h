@@ -434,7 +434,7 @@ public:
 	virtual void Change_Target(CCharacter* pActiveCharacter) {}
 
 	// PlayerCharacter 교대 시 등장하는/사라지는 함수
-	virtual void Appear(CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID) {}
+	virtual void Appear(CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID, _float fDissolveSpeed = 5.f) {}
 	virtual void Disappear(class CTransform** ppTransform, CCharacter** ppTarget, _uint* pNaviCellID) {}
 
 	virtual void Appear_QTE(CTransform* pTransform, CCharacter* pTarget, _uint iNaviCellID) {}
@@ -455,12 +455,18 @@ public: // StateKey 대응 함수 모음
 	virtual void Set_InitPos(_fvector vPos, _uint iNaviID);
 
 	//
+	virtual void Set_OnControl(_bool bControl) {}
+	virtual void Set_ForceIdle() {}
+
+	//
 	virtual void Shot_Echo(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID) {}
 
 	virtual _bool Get_Dying() { return false; }
 
 	// 포지션 제외한 나머지 변수(체력, 상태 체크용 불값 등) 초기화하는 함수, 몬스터 전용
-	virtual void Regen() {};
+	virtual void Regen();
+
+	void Set_WorldMatrix(_matrix matWorld);
 
 
 protected:

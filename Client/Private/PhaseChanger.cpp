@@ -3,6 +3,8 @@
 
 #include "GameInstance.h"
 #include "GameMode.h"
+#include "EffectKey.h"
+#include "SoundKey.h"
 
 CPhaseChanger::CPhaseChanger(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -53,9 +55,11 @@ HRESULT CPhaseChanger::Initialize(void * pArg)
 	_vector vCrownlessPos = vPos - vLookDir * 6.f;
 	m_pCrownlessTransform->Set_State(CTransform::STATE_POSITION, vCrownlessPos);
 	m_pCrownlessTransform->Set_LookDir(vLookDir);
-
 	
+	CGameInstance* pGame = CGameInstance::GetInstance();
 
+	m_pPlayerStateClass = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	
 	//SetState(DISABLE);
 	m_bRender = false;
 
@@ -224,14 +228,21 @@ void CPhaseChanger::CutScene1_Ready()
 {
 	m_Timer = 1.0;
 	m_eState = STATE_1_READY;
+
+	m_pPlayerStateClass->Change_ActiveCharacter(m_pPlayerStateClass->Get_Slot(CPlayerState::CHARACTER_ROVER));
+	CCharacter* pChar = m_pPlayerStateClass->Get_ActiveCharacter();
+	pChar->Set_OnControl(false);
+	pChar->Set_ForceIdle();
+
 	// UI 끄기, 기존 모델 숨기기 등?
 }
 
 void CPhaseChanger::CutScene1_Start()
 {
-	//m_pCrownless_P1->SetState(DISABLE);
+	m_pCrownless_P1->SetState(DISABLE);
 
-	m_pCrownlessModel->Set_RootBone(TEXT("Root"));
+	m_pPlayerStateClass->Get_ActiveCharacter()->Set_WorldMatrix(XMLoadFloat4x4(&m_pRoverTransform->Get_WorldMatrix()));
+	m_pPlayerStateClass->Get_ActiveCharacter()->Disappear(nullptr, nullptr, nullptr);
 
 	m_bRender = true;
 
@@ -248,9 +259,18 @@ void CPhaseChanger::CutScene1_End()
 	m_bRender = false;
 	m_eState = STATE_WAIT;
 
-	//m_pCrownlessModel->setup_
-	//m_pCrownless_P2->set_p
-	//m_pCrownless_P2->SetState(ACTIVE);
+	m_pCrownless_P2->SetState(ACTIVE);
+	m_pCrownless_P2->Set_WorldMatrix(XMLoadFloat4x4(&m_pCrownlessTransform->Get_WorldMatrix()));
+
+	//m_pCrownless_P2->Set_ForceIdle();
+
+
+	m_pRoverTransform->LookAt(m_pCrownlessTransform->Get_State(CTransform::STATE_POSITION));
+
+	m_pPlayerStateClass->Get_ActiveCharacter()->Appear(m_pRoverTransform, nullptr, 196, 200.f);
+
+	m_pPlayerStateClass->Get_ActiveCharacter()->Set_ForceIdle();
+
 }
 
 
@@ -258,12 +278,23 @@ void CPhaseChanger::CutScene2_Ready()
 {
 	m_Timer = 1.0;
 	m_eState = STATE_2_READY;
+
+	m_pPlayerStateClass->Change_ActiveCharacter(m_pPlayerStateClass->Get_Slot(CPlayerState::CHARACTER_ROVER));
+	CCharacter* pChar = m_pPlayerStateClass->Get_ActiveCharacter();
+	pChar->Set_OnControl(false);
+	pChar->Set_ForceIdle();
 }
 
 void CPhaseChanger::CutScene2_Start()
 {
+	m_pCrownless_P2->SetState(DISABLE);
+
+	m_pPlayerStateClass->Get_ActiveCharacter()->Set_WorldMatrix(XMLoadFloat4x4(&m_pRoverTransform->Get_WorldMatrix()));
+	m_pPlayerStateClass->Get_ActiveCharacter()->Disappear(nullptr, nullptr, nullptr);
+
 	m_bRender = true;
 
+	m_pCrownlessModel->Set_RootBone(TEXT("Root"));
 	
 	m_TrackPos = 1200.0;
 	m_bAnimFinished = false;
@@ -277,7 +308,71 @@ void CPhaseChanger::CutScene2_End()
 	m_bRender = false;
 	m_eState = STATE_WAIT;
 
+	m_pCrownless_P3->SetState(ACTIVE);
+	m_pCrownless_P3->Set_WorldMatrix(XMLoadFloat4x4(&m_pCrownlessTransform->Get_WorldMatrix()));
+	//m_pCrownless_P3->Set_ForceIdle();
 
+	
+	m_pRoverTransform->LookAt(m_pCrownlessTransform->Get_State(CTransform::STATE_POSITION));
+
+	m_pPlayerStateClass->Get_ActiveCharacter()->Appear(m_pRoverTransform, nullptr, 196, 200.f);
+	m_pPlayerStateClass->Get_ActiveCharacter()->Set_ForceIdle();
+}
+
+HRESULT CPhaseChanger::Init_States(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+{
+	ZeroMemory(m_tStates, sizeof(CCharacter::SINGLESTATE) * 2);
+
+	// 로드하는 코드
+	for (_int i = 0; i < 2; ++i)
+	{
+		_tchar szBuffer[MAX_PATH];
+		wsprintf(szBuffer, TEXT("../../Data/CharState/Act_Crownless/Qunjing_%d.state"), i);
+		HANDLE hFile = CreateFile(szBuffer, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			continue;
+
+
+		DWORD dwByte = 0;
+
+		ReadFile(hFile, &m_tStates[i], sizeof(CCharacter::SINGLESTATE) - sizeof(CStateKey**), &dwByte, nullptr);
+
+		if (0 != m_tStates[i].iKeyCount)
+		{
+			m_tStates[i].ppStateKeys = new CStateKey*[m_tStates[i].iKeyCount];
+			ZeroMemory(m_tStates[i].ppStateKeys, sizeof(CStateKey*) * m_tStates[i].iKeyCount);
+
+			for (_uint j = 0; j < m_tStates[i].iKeyCount; ++j)
+			{
+				CStateKey::BaseData tBaseData;
+				ReadFile(hFile, &tBaseData, sizeof(CStateKey::BaseData), &dwByte, nullptr);
+
+				switch (tBaseData.iType)
+				{
+				case CStateKey::TYPE_EFFECT:
+					m_tStates[i].ppStateKeys[j] = CEffectKey::Create(pDevice, pContext, &tBaseData);
+					break;
+				case CStateKey::TYPE_SOUND:
+					m_tStates[i].ppStateKeys[j] = CSoundKey::Create(pDevice, pContext, &tBaseData);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		else
+			m_tStates[i].ppStateKeys = nullptr;
+
+		CloseHandle(hFile);
+	}
+
+
+	return S_OK;
+}
+
+void CPhaseChanger::Release_States()
+{
 }
 
 HRESULT CPhaseChanger::Add_Components()

@@ -62,6 +62,16 @@ void CCharacter::Set_InitPos(_fvector vPos, _uint iNaviID)
 }
 
 
+void CCharacter::Regen()
+{
+	Shot_EffectKey(L"M_Appear_Effect", 0, 2, true);
+}
+
+void CCharacter::Set_WorldMatrix(_matrix matWorld)
+{
+	m_pMainTransform->Set_WorldMatrix(matWorld);
+}
+
 CCharacter::CCharacter(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -162,8 +172,9 @@ void CCharacter::SetUp_Activate(SPAWN_POINT SpawnPoint)
 {
 	m_SpawnPoint = SpawnPoint;
 
-	Regen();
 	Set_InitPos(XMLoadFloat3(&SpawnPoint.vP), SpawnPoint.iCellIndex);
+
+	Regen();
 }
 
 void CCharacter::Free()

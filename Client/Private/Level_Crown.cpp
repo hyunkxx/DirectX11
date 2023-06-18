@@ -349,6 +349,17 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
+	// PhaseChanger 초기화
+	CGameObject* pChar = nullptr;
+
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::PHASECHANGER, TEXT("PhaseChanger"), TEXT("PhaseChanger"))))
+		return E_FAIL;
+
+	CGameMode* pGM = CGameMode::GetInstance();
+	CPhaseChanger* pPhase = static_cast<CPhaseChanger*>(pChar);
+	pGM->Set_PhaseChanger(pPhase);
+
+	// 트리거 정보 로드
 	if (FAILED(Load_TriggerData(TEXT("../../Data/Crown/Trigger/Spawn_Crown.data"), TEXT("Trigger_Spawn_Crown"),
 		TEXT("layer_trigger"), TEXT("../../Data/Crown/Trigger/Spawn_Crown_SpawnPoint.data"))))
 	{
@@ -356,35 +367,41 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
-	CGameObject* pChar = nullptr;
+	
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_CROWNLESS_P1, pLayerTag, TEXT("Crownless_P1"))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P1, pLayerTag, TEXT("Crownless_P1"))))
+		return E_FAIL;
+	pPhase->Set_Phase1(static_cast<CCharacter*>(pChar));
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_CROWNLESS_P2, pLayerTag, TEXT("Crownless_P2"))))
-	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P2, pLayerTag, TEXT("Crownless_P2"))))
+		return E_FAIL;
+	pPhase->Set_Phase2(static_cast<CCharacter*>(pChar));
+	pChar->SetState(CGameObject::DISABLE);
+
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
 
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P3, pLayerTag, TEXT("Crownless_P3"))))
 		return E_FAIL;
+	pPhase->Set_Phase3(static_cast<CCharacter*>(pChar));
+	pChar->SetState(CGameObject::DISABLE);
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
 
-	//static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
-	static_cast<CCharacter*>(pChar)->Set_State(CCharacter::STATE::DISABLE);
+	
+	//static_cast<CCharacter*>(pChar)->Set_State(CCharacter::STATE::DISABLE);
 
-	CGameObject*		pGameObject = { nullptr };
-	pGameObject = pGameInstance->Find_GameObject(LEVEL_CROWN, TEXT("Trigger_Spawn_Crown"));
-	if (nullptr == pGameObject)
-		return E_FAIL;
+	//CGameObject*		pGameObject = { nullptr };
+	//pGameObject = pGameInstance->Find_GameObject(LEVEL_CROWN, TEXT("Trigger_Spawn_Crown"));
+	//if (nullptr == pGameObject)
+	//	return E_FAIL;
 
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, static_cast<CCharacter*>(pChar))))
-		return E_FAIL;
+	//if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, static_cast<CCharacter*>(pChar))))
+	//	return E_FAIL;
 
 
 	
-	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::PHASECHANGER, pLayerTag, TEXT("PhaseChanger"))))
-		return E_FAIL;
 
-	CGameMode* pGM = CGameMode::GetInstance();
-	pGM->Set_PhaseChanger(static_cast<CPhaseChanger*>(pChar));
 
 
 	return S_OK;

@@ -149,6 +149,8 @@ void CM_Crownless_P1::Start()
 	//m_pUIIcon = static_cast<CUI_Minimap*>(pGame->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	//m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::BOSS);
 	//m_pUIIcon->SetRender(m_UIIndex, false);
+
+	Update_EffectBones();
 }
 
 void CM_Crownless_P1::PreTick(_double TimeDelta)
@@ -1429,6 +1431,7 @@ void CM_Crownless_P1::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 		m_Scon.iNextState = IS_DEAD;
 		m_pHitCollider->SetActive(false);
 		m_bDying = true;
+		bHitCheck = true;
 	}
 	// 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)
@@ -1486,7 +1489,7 @@ void CM_Crownless_P1::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 	}
 
 
-	if (true == bHitCheck || m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
+	if (true == bHitCheck && m_tCurState.iLeavePriority < m_tStates[m_Scon.iNextState].iEnterPriority)
 	{
 		m_pMainTransform->Set_LookDir(XMVectorSetY(pChar->Get_Position() - this->Get_Position(), 0.f));
 		SetUp_State();

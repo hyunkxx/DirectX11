@@ -833,7 +833,7 @@ void CP_PlayerGirl::Check_TimeDelay(_double TimeDelta)
 	}
 }
 
-void CP_PlayerGirl::Appear(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID)
+void CP_PlayerGirl::Appear(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID, _float fDissolveSpeed)
 {
 	SetState(ACTIVE);
 
@@ -849,16 +849,20 @@ void CP_PlayerGirl::Appear(CTransform * pTransform, CCharacter * pTarget, _uint 
 	m_bOnControl = true;
 	m_pMoveCollider->SetActive(true);
 	m_pHitCollider->SetActive(true);
-	Shot_DissolveKey(true, 5.f);
+	Shot_DissolveKey(true, fDissolveSpeed);
 	for (auto& pParts : m_Parts)
-		pParts->Start_Dissolve(true, 5.f, true);
+		pParts->Start_Dissolve(true, fDissolveSpeed, true);
 }
 
 void CP_PlayerGirl::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget, _uint* pNaviCellID)
 {
-	*ppTarget = m_pFixedTarget;
-	*ppTransform = m_pMainTransform;
-	*pNaviCellID = m_pNaviCom->Get_CurrentIndex();
+	if (nullptr != ppTarget)
+		*ppTarget = m_pFixedTarget;
+	if (nullptr != ppTransform)
+		*ppTransform = m_pMainTransform;
+	if (nullptr != pNaviCellID)
+		*pNaviCellID = m_pNaviCom->Get_CurrentIndex();
+
 	m_pFixedTarget = nullptr;
 
 	m_bOnControl = false;
@@ -1174,9 +1178,7 @@ void CP_PlayerGirl::SetUp_State()
 		else if (SS_SUMMON == m_Scon.iCurState)
 			m_pCharacterState->fCurCooltime[CPlayerState::COOL_ECHO] = m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO];
 		else if (SS_FIXHOOK_END_UP == m_Scon.iCurState)
-			m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_FIXHOOK);
-		else if (SS_THROW_F == m_Scon.iCurState)
-			m_pPlayerStateClass->Set_ToolUsed(CPlayerState::TOOL_LAVITATION);
+			m_pPlayerStateClass->Set_ToolUsed();
 	}
 
 	// 게이지 차감
@@ -1487,10 +1489,7 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
 		}
 	}
-	if (pGame->InputKey(DIK_N) == KEY_STATE::TAP)
-	{
-		m_pRader->Play_Rader(m_pMainTransform);
-	}
+
 
 	// 타겟 방향
 	_vector vTargetDir;
@@ -1719,11 +1718,11 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 			{
 				if (CPlayerState::TOOL_FIXHOOK == m_pPlayerStateClass->Get_CurToolID())
 					m_Scon.iNextState = SS_FIXHOOK_END_UP;
-				else if (CPlayerState::TOOL_LAVITATION == m_pPlayerStateClass->Get_CurToolID())
-					m_Scon.iNextState = SS_CONTROL_F;
-				else if (CPlayerState::TOOL_SCANNER== m_pPlayerStateClass->Get_CurToolID())
-					int a = 1; // 즉발 후 쿨타임 세팅을 할 수도 있음 
-
+				else if (CPlayerState::TOOL_SCANNER == m_pPlayerStateClass->Get_CurToolID())
+				{
+					m_pRader->Play_Rader(m_pMainTransform);
+					m_pPlayerStateClass->Set_ToolUsed();
+				}
 			}
 				
 			break;
