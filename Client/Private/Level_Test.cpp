@@ -85,7 +85,7 @@ HRESULT CLevel_Test::Initialize()
 
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
-	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
+	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
 	//pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::BGM, VOLUME_BGM);
 
 	return S_OK;

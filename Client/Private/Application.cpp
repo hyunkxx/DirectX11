@@ -755,6 +755,14 @@ HRESULT CApplication::Ready_Prototype_Static_GameObject()
 		CActionCam::Create(m_pDevice, m_pContext, CCameraMovement::CAM_CHIXIA))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ACTION_CAM_CROWN1,
+		CActionCam::Create(m_pDevice, m_pContext, CCameraMovement::CAM_CROWN1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::ACTION_CAM_CROWN2,
+		CActionCam::Create(m_pDevice, m_pContext, CCameraMovement::CAM_CROWN2))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(OBJECT::UI_CAM,
 		CUICam::Create(m_pDevice, m_pContext, CCameraMovement::CAM_UI))))
 		return E_FAIL;

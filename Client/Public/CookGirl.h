@@ -81,9 +81,10 @@ private:
 	CModel_Anim* m_pModel = nullptr;
 	CCollider* m_pCollider = nullptr;
 
+	CCollider* m_pCook = nullptr;
 private:
 	class CPlayerState* m_pPlayerState = nullptr;
-	class CUI_Souvenir* m_pTargetUI = nullptr;
+	class CUI_Panhua* m_pTargetUI = nullptr;
 
 	queue<CLIP> m_AnimQueue;
 	_uint m_iCurClip = CLIP_IDLE;

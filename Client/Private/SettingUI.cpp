@@ -396,6 +396,7 @@ void CSettingUI::audioInput(_double TimeDelta)
 
 void CSettingUI::onColickGraphicLeftButton(GRAPHIC_BTN eGraphicButton)
 {
+	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGI = CGameInstance::GetInstance();
 
 	if (eGraphicButton == GRAPHIC_FILTER)
@@ -451,7 +452,7 @@ void CSettingUI::onColickGraphicRightButton(GRAPHIC_BTN eGraphicButton)
 	switch (eGraphicButton)
 	{
 	case GRAPHIC_SHADOW:
-		pGI->SetShadowLevel(SHADOW_LEVEL::SHADOW_OFF);
+		pGI->SetShadowLevel(SHADOW_LEVEL::SHADOW_HIGH);
 		break;
 	case GRAPHIC_SSAO:
 		pGI->SetSSAO(true);

@@ -36,16 +36,21 @@ public:
 public:
 	void ActionInit();
 	void SetupBone(CBone* pBone) { m_pTargetBone = pBone; };
-	
+	void SetupTransform(CTransform* pTransform) { m_pTargetTransform = pTransform; }
+
 private:
 	void RevertPrevCam(_double TimeDelta);
 	void actionInit_Bangsun();
 	void actionInit_Yangyang();
 	void actionInit_Chixia();
+	void actionInit_Crown1();
+	void actionInit_Crown2();
 
 	void actionLoop_Bangsung(_double TimeDelta);
 	void actionLoop_Yangyang(_double TimeDelta);
 	void actionLoop_Chixia(_double TimeDelta);
+	void actionLoop_Crown1(_double TimeDelta);
+	void actionLoop_Crown2(_double TimeDelta);
 
 public:
 	static CActionCam* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CCameraMovement::CAM_TYPE eActionType);

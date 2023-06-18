@@ -64,9 +64,9 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_StaticGameObject(TEXT("layer_static"))))
 		return E_FAIL;
 
-	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
+	/*pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
 	pGameInstance->PlaySoundEx(L"Login.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
-	
+	*/
 	return S_OK;
 }
 
@@ -184,6 +184,12 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 		return E_FAIL;
 	// Action 캠 생성 : Action Cam 자동으로 등록됨
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ACTION_CAM_CHIXIA, pLayerTag, L"ActionCam_Chixia", &CameraDesc)))
+		return E_FAIL;
+	
+	// Boss연출용 카메라
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ACTION_CAM_CROWN1, pLayerTag, L"ActionCam_Crown1", &CameraDesc)))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::ACTION_CAM_CROWN2, pLayerTag, L"ActionCam_Crown2", &CameraDesc)))
 		return E_FAIL;
 
 	CameraDesc.vEye = _float3(-1000.3f, 1.2f, -999.7f);

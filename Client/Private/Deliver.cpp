@@ -289,8 +289,22 @@ void CDeliver::OnCollisionStay(CCollider * src, CCollider * dest)
 	CCharacter* pActiveCharacter = m_pPlayerState->Get_ActiveCharacter();
 	if (pActiveCharacter == dest->GetOwner() && src->GetOwner() == this)
 	{
-		if(m_iCurClip == CLIP_IDLE)
-			m_bOverlaped = true;
+		if (pActiveCharacter->Get_Attack())
+		{
+			if (!(m_iCurClip == CLIP_SCARE_START) && !(m_iCurClip == CLIP_SCARE_LOOP) && !(m_iCurClip == CLIP_SCARE_END))
+			{
+				while (!m_AnimQueue.empty())
+					m_AnimQueue.pop();
+
+				PushAnimation(ANIM_STATE::ANIM_SCARE);
+			}
+		}
+		else
+		{
+			if (m_iCurClip == CLIP_IDLE)
+				m_bOverlaped = true;
+		}
+	
 	}
 }
 

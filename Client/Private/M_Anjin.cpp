@@ -1213,7 +1213,7 @@ void CM_Anjin::OnCollisionEnter(CCollider * src, CCollider * dest)
 				true == dest->Compare(pOpponent->GetAttackCollider()))
 			{
 				m_pCamMovement->StartVibration();
-
+				
 				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
 				TAGATTACK tAttackInfo;
 				ZeroMemory(&tAttackInfo, sizeof(tAttackInfo));

@@ -109,7 +109,8 @@ private:
 	_double			m_TrackPos = { 0.0 };
 	_bool			m_bAnimFinished = { false };
 
-
+private:
+	class CCameraMovement* m_pCamMovement = { nullptr };
 
 private:
 	HRESULT Add_Components();

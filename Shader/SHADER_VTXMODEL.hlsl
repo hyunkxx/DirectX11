@@ -658,7 +658,8 @@ technique11 DefaultTechnique
 	pass Model_Sky
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		//SetDepthStencilState(DS_Not_ZTest_ZWrite, 0);
+		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN_SKY();

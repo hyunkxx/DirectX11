@@ -36,8 +36,9 @@ HRESULT CLevel_Crown::Initialize()
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	_float4 vFogColor = _float4(0.2f, 0.2f, 0.2f, 1.f);
-	pGameInstance->SetFogColor(vFogColor);
+	//_float4 vFogColor = _float4(0.1f, 0.1f, 0.1f, 0.f);
+	//pGameInstance->SetFogColor(vFogColor);
+	pGameInstance->SetFog(false);
 
 	// 몬스터들 상태 초기화 해놓기
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
@@ -113,8 +114,7 @@ HRESULT CLevel_Crown::Initialize()
 	}
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
-	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
-	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+	//pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 
 	pGM->ResetStaticShadowBake();
 

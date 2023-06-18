@@ -5,7 +5,7 @@
 #include "AppManager.h"
 #include "GameInstance.h"
 #include "PlayerState.h"
-#include "UI_Souvenir.h"
+#include "UI_Panhua.h"
 
 CCookGirl::CCookGirl(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CNonPlayer(pDevice, pContext)
@@ -42,7 +42,7 @@ void CCookGirl::Start()
 	CGameInstance* pGI = CGameInstance::GetInstance();
 
 	m_pPlayerState = static_cast<CPlayerState*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
-	//m_pTargetUI = static_cast<CUI_Souvenir*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pTargetUI = static_cast<CUI_Panhua*>(pGI->Find_GameObject(LEVEL_CITY, L"UI_Panhua"));
 }
 
 void CCookGirl::PreTick(_double TimeDelta)
@@ -75,6 +75,9 @@ void CCookGirl::Tick(_double TimeDelta)
 
 	pGI->AddCollider(m_pCollider, COLL_NPC);
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+
+	pGI->AddCollider(m_pCook, COLL_NPC);
+	m_pCook->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
 }
 
 void CCookGirl::LateTick(_double TimeDelta)
@@ -153,6 +156,14 @@ HRESULT CCookGirl::addComponents()
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
 		TEXT("com_collider"), (CComponent**)&m_pCollider, &CollDesc)))
+		return E_FAIL;
+
+	CollDesc.owner = this;
+	CollDesc.vCenter = { 5.f, 0.f, -4.f };
+	CollDesc.vExtents = { 2.f, 2.f, 2.f };
+	CollDesc.vRotation = { 0.f, 0.f, 0.f };
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::SPHERE,
+		TEXT("com_collider_cook"), (CComponent**)&m_pCook, &CollDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -275,38 +286,54 @@ void CCookGirl::Free()
 
 void CCookGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
-	CCharacter* pActiveCharacter = m_pPlayerState->Get_ActiveCharacter();
-	if (pActiveCharacter == dest->GetOwner())
+	// 상인
+	if (src == m_pCollider)
 	{
-		//UI Active
-		PushAnimation(ANIM_STATE::ANIM_TALK);
-	}
+		CCharacter* pActiveCharacter = m_pPlayerState->Get_ActiveCharacter();
+		if (pActiveCharacter == dest->GetOwner())
+		{
+			PushAnimation(ANIM_STATE::ANIM_TALK);
 
+		}
+	}
+	
+	// 조리대
+	if (src == m_pCook)
+	{
+		CCharacter* pActiveCharacter = m_pPlayerState->Get_ActiveCharacter();
+		if (pActiveCharacter == dest->GetOwner())
+		{
+
+		}
+	}
 }
 
 void CCookGirl::OnCollisionStay(CCollider * src, CCollider * dest)
 {
-	CCharacter* pActiveCharacter = m_pPlayerState->Get_ActiveCharacter();
-	if (pActiveCharacter == dest->GetOwner() && src->GetOwner() == this)
+	// 요리상인
+	if (src == m_pCollider)
 	{
-		if (pActiveCharacter->Get_Attack())
-		{
-			if (!(m_iCurClip == CLIP_SCARE_START) && !(m_iCurClip == CLIP_SCARE_LOOP) && !(m_iCurClip == CLIP_SCARE_END))
-			{
-				while (!m_AnimQueue.empty())
-					m_AnimQueue.pop();
-
-				PushAnimation(ANIM_STATE::ANIM_SCARE);
-			}
-		}
-		else
+		CCharacter* pActiveCharacter = m_pPlayerState->Get_ActiveCharacter();
+		if (pActiveCharacter == dest->GetOwner())
 		{
 			if (m_iCurClip == CLIP_IDLE)
 				m_bOverlaped = true;
+		}
+	}
+
+
+	// 조리대
+	if (src == m_pCook)
+	{
+		CCharacter* pActiveCharacter = m_pPlayerState->Get_ActiveCharacter();
+		if (pActiveCharacter == dest->GetOwner())
+		{
+
 		}
 	}
 }
 
 void CCookGirl::OnCollisionExit(CCollider * src, CCollider * dest)
 {
+
 }

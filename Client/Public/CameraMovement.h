@@ -14,7 +14,7 @@ BEGIN(Client)
 class CCameraMovement final : public CGameObject
 {
 public:
-	enum CAM_TYPE { CAM_DYNAMIC, CAM_MAINPLAYER, CAM_UI, CAM_BANGSUN, CAM_YANGYANG, CAM_CHIXIA, CAM_END };
+	enum CAM_TYPE { CAM_DYNAMIC, CAM_MAINPLAYER, CAM_UI, CAM_BANGSUN, CAM_YANGYANG, CAM_CHIXIA, CAM_CROWN1, CAM_CROWN2, CAM_END };
 
 private:
 	CCameraMovement(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -35,6 +35,8 @@ public:
 	HRESULT AddCamera(CAM_TYPE eCameraType, CCamera* pCamera);
 	void UseCamera(CAM_TYPE eCameraType);
 	void SetupBone(CAM_TYPE eCameraType, CBone* pBone);
+	void SetupTransform(CAM_TYPE eCameraType, CTransform* pTransform);
+
 	void ResetPlayerCamera();
 
 public:

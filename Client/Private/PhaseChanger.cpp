@@ -6,6 +6,7 @@
 #include "EffectKey.h"
 #include "SoundKey.h"
 #include "Effect.h"
+#include "CameraMovement.h"
 
 CPhaseChanger::CPhaseChanger(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCharacter(pDevice, pContext)
@@ -74,6 +75,13 @@ HRESULT CPhaseChanger::Initialize(void * pArg)
 void CPhaseChanger::Start()
 {
 	Update_EffectBones();
+
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	m_pCamMovement = static_cast<CCameraMovement*>(pGI->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
+	m_pCamMovement->SetupBone(CCameraMovement::CAM_CROWN1, m_EffectBones[EBONE_SPINE]);
+	m_pCamMovement->SetupTransform(CCameraMovement::CAM_CROWN1, m_pCrownlessTransform);
+	m_pCamMovement->SetupBone(CCameraMovement::CAM_CROWN2, m_EffectBones[EBONE_SPINE]);
+	m_pCamMovement->SetupTransform(CCameraMovement::CAM_CROWN2, m_pCrownlessTransform);
 }
 
 void CPhaseChanger::Tick(_double TimeDelta)
@@ -267,7 +275,9 @@ void CPhaseChanger::CutScene1_Start()
 
 	pCharTransform->Set_State(CTransform::STATE_POSITION, m_pRoverTransform->Get_State(CTransform::STATE_POSITION));
 	pCharTransform->Set_LookDir(m_pRoverTransform->Get_State(CTransform::STATE_LOOK));
-	m_pPlayerStateClass->SetCamBehind();
+	//m_pPlayerStateClass->SetCamBehind();
+	m_pCamMovement->UseCamera(CCameraMovement::CAM_CROWN1);
+
 	pChar->Disappear(nullptr, nullptr, nullptr);
 
 	m_bRender = true;
@@ -320,7 +330,9 @@ void CPhaseChanger::CutScene2_Start()
 
 	pCharTransform->Set_State(CTransform::STATE_POSITION, m_pRoverTransform->Get_State(CTransform::STATE_POSITION));
 	pCharTransform->Set_LookDir(m_pRoverTransform->Get_State(CTransform::STATE_LOOK));
-	m_pPlayerStateClass->SetCamBehind();
+	//m_pPlayerStateClass->SetCamBehind();
+	m_pCamMovement->UseCamera(CCameraMovement::CAM_CROWN2);
+
 	pChar->Disappear(nullptr, nullptr, nullptr);
 
 	m_bRender = true;

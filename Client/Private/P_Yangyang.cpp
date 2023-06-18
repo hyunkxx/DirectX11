@@ -1074,12 +1074,11 @@ void CP_Yangyang::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	if (iMissilePoolID == MISS_BURST_1)
 	{
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
-		pGameInstance->StartBlackWhite(0.25f);
 
 		CRenderSetting::RGB_SPLIT_DESC Split;
-		Split.m_fDistortion = 7.2f;
-		Split.m_fStrength = 1.f;
-		Split.m_fSeparation = 0.1f;
+		Split.m_fDistortion = 4.0f;
+		Split.m_fStrength = 0.5f;
+		Split.m_fSeparation = 0.5f;
 		pGameInstance->SetSplitDesc(Split);
 		pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DIR::SPLIT_DEFAULT, 1.f);
 	}
@@ -1704,8 +1703,8 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_Yangyang::INPUT_BURST:
-			if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] &&
-				m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] == m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST])
+			/*if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] &&
+				m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] == m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST])*/
 				m_Scon.iNextState = IS_BURST;
 			break;
 

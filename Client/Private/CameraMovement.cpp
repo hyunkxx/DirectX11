@@ -116,6 +116,14 @@ void CCameraMovement::SetupBone(CAM_TYPE eCameraType, CBone * pBone)
 	static_cast<CActionCam*>(m_pCams[eCameraType])->SetupBone(pBone);
 }
 
+void CCameraMovement::SetupTransform(CAM_TYPE eCameraType, CTransform * pTransform)
+{
+	if (eCameraType <= CAM_UI || eCameraType >= CAM_END)
+		return;
+
+	static_cast<CActionCam*>(m_pCams[eCameraType])->SetupTransform(pTransform);
+}
+
 void CCameraMovement::ResetPlayerCamera()
 {
 	if(m_pCams[CAM_MAINPLAYER])
