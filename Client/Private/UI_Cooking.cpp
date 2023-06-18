@@ -3727,12 +3727,16 @@ HRESULT CUI_Cooking::Add_Components()
 
 void CUI_Cooking::Set_SituMeet()
 {
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+	pActiveCharacter->Set_OnControl(false);
 	SetState(ACTIVE);
 	Situation = COOKSITUINDEX::MEET;
 }
 
 void CUI_Cooking::Set_END()
 {
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+	pActiveCharacter->Set_OnControl(true);
 	Situation = COOKSITUINDEX::COOKEND;
 	m_Count = 0;
 	m_MenuRenderStart = true;
