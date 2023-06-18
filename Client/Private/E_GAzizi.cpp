@@ -788,14 +788,12 @@ void CE_GAzizi::OnCollisionEnter(CCollider * src, CCollider * dest)
 				true == dest->Compare(pOpponent->GetHitCollider()))
 			{
 				// 타격 위치를 찾아서 히트 이펙트 출력
-				m_pCamMovement->StartVibration(10.f, 0.5f);
 			}
 
 			// 상대의 공격이 나에게 적중한 경우 
 			if (true == src->Compare(GetHitCollider()) &&
 				true == dest->Compare(pOpponent->GetAttackCollider()))
 			{
-				m_pCamMovement->StartVibration();
 
 				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
 				TAGATTACK tAttackInfo;

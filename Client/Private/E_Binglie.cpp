@@ -94,6 +94,8 @@ HRESULT CE_Binglie::Initialize(void * pArg)
 
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 
+
+
 	SetState(DISABLE);
 
 	return S_OK;
@@ -609,6 +611,8 @@ void CE_Binglie::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.bNoShutDownEffect = true;
 
 	m_MissilePools[MISS_ATTACK_02_BOOM] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 0.f, 0.f), &tMissilePoolDesc);
+
+	m_MissilePools[MISS_ATTACK_02_BOOM]->Set_CamMovement(m_pCamMovement, 3);
 }
 
 void CE_Binglie::Release_Missiles()

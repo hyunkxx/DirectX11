@@ -162,6 +162,88 @@ void CCameraMovement::StartVibration(_float fRange, _float fDuration)
 	m_pCams[CAM_MAINPLAYER]->StartVibration(fRange, fDuration);
 }
 
+void CCameraMovement::StartWave(_uint iShakeLevel)
+{
+	CCamera::SHAKE_DESC tDesc;
+
+	ZeroMemory(&tDesc, sizeof(tDesc));
+
+	switch (iShakeLevel)
+	{
+	case SHAKE_1:
+		tDesc.fPower = 0.5f;
+		tDesc.fSpeed = 4.f;
+		tDesc.fDuration = 0.2f;
+		break;
+
+	case SHAKE_2:
+		tDesc.fPower = 1.0f;
+		tDesc.fSpeed = 5.5f;
+		tDesc.fDuration = 0.35f;
+		break;
+
+	case SHAKE_3:
+		tDesc.fPower = 1.5f;
+		tDesc.fSpeed = 7.f;
+		tDesc.fDuration = 0.5f;
+		break;
+
+	case SHAKE_4:
+		tDesc.fPower = 2.f;
+		tDesc.fSpeed = 8.5f;
+		tDesc.fDuration = 0.65f;
+		break;
+
+	case SHAKE_5:
+		tDesc.fPower = 2.5f;
+		tDesc.fSpeed = 10.f;
+		tDesc.fDuration = 0.8f;
+		break;
+	default:
+		break;
+	}
+
+	StartWave(tDesc);
+
+}
+
+void CCameraMovement::StartVibration(_uint iShakeLevel)
+{
+	_float fRange, fDuration;
+
+	switch (iShakeLevel)
+	{
+	case SHAKE_1:
+		fRange = 6.f;
+		fDuration = 0.1f;
+		break;
+
+	case SHAKE_2:
+		fRange = 12.f;
+		fDuration = 0.2f;
+		break;
+
+	case SHAKE_3:
+		fRange = 18.f;
+		fDuration = 0.3f;
+		break;
+
+	case SHAKE_4:
+		fRange = 24.f;
+		fDuration = 0.4f;
+		break;
+
+	case SHAKE_5:
+		fRange = 30.f;
+		fDuration = 0.5f;
+		break;
+
+	default:
+		break;
+	}
+	StartVibration(fRange, fDuration);
+}
+
 HRESULT CCameraMovement::addComponents()
 {
 	CTransform::TRANSFORM_DESC	TransformDesc;

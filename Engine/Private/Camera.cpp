@@ -86,8 +86,8 @@ void CCamera::StopShake()
 
 void CCamera::StartWave()
 {
-	if (m_bShakeActive)
-		return;
+	//if (m_bShakeActive)
+	//	return;
 
 	m_bShakeActive = true;
 
@@ -102,8 +102,8 @@ void CCamera::StartWave()
 
 void CCamera::StartWave(SHAKE_DESC tagShakeDesc)
 {
-	if (m_bShakeActive)
-		return;
+	//if (m_bShakeActive)
+	//	return;
 
 	m_bShakeActive = true;
 
@@ -116,8 +116,8 @@ void CCamera::StartWave(SHAKE_DESC tagShakeDesc)
 
 void CCamera::StartVibration()
 {
-	if (m_bShakeActive)
-		return;
+	//if (m_bShakeActive)
+	//	return;
 
 	m_bShakeActive = true;
 	m_eShakeType = VIBRATION;
@@ -130,8 +130,8 @@ void CCamera::StartVibration()
 
 void CCamera::StartVibration(_float fRange, _float fDuration)
 {
-	if (m_bShakeActive)
-		return;
+	//if (m_bShakeActive)
+	//	return;
 
 	m_bShakeActive = true;
 	m_eShakeType = VIBRATION;

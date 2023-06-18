@@ -16,6 +16,8 @@ class CCameraMovement final : public CGameObject
 public:
 	enum CAM_TYPE { CAM_DYNAMIC, CAM_MAINPLAYER, CAM_UI, CAM_BANGSUN, CAM_YANGYANG, CAM_CHIXIA, CAM_CROWN1, CAM_CROWN2, CAM_END };
 
+	enum SHAKE_LEVEL { SHAKE_1, SHAKE_2, SHAKE_3, SHAKE_4, SHAKE_5 };
+
 private:
 	CCameraMovement(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CCameraMovement(const CCameraMovement& rhs);
@@ -44,6 +46,10 @@ public:
 	void StartWave(CCamera::SHAKE_DESC tagShakeDesc);
 	void StartVibration();
 	void StartVibration(_float fRange, _float fDuration = 0.5f);
+
+	//
+	void StartWave(_uint iShakeLevel);
+	void StartVibration(_uint iShakeLevel);
 
 	CAM_TYPE GetCurrentCamType() const { return m_eCurCamType; }
 

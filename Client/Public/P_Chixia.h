@@ -361,6 +361,8 @@ private:
 	_double				m_SubTrackPos = { 0.0 };
 	_bool				m_SubAnimFinished = { false };
 
+	
+
 	//파괴 오브젝트 확인용 레이더
 	class CRader* m_pRader = { nullptr };
 

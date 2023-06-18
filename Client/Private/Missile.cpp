@@ -131,8 +131,9 @@ _bool CMissile::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotM
 void CMissile::End()
 {
 	if (nullptr != m_tMissileDesc.ppNextMissilePool)
-		(*m_tMissileDesc.ppNextMissilePool)->Shot(m_pMainTransform->Get_State(CTransform::STATE_POSITION), 
+		(*m_tMissileDesc.ppNextMissilePool)->Shot(m_pMainTransform->Get_State(CTransform::STATE_POSITION),
 			m_pMainTransform->Get_State(CTransform::STATE_LOOK), XMMatrixIdentity());
+		
 
 	if (nullptr != m_pEffect)
 	{

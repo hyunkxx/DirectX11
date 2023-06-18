@@ -1040,6 +1040,27 @@ void CP_Chixia::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	if (MISS_END <= iMissilePoolID || EBONE_END <= iEffectBoneID)
 		return;
 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (MISS_SKILL_03 == iMissilePoolID ||
+		MISS_ATTACK_03 == iMissilePoolID)
+		m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_1);
+	else if (MISS_ATTACK_01 == iMissilePoolID ||
+		MISS_ATTACK_02 == iMissilePoolID ||
+		MISS_SKILL_01 == iMissilePoolID ||
+		MISS_AIRATTACK == iMissilePoolID)
+		m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_2);
+	else if (MISS_AIMATTACK_S == iMissilePoolID ||
+		MISS_SKILL_QTE == iMissilePoolID)
+		m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_3);
+	else if (MISS_BURST_1 == iMissilePoolID ||
+		MISS_AIMATTACK_B == iMissilePoolID ||
+		MISS_ATTACK_04 == iMissilePoolID)
+		m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_4);
+	else if (MISS_BURST_2 == iMissilePoolID)
+		m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_5);
+
+
 	if (iMissilePoolID == MISS_SKILL_03)
 	{
 		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] -= 1.f;
@@ -1053,7 +1074,7 @@ void CP_Chixia::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 
 	m_bAttack = true;
 
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	
 
 	if (0/*iMissilePoolID == MISS_BURST_1*/)
 	{
@@ -2603,7 +2624,7 @@ void CP_Chixia::On_Cell()
 						SS_BEHIT_PUSH == m_Scon.iCurState ||
 						SS_BEHIT_FLY_LOOP == m_Scon.iCurState)
 					{
-						m_pCamMovement->StartWave();
+						m_pCamMovement->StartWave(2);
 						m_Scon.iNextState = SS_BEHIT_FLY_FALL;
 					}
 					// 일반적인 경우
@@ -2611,11 +2632,20 @@ void CP_Chixia::On_Cell()
 					{
 						_float fGap = m_vJumpPos.y - fCellHeight;
 						if (fGap > 4.f)
+						{
+							m_pCamMovement->StartWave(2);
 							m_Scon.iNextState = SS_LAND_ROLL;
+						}
 						else if (fGap > 2.f)
+						{
+							m_pCamMovement->StartWave(1);
 							m_Scon.iNextState = SS_LAND_HEAVY;
+						}
 						else
+						{
+							m_pCamMovement->StartWave(0);
 							m_Scon.iNextState = SS_LAND_LIGHT;
+						}
 					}
 
 					SetUp_State();
@@ -2707,6 +2737,9 @@ void CP_Chixia::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _float
 		return;
 	}
 
+
+	CGameInstance* pGI = CGameInstance::GetInstance();
+
 	static_cast<CCharacter*>(pGameObject)->Set_AttackHit(true);
 	Play_HitSound(pAttackInfo);
 
@@ -2714,7 +2747,7 @@ void CP_Chixia::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _float
 	// 피격 이펙트 출력
 	if (lstrcmp(pAttackInfo->szHitEffectTag, TEXT("")))
 	{
-		CGameInstance* pGI = CGameInstance::GetInstance();
+		
 		_float4x4 EffectMatrix = m_pMainTransform->Get_WorldMatrix();
 		memcpy(EffectMatrix.m[3], pEffPos, sizeof(_float3));
 		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
@@ -2742,7 +2775,6 @@ void CP_Chixia::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _float
 	// pAttackInfo->eElementType : 공격 판정의 속성
 	m_pUIMain->Set_Damage(fFinalDamage);
 
-
 	// 사망 시 사망 애니메이션 실행 
 	if (false/*0.f >= m_tMonsterInfo.fCurHP*/)
 	{
@@ -2760,15 +2792,19 @@ void CP_Chixia::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _float
 				{
 				case HIT_SMALL:
 					m_Scon.iNextState = SS_BEHIT_S;
+					m_pCamMovement->StartVibration(_uint(1));
 					break;
 				case HIT_BIG:
 					m_Scon.iNextState = SS_BEHIT_B;
+					m_pCamMovement->StartVibration(_uint(2));
 					break;
 				case HIT_FLY:
 					m_Scon.iNextState = SS_BEHIT_FLY_START;
+					m_pCamMovement->StartVibration(_uint(3));
 					break;
 				case HIT_PUSH:
 					m_Scon.iNextState = SS_BEHIT_PUSH;
+					m_pCamMovement->StartVibration(_uint(4));
 					break;
 				default:
 					break;
@@ -2780,9 +2816,11 @@ void CP_Chixia::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _float
 				{
 				case HIT_FLY:
 					m_Scon.iNextState = SS_BEHIT_FLY_START;
+					m_pCamMovement->StartVibration(_uint(3));
 					break;
 				case HIT_PUSH:
 					m_Scon.iNextState = SS_BEHIT_PUSH;
+					m_pCamMovement->StartVibration(_uint(4));
 					break;
 				default:
 					break;
@@ -2795,9 +2833,11 @@ void CP_Chixia::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _float
 			{
 			case HIT_FLY:
 				m_Scon.iNextState = SS_BEHIT_FLY_START;
+				m_pCamMovement->StartVibration(_uint(3));
 				break;
 			case HIT_PUSH:
 				m_Scon.iNextState = SS_BEHIT_PUSH;
+				m_pCamMovement->StartVibration(_uint(4));
 				break;
 			default:
 				break;
@@ -2822,6 +2862,15 @@ void CP_Chixia::On_Dodge()
 
 	SetUp_State();
 	SetUp_Animations(false);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	CRenderSetting::RGB_SPLIT_DESC Split;
+	Split.m_fDistortion = 1.5f;
+	Split.m_fStrength = 0.2f;
+	Split.m_fSeparation = 0.3f;
+	pGameInstance->SetSplitDesc(Split);
+	pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DIR::SPLIT_DEFAULT, 0.7f);
 
 }
 

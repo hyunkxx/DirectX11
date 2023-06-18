@@ -5,6 +5,7 @@
 #include "Missile_Constant.h"
 #include "Missile_RotAround.h"
 #include "Missile_NaviBoom.h"
+#include "CameraMovement.h"
 
 CMissilePool::CMissilePool(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -117,6 +118,11 @@ void CMissilePool::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileR
 
 	if (false == bShot)
  		MSG_BOX("Shot Failed, Missiles are all busy");
+	else if (nullptr != m_pCamMovement)
+	{
+		m_pCamMovement->StartWave(m_iShakeLevel);
+	}
+		
 }
 
 CMissilePool * CMissilePool::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _fvector vLocalPos, MISSILEPOOLDESC* pMissilePoolDesc)

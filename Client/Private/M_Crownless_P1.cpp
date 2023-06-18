@@ -1448,7 +1448,6 @@ void CM_Crownless_P1::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 				m_fHitPoint -= 10;
 				if (m_fHitPoint < 0)
 				{
-					m_pCamMovement->StartVibration();
 					m_Scon.iNextState = IS_BEHIT_S;
 					bHitCheck = true;
 				}
@@ -1457,7 +1456,6 @@ void CM_Crownless_P1::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 				m_fHitPoint -= 25;
 				if (m_fHitPoint < 0)
 				{
-					m_pCamMovement->StartVibration(10.f, 0.7f);
 					m_Scon.iNextState = IS_BEHIT_B;
 					bHitCheck = true;
 				}
@@ -1468,8 +1466,6 @@ void CM_Crownless_P1::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 
 				if (m_fHitPoint < 0)
 				{
-					//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
-					m_pCamMovement->StartWave();
 					m_Scon.iNextState = IS_BEHIT_FLY_START;
 					bHitCheck = true;
 				}
@@ -1591,14 +1587,12 @@ void CM_Crownless_P1::OnCollisionEnter(CCollider * src, CCollider * dest)
 				true == dest->Compare(pOpponent->GetHitCollider()))
 			{
 				// 타격 위치를 찾아서 히트 이펙트 출력
-				m_pCamMovement->StartVibration(10.f, 0.5f);
 			}
 
 			// 상대의 공격이 나에게 적중한 경우 
 			if (true == src->Compare(GetHitCollider()) &&
 				true == dest->Compare(pOpponent->GetAttackCollider()))
 			{
-				m_pCamMovement->StartVibration();
 
 				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
 				TAGATTACK tAttackInfo;

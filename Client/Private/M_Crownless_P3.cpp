@@ -1818,7 +1818,6 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 					m_fHitPoint -= 60.f;
 					if (m_fHitPoint < 0)
 					{
-						//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
 						m_pCamMovement->StartWave();
 						m_Scon.iNextState = IS_BEHIT_FLY_START;
 						bHitCheck = true;
@@ -1961,7 +1960,6 @@ void CM_Crownless_P3::OnCollisionEnter(CCollider * src, CCollider * dest)
 			if (true == src->Compare(GetAttackCollider()) &&
 				true == dest->Compare(pOpponent->GetHitCollider()))
 			{
-				m_pCamMovement->StartVibration(10.f, 0.5f);
 
 				if (ATK_ATTACK08 == m_iCurAttackID)
 				{
@@ -1974,8 +1972,6 @@ void CM_Crownless_P3::OnCollisionEnter(CCollider * src, CCollider * dest)
 			if (true == src->Compare(GetHitCollider()) &&
 				true == dest->Compare(pOpponent->GetAttackCollider()))
 			{
-				m_pCamMovement->StartVibration();
-
 				// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
 				TAGATTACK tAttackInfo;
 				ZeroMemory(&tAttackInfo, sizeof(tAttackInfo));

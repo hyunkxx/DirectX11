@@ -3,6 +3,7 @@
 
 #include "GameMode.h"
 
+_uint CCharacter::iPlayerSoundChannel = SOUND_PLAYER_SWING;
 _int CCharacter::Monindex = 0;
 CCharacter::PHYSICMOVE CCharacter::StatePhysics[SP_END]
 {
@@ -33,6 +34,24 @@ CCharacter::PHYSICMOVE CCharacter::StatePhysics[SP_END]
 	{ true, false, _float3(0.f, -1.f, 0.f),	0.f, 0.5f, 20.f, 20.f, -20.f },
 
 };
+
+void CCharacter::Shot_SoundKey(_tchar * szSoundTag, _uint iSoundChannelm, _float fVolume)
+{
+	CGameInstance* pGame = CGameInstance::GetInstance();
+
+	if (CT_PLAYER == m_eCollisionType)
+	{
+		pGame->StopSound(iPlayerSoundChannel);
+		pGame->PlaySoundEx(szSoundTag, iPlayerSoundChannel++, fVolume);
+		if (SOUND_PLAYER_TEMP_03 < iPlayerSoundChannel)
+			iPlayerSoundChannel = SOUND_PLAYER_SWING;
+	}
+	else
+	{
+		pGame->StopSound(iSoundChannelm);
+		pGame->PlaySoundEx(szSoundTag, iSoundChannelm, fVolume);
+	}
+}
 
 void CCharacter::Shot_SlowKey(_float fTargetTime, _float fLerpSpeed)
 {

@@ -1029,6 +1029,18 @@ void CP_PlayerGirl::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 
 	m_bAttack = true;
 
+
+	if (MISS_ATTACK_PO_2 == iMissilePoolID)
+		m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_2);
+	else if (MISS_ATTACK_03 == iMissilePoolID ||
+		MISS_ATTACK_09 == iMissilePoolID)
+		m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_3);
+	else if (MISS_ATTACK_PO_3 == iMissilePoolID)
+		m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_4);
+	else if (MISS_AIRATTACK == iMissilePoolID || 
+		MISS_SKILL_QTE == iMissilePoolID)
+		m_pCamMovement->StartWave((_uint)CCameraMovement::SHAKE_5);
+
 	if (iMissilePoolID == MISS_BURST_02)
 	{
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -2312,14 +2324,13 @@ void CP_PlayerGirl::On_Cell()
 					if (IS_AIRATTACK_START == m_Scon.iCurState ||
 						IS_AIRATTACK_LOOP == m_Scon.iCurState)
 					{
-						m_pCamMovement->StartWave();
 						m_Scon.iNextState = IS_AIRATTACK_END;
 					}
 					else if (SS_BEHIT_FLY_START == m_Scon.iCurState ||
 						SS_BEHIT_PUSH == m_Scon.iCurState ||
 						SS_BEHIT_FLY_LOOP == m_Scon.iCurState)
 					{
-						m_pCamMovement->StartWave();
+						m_pCamMovement->StartWave(2);
 						m_Scon.iNextState = SS_BEHIT_FLY_FALL;
 					}
 					// 일반적인 경우
@@ -2327,11 +2338,20 @@ void CP_PlayerGirl::On_Cell()
 					{
 						_float fGap = m_vJumpPos.y - fCellHeight;
 						if (fGap > 4.f)
+						{
+							m_pCamMovement->StartWave(2);
 							m_Scon.iNextState = SS_LAND_ROLL;
+						}
 						else if (fGap > 2.f)
+						{
+							m_pCamMovement->StartWave(1);
 							m_Scon.iNextState = SS_LAND_HEAVY;
+						}
 						else
+						{
+							m_pCamMovement->StartWave(0);
 							m_Scon.iNextState = SS_LAND_LIGHT;
+						}
 					}
 
 					SetUp_State();
@@ -2477,15 +2497,19 @@ void CP_PlayerGirl::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _f
 				{
 				case HIT_SMALL:
 					m_Scon.iNextState = SS_BEHIT_S;
+					m_pCamMovement->StartVibration(_uint(1));
 					break;
 				case HIT_BIG:
 					m_Scon.iNextState = SS_BEHIT_B;
+					m_pCamMovement->StartVibration(_uint(2));
 					break;
 				case HIT_FLY:
 					m_Scon.iNextState = SS_BEHIT_FLY_START;
+					m_pCamMovement->StartVibration(_uint(3));
 					break;
 				case HIT_PUSH:
 					m_Scon.iNextState = SS_BEHIT_PUSH;
+					m_pCamMovement->StartVibration(_uint(4));
 					break;
 				default:
 					break;
@@ -2497,9 +2521,11 @@ void CP_PlayerGirl::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _f
 				{
 				case HIT_FLY:
 					m_Scon.iNextState = SS_BEHIT_FLY_START;
+					m_pCamMovement->StartVibration(_uint(3));
 					break;
 				case HIT_PUSH:
 					m_Scon.iNextState = SS_BEHIT_PUSH;
+					m_pCamMovement->StartVibration(_uint(4));
 					break;
 				default:
 					break;
@@ -2512,9 +2538,11 @@ void CP_PlayerGirl::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _f
 			{
 			case HIT_FLY:
 				m_Scon.iNextState = SS_BEHIT_FLY_START;
+				m_pCamMovement->StartVibration(_uint(3));
 				break;
 			case HIT_PUSH:
 				m_Scon.iNextState = SS_BEHIT_PUSH;
+				m_pCamMovement->StartVibration(_uint(4));
 				break;
 			default:
 				break;
@@ -2539,6 +2567,15 @@ void CP_PlayerGirl::On_Dodge()
 	
 	SetUp_State();
 	SetUp_Animations(false);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	CRenderSetting::RGB_SPLIT_DESC Split;
+	Split.m_fDistortion = 1.5f;
+	Split.m_fStrength = 0.2f;
+	Split.m_fSeparation = 0.3f;
+	pGameInstance->SetSplitDesc(Split);
+	pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DIR::SPLIT_DEFAULT, 0.7f);
 
 }
 
@@ -3196,17 +3233,19 @@ void CP_PlayerGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 				true == dest->Compare(pOpponent->GetHitCollider()))
 			{
 				// 플레이어 전용 : 카메라 쉐이크 / 블러 / 쉐이더 / 히트렉(혼자 1~2프레임 애니메이션 정지 or 느려지기) 등??
-
-				// SP BP TP 수치 회복 처리 몬스터 쪽에서 처리
-			/*	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] += m_AttackInfos[m_iCurAttackID].fSPGain;
-				if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL])
-					m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL];
 				
-				m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] += m_AttackInfos[m_iCurAttackID].fBPGain;
-				if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST])
-					m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST];
-
-				m_pPlayerStateClass->Gain_QTEGauge(m_AttackInfos[m_iCurAttackID].fTPGain);*/
+				if (ATK_ATTACK_01 == m_iCurAttackID)
+					m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_1);
+				else if (ATK_ATTACK_02 == m_iCurAttackID)
+					m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_2);
+				else if (ATK_SKILL_01 == m_iCurAttackID ||
+					ATK_ATTACK_05_01 == m_iCurAttackID ||
+					ATK_SKILL_02_01 == m_iCurAttackID)
+					m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_3);
+				else if (ATK_ATTACK_04 == m_iCurAttackID ||
+					ATK_SKILL_02_02 == m_iCurAttackID ||
+					ATK_ATTACK_05_02 == m_iCurAttackID)
+					m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_4);
 
 			}
 

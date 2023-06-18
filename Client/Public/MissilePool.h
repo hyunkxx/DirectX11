@@ -48,6 +48,7 @@ public:
 
 		//Binglie 거시기용
 		CNavigation* pNavigation;
+
 	}MISSILEPOOLDESC;
 
 private:
@@ -64,9 +65,18 @@ public:
 		m_Missiles.front()->Get_TargetDir();
 	}
 
+	void Set_CamMovement(class CCameraMovement* pPtr, _uint iShakeLevel)
+	{
+		m_pCamMovement = pPtr;
+		m_iShakeLevel = iShakeLevel;
+	}
+
 private:
 	_float3 m_vLocalPos;
 	vector<CMissile*> m_Missiles;
+
+	class CCameraMovement* m_pCamMovement = { nullptr };
+	_uint m_iShakeLevel;
 
 public:
 	static CMissilePool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _fvector vLocalPos, MISSILEPOOLDESC* pMissilePoolDesc);

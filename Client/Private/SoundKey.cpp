@@ -38,9 +38,7 @@ HRESULT CSoundKey::Initialize(BaseData* pData)
 
 void CSoundKey::Shot(CCharacter * pMyCharacter)
 {
-	CGameInstance* pGame = CGameInstance::GetInstance();
-	pGame->StopSound(m_iChannelID);
-	pGame->PlaySoundEx(m_szSoundKey, m_iChannelID, m_fVolume);
+	pMyCharacter->Shot_SoundKey(m_szSoundKey, m_iChannelID, m_fVolume);
 }
 
 CSoundKey * CSoundKey::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, BaseData* pData)

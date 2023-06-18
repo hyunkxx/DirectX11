@@ -1400,7 +1400,6 @@ void CM_Qunjing::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtt
 			m_fHitPoint -= 10.f;
 			if (m_fHitPoint < 0.f)
 			{
-				m_pCamMovement->StartVibration();
 				if (m_fHitPoint < -50.f)
 					m_Scon.iNextState = IS_BEHIT_B;
 				else
@@ -1412,7 +1411,6 @@ void CM_Qunjing::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtt
 			m_fHitPoint -= 25.f;
 			if (m_fHitPoint < 0.f)
 			{
-				m_pCamMovement->StartVibration(10.f, 0.7f);
 				bHitCheck = true;
 				if (m_fHitPoint < -50.f)
 					m_Scon.iNextState = IS_BEHIT_B;
@@ -1426,8 +1424,6 @@ void CM_Qunjing::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtt
 
 			if (m_fHitPoint < 0)
 			{
-				//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
-				m_pCamMovement->StartWave();
 				bHitCheck = true;
 				if (m_fHitPoint < -50.f)
 					m_Scon.iNextState = IS_BEHIT_B;
@@ -1540,7 +1536,6 @@ void CM_Qunjing::OnCollisionEnter(CCollider * src, CCollider * dest)
 			if (true == src->Compare(GetAttackCollider()) &&
 				true == dest->Compare(pOpponent->GetHitCollider()))
 			{
-				m_pCamMovement->StartVibration(10.f, 0.5f);
 			}
 
 			// 상대의 공격이 나에게 적중한 경우 
@@ -1555,8 +1550,6 @@ void CM_Qunjing::OnCollisionEnter(CCollider * src, CCollider * dest)
 				}
 				else
 				{
-					m_pCamMovement->StartVibration();
-
 					// 플/몬 공통 : 대미지 처리, 대미지 폰트 출력, 피격 애니메이션 이행
 					TAGATTACK tAttackInfo;
 					ZeroMemory(&tAttackInfo, sizeof(tAttackInfo));

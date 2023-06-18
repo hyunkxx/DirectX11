@@ -221,6 +221,9 @@ void CP_Yangyang::Start()
 
 	if (false == m_bOnControl)
 		SetState(DISABLE);
+
+	m_MissilePools[MISS_SKILL_01_3]->Set_CamMovement(m_pCamMovement, 3);
+
 }
 
 void CP_Yangyang::PreTick(_double TimeDelta)
@@ -733,7 +736,7 @@ HRESULT CP_Yangyang::Add_Components()
 
 	CollDesc.owner = this;
 	CollDesc.vCenter = { -0.4f, 0.f, 0.f };
-	CollDesc.vExtents = { 0.5f, 0.05f, 0.05f };
+	CollDesc.vExtents = { 0.75f, 0.15f, 0.15f };
 	CollDesc.vRotation = { 0.f, 0.f, 0.f };
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, COMPONENT::OBB,
 		TEXT("Com_AttackCollider"), (CComponent**)&m_pAttackCollider, &CollDesc)))
@@ -1059,7 +1062,7 @@ void CP_Yangyang::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
 	else
 	{
 		m_pAttackCollider->SetCenter_(_float3(-0.4f, 0.f, 0.f));
-		m_pAttackCollider->SetExtents_(_float3(0.5f, 0.05f, 0.05f));
+		m_pAttackCollider->SetExtents_(_float3(0.5f, 0.15f, 0.15f));
 	}
 	
 }
@@ -1070,6 +1073,20 @@ void CP_Yangyang::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 		return;
 
 	m_bAttack = true;
+
+
+	if (MISS_AIRATTACK_2_1 == iMissilePoolID || 
+		MISS_SKILL_QTE == iMissilePoolID)
+		m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_3);
+	else if (MISS_SKILL_01_1 == iMissilePoolID)
+		m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_4);
+	else if (MISS_AIRATTACK_1 == iMissilePoolID ||
+		MISS_AIRATTACK_2_3 == iMissilePoolID ||
+		MISS_AIRATTACK_2_2 == iMissilePoolID)
+		m_pCamMovement->StartWave((_uint)CCameraMovement::SHAKE_5);
+
+
+
 	
 	if (iMissilePoolID == MISS_BURST_1)
 	{
@@ -2304,26 +2321,23 @@ void CP_Yangyang::On_Cell()
 					if (IS_AIRATTACK_1_START == m_Scon.iCurState ||
 						IS_AIRATTACK_1_LOOP == m_Scon.iCurState)
 					{
-						m_pCamMovement->StartWave();
 						m_Scon.iNextState = IS_AIRATTACK_1_END;
 					}
 					else if (IS_AIRATTACK_2_START == m_Scon.iCurState ||
 						IS_AIRATTACK_2_LOOP == m_Scon.iCurState)
 					{
-						m_pCamMovement->StartWave();
 						m_Scon.iNextState = IS_AIRATTACK_2_END;
 					}
 					else if (IS_AIRATTACK_2_QTE_START == m_Scon.iCurState ||
 						IS_AIRATTACK_2_QTE_LOOP == m_Scon.iCurState)
 					{
-						m_pCamMovement->StartWave();
 						m_Scon.iNextState = IS_AIRATTACK_2_QTE_END;
 					}
 					else if (SS_BEHIT_FLY_START == m_Scon.iCurState ||
 						SS_BEHIT_PUSH == m_Scon.iCurState ||
 						SS_BEHIT_FLY_LOOP == m_Scon.iCurState)
 					{
-						m_pCamMovement->StartWave();
+						m_pCamMovement->StartWave(2);
 						m_Scon.iNextState = SS_BEHIT_FLY_FALL;
 					}
 					// 일반적인 경우
@@ -2331,11 +2345,21 @@ void CP_Yangyang::On_Cell()
 					{
 						_float fGap = m_vJumpPos.y - fCellHeight;
 						if (fGap > 4.f)
+						{
+							m_pCamMovement->StartWave(2);
 							m_Scon.iNextState = SS_LAND_ROLL;
+						}
 						else if (fGap > 2.f)
+						{
+							m_pCamMovement->StartWave(1);
 							m_Scon.iNextState = SS_LAND_HEAVY;
+						}
 						else
+						{
+							m_pCamMovement->StartWave(0);
 							m_Scon.iNextState = SS_LAND_LIGHT;
+						}
+							
 					}
 
 					SetUp_State();
@@ -2483,15 +2507,19 @@ void CP_Yangyang::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _flo
 				{
 				case HIT_SMALL:
 					m_Scon.iNextState = SS_BEHIT_S;
+					m_pCamMovement->StartVibration(_uint(1));
 					break;
 				case HIT_BIG:
 					m_Scon.iNextState = SS_BEHIT_B;
+					m_pCamMovement->StartVibration(_uint(2));
 					break;
 				case HIT_FLY:
 					m_Scon.iNextState = SS_BEHIT_FLY_START;
+					m_pCamMovement->StartVibration(_uint(3));
 					break;
 				case HIT_PUSH:
 					m_Scon.iNextState = SS_BEHIT_PUSH;
+					m_pCamMovement->StartVibration(_uint(4));
 					break;
 				default:
 					break;
@@ -2503,9 +2531,11 @@ void CP_Yangyang::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _flo
 				{
 				case HIT_FLY:
 					m_Scon.iNextState = SS_BEHIT_FLY_START;
+					m_pCamMovement->StartVibration(_uint(3));
 					break;
 				case HIT_PUSH:
 					m_Scon.iNextState = SS_BEHIT_PUSH;
+					m_pCamMovement->StartVibration(_uint(4));
 					break;
 				default:
 					break;
@@ -2518,9 +2548,11 @@ void CP_Yangyang::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _flo
 			{
 			case HIT_FLY:
 				m_Scon.iNextState = SS_BEHIT_FLY_START;
+				m_pCamMovement->StartVibration(_uint(3));
 				break;
 			case HIT_PUSH:
 				m_Scon.iNextState = SS_BEHIT_PUSH;
+				m_pCamMovement->StartVibration(_uint(4));
 				break;
 			default:
 				break;
@@ -2545,6 +2577,15 @@ void CP_Yangyang::On_Dodge()
 
 	SetUp_State();
 	SetUp_Animations(false);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	CRenderSetting::RGB_SPLIT_DESC Split;
+	Split.m_fDistortion = 1.5f;
+	Split.m_fStrength = 0.2f;
+	Split.m_fSeparation = 0.3f;
+	pGameInstance->SetSplitDesc(Split);
+	pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DIR::SPLIT_DEFAULT, 0.7f);
 
 }
 
@@ -3192,16 +3233,20 @@ void CP_Yangyang::OnCollisionEnter(CCollider * src, CCollider * dest)
 			{
 				// 플레이어 전용 : 카메라 쉐이크 / 블러 / 쉐이더 / 히트렉(혼자 1~2프레임 애니메이션 정지 or 느려지기) 등??
 
-				// SP BP TP 수치 회복 처리
-				/*m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] += m_AttackInfos[m_iCurAttackID].fSPGain;
-				if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL])
-					m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL];
-
-				m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] += m_AttackInfos[m_iCurAttackID].fBPGain;
-				if (m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] > m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST])
-					m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST];
-
-				m_pPlayerStateClass->Gain_QTEGauge(m_AttackInfos[m_iCurAttackID].fTPGain);*/
+				if (ATK_ATTACK_04_1 == m_iCurAttackID ||
+					ATK_ATTACK_03_1 == m_iCurAttackID)
+					m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_1);
+				else if (ATK_ATTACK_01 == m_iCurAttackID ||
+					ATK_ATTACK_02 == m_iCurAttackID ||
+					ATK_ATTACK_03_2 == m_iCurAttackID ||
+					ATK_ATTACK_04_2 == m_iCurAttackID)
+					m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_2);
+				else if (ATK_ATTACK_04_3 == m_iCurAttackID ||
+					ATK_ATTACK_05 == m_iCurAttackID ||
+					ATK_ATTACK_06 == m_iCurAttackID)
+					m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_3);
+				else if (ATK_SKILL_02 == m_iCurAttackID)
+					m_pCamMovement->StartVibration((_uint)CCameraMovement::SHAKE_4);
 
 			}
 

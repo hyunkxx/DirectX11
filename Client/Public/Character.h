@@ -457,6 +457,8 @@ public: // StateKey 대응 함수 모음
 	virtual void Shot_OBBKey(_bool bOBB, _uint iAttackInfoID) {}
 	virtual void Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID) {}
 	virtual void Shot_TraceKey(_bool bTraceOn, _bool bOnce, _double Duration) {}
+
+	virtual void Shot_SoundKey(_tchar* szSoundTag, _uint iSoundChannelm, _float fVolume);
 	
 	//
 	virtual void Shot_SlowKey(_float fTargetTime, _float fLerpSpeed);
@@ -478,6 +480,9 @@ public: // StateKey 대응 함수 모음
 
 	void Set_WorldMatrix(_matrix matWorld);
 
+	
+
+	static _uint iPlayerSoundChannel;
 
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -129,7 +129,7 @@ void CM_Anjin::Start()
 #ifdef _DEBUG
 	m_pRendererCom->DebugBundleRender_Control(true);
 #endif
-
+	
 	m_pCamMovement = static_cast<CCameraMovement*>(pGame->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
 
 	// Find ActivePlayer
@@ -496,6 +496,10 @@ void CM_Anjin::Shot_OBBKey(_bool bOBB, _uint iAttackInfoID)
 {
 	m_pAttackCollider->SetActive(bOBB);
 	m_iCurAttackID = iAttackInfoID;
+
+	if (ATK_ATTACK_02_3 == iAttackInfoID && bOBB == false)
+		m_pCamMovement->StartWave(2);
+
 }
 
 
@@ -1068,17 +1072,13 @@ void CM_Anjin::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAttac
 			switch (pAttackInfo->eHitIntensity)
 			{
 			case HIT_SMALL:
-				m_pCamMovement->StartVibration();
 				m_Scon.iNextState = IS_BEHIT_S;
 				break;
 			case HIT_BIG:
-				m_pCamMovement->StartVibration(10.f, 0.7f);
 				m_Scon.iNextState = IS_BEHIT_B;
 				break;
 			case HIT_FLY:
 			{
-				//위로 치는 모션이면 수치 조절해서 값 넣어주기 일단 디폴트 웨이브 넣음
-				m_pCamMovement->StartWave();
 				m_Scon.iNextState = IS_BEHIT_FLY_START;
 				break;
 			}
