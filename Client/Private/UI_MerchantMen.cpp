@@ -1615,7 +1615,7 @@ void CUI_MerchantMen::Set_END()
 	m_CircleSTurntart = true;
 	m_CircleLevDown = false;
 	m_CircleSLevUp = false;
-	m_MsgboxRender = false;
+	m_MsgboxRender = true;
 	m_RewardboxRender = false;
 	m_CancelMsgbox = false;
 	Degree = 0.f;

@@ -172,7 +172,7 @@ void CTrigger::Floating(_double TimeDelta)
 
 	_vector		vP = m_pMainTransform->Get_State(CTransform::STATE::STATE_POSITION);
 
-	vP = vP + VECTOR_UP * fHeight * (_float)TimeDelta * m_fFloating_Speed;
+	vP = XMLoadFloat3(&m_vOrigin_Pos) + VECTOR_UP * fHeight * (_float)TimeDelta * m_fFloating_Speed;
 
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, vP);
 
@@ -336,22 +336,22 @@ void CTrigger::Trigger_Spawn_Crown()
 
 void CTrigger::Trigger_Interact_Cook()
 {
-	MSG_BOX("Trigger : Interact_Cook");
+	//MSG_BOX("Trigger : Interact_Cook");
 }
 
 void CTrigger::Trigger_Interact_CookNpc()
 {
-	MSG_BOX("Trigger : Interact_CookNpc");
+	//MSG_BOX("Trigger : Interact_CookNpc");
 }
 
 void CTrigger::Trigger_Interact_Shop_1()
 {
-	MSG_BOX("Trigger : Interact_Shop_1");
+	//MSG_BOX("Trigger : Interact_Shop_1");
 }
 
 void CTrigger::Trigger_Interact_Shop_2()
 {
-	MSG_BOX("Trigger : Interact_Shop_2");
+	//MSG_BOX("Trigger : Interact_Shop_2");
 }
 
 void CTrigger::ShowEffect(_double TimeDelta)

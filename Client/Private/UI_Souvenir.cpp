@@ -379,6 +379,8 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
+	if (m_NPCbye)
+		Set_END();
 	
 	switch (Situation)
 	{

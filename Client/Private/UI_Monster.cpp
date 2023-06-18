@@ -568,10 +568,11 @@ HRESULT CUI_Monster::Setup_ShaderResourcesHP(_int index)
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 
-	
-	if (FAILED(m_pShader->SetRawValue("g_fRedBar", &m_fRedBar, sizeof(_float))))
-		return E_FAIL;
-	
+	if (true == m_bRedStart)
+	{
+		if (FAILED(m_pShader->SetRawValue("g_fRedBar", &m_fRedBar, sizeof(_float))))
+			return E_FAIL;
+	}
 	if (FAILED(m_pShader->SetRawValue("g_fwhiteBar", &m_fWhiteBar, sizeof(_float))))
 		return E_FAIL;
 

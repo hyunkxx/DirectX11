@@ -54,7 +54,7 @@ void CIntro::Tick(_double TimeDelta)
 
 		m_fLoading = XMVectorGetX(XMVectorLerp(vCurLoadAcc, vLoadRatio, (_float)TimeDelta));
 	}
-	if (1.f <= m_fLoading)
+	if (0.9f <= m_fLoading)
 		m_bLoadingEnd = true;
 
 	if (true == m_bLoadingEnd)
