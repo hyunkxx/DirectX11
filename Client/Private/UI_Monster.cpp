@@ -99,7 +99,7 @@ void CUI_Monster::LateTick(_double TimeDelta)
 
 HRESULT CUI_Monster::Render()
 {
-	
+
 	if (true == m_bRender)
 	{
 		for (auto& Desc : DamageList)
@@ -108,7 +108,7 @@ HRESULT CUI_Monster::Render()
 				return E_FAIL;
 			if (FAILED(Setup_ShaderResourcesDamage(&Desc)))
 				return E_FAIL;
-			m_pShader->Begin(0);
+			m_pShader->Begin(24);
 			m_pVIBuffer->Render();
 		}
 
@@ -142,7 +142,7 @@ HRESULT CUI_Monster::Render()
 				}
 			}
 		}
-			break;
+		break;
 		case Client::CUI_Monster::MONSTERTYPE::TYPE1:
 		{
 			if (true == m_DescList[9].bRender)
@@ -180,13 +180,13 @@ HRESULT CUI_Monster::Render()
 					m_pVIBuffer->Render();
 				}
 			}
-			
+
 
 		}
-			break;
+		break;
 		case Client::CUI_Monster::MONSTERTYPE::BOSS:
 		{
-			for (_uint i = 10; i < (_uint)m_DescList.size()-1; ++i)
+			for (_uint i = 10; i < (_uint)m_DescList.size() - 1; ++i)
 			{
 				if (i == 16)
 					continue;
@@ -219,11 +219,11 @@ HRESULT CUI_Monster::Render()
 				m_pVIBuffer->Render();
 			}
 		}
-			break;
+		break;
 		default:
 			break;
 		}
-	
+
 	}
 	return S_OK;
 }
@@ -323,7 +323,7 @@ void	CUI_Monster::Damage(_float Damage)
 	if (10 == m_HitCount)
 		m_HitCount = 1;
 	srand((unsigned int)time(NULL));
-	_float pos = _float(rand() % (100 + 1 - (-100)) + (-100)); 
+	_float pos = _float(rand() % (100 + 1 - (-100)) + (-100));
 
 	if (0 == m_HitCount % 2)
 	{
@@ -504,7 +504,7 @@ void CUI_Monster::FontColor()
 	}
 	else
 	{
-		fFontColor =  _float4( 255.f, 255.f, 255.f, 0.f);
+		fFontColor = _float4(255.f, 255.f, 255.f, 255.f);
 	}
 }
 HRESULT CUI_Monster::Add_Components()
@@ -950,91 +950,91 @@ void CUI_Monster::DecideRender(_double TimeDelta)
 	{
 		switch (m_MonsterType)
 		{
-			case Client::CUI_Monster::MONSTERTYPE::TYPE0:
+		case Client::CUI_Monster::MONSTERTYPE::TYPE0:
+		{
+			m_DescList[8].bRender = false;
+			m_DescList[9].bRender = false;
+
+
+			if (true == m_bNameRender)
 			{
-				m_DescList[8].bRender = false;
-				m_DescList[9].bRender = false;
-
-
-				if (true == m_bNameRender)
-				{
-					m_DescList[4].bRender = false;
-					m_DescList[5].bRender = false;
-					m_DescList[6].bRender = false;
-					m_DescList[7].bRender = true;
-				}
-				else
-				{
-					m_DescList[4].bRender = true;
-					m_DescList[5].bRender = true;
-					m_DescList[6].bRender = true;
-					m_DescList[7].bRender = false;
-				}
+				m_DescList[4].bRender = false;
+				m_DescList[5].bRender = false;
+				m_DescList[6].bRender = false;
+				m_DescList[7].bRender = true;
 			}
-			break;
-			case Client::CUI_Monster::MONSTERTYPE::TYPE1:
+			else
 			{
-				m_DescList[8].bRender = true;
-				m_DescList[9].bRender = true;
-
-
-				if (true == m_bNameRender)
-				{
-					m_DescList[4].bRender = false;
-					m_DescList[5].bRender = false;
-					m_DescList[6].bRender = false;
-					m_DescList[7].bRender = true;
-				}
-				else
-				{
-					m_DescList[4].bRender = true;
-					m_DescList[5].bRender = true;
-					m_DescList[6].bRender = true;
-					m_DescList[7].bRender = false;
-				}
-
+				m_DescList[4].bRender = true;
+				m_DescList[5].bRender = true;
+				m_DescList[6].bRender = true;
+				m_DescList[7].bRender = false;
 			}
-			break;
-			case Client::CUI_Monster::MONSTERTYPE::BOSS:
+		}
+		break;
+		case Client::CUI_Monster::MONSTERTYPE::TYPE1:
+		{
+			m_DescList[8].bRender = true;
+			m_DescList[9].bRender = true;
+
+
+			if (true == m_bNameRender)
 			{
-				for (_uint i = 0; i < 10; ++i)
-				{
-					m_DescList[i].bRender = false;
-				}
-				if (true == m_bHit)
-				{
-					m_DescList[16].fHeight = 35.f + abs(m_Damage * 0.3f);
-					m_DescList[20].fHeight = 35.f + abs(m_Damage * 0.3f);
-					if (m_DescList[16].fHeight > 35.f) { m_DescList[16].fHeight -= abs(m_Damage * 0.05f); }
-					if (m_DescList[20].fHeight > 35.f) { m_DescList[20].fHeight -= abs(m_Damage * 0.05f); }
-					if (m_DescList[16].fHeight > 55.f) { m_DescList[16].fHeight = 35.f; }
-					if (m_DescList[20].fHeight > 55.f) { m_DescList[20].fHeight = 35.f; }
-				}
-
-				for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
-				{
-					m_DescList[i].bRender = true;
-					XMStoreFloat4x4(&(m_DescList[i].WorldMatrix), XMMatrixScaling(m_DescList[i].fWidth, m_DescList[i].fHeight, 1.f) *
-						XMMatrixTranslation(m_DescList[i].fX, m_DescList[i].fY, m_DescList[i].fZ));
-				}
-
-				_int LevelTen = m_MonsterLevel / 10;
-				_int LevelOne = m_MonsterLevel % 10; // 0 = 33 1 = 34
-
-				if (1 > LevelTen)
-				{
-					//11,12,13
-					m_DescList[13].bRender = false;
-					m_DescList[14].iTexNum = LevelOne + 79;
-				}
-				else
-				{
-					m_DescList[13].bRender = true;
-					m_DescList[13].iTexNum = LevelTen + 79;
-					m_DescList[14].iTexNum = LevelOne + 79;
-				}
+				m_DescList[4].bRender = false;
+				m_DescList[5].bRender = false;
+				m_DescList[6].bRender = false;
+				m_DescList[7].bRender = true;
 			}
-			break;
+			else
+			{
+				m_DescList[4].bRender = true;
+				m_DescList[5].bRender = true;
+				m_DescList[6].bRender = true;
+				m_DescList[7].bRender = false;
+			}
+
+		}
+		break;
+		case Client::CUI_Monster::MONSTERTYPE::BOSS:
+		{
+			for (_uint i = 0; i < 10; ++i)
+			{
+				m_DescList[i].bRender = false;
+			}
+			if (true == m_bHit)
+			{
+				m_DescList[16].fHeight = 35.f + abs(m_Damage * 0.6f);
+				m_DescList[20].fHeight = 35.f + abs(m_Damage * 0.6f);
+				if (m_DescList[16].fHeight > 50.f) { m_DescList[16].fHeight -= abs(m_Damage * 0.05f); }
+				if (m_DescList[20].fHeight > 50.f) { m_DescList[20].fHeight -= abs(m_Damage * 0.05f); }
+				if (m_DescList[16].fHeight > 75.f) { m_DescList[16].fHeight = 35.f; }
+				if (m_DescList[20].fHeight > 75.f) { m_DescList[20].fHeight = 35.f; }
+			}
+
+			for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)
+			{
+				m_DescList[i].bRender = true;
+				XMStoreFloat4x4(&(m_DescList[i].WorldMatrix), XMMatrixScaling(m_DescList[i].fWidth, m_DescList[i].fHeight, 1.f) *
+					XMMatrixTranslation(m_DescList[i].fX, m_DescList[i].fY, m_DescList[i].fZ));
+			}
+
+			_int LevelTen = m_MonsterLevel / 10;
+			_int LevelOne = m_MonsterLevel % 10; // 0 = 33 1 = 34
+
+			if (1 > LevelTen)
+			{
+				//11,12,13
+				m_DescList[13].bRender = false;
+				m_DescList[14].iTexNum = LevelOne + 79;
+			}
+			else
+			{
+				m_DescList[13].bRender = true;
+				m_DescList[13].iTexNum = LevelTen + 79;
+				m_DescList[14].iTexNum = LevelOne + 79;
+			}
+		}
+		break;
 		}
 
 	}

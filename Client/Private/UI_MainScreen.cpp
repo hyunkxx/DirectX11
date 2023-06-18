@@ -248,7 +248,7 @@ HRESULT CUI_MainScreen::Render()
 				return E_FAIL;
 			if (FAILED(Setup_ShaderResourcesDamage(&Desc)))
 				return E_FAIL;
-			m_pShader->Begin(0);
+			m_pShader->Begin(24);
 			m_pVIBuffer->Render();
 		}
 
@@ -357,7 +357,6 @@ HRESULT CUI_MainScreen::Render()
 					m_pShader->Begin(m_iPass);
 					m_pVIBuffer->Render();
 				}
-
 			}
 		}
 	}
@@ -1029,9 +1028,10 @@ void	CUI_MainScreen::Damage(_float Damage)
 	Damage10 = iDamage / 10;
 	Damage1 = iDamage % 10;
 
-	
+	//if (Damage < -40)
+	//{
 	fFontColor = _float4{ 255.f, -255.f, -255.f, 255.f };
-	
+	//}
 	_float3 PlayerPos;
 	XMStoreFloat3(&PlayerPos, m_pPlayer->Get_Position());
 

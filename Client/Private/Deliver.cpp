@@ -5,7 +5,8 @@
 #include "AppManager.h"
 #include "GameInstance.h"
 #include "PlayerState.h"
-#include "UI_Souvenir.h"
+#include "UI_MerchantMen.h"
+#include "UI_Minimap.h"
 
 CDeliver::CDeliver(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CNonPlayer(pDevice, pContext)
@@ -43,7 +44,11 @@ void CDeliver::Start()
 	CGameInstance* pGI = CGameInstance::GetInstance();
 
 	m_pPlayerState = static_cast<CPlayerState*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
-	//m_pTargetUI = static_cast<CUI_Souvenir*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pTargetUI = static_cast<CUI_MerchantMen*>(pGI->Find_GameObject(LEVEL_ANYWHERE, L"UI_MerchantMen"));
+
+	m_pUIIcon = static_cast<CUI_Minimap*>(pGI->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
+	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::MERCHANTMEN);
+	m_pUIIcon->SetRender(m_UIIndex, false);
 }
 
 void CDeliver::PreTick(_double TimeDelta)
@@ -282,6 +287,7 @@ void CDeliver::OnCollisionEnter(CCollider * src, CCollider * dest)
 		//UI Active
 		PushAnimation(ANIM_STATE::ANIM_TALK);
 	}
+	m_pTargetUI->Set_SituMeet();
 }
 
 void CDeliver::OnCollisionStay(CCollider * src, CCollider * dest)
@@ -319,4 +325,5 @@ void CDeliver::OnCollisionExit(CCollider * src, CCollider * dest)
 		m_AnimQueue.push(CLIP_IDLE);
 
 	}
+	m_pTargetUI->Set_END();
 }

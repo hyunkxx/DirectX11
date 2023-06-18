@@ -44,7 +44,7 @@ void CShopGirl::Start()
 	CGameInstance* pGI = CGameInstance::GetInstance();
 
 	m_pPlayerState = static_cast<CPlayerState*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
-	//m_pTargetUI = static_cast<CUI_Souvenir*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pTargetUI = static_cast<CUI_Souvenir*>(pGI->Find_GameObject(LEVEL_ANYWHERE, L"UI_Souvenir"));
 
 	m_pUIIcon = static_cast<CUI_Minimap*>(pGI->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::SOUVENIR);

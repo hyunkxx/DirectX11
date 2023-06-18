@@ -91,6 +91,10 @@ private:
 
 	_bool m_bOverlaped = false;
 	_float m_fTimeAcc = 0.f;
+
+private:
+	class CUI_Minimap*		m_pUIIcon = { nullptr };
+	_int					m_UIIndex = { 0 };
 };
 
 END

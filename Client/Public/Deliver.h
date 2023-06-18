@@ -84,13 +84,17 @@ private:
 
 private:
 	class CPlayerState* m_pPlayerState = nullptr;
-	class CUI_Souvenir* m_pTargetUI = nullptr;
+	class CUI_MerchantMen* m_pTargetUI = nullptr;
 
 	queue<CLIP> m_AnimQueue;
 	_uint m_iCurClip = CLIP_IDLE;
 
 	_bool m_bOverlaped = false;
 	_float m_fTimeAcc = 0.f;
+
+private:
+	class CUI_Minimap*		m_pUIIcon = { nullptr };
+	_int					m_UIIndex = { 0 };
 };
 
 END
