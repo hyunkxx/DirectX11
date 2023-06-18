@@ -264,4 +264,8 @@ void CObject_Bomber::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 	m_eState = ID_BOOM;
 	m_fResetTime = 0.f;
+
+	CGameInstance::GetInstance()->PlaySoundEx(L"DA_Au_Element_LightFire_Qiu.wem.wav",
+		SOUND_UI_TEMP, 1.f);
+	
 }

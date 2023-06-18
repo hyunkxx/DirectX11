@@ -242,5 +242,9 @@ void CBoom_Rock::OnCollisionEnter(CCollider * src, CCollider * dest)
 		CGameObject* pCamera = pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement");
 		static_cast<CCameraMovement*>(pCamera)->StartVibration(40.f, 1.f);
 		// 여기서 몬스터 소환 및 사운드 변경
+
+		CGameInstance::GetInstance()->PlaySoundEx(L"DA_Au_amb_interact_rock_po.wem.wav",
+			SOUND_UI_FEEDBACK, 1.f);
+
 	}
 }

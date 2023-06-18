@@ -2632,7 +2632,8 @@ void CResonatorUI::upgradeCharacter(_uint iCharacterType)
 		{
 			pEffect->Play_Effect(&m_WorldMatrix , false);
 		}
-			
+		CGameInstance::GetInstance()->PlaySoundEx(L"Play_AE_UI_FB_LevelUp.wem.wav",
+			SOUND_UI_TEMP, 1.f);
 	}
 
 }

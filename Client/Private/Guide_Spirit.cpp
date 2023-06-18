@@ -158,6 +158,9 @@ void CGuide_Spirit::Wait_Tick(_double TimeDelta)
 			iter += m_iDestinationCount;
 			m_vDestination = _float3((*(*iter)).x, (*(*iter)).y, (*(*iter)).z);
 			
+			CGameInstance::GetInstance()->PlaySoundEx(L"DA_Au_Element_LightFire_Qiu.wem.wav",
+				SOUND_UI_TEMP, 0.5f);
+
 			if (1.f == (*(*iter)).w)
 				m_bStop = true;
 			else

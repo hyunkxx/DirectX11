@@ -278,6 +278,10 @@ void CInvisible_Chest::Visivle_Tick(_double TimeDelta)
 				matrix._42 = matrix._42 + 1.f;
 				CEffect* pOpenEffect = pGameInstance->Get_Effect(L"Get_Item_Effect_02", EFFECT_ID::COMON);
 				pOpenEffect->Play_Effect(&matrix);
+
+				CGameInstance::GetInstance()->PlaySoundEx(L"DA_Au_Buff_Pickup_timerush.wem.wav",
+					SOUND_UI_TEMP, 1.f);
+				
 			}
 		}
 		else
@@ -571,6 +575,9 @@ void CInvisible_Chest::OnCollisionEnter(CCollider * src, CCollider * dest)
 	m_bRimLight = true;
 	m_ChestState = STATE_APPEAR;
 
+	CGameInstance::GetInstance()->PlaySoundEx(L"Play_AE_UI_Calabash_BigWorld_Interaction.wem.wav",
+		SOUND_UI_TEMP, 1.f);
+
 	m_Invisible_Effect->Shut_Down();
 	m_Invisible_Effect = nullptr;
 }
@@ -612,8 +619,9 @@ void CInvisible_Chest::Off_Detection(void)
 }
 
 void CInvisible_Chest::Appear_Box(void)
-{
+{	
 	m_fBurstRim = 0.f;
 	m_bRimLight = true;
 	m_ChestState = STATE_APPEAR;
+
 }

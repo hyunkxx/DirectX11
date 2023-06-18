@@ -87,7 +87,8 @@ void CRader::Play_Rader(CTransform* pTransform)
 
 	m_pEffect = CGameInstance::GetInstance()->Get_Effect(L"P_Rader_Effect", EFFECT_ID::COMON);
 	m_pEffect->Play_Effect(&m_WorldMatrix,false);
-
+	
+	CGameInstance::GetInstance()->PlaySoundEx(L"Play_AE_UI_But_Scan.wem.wav", SOUND_PLAYER_TEMP_03 , 1.f);
 	m_bReady = false;
 	m_fCoolTime = 0.f;
 	m_fLinear = 0.f;

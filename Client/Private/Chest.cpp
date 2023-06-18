@@ -108,6 +108,9 @@ void CChest::Tick(_double TimeDelta)
 
 				//UI Ãß°¡
 				m_pUIIcon->SetRender(m_UIIndex, false);
+
+				CGameInstance::GetInstance()->PlaySoundEx(L"DA_Au_Buff_Pickup_timerush.wem.wav",
+					SOUND_UI_TEMP, 1.f);
 			}
 		}
 		else
