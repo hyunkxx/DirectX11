@@ -89,7 +89,6 @@ private:
 	void DecideRender();
 	void OtherobjIsActive();
 
-
 private:
 	_int m_Num = { 0 }; // 미니맵 오브젝트 아이콘 enum
 						//미니맵 기능
