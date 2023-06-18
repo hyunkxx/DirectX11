@@ -3077,16 +3077,12 @@ void CUI_Souvenir::Save()
 
 void CUI_Souvenir::Set_SituMeet()
 {
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-	pActiveCharacter->Set_OnControl(false);
 	SetState(ACTIVE);
 	Situation = SOUSITUINDEX::MEET; 
 }
 
 void CUI_Souvenir::Set_END()
 {
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-	pActiveCharacter->Set_OnControl(true);
 	Situation = SOUSITUINDEX::SOUEND;
 	m_Count = 0;
 	m_InMenuRenderStart = true;

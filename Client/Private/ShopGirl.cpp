@@ -296,7 +296,6 @@ void CShopGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 		PushAnimation(ANIM_STATE::ANIM_TALK);
 	}
 	m_pTargetUI->Set_SituMeet();
-	
 }
 
 void CShopGirl::OnCollisionStay(CCollider * src, CCollider * dest)

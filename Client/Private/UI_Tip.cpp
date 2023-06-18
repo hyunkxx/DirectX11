@@ -44,7 +44,6 @@ void CUI_Tip::Start()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
 	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
-	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	Level = pGM->GetCurrentLevel();
 	switch (Level)
 	{
@@ -146,9 +145,6 @@ void CUI_Tip::Tick(_double TimeDelta)
 		pGM->SetMouseActive(true);
 		m_pUIMouse->Set_RenderMouse(true);
 
-		CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-		pActiveCharacter->Set_OnControl(false);
-
 		if ((true == m_bUIRender) && (AddAlphaW(&m_YangyanDescList, TimeDelta)))
 		{
 			m_bUIRender = false;
@@ -171,7 +167,6 @@ void CUI_Tip::Tick(_double TimeDelta)
 				if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 				{
 					m_YangyanDescList[9].OnRect = true;
-					pActiveCharacter->Set_OnControl(true);
 				}
 			}
 			else
@@ -205,8 +200,7 @@ void CUI_Tip::Tick(_double TimeDelta)
 		CGameMode* pGM = CGameMode::GetInstance();
 		pGM->SetMouseActive(true);
 		m_pUIMouse->Set_RenderMouse(true);
-		CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-		pActiveCharacter->Set_OnControl(false);
+
 		if ((true == m_bUIRender) && (AddAlphaW(&m_ChixiaDescList, TimeDelta)))
 		{
 			m_bUIRender = false;
@@ -228,7 +222,6 @@ void CUI_Tip::Tick(_double TimeDelta)
 				ColorP(&m_ChixiaDescList[10], _float4(150.f, -30.f, -140.f, 0.f), TimeDelta);
 				if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 				{
-					pActiveCharacter->Set_OnControl(true);
 					m_ChixiaDescList[9].OnRect = true;
 				}
 			}

@@ -1784,16 +1784,12 @@ HRESULT CUI_Panhua::Setup_MenuShader(_uint index)
 
 void CUI_Panhua::Set_SituMeet()
 {
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-	pActiveCharacter->Set_OnControl(false);
 	SetState(ACTIVE);
 	Situation = PANSITUINDEX::MEET;
 }
 
 void CUI_Panhua::Set_END()
 {
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-	pActiveCharacter->Set_OnControl(true);
 	Situation = PANSITUINDEX::PANEND;
 	m_Count = 0;
 	m_InMenuRenderStart = true;

@@ -105,7 +105,6 @@ public:
 
 
 private:
-	class CPlayerState*			m_pPlayerStateClass = { nullptr };
 	class CUI_Mouse*		m_pUIMouse = { nullptr };
 	class CUI_MainScreen*	m_pUIMain = { nullptr };
 	class CUI_Minimap*		m_pUIMinimap = { nullptr };
