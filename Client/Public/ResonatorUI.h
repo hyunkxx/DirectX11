@@ -111,7 +111,8 @@ private:
 
 private: //Ortho Desc
 	_float4x4 m_ViewMatrix, m_ProjMatrix;
-
+	_float4x4 m_WorldMatrix;
+	_float    m_fParticleTime = { 0.f };
 private:
 	ORTHO_DESC m_OrthoBackground;
 	_float m_fBackgroundAlpha = 1.f;

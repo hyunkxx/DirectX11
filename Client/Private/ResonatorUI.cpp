@@ -17,6 +17,8 @@
 #include "EchoSystem.h"
 #include "Layer.h"
 
+#include "Effect.h"
+
 CResonatorUI::CResonatorUI(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -1086,6 +1088,13 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	itemDesc.iAmount = 5;
 	m_pInven->PushItemDesc(itemDesc);
 
+	_matrix IdenMatrix = XMMatrixIdentity();
+	
+	XMStoreFloat4x4(&m_WorldMatrix, IdenMatrix);
+	m_WorldMatrix._41 = -999.f;
+	m_WorldMatrix._42 = 0.f;
+	m_WorldMatrix._43 = -1000.f;
+
 	return S_OK;
 }
 
@@ -1101,6 +1110,17 @@ void CResonatorUI::Tick(_double TimeDelta)
 
 	if (!m_bRender)
 		return;
+
+	m_fParticleTime += (_float)TimeDelta;
+	if (m_fParticleTime > 2.f)
+	{
+		CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"UI_Particle_Effect", EFFECT_ID::COMON);
+		if (nullptr != pEffect)
+		{
+			pEffect->Play_Effect(&m_WorldMatrix, false);
+		}
+		m_fParticleTime = 0.f;
+	}
 
 	stateUpdate(TimeDelta);
 	elemAlphaUpdate(TimeDelta);
@@ -2599,7 +2619,22 @@ void CResonatorUI::upgradeCharacter(_uint iCharacterType)
 		m_pInven->EraseItem(CInventory::INVEN_MATERIAL, ITEM::EXP0 + i, m_iUseAmount[i]);
 
 	m_pInven->DeleteCoin(m_iTotalConsume);
+
+	_int iPrevLevel = m_pPlayerState->Get_CharState_byChar(iCharacterType)->iCurLevel;
+
 	m_pPlayerState->AddExp((CPlayerState::CHARACTERS)iCharacterType, m_fTotalExp);
+	_int iCurLevel = m_pPlayerState->Get_CharState_byChar(iCharacterType)->iCurLevel;
+
+	if (iPrevLevel != iCurLevel)
+	{
+		CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"P_Level_Up_Effect",EFFECT_ID::COMON);
+		if (nullptr != pEffect)
+		{
+			pEffect->Play_Effect(&m_WorldMatrix , false);
+		}
+			
+	}
+
 }
 
 HRESULT CResonatorUI::weaponStateRender()
