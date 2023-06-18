@@ -104,6 +104,8 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		Set_END();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+
 	// 레벨에 따라 보상 아이템, 수치 설정
 	switch (SettingLevel)
 	{
@@ -243,6 +245,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pActiveCharacter->Set_OnControl(false);
 				m_MerchantList[0].OnRect = true;
 			}
 		}
@@ -302,6 +305,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pActiveCharacter->Set_OnControl(true);
 				m_MenuList[3].OnRect = true;
 			}
 		}
@@ -1565,6 +1569,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			m_CommonList[10].iTexNum = 12;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pActiveCharacter->Set_OnControl(true);
 				m_CommonList[10].OnRect = true;
 			}
 		}
@@ -1586,6 +1591,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 	break;
 	case Client::CUI_MerchantMen::BYE:
 	{
+		pActiveCharacter->Set_OnControl(true);
 		m_pUIMouse->Set_RenderMouse(false);
 		pGM->SetMouseActive(false);
 		SetState(DISABLE);
@@ -1597,16 +1603,12 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 
 void CUI_MerchantMen::Set_SituMeet()
 {
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-	pActiveCharacter->Set_OnControl(false);
 	SetState(ACTIVE);
 	Situation = MENSITUINDEX::MEET;
 }
 
 void CUI_MerchantMen::Set_END()
 {
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-	pActiveCharacter->Set_OnControl(true);
 	Situation = MENSITUINDEX::MENEND;
 	m_Count = 0;
 	m_InMenuRenderStart = true;

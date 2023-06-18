@@ -110,35 +110,7 @@ void CUI_MainScreen::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	if (pGameInstance->InputKey(DIK_NUMPADENTER) == KEY_STATE::TAP) // 임시
-	{/*
-	 if (nullptr == m_pUIMen)
-	 return;
-	 m_pUIMen->SetState(ACTIVE);
-	 m_pUIMen->Set_SituMeet();*/
-		m_pPlayerStateClass->AddPlayer();
-	}
-	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::TAP) // 임시
-	{
-		if (nullptr == m_pUISovi)
-			return;
-		m_pUISovi->SetState(ACTIVE);
-		m_pUISovi->Set_SituMeet();
-	}
-	if (pGameInstance->InputKey(DIK_NUMPADMINUS) == KEY_STATE::TAP) // 임시
-	{
-		if (nullptr == m_pUIPanhua)
-			return;
-		m_pUIPanhua->SetState(ACTIVE);
-		m_pUIPanhua->Set_SituMeet();
-	}
-	if (pGameInstance->InputKey(DIK_NUMLOCK) == KEY_STATE::TAP) // 임시
-	{
-		if (nullptr == m_pUICook)
-			return;
-		m_pUICook->SetState(ACTIVE);
-		m_pUICook->Set_SituMeet();
-	}
+	
 	OtherobjIsActive(TimeDelta);
 
 	SetPlayer(); // 각 슬롯에 맞는 플레이어 색깔 설정, 스킬 텍스처 설정, 보유캐릭터
@@ -1032,8 +1004,8 @@ void	CUI_MainScreen::Damage(_float Damage)
 	//{
 	fFontColor = _float4{ 255.f, -255.f, -255.f, 255.f };
 	//}
-	_float3 PlayerPos;
-	XMStoreFloat3(&PlayerPos, m_pPlayer->Get_Position());
+	_float4 PlayerPos;
+	XMStoreFloat4(&PlayerPos, m_pPlayerStateClass->GetTransform()->Get_State(CTransform::STATE_POSITION));
 
 	if (0 != Damage1000)
 	{
@@ -1045,21 +1017,21 @@ void	CUI_MainScreen::Damage(_float Damage)
 		DamageList.push_back(Desc1000);
 
 		DAMAGEDESC Desc100;
-		Desc100.Pos = _float3{ Desc1000.Pos.x + (15.f) , Desc1000.Pos.y, 0.f };
+		Desc100.Pos = _float4{ Desc1000.Pos.x + (15.f) , Desc1000.Pos.y, 0.f , 1.f};
 		Desc100.Size = _float2{ 30.f, 30.f };
 		Desc100.TextureNum = -Damage100 + 33;
 		Desc100.Color = fFontColor;
 		DamageList.push_back(Desc100);
 
 		DAMAGEDESC Desc10;
-		Desc10.Pos = _float3{ Desc1000.Pos.x + (30.f) , Desc1000.Pos.y, 0.f };
+		Desc10.Pos = _float4{ Desc1000.Pos.x + (30.f) , Desc1000.Pos.y, 0.f, 1.f };
 		Desc10.Size = _float2{ 30.f, 30.f };
 		Desc10.TextureNum = -Damage10 + 33;
 		Desc10.Color = fFontColor;
 		DamageList.push_back(Desc10);
 
 		DAMAGEDESC Desc1;
-		Desc1.Pos = _float3{ Desc1000.Pos.x + (48.f), Desc1000.Pos.y, 0.f };
+		Desc1.Pos = _float4{ Desc1000.Pos.x + (48.f), Desc1000.Pos.y, 0.f , 1.f };
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
 		Desc1.Color = fFontColor;
@@ -1077,14 +1049,14 @@ void	CUI_MainScreen::Damage(_float Damage)
 		DamageList.push_back(Desc100);
 
 		DAMAGEDESC Desc10;
-		Desc10.Pos = _float3{ Desc100.Pos.x + (15.f) , Desc100.Pos.y ,0.f };
+		Desc10.Pos = _float4{ Desc100.Pos.x + (15.f) , Desc100.Pos.y ,0.f, 1.f };
 		Desc10.Size = _float2{ 30.f, 30.f };
 		Desc10.TextureNum = -Damage10 + 33;
 		Desc10.Color = fFontColor;
 		DamageList.push_back(Desc10);
 
 		DAMAGEDESC Desc1;
-		Desc1.Pos = _float3{ Desc100.Pos.x + (33.f), Desc100.Pos.y, 0.f };
+		Desc1.Pos = _float4{ Desc100.Pos.x + (33.f), Desc100.Pos.y, 0.f , 1.f };
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
 		Desc1.Color = fFontColor;
@@ -1101,7 +1073,7 @@ void	CUI_MainScreen::Damage(_float Damage)
 		DamageList.push_back(Desc10);
 
 		DAMAGEDESC Desc1;
-		Desc1.Pos = _float3{ Desc10.Pos.x + (18.f), Desc10.Pos.y, 0.f };
+		Desc1.Pos = _float4{ Desc10.Pos.x + (18.f), Desc10.Pos.y, 0.f , 1.f };
 		Desc1.Size = _float2{ 30.f, 30.f };
 		Desc1.TextureNum = -Damage1 + 33;
 		Desc1.Color = fFontColor;

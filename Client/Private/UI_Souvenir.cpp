@@ -376,6 +376,8 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+	
 	switch (Situation)
 	{
 	case Client::CUI_Souvenir::MEET:
@@ -395,6 +397,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pActiveCharacter->Set_OnControl(false);
 				m_SouList[0].OnRect = true;
 			}
 		}
@@ -475,6 +478,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 		{
 			if (MinusAlphaW(&m_MenuList, TimeDelta))
 			{
+				pActiveCharacter->Set_OnControl(true);
 				m_MenuRenderStart = true;
 				m_MenuList[3].OnRect = false;
 				SetState(DISABLE);
@@ -3077,16 +3081,12 @@ void CUI_Souvenir::Save()
 
 void CUI_Souvenir::Set_SituMeet()
 {
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-	pActiveCharacter->Set_OnControl(false);
 	SetState(ACTIVE);
 	Situation = SOUSITUINDEX::MEET; 
 }
 
 void CUI_Souvenir::Set_END()
 {
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-	pActiveCharacter->Set_OnControl(true);
 	Situation = SOUSITUINDEX::SOUEND;
 	m_Count = 0;
 	m_InMenuRenderStart = true;

@@ -53,35 +53,24 @@ HRESULT CUI_Minimap::Initialize(void * pArg)
 void CUI_Minimap::Start()
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	m_pPlayer = static_cast<CP_PlayerGirl*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
-	m_pPlayer1 = static_cast<CP_Yangyang*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
-	m_pPlayer2 = static_cast<CP_Chixia*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("Player")));
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pTerminalUI = static_cast<CTerminalUI*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Terminal"));
-	//m_pTip = static_cast<CUI_Tip*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
-	//m_pUIMen = static_cast<CUI_MerchantMen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MerchantMen"));
-	//m_pUISovi = static_cast<CUI_Souvenir*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Souvenir"));
-	//m_pUIPanhua = static_cast<CUI_Panhua*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Panhua"));
-	//m_pUICook = static_cast<CUI_Cooking*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Cooking"));
 }
 
 void CUI_Minimap::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+	CTransform* pComponent = static_cast<CTransform*>(pActiveCharacter->Find_Component(TEXT("Com_Transform")));
 	OtherobjIsActive();
 
 	// 미니맵 
 	// 가져온 오브젝트들이 준비가 되면 랜더 돌릴 수 있음-> 랜더조건
-	eElement = m_pPlayerStateClass->Get_MainCharacterState()->eElement;
-	switch (eElement)
-	{
-	case ELMT_SPECTRA:
-	{
-		if (nullptr != m_pPlayer)
+		if (nullptr != pComponent)
 		{
 			m_bNull = false;
-			CTransform* pComponent = static_cast<CTransform*>(m_pPlayer->Find_Component(TEXT("Com_Transform")));
+			//CTransform* pComponent = static_cast<CTransform*>(m_pPlayer->Find_Component(TEXT("Com_Transform")));
 			XMStoreFloat4(&fPlayerPos, pComponent->Get_State(CTransform::STATE_POSITION));
 			//미니맵에 출력될 텍스처 uv의 전체 지형에서의 pos X,Z값
 			// 플레이어 pos 기준으로 정해줌
@@ -165,193 +154,7 @@ void CUI_Minimap::Tick(_double TimeDelta)
 				}
 			}
 		}
-	}
-		break;
-
-	case ELMT_CONDUCTO:
-	{
-		if (nullptr != m_pPlayer1)
-		{
-			m_bNull = false;
-			CTransform* pComponent = static_cast<CTransform*>(m_pPlayer1->Find_Component(TEXT("Com_Transform")));
-			XMStoreFloat4(&fPlayerPos, pComponent->Get_State(CTransform::STATE_POSITION));
-			//미니맵에 출력될 텍스처 uv의 전체 지형에서의 pos X,Z값
-			// 플레이어 pos 기준으로 정해줌
-			m_fPointLU.x = fPlayerPos.x - 200.f;
-			m_fPointLU.y = fPlayerPos.z + 200.f;
-			m_fPointRB.x = fPlayerPos.x + 200.f;
-			m_fPointRB.y = fPlayerPos.z - 200.f;
-
-			// 스크린좌표상의 uv구하기, 자른 사진과 지형이 1:1이라는 상황
-			// dx 좌표계와 uv 좌표계의 y+ 방향이 반대라서 y값은 -곱해줌
-			m_TerrainLU.x = m_fPointLU.x / m_fWidthMiniMap + 0.5f;
-			m_TerrainLU.y = -m_fPointLU.y / m_fHeightMiniMap + 0.5f;
-			m_TerrainRB.x = m_fPointRB.x / m_fWidthMiniMap + 0.5f;
-			m_TerrainRB.y = -m_fPointRB.y / m_fHeightMiniMap + 0.5f;
-
-			XMStoreFloat4x4(&m_WorldMatrixMiniMap, XMMatrixScaling(m_fWidthMiniMap, m_fHeightMiniMap, 1.f) * XMMatrixTranslation(m_fXMiniMap, m_fYMiniMap, m_fZMiniMap));
-
-
-
-			for (_uint i = 0; i < 2; ++i)
-			{
-				m_fDefaultIconPointLU[i].x = m_fPointLU.x;
-				m_fDefaultIconPointLU[i].y = m_fPointLU.y;
-				m_fDefaultIconPointRB[i].x = m_fPointRB.x;
-				m_fDefaultIconPointRB[i].y = m_fPointRB.y;
-
-				m_DefaultIconLU[i].x = m_TerrainLU.x;
-				m_DefaultIconLU[i].y = m_TerrainLU.y;
-				m_DefaultIconRB[i].x = m_TerrainRB.x;
-				m_DefaultIconRB[i].y = m_TerrainRB.y;
-			}
-
-			//미니맵아이콘
-			for (auto& pDesc : m_IconDescList)
-			{
-				_vector vPlayerPos, vWorldPos;
-				vWorldPos = XMVectorSet(pDesc.fX, pDesc.fY, pDesc.fZ, 1.f);
-				vPlayerPos = XMLoadFloat4(&fPlayerPos);
-				_float X = XMVectorGetX(vPlayerPos - vWorldPos);
-				_float Y = XMVectorGetZ(vPlayerPos - vWorldPos);
-				pDesc.Dist = XMVectorGetX(XMVector4Length(vPlayerPos - vWorldPos));
-
-				if ((190.f <= pDesc.Dist) || ((_int)pDesc.IconLU.x == -1))
-					pDesc.bRender = false;
-				if ((190.f > pDesc.Dist) && ((_int)pDesc.IconLU.x != -1))
-					pDesc.bRender = true;
-
-				XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)
-					* XMMatrixTranslation(-540.f - X * (m_fWidthMiniMap / g_iWinSizeX) * 1.5f
-						, 260.f - Y  * (m_fHeightMiniMap / g_iWinSizeY) * 1.5f, 0.01f));
-			}
-
-
-
-			// 플레이어 아이콘 돌리는 기능
-			{
-				_float4x4 PlayerWorldMat = pComponent->Get_WorldMatrix();
-				_vector vPlayerLook = XMLoadFloat4x4(&PlayerWorldMat).r[2];
-				XMVectorSetY(vPlayerLook, 0.f);
-				vPlayerLook = XMVector3Normalize(vPlayerLook); //플레이어 룩 노멀라이즈
-				_float Get = XMVectorGetX(XMVector3Dot(XMVectorSet(0.f, 0.f, 1.f, 0.f), vPlayerLook)); // 회전각도
-
-				_float fRadian = acosf(Get);
-				_float Angle = (fRadian*180.f) / 3.141592f;
-				if (0.f < XMVectorGetX(vPlayerLook))
-				{
-					fRadian *= -1.f;
-				}
-
-				if (0.99 > Get)
-				{
-
-					_matrix ScaleMat = XMMatrixScaling(m_fWidthDefaultIcon[0], m_fHeightDefaultIcon[0], 1.f);
-
-					_matrix RotaMat = XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), fRadian);
-
-					_matrix TransMat = XMMatrixTranslation(m_fXDefaultIcon[0], m_fYDefaultIcon[0], m_fZDefaultIcon[0]);
-
-
-					XMStoreFloat4x4(&m_WorldMatrixDefaultIcon[0], ScaleMat * RotaMat * TransMat);
-				}
-			}
-		}
-	}
-		break;
-
-	case ELMT_FUSION:
-	{
-		if (nullptr != m_pPlayer2)
-		{
-			m_bNull = false;
-			CTransform* pComponent = static_cast<CTransform*>(m_pPlayer2->Find_Component(TEXT("Com_Transform")));
-			XMStoreFloat4(&fPlayerPos, pComponent->Get_State(CTransform::STATE_POSITION));
-			//미니맵에 출력될 텍스처 uv의 전체 지형에서의 pos X,Z값
-			// 플레이어 pos 기준으로 정해줌
-			m_fPointLU.x = fPlayerPos.x - 200.f;
-			m_fPointLU.y = fPlayerPos.z + 200.f;
-			m_fPointRB.x = fPlayerPos.x + 200.f;
-			m_fPointRB.y = fPlayerPos.z - 200.f;
-
-			// 스크린좌표상의 uv구하기, 자른 사진과 지형이 1:1이라는 상황
-			// dx 좌표계와 uv 좌표계의 y+ 방향이 반대라서 y값은 -곱해줌
-			m_TerrainLU.x = m_fPointLU.x / m_fWidthMiniMap + 0.5f;
-			m_TerrainLU.y = -m_fPointLU.y / m_fHeightMiniMap + 0.5f;
-			m_TerrainRB.x = m_fPointRB.x / m_fWidthMiniMap + 0.5f;
-			m_TerrainRB.y = -m_fPointRB.y / m_fHeightMiniMap + 0.5f;
-
-			XMStoreFloat4x4(&m_WorldMatrixMiniMap, XMMatrixScaling(m_fWidthMiniMap, m_fHeightMiniMap, 1.f) * XMMatrixTranslation(m_fXMiniMap, m_fYMiniMap, m_fZMiniMap));
-
-
-
-			for (_uint i = 0; i < 2; ++i)
-			{
-				m_fDefaultIconPointLU[i].x = m_fPointLU.x;
-				m_fDefaultIconPointLU[i].y = m_fPointLU.y;
-				m_fDefaultIconPointRB[i].x = m_fPointRB.x;
-				m_fDefaultIconPointRB[i].y = m_fPointRB.y;
-
-				m_DefaultIconLU[i].x = m_TerrainLU.x;
-				m_DefaultIconLU[i].y = m_TerrainLU.y;
-				m_DefaultIconRB[i].x = m_TerrainRB.x;
-				m_DefaultIconRB[i].y = m_TerrainRB.y;
-			}
-
-			//미니맵아이콘
-			for (auto& pDesc : m_IconDescList)
-			{
-				_vector vPlayerPos, vWorldPos;
-				vWorldPos = XMVectorSet(pDesc.fX, pDesc.fY, pDesc.fZ, 1.f);
-				vPlayerPos = XMLoadFloat4(&fPlayerPos);
-				_float X = XMVectorGetX(vPlayerPos - vWorldPos);
-				_float Y = XMVectorGetZ(vPlayerPos - vWorldPos);
-				pDesc.Dist = XMVectorGetX(XMVector4Length(vPlayerPos - vWorldPos));
-
-				if ((190.f <= pDesc.Dist) || ((_int)pDesc.IconLU.x == -1))
-					pDesc.bRender = false;
-				if ((190.f > pDesc.Dist) && ((_int)pDesc.IconLU.x != -1))
-					pDesc.bRender = true;
-
-				XMStoreFloat4x4(&(pDesc.WorldMatrix), XMMatrixScaling(pDesc.fWidth, pDesc.fHeight, 1.f)
-					* XMMatrixTranslation(-540.f - X * (m_fWidthMiniMap / g_iWinSizeX) * 1.5f
-						, 260.f - Y  * (m_fHeightMiniMap / g_iWinSizeY) * 1.5f, 0.01f));
-			}
-
-
-
-			// 플레이어 아이콘 돌리는 기능
-			{
-				_float4x4 PlayerWorldMat = pComponent->Get_WorldMatrix();
-				_vector vPlayerLook = XMLoadFloat4x4(&PlayerWorldMat).r[2];
-				XMVectorSetY(vPlayerLook, 0.f);
-				vPlayerLook = XMVector3Normalize(vPlayerLook); //플레이어 룩 노멀라이즈
-				_float Get = XMVectorGetX(XMVector3Dot(XMVectorSet(0.f, 0.f, 1.f, 0.f), vPlayerLook)); // 회전각도
-
-				_float fRadian = acosf(Get);
-				_float Angle = (fRadian*180.f) / 3.141592f;
-				if (0.f < XMVectorGetX(vPlayerLook))
-				{
-					fRadian *= -1.f;
-				}
-
-				if (0.99 > Get)
-				{
-
-					_matrix ScaleMat = XMMatrixScaling(m_fWidthDefaultIcon[0], m_fHeightDefaultIcon[0], 1.f);
-
-					_matrix RotaMat = XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), fRadian);
-
-					_matrix TransMat = XMMatrixTranslation(m_fXDefaultIcon[0], m_fYDefaultIcon[0], m_fZDefaultIcon[0]);
-
-
-					XMStoreFloat4x4(&m_WorldMatrixDefaultIcon[0], ScaleMat * RotaMat * TransMat);
-				}
-			}
-		}
-	}
-		break;
-	}
+	
 	
 		// 시야범위 돌리는 기능
 		{

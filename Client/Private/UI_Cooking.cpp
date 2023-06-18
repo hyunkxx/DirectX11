@@ -194,6 +194,8 @@ void CUI_Cooking::Tick(_double TimeDelta)
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+
 	switch (Situation)
 	{
 	case Client::CUI_Cooking::MEET:
@@ -212,6 +214,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pActiveCharacter->Set_OnControl(false);
 				m_Cookist[0].OnRect = true;
 			}
 		}
@@ -304,6 +307,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 			m_CommonList[9].iTexNum = 8;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pActiveCharacter->Set_OnControl(true);
 				m_MenuOutStart = true;
 			}
 		}
@@ -429,7 +433,6 @@ void CUI_Cooking::Tick(_double TimeDelta)
 	{
 		// 라스트  수량
 		SettingTotal(MakeNum);
-		// 여기서 랜더 안되면 랜더 스위치에 READYCONFRIM 추가해주고 랜더함수들 추가하기
 		Situation = CUI_Cooking::CONFRIM;
 	}
 	case Client::CUI_Cooking::CONFRIM:
@@ -3727,16 +3730,12 @@ HRESULT CUI_Cooking::Add_Components()
 
 void CUI_Cooking::Set_SituMeet()
 {
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-	pActiveCharacter->Set_OnControl(false);
 	SetState(ACTIVE);
 	Situation = COOKSITUINDEX::MEET;
 }
 
 void CUI_Cooking::Set_END()
 {
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-	pActiveCharacter->Set_OnControl(true);
 	Situation = COOKSITUINDEX::COOKEND;
 	m_Count = 0;
 	m_MenuRenderStart = true;

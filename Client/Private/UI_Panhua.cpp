@@ -531,6 +531,8 @@ void CUI_Panhua::Tick(_double TimeDelta)
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+
 	switch (Situation)
 	{
 	case Client::CUI_Panhua::MEET:
@@ -557,6 +559,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		{
 			if (MinusAlphaW(&m_PanList, TimeDelta))
 			{
+				pActiveCharacter->Set_OnControl(false);
 				m_PanList[0].OnRect = false;
 				Situation = CUI_Panhua::MENU;
 			}
@@ -609,6 +612,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
 				m_MenuList[3].OnRect = true;
+				pActiveCharacter->Set_OnControl(true);
 			}
 		}
 		else
@@ -1784,16 +1788,12 @@ HRESULT CUI_Panhua::Setup_MenuShader(_uint index)
 
 void CUI_Panhua::Set_SituMeet()
 {
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-	pActiveCharacter->Set_OnControl(false);
 	SetState(ACTIVE);
 	Situation = PANSITUINDEX::MEET;
 }
 
 void CUI_Panhua::Set_END()
 {
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-	pActiveCharacter->Set_OnControl(true);
 	Situation = PANSITUINDEX::PANEND;
 	m_Count = 0;
 	m_InMenuRenderStart = true;

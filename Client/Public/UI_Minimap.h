@@ -144,15 +144,7 @@ private:
 	_int  Index = 0;
 
 private:
-	class CP_PlayerGirl*		m_pPlayer = { nullptr };
-	class CP_Yangyang*			m_pPlayer1 = { nullptr };
-	class CP_Chixia*			m_pPlayer2 = { nullptr };
 	class CTerminalUI*			m_pTerminalUI = { nullptr };
-	class CUI_Tip*				m_pTip = { nullptr };
-	class CUI_MerchantMen*		m_pUIMen = { nullptr };
-	class CUI_Souvenir*			m_pUISovi = { nullptr };
-	class CUI_Panhua*			m_pUIPanhua = { nullptr };
-	class CUI_Cooking*			m_pUICook = { nullptr };
 	class CPlayerState*			m_pPlayerStateClass = { nullptr };
 	ELEMENT		eElement = { ELEMENT::ELMT_SPECTRA };
 private:
