@@ -2365,8 +2365,8 @@ void CUI_Panhua::MouseMove()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	
 	mouse = pGameInstance->InputMouseMove(DIMM_Y);
-	(134.f > m_CommonList[11].fY ? m_CommonList[11].fY += -mouse*0.7f : m_CommonList[11].fY = 134.f);
-	(-156.f <= m_CommonList[11].fY ? m_CommonList[11].fY += -mouse*0.7f : m_CommonList[11].fY = -156.f);
+	(134.f > m_CommonList[11].fY ? m_CommonList[11].fY += -mouse*0.5f : m_CommonList[11].fY = 134.f);
+	(-156.f <= m_CommonList[11].fY ? m_CommonList[11].fY += -mouse*0.5f : m_CommonList[11].fY = -156.f);
 
 
 	XMStoreFloat4x4(&(m_CommonList[11].WorldMatrix), XMMatrixScaling(m_CommonList[11].fWidth, m_CommonList[11].fHeight, 1.f)
