@@ -961,7 +961,7 @@ void CUI_MainScreen::Font(_double TimeDelta)
 		list<DAMAGEDESC>::iterator iter = DamageList.begin();
 		for (iter; iter != DamageList.end();)
 		{
-			if (-255.f > iter->Color.w)
+			if (0.f > iter->Color.w)
 			{
 				iter = DamageList.erase(iter);
 			}
@@ -974,14 +974,14 @@ void CUI_MainScreen::Font(_double TimeDelta)
 
 	for (auto& Desc : DamageList)
 	{
-		Desc.Color.w -= (_float)TimeDelta * 150.f;
+		Desc.Color.w -= (_float)TimeDelta * 300.f;
 
-		if (-20.f < Desc.Color.w)
+		if (220.f < Desc.Color.w)
 		{
-			Desc.Size.x += (_float)TimeDelta * 200.f;
-			Desc.Size.y += (_float)TimeDelta * 200.f;
+			Desc.Size.x += (_float)TimeDelta * 50.f;
+			Desc.Size.y += (_float)TimeDelta * 50.f;
 		}
-		if ((-20.f > Desc.Color.w) && (-30.f > Desc.Color.w))
+		if ((220.f > Desc.Color.w) && (160.f > Desc.Color.w))
 		{
 			if (30.f >= Desc.Size.x)
 			{
@@ -990,26 +990,26 @@ void CUI_MainScreen::Font(_double TimeDelta)
 			}
 			else
 			{
-				Desc.Size.x -= (_float)TimeDelta * 400.f;
-				Desc.Size.y -= (_float)TimeDelta * 400.f;
+				Desc.Size.x -= (_float)TimeDelta * 50.f;
+				Desc.Size.y -= (_float)TimeDelta * 50.f;
 			}
 		}
 
 
-		if (-30.f < Desc.Color.w)
+		if (220.f < Desc.Color.w)
 		{
 			Acc += (_float)TimeDelta *1000.f;
 			Desc.Pos.x += sinf(XMConvertToRadians(Acc) + 2.f);
 			Desc.Pos.y += sinf(XMConvertToRadians(Acc));
 		}
-		if (-100.f < Desc.Color.w)
+		if (140.f < Desc.Color.w)
 		{
 
-			Desc.Pos.y += (_float)TimeDelta * 40.f;
+			Desc.Pos.y += (_float)TimeDelta * 50.f;
 		}
 		if (-180.f >= Desc.Color.w)
 		{
-			Desc.Pos.y += (_float)TimeDelta * 100.f;
+			Desc.Pos.y += (_float)TimeDelta * 80.f;
 		}
 
 		XMStoreFloat4x4(&(Desc.WorldMat), XMMatrixScaling(Desc.Size.x, Desc.Size.y, 0.f)
@@ -1029,10 +1029,9 @@ void	CUI_MainScreen::Damage(_float Damage)
 	Damage10 = iDamage / 10;
 	Damage1 = iDamage % 10;
 
-	if (Damage < -40)
-	{
-		fFontColor = _float4{ 255.f, -255.f, -255.f,0.f };
-	}
+	
+	fFontColor = _float4{ 255.f, -255.f, -255.f, 255.f };
+	
 	_float3 PlayerPos;
 	XMStoreFloat3(&PlayerPos, m_pPlayer->Get_Position());
 

@@ -6,6 +6,7 @@
 #include "GameInstance.h"
 #include "PlayerState.h"
 #include "UI_Souvenir.h"
+#include "UI_Minimap.h"
 
 CShopGirl::CShopGirl(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CNonPlayer(pDevice, pContext)
@@ -44,6 +45,11 @@ void CShopGirl::Start()
 
 	m_pPlayerState = static_cast<CPlayerState*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	//m_pTargetUI = static_cast<CUI_Souvenir*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+
+	m_pUIIcon = static_cast<CUI_Minimap*>(pGI->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
+	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::SOUVENIR);
+	m_pUIIcon->SetRender(m_UIIndex, false);
+
 }
 
 void CShopGirl::PreTick(_double TimeDelta)
@@ -76,6 +82,13 @@ void CShopGirl::Tick(_double TimeDelta)
 
 	pGI->AddCollider(m_pCollider, COLL_NPC);
 	m_pCollider->Update(XMLoadFloat4x4(&m_pMainTransform->Get_WorldMatrix()));
+
+	if (true == this->IsActive())
+	{
+		if (false == m_pUIIcon->GetRenderState(m_UIIndex))
+			m_pUIIcon->SetRender(m_UIIndex, true);
+		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	}
 }
 
 void CShopGirl::LateTick(_double TimeDelta)
@@ -282,6 +295,7 @@ void CShopGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 		//UI Active
 		PushAnimation(ANIM_STATE::ANIM_TALK);
 	}
+	m_pTargetUI->Set_SituMeet();
 }
 
 void CShopGirl::OnCollisionStay(CCollider * src, CCollider * dest)
@@ -309,4 +323,5 @@ void CShopGirl::OnCollisionStay(CCollider * src, CCollider * dest)
 
 void CShopGirl::OnCollisionExit(CCollider * src, CCollider * dest)
 {
+	m_pTargetUI->Set_END();
 }

@@ -521,14 +521,14 @@ void CUI_Panhua::Start()
 	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
 	
 	SetState(DISABLE);
-
-	// 들어오기, 나가기 
-	/* NPC랑 플레이어랑 충돌하면 Setstate()로 활성화 , 비활성화*/
 }
 
 void CUI_Panhua::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+	if (m_NPCbye)
+		Set_END();
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
 	switch (Situation)
@@ -1780,6 +1780,123 @@ HRESULT CUI_Panhua::Setup_MenuShader(_uint index)
 	m_iPass = m_MenuList[index].iPass;
 
 	return S_OK;
+}
+
+void CUI_Panhua::Set_SituMeet()
+{
+	SetState(ACTIVE);
+	Situation = PANSITUINDEX::MEET;
+}
+
+void CUI_Panhua::Set_END()
+{
+	Situation = PANSITUINDEX::PANEND;
+	m_Count = 0;
+	m_InMenuRenderStart = true;
+	m_MenuRenderStart = true;
+	m_DetailRenderStart = true;
+	m_ConfirmRenderStart = true;
+	m_bOverPurchase = false;
+	pSelectSlot = nullptr;
+	pLimibuycount = nullptr;
+	m_bMouseMoveStart = false;
+	mouse = 0l;
+	BuyNum = 0;
+	CurrentMoney = 0;
+	CurrentOwn = 0;
+	iTotal = 0;
+	m_NPCbye = false;
+	for (auto& Desc : m_PanList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_MenuList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_CommonList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_DetailsList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_FinalList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_0Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_1Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_2Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_3Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_4Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_5Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_6Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_7Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_8Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_9Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_10Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_11Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_12Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_13Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_14Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_15Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_16Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+
+
+	SetState(DISABLE);
 }
 
 void CUI_Panhua::IsMouseinRect()

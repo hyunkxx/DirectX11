@@ -90,24 +90,18 @@ void CUI_MerchantMen::Start()
 	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
-	//m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel; // 나중에 주석 풀기
-	
+	m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel; 
+	ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET);
+	CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE);
+
 	SetState(DISABLE);
-
-	m_pInven->AddItem(ITEM::CASKET, 0);
-	m_pInven->AddItem(ITEM::CASKETPIECE, 9);
-	ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET); // 나중에 주석 풀기
-	CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE); // 나중에 주석 풀기
-
-
-
-	// 들어오기, 나가기 
-	/* NPC랑 플레이어랑 충돌하면 Setstate()로 활성화 , 비활성화*/
 }
 
 void CUI_MerchantMen::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+	if (m_NPCbye)
+		Set_END();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
 	// 레벨에 따라 보상 아이템, 수치 설정
@@ -269,10 +263,10 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 	break;
 	case Client::CUI_MerchantMen::MENU:
 	{
-		if (m_MenuRnderStart)
+		if (m_MenuRenderStart)
 		{
 			if (AddAlphaW(&m_MenuList, TimeDelta))
-				m_MenuRnderStart = false;
+				m_MenuRenderStart = false;
 		}
 		if (SelectUI(&m_MenuList[0])) // 랜더 도중에 메뉴에 마우스를 올리면
 		{
@@ -320,7 +314,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		{
 			if (MinusAlphaW(&m_MenuList, TimeDelta))
 			{
-				m_MenuRnderStart = true;
+				m_MenuRenderStart = true;
 				m_MenuList[0].OnRect = false;
 				Situation = CUI_MerchantMen::INMENU;
 			}
@@ -329,7 +323,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		{
 			if (MinusAlphaW(&m_MenuList, TimeDelta))
 			{
-				m_MenuRnderStart = true;
+				m_MenuRenderStart = true;
 				m_MenuList[3].OnRect = false;
 				Situation = CUI_MerchantMen::BYE;
 			}
@@ -339,7 +333,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 	case Client::CUI_MerchantMen::INMENU:
 	{
 		// 창 열릴 때 전체 랜더on
-		if (m_InMenuRnderStart)
+		if (m_InMenuRenderStart)
 			InMenuOpen(TimeDelta); // m_InMenuRnderStart 를 false로 
 		else
 		{
@@ -351,7 +345,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			{
 				if (m_CircleSTurntart)
 				{
-					Degree = 360.f;
+					Degree = 432.f;
 					SubDegree += (_float)TimeDelta * 80.f;
 					if (SubDegree < Degree)
 					{
@@ -1582,7 +1576,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			if (InMenuEnd(TimeDelta))
 			{
 				Situation = CUI_MerchantMen::BYE;
-				m_InMenuRnderStart = true; //리셋
+				m_InMenuRenderStart = true; //리셋
 				m_CommonList[10].OnRect = false;
 				SubDegree = 0.f;
 				Degree = 0.f;
@@ -1601,6 +1595,103 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 
 }
 
+void CUI_MerchantMen::Set_SituMeet()
+{
+	SetState(ACTIVE);
+	Situation = MENSITUINDEX::MEET;
+}
+
+void CUI_MerchantMen::Set_END()
+{
+	Situation = MENSITUINDEX::MENEND;
+	m_Count = 0;
+	m_InMenuRenderStart = true;
+	m_MenuRenderStart = true;
+	m_CircleSTurntart = true;
+	m_CircleLevDown = false;
+	m_CircleSLevUp = false;
+	m_MsgboxRender = false;
+	m_RewardboxRender = false;
+	m_CancelMsgbox = false;
+	Degree = 0.f;
+	SubDegree = 0.f;
+	SettingLevel = 10;
+	m_NPCbye = false;
+	for (auto& Desc : m_CommonList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_LevelList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_CircleList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_LButtonList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_RButtonList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_CasketList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_OwnList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_DeliverList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_0RewardList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_1RewardList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_2RewardList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_3RewardList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_4RewardList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_5RewardList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_MerchantList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_MenuList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_MessageList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_FinalList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+
+	SetState(DISABLE);
+}
 
 void CUI_MerchantMen::InMenuOpen(_double TimeDelta)
 {// 창 열릴 때 전체 랜더
@@ -1649,7 +1740,7 @@ void CUI_MerchantMen::InMenuOpen(_double TimeDelta)
 		++Count;
 
 	if (14 == Count)
-		m_InMenuRnderStart = false;
+		m_InMenuRenderStart = false;
 }
 
 _bool CUI_MerchantMen::InMenuEnd(_double TimeDelta)

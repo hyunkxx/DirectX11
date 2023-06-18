@@ -91,16 +91,20 @@ private:
 	void	Load();
 	void	Save();
 
-public:
-	void	Set_SituMeet() { Situation = MENSITUINDEX::MEET; }
+public: // NPCÀü¿ë
+	void	Set_SituMeet();
+	void	Set_END();
+	void	Call_END() { m_NPCbye = true; };
+
 private:
+	_bool m_NPCbye = { false };
 	MENSITUINDEX Situation = { MENSITUINDEX::MEET };
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint		m_iPass = { 1 };
 	_int		m_Count = {0};
 	_float		m_TimeAcc = { 0.f };
-	_bool		m_InMenuRnderStart = { true };
-	_bool		m_MenuRnderStart = { true };
+	_bool		m_InMenuRenderStart = { true };
+	_bool		m_MenuRenderStart = { true };
 	_bool		m_CircleSTurntart = { true };
 	_bool		m_CircleLevDown = { false };
 	_bool		m_CircleSLevUp = { false };

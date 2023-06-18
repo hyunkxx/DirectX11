@@ -188,6 +188,10 @@ void CUI_Cooking::Tick(_double TimeDelta)
 	// 레시피 조건 추가해야함
 
 	__super::Tick(TimeDelta);
+
+	if (m_NPCbye)
+		Set_END();
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
 	switch (Situation)
@@ -3721,8 +3725,133 @@ HRESULT CUI_Cooking::Add_Components()
 }
 
 
+void CUI_Cooking::Set_SituMeet()
+{
+	SetState(ACTIVE);
+	Situation = COOKSITUINDEX::MEET;
+}
 
-
+void CUI_Cooking::Set_END()
+{
+	Situation = COOKSITUINDEX::COOKEND;
+	m_Count = 0;
+	m_MenuRenderStart = true;
+	m_MenuOutStart = false;
+	m_ReadyConfirmRender = false;
+	m_ConfirmRenderStart = true;
+	pSelectSlot = &m_0Slot[2];
+	pOwnFood = &InvenFlatbread;
+	pNeedMaterial0 = &NeedMaterial0;
+	pNeedMaterial1 = &NeedMaterial1;
+	pNeedMaterial2 = &NeedMaterial2;
+	pOwnMaterial0 = &InvenFlour;
+	pOwnMaterial1 = &InvenRice;
+	pOwnMaterial2 = &InvenTofu;
+	MakeNum = 1;
+	bEnoughMaterial0 = false;
+	bEnoughMaterial1 = false;
+	bEnoughMaterial2 = false;
+	bMake = false;
+	GradeIndex = 0;
+	m_NPCbye = false;
+	for (auto& Desc : m_Cookist)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_CommonList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_GradeList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_DetailsList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_0MaterialSlot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_1MaterialSlot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_2MaterialSlot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_LButtonList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_RButtonList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_FinalList)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_0Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_1Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_2Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_3Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_4Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_5Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_6Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_7Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_8Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_9Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_10Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_11Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_12Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	for (auto& Desc : m_13Slot)
+	{
+		Desc.fColorA = Desc.Color.w;
+	}
+	SetState(DISABLE);
+}
 
 void CUI_Cooking::IsMouseinRect()
 {

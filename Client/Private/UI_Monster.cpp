@@ -151,7 +151,7 @@ HRESULT CUI_Monster::Render()
 					return E_FAIL;
 				if (FAILED(Setup_ShaderResourcesMask(9)))
 					return E_FAIL;
-				m_pShader->Begin(m_DescList[9].iPass);
+				m_pShader->Begin(25);
 				m_pVIBuffer->Render();
 			}
 
@@ -206,7 +206,7 @@ HRESULT CUI_Monster::Render()
 					return E_FAIL;
 				if (FAILED(Setup_ShaderResourcesBossG1(16)))
 					return E_FAIL;
-				m_pShader->Begin(m_DescList[16].iPass);
+				m_pShader->Begin(25);
 				m_pVIBuffer->Render();
 			}
 			if (true == m_DescList[20].bRender)
@@ -215,7 +215,7 @@ HRESULT CUI_Monster::Render()
 					return E_FAIL;
 				if (FAILED(Setup_ShaderResourcesBossG2(20)))
 					return E_FAIL;
-				m_pShader->Begin(m_DescList[20].iPass);
+				m_pShader->Begin(25);
 				m_pVIBuffer->Render();
 			}
 		}
@@ -239,7 +239,7 @@ void CUI_Monster::Font(_double TimeDelta)
 		list<DAMAGEDESC>::iterator iter = DamageList.begin();
 		for (iter; iter != DamageList.end();)
 		{
-			if (-255.f > iter->Color.w)
+			if (0.f > iter->Color.w)
 			{
 				iter = DamageList.erase(iter);
 			}
@@ -254,8 +254,8 @@ void CUI_Monster::Font(_double TimeDelta)
 	{
 		if (78 == Desc.TextureNum)
 		{
-			Desc.Size.x += (_float)(TimeDelta * 500.f);
-			Desc.Size.y -= (_float)(TimeDelta * 30.f);
+			Desc.Size.x += (_float)(TimeDelta * 80.f);
+			Desc.Size.y -= (_float)(TimeDelta * 40.f);
 			if (0.f >= Desc.Size.y)
 			{
 				Desc.Size.y = 0.f;
@@ -263,14 +263,14 @@ void CUI_Monster::Font(_double TimeDelta)
 		}
 
 
-		Desc.Color.w -= (_float)(TimeDelta * 150.f);
+		Desc.Color.w -= (_float)(TimeDelta * 300.f);
 
-		if (-20.f < Desc.Color.w)
+		if (220.f < Desc.Color.w)
 		{
-			Desc.Size.x += (_float)TimeDelta * 200.f;
-			Desc.Size.y += (_float)TimeDelta * 200.f;
+			Desc.Size.x += (_float)TimeDelta * 50.f;
+			Desc.Size.y += (_float)TimeDelta * 50.f;
 		}
-		if ((-20.f > Desc.Color.w) && (-30.f > Desc.Color.w))
+		if ((220.f > Desc.Color.w) && (160.f < Desc.Color.w))
 		{
 			if (30.f >= Desc.Size.x)
 			{
@@ -279,27 +279,27 @@ void CUI_Monster::Font(_double TimeDelta)
 			}
 			else
 			{
-				Desc.Size.x -= (_float)TimeDelta * 400.f;
-				Desc.Size.y -= (_float)TimeDelta * 400.f;
+				Desc.Size.x -= (_float)TimeDelta * 50.f;
+				Desc.Size.y -= (_float)TimeDelta * 50.f;
 			}
 		}
 
 
 
-		if (-30.f < Desc.Color.w)
+		if (220.f < Desc.Color.w)
 		{
-			Acc += (_float)(TimeDelta *1000.f);
+			Acc += (_float)(TimeDelta * 1000.f);
 			Desc.Pos.x += sinf(XMConvertToRadians(Acc) + 2.f);
 			Desc.Pos.y += sinf(XMConvertToRadians(Acc));
 		}
-		if (-100.f < Desc.Color.w)
+		if (140.f < Desc.Color.w)
 		{
 
-			Desc.Pos.y += (_float)(TimeDelta * 40.f);
+			Desc.Pos.y += (_float)(TimeDelta) * 50.f;
 		}
-		if (-180.f >= Desc.Color.w)
+		if (130.f >= Desc.Color.w)
 		{
-			Desc.Pos.y += (_float)(TimeDelta * 100.f);
+			Desc.Pos.y += (_float)(TimeDelta) * 80.f;
 		}
 
 		XMStoreFloat4x4(&(Desc.WorldMat), XMMatrixScaling(Desc.Size.x, Desc.Size.y, 1.f)
@@ -374,7 +374,7 @@ void	CUI_Monster::Damage(_float Damage)
 			Desc.Pos = _float3{ (Desc1000.Pos.x + Desc1.Pos.x) / 2.f, Desc1000.Pos.y , 0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };;
+			Desc.Color = _float4{ 255.f, 255.f,255.f,155.f };
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
@@ -416,7 +416,7 @@ void	CUI_Monster::Damage(_float Damage)
 			Desc.Pos = _float3{ (Desc100.Pos.x + Desc1.Pos.x) / 2.f, Desc100.Pos.y, 0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };;
+			Desc.Color = _float4{ 255.f, 255.f,255.f,155.f };
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
@@ -448,7 +448,7 @@ void	CUI_Monster::Damage(_float Damage)
 			Desc.Pos = _float3{ (Desc10.Pos.x + Desc1.Pos.x) / 2.f,Desc10.Pos.y,0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = _float4{ 0.f, 0.f,0.f,0.f };;
+			Desc.Color = _float4{ 255.f, 255.f,255.f,155.f };
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
@@ -471,7 +471,7 @@ void	CUI_Monster::Damage(_float Damage)
 			Desc.Pos = _float3{ Desc1.Pos.x, Desc1.Pos.y ,0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = fFontColor;
+			Desc.Color = _float4{ 255.f, 255.f,255.f,155.f };
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
@@ -487,17 +487,17 @@ void CUI_Monster::FontColor()
 		{
 		case ELEMENT::ELMT_SPECTRA:
 		{
-			fFontColor = _float4(214.959f, 208.637f, 126.347f, 0.f);
+			fFontColor = _float4(214.959f, 208.637f, 126.347f, 255.f);
 		}
 		break;
 		case ELEMENT::ELMT_CONDUCTO:
 		{
-			fFontColor = _float4(107.f, 234.f, 219.f, 0.f);
+			fFontColor = _float4(107.f, 234.f, 219.f, 255.f);
 		}
 		break;
 		case ELEMENT::ELMT_FUSION:
 		{
-			fFontColor = _float4(158.058f, -255.f, -231.818f, 0.f);
+			fFontColor = _float4(158.058f, -255.f, -231.818f, 255.f);
 		}
 		break;
 		}
@@ -633,7 +633,10 @@ HRESULT CUI_Monster::Setup_ShaderResourcesMask(_int index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-
+	m_DescList[index].fColorR = 155.f;
+	m_DescList[index].fColorG = 96.f;
+	m_DescList[index].fColorB = 224.f;
+	m_DescList[index].fColorA = 255.f;
 	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index].fColorR), sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index].fColorG), sizeof(_float))))
@@ -701,6 +704,10 @@ HRESULT CUI_Monster::Setup_ShaderResourcesBossG1(_int index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
+	m_DescList[index].fColorR = 155.f;
+	m_DescList[index].fColorG = 96.f;
+	m_DescList[index].fColorB = 224.f;
+	m_DescList[index].fColorA = 255.f;
 	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index].fColorR), sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index].fColorG), sizeof(_float))))
@@ -733,6 +740,10 @@ HRESULT CUI_Monster::Setup_ShaderResourcesBossG2(_int index)
 		return E_FAIL;
 	if (FAILED(m_pShader->SetMatrix("g_MyProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
+	m_DescList[index].fColorR = 155.f;
+	m_DescList[index].fColorG = 96.f;
+	m_DescList[index].fColorB = 224.f;
+	m_DescList[index].fColorA = 255.f;
 	if (FAILED(m_pShader->SetRawValue("g_fColorR", &(m_DescList[index].fColorR), sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetRawValue("g_fColorG", &(m_DescList[index].fColorG), sizeof(_float))))

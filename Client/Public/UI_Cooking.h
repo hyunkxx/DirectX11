@@ -96,9 +96,13 @@ private:
 	void	Load();
 	void	Save();
 
-public:
-	void	Set_SituMeet() { Situation = COOKSITUINDEX::MEET; }
+public: // NPCÀü¿ë
+	void	Set_SituMeet();
+	void	Set_END();
+	void	Call_END() { m_NPCbye = true; };
+	
 private:
+	_bool m_NPCbye = { false };
 	COOKSITUINDEX Situation = { COOKSITUINDEX::COOKEND };
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint		m_iPass = { 21 };

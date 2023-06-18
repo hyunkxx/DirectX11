@@ -14,7 +14,7 @@ END
 BEGIN(Client)
 class CUI_Panhua final : public CGameObject
 {
-	enum PANSITUINDEX { MEET, MENU, INMENU, DETAILS, CONFRIM, BYE, SOUEND};
+	enum PANSITUINDEX { MEET, MENU, INMENU, DETAILS, CONFRIM, BYE, PANEND};
 
 	typedef struct tagSou
 	{
@@ -101,14 +101,17 @@ private:
 	void	Load();
 	void	Save();
 
-public:
-	void	Set_SituMeet() { Situation = PANSITUINDEX::MEET; }
+public: // NPCÀü¿ë
+	void	Set_SituMeet();
+	void	Set_END();
+	void	Call_END() { m_NPCbye = true; };
+
 private:
-	PANSITUINDEX Situation = { PANSITUINDEX::SOUEND };
+	_bool m_NPCbye = { false };
+	PANSITUINDEX Situation = { PANSITUINDEX::PANEND };
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint		m_iPass = { 1 };
 	_int		m_Count = {0};
-	_bool		m_bMouseActive = { false };
 	_bool		m_InMenuRenderStart = { true };
 	_bool		m_MenuRenderStart = { true };
 	_bool		m_DetailRenderStart = { true };

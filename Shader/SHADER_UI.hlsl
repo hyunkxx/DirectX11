@@ -190,6 +190,21 @@ PS_OUT PS_LinearDiscard(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_Pont(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_MyTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor.r *= g_fColorR/255.f;
+	Out.vColor.g *= g_fColorG/255.f;
+	Out.vColor.b *= g_fColorB/255.f;
+	Out.vColor.a *= g_fColorA/255.f;
+
+	if(Out.vColor.a < 0.1)
+	discard;
+	return Out;
+}
+
 PS_OUT PS_MAIN_LOADING(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
@@ -442,6 +457,37 @@ PS_OUT PS_MASK(PS_IN In)
 	return Out;
 
 }
+
+PS_OUT PS_MASKMON(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+	vector Defuse ,Mask, Mask2;
+	Mask = g_GMask.Sample(LinearSampler,  float2(In.vTexUV.x - g_GraphUV.x  ,In.vTexUV.y)); // 흐르는 이미지
+	Mask2 = g_GMask2.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y)); // 랜더부분 이미지
+	Defuse = g_MyTexture.Sample(LinearSampler,  float2(In.vTexUV.x ,In.vTexUV.y));
+	
+	Defuse *= (Mask.a +  Mask2.a);
+	Defuse.x *= g_fColorR/255.f;
+	Defuse.y *= g_fColorG/255.f;
+	Defuse.z *= g_fColorB/255.f;
+	Defuse.w *= g_fColorA/255.f;
+
+	Out.vColor.a = Defuse;
+	if(Out.vColor.a < 0.1)
+	discard;
+
+	Out.vColor.r = Defuse.x;
+	Out.vColor.g = Defuse.y;
+	Out.vColor.b = Defuse.z;
+	Out.vColor.a = Defuse.w;
+
+	if(In.vTexUV.x > g_SkillRadian)
+	   discard;
+	
+	return Out;
+
+}
+
 
 PS_OUT PS_COOLEFFECT(PS_IN In)
 {
@@ -856,6 +902,31 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_CHIXIA();
+	}
+
+				pass UI_Pont // 24
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Pont();
+	}
+	pass UI_MASKMON // 25
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MASKMON();
 	}
 }
 	
