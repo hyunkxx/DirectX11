@@ -260,9 +260,15 @@ void CPhaseChanger::CutScene1_Ready()
 void CPhaseChanger::CutScene1_Start()
 {
 	m_pCrownless_P1->SetState(DISABLE);
+	
+	CCharacter* pChar = m_pPlayerStateClass->Get_ActiveCharacter();
 
-	m_pPlayerStateClass->Get_ActiveCharacter()->Set_WorldMatrix(XMLoadFloat4x4(&m_pRoverTransform->Get_WorldMatrix()));
-	m_pPlayerStateClass->Get_ActiveCharacter()->Disappear(nullptr, nullptr, nullptr);
+	CTransform* pCharTransform = pChar->GetTransform();
+
+	pCharTransform->Set_State(CTransform::STATE_POSITION, m_pRoverTransform->Get_State(CTransform::STATE_POSITION));
+	pCharTransform->Set_LookDir(m_pRoverTransform->Get_State(CTransform::STATE_LOOK));
+	m_pPlayerStateClass->SetCamBehind();
+	pChar->Disappear(nullptr, nullptr, nullptr);
 
 	m_bRender = true;
 
@@ -284,12 +290,12 @@ void CPhaseChanger::CutScene1_End()
 
 	//m_pCrownless_P2->Set_ForceIdle();
 
+	//m_pRoverTransform->LookAt(m_pCrownlessTransform->Get_State(CTransform::STATE_POSITION));
 
-	m_pRoverTransform->LookAt(m_pCrownlessTransform->Get_State(CTransform::STATE_POSITION));
-
-	m_pPlayerStateClass->Get_ActiveCharacter()->Appear(m_pRoverTransform, nullptr, 196, 200.f);
-
-	m_pPlayerStateClass->Get_ActiveCharacter()->Set_ForceIdle();
+	CCharacter* pChar = m_pPlayerStateClass->Get_ActiveCharacter();
+	pChar->Appear(m_pRoverTransform, nullptr, 196, 200.f);
+	pChar->Set_LookAt(m_pCrownlessTransform->Get_State(CTransform::STATE_POSITION));
+	pChar->Set_ForceIdle();
 
 }
 
@@ -309,18 +315,23 @@ void CPhaseChanger::CutScene2_Start()
 {
 	m_pCrownless_P2->SetState(DISABLE);
 
-	m_pPlayerStateClass->Get_ActiveCharacter()->Set_WorldMatrix(XMLoadFloat4x4(&m_pRoverTransform->Get_WorldMatrix()));
-	m_pPlayerStateClass->Get_ActiveCharacter()->Disappear(nullptr, nullptr, nullptr);
+	CCharacter* pChar = m_pPlayerStateClass->Get_ActiveCharacter();
+	CTransform* pCharTransform = pChar->GetTransform();
+
+	pCharTransform->Set_State(CTransform::STATE_POSITION, m_pRoverTransform->Get_State(CTransform::STATE_POSITION));
+	pCharTransform->Set_LookDir(m_pRoverTransform->Get_State(CTransform::STATE_LOOK));
+	m_pPlayerStateClass->SetCamBehind();
+	pChar->Disappear(nullptr, nullptr, nullptr);
 
 	m_bRender = true;
 
 	m_pCrownlessModel->Set_RootBone(TEXT("Root"));
 	
-	m_TrackPos = 1200.0;
+	m_TrackPos = 1250.0;
 	m_bAnimFinished = false;
 
 	m_pCrownlessModel->SetUp_Animation(1, false);
-	m_pCrownlessModel->Set_TrackPos(1200.f);
+	m_pCrownlessModel->Set_TrackPos(1250.f);
 }
 
 void CPhaseChanger::CutScene2_End()
@@ -333,10 +344,10 @@ void CPhaseChanger::CutScene2_End()
 	//m_pCrownless_P3->Set_ForceIdle();
 
 	
-	m_pRoverTransform->LookAt(m_pCrownlessTransform->Get_State(CTransform::STATE_POSITION));
-
-	m_pPlayerStateClass->Get_ActiveCharacter()->Appear(m_pRoverTransform, nullptr, 196, 200.f);
-	m_pPlayerStateClass->Get_ActiveCharacter()->Set_ForceIdle();
+	CCharacter* pChar = m_pPlayerStateClass->Get_ActiveCharacter();
+	pChar->Appear(m_pRoverTransform, nullptr, 196, 200.f);
+	pChar->Set_LookAt(m_pCrownlessTransform->Get_State(CTransform::STATE_POSITION));
+	pChar->Set_ForceIdle();
 }
 
 HRESULT CPhaseChanger::Init_States(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

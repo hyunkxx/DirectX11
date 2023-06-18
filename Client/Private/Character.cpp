@@ -204,4 +204,9 @@ void CCharacter::Push_OnNavi(_fvector PushVector)
 	m_pMainTransform->Push_OnNavi(PushVector, static_cast<CNavigation*>(Find_Component(TEXT("Com_Navigation"))));
 }
 
+void CCharacter::Set_LookAt(_vector vPos)
+{
+	m_pMainTransform->LookAt(vPos);
+}
+
 

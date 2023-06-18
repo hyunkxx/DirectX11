@@ -670,3 +670,25 @@ void CPlayerCamera::Reset_ActiveCharacter(CCharacter * pCharacter)
 	m_pPlayerTransform = pCharacter->GetTransform();
 	m_pPlayerNavigation = static_cast<CNavigation*>(m_pPlayerStateClass->Get_ActiveCharacter()->Find_Component(TEXT("Com_Navigation")));
 }
+
+void CPlayerCamera::Set_Behind()
+{
+	if (nullptr == m_pPlayerTransform)
+		return;
+
+	_vector vLook = XMVector3Normalize(m_pPlayerTransform->Get_State(CTransform::STATE_LOOK));
+	_vector vDefaultDir = XMLoadFloat3(&m_vDir);
+
+	if (0.f > XMVectorGetY(XMVector3Cross(vDefaultDir, XMVectorSetY(vLook, 0.f))))
+		m_fYCurAngle = -XMConvertToDegrees(acosf(XMVectorGetX(XMVector3Dot(vDefaultDir, XMVector3Normalize(XMVectorSetY(vLook, 0.f))))));
+	else
+		m_fYCurAngle = XMConvertToDegrees(acosf(XMVectorGetX(XMVector3Dot(vDefaultDir, XMVector3Normalize(XMVectorSetY(vLook, 0.f))))));
+
+	m_fTargetDistance = m_fCurDistance =  3.f;
+
+	m_fPinHeight = 0.7f + m_fCurDistance * 0.2f;
+
+	m_fXCurAngle = 5.f;
+	m_fXTargetAngle = m_fXCurAngle;
+	m_fYTargetAngle = m_fYCurAngle;
+}

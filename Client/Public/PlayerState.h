@@ -256,6 +256,8 @@ public:
 	void SetAirboneQTE(CHARACTERS eCharacter, _bool bAirbone);
 	_uint GetCharacterSP(CHARACTERS eCharacter) { return m_iSkillPoint[eCharacter]; }
 
+	void SetCamBehind();
+
 private:
 	void levelUp(CHARACTERS eCharater);
 

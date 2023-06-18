@@ -389,6 +389,12 @@ void CPlayerState::SetAirboneQTE(CHARACTERS eCharacter, _bool bAirbone)
 	m_iSkillPoint[eCharacter]--;
 }
 
+void CPlayerState::SetCamBehind()
+{
+	if(nullptr !=m_pPlayerCam)
+		m_pPlayerCam->Set_Behind();
+}
+
 void CPlayerState::levelUp(CHARACTERS eCharater)
 {
 	if (m_CharacterState[eCharater].iCurLevel % 4 == 0)

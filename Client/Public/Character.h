@@ -418,6 +418,10 @@ public:
 
 	virtual void Set_AttackHit(_bool bAttackHit) {}
 
+	void Set_LookAt(_vector vPos);
+
+
+
 	//피격 처리
 	virtual void On_Hit(CCharacter* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos, _float fCritRate, _float fCritDMG) {}
 	virtual _float Get_CritRate() { return 0.f; }
