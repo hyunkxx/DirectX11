@@ -37,7 +37,8 @@ HRESULT CUI_Monster::Initialize(void * pArg)
 	memcpy(&MonInfo, pArg, sizeof(MONINFO));
 	m_MonsterLevel = MonInfo.Level;
 	m_MonsterType = MonInfo.Type;
-
+	m_DescList[16].fWidth += 2.f;
+	m_DescList[20].fWidth += 2.f;
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 	return S_OK;
@@ -255,7 +256,7 @@ void CUI_Monster::Font(_double TimeDelta)
 		if (78 == Desc.TextureNum)
 		{
 			Desc.Size.x += (_float)(TimeDelta * 80.f);
-			Desc.Size.y -= (_float)(TimeDelta * 40.f);
+			Desc.Size.y -= (_float)(TimeDelta * 30.f);
 			if (0.f >= Desc.Size.y)
 			{
 				Desc.Size.y = 0.f;
@@ -567,11 +568,10 @@ HRESULT CUI_Monster::Setup_ShaderResourcesHP(_int index)
 	if (FAILED(m_pShader->SetRawValue("g_fColorA", &(m_DescList[index].fColorA), sizeof(_float))))
 		return E_FAIL;
 
-	if (true == m_bRedStart)
-	{
-		if (FAILED(m_pShader->SetRawValue("g_fRedBar", &m_fRedBar, sizeof(_float))))
-			return E_FAIL;
-	}
+	
+	if (FAILED(m_pShader->SetRawValue("g_fRedBar", &m_fRedBar, sizeof(_float))))
+		return E_FAIL;
+	
 	if (FAILED(m_pShader->SetRawValue("g_fwhiteBar", &m_fWhiteBar, sizeof(_float))))
 		return E_FAIL;
 

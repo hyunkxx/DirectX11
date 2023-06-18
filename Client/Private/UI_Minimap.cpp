@@ -289,7 +289,7 @@ HRESULT CUI_Minimap::Render()
 		//메인화면아이콘
 		for (auto& Desc : m_DescList)
 		{
-			if ((true == Desc.bRender) && (Desc.Dist > 50.f) && (Desc.Dist < 100.f))
+			if ((true == Desc.bRender) && (Desc.Dist > 50.f) && (Desc.Dist < 80.f))
 			{
 				if (FAILED(Setup_ShaderResourcesIcons(&Desc)))
 					return E_FAIL;
