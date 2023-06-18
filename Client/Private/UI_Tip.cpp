@@ -1032,7 +1032,7 @@ void CUI_Tip::Area_Opening(vector<TIPDESC>* pDesc, _double TimeDelta)
 	{
 		if (MinusAlpha(pDesc, TimeDelta))
 		{
-			for (auto& Desc : m_BossDescList)
+			for (auto& Desc : (*pDesc))
 			{
 				Desc.fColorA = -255.f;
 			}

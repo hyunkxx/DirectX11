@@ -97,7 +97,11 @@ public:
 	virtual void Free() override;
 
 public:
-	void Set_MonHP(_float HP) { m_HP = m_CurrentHp = m_RedHP = HP; }
+	void Set_MonHP(_float HP) {
+		m_HP = m_CurrentHp = m_RedHP = HP;
+		m_fWhiteBar = m_CurrentHp / m_HP;
+		m_fRedBar = m_RedHP / m_HP;
+	}
 	void Set_Damage(_float fDamage, _bool bCrit) { m_Damage = -fDamage; m_bHit = true; Damage(m_Damage); m_bCrit = bCrit; }
 	void Set_CharacterPos(_fvector vCharacterPos) { m_vCharacterPos = vCharacterPos; }
 	void Set_ElementType(ELEMENT ElementType) { ElementType = ElementType; }

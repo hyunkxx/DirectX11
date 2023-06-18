@@ -122,6 +122,10 @@ void CMissilePool::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileR
 	{
 		m_pCamMovement->StartWave(m_iShakeLevel);
 	}
+	else if (nullptr != m_pOwner)
+	{
+		m_pOwner->Shot_SoundKey(m_szSoundTag, 1, VOLUME_VFX);
+	}
 		
 }
 

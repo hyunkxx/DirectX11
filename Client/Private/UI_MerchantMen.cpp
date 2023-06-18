@@ -211,7 +211,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 	break;
 	}
 
-	//m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel; // 나중에 주석 풀기
+	m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel; 
 	 ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET);
 	 CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE);
 	_int num = ItemNum / 1;
@@ -235,7 +235,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 
 		if (SelectUI(&m_MerchantList[0]))
 		{
-
+			pActiveCharacter->Set_OnControl(false);
 			if (false == m_MerchantList[0].OnRect)
 			{
 				for (auto& Mer : m_MerchantList)
@@ -245,7 +245,6 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pActiveCharacter->Set_OnControl(false);
 				m_MerchantList[0].OnRect = true;
 			}
 		}
@@ -1616,7 +1615,7 @@ void CUI_MerchantMen::Set_END()
 	m_CircleSTurntart = true;
 	m_CircleLevDown = false;
 	m_CircleSLevUp = false;
-	m_MsgboxRender = false;
+	m_MsgboxRender = true;
 	m_RewardboxRender = false;
 	m_CancelMsgbox = false;
 	Degree = 0.f;

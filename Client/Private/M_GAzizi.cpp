@@ -560,6 +560,7 @@ void CM_GAzizi::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("GenkiDama_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Light_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 1.7f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_FLY;
@@ -568,6 +569,7 @@ void CM_GAzizi::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_03].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("GenkiDama_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Light_3.wem.wav"));
 }
 
 void CM_GAzizi::Init_Missiles()

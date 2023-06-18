@@ -458,6 +458,11 @@ void CM_Leilie::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	if (MISS_END <= iMissilePoolID || EBONE_END <= iEffectBoneID)
 		return;
 
+	if (MISS_ATTACK_03 == iMissilePoolID)
+	{
+		Shot_SoundKey(L"Play_mon_leilie_fx_attack03_jianyu.wem.wav", SOUND_MONSTER2_MISSILE, VOLUME_VFX);
+	}
+
 	_vector vInitPos;
 	if (MISS_ATTACK_03 == iMissilePoolID)
 	{
@@ -580,6 +585,7 @@ void CM_Leilie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("M_Purple_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Electric_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_02_1].fDamageFactor = 0.7f;
 	m_AttackInfos[ATK_ATTACK_02_1].eHitIntensity = HIT_SMALL;
@@ -588,6 +594,7 @@ void CM_Leilie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02_1].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_1].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02_1].szHitEffectTag, TEXT("M_Purple_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Electric_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_02_2].fDamageFactor = 2.3f;
 	m_AttackInfos[ATK_ATTACK_02_2].eHitIntensity = HIT_FLY;
@@ -596,6 +603,7 @@ void CM_Leilie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02_2].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_2].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02_2].szHitEffectTag, TEXT("M_Purple_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Electric_4.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 0.9f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_SMALL;
@@ -604,6 +612,7 @@ void CM_Leilie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_03].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("M_Purple_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Electric_3.wem.wav"));
 
 }
 

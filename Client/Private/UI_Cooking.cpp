@@ -205,6 +205,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 
 		if (SelectUI(&m_Cookist[0]))
 		{
+			pActiveCharacter->Set_OnControl(false);
 			if (false == m_Cookist[0].OnRect)
 			{
 				for (auto& Sou : m_Cookist)
@@ -214,7 +215,6 @@ void CUI_Cooking::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pActiveCharacter->Set_OnControl(false);
 				m_Cookist[0].OnRect = true;
 			}
 		}

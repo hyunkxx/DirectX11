@@ -222,7 +222,14 @@ void CP_Yangyang::Start()
 	if (false == m_bOnControl)
 		SetState(DISABLE);
 
+	m_MissilePools[MISS_SKILL_01_1]->Set_SoundTag(this, L"Play_role_yangyang_fx_skill01_longjuan.wem.wav");
+	m_MissilePools[MISS_SKILL_01_3]->Set_SoundTag(this, L"Play_role_yangyang_fx_skill01_xiaoshi.wem.wav");
 	m_MissilePools[MISS_SKILL_01_3]->Set_CamMovement(m_pCamMovement, 3);
+
+	m_MissilePools[MISS_BURST_1]->Set_SoundTag(this, L"Play_role_yangyang_fx_burst_longjuan.wem.wav");
+	m_MissilePools[MISS_BURST_2]->Set_SoundTag(this, L"Play_role_yangyang_fx_burst_end.wem.wav");
+
+	m_MissilePools[MISS_AIRATTACK_2_3]->Set_SoundTag(this, L"Play_role_yangyang_fx_skill02_xuli.wem.wav");
 
 }
 
@@ -1073,7 +1080,6 @@ void CP_Yangyang::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 		return;
 
 	m_bAttack = true;
-
 
 	if (MISS_AIRATTACK_2_1 == iMissilePoolID || 
 		MISS_SKILL_QTE == iMissilePoolID)
@@ -2724,6 +2730,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 5;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Hit_Effect_Y_01"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 1.1f;
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
@@ -2733,6 +2740,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 5;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Hit_Effect_Y_02"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_03_1].fDamageFactor = 0.75f;
 	m_AttackInfos[ATK_ATTACK_03_1].eHitIntensity = HIT_SMALL;
@@ -2741,7 +2749,8 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_03_1].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_03_1].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_03_1].iHitEffectID = 5;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_03_1].szHitEffectTag, TEXT("Hit_Effect_Y_3"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Hit_Effect_Y_06"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03_1].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_03_2].fDamageFactor = 1.05f;
 	m_AttackInfos[ATK_ATTACK_03_2].eHitIntensity = HIT_BIG;
@@ -2750,7 +2759,8 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_03_2].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_03_2].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_03_2].iHitEffectID = 5;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_03_2].szHitEffectTag, TEXT("Hit_Effect_Y_3"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Hit_Effect_Y_03"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03_2].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_04_1].fDamageFactor = 0.9f;
 	m_AttackInfos[ATK_ATTACK_04_1].eHitIntensity = HIT_SMALL;
@@ -2759,7 +2769,8 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_04_1].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_04_1].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_04_1].iHitEffectID = 5;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_04_1].szHitEffectTag, TEXT("Hit_Effect_Y_4_1"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_1].szHitEffectTag, TEXT("Hit_Effect_Y_5"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_1].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_04_2].fDamageFactor = 1.3f;
 	m_AttackInfos[ATK_ATTACK_04_2].eHitIntensity = HIT_SMALL;
@@ -2769,6 +2780,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_04_2].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_04_2].iHitEffectID = 5;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_04_2].szHitEffectTag, TEXT("Hit_Effect_Y_4_1"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_2].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_4.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_04_3].fDamageFactor = 1.6f;
 	m_AttackInfos[ATK_ATTACK_04_3].eHitIntensity = HIT_BIG;
@@ -2778,6 +2790,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_04_3].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_04_3].iHitEffectID = 5;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_04_3].szHitEffectTag, TEXT("Hit_Effect_Y_4_2"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_3].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_5.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_05].fDamageFactor = 1.25f;
 	m_AttackInfos[ATK_ATTACK_05].eHitIntensity = HIT_SMALL;
@@ -2787,6 +2800,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_05].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_05].iHitEffectID = 5;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_05].szHitEffectTag, TEXT("Hit_Effect_Y_5"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_05].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_06].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_ATTACK_06].eHitIntensity = HIT_SMALL;
@@ -2796,6 +2810,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_06].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_06].iHitEffectID = 5;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_06].szHitEffectTag, TEXT("Hit_Effect_Y_6"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_06].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_5.wem.wav"));
 
 	m_AttackInfos[ATK_AIRATTACK_1].fDamageFactor = 1.55f;
 	m_AttackInfos[ATK_AIRATTACK_1].eHitIntensity = HIT_BIG;
@@ -2805,6 +2820,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_AIRATTACK_1].fTPGain = 1.5f;
 	m_AttackInfos[ATK_AIRATTACK_1].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_AIRATTACK_1].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_AIRATTACK_1].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Stick_Heavy_3.wem.wav"));
 
 	m_AttackInfos[ATK_AIRATTACK_2_1].fDamageFactor = 0.45f;
 	m_AttackInfos[ATK_AIRATTACK_2_1].eHitIntensity = HIT_SMALL;
@@ -2814,6 +2830,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_AIRATTACK_2_1].fTPGain = 1.5f;
 	m_AttackInfos[ATK_AIRATTACK_2_1].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_AIRATTACK_2_1].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_AIRATTACK_2_1].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_2.wem.wav"));
 
 	m_AttackInfos[ATK_AIRATTACK_2_2].fDamageFactor = 1.35f;
 	m_AttackInfos[ATK_AIRATTACK_2_2].eHitIntensity = HIT_BIG;
@@ -2823,6 +2840,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_AIRATTACK_2_2].fTPGain = 1.5f;
 	m_AttackInfos[ATK_AIRATTACK_2_2].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_AIRATTACK_2_2].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_AIRATTACK_2_2].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Stick_Heavy_3.wem.wav"));
 
 	m_AttackInfos[ATK_AIRATTACK_2_3].fDamageFactor = 2.15f;
 	m_AttackInfos[ATK_AIRATTACK_2_3].eHitIntensity = HIT_FLY;
@@ -2832,6 +2850,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_AIRATTACK_2_3].fTPGain = 1.5f;
 	m_AttackInfos[ATK_AIRATTACK_2_3].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_AIRATTACK_2_3].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_AIRATTACK_2_3].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_2.wem.wav"));
 
 	m_AttackInfos[ATK_SKILL_01_1].fDamageFactor = 1.2f;
 	m_AttackInfos[ATK_SKILL_01_1].eHitIntensity = HIT_SMALL;
@@ -2841,6 +2860,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_01_1].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_01_1].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_SKILL_01_1].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_SKILL_01_1].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Magic_Wind_5.wem.wav"));
 
 	m_AttackInfos[ATK_SKILL_01_2].fDamageFactor = 0.65f;
 	m_AttackInfos[ATK_SKILL_01_2].eHitIntensity = HIT_SMALL;
@@ -2850,6 +2870,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_01_2].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_01_2].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_SKILL_01_2].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_SKILL_01_2].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Magic_Wind_4.wem.wav"));
 
 	m_AttackInfos[ATK_SKILL_01_3].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_SKILL_01_3].eHitIntensity = HIT_BIG;
@@ -2859,6 +2880,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_01_3].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_01_3].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_SKILL_01_3].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_SKILL_01_3].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Magic_Wind_3.wem.wav"));
 
 	m_AttackInfos[ATK_SKILL_02].fDamageFactor = 2.6f;
 	m_AttackInfos[ATK_SKILL_02].eHitIntensity = HIT_BIG;
@@ -2868,6 +2890,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_02].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_02].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_SKILL_02].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_SKILL_02].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Magic_Wind_3.wem.wav"));
 
 	m_AttackInfos[ATK_SKILL_QTE].fDamageFactor = 1.6f;
 	m_AttackInfos[ATK_SKILL_QTE].eHitIntensity = HIT_FLY;
@@ -2877,6 +2900,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_QTE].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_QTE].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_SKILL_QTE].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_SKILL_QTE].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Magic_Wind_3.wem.wav"));
 
 	m_AttackInfos[ATK_BURST_1].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_BURST_1].eHitIntensity = HIT_SMALL;
@@ -2886,6 +2910,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_BURST_1].fTPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_1].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_BURST_1].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_BURST_1].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Magic_Wind_2.wem.wav"));
 
 	m_AttackInfos[ATK_BURST_2].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_BURST_2].eHitIntensity = HIT_FLY;
@@ -2894,6 +2919,7 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_BURST_2].fTPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_2].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_BURST_2].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_BURST_2].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Magic_Wind_1.wem.wav"));
 
 }
 

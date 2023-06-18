@@ -49,8 +49,14 @@ void CIntro::Tick(_double TimeDelta)
 
 	if (false == m_bLoadingEnd)
 	{
-		m_fLoading = m_fLoadRatio;
+		_vector vCurLoadAcc = XMVectorSet(m_fLoading, 0.f, 0.f, 0.f);
+		_vector vLoadRatio = XMVectorSet(m_fLoadRatio, 0.f, 0.f, 0.f);
+
+		m_fLoading = XMVectorGetX(XMVectorLerp(vCurLoadAcc, vLoadRatio, (_float)TimeDelta));
 	}
+	if (0.9f <= m_fLoading)
+		m_bLoadingEnd = true;
+
 	if (true == m_bLoadingEnd)
 	{
 		m_DescList[2]->fColorA = 0.f;
@@ -164,12 +170,6 @@ HRESULT CIntro::Render()
 
 void CIntro::RenderGUI()
 {
-	//ImGui::Begin("Loading ID");
-	//ImGui::InputInt("ID", &m_iObjectID);
-
-	//ImGui::End();
-
-
 }
 
 

@@ -379,6 +379,8 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
+	if (m_NPCbye)
+		Set_END();
 	
 	switch (Situation)
 	{
@@ -390,6 +392,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 
 		if (SelectUI(&m_SouList[0]))
 		{
+			pActiveCharacter->Set_OnControl(false);
 			if (false == m_SouList[0].OnRect)
 			{
 				for (auto& Sou : m_SouList)
@@ -399,7 +402,6 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pActiveCharacter->Set_OnControl(false);
 				m_SouList[0].OnRect = true;
 			}
 		}
@@ -1800,8 +1802,8 @@ void CUI_Souvenir::MouseMove()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	
 	mouse = pGameInstance->InputMouseMove(DIMM_Y);
-	(134.f > m_CommonList[11].fY ? m_CommonList[11].fY += -mouse*0.5f : m_CommonList[11].fY = 134.f);
-	(-156.f <= m_CommonList[11].fY ? m_CommonList[11].fY += -mouse*0.5f : m_CommonList[11].fY = -156.f);
+	(134.f > m_CommonList[11].fY ? m_CommonList[11].fY += -mouse*0.2f : m_CommonList[11].fY = 134.f);
+	(-156.f <= m_CommonList[11].fY ? m_CommonList[11].fY += -mouse*0.2f : m_CommonList[11].fY = -156.f);
 
 
 	XMStoreFloat4x4(&(m_CommonList[11].WorldMatrix), XMMatrixScaling(m_CommonList[11].fWidth, m_CommonList[11].fHeight, 1.f)

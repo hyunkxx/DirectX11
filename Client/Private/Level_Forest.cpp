@@ -524,6 +524,10 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pBinglie)))
 		return E_FAIL;
 
+	// Test
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pLeilei)))
+		return E_FAIL;
+
 	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pQunjing)))
 		return E_FAIL;
 

@@ -567,6 +567,7 @@ void CM_Fenglie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("M_Green_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Arcane_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_BIG;
@@ -575,6 +576,7 @@ void CM_Fenglie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("M_Green_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Arcane_2.wem.wav"));
 
 }
 

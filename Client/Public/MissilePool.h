@@ -71,12 +71,26 @@ public:
 		m_iShakeLevel = iShakeLevel;
 	}
 
+	void Set_SoundTag(CCharacter* pOwner, _tchar* pSoundTag)
+	{
+		if (nullptr == pOwner || nullptr == pSoundTag)
+			return;
+
+		m_pOwner = pOwner;
+		lstrcpy(m_szSoundTag, pSoundTag);
+	}
+
 private:
 	_float3 m_vLocalPos;
 	vector<CMissile*> m_Missiles;
 
+	//
 	class CCameraMovement* m_pCamMovement = { nullptr };
-	_uint m_iShakeLevel;
+	_uint m_iShakeLevel = 0;
+
+	//
+	CCharacter* m_pOwner = { nullptr };
+	_tchar		m_szSoundTag[MAX_PATH] = L"";
 
 public:
 	static CMissilePool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _fvector vLocalPos, MISSILEPOOLDESC* pMissilePoolDesc);
