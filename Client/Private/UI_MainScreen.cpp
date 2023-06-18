@@ -1590,31 +1590,6 @@ _bool CUI_MainScreen::REnd(_double TimeDelta)
 	return false;
 }
 
-void CUI_MainScreen::Save(_int Index)
-{
-	TCHAR	szFileName[128] = L"";
-	wsprintf(szFileName, L"../../Data/UI/MainScreen%d.dat", m_Index);
-	HANDLE hFile = CreateFile(
-		szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-	//Desc.fColorA = Desc.Color.w;
-	_ulong dwByte = 0;
-	WriteFile(hFile, &(m_CutDescList[m_Index]->fXCut), sizeof(_float), &dwByte, nullptr);
-	WriteFile(hFile, &(m_CutDescList[m_Index]->fYCut), sizeof(_float), &dwByte, nullptr);
-	WriteFile(hFile, &(m_CutDescList[m_Index]->fZCut), sizeof(_float), &dwByte, nullptr);
-	WriteFile(hFile, &(m_CutDescList[m_Index]->fWidthCut), sizeof(_float), &dwByte, nullptr);
-	WriteFile(hFile, &(m_CutDescList[m_Index]->fHeightCut), sizeof(_float), &dwByte, nullptr);
-	WriteFile(hFile, &(m_CutDescList[m_Index]->fColorACut), sizeof(_float), &dwByte, nullptr);
-	WriteFile(hFile, &(m_CutDescList[m_Index]->fColorRCut), sizeof(_float), &dwByte, nullptr);
-	WriteFile(hFile, &(m_CutDescList[m_Index]->fColorGCut), sizeof(_float), &dwByte, nullptr);
-	WriteFile(hFile, &(m_CutDescList[m_Index]->fColorBCut), sizeof(_float), &dwByte, nullptr);
-	WriteFile(hFile, &(m_CutDescList[m_Index]->iPass), sizeof(_int), &dwByte, nullptr);
-	WriteFile(hFile, &(m_CutDescList[m_Index]->iTexNum), sizeof(_int), &dwByte, nullptr);
-	WriteFile(hFile, &(m_CutDescList[m_Index]->bRender), sizeof(_bool), &dwByte, nullptr);
-
-	CloseHandle(hFile);
-}
-
-
 void CUI_MainScreen::RenderPlayer1()
 {
 
