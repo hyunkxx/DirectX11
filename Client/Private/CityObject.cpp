@@ -226,9 +226,15 @@ HRESULT CCityObject::Render_Interect()
 		if (CCityObject::TYPE_ID::ID_STO == m_CityObject_Desc.iType_ID)
 		{
 			if (1 == i)
+			{
 				m_CityObject_Desc.Use_Glow = true;
+				m_iShaderPassID = 0;
+			}
 			else
+			{
 				m_CityObject_Desc.Use_Glow = false;
+				m_iShaderPassID = 13;
+			}
 
 			if (FAILED(m_pShaderCom->SetRawValue("g_IsUseGlow", &m_CityObject_Desc.Use_Glow, sizeof(_bool))))
 				return E_FAIL;
@@ -238,7 +244,7 @@ HRESULT CCityObject::Render_Interect()
 
 			m_IsNormalTex = false;
 
-			m_pShaderCom->Begin(13);
+			m_pShaderCom->Begin(m_iShaderPassID);
 			m_pModelCom->Render(i);
 			
 		}

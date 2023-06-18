@@ -374,9 +374,11 @@ void CUI_Souvenir::Start()
 void CUI_Souvenir::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
 	
 	switch (Situation)
 	{

@@ -286,16 +286,6 @@ HRESULT CUI_Minimap::Render()
 			}
 			++Descindex;
 		}
-
-		// 미니맵
-		if (false == m_bNull)
-		{
-			if (FAILED(Setup_ShaderResourcesMiniMap()))
-				return E_FAIL;
-			m_pShader->Begin(16);
-			m_pVIBufferMiniMap->Render();
-		}
-
 		//메인화면아이콘
 		for (auto& Desc : m_DescList)
 		{
@@ -306,6 +296,14 @@ HRESULT CUI_Minimap::Render()
 				m_pShader->Begin(1);
 				m_pVIBufferMiniMap->Render();
 			}
+		}
+		// 미니맵
+		if (false == m_bNull)
+		{
+			if (FAILED(Setup_ShaderResourcesMiniMap()))
+				return E_FAIL;
+			m_pShader->Begin(16);
+			m_pVIBufferMiniMap->Render();
 		}
 	}
 	return S_OK;

@@ -530,6 +530,7 @@ HRESULT CLevel_City::Ready_Layer_Trigger(const _tchar * pLayerTag)
 		return E_FAIL;
 	}
 
+	/*
 	if (FAILED(Load_TriggerData(TEXT("../../Data/City/Trigger/Interact_Cook.data"), TEXT("Trigger_Interact_Cook"), pLayerTag)))
 	{
 		MSG_BOX("Trigger_Interact_Cook");
@@ -553,6 +554,7 @@ HRESULT CLevel_City::Ready_Layer_Trigger(const _tchar * pLayerTag)
 		MSG_BOX("Trigger_Interact_Shop_2");
 		return E_FAIL;
 	}
+	*/
 
 	_float3 vPos;
 

@@ -55,7 +55,7 @@ public:
 
 	typedef struct tagDamage
 	{
-		_float4		Pos;
+		_float3		Pos;
 		_float2		Size;
 		_int		TextureNum;
 		_float4x4	WorldMat;
