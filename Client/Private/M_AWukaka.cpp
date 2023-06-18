@@ -598,6 +598,7 @@ void CM_AWukaka::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Anjin_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Dark_Light_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
@@ -606,6 +607,7 @@ void CM_AWukaka::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Anjin_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Dark_Light_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 3.5f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_FLY;
@@ -614,6 +616,7 @@ void CM_AWukaka::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_03].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Anjin_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Dark_Light_3.wem.wav"));
 }
 
 void CM_AWukaka::Init_Missiles()

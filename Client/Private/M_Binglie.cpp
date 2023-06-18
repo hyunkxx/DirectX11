@@ -140,6 +140,8 @@ void CM_Binglie::Start()
 	//m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::MOSTER);
 	//m_pUIIcon->SetRender(m_UIIndex, false);
 
+	m_MissilePools[MISS_ATTACK_02_BOOM]->Set_SoundTag(this, L"DA_Au_Mon_Imp_Magic_Ice_Light_5.wem.wav");
+
 	Update_EffectBones();
 }
 
@@ -580,6 +582,8 @@ void CM_Binglie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Ice_Light_1.wem.wav"));
+
 
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 1.5f;
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
@@ -588,6 +592,7 @@ void CM_Binglie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Ice_Light_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_02_BOOM].fDamageFactor = 2.5f;
 	m_AttackInfos[ATK_ATTACK_02_BOOM].eHitIntensity = HIT_BIG;
@@ -596,6 +601,7 @@ void CM_Binglie::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02_BOOM].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_BOOM].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02_BOOM].szHitEffectTag, TEXT("M_Blue_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02_BOOM].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Ice_Light_3.wem.wav"));
 
 }
 

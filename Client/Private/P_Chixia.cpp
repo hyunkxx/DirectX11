@@ -3083,9 +3083,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
-
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_1.wem.wav"));
-	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
 
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 0.6f;
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
@@ -3095,9 +3093,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
-
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_2.wem.wav"));
-	m_AttackInfos[ATK_ATTACK_02].fVolume = 0.f;
 
 	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 0.45f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_SMALL;
@@ -3107,9 +3103,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_03].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
-
 	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_3.wem.wav"));
-	m_AttackInfos[ATK_ATTACK_03].fVolume = 0.f;
 
 	m_AttackInfos[ATK_ATTACK_04].fDamageFactor = 2.1f;
 	m_AttackInfos[ATK_ATTACK_04].eHitIntensity = HIT_BIG;
@@ -3119,9 +3113,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_04].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_04].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_04].szHitEffectTag, TEXT("Chixia_Hit_Effect_B"));
-
 	lstrcpy(m_AttackInfos[ATK_ATTACK_04].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_3.wem.wav"));
-	m_AttackInfos[ATK_ATTACK_04].fVolume = 0.f;
 
 	m_AttackInfos[ATK_SKILL_01].fDamageFactor = 0.8f;
 	m_AttackInfos[ATK_SKILL_01].eHitIntensity = HIT_SMALL;
@@ -3131,9 +3123,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_01].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_01].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_SKILL_01].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
-
 	lstrcpy(m_AttackInfos[ATK_SKILL_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_4.wem.wav"));
-	m_AttackInfos[ATK_SKILL_01].fVolume = 0.f;
 
 	m_AttackInfos[ATK_SKILL_QTE].fDamageFactor = 0.8f;
 	m_AttackInfos[ATK_SKILL_QTE].eHitIntensity = HIT_SMALL;
@@ -3143,9 +3133,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_QTE].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_QTE].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_SKILL_QTE].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
-
 	lstrcpy(m_AttackInfos[ATK_SKILL_QTE].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_2.wem.wav"));
-	m_AttackInfos[ATK_SKILL_QTE].fVolume = 0.f;
 
 	m_AttackInfos[ATK_BURST_1].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_BURST_1].eHitIntensity = HIT_BIG;
@@ -3155,9 +3143,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_BURST_1].fTPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_1].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_BURST_1].szHitEffectTag, TEXT("Chixia_Hit_Effect_B"));
-
 	lstrcpy(m_AttackInfos[ATK_BURST_1].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_5.wem.wav"));
-	m_AttackInfos[ATK_BURST_1].fVolume = 0.f;
 
 	m_AttackInfos[ATK_BURST_2].fDamageFactor = 2.9f;
 	m_AttackInfos[ATK_BURST_2].eHitIntensity = HIT_FLY;
@@ -3167,9 +3153,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_BURST_2].fTPGain = 1.5f;
 	m_AttackInfos[ATK_BURST_2].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_BURST_2].szHitEffectTag, TEXT("Chixia_Hit_Effect_B"));
-
 	lstrcpy(m_AttackInfos[ATK_BURST_2].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_5.wem.wav"));
-	m_AttackInfos[ATK_BURST_2].fVolume = 0.f;
 
 	m_AttackInfos[ATK_AIMATTACK_S].fDamageFactor = 1.2f;
 	m_AttackInfos[ATK_AIMATTACK_S].eHitIntensity = HIT_SMALL;
@@ -3179,9 +3163,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_AIMATTACK_S].fTPGain = 1.5f;
 	m_AttackInfos[ATK_AIMATTACK_S].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_AIMATTACK_S].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
-
 	lstrcpy(m_AttackInfos[ATK_AIMATTACK_S].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_2.wem.wav"));
-	m_AttackInfos[ATK_AIMATTACK_S].fVolume = 0.f;
 
 
 	m_AttackInfos[ATK_AIMATTACK_B].fDamageFactor = 2.5f;
@@ -3192,9 +3174,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_AIMATTACK_B].fTPGain = 1.5f;
 	m_AttackInfos[ATK_AIMATTACK_B].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitEffectTag, TEXT("Chixia_Hit_Effect_SC"));
-
 	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_3.wem.wav"));
-	m_AttackInfos[ATK_AIMATTACK_B].fVolume = 0.f;
 
 	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 600.6f;
 	m_AttackInfos[ATK_AIRATTACK].eHitIntensity = HIT_SMALL;
@@ -3204,9 +3184,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_AIRATTACK].fTPGain = 1.5f;
 	m_AttackInfos[ATK_AIRATTACK].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_AIRATTACK].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
-
 	lstrcpy(m_AttackInfos[ATK_AIRATTACK].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_1.wem.wav"));
-	m_AttackInfos[ATK_AIRATTACK].fVolume = 0.f;
 
 	m_AttackInfos[ATK_SKILL_03].fDamageFactor = 0.33f;
 	m_AttackInfos[ATK_SKILL_03].eHitIntensity = HIT_SMALL;
@@ -3216,9 +3194,7 @@ void CP_Chixia::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_03].fTPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_03].iHitEffectID = EFFECT_ID::PLAYER_CHIXIA;
 	lstrcpy(m_AttackInfos[ATK_SKILL_03].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
-
 	lstrcpy(m_AttackInfos[ATK_SKILL_03].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_4.wem.wav"));
-	m_AttackInfos[ATK_SKILL_03].fVolume = 0.f;
 
 }
 
@@ -3424,7 +3400,7 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 2.0;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIMATTACK_S;
 	tMissilePoolDesc.tMissileDesc.fExtents = 0.2f;
 	tMissilePoolDesc.tMissileDesc.bDeleteOnHit = true;
@@ -3449,7 +3425,7 @@ void CP_Chixia::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.iLoopEffectLayer = EFFECT_ID::PLAYER_CHIXIA;
 	tMissilePoolDesc.tMissileDesc.pOwner = this;
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.0;
-	tMissilePoolDesc.tMissileDesc.LifeTime = 1.0;
+	tMissilePoolDesc.tMissileDesc.LifeTime = 3.0;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIMATTACK_B;
 	tMissilePoolDesc.tMissileDesc.fExtents = 0.4f;
 	tMissilePoolDesc.tMissileDesc.bDeleteOnHit = true;

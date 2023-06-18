@@ -603,6 +603,7 @@ void CM_Anjin::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Anjin_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_02_1].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_02_1].eHitIntensity = HIT_SMALL;
@@ -611,6 +612,7 @@ void CM_Anjin::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02_1].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_1].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02_1].szHitEffectTag, TEXT("Anjin_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_02_2].fDamageFactor = 2.5f;
 	m_AttackInfos[ATK_ATTACK_02_2].eHitIntensity = HIT_BIG;
@@ -619,6 +621,7 @@ void CM_Anjin::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02_2].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_2].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02_2].szHitEffectTag, TEXT("Anjin_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_02_3].fDamageFactor = 3.f;
 	m_AttackInfos[ATK_ATTACK_02_3].eHitIntensity = HIT_FLY;
@@ -626,7 +629,8 @@ void CM_Anjin::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02_3].fSPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_3].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02_3].iHitEffectID = 2;
-	lstrcpy(m_AttackInfos[ATK_ATTACK_02_3].szHitEffectTag, TEXT("GenkiDama_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02_3].szHitEffectTag, TEXT("Anjin_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02_3].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_4.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 3.5f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_FLY;
@@ -635,6 +639,7 @@ void CM_Anjin::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_03].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 2;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Anjin_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_5.wem.wav"));
 }
 
 void CM_Anjin::Init_Missiles()

@@ -383,7 +383,6 @@ public:
 		_uint	iHitEffectID;	// 히트 이펙트 레이어 ID
 		//
 		_tchar	szHitSoundTag[MAX_PATH];
-		_float	fVolume;
 	}TAGATTACK;
 
 	typedef struct tagTraceDesc

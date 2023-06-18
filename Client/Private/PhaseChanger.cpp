@@ -550,7 +550,8 @@ void CPhaseChanger::Free()
 {
 	__super::Free();
 
-	Release_States();
+	if(m_bClone)
+		Release_States();
 
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);

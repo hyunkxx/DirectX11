@@ -616,6 +616,7 @@ void CM_Huojin::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01_1].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01_1].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01_1].szHitEffectTag, TEXT("M_Red_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Light_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_01_2].fDamageFactor = 1.2f;
 	m_AttackInfos[ATK_ATTACK_01_2].eHitIntensity = HIT_SMALL;
@@ -624,6 +625,7 @@ void CM_Huojin::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01_2].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01_2].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01_2].szHitEffectTag, TEXT("M_Red_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Light_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_01_3].fDamageFactor = 1.8f;
 	m_AttackInfos[ATK_ATTACK_01_3].eHitIntensity = HIT_SMALL;
@@ -632,6 +634,7 @@ void CM_Huojin::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01_3].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_01_3].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01_3].szHitEffectTag, TEXT("M_Red_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01_3].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 2.3f;
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_FLY;
@@ -640,6 +643,7 @@ void CM_Huojin::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("M_Red_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 2.1f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_BIG;
@@ -648,6 +652,7 @@ void CM_Huojin::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_03].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("M_Red_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_3.wem.wav"));
 }
 
 void CM_Huojin::Apply_CoolTime(_double TimeDelta)

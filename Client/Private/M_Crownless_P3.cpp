@@ -687,6 +687,9 @@ void CM_Crownless_P3::SetUp_State()
 	else if (m_Scon.iNextState <= 0)
 		m_Scon.iNextState = 0;
 
+
+	Trace_Off();
+
 	// 근접 시동기 사용 시 다음 근접 시동기로 인덱스 넘김
 	for (_uint i = 0; i < MA_END; ++i)
 	{
@@ -952,144 +955,168 @@ void CM_Crownless_P3::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK01_1].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK01_1].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK01_1].szHitEffectTag, TEXT("B_Crownless_Hit_15"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Light_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK01_2].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK01_2].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK01_2].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK01_2].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK01_2].szHitEffectTag, TEXT("B_Crownless_Hit_135"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Light_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK01_3].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK01_3].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK01_3].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK01_3].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK01_3].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_3].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Electric_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK05].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK05].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK05].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK05].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK05].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK05].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Arcane_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK07].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK07].eHitIntensity = HIT_PUSH;
 	m_AttackInfos[ATK_ATTACK07].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK07].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK07].szHitEffectTag, TEXT("B_Crownless_Hit_195"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK07].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK08].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK08].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK08].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK08].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK08].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK08].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Electric_5.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK09].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK09].eHitIntensity = HIT_PUSH;
 	m_AttackInfos[ATK_ATTACK09].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK09].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK09].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK09].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Electric_4.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK10_1].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK10_1].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK10_1].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK10_1].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK10_1].szHitEffectTag, TEXT("B_Crownless_Hit_155"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK10_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK10_2].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK10_2].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK10_2].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK10_2].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK10_2].szHitEffectTag, TEXT("B_Crownless_Hit_15"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK10_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK10_3].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK10_3].eHitIntensity = HIT_PUSH;
 	m_AttackInfos[ATK_ATTACK10_3].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK10_3].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK10_3].szHitEffectTag, TEXT("B_Crownless_Hit_345"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK10_3].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_4.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK11_1].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK11_1].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK11_1].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK11_1].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK11_1].szHitEffectTag, TEXT("B_Crownless_Hit_15"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK11_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_5.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK11_2].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK11_2].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK11_2].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK11_2].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK11_2].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK11_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK12].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK12].eHitIntensity = HIT_PUSH;
 	m_AttackInfos[ATK_ATTACK12].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK12].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK12].szHitEffectTag, TEXT("B_Crownless_Hit_0"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK12].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK13_1].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK13_1].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK13_1].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK13_1].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK13_1].szHitEffectTag, TEXT("B_Crownless_Hit_195"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK13_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Light_4.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK13_2].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK13_2].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK13_2].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK13_2].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK13_2].szHitEffectTag, TEXT("B_Crownless_Hit_345"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK13_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Light_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK13_3].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK13_3].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK13_3].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK13_3].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK13_3].szHitEffectTag, TEXT("B_Crownless_Hit_135"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK13_3].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_4.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK13_4].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK13_4].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK13_4].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK13_4].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK13_4].szHitEffectTag, TEXT("B_Crownless_Hit_285"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK13_4].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Light_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK13_5].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK13_5].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK13_5].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK13_5].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK13_5].szHitEffectTag, TEXT("B_Crownless_Hit_135"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK13_5].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Light_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK13_6].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK13_6].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK13_6].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK13_6].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK13_6].szHitEffectTag, TEXT("B_Crownless_Hit_180"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK13_6].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Light_5.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK13_7].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK13_7].eHitIntensity = HIT_PUSH;
 	m_AttackInfos[ATK_ATTACK13_7].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK13_7].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK13_7].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK13_7].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Electric_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK13_8].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK13_8].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK13_8].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK13_8].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK13_8].szHitEffectTag, TEXT("B_Crownless_Hit_155"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK13_8].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_4.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK13_9].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK13_9].eHitIntensity = HIT_PUSH;
 	m_AttackInfos[ATK_ATTACK13_9].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK13_9].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK13_9].szHitEffectTag, TEXT("B_Crownless_Hit_45"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK13_9].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_3.wem.wav"));
 
 	m_AttackInfos[ATK_PARALYSIS_END_1].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_PARALYSIS_END_1].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_PARALYSIS_END_1].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_PARALYSIS_END_1].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_PARALYSIS_END_1].szHitEffectTag, TEXT("B_Crownless_Hit_195"));
+	lstrcpy(m_AttackInfos[ATK_PARALYSIS_END_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Light_4.wem.wav"));
 
 	m_AttackInfos[ATK_PARALYSIS_END_2].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_PARALYSIS_END_2].eHitIntensity = HIT_PUSH;
 	m_AttackInfos[ATK_PARALYSIS_END_2].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_PARALYSIS_END_2].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_PARALYSIS_END_2].szHitEffectTag, TEXT("B_Crownless_Hit_45"));
+	lstrcpy(m_AttackInfos[ATK_PARALYSIS_END_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Stick_Heavy_5.wem.wav"));
 }
 
 void CM_Crownless_P3::Init_Missiles()

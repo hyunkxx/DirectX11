@@ -669,6 +669,8 @@ void CM_Crownless_P1::SetUp_State()
 	m_Scon.TrackPos = 0.0;
 	m_Scon.bAnimFinished = false;
 
+	Trace_Off();
+
 
 	// 애니메이션이 강제로 끊긴 경우 대비 애니메이션 갱신 시 OBB 콜라이더 무조건 끄기
 	m_pAttackCollider->SetActive(false);
@@ -753,36 +755,42 @@ void CM_Crownless_P1::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Knock_Heavy_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_ATTACK_03].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Dark_Light_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_04_1].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_04_1].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_04_1].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK_04_1].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_04_1].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Punch_Light_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_04_3].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_04_3].eHitIntensity = HIT_PUSH;
 	m_AttackInfos[ATK_ATTACK_04_3].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK_04_3].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_04_3].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_04_3].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Knock_Heavy_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_05].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_05].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_05].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK_05].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_05].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_05].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Dark_Light_4.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK_08].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK_08].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_08].eElementType = ELMT_HAVOC;
 	m_AttackInfos[ATK_ATTACK_08].iHitEffectID = 6;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_08].szHitEffectTag, TEXT("B_Crownless_Hit_Boom"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_08].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Dark_Light_1.wem.wav"));
 }
 
 void CM_Crownless_P1::Init_Missiles()

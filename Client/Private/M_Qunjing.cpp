@@ -694,6 +694,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK01_1].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK01_1].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK01_1].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Knock_Heavy_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK01_2].fDamageFactor = 1.1f;
 	m_AttackInfos[ATK_ATTACK01_2].eHitIntensity = HIT_BIG;
@@ -702,6 +703,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK01_2].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK01_2].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK01_2].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Knock_Heavy_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK01_3].fDamageFactor = 1.2f;
 	m_AttackInfos[ATK_ATTACK01_3].eHitIntensity = HIT_BIG;
@@ -710,6 +712,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK01_3].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK01_3].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK01_3].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_3].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Knock_Heavy_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK01_4].fDamageFactor = 1.8f;
 	m_AttackInfos[ATK_ATTACK01_4].eHitIntensity = HIT_FLY;
@@ -718,6 +721,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK01_4].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK01_4].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK01_4].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK01_4].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Rock_4.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK02_1].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_ATTACK02_1].eHitIntensity = HIT_BIG;
@@ -726,6 +730,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK02_1].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK02_1].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK02_1].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK02_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Knock_Heavy_4.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK02_2].fDamageFactor = 0.3f;
 	m_AttackInfos[ATK_ATTACK02_2].eHitIntensity = HIT_SMALL;
@@ -734,6 +739,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK02_2].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK02_2].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK02_2].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK02_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Hammer_Heavy_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK02_3].fDamageFactor = 1.5f;
 	m_AttackInfos[ATK_ATTACK02_3].eHitIntensity = HIT_BIG;
@@ -742,6 +748,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK02_3].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK02_3].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK02_3].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK02_3].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Knock_Heavy_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK02_4].fDamageFactor = 2.f;
 	m_AttackInfos[ATK_ATTACK02_4].eHitIntensity = HIT_FLY;
@@ -750,6 +757,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK02_4].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK02_4].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK02_4].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK02_4].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Rock_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK03_1].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_ATTACK03_1].eHitIntensity = HIT_SMALL;
@@ -758,6 +766,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK03_1].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK03_1].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK03_1].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK03_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Knock_Heavy_5.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK03_2].fDamageFactor = 2.4f;
 	m_AttackInfos[ATK_ATTACK03_2].eHitIntensity = HIT_FLY;
@@ -766,6 +775,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK03_2].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK03_2].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK03_2].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK03_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Rock_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK03_4].fDamageFactor = 2.8f;
 	m_AttackInfos[ATK_ATTACK03_4].eHitIntensity = HIT_FLY;
@@ -774,6 +784,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK03_4].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK03_4].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK03_4].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK03_4].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Rock_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK04].fDamageFactor = 2.1f;
 	m_AttackInfos[ATK_ATTACK04].eHitIntensity = HIT_BIG;
@@ -782,6 +793,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK04].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK04].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK04].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK04].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Rock_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK06].fDamageFactor = 1.8f;
 	m_AttackInfos[ATK_ATTACK06].eHitIntensity = HIT_FLY;
@@ -790,6 +802,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK06].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK06].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK06].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK06].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Hammer_Heavy_3.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK07_1].fDamageFactor = 0.7f;
 	m_AttackInfos[ATK_ATTACK07_1].eHitIntensity = HIT_SMALL;
@@ -798,6 +811,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK07_1].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK07_1].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK07_1].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK07_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Rock_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK07_2].fDamageFactor = 1.9f;
 	m_AttackInfos[ATK_ATTACK07_2].eHitIntensity = HIT_FLY;
@@ -806,6 +820,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK07_2].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK07_2].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK07_2].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK07_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Rock_1.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK08_1].fDamageFactor = 1.f;
 	m_AttackInfos[ATK_ATTACK08_1].eHitIntensity = HIT_SMALL;
@@ -814,6 +829,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK08_1].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK08_1].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK08_1].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_1].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Hammer_Heavy_2.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK08_2].fDamageFactor = 3.f;
 	m_AttackInfos[ATK_ATTACK08_2].eHitIntensity = HIT_FLY;
@@ -822,6 +838,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK08_2].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK08_2].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK08_2].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_2].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Rock_4.wem.wav"));
 
 	m_AttackInfos[ATK_ATTACK08_3].fDamageFactor = 1.6f;
 	m_AttackInfos[ATK_ATTACK08_3].eHitIntensity = HIT_BIG;
@@ -830,6 +847,7 @@ void CM_Qunjing::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK08_3].fTPGain = 0.f;
 	m_AttackInfos[ATK_ATTACK08_3].iHitEffectID = 0;
 	lstrcpy(m_AttackInfos[ATK_ATTACK08_3].szHitEffectTag, TEXT("M_Yellow_Hit"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK08_3].szHitSoundTag, TEXT("DA_Au_Mon_Imp_Magic_Rock_1.wem.wav"));
 
 }
 
