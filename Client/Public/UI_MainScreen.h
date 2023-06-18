@@ -160,15 +160,13 @@ private:
 	void QCoolRenderOff();
 	void RCoolRenderOff();
 
-
-
 	_bool TEnd(_double TimeDelta);
 	_bool EEnd(_double TimeDelta);
 	_bool QEnd(_double TimeDelta);
 	_bool REnd(_double TimeDelta);
 	void	Load();
-
 private:
+	_int bRender = { true }; // 툴 임시
 	_int m_Index = { 0 }; // 임시
 	_float Degree = { 0.f }; // RRfull효과
 	_bool m_bRenderCheck = { true };

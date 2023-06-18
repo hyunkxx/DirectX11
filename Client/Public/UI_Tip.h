@@ -14,8 +14,8 @@ BEGIN(Client)
 class CUI_Tip final : public CGameObject
 {
 public:
-	enum SITUINDEX { AREA_OPENING, AREA_BOSS, CHAR_YANGYANG, CHAR_CHIXIA, TOOL_HOOK, TOOL_SCAN, TOOL_LEVI, SKILL_E, SKILL_Q, SKILL_R, SKILL_QTE, SKILL_BURST, SITUINDEXEND };
-	
+	enum SITUINDEX { AREA_OPENING, AREA_BOSS, AREA_CITY, AREA_DUNGEON, CHAR_YANGYANG, CHAR_CHIXIA, SITUINDEXEND };
+
 	typedef struct tagTip
 	{
 		//클라변수
@@ -56,10 +56,18 @@ public:
 private:
 	HRESULT Add_Components();
 	HRESULT Setup_ShaderResources(_uint index);
+	HRESULT Setup_ShaderResourcesCity(_uint index);
+	HRESULT Setup_ShaderResourcesDungeon(_uint index);
 	HRESULT Setup_ShaderResourcesYang(_uint index);
 	HRESULT Setup_ShaderResourcesChixia(_uint index);
+	HRESULT Setup_ShaderResourcesBoss(_uint index);
+
+
 
 private:
+	_bool	AddAlphaSingle(TIPDESC* pDesc, _double TimeDelta);
+	_bool	MinusAlphaSingle(TIPDESC* pDesc, _double TimeDelta);
+
 	_bool	AddAlpha(vector<TIPDESC>* pDesc, _double TimeDelta);
 	_bool	MinusAlpha(vector<TIPDESC>* pDesc, _double TimeDelta);
 	_bool	AddAlphaW(vector<TIPDESC>* pDesc, _double TimeDelta);
@@ -71,18 +79,19 @@ private:
 	void	Load();
 
 private:
-	void	Area_Opening(_double TimeDelta);
-	
+	void	Area_Opening(vector<TIPDESC>* pDesc, _double TimeDelta);
+
 private:
 	_float4x4	m_ViewMatrix, m_ProjMatrix;
 	_uint   m_iPass = { 1 };
-
-	_int m_Count = {0};
+	_uint   Level = { 0 };
+	_int	m_Count = { 0 };
 	_float2 m_fUV = { 1.f, 0.f }; // 텍스처uv흘리는애
 	_int m_MainMaskNum = { 6 };
 	_bool  m_bMouseActive = { false };
 	_bool  m_bUIRender = { true };
 	_float m_TimeAcc = { 0.f };
+	_float LoadTime = { 0.f };
 
 public:
 	static CUI_Tip* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -97,7 +106,7 @@ public:
 
 private:
 	class CUI_Mouse*		m_pUIMouse = { nullptr };
-	class CUI_MainScreen*	m_pUIMain  = { nullptr };
+	class CUI_MainScreen*	m_pUIMain = { nullptr };
 	class CUI_Minimap*		m_pUIMinimap = { nullptr };
 
 	CRenderer*		m_pRenderer = { nullptr };
@@ -108,9 +117,13 @@ private:
 	vector<TIPDESC>		  m_OpeningDescList;
 	vector<TIPDESC>		  m_YangyanDescList;
 	vector<TIPDESC>		  m_ChixiaDescList;
+	vector<TIPDESC>		  m_BossDescList;
+	vector<TIPDESC>		  m_CityDescList;
+	vector<TIPDESC>		  m_DungeonDescList;
 
 	// 0 = AREA_OPENING, 1 = AREA_BOSS, 2 = CHAR_YANGYANG, 3 = CHAR_CHIXIA, 4 = TOOL_HOOK, 5 = TOOL_SCAN, 6 = TOOL_LEVI, 7 = SKILL_E, 8 = SKILL_Q, 9 = SKILL_R, 10 = SKILL_QTE, 11 = SKILL_BURST
 	SITUINDEX		SituIndex = { SITUINDEX::SITUINDEXEND };
+	_int iSituation = { 0 };
 };
 
 END

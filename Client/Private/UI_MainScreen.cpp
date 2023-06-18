@@ -78,6 +78,8 @@ HRESULT CUI_MainScreen::Initialize(void * pArg)
 	m_CutDescList[1]->Duration = 0.2f;
 	m_CutDescList[2]->Duration = 0.2f;
 	m_CutDescList[51]->fZCut = 0.01f;
+	m_CutDescList[70]->OriPos.y = m_CutDescList[70]->fYCut;
+	m_CutDescList[70]->fXCut = -3.f;
 	return S_OK;
 }
 
@@ -252,10 +254,6 @@ HRESULT CUI_MainScreen::Render()
 
 		for (_uint i = 0; i < (_uint)m_CutDescList.size(); ++i)
 		{
-			if (i == 37)
-			{
-				int i = 0;
-			}
 			if (true == m_CutDescList[i]->bRender)
 			{
 				if (3 > m_CutDescList[i]->eKeyType)
@@ -411,40 +409,6 @@ void CUI_MainScreen::OtherobjIsActive(_double TimeDelta)
 		if (m_pTerminalUI->IsActive())
 			m_bRender = false;
 	}
-
-
-
-
-	/*if (m_pTerminalUI != nullptr)
-	{
-	if (m_pTerminalUI->IsActive())
-	m_bRender = false;
-	}
-	if (m_pTerminalUI != nullptr)
-	{
-	if (m_pTip->IsActive())
-	m_bRender = false;
-	}
-	if (m_pTerminalUI != nullptr)
-	{
-	if (m_pUIMen->IsActive())
-	m_bRender = false;
-	if (m_pTerminalUI != nullptr)
-	{
-	if (m_pUISovi->IsActive())
-	m_bRender = false;
-	}
-	if (m_pTerminalUI != nullptr)
-	{
-	if (m_pUIPanhua->IsActive())
-	m_bRender = false;
-	}
-	if (m_pTerminalUI != nullptr)
-	{
-	if (m_pUICook->IsActive())
-	m_bRender = false;
-	}
-	*/
 }
 
 void CUI_MainScreen::OffRender(_double TimeDelta)
@@ -512,20 +476,6 @@ void CUI_MainScreen::Counting()
 
 void CUI_MainScreen::QTEAct(_double TimeDelta)
 {
-	// 38 사이즈 알파 100 * 100
-	//if (-255.f < m_CutDescList[38]->fColorACut)
-	//{
-	//	m_CutDescList[38]->fColorACut -= (_float)TimeDelta * 100.f;
-	//	m_CutDescList[38]->fWidthCut += (_float)TimeDelta * 100.f;
-	//	m_CutDescList[38]->fHeightCut += (_float)TimeDelta * 100.f;
-	//}
-	//else
-	//{
-	//	m_CutDescList[38]->fColorACut = 0.f;
-	//	m_CutDescList[38]->fWidthCut = 100.f;
-	//	m_CutDescList[38]->fHeightCut = 100.f;
-	//}
-
 	if (-255.f < m_CutDescList[57]->fColorACut)
 	{
 		m_CutDescList[57]->fColorACut -= (_float)TimeDelta * 300.f;
@@ -557,22 +507,6 @@ _bool CUI_MainScreen::QTEFull()
 
 void CUI_MainScreen::RRAct(_double TimeDelta)
 {
-	// 37사이즈 알파 94*94
-
-
-	//if (-255.f < m_CutDescList[37]->fColorACut)
-	//{
-	//	m_CutDescList[37]->fColorACut -= (_float)TimeDelta * 200.f;
-	//	m_CutDescList[37]->fWidthCut += (_float)TimeDelta * 300.f;
-	//	m_CutDescList[37]->fHeightCut += (_float)TimeDelta * 300.f;
-	//}
-	//else
-	//{
-	//	m_CutDescList[37]->fColorACut = 0.f;
-	//	m_CutDescList[37]->fWidthCut = 110.f;
-	//	m_CutDescList[37]->fHeightCut = 110.f;
-	//}
-
 	if (-255.f < m_CutDescList[9]->fColorACut)
 	{
 		m_CutDescList[9]->fColorACut -= (_float)TimeDelta * 300.f;
@@ -597,10 +531,7 @@ _bool CUI_MainScreen::RRFull()
 		m_CutDescList[75]->bRender = true;
 		return true;
 	}
-	/*m_CutDescList[37]->fColorACut = 0.f;
-	m_CutDescList[37]->fWidthCut = 56.f;
-	m_CutDescList[37]->fHeightCut = 56.f;
-	*/
+
 	m_CutDescList[9]->fColorACut = 0.f;
 	m_CutDescList[9]->fWidthCut = 56.f;
 	m_CutDescList[9]->fHeightCut = 56.f;
@@ -814,6 +745,12 @@ void CUI_MainScreen::SetPlayer()
 
 		m_CutDescList[70]->iTexNum = 224;
 		m_CutDescList[70]->iPass = 10;
+		m_CutDescList[70]->fYCut = m_CutDescList[70]->OriPos.y;
+
+		m_CutDescList[75]->fColorRCut = m_CutDescList[37]->fColorRCut = 175.f;
+		m_CutDescList[75]->fColorGCut = m_CutDescList[37]->fColorGCut = 255.f;
+		m_CutDescList[75]->fColorBCut = m_CutDescList[37]->fColorBCut = -30.f;
+
 	}
 	break;
 	case ELEMENT::ELMT_CONDUCTO:
@@ -851,6 +788,11 @@ void CUI_MainScreen::SetPlayer()
 
 		m_CutDescList[70]->iTexNum = 248;
 		m_CutDescList[70]->iPass = 10;
+		m_CutDescList[70]->fYCut = m_CutDescList[70]->OriPos.y;
+
+		m_CutDescList[75]->fColorRCut = m_CutDescList[37]->fColorRCut = 0.f;
+		m_CutDescList[75]->fColorGCut = m_CutDescList[37]->fColorGCut = 0.f;
+		m_CutDescList[75]->fColorBCut = m_CutDescList[37]->fColorBCut = 0.f;
 	}
 	break;
 	case ELEMENT::ELMT_FUSION:
@@ -888,6 +830,12 @@ void CUI_MainScreen::SetPlayer()
 
 		m_CutDescList[70]->iTexNum = 69;
 		m_CutDescList[70]->iPass = 23;
+		m_CutDescList[70]->fYCut = -306.f;
+
+		m_CutDescList[75]->fColorRCut = m_CutDescList[37]->fColorRCut = 255.f;
+		m_CutDescList[75]->fColorGCut = m_CutDescList[37]->fColorGCut = -188.f;
+		m_CutDescList[75]->fColorBCut = m_CutDescList[37]->fColorBCut = -188.f;
+
 	}
 	break;
 	default:
@@ -1641,6 +1589,31 @@ _bool CUI_MainScreen::REnd(_double TimeDelta)
 	}
 	return false;
 }
+
+void CUI_MainScreen::Save(_int Index)
+{
+	TCHAR	szFileName[128] = L"";
+	wsprintf(szFileName, L"../../Data/UI/MainScreen%d.dat", m_Index);
+	HANDLE hFile = CreateFile(
+		szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+	//Desc.fColorA = Desc.Color.w;
+	_ulong dwByte = 0;
+	WriteFile(hFile, &(m_CutDescList[m_Index]->fXCut), sizeof(_float), &dwByte, nullptr);
+	WriteFile(hFile, &(m_CutDescList[m_Index]->fYCut), sizeof(_float), &dwByte, nullptr);
+	WriteFile(hFile, &(m_CutDescList[m_Index]->fZCut), sizeof(_float), &dwByte, nullptr);
+	WriteFile(hFile, &(m_CutDescList[m_Index]->fWidthCut), sizeof(_float), &dwByte, nullptr);
+	WriteFile(hFile, &(m_CutDescList[m_Index]->fHeightCut), sizeof(_float), &dwByte, nullptr);
+	WriteFile(hFile, &(m_CutDescList[m_Index]->fColorACut), sizeof(_float), &dwByte, nullptr);
+	WriteFile(hFile, &(m_CutDescList[m_Index]->fColorRCut), sizeof(_float), &dwByte, nullptr);
+	WriteFile(hFile, &(m_CutDescList[m_Index]->fColorGCut), sizeof(_float), &dwByte, nullptr);
+	WriteFile(hFile, &(m_CutDescList[m_Index]->fColorBCut), sizeof(_float), &dwByte, nullptr);
+	WriteFile(hFile, &(m_CutDescList[m_Index]->iPass), sizeof(_int), &dwByte, nullptr);
+	WriteFile(hFile, &(m_CutDescList[m_Index]->iTexNum), sizeof(_int), &dwByte, nullptr);
+	WriteFile(hFile, &(m_CutDescList[m_Index]->bRender), sizeof(_bool), &dwByte, nullptr);
+
+	CloseHandle(hFile);
+}
+
 
 void CUI_MainScreen::RenderPlayer1()
 {

@@ -284,7 +284,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UITIP,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 29))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 37))))
 		return E_FAIL;	
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXTURE::UIMERCHANT,
@@ -435,7 +435,7 @@ HRESULT CLoader::Load_Level_City()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UITIP,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 29))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 37))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CITY, TEXTURE::UIMERCHANT,
@@ -579,7 +579,7 @@ HRESULT CLoader::Load_Level_Forest()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UITIP,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 29))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 37))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FOREST, TEXTURE::UIMERCHANT,
@@ -754,7 +754,7 @@ HRESULT CLoader::Load_Level_Crown()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UITIP,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 29))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Texture/Image/Tip/Tip%d.dds"), 37))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_CROWN, TEXTURE::UIMERCHANT,
