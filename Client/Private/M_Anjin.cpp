@@ -70,7 +70,6 @@ HRESULT CM_Anjin::Initialize(void * pArg)
 	m_pNaviCom->Set_CurrentIndex(2200);
 
 
-
 	// StateController ÃÊ±âÈ­
 	m_Scon.iCurState = 0;
 	m_Scon.iNextState = 0;
@@ -1027,6 +1026,8 @@ void CM_Anjin::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAttac
 	}
 
 	pChar->Recover_Gauge(pAttackInfo->fSPGain, pAttackInfo->fBPGain, pAttackInfo->fTPGain);
+
+	Play_HitSound(pAttackInfo);
 
 	CGameMode* pGM = CGameMode::GetInstance();
 

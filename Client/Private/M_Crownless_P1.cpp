@@ -1398,6 +1398,7 @@ void CM_Crownless_P1::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
 	}
 
+	Play_HitSound(pAttackInfo);
 
 	pChar->Recover_Gauge(pAttackInfo->fSPGain, pAttackInfo->fBPGain, pAttackInfo->fTPGain);
 

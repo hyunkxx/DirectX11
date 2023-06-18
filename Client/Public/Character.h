@@ -378,8 +378,12 @@ public:
 		_float	fSPGain;		// Special 게이지 회복량
 		_float	fBPGain;		// Burst 게이지 회복량
 		_float	fTPGain;		// QTE 게이지 회복량
+		//
 		_tchar  szHitEffectTag[MAX_PATH]; // 히트 이펙트 태그
 		_uint	iHitEffectID;	// 히트 이펙트 레이어 ID
+		//
+		_tchar	szHitSoundTag[MAX_PATH];
+		_float	fVolume;
 	}TAGATTACK;
 
 	typedef struct tagTraceDesc
@@ -426,6 +430,8 @@ public:
 	virtual void On_Hit(CCharacter* pGameObject, TAGATTACK* pAttackInfo, _float fAttackPoint, _float3* pEffPos, _float fCritRate, _float fCritDMG) {}
 	virtual _float Get_CritRate() { return 0.f; }
 	virtual _float Get_CritDMG() { return 0.f; }
+
+	virtual void Play_HitSound(TAGATTACK* pAttackInfo);
 	
 
 	virtual void Recover_Gauge(_float fSP, _float fBP, _float fTP) {}
@@ -496,6 +502,7 @@ protected:
 	StateController m_Scon;
 	CollisionType	m_eCollisionType;
 	_bool			m_bRender = true;
+	_uint			m_iSoundChannel = 0;
 
 	// 디졸브 벨류
 	_float m_fDissolveAmount = 0.f;

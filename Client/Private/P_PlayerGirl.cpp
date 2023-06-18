@@ -2424,6 +2424,7 @@ void CP_PlayerGirl::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _f
 	}
 
 	pGameObject->Set_AttackHit(true);
+	Play_HitSound(pAttackInfo);
 
 	// 그 외 피격 처리
 	// 피격 이펙트 출력
@@ -2696,6 +2697,9 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Hit_Effect_01"));
 
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
+	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
+
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = 1.2f;
 	m_AttackInfos[ATK_ATTACK_02].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_02].eElementType = ELMT_NONE;
@@ -2704,6 +2708,8 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_02].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_02].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_02].szHitEffectTag, TEXT("Hit_Effect_02"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
+	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
 
 	m_AttackInfos[ATK_ATTACK_03].fDamageFactor = 0.3f;
 	m_AttackInfos[ATK_ATTACK_03].eHitIntensity = HIT_NONE;
@@ -2714,6 +2720,9 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_03].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_03].szHitEffectTag, TEXT("Hit_Effect_03"));
 
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
+	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
+
 	m_AttackInfos[ATK_ATTACK_04].fDamageFactor = 1.8f;
 	m_AttackInfos[ATK_ATTACK_04].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK_04].eElementType = ELMT_NONE;
@@ -2722,6 +2731,9 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_04].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_04].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_04].szHitEffectTag, TEXT("Hit_Effect_04"));
+
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
+	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
 
 	m_AttackInfos[ATK_ATTACK_05_01].fDamageFactor = 0.8f;
 	m_AttackInfos[ATK_ATTACK_05_01].eHitIntensity = HIT_SMALL;
@@ -2732,6 +2744,9 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_05_01].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_05_01].szHitEffectTag, TEXT("Hit_Effect_05_01"));
 
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
+	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
+
 	m_AttackInfos[ATK_ATTACK_05_02].fDamageFactor = 1.2f;
 	m_AttackInfos[ATK_ATTACK_05_02].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_ATTACK_05_02].eElementType = ELMT_NONE;
@@ -2741,6 +2756,9 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_05_02].iHitEffectID = 1;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_05_02].szHitEffectTag, TEXT("Hit_Effect_05_02"));
 
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
+	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
+
 	m_AttackInfos[ATK_ATTACK_09].fDamageFactor = 0.45f;
 	m_AttackInfos[ATK_ATTACK_09].eHitIntensity = HIT_NONE;
 	m_AttackInfos[ATK_ATTACK_09].eElementType = ELMT_NONE;
@@ -2748,6 +2766,9 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_09].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_09].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_09].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_05_02].szHitEffectTag, TEXT("Hit_Effect_05_02"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
+	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
 
 	m_AttackInfos[ATK_ATTACK_PO_2].fDamageFactor = 1.3f;
 	m_AttackInfos[ATK_ATTACK_PO_2].eHitIntensity = HIT_SMALL;
@@ -2756,6 +2777,11 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_PO_2].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_PO_2].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_PO_2].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_05_02].szHitEffectTag, TEXT("Hit_Effect_05_02"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
+	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
+
+
 
 	m_AttackInfos[ATK_ATTACK_PO_3].fDamageFactor = 2.15f;
 	m_AttackInfos[ATK_ATTACK_PO_3].eHitIntensity = HIT_FLY;
@@ -2764,6 +2790,9 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_PO_3].fBPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_PO_3].fTPGain = 1.5f;
 	m_AttackInfos[ATK_ATTACK_PO_3].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_05_02].szHitEffectTag, TEXT("Hit_Effect_05_02"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
+	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
 
 	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 1.55f;
 	m_AttackInfos[ATK_AIRATTACK].eHitIntensity = HIT_BIG;
@@ -2771,7 +2800,10 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_AIRATTACK].fSPGain = 1.5f;
 	m_AttackInfos[ATK_AIRATTACK].fBPGain = 1.5f;
 	m_AttackInfos[ATK_AIRATTACK].fTPGain = 1.5f;
-	m_AttackInfos[ATK_AIRATTACK].iHitEffectID = 1;
+	m_AttackInfos[ATK_ATTACK_PO_3].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_05_02].szHitEffectTag, TEXT("Hit_Effect_05_02"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
+	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
 
 	m_AttackInfos[ATK_SKILL_01].fDamageFactor = 2300.3f;
 	m_AttackInfos[ATK_SKILL_01].eHitIntensity = HIT_BIG;
@@ -2779,7 +2811,10 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_01].fSPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_01].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_01].fTPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_01].iHitEffectID = 1;
+	m_AttackInfos[ATK_ATTACK_PO_3].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_05_02].szHitEffectTag, TEXT("Hit_Effect_05_02"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
+	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
 
 	m_AttackInfos[ATK_SKILL_02_01].fDamageFactor = 1.7f;
 	m_AttackInfos[ATK_SKILL_02_01].eHitIntensity = HIT_SMALL;
@@ -2787,7 +2822,10 @@ void CP_PlayerGirl::Init_AttackInfos()
 	m_AttackInfos[ATK_SKILL_02_01].fSPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_02_01].fBPGain = 1.5f;
 	m_AttackInfos[ATK_SKILL_02_01].fTPGain = 1.5f;
-	m_AttackInfos[ATK_SKILL_02_01].iHitEffectID = 1;
+	m_AttackInfos[ATK_ATTACK_PO_3].iHitEffectID = 1;
+	lstrcpy(m_AttackInfos[ATK_ATTACK_05_02].szHitEffectTag, TEXT("Hit_Effect_05_02"));
+	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
+	m_AttackInfos[ATK_ATTACK_01].fVolume = 0.f;
 
 	m_AttackInfos[ATK_SKILL_02_02].fDamageFactor = 2.4f;
 	m_AttackInfos[ATK_SKILL_02_02].eHitIntensity = HIT_BIG;

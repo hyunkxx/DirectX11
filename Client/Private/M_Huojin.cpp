@@ -973,6 +973,8 @@ void CM_Huojin::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtta
 
 	pChar->Recover_Gauge(pAttackInfo->fSPGain, pAttackInfo->fBPGain, pAttackInfo->fTPGain);
 
+	Play_HitSound(pAttackInfo);
+
 	CGameMode* pGM = CGameMode::GetInstance();
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)

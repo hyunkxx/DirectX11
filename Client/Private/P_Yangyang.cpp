@@ -2413,6 +2413,8 @@ void CP_Yangyang::On_Cell()
 
 void CP_Yangyang::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _float fAttackPoint, _float3 * pEffPos, _float fCritRate, _float fCritDMG)
 {
+
+
 	// 저스트 회피 성공
 	if ((SS_MOVE_B == m_Scon.iCurState ||
 		SS_MOVE_F == m_Scon.iCurState) &&
@@ -2429,6 +2431,8 @@ void CP_Yangyang::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _flo
 	}
 
 	static_cast<CCharacter*>(pGameObject)->Set_AttackHit(true);
+	
+	Play_HitSound(pAttackInfo);
 
 	// 그 외 피격 처리
 	// 피격 이펙트 출력

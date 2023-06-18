@@ -58,7 +58,6 @@ void CCharacter::Set_InitPos(_fvector vPos, _uint iNaviID)
 	
 	if(nullptr != pNavi)
 		pNavi->Set_CurrentIndex(iNaviID);
-
 }
 
 
@@ -209,4 +208,19 @@ void CCharacter::Set_LookAt(_vector vPos)
 	m_pMainTransform->LookAt(vPos);
 }
 
+void CCharacter::Play_HitSound(TAGATTACK * pAttackInfo)
+{
+	CGameInstance* pGame = CGameInstance::GetInstance();
 
+	if (CT_PLAYER == m_eCollisionType)
+	{
+		pGame->PlaySoundEx(pAttackInfo->szHitSoundTag, SOUND_PLAYER_HIT, VOLUME_VFX);
+	}
+	else if (CT_MONSTER == m_eCollisionType)
+	{
+		if (1 == m_iSoundChannel)
+			pGame->PlaySoundEx(pAttackInfo->szHitSoundTag, SOUND_MONSTER1_HIT, VOLUME_VFX);
+		else
+			pGame->PlaySoundEx(pAttackInfo->szHitSoundTag, SOUND_MONSTER2_HIT, VOLUME_VFX);
+	}
+}

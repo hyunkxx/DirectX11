@@ -97,6 +97,7 @@ HRESULT CM_Binglie::Initialize(void * pArg)
 	m_tMonsterInfo.fAttack = 50.f;
 	m_tMonsterInfo.fDefense = 50.f;
 	m_tMonsterInfo.fCriticalRate = 0.1f;
+	m_iSoundChannel = 1;
 
 	// 충돌 타입 처리
 	m_eCollisionType = CT_MONSTER;
@@ -1012,6 +1013,8 @@ void CM_Binglie::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtt
 	}
 
 	pChar->Recover_Gauge(pAttackInfo->fSPGain, pAttackInfo->fBPGain, pAttackInfo->fTPGain);
+
+	Play_HitSound(pAttackInfo);
 
 	CGameMode* pGM = CGameMode::GetInstance();
 
