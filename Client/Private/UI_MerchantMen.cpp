@@ -1597,12 +1597,16 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 
 void CUI_MerchantMen::Set_SituMeet()
 {
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+	pActiveCharacter->Set_OnControl(false);
 	SetState(ACTIVE);
 	Situation = MENSITUINDEX::MEET;
 }
 
 void CUI_MerchantMen::Set_END()
 {
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+	pActiveCharacter->Set_OnControl(true);
 	Situation = MENSITUINDEX::MENEND;
 	m_Count = 0;
 	m_InMenuRenderStart = true;
