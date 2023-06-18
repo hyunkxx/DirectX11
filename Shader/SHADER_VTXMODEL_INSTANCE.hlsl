@@ -102,7 +102,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	//In.vPosition += sin(g_fTimeAcc) * In.vPosition.y * 0.06;
 
 	if (true == m_IsUseShake)
-		In.vPosition += sin(g_fTimeAcc * g_fShakePower) * In.vPosition.y * g_fShakeRange_Ratio;
+		In.vPosition += sin(In.vTranslation.x + g_fTimeAcc * g_fShakePower) * In.vPosition.y * g_fShakeRange_Ratio;
 
 	vector	vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
 
