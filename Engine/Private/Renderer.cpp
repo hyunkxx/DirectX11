@@ -1521,6 +1521,10 @@ void CRenderer::FinalExtraction()
 	if (FAILED(m_pShader_Extraction->SetRawValue("g_fFogEnd", &fFog.y, sizeof(_float))))
 		return;
 
+	_float4 vFogColor = m_pRenderSetting->GetFogColor();
+	if (FAILED(m_pShader_Extraction->SetRawValue("g_vFogColor", &vFogColor, sizeof(_float4))))
+		return;
+
 	if (pSourTarget)
 		pSourTarget->Set_ShaderResourceView(m_pShader_Extraction, "g_SourTexture");
 	if (pDepthTarget)

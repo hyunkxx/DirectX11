@@ -161,6 +161,8 @@ public: // RenderSetting
 	
 	void SetFog(_bool bValue);
 	_bool IsActiveFog() const;
+	void SetFogColor(_float4 vFogColor);
+	_float4 GetFogColor() const;
 
 	void StartFade(CRenderSetting::FADE_STATE eState, _double FadeTime);
 

@@ -7,6 +7,7 @@ float4x4  g_PipeProjMatrix, g_PipeViewMatrix;
 texture2D g_SourTexture, g_DestTexture;
 texture2D g_DepthTexture;
 
+float4 g_vFogColor;
 float4 g_vCamPosition;
 float g_fFogStart, g_fFogEnd;
 
@@ -114,7 +115,7 @@ PS_OUT PS_EXTRACTION_FINAL_FOG(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	float4 vFogColor = float4(0.9f, 0.9f, 0.9f, 1.0f);
+	float4 vFogColor = g_vFogColor;
 
 	vector vSourColor = g_SourTexture.Sample(LinearBorderSampler, In.vTexUV);
 	vector vDepthDesc = g_DepthTexture.Sample(LinearClampSampler, In.vTexUV);

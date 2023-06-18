@@ -483,6 +483,8 @@
     <ClCompile Include="..\private\NonPlayer.cpp">
       <Filter>src\02. GameObject\03. Character\04. NPC</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\CookGirl.cpp" />
+    <ClCompile Include="..\private\Deliver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -944,6 +946,8 @@
     <ClInclude Include="..\public\NonPlayer.h">
       <Filter>src\02. GameObject\03. Character\04. NPC</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CookGirl.h" />
+    <ClInclude Include="..\public\Deliver.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

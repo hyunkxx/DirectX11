@@ -55,15 +55,22 @@ void CShopGirl::Tick(_double TimeDelta)
 {
 	CGameInstance* pGI = CGameInstance::GetInstance();
 
-	//테스트용코드
-	//if (pGI->InputKey(DIK_I) == KEY_STATE::TAP)
-	//	PushAnimation(ANIM_STATE::ANIM_SCARE);
-
-	//if (pGI->InputKey(DIK_P) == KEY_STATE::TAP)
-	//	PushAnimation(ANIM_STATE::ANIM_TALK);
-
-	//if (pGI->InputKey(DIK_O) == KEY_STATE::TAP)
-	//	PushAnimation(ANIM_STATE::ANIM_IDLE);
+	if (m_bOverlaped)
+	{
+		if (m_iCurClip == CLIP_IDLE)
+		{
+			m_fTimeAcc += (_float)TimeDelta;
+			if (m_fTimeAcc > 2.f)
+			{
+				m_fTimeAcc = 0.f;
+				PushAnimation(ANIM_STATE::ANIM_TALK);
+			}
+		}
+	}
+	else
+	{
+		m_fTimeAcc = 0.f;
+	}
 
 	animationUpdate(TimeDelta);
 
@@ -116,6 +123,8 @@ HRESULT CShopGirl::RenderShadow()
 	_uint iMeshCount = m_pModel->Get_NumMeshes();
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
+		if (FAILED(m_pModel->SetUp_BoneMatrices(m_pShader, "g_BoneMatrix", i)))
+			return E_FAIL;
 		if (FAILED(m_pModel->SetUp_ShaderMaterialResource(m_pShader, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
 			return E_FAIL;
 		if (FAILED(m_pModel->SetUp_ShaderMaterialResource(m_pShader, "g_NormalTexture", i, MyTextureType_NORMALS)))
@@ -271,18 +280,33 @@ void CShopGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 	if (pActiveCharacter == dest->GetOwner())
 	{
 		//UI Active
+		PushAnimation(ANIM_STATE::ANIM_TALK);
 	}
 }
 
 void CShopGirl::OnCollisionStay(CCollider * src, CCollider * dest)
 {
+	CCharacter* pActiveCharacter = m_pPlayerState->Get_ActiveCharacter();
+	if (pActiveCharacter == dest->GetOwner() && src->GetOwner() == this)
+	{
+		if (pActiveCharacter->Get_Attack())
+		{
+			if (!(m_iCurClip == CLIP_SCARE_START) && !(m_iCurClip == CLIP_SCARE_LOOP) && !(m_iCurClip == CLIP_SCARE_END))
+			{
+				while (!m_AnimQueue.empty())
+					m_AnimQueue.pop();
+
+				PushAnimation(ANIM_STATE::ANIM_SCARE);
+			}
+		}
+		else
+		{
+			if (m_iCurClip == CLIP_IDLE)
+				m_bOverlaped = true;
+		}
+	}
 }
 
 void CShopGirl::OnCollisionExit(CCollider * src, CCollider * dest)
 {
-	CCharacter* pActiveCharacter = m_pPlayerState->Get_ActiveCharacter();
-	if (pActiveCharacter == dest->GetOwner())
-	{
-		//UI Active
-	}
 }

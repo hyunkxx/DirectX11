@@ -68,6 +68,8 @@
 //NPC
 #include "NonPlayer.h"
 #include "ShopGirl.h"
+#include "Deliver.h"
+#include "CookGirl.h"
 
 #include "PhaseChanger.h"
 
@@ -521,6 +523,10 @@ HRESULT CLoader::Load_Level_City()
 	m_szLoadingStateText = L"객체원본을 로딩중입니다.";
 
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::SHOP_GIRL, CShopGirl::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::COOK_GIRL, CCookGirl::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::DELIVER, CDeliver::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion GAMEOBJECTS

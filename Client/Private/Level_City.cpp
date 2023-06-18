@@ -36,6 +36,9 @@ HRESULT CLevel_City::Initialize()
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+	_float4 vFogColor = _float4(0.9f, 0.9f, 0.9f, 1.f);
+	pGameInstance->SetFogColor(vFogColor);
+
 	// 몬스터들 상태 초기화 해놓기
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
 	CP_Yangyang::Init_States(m_pDevice, m_pContext);
@@ -353,6 +356,10 @@ HRESULT CLevel_City::Ready_Layer_Character(const _tchar * pLayerTag)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::SHOP_GIRL, pLayerTag, TEXT("ShopGirl"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::COOK_GIRL, pLayerTag, TEXT("CookGirl"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::DELIVER, pLayerTag, TEXT("Deliver"))))
 		return E_FAIL;
 
 	return S_OK;

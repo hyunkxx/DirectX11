@@ -2,6 +2,7 @@
 #include "..\Public\Sky.h"
 
 #include "GameMode.h"
+#include "AppManager.h"
 #include "GameInstance.h"
 
 CSky::CSky(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -62,6 +63,9 @@ void CSky::LateTick(_double TimeDelta)
 
 HRESULT CSky::Render()
 {
+	CGameMode* pGM = CGameMode::GetInstance();
+	CGameInstance* pGI = CGameInstance::GetInstance();
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
@@ -71,8 +75,17 @@ HRESULT CSky::Render()
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
-			return E_FAIL;
+		if (pGM->GetCurrentLevel() == LEVEL_CROWN)
+		{
+			if (FAILED(pGI->SetupSRV(STATIC_IMAGE::DARK_SKY, m_pShaderCom, "g_DiffuseTexture")))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, MyTextureType_DIFFUSE)))
+				return E_FAIL;
+		}
+
 
 		m_pShaderCom->Begin(m_iShaderPass_ID);
 		m_pModelCom->Render(i);

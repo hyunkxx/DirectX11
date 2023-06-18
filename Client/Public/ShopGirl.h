@@ -91,7 +91,8 @@ private:
 	queue<CLIP> m_AnimQueue;
 	_uint m_iCurClip = CLIP_IDLE;
 
-
+	_bool m_bOverlaped = false;
+	_float m_fTimeAcc = 0.f;
 };
 
 END

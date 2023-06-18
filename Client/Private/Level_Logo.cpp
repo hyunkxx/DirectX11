@@ -23,7 +23,8 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 HRESULT CLevel_Logo::Initialize()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	
+	pGameInstance->SetFog(false);
+
 	LIGHT_DESC LightDesc;
 
 	// Directional
@@ -39,7 +40,7 @@ HRESULT CLevel_Logo::Initialize()
 	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
-	pGameInstance->SetLUT(CRenderer::LUT_FUJI);
+	pGameInstance->SetLUT(CRenderer::LUT_KURO);
 	pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)SHADOW_LEVEL::SHADOW_HIGH);
 	pGameInstance->OutlineToggle();
 	pGameInstance->SSAOToggle();

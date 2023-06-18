@@ -119,7 +119,7 @@ HRESULT CSettingUI::Initialize(void * pArg)
 	m_iGraphicState[GRAPHIC_SHADOW] = 1;
 	m_iGraphicState[GRAPHIC_SSAO] = 1;
 	m_iGraphicState[GRAPHIC_OUTLINE] = 1;
-	m_iGraphicState[GRAPHIC_FILTER] = CRenderer::LUT_LAST;
+	m_iGraphicState[GRAPHIC_FILTER] = CRenderer::LUT_FUJI;
 	m_iGraphicState[GRAPHIC_FOG] = 1;
 
 	return S_OK;

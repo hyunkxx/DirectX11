@@ -484,7 +484,7 @@ HRESULT CTrigger::Link_WaveMonster(SPAWN_WAVE eWave, CCharacter * pCharacter)
 
 	m_pMonsters[eWave].push_back(pCharacter);
 	// 리미트 웨이브 갱신 -> 가장 높은 웨이브가 저장된다.
-	if (m_iLimitWave <= eWave)
+	if (m_iLimitWave <= (_uint)eWave)
 		m_iLimitWave = eWave;
 
 	return S_OK;

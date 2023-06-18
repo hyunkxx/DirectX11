@@ -161,6 +161,9 @@ public:
 		return m_bFog;
 	}
 
+	void SetFogColor(_float4 vFogColor) { m_FogColor = vFogColor; }
+	_float4 GetFogColor() const { return m_FogColor; }
+
 private:
 	_bool m_bDebugRenderTarget = false;
 
@@ -191,6 +194,8 @@ private:
 
 	// Fog
 	_bool m_bFog = true;
+	_float4 m_FogColor = { 0.9f, 0.9f, 0.9f, 1.f };
+
 };
 
 END

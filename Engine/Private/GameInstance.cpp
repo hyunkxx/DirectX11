@@ -896,6 +896,22 @@ _bool CGameInstance::IsActiveFog() const
 	return m_pRenderSetting->IsActiveFog();
 }
 
+void CGameInstance::SetFogColor(_float4 vFogColor)
+{
+	if (nullptr == m_pRenderSetting)
+		return;
+
+	m_pRenderSetting->SetFogColor(vFogColor);
+}
+
+_float4 CGameInstance::GetFogColor() const
+{
+	if (nullptr == m_pRenderSetting)
+		return _float4();
+
+	return m_pRenderSetting->GetFogColor();
+}
+
 void CGameInstance::StartFade(CRenderSetting::FADE_STATE eState, _double FadeTime)
 {
 	if (nullptr == m_pRenderSetting)

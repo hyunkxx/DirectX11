@@ -2154,6 +2154,9 @@ HRESULT CApplication::Ready_Item_Image()
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::TEXT_LUT_ACHROMATIC,
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/Achromatic_.dds")))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::DARK_SKY,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/DarkSky.png")))))
+		return E_FAIL;
 
 	//이미지
 	//요리 재료 아이콘

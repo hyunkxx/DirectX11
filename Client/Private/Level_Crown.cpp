@@ -36,6 +36,9 @@ HRESULT CLevel_Crown::Initialize()
 	CGameMode* pGM = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+	_float4 vFogColor = _float4(0.2f, 0.2f, 0.2f, 1.f);
+	pGameInstance->SetFogColor(vFogColor);
+
 	// 몬스터들 상태 초기화 해놓기
 	CP_PlayerGirl::Init_States(m_pDevice, m_pContext);
 	CP_Yangyang::Init_States(m_pDevice, m_pContext);
