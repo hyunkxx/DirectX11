@@ -188,16 +188,15 @@ HRESULT CP_Yangyang::Initialize(void * pArg)
 	m_pPlayerStateClass->Register_Character(CPlayerState::CHARACTER_YANGYANG, this, &m_bOnControl);
 	m_pCharacterState = m_pPlayerStateClass->Get_CharState_byChar(CPlayerState::CHARACTER_YANGYANG);
 
-	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = 2.f;
+	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = 7.f;
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST] = 9.f;
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO] = 5.f;
 	
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 3.f;
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
-	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 3.f;
-	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 100.f;
-
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 0.f;
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 0.f;
 
 
 
@@ -1272,9 +1271,9 @@ void CP_Yangyang::SetUp_State()
 
 	// 게이지 차감
 	if (IS_AIRATTACK_2_START == m_Scon.iCurState)
-		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 2.f;
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 0.f;
 	else if (IS_BURST == m_Scon.iCurState)
-		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] -= 5.f;
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 0.f;
 
 
 	//PhysicMove
@@ -2747,8 +2746,8 @@ void CP_Yangyang::Init_AttackInfos()
 	m_AttackInfos[ATK_ATTACK_01].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_ATTACK_01].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_ATTACK_01].fSPGain = 0.f;
-	m_AttackInfos[ATK_ATTACK_01].fBPGain = 1.5f;
-	m_AttackInfos[ATK_ATTACK_01].fTPGain = 1.5f;
+	m_AttackInfos[ATK_ATTACK_01].fBPGain = 3.f;
+	m_AttackInfos[ATK_ATTACK_01].fTPGain = 3.f;
 	m_AttackInfos[ATK_ATTACK_01].iHitEffectID = 5;
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitEffectTag, TEXT("Hit_Effect_Y_01"));
 	lstrcpy(m_AttackInfos[ATK_ATTACK_01].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Sword_Light_1.wem.wav"));
@@ -2923,7 +2922,7 @@ void CP_Yangyang::Init_AttackInfos()
 	lstrcpy(m_AttackInfos[ATK_SKILL_QTE].szHitEffectTag, TEXT("M_Blue_Hit"));
 	lstrcpy(m_AttackInfos[ATK_SKILL_QTE].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Magic_Wind_3.wem.wav"));
 
-	m_AttackInfos[ATK_BURST_1].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_BURST_1].fDamageFactor = 1.2f;
 	m_AttackInfos[ATK_BURST_1].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_BURST_1].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_BURST_1].fSPGain = 0.f;
@@ -2933,7 +2932,7 @@ void CP_Yangyang::Init_AttackInfos()
 	lstrcpy(m_AttackInfos[ATK_BURST_1].szHitEffectTag, TEXT("M_Blue_Hit"));
 	lstrcpy(m_AttackInfos[ATK_BURST_1].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Magic_Wind_2.wem.wav"));
 
-	m_AttackInfos[ATK_BURST_2].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_BURST_2].fDamageFactor = 3.6f;
 	m_AttackInfos[ATK_BURST_2].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_BURST_2].fSPGain = 0.f;
 	m_AttackInfos[ATK_BURST_2].fBPGain = 1.5f;
@@ -2980,7 +2979,7 @@ void CP_Yangyang::Init_Missiles()
 	tMissilePoolDesc.tMissileDesc.HitInterval = 0.15;
 	tMissilePoolDesc.tMissileDesc.LifeTime = 0.5;
 	tMissilePoolDesc.tMissileDesc.iAttackInfoID = ATK_AIRATTACK_2_1;
-	tMissilePoolDesc.tMissileDesc.fExtents = 3.5f;
+	tMissilePoolDesc.tMissileDesc.fExtents = 4.f;
 
 	m_MissilePools[MISS_AIRATTACK_2_1] = CMissilePool::Create(m_pDevice, m_pContext, XMVectorSet(0.f, 0.f, 1.f, 0.f), &tMissilePoolDesc);
 	m_MissileRotAngles[MISS_AIRATTACK_2_1] = _float3(0.f, 0.f, 0.f);
