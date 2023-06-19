@@ -208,6 +208,8 @@ void CRobot::OnCollisionEnter(CCollider * src, CCollider * dest)
 	{
 		if (m_pCollider[i] == src && false == m_bHit[i])
 		{
+
+
 			_tchar EffectPath[MAX_PATH];
 			_int iEffectNum = i + 1;
 			wsprintf(EffectPath, L"Box_Robot_Mark_0%d", iEffectNum);
@@ -223,7 +225,7 @@ void CRobot::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 			static_cast<CCameraMovement*>(m_pCamera)->StartVibration(15.f, 0.5f);
 
-			CGameInstance::GetInstance()->PlaySoundEx(L"Play_Role_Common_Weapon_Crash_1.wem.wavv",
+			CGameInstance::GetInstance()->PlaySoundEx(L"Play_Role_Common_Weapon_Crash_2.wem.wav",
 				SOUND_UI_TEMP, 1.f);
 
 			if (All_Hit_Check())
