@@ -191,8 +191,8 @@ HRESULT CP_Chixia::Initialize(void * pArg)
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 60.f;
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
-	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 0.f;
-	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 0.f;
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 60.f;
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
 
 	// TODO: 에코 쿨타임, 에코 착용 시 변경하도록 바꿔야 함
@@ -1258,7 +1258,7 @@ void CP_Chixia::SetUp_State()
 
 	// 게이지 차감
 	if (IS_BURST == m_Scon.iCurState)
-		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 0.f;
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] -= 10.f;
 
 	if (IS_SKILL_01_B == m_Scon.iCurState ||
 		IS_SKILL_01_F == m_Scon.iCurState)
@@ -1649,14 +1649,11 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB1);
 		}
 
-		if (m_pPlayerStateClass->Get_PlayerState()->iCharCount == 3)
+		if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
 		{
-			if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
-			{
-				if (PS_GROUND == m_Scon.ePositionState &&
-					7 > m_tCurState.iLeavePriority)
-					m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
-			}
+			if (PS_GROUND == m_Scon.ePositionState &&
+				7 > m_tCurState.iLeavePriority)
+				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
 		}
 	}
 	// Echo Summon
@@ -3203,7 +3200,7 @@ void CP_Chixia::Init_AttackInfos()
 	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitEffectTag, TEXT("Chixia_Hit_Effect_SC"));
 	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_3.wem.wav"));
 
-	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 0.8f;
+	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 600.6f;
 	m_AttackInfos[ATK_AIRATTACK].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_AIRATTACK].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_AIRATTACK].fSPGain = 1.f;

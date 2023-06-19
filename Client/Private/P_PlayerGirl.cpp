@@ -196,13 +196,13 @@ HRESULT CP_PlayerGirl::Initialize(void * pArg)
 	m_pPlayerStateClass->Register_Character(CPlayerState::CHARACTER_ROVER, this, &m_bOnControl);
 	m_pCharacterState = m_pPlayerStateClass->Get_CharState_byChar(CPlayerState::CHARACTER_ROVER);
 	
-	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = 7.f;
+	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_SKILL] = (_float)m_tStates[IS_SKILL_01].CoolTime;
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_BURST] = 10.f;
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 100.f;
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
-	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 0.f;
-	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 0.f;
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 100.f;
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
 	// TODO: 에코 쿨타임, 에코 착용 시 변경하도록 바꿔야 함
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO] = 5.f;
@@ -1516,14 +1516,11 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB1);
 		}
 
-		if (m_pPlayerStateClass->Get_PlayerState()->iCharCount == 3)
+		if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
 		{
-			if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
-			{
-				if (PS_GROUND == m_Scon.ePositionState &&
-					7 > m_tCurState.iLeavePriority)
-					m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
-			}
+			if (PS_GROUND == m_Scon.ePositionState &&
+				7 > m_tCurState.iLeavePriority)
+				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
 		}
 	}
 
@@ -2849,7 +2846,7 @@ void CP_PlayerGirl::Init_AttackInfos()
 	lstrcpy(m_AttackInfos[ATK_AIRATTACK].szHitEffectTag, TEXT("M_Yellow_Hit"));
 	lstrcpy(m_AttackInfos[ATK_AIRATTACK].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Magic_Arcane_3.wem.wav"));
 
-	m_AttackInfos[ATK_SKILL_01].fDamageFactor = 2.3f;
+	m_AttackInfos[ATK_SKILL_01].fDamageFactor = 2300.3f;
 	m_AttackInfos[ATK_SKILL_01].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_SKILL_01].eElementType = ELMT_SPECTRA;
 	m_AttackInfos[ATK_SKILL_01].fSPGain = 1.5f;
