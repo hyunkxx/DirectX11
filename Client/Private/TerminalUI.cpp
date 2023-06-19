@@ -254,7 +254,7 @@ void CTerminalUI::Tick(_double TimeDelta)
 
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
-	_bool bShowCursor = false;
+	static _bool bShowCursor = false;
 	if (pGame->InputKey(DIK_INSERT) == KEY_STATE::TAP)
 	{
 		bShowCursor = !bShowCursor;
