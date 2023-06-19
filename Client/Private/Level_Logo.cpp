@@ -80,19 +80,34 @@ void CLevel_Logo::Tick(_double TimeDelta)
 	pGameInstance->ShadowUpdate(40.f, XMLoadFloat4(&pGameInstance->Get_CamPosition()));
 
 	if (static_cast<CIntroCamera*>(m_pIntroCam)->IsLobbyOut() || KEY_STATE::TAP == pGameInstance->InputKey(DIK_TAB))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY));
+	}
 	else if (static_cast<CIntroCamera*>(m_pIntroCam)->IsLobbyOut() || KEY_STATE::TAP == pGameInstance->InputKey(DIK_F9))
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TEST));
 
 #pragma region LEVEL_MOVE
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F1))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY));
+	}
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F2))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CITY));
+	}
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F3))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FOREST));
+	}
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F4))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CROWN));
+	}
 #pragma endregion LEVEL_MOVE
 
 }

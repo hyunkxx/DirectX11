@@ -119,8 +119,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	}
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
-	//pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
-	//pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+
+	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
+	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 
 	pGM->ResetStaticShadowBake();
 	ShowCursor(false);
@@ -138,7 +139,54 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	//pGameInstance->BGMSmoothOn(TimeDelta);
+
+	if (nullptr == pGameInstance || nullptr == pGameMode)
+		return;
+
+	// 전투 상태인데
+	if (true == pGameMode->Is_Battle())
+	{
+		// 전투 거리 안에 없을경우. -> 시간체크
+		if (false == pGameMode->IsIn_BattleRange())
+		{
+			m_Battle_TimeAcc += TimeDelta;
+
+			// 전투 상태일때 거리가 멀어지면. 일정시간 경과시 비전투 상태로 세팅.
+			if (m_Battle_Time <= m_Battle_TimeAcc)
+			{
+				m_Battle_TimeAcc = 0.0;
+				pGameMode->Reset_Battle();
+
+				pGameMode->SetUp_ChangeDelay();
+			}
+		}
+	}
+
+	if (true == pGameMode->Is_ChangeDelay())
+	{
+		if (true == pGameInstance->BGMSmoothOff(TimeDelta))
+		{
+			if (true == pGameMode->Is_Battle())
+			{
+				//pGameInstance->BGMSmoothOn(TimeDelta);
+				pGameInstance->StopSound(SOUND_CHANNEL::SOUND_BGM);
+				pGameInstance->PlaySoundEx(L"Battle_BGM_0.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+			}
+			else
+			{
+				//pGameInstance->BGMSmoothOn(TimeDelta);
+				pGameInstance->StopSound(SOUND_CHANNEL::SOUND_BGM);
+				pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+			}
+
+			pGameMode->Reset_ChangeDelay();
+		}
+	}
+	else
+	{
+		pGameInstance->BGMSmoothOn(TimeDelta);
+	}
+
 
 #pragma region  Key_Input
 	//임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것
@@ -202,17 +250,27 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 
 	if (true == pGameMode->Is_ReserveLevel())
 	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
 		pGameMode->Reset_ReserveLevel();
 	}
 
 #pragma region LEVEL_MOVE
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F2))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CITY));
+	}
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F3))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FOREST));
+	}
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F4))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CROWN));
+	}
 #pragma endregion LEVEL_MOVE
 
 }

@@ -114,7 +114,11 @@ HRESULT CLevel_Crown::Initialize()
 	}
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
-	//pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+	
+	// play_story_music_neutral_02_1.wem.wav
+	// play_story_music_serious_1.wem.wav ÀüÅõ ?
+	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
+	pGameInstance->PlaySoundEx(L"play_story_music_dangerous_2.wem.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 
 	pGM->ResetStaticShadowBake();
 
@@ -193,17 +197,27 @@ void CLevel_Crown::Tick(_double TimeDelta)
 
 	if (true == pGameMode->Is_ReserveLevel())
 	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
 		pGameMode->Reset_ReserveLevel();
 	}
 
 #pragma region LEVEL_MOVE
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F1))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY));
+	}
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F2))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CITY));
+	}
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F3))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FOREST));
+	}
 #pragma endregion LEVEL_MOVE
 
 	

@@ -138,12 +138,12 @@ HRESULT CLevel_Forest::Initialize()
 	}
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
-	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
+	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
 
 	//pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 
 	// Play_AMB_Common_Forest_Bird.wem.wav
-	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+	pGameInstance->PlaySoundEx(L"play_story_music_neutral_02_1.wem.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 
 	pGM->ResetStaticShadowBake();
 
@@ -159,7 +159,7 @@ void CLevel_Forest::Tick(_double TimeDelta)
 
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	if (nullptr == pGameInstance)
+	if (nullptr == pGameInstance || nullptr == pGameMode)
 		return;
 
 	// 전투 상태인데
@@ -195,7 +195,7 @@ void CLevel_Forest::Tick(_double TimeDelta)
 			{
 				//pGameInstance->BGMSmoothOn(TimeDelta);
 				pGameInstance->StopSound(SOUND_CHANNEL::SOUND_BGM);
-				pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+				pGameInstance->PlaySoundEx(L"play_story_music_neutral_02_1.wem.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 			}
 
 			pGameMode->Reset_ChangeDelay();
@@ -288,17 +288,27 @@ void CLevel_Forest::Tick(_double TimeDelta)
 
 	if (true == pGameMode->Is_ReserveLevel())
 	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
 		pGameMode->Reset_ReserveLevel();
 	}
 
 #pragma region LEVEL_MOVE
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F1))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY));
+	}
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F2))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CITY));
+	}
 	if (KEY_STATE::TAP == pGameInstance->InputKey(DIK_F4))
+	{
+		pGameInstance->StopAllSound();
 		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CROWN));
+	}
 #pragma endregion LEVEL_MOVE
 
 }
