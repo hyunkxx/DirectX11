@@ -275,13 +275,13 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 
 	if (true == pGameMode->Is_ReserveLevel())
 	{
-		//pGameInstance->StopAllSound();
+			pGameInstance->StopAllSound();
 
-		if (true == pGameInstance->BGMSmoothOff(TimeDelta))
-		{
+		//if (true == pGameInstance->BGMSmoothOff(TimeDelta))
+		//{
 			pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
 			pGameMode->Reset_ReserveLevel();
-		}
+		//}
 	}
 
 #pragma region LEVEL_MOVE
