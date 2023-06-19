@@ -110,6 +110,9 @@ void CRobot::Give_Compensation(_int iLast_Hit_Count)
 	static_cast<CInvisible_Chest*>(m_pMyBox)->Set_Position(vPos);
 	static_cast<CInvisible_Chest*>(m_pMyBox)->Appear_Box();
 
+	CGameInstance::GetInstance()->PlaySoundEx(L"DA_Au_Role_Common_Char_ExFlash.wem.wav",
+		SOUND_UI_BUTTON, 1.f);
+
 	for (_int i = 0; 4 > i; i++)
 	{
 		_float4x4 WorldMatrix = m_RobotMatrix[i];
@@ -220,6 +223,8 @@ void CRobot::OnCollisionEnter(CCollider * src, CCollider * dest)
 
 			static_cast<CCameraMovement*>(m_pCamera)->StartVibration(15.f, 0.5f);
 
+			CGameInstance::GetInstance()->PlaySoundEx(L"Play_Role_Common_Weapon_Crash_1.wem.wavv",
+				SOUND_UI_TEMP, 1.f);
 
 			if (All_Hit_Check())
 				Give_Compensation(i);

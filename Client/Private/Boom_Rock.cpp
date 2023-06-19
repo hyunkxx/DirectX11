@@ -237,14 +237,16 @@ void CBoom_Rock::OnCollisionEnter(CCollider * src, CCollider * dest)
 	}
 	else if(m_pCollider == src)
 	{
-		m_bRender = false;
-		CGameInstance* pGameInstance = CGameInstance::GetInstance();
-		CGameObject* pCamera = pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement");
-		static_cast<CCameraMovement*>(pCamera)->StartVibration(40.f, 1.f);
-		// 여기서 몬스터 소환 및 사운드 변경
+		if (m_bRender)
+		{
+			m_bRender = false;
+			CGameInstance* pGameInstance = CGameInstance::GetInstance();
+			CGameObject* pCamera = pGameInstance->Find_GameObject(LEVEL_STATIC, L"CameraMovement");
+			static_cast<CCameraMovement*>(pCamera)->StartVibration(40.f, 1.f);
+			CGameInstance::GetInstance()->PlaySoundEx(L"DA_Au_amb_interact_rock_po.wem.wav",
+				SOUND_ECHO_TEMP, 1.f);
+		}
 
-		CGameInstance::GetInstance()->PlaySoundEx(L"DA_Au_amb_interact_rock_po.wem.wav",
-			SOUND_UI_FEEDBACK, 1.f);
 
 	}
 }
