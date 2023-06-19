@@ -1111,32 +1111,40 @@ void CM_Anjin::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAttac
 				{
 				case CItem::ADVANCED:
 					item = pDB->GetItemData(ITEM::EXP0);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					item = pDB->GetItemData(ITEM::DOGTAG0);
+					item.iAmount = 2;
 					pAquire->EnqueueItemDesc(item);
 
 					break;
 				case CItem::RARE:
 					item = pDB->GetItemData(ITEM::EXP1);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					item = pDB->GetItemData(ITEM::DOGTAG1);
+					item.iAmount = 2;
 					pAquire->EnqueueItemDesc(item);
 
 					break;
 				case CItem::UNIQUE:
 					item = pDB->GetItemData(ITEM::EXP2);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					item = pDB->GetItemData(ITEM::DOGTAG2);
+					item.iAmount = 2;
 					pAquire->EnqueueItemDesc(item);
 					break;
 				case CItem::LEGEND:
 					item = pDB->GetItemData(ITEM::EXP3);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					item = pDB->GetItemData(ITEM::DOGTAG3);
+					item.iAmount = 2;
 					pAquire->EnqueueItemDesc(item);
 
 					break;

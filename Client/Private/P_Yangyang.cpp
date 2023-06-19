@@ -241,8 +241,16 @@ void CP_Yangyang::PreTick(_double TimeDelta)
 			true == m_pFixedTarget->Get_Dying() ||
 			25.f <  XMVectorGetX(XMVector3Length(m_pFixedTarget->Get_Position() - Get_Position())))
 		{
-			m_pFixedTarget = nullptr;
-			m_pPlayerStateClass->Set_LockOn(false, nullptr);
+			if (nullptr != m_pNearst)
+			{
+				m_pFixedTarget = m_pNearst;
+				m_pPlayerStateClass->Set_LockOn(true, m_pFixedTarget);
+			}
+			else
+			{
+				m_pFixedTarget = nullptr;
+				m_pPlayerStateClass->Set_LockOn(false, nullptr);
+			}
 		}
 	}
 }
@@ -1145,12 +1153,18 @@ void CP_Yangyang::updateAttackDesc()
 	const CPlayerState::ATTACK_DESC* AttackDesc = m_pPlayerStateClass->GetAttackDesc(CPlayerState::CHARACTER_YANGYANG);
 
 	static float fOriginDamageFactor[4];
-	fOriginDamageFactor[0] = m_AttackInfos[ATK_ATTACK_01].fDamageFactor;
-	fOriginDamageFactor[1] = m_AttackInfos[ATK_ATTACK_02].fDamageFactor;
-	fOriginDamageFactor[2] = m_AttackInfos[ATK_ATTACK_03_2].fDamageFactor;
-	fOriginDamageFactor[3] = m_AttackInfos[ATK_ATTACK_04_3].fDamageFactor;
+	static float fOriginBurstFactor;
+	static _bool bSetup = false;
 
-	static float fOriginBurstFactor = m_AttackInfos[ATK_BURST_2].fDamageFactor;
+	if (!bSetup)
+	{
+		bSetup = true;
+		fOriginDamageFactor[0] = m_AttackInfos[ATK_ATTACK_01].fDamageFactor;
+		fOriginDamageFactor[1] = m_AttackInfos[ATK_ATTACK_02].fDamageFactor;
+		fOriginDamageFactor[2] = m_AttackInfos[ATK_ATTACK_03_2].fDamageFactor;
+		fOriginDamageFactor[3] = m_AttackInfos[ATK_ATTACK_04_3].fDamageFactor;
+		fOriginBurstFactor = m_AttackInfos[ATK_BURST_2].fDamageFactor;
+	}
 
 	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = fOriginDamageFactor[0] * AttackDesc->fDamageFactor[0];
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = fOriginDamageFactor[1] * AttackDesc->fDamageFactor[1];
@@ -1283,7 +1297,6 @@ void CP_Yangyang::SetUp_State()
 	}
 	else
 		m_pHitCollider->SetActive(true);
-
 
 	//PhysicMove
 	if (false == m_tCurState.bRootMotion)

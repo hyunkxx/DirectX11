@@ -49,6 +49,8 @@ public:
 	void PushActiveUI(struct IActivate* pActivateUI);
 	void ManualShutDown();
 
+	void SetupMouseUI(class CUI_Mouse* pMouseUI) { m_pMouse = pMouseUI; };
+
 private:
 	HRESULT addComponents();
 	HRESULT addGameObjects();
@@ -108,6 +110,8 @@ private:
 	_bool m_bSlotActive[SLOT_MAX];
 	_bool m_bSlotOnMouse[SLOT_MAX];
 	_float m_fSlotAlpha[SLOT_MAX];
+
+	class CUI_Mouse* m_pMouse = nullptr;
 
 private:
 	_uint m_iActiveUICount = 0;

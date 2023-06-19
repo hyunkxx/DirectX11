@@ -152,20 +152,20 @@ HRESULT CApplication::Render()
 	++m_iNumRender;
 
 	/* 1초마다 그리는 회수를 측정 */
-	if (1.0 <= m_TimeAcc)
-	{
-		wsprintf(m_szFPS, TEXT("Fps : %d"), m_iNumRender);
-		m_TimeAcc = 0.0;
-		m_iNumRender = 0;
-	}
+	//if (1.0 <= m_TimeAcc)
+	//{
+	//	wsprintf(m_szFPS, TEXT("Fps : %d"), m_iNumRender);
+	//	m_TimeAcc = 0.0;
+	//	m_iNumRender = 0;
+	//}
 
-	m_pGameInstance->Render_Font(
-		TEXT("DefaultFont"),
-		m_szFPS,
-		_float2(0.f, 0.f),
-		XMVectorSet(1.f, 1.f, 1.f, 1.f),
-		_float2(0.5f, 0.5f)
-	);
+	//m_pGameInstance->Render_Font(
+	//	TEXT("DefaultFont"),
+	//	m_szFPS,
+	//	_float2(0.f, 0.f),
+	//	XMVectorSet(1.f, 1.f, 1.f, 1.f),
+	//	_float2(0.5f, 0.5f)
+	//);
 
 #ifdef _DEBUG 
 	m_pGUIManager->RenderDrawData();

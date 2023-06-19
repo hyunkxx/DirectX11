@@ -1034,10 +1034,10 @@ void CM_Huojin::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtta
 			CAcquireSystem* pAquire = static_cast<CAcquireSystem*>(pGI->Find_GameObject(LEVEL_STATIC, L"AcquireSystem"));
 			CItemDB* pDB = CItemDB::GetInstance();
 
-			if (!pEchoSystem->GetEcho(CEchoSystem::EC_RUPTURE_WARRIOR).bActive)
+			if (!pEchoSystem->GetEcho(CEchoSystem::EC_FUSHION_WARRIOR).bActive)
 			{
-				pEchoSystem->SetActiveEcho(CEchoSystem::EC_RUPTURE_WARRIOR);
-				CItem::ITEM_DESC item = pDB->GetItemData(ITEM::E_RUPTURE);
+				pEchoSystem->SetActiveEcho(CEchoSystem::EC_FUSHION_WARRIOR);
+				CItem::ITEM_DESC item = pDB->GetItemData(ITEM::E_FUSHION);
 				pAquire->EnqueueItemDesc(item);
 
 				pState->AddUnionExp(20.f);
@@ -1046,32 +1046,40 @@ void CM_Huojin::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtta
 				{
 				case CItem::ADVANCED:
 					item = pDB->GetItemData(ITEM::EXP0);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					item = pDB->GetItemData(ITEM::DOGTAG0);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					break;
 				case CItem::RARE:
 					item = pDB->GetItemData(ITEM::EXP1);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					item = pDB->GetItemData(ITEM::DOGTAG1);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					break;
 				case CItem::UNIQUE:
 					item = pDB->GetItemData(ITEM::EXP2);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					item = pDB->GetItemData(ITEM::DOGTAG2);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 					break;
 				case CItem::LEGEND:
 					item = pDB->GetItemData(ITEM::EXP3);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					item = pDB->GetItemData(ITEM::DOGTAG3);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					break;

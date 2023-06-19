@@ -38,25 +38,6 @@ HRESULT CInventory::Initialize(void * pArg)
 	m_pPlayerState = static_cast<CPlayerState*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 
 	// 임시 채우기
-	AddItem(ITEM::FLATBREAD, 5);
-	AddItem(ITEM::SALAD, 5);
-	AddItem(ITEM::FRIEDTOFU, 5);
-	AddItem(ITEM::SALTEDTEA, 5);
-	AddItem(ITEM::HERBTEA, 5);
-	AddItem(ITEM::DRAGONNOODLE, 5);
-	AddItem(ITEM::OMURICE, 5);
-	AddItem(ITEM::FRIEDRICE, 5);
-	AddItem(ITEM::FRIEDCHICKEN, 5);
-	AddItem(ITEM::RABBITBREAD, 5);
-	AddItem(ITEM::FRIEDMUSHROOM, 5);
-	AddItem(ITEM::MAPOTOFU, 5);
-	AddItem(ITEM::PORKBELLY, 5);
-	AddItem(ITEM::DUCKNOODLES, 5);
-
-	AddItem(ITEM::GEM, 100);
-	AddItem(ITEM::SWORD0, 1);
-	AddItem(ITEM::SWORD1, 1);
-	AddItem(ITEM::SEQUENCE_GEM, 4);
 
 	return S_OK;
 }
@@ -67,6 +48,53 @@ void CInventory::Start()
 
 void CInventory::Tick(_double TimeDelta)
 {
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	static _bool bPush = false;
+
+	if (pGI->InputKey(DIK_0) == KEY_STATE::TAP)
+	{
+		AddItem(ITEM::SWORD0, 1);
+		AddItem(ITEM::SWORD1, 1);
+		AddItem(ITEM::SWORD2, 1);
+		AddItem(ITEM::SWORD3, 1);
+		AddItem(ITEM::SWORD4, 1);
+		AddItem(ITEM::GUN0, 1);
+		AddItem(ITEM::GUN1, 1);
+		AddItem(ITEM::GUN2, 1);
+		AddItem(ITEM::GUN3, 1);
+		AddItem(ITEM::GUN4, 1);
+
+		AddItem(ITEM::FLATBREAD, 10);
+		AddItem(ITEM::SALAD, 10);
+		AddItem(ITEM::FRIEDTOFU, 10);
+		AddItem(ITEM::SALTEDTEA, 10);
+		AddItem(ITEM::HERBTEA, 5);
+		AddItem(ITEM::DRAGONNOODLE, 5);
+		AddItem(ITEM::OMURICE, 5);
+		AddItem(ITEM::FRIEDRICE, 5);
+		AddItem(ITEM::FRIEDCHICKEN, 5);
+		AddItem(ITEM::RABBITBREAD, 5);
+		AddItem(ITEM::FRIEDMUSHROOM, 5);
+		AddItem(ITEM::MAPOTOFU, 5);
+		AddItem(ITEM::PORKBELLY, 5);
+		AddItem(ITEM::DUCKNOODLES, 5);
+
+		AddItem(ITEM::GEM, 50);
+		AddItem(ITEM::SEQUENCE_GEM, 10);
+		AddItem(ITEM::COMMEMORATIVE_COIN, 50);
+		AddItem(ITEM::COMMEMORATIVE_COIN, 50);
+		AddItem(ITEM::COMMEMORATIVE_COIN, 50);
+		AddItem(ITEM::COMMEMORATIVE_COIN, 50);
+
+	}
+
+	if (pGI->InputKey(DIK_9) == KEY_STATE::TAP)
+	{
+		AddItem(ITEM::TACTITE_COIN, 20000);
+		AddItem(ITEM::SEQUENCE_GEM, 20);
+		AddItem(ITEM::GEM, 20);
+		AddItem(ITEM::EXP3, 20);
+	}
 }
 
 void CInventory::LateTick(_double TimeDelta)

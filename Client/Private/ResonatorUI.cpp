@@ -1073,21 +1073,17 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_pInven->PushItemDesc(itemDesc);
 
 	itemDesc = pDB->GetItemData(ITEM::EXP1);
-	itemDesc.iAmount = 5;
+	itemDesc.iAmount = 10;
 	m_pInven->PushItemDesc(itemDesc);
 
 	itemDesc = pDB->GetItemData(ITEM::EXP2);
-	itemDesc.iAmount = 20;
+	itemDesc.iAmount = 10;
 	m_pInven->PushItemDesc(itemDesc);
 	
 	itemDesc = pDB->GetItemData(ITEM::SWORD4);
 	itemDesc.iAmount = 5;
 	m_pInven->PushItemDesc(itemDesc);
-
-	itemDesc = pDB->GetItemData(ITEM::GUN3);
-	itemDesc.iAmount = 5;
-	m_pInven->PushItemDesc(itemDesc);
-
+	
 	_matrix IdenMatrix = XMMatrixIdentity();
 	
 	XMStoreFloat4x4(&m_WorldMatrix, IdenMatrix);
@@ -1384,7 +1380,7 @@ void CResonatorUI::stateUpdate(_double TimeDelta)
 					{
 						elemAlphaReset();
 						m_pUICharacter->SetAnimation((UICharacter::UIANIMATION)i);
-						pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX);
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
 					}
 
 					m_eCurButton = (RESONATOR_BTN)i;

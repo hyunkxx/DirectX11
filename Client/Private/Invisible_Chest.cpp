@@ -379,7 +379,7 @@ void CInvisible_Chest::Interaction(void * pArg)
 	case CInvisible_Chest::CHEST_SIMPLE:
 	{
 		CItem::ITEM_DESC item0 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
-		item0.iAmount = 12900;
+		item0.iAmount = 500;
 		CGameMode::GetInstance()->EnqueueItemDesc(item0);
 		m_pInven->AddItem(ITEM::TACTITE_COIN, item0.iAmount);
 		break;

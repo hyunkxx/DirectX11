@@ -226,6 +226,9 @@ void CSettingUI::stateActive()
 	//초기상태 세팅
 	m_bRender = true;
 
+	CGameMode* pGM = CGameMode::GetInstance();
+	pGM->SetSettingUI(true);
+
 	elemAlphaReset(0);
 	m_bElemAlphaStart[0] = true;
 	ZeroMemory(m_fSmoothMove, sizeof m_fSmoothMove);
@@ -252,6 +255,9 @@ void CSettingUI::stateActive()
 
 void CSettingUI::stateDisable()
 {
+	CGameMode* pGM = CGameMode::GetInstance();
+	pGM->SetSettingUI(false);
+
 	m_bActive = false;
 	m_bRender = false;
 }
