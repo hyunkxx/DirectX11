@@ -630,6 +630,8 @@ void CActionCam::actionLoop_Crown2(_double TimeDelta)
 	static _bool bSlowMotion = false;
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+	static _float m_fAcc = 0.f;
+
 	if (m_iAction < 5)
 	{
 		m_fTimeAcc += (_float)TimeDelta;
@@ -657,7 +659,8 @@ void CActionCam::actionLoop_Crown2(_double TimeDelta)
 				if (!bSlowMotion)
 				{
 					bSlowMotion = true;
-					pGameInstance->StartBlackWhite(2.5f);
+					//pGameInstance->StartBlackWhite(2.5f);
+					pGameInstance->SetLUT(CRenderer::LUT_GRUNGY);
 				}
 
 				m_fTimeAcc = 0.f;
@@ -679,6 +682,15 @@ void CActionCam::actionLoop_Crown2(_double TimeDelta)
 				m_iAction++;
 			}
 			break;
+		}
+	}
+
+	if (!bSlowMotion)
+	{
+		m_fAcc += (_float)TimeDelta;
+		if (m_fAcc >= 2.f)
+		{
+			pGameInstance->SetLUT(CRenderer::LUT_EXPOSURE_MINUS);
 		}
 	}
 

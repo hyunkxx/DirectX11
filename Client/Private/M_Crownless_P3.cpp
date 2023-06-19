@@ -103,7 +103,7 @@ HRESULT CM_Crownless_P3::Initialize(void * pArg)
 	m_tMonsterInfo.eElement = ELMT_HAVOC;
 	m_tMonsterInfo.iLevel = 45;
 	m_tMonsterInfo.iExp = 0;
-	m_tMonsterInfo.fMaxHP = 100000.f;
+	m_tMonsterInfo.fMaxHP = 70000.f;
 	m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
 	m_tMonsterInfo.fAttack = 750.f;
 	m_tMonsterInfo.fDefense = 600.f;
@@ -1726,6 +1726,9 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 	// 사망 시 사망 애니메이션 실행 
 	if (0.f >= m_tMonsterInfo.fCurHP)
 	{
+		CGameInstance* pGame = CGameInstance::GetInstance();
+		pGame->StartFade(CRenderSetting::FADE_OUT, 3.f);
+
 		m_tMonsterInfo.fCurHP = 0.f;
 		m_Scon.iNextState = IS_DEAD;
 		m_pHitCollider->SetActive(false);

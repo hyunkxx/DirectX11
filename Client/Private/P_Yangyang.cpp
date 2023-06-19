@@ -1298,7 +1298,6 @@ void CP_Yangyang::SetUp_State()
 	else
 		m_pHitCollider->SetActive(true);
 
-
 	//PhysicMove
 	if (false == m_tCurState.bRootMotion)
 	{
