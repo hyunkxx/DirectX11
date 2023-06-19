@@ -26,6 +26,8 @@
 
 #include "Level_Loading.h"
 
+#include "M_Crownless_P1.h"
+
 CLevel_Crown::CLevel_Crown(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
 {
@@ -425,7 +427,24 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P1, pLayerTag, TEXT("Crownless_P1"))))
 		return E_FAIL;
 	pPhase->Set_Phase1(static_cast<CCharacter*>(pChar));
+<<<<<<< Updated upstream
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
+=======
+	_vector vP = { 113.027f, 20.010f, 112.314f, 1.0f };
+	_vector vLookP = { 105.170f, 20.010f, 106.277f, 1.0f };
+	_vector vLookDir = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+	vLookDir = vLookP - vP;
+
+	static_cast<CCharacter*>(pChar)->Set_InitPos(vP, 218);
+	static_cast<CM_Crownless_P1*>(pChar)->GetTransform()->Set_LookDir(vLookDir);
+
+	//static_cast<CM_Crownless_P1*>(pChar)->GetTransform()->Set_LookDir(XMVectorSet(104.623f, 20.010f, 103.381f, 1.0f));
+	//static_cast<CCharacter*>(pChar)->Set_LookAt()
+	//static_cast<CM_Crownless_P1*>(pChar)->GetTransform()->SetRotation(VECTOR_UP, 240.0f);
+	//static_cast<CM_Crownless_P1*>(pChar)->GetTransform()->SetRotationXYZ(_float3(0.0f, 240.0f, 0.0f));
+
+>>>>>>> Stashed changes
 
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P2, pLayerTag, TEXT("Crownless_P2"))))
 		return E_FAIL;

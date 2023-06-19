@@ -91,6 +91,7 @@ HRESULT CM_Crownless_P1::Initialize(void * pArg)
 
 	// 고유 변수 초기화
 	m_fAlertRange = 15.f;
+	m_bAlert = false;
 	m_bAttackReady = true;
 
 	// CharInfo 초기화
