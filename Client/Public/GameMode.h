@@ -121,6 +121,29 @@ private:
 
 	_bool				m_bChixia = { false };
 
+public:
+	void Distance_BattleRange(_float fTargetDistance);
+
+	// 전투 비전투 판단
+	_bool Is_Battle() const { return m_IsBattle; }
+	void Reset_Battle();
+
+	_bool IsIn_BattleRange() const { return m_IsIn_BattleRange; }
+	void Reset_BattleRange();
+
+	// 사운드 변경 딜레이 -> SMoothOff
+	_bool Is_ChangeDelay() const { return m_IsChangeDelay; }
+	void SetUp_ChangeDelay();
+	void Reset_ChangeDelay();
+
+private:
+	_bool				m_IsChangeDelay = { false };
+	_bool				m_IsBattle = { false };
+	_bool				m_IsIn_BattleRange = { false };
+
+	const _float&		m_fBattle_Range = { 20.0f };
+	_double				m_Battle_Time = { 0.0 };
+
 private: 
 	class CAcquireSystem* m_pAcquireSystem = nullptr;
 	CRenderer* m_pRenderer = nullptr;

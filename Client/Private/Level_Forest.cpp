@@ -126,6 +126,7 @@ HRESULT CLevel_Forest::Initialize()
 
 	if (FAILED(Ready_Interaction_Object(TEXT("Layer_Interaction_Object_Forest"))))
 		return E_FAIL;
+
 #pragma endregion
 
 	CLayer* pEchoLayer = pGameInstance->Find_Layer(LEVEL_STATIC, TEXT("EchoInstance"));
@@ -137,7 +138,12 @@ HRESULT CLevel_Forest::Initialize()
 	}
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
+	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
+
 	//pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+
+	// Play_AMB_Common_Forest_Bird.wem.wav
+	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 
 	pGM->ResetStaticShadowBake();
 
@@ -153,8 +159,72 @@ void CLevel_Forest::Tick(_double TimeDelta)
 
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return;
 
-	//pGameInstance->BGMSmoothOn(TimeDelta);
+	// 전투 상태인데
+	if (true == pGameMode->Is_Battle())
+	{
+		// 전투 거리 안에 없을경우. -> 시간체크
+		if (false == pGameMode->IsIn_BattleRange())
+		{
+			m_Battle_TimeAcc += TimeDelta;
+
+			// 전투 상태일때 거리가 멀어지면. 일정시간 경과시 비전투 상태로 세팅.
+			if (m_Battle_Time <= m_Battle_TimeAcc)
+			{
+				m_Battle_TimeAcc = 0.0;
+				pGameMode->Reset_Battle();
+
+				pGameMode->SetUp_ChangeDelay();
+			}
+		}	
+	}
+
+	if (true == pGameMode->Is_ChangeDelay())
+	{
+		if (true == pGameInstance->BGMSmoothOff(TimeDelta))
+		{
+			if (true == pGameMode->Is_Battle())
+			{
+				//pGameInstance->BGMSmoothOn(TimeDelta);
+				pGameInstance->StopSound(SOUND_CHANNEL::SOUND_BGM);
+				pGameInstance->PlaySoundEx(L"Battle_BGM_0.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+			}
+			else
+			{
+				//pGameInstance->BGMSmoothOn(TimeDelta);
+				pGameInstance->StopSound(SOUND_CHANNEL::SOUND_BGM);
+				pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+			}
+
+			pGameMode->Reset_ChangeDelay();
+		}
+	}
+	else
+	{
+		pGameInstance->BGMSmoothOn(TimeDelta);
+	}
+
+	//if (true == pGameMode->Is_ChangeBgm())
+
+	/*if (true == pGameInstance->BGMSmoothOff(TimeDelta))
+	{
+		if (true == pGameMode->Is_Battle())
+		{
+			pGameInstance->BGMSmoothOn(TimeDelta);
+			pGameInstance->PlaySoundEx(L"Battle_BGM_0.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+		}
+		else
+		{
+			pGameInstance->BGMSmoothOn(TimeDelta);
+			pGameInstance->PlaySoundEx(L"Play_AMB_Common_Forest_Bird.wem.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+		}
+	}*/
+
+	//pGameInstance->Get_CamPosition();
+
+	//
 
 #pragma region Key_Input
 	//임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것
@@ -418,7 +488,178 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 		return E_FAIL;
 	}
 
-	
+	CCharacter*	 pChar = nullptr;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_GAZIZI, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(Add_Monster(OBJECT::MONSTER_AWUKAKA, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(Add_Monster(OBJECT::MONSTER_FHUXIUXIU, pLayerTag, &pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_ANJIN, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(Add_Monster(OBJECT::MONSTER_HUOJIN, pLayerTag, &pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_BINGLIE, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(Add_Monster(OBJECT::MONSTER_FENGLIE, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(Add_Monster(OBJECT::MONSTER_LEILIE, pLayerTag, &pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_QUNJING, pLayerTag, &pChar)))
+		return E_FAIL;
+
+	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_0"));
+	if (nullptr == pGameObject)
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_HUOJIN, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_FHUXIUXIU, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pChar)))
+		return E_FAIL;
+
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_BINGLIE, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_AWUKAKA, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pChar)))
+		return E_FAIL;
+
+	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_1"));
+	if (nullptr == pGameObject)
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_FENGLIE, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_AWUKAKA, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pChar)))
+		return E_FAIL;
+
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_ANJIN, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_FHUXIUXIU, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pChar)))
+		return E_FAIL;
+
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_HUOJIN, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_FENGLIE, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_GAZIZI, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pChar)))
+		return E_FAIL;
+
+	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_2"));
+	if (nullptr == pGameObject)
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_LEILIE, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_GAZIZI, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pChar)))
+		return E_FAIL;
+
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_BINGLIE, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_ANJIN, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pChar)))
+		return E_FAIL;
+
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_HUOJIN, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pChar)))
+		return E_FAIL;
+	if (FAILED(Add_Monster(OBJECT::MONSTER_LEILIE, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pChar)))
+		return E_FAIL;
+	if (FAILED(Add_Monster(OBJECT::MONSTER_AWUKAKA, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pChar)))
+		return E_FAIL;
+
+	pGameObject = pGameInstance->Find_GameObject(LEVEL_FOREST, TEXT("Trigger_Spawn_Forest_3"));
+	if (nullptr == pGameObject)
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_ANJIN, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_LEILIE, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, pChar)))
+		return E_FAIL;
+
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_HUOJIN, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_FENGLIE, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_BINGLIE, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pChar)))
+		return E_FAIL;
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_LEILIE, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_2, pChar)))
+		return E_FAIL;
+
+
+	if (FAILED(Add_Monster(OBJECT::MONSTER_QUNJING, pLayerTag, &pChar)))
+		return E_FAIL;
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pChar)))
+		return E_FAIL;
+
+	/*
+
 	CCharacter*		pGazizi = { nullptr }; // 가지지
 	CCharacter*		pAwukaka = { nullptr }; // 자폭
 	CCharacter*		pFhuxiuxiu = { nullptr }; // 바람
@@ -530,6 +771,10 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 
 	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_3, pQunjing)))
 		return E_FAIL;
+
+	*/
+
+
 
 	/*CGameObject* pChar = nullptr;
 

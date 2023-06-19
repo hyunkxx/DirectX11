@@ -61,6 +61,10 @@ public:
 
 	_bool m_bBakeStart = false;
 	CGameObject* m_pAcquireSystem = nullptr;
+
+private:
+	_double				m_Battle_Time = { 5.0 };
+	_double				m_Battle_TimeAcc = { 0.0 };
 };
 
 END

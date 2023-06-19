@@ -158,6 +158,13 @@ void CM_FHuxiuxiu::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
+	CGameMode*	pGameMode = CGameMode::GetInstance();
+
+	if (IsActive())
+		pGameMode->Distance_BattleRange(ComputeCameraLength());
+	else if (IsDisable())
+		pGameMode->Distance_BattleRange(-1.0f);
+
 	_double TimeDelay = 1.0;
 
 	if (pGameInstance->InputKey(DIK_NUMPAD0) == KEY_STATE::HOLD)

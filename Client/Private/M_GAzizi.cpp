@@ -163,6 +163,13 @@ void CM_GAzizi::Tick(_double TimeDelta)
 
 	__super::Tick(TimeDelta);
 
+	CGameMode*	pGameMode = CGameMode::GetInstance();
+
+	if (IsActive())
+		pGameMode->Distance_BattleRange(ComputeCameraLength());
+	else if (IsDisable())
+		pGameMode->Distance_BattleRange(-1.0f);
+
 	Apply_CoolTime(TimeDelta); // 쿨타임 갱신
 
 	if (!m_bDying)

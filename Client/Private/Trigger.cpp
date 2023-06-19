@@ -78,7 +78,7 @@ HRESULT CTrigger::Initialize(void* pArg)
 
 	m_EffectTime = { 5.0 };
 
-	m_fFloating_Power = { 0.10f };
+	m_fFloating_Power = { 2.50f };
 
 	m_fFloating_Speed = { 2.0f };
 

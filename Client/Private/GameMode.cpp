@@ -47,3 +47,49 @@ void CGameMode::SetGagebar(_float fValue)
 {
 	m_pAcquireSystem->SetGageBar(fValue);
 }
+
+void CGameMode::Distance_BattleRange(_float fTargetDistance)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return;
+
+	if (0.0f >= fTargetDistance)
+	{
+		m_IsIn_BattleRange = false;
+		return;
+	}
+
+	// 전투 거리에 들어왔을 때. m_IsBattle 전투 상태로 변경 , m_IsIn_BattleRange true 
+	// 한마리라도 들어 왔을 경우 m_IsIn_BattleRange 이 true
+	if (m_fBattle_Range >= fTargetDistance)
+	{
+		if (false == m_IsBattle)
+			m_IsChangeDelay = true;
+
+		m_IsBattle = true;
+		m_IsIn_BattleRange = true;
+	}
+	else
+		m_IsIn_BattleRange = false;
+}
+
+void CGameMode::Reset_Battle()
+{
+	m_IsBattle = false;
+}
+
+void CGameMode::Reset_BattleRange()
+{
+	m_IsIn_BattleRange = false;
+}
+
+void CGameMode::SetUp_ChangeDelay()
+{
+	m_IsChangeDelay = true;
+}
+
+void CGameMode::Reset_ChangeDelay()
+{
+	m_IsChangeDelay = false;
+}
