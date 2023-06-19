@@ -485,6 +485,8 @@
     </ClCompile>
     <ClCompile Include="..\private\CookGirl.cpp" />
     <ClCompile Include="..\private\Deliver.cpp" />
+    <ClCompile Include="..\private\PhaseChanger.cpp" />
+    <ClCompile Include="..\private\NPC_Chixia.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Client_Defines.h">
@@ -948,6 +950,8 @@
     </ClInclude>
     <ClInclude Include="..\public\CookGirl.h" />
     <ClInclude Include="..\public\Deliver.h" />
+    <ClInclude Include="..\public\PhaseChanger.h" />
+    <ClInclude Include="..\public\NPC_Chixia.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

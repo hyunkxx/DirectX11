@@ -142,6 +142,7 @@ namespace OBJECT
 		INTERACTION_ROBOT ,
 
 		PHASECHANGER,
+		NPC_CHIXIA,
 
 		// AnimTool 전용 오브젝트
 		TESTVTF_BEGIN = 900000,

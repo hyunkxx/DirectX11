@@ -1560,7 +1560,10 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				break;
 
 			case SS_STAND1:
-				m_Scon.iNextState = SS_STAND1_ACTION01;
+				if(8.0 < m_IdleTimeAcc) 
+					m_Scon.iNextState = SS_STAND1_ACTION01;
+				else
+					m_Scon.iNextState = SS_STAND1;
 				break;
 			default:
 				m_Scon.iNextState = SS_STAND1;

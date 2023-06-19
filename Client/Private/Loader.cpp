@@ -72,6 +72,7 @@
 #include "CookGirl.h"
 
 #include "PhaseChanger.h"
+#include "NPC_Chixia.h"
 
 
 //AnimTool
@@ -1774,6 +1775,9 @@ HRESULT CLoader::Load_Prototype_GameObject()
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::COOK_GIRL, CCookGirl::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(OBJECT::DELIVER, CDeliver::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(OBJECT::NPC_CHIXIA, CNPC_Chixia::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

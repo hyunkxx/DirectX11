@@ -203,6 +203,7 @@
     <ClInclude Include="..\public\CharacterSelect_Terrain.h" />
     <ClInclude Include="..\public\Chest.h" />
     <ClInclude Include="..\Public\CityObject.h" />
+    <ClInclude Include="..\public\NPC_Chixia.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Client_InstanceModelEnum.h" />
@@ -389,6 +390,7 @@
     <ClCompile Include="..\private\CharacterSelect_Terrain.cpp" />
     <ClCompile Include="..\private\Chest.cpp" />
     <ClCompile Include="..\Private\CityObject.cpp" />
+    <ClCompile Include="..\private\NPC_Chixia.cpp" />
     <ClCompile Include="..\private\CookGirl.cpp" />
     <ClCompile Include="..\private\Deliver.cpp" />
     <ClCompile Include="..\private\E_Anjin.cpp" />

@@ -105,6 +105,9 @@ public:
 	{
 		m_pPhaseChanger = pPhaseChanger;
 	}
+
+	_bool Get_Chixia() { return m_bChixia; }
+	void Set_Chixia(_bool bChixia) { m_bChixia = bChixia; }
 	
 public:
 	void  SetMouseActive(_bool bMouse) { m_bMouseActive = bMouse; }
@@ -115,6 +118,8 @@ private:
 	_bool				m_bMouseActive = { false };
 
 	CPhaseChanger*		m_pPhaseChanger = { nullptr };
+
+	_bool				m_bChixia = { false };
 
 private: 
 	class CAcquireSystem* m_pAcquireSystem = nullptr;

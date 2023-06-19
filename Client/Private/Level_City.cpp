@@ -361,6 +361,12 @@ HRESULT CLevel_City::Ready_Layer_Character(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::DELIVER, pLayerTag, TEXT("Deliver"))))
 		return E_FAIL;
 
+	if(false == pGameMode->Get_Chixia())
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_CITY, OBJECT::NPC_CHIXIA, pLayerTag, TEXT("NPC_Chixia"))))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
