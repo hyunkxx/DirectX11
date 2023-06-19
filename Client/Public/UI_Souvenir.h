@@ -101,7 +101,7 @@ private:
 public: // NPCÀü¿ë
 	void	Set_SituMeet();
 	void	Set_END();
-	void	Call_END() { m_NPCbye = true; };
+	void	Call_END() { m_NPCbye = true; SetState(ACTIVE);};
 
 private:
 	_bool m_NPCbye = { false };

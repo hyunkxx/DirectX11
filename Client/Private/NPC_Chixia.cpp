@@ -83,7 +83,6 @@ void CNPC_Chixia::Tick(_double TimeDelta)
 		else if (STATE_STAND1_ACTION == m_eState)
 		{
 			// Ä³¸¯ÅÍ È¹µæ Ã³¸®
-			m_UITip->SetTipIndex(CUI_Tip::CHAR_CHIXIA);
 			SetState(DISABLE);
 		}
 	}
@@ -621,6 +620,7 @@ void CNPC_Chixia::Free()
 
 void CNPC_Chixia::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
+	m_UITip->SetTipIndex(CUI_Tip::CHAR_CHIXIA);
 }
 
 void CNPC_Chixia::OnCollisionStay(CCollider * src, CCollider * dest)

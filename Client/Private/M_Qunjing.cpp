@@ -122,7 +122,7 @@ HRESULT CM_Qunjing::Initialize(void * pArg)
 	_tchar szIndex[MAX_PATH];
 	wsprintf(szIndex, TEXT("UI_Monster%d"), Monindex);
 	CUI_Monster::MONINFO MonInfo;
-	MonInfo.Level = 23;
+	MonInfo.Level = 7;
 	MonInfo.Type = CUI_Monster::MONSTERTYPE::TYPE0;
 	CGameObject * pUIMon = nullptr;
 	if (pGame->Add_GameObjectEx(&pUIMon, LEVEL_ANYWHERE, OBJECT::UIMONSTER, TEXT("layer_UI"), szIndex, &MonInfo))

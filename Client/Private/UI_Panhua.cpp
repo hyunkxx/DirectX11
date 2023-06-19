@@ -552,7 +552,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 				m_PanList[0].OnRect = true;
 			}
 		}
@@ -578,7 +578,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 			if (AddAlphaW(&m_MenuList, TimeDelta))
 			{
 				m_MenuRenderStart = false;
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
 
 			}
 		}
@@ -598,7 +598,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 
 				m_MenuList[0].OnRect = true;
 			}
@@ -618,7 +618,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 
 				m_MenuList[3].OnRect = true;
 				pActiveCharacter->Set_OnControl(true);
@@ -636,7 +636,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 				m_MenuRenderStart = true;
 				m_MenuList[0].OnRect = false;
 				Situation = CUI_Panhua::INMENU;
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
 
 			}
 		}
@@ -644,7 +644,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		{
 			if (MinusAlphaW(&m_MenuList, TimeDelta))
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 닫는 소리, NPC나가는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 닫는 소리, NPC나가는 소리
 				m_MenuRenderStart = true;
 				m_MenuList[3].OnRect = false;
 				SetState(DISABLE);
@@ -685,7 +685,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 			m_CommonList[4].iTexNum = 8;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
 
 				m_InMenuRenderStart = false;
 				Situation = CUI_Panhua::MENU;
@@ -706,7 +706,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 			if (AddAlphaW(&m_DetailsList, TimeDelta))
 			{
 				m_DetailRenderStart = false;
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
 
 			} 
 			else
@@ -722,7 +722,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		// QE ,클릭 수량 설정
 		if (pGameInstance->InputKey(DIK_Q) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
 
 			// 구매수량 정할 때 0보다 작을 수 없음
 			if (Limited == BuyNum)
@@ -744,7 +744,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		{
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+				pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
 
 				if (Limited == BuyNum)
 				{
@@ -766,7 +766,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		//
 		if (pGameInstance->InputKey(DIK_E) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
 
 			// 구매수량 정할 때 리미트를 넘길 수 없음
 			if (0 == BuyNum)
@@ -787,7 +787,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		{
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+				pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
 
 				if (0 == BuyNum)
 				{
@@ -814,7 +814,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 			m_DetailsList[1].iTexNum = 8;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
 
 				BuyNum = 0;
 				m_DetailRenderStart = false;
@@ -833,7 +833,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 			m_DetailsList[26].iTexNum = 20;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
 
 				BuyNum = 0;
 				m_DetailRenderStart = false;
@@ -859,7 +859,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 			m_DetailsList[27].iTexNum = 20;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 
 				(*pLimibuycount) += BuyNum;
 				//제한개수와 누적구매가 같다면
@@ -912,7 +912,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		{
 			for (_int i = 8; i < 10; ++i)
 			{
-				m_FinalList[i].bRender = false;
+				m_FinalList[i].bRender = true;
 			}
 			m_FinalList[6].iTexNum = (BuyNum*10)/10 + 27;
 			m_FinalList[7].iTexNum = 27;
@@ -929,7 +929,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 			if (AddAlphaW(&m_FinalList, TimeDelta))
 			{
 				m_ConfirmRenderStart = false;
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 물건 구매나 보상획득 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX); // 물건 구매나 보상획득 소리
 			}
 			else
 			{
@@ -943,7 +943,7 @@ void CUI_Panhua::Tick(_double TimeDelta)
 
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 
 				m_ConfirmRenderStart = true;
 				Situation = CUI_Panhua::BYE;
@@ -992,9 +992,9 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		if (pSelectSlot == &m_14Slot)
 			m_pInven->AddItem(itemDesc[14].iItemID, BuyNum * 10);
 		if (pSelectSlot == &m_15Slot)
-			m_pInven->AddItem(itemDesc[15].iItemID, BuyNum);
+			m_pInven->AddItem(itemDesc[15].iItemID, 1);
 		if (pSelectSlot == &m_16Slot)
-			m_pInven->AddItem(itemDesc[16].iItemID, BuyNum);
+			m_pInven->AddItem(itemDesc[16].iItemID, 1);
 
 		m_pInven->DeleteCoin(iTotal);
 		SettingCurMoneyTexNum();
@@ -1051,7 +1051,7 @@ void CUI_Panhua::InMenuOpen(_double TimeDelta)
 		m_InMenuRenderStart = false;
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-		pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
+		pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
 
 	}
 }
