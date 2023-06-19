@@ -1249,7 +1249,12 @@ void CP_Chixia::SetUp_State()
 
 	// 게이지 차감
 	if (IS_BURST == m_Scon.iCurState)
+	{
 		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 0.f;
+		m_pHitCollider->SetActive(false);
+	}
+	else
+		m_pHitCollider->SetActive(true);
 
 	if (IS_SKILL_01_B == m_Scon.iCurState ||
 		IS_SKILL_01_F == m_Scon.iCurState)
@@ -1640,11 +1645,14 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB1);
 		}
 
-		if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
+		if (m_pPlayerStateClass->Get_PlayerState()->iCharCount == 3)
 		{
-			if (PS_GROUND == m_Scon.ePositionState &&
-				7 > m_tCurState.iLeavePriority)
-				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
+			if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
+			{
+				if (PS_GROUND == m_Scon.ePositionState &&
+					7 > m_tCurState.iLeavePriority)
+					m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
+			}
 		}
 	}
 	// Echo Summon

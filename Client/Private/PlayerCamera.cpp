@@ -91,6 +91,8 @@ void CPlayerCamera::Start()
 	if (nullptr == m_pPlayerTransform || nullptr == m_pPlayerNavigation)
 		return;
 
+	Set_Behind();
+
 	// 초기 위치로 1회 갱신해 놓음
 	_vector vAxisRight = XMVector3Cross(XMLoadFloat3(&m_vDir), XMVectorSet(0.f, 1.f, 0.f, 0.f));
 	_matrix matRotX = XMMatrixRotationAxis(vAxisRight, XMConvertToRadians(m_fXCurAngle));

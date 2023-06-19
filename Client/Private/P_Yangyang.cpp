@@ -363,6 +363,8 @@ void CP_Yangyang::LateTick(_double TimeDelta)
 			m_fBurstRim = 0.f;
 	}
 
+
+
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 
@@ -1269,11 +1271,18 @@ void CP_Yangyang::SetUp_State()
 			IS_AIRATTACK_2_QTE_END == m_Scon.iCurState)
 			m_bRender = true;
 
+
 	// 게이지 차감
 	if (IS_AIRATTACK_2_START == m_Scon.iCurState)
 		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 0.f;
-	else if (IS_BURST == m_Scon.iCurState)
+	
+	if (IS_BURST == m_Scon.iCurState)
+	{
 		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 0.f;
+		m_pHitCollider->SetActive(false);
+	}
+	else
+		m_pHitCollider->SetActive(true);
 
 
 	//PhysicMove
@@ -1525,16 +1534,15 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB1);
 		}
 
-		if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
+		if (m_pPlayerStateClass->Get_PlayerState()->iCharCount == 3)
 		{
-			if (PS_GROUND == m_Scon.ePositionState &&
-				7 > m_tCurState.iLeavePriority)
-				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
+			if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
+			{
+				if (PS_GROUND == m_Scon.ePositionState &&
+					7 > m_tCurState.iLeavePriority)
+					m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
+			}
 		}
-	}
-	if (pGame->InputKey(DIK_N) == KEY_STATE::TAP)
-	{
-		m_pRader->Play_Rader(m_pMainTransform);
 	}
 
 

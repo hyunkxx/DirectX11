@@ -321,6 +321,9 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 			m_fBurstRim = 0.f;
 	}
 
+
+
+
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOW, this);
 
@@ -1221,6 +1224,15 @@ void CP_PlayerGirl::SetUp_State()
 	else if (IS_BURST == m_Scon.iCurState)
 		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 0.f;
 
+	// 게이지 차감
+	if (IS_BURST == m_Scon.iCurState)
+	{
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 0.f;
+		m_pHitCollider->SetActive(false);
+	}
+	else
+		m_pHitCollider->SetActive(true);
+
 
 	//PhysicMove
 	if (false == m_tCurState.bRootMotion)
@@ -1509,12 +1521,14 @@ void CP_PlayerGirl::Key_Input(_double TimeDelta)
 				7 > m_tCurState.iLeavePriority)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB1);
 		}
-
-		if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
+		if (m_pPlayerStateClass->Get_PlayerState()->iCharCount == 3)
 		{
-			if (PS_GROUND == m_Scon.ePositionState &&
-				7 > m_tCurState.iLeavePriority)
-				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
+			if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
+			{
+				if (PS_GROUND == m_Scon.ePositionState &&
+					7 > m_tCurState.iLeavePriority)
+					m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
+			}
 		}
 	}
 

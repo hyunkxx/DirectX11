@@ -556,7 +556,7 @@ void CM_AWukaka::SetUp_State()
 		m_Scon.ePositionState = PS_GROUND;
 	}
 
-	if (IS_ATTACK03 == m_Scon.iCurState)
+	if (IS_ATTACK03 == m_Scon.iCurState || IS_DEAD == m_Scon.iCurState)
 		m_pHitCollider->SetActive(false);
 	else
 		m_pHitCollider->SetActive(true);

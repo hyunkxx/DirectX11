@@ -23,7 +23,7 @@ HRESULT CPlayerState::Initialize_Prototype()
 {
 	// Default Player State
 	ZeroMemory(&m_PlayerState, sizeof(PLAYER_STATE));
-	m_PlayerState.iCharCount = 1;
+	m_PlayerState.iCharCount = 2;
 	m_PlayerState.fMaxTagCooltime = 1.f;
 	m_PlayerState.fCurTagCooltime = 0.f;
 	m_PlayerState.fMaxQTEGauge = 100.f;
