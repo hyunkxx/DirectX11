@@ -136,6 +136,9 @@ public:
 	void SetUp_ChangeDelay();
 	void Reset_ChangeDelay();
 
+	_bool ActiveSettingUI() const { return m_bSettingActive; };
+	void SetSettingUI(_bool bValue) { m_bSettingActive = bValue; }
+
 private:
 	_bool				m_IsChangeDelay = { false };
 	_bool				m_IsBattle = { false };
@@ -176,6 +179,7 @@ private:
 	class CAcquireSystem* m_pAcquireSystem = nullptr;
 	CRenderer* m_pRenderer = nullptr;
 
+	_bool m_bSettingActive = false;
 };
 
 END

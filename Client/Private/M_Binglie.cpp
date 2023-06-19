@@ -1030,9 +1030,7 @@ void CM_Binglie::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtt
 		CGameInstance* pGI = CGameInstance::GetInstance();
 		_float4x4 EffectMatrix = m_pMainTransform->Get_WorldMatrix();
 		memcpy(EffectMatrix.m[3], pEffPos, sizeof(_float3));
-		CEffect* pEffect = pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID);
-		if(nullptr != pEffect)
-			pEffect->Play_Effect(&EffectMatrix);
+		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
 	}
 
 	pChar->Recover_Gauge(pAttackInfo->fSPGain, pAttackInfo->fBPGain, pAttackInfo->fTPGain);
@@ -1082,10 +1080,10 @@ void CM_Binglie::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtt
 			CAcquireSystem* pAquire = static_cast<CAcquireSystem*>(pGI->Find_GameObject(LEVEL_STATIC, L"AcquireSystem"));
 			CItemDB* pDB = CItemDB::GetInstance();
 
-			if (!pEchoSystem->GetEcho(CEchoSystem::EC_RUPTURE_WARRIOR).bActive)
+			if (!pEchoSystem->GetEcho(CEchoSystem::EC_PNENUMA_PREDATOR).bActive)
 			{
-				pEchoSystem->SetActiveEcho(CEchoSystem::EC_RUPTURE_WARRIOR);
-				CItem::ITEM_DESC item = pDB->GetItemData(ITEM::E_RUPTURE);
+				pEchoSystem->SetActiveEcho(CEchoSystem::EC_PNENUMA_PREDATOR);
+				CItem::ITEM_DESC item = pDB->GetItemData(ITEM::E_PNENUMA);
 				pAquire->EnqueueItemDesc(item);
 
 				pState->AddUnionExp(20.f);
@@ -1094,32 +1092,40 @@ void CM_Binglie::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtt
 				{
 				case CItem::ADVANCED:
 					item = pDB->GetItemData(ITEM::EXP0);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					item = pDB->GetItemData(ITEM::DOGTAG0);
+					item.iAmount = 2;
 					pAquire->EnqueueItemDesc(item);
 
 					break;
 				case CItem::RARE:
 					item = pDB->GetItemData(ITEM::EXP1);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					item = pDB->GetItemData(ITEM::DOGTAG1);
+					item.iAmount = 2;
 					pAquire->EnqueueItemDesc(item);
 
 					break;
 				case CItem::UNIQUE:
 					item = pDB->GetItemData(ITEM::EXP2);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					item = pDB->GetItemData(ITEM::DOGTAG2);
+					item.iAmount = 2;
 					pAquire->EnqueueItemDesc(item);
 					break;
 				case CItem::LEGEND:
 					item = pDB->GetItemData(ITEM::EXP3);
+					item.iAmount = 1;
 					pAquire->EnqueueItemDesc(item);
 
 					item = pDB->GetItemData(ITEM::DOGTAG3);
+					item.iAmount = 2;
 					pAquire->EnqueueItemDesc(item);
 
 					break;
