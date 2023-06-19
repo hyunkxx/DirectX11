@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "MissilePool.h"
 #include "UI_Monster.h"
+#include "UI_Minimap.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -133,6 +134,7 @@ public:
 		m_bRender = true;
 		m_bAlert = false;
 		m_pUIMon->Set_MonHP(m_tMonsterInfo.fCurHP);
+		m_pUIIcon->SetRender(m_UIIndex, true);
 	};
 
 

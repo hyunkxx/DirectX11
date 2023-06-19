@@ -648,5 +648,6 @@ void CNPC_Chixia::OnCollisionStay(CCollider * src, CCollider * dest)
 
 void CNPC_Chixia::OnCollisionExit(CCollider * src, CCollider * dest)
 {
+	m_UITip->Foff();
 }
 
