@@ -103,8 +103,8 @@ HRESULT CLevel_Crown::Initialize()
 	if (FAILED(Ready_Layer_MapObject_Tof_Grass(TEXT("layer_tof_grass"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Trigger(TEXT("layer_trigger"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_Trigger(TEXT("layer_trigger"))))
+		//return E_FAIL;
 
 	CLayer* pEchoLayer = pGameInstance->Find_Layer(LEVEL_STATIC, TEXT("EchoInstance"));
 
@@ -425,23 +425,12 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P1, pLayerTag, TEXT("Crownless_P1"))))
 		return E_FAIL;
 	pPhase->Set_Phase1(static_cast<CCharacter*>(pChar));
-	pChar->SetState(CGameObject::DISABLE);
-	//static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
-
-	CGameObject*		pGameObject = { nullptr };
-	pGameObject = pGameInstance->Find_GameObject(LEVEL_CROWN, TEXT("Trigger_Spawn_Crown"));
-	if (nullptr == pGameObject)
-		return E_FAIL;
-
-	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, static_cast<CCharacter*>(pChar))))
-		return E_FAIL;
 
 
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P2, pLayerTag, TEXT("Crownless_P2"))))
 		return E_FAIL;
 	pPhase->Set_Phase2(static_cast<CCharacter*>(pChar));
 	pChar->SetState(CGameObject::DISABLE);
-
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
 
 
@@ -451,8 +440,6 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 	pChar->SetState(CGameObject::DISABLE);
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
 
-	
-	static_cast<CCharacter*>(pChar)->Set_State(CCharacter::STATE::DISABLE);
 
 
 	return S_OK;
