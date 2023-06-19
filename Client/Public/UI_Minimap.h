@@ -142,6 +142,8 @@ private:
 	vector<ICONDESC>	m_DescList; //메인아이콘
 	_int  Index = 0;
 
+
+	_bool m_bUIRender = { true };
 private:
 	class CTerminalUI*			m_pTerminalUI = { nullptr };
 	class CPlayerState*			m_pPlayerStateClass = { nullptr };

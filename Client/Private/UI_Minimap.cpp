@@ -60,6 +60,15 @@ void CUI_Minimap::Start()
 void CUI_Minimap::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+	CGameMode* pGM = CGameMode::GetInstance();
+	if (pGM->Get_UIRender())
+	{
+		m_bUIRender = true;
+	}
+	else
+	{
+		m_bUIRender = false;
+	}
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
 	CTransform* pComponent = static_cast<CTransform*>(pActiveCharacter->Find_Component(TEXT("Com_Transform")));
@@ -255,55 +264,57 @@ void CUI_Minimap::LateTick(_double TimeDelta)
 
 HRESULT CUI_Minimap::Render()
 {
-
-	if (true == m_bRender)
+	if (m_bUIRender)
 	{
-		if (FAILED(__super::Render()))
-			return E_FAIL;
-		//디폴트아이콘
-		for (_uint i = 0; i < 2; ++i)
+		if (true == m_bRender)
 		{
+			if (FAILED(__super::Render()))
+				return E_FAIL;
+			//디폴트아이콘
+			for (_uint i = 0; i < 2; ++i)
+			{
+				if (false == m_bNull)
+				{
+					if (FAILED(Setup_ShaderResourcesDefaultIcon(i)))
+						return E_FAIL;
+					m_pShader->Begin(1);
+					m_pVIBufferMiniMap->Render();
+				}
+			}
+
+
+			//미니맵아이콘
+			_uint Descindex = 0;
+			for (auto& Desc : m_IconDescList)
+			{
+				if (true == Desc.bRender && 190.f > Desc.Dist)
+				{
+					if (FAILED(Setup_ShaderResourcesIcon(Descindex)))
+						return E_FAIL;
+					m_pShader->Begin(1);
+					m_pVIBufferMiniMap->Render();
+				}
+				++Descindex;
+			}
+			//메인화면아이콘
+			for (auto& Desc : m_DescList)
+			{
+				if ((true == Desc.bRender) && (Desc.Dist > 50.f) && (Desc.Dist < 80.f))
+				{
+					if (FAILED(Setup_ShaderResourcesIcons(&Desc)))
+						return E_FAIL;
+					m_pShader->Begin(1);
+					m_pVIBufferMiniMap->Render();
+				}
+			}
+			// 미니맵
 			if (false == m_bNull)
 			{
-				if (FAILED(Setup_ShaderResourcesDefaultIcon(i)))
+				if (FAILED(Setup_ShaderResourcesMiniMap()))
 					return E_FAIL;
-				m_pShader->Begin(1);
+				m_pShader->Begin(16);
 				m_pVIBufferMiniMap->Render();
 			}
-		}
-
-
-		//미니맵아이콘
-		_uint Descindex = 0;
-		for (auto& Desc : m_IconDescList)
-		{
-			if (true == Desc.bRender && 190.f > Desc.Dist)
-			{
-				if (FAILED(Setup_ShaderResourcesIcon(Descindex)))
-					return E_FAIL;
-				m_pShader->Begin(1);
-				m_pVIBufferMiniMap->Render();
-			}
-			++Descindex;
-		}
-		//메인화면아이콘
-		for (auto& Desc : m_DescList)
-		{
-			if ((true == Desc.bRender) && (Desc.Dist > 50.f) && (Desc.Dist < 80.f))
-			{
-				if (FAILED(Setup_ShaderResourcesIcons(&Desc)))
-					return E_FAIL;
-				m_pShader->Begin(1);
-				m_pVIBufferMiniMap->Render();
-			}
-		}
-		// 미니맵
-		if (false == m_bNull)
-		{
-			if (FAILED(Setup_ShaderResourcesMiniMap()))
-				return E_FAIL;
-			m_pShader->Begin(16);
-			m_pVIBufferMiniMap->Render();
 		}
 	}
 	return S_OK;

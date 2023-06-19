@@ -166,6 +166,7 @@ private:
 	_bool REnd(_double TimeDelta);
 	void	Load();
 private:
+	_bool m_bUIRender = { true };
 	_int bRender = { true }; // 툴 임시
 	_int m_Index = { 0 }; // 임시
 	_float Degree = { 0.f }; // RRfull효과

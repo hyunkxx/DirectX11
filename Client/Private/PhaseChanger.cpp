@@ -284,6 +284,8 @@ void CPhaseChanger::CutScene1_Ready()
 	
 
 	// UI ²ô±â, ±âÁ¸ ¸ðµ¨ ¼û±â±â µî?
+	CGameMode* pGM = CGameMode::GetInstance();
+	pGM->Set_UIRender(false);
 }
 
 void CPhaseChanger::CutScene1_Start()
@@ -335,6 +337,8 @@ void CPhaseChanger::CutScene1_End()
 	pChar->Set_LookAt(m_pCrownlessTransform->Get_State(CTransform::STATE_POSITION));
 	//pChar->Set_ForceIdle();
 
+	CGameMode* pGM = CGameMode::GetInstance();
+	pGM->Set_UIRender(true);
 }
 
 
@@ -350,6 +354,9 @@ void CPhaseChanger::CutScene2_Ready()
 
 	CGameInstance* pGI = CGameInstance::GetInstance();
 	pGI->StartFade(CRenderSetting::FADE_OUT, 0.8f);
+
+	CGameMode* pGM = CGameMode::GetInstance();
+	pGM->Set_UIRender(false);
 }
 
 void CPhaseChanger::CutScene2_Start()
@@ -399,6 +406,10 @@ void CPhaseChanger::CutScene2_End()
 	pChar->Appear(m_pRoverTransform, nullptr, 196, 200.f);
 	pChar->Set_LookAt(m_pCrownlessTransform->Get_State(CTransform::STATE_POSITION));
 	pChar->Set_ForceIdle();
+
+
+	CGameMode* pGM = CGameMode::GetInstance();
+	pGM->Set_UIRender(true);
 }
 
 HRESULT CPhaseChanger::Init_States(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

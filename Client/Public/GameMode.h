@@ -112,6 +112,9 @@ public:
 public:
 	void  SetMouseActive(_bool bMouse) { m_bMouseActive = bMouse; }
 	_bool GetMouseActive() { return m_bMouseActive; }
+	void Set_UIRender(_bool bRender) { m_bUIRender = bRender; }
+	_bool Get_UIRender() { return m_bUIRender;  }
+
 private:
 	_bool				m_IsReserveLevel = { false };
 	LEVEL_ID			m_eReserveLevel_ID = { LEVEL_END };
@@ -121,6 +124,7 @@ private:
 
 	_bool				m_bChixia = { false };
 
+	_bool				m_bUIRender = { true };
 public:
 	void Distance_BattleRange(_float fTargetDistance);
 
