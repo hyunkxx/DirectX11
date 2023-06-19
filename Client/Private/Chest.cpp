@@ -68,10 +68,10 @@ HRESULT CChest::Initialize(void * pArg)
 void CChest::Start()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	m_pUIIcon = static_cast<CUI_Minimap*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
+	//m_pUIIcon = static_cast<CUI_Minimap*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, TEXT("UI_Minimap")));
 	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, TEXT("Inventory")));
-	m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::BOX);
-	m_pUIIcon->SetRender(m_UIIndex, false);
+	//m_UIIndex = m_pUIIcon->Add_Icon(m_pMainTransform->Get_State(CTransform::STATE_POSITION), CUI_Minimap::BOX);
+	//m_pUIIcon->SetRender(m_UIIndex, false);
 }
 
 void CChest::PreTick(_double TimeDelta)
@@ -107,7 +107,7 @@ void CChest::Tick(_double TimeDelta)
 				pOpenEffect->Play_Effect(&matrix);
 
 				//UI 추가
-				m_pUIIcon->SetRender(m_UIIndex, false);
+				///m_pUIIcon->SetRender(m_UIIndex, false);
 
 				CGameInstance::GetInstance()->PlaySoundEx(L"DA_Au_Buff_Pickup_timerush.wem.wav",
 					SOUND_UI_TEMP, 1.f);
@@ -164,14 +164,13 @@ void CChest::Tick(_double TimeDelta)
 	}
 
 	//UI추가
-	if ((nullptr != m_pUIIcon)&&(true == this->IsActive()))
-	{
-		if (false == m_pUIIcon->GetRenderState(m_UIIndex))
-			m_pUIIcon->SetRender(m_UIIndex, true);
-
-		m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
-		m_pUIIcon->SetRender(m_UIIndex, true);
-	}
+	//if ((nullptr != m_pUIIcon)&&(true == this->IsActive()))
+	//{
+	//	if (false == m_pUIIcon->GetRenderState(m_UIIndex))
+	//		m_pUIIcon->SetRender(m_UIIndex, true);
+	//	m_pUIIcon->Set_ObjectPos(m_UIIndex, m_pMainTransform->Get_State(CTransform::STATE_POSITION));
+	//	m_pUIIcon->SetRender(m_UIIndex, true);
+	//}
 }
 
 void CChest::LateTick(_double TimeDelta)

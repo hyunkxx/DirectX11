@@ -82,7 +82,7 @@ void CUI_Monster::Tick(_double TimeDelta)
 		HPRedBar(TimeDelta);
 	}
 
-	m_MonsterUV.x += (_float)TimeDelta * 0.3f;
+	m_MonsterUV.x += (_float)TimeDelta * 0.5f;
 	//m_MonsterGauge2 = 몬스터의어떤게이지
 	//if (0.f > = m_MonsterGauge2)
 	//{

@@ -296,7 +296,7 @@ void CShopGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 		PushAnimation(ANIM_STATE::ANIM_TALK);
 	}
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
+	pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
 
 	m_pTargetUI->Set_SituMeet();
 	

@@ -402,7 +402,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 				m_SouList[0].OnRect = true;
 			}
 		}
@@ -428,7 +428,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			if (AddAlphaW(&m_MenuList, TimeDelta))
 			{
 				m_MenuRenderStart = false;
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
 
 			}
 		}
@@ -448,7 +448,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 
 				m_MenuList[0].OnRect = true;
 			}
@@ -468,7 +468,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 
 				m_MenuList[3].OnRect = true;
 			}
@@ -485,7 +485,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 				m_MenuRenderStart = true;
 				m_MenuList[0].OnRect = false;
 				Situation = CUI_Souvenir::INMENU;
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
 
 			}
 		}
@@ -493,12 +493,13 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 		{
 			if (MinusAlphaW(&m_MenuList, TimeDelta))
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 닫는 소리, NPC나가는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 닫는 소리, NPC나가는 소리
 				pActiveCharacter->Set_OnControl(true);
 				m_MenuRenderStart = true;
 				m_MenuList[3].OnRect = false;
 				SetState(DISABLE);
 				pGM->SetMouseActive(false);
+				m_NPCbye = false;
 			}
 		}
 	}
@@ -534,7 +535,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			m_CommonList[4].iTexNum = 8;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
 
 				m_InMenuRenderStart = false;
 				Situation = CUI_Souvenir::MENU;
@@ -555,7 +556,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			if (AddAlphaW(&m_DetailsList, TimeDelta))
 			{
 				m_DetailRenderStart = false;
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
 
 			}
 			else
@@ -572,7 +573,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 		// QE ,클릭 수량 설정
 		if (pGameInstance->InputKey(DIK_Q) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
 
 
 			// 구매수량 정할 때 0보다 작을 수 없음
@@ -595,7 +596,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 		{
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+				pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
 
 
 				if (Limited == BuyNum)
@@ -618,7 +619,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 		//
 		if (pGameInstance->InputKey(DIK_E) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
 
 
 			// 구매수량 정할 때 리미트를 넘길 수 없음
@@ -640,7 +641,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 		{
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+				pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
 
 
 				if (0 == BuyNum)
@@ -668,7 +669,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			m_DetailsList[1].iTexNum = 8;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
 
 				BuyNum = 0;
 				m_DetailRenderStart = false;
@@ -687,7 +688,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			m_DetailsList[26].iTexNum = 20;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
 
 				BuyNum = 0;
 				m_DetailRenderStart = false;
@@ -713,7 +714,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			m_DetailsList[27].iTexNum = 20;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 
 
 				(*pLimibuycount) += BuyNum;
@@ -799,7 +800,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 
 				m_ConfirmRenderStart = true;
 				Situation = CUI_Souvenir::BYE;
@@ -893,7 +894,7 @@ void CUI_Souvenir::InMenuOpen(_double TimeDelta)
 		m_InMenuRenderStart = false;
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-		pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
+		pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
 
 	}
 }
@@ -1483,7 +1484,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_0Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[0];
@@ -1504,7 +1505,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_1Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[1];
@@ -1525,7 +1526,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_2Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[2];
@@ -1546,7 +1547,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_3Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[3];
@@ -1567,7 +1568,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_4Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[4];
@@ -1588,7 +1589,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_5Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[5];
@@ -1609,7 +1610,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_6Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[6];
@@ -1630,7 +1631,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_7Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[7];
@@ -1651,7 +1652,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_8Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[8];
@@ -1672,7 +1673,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_9Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[9];
@@ -1693,7 +1694,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_10Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[10];
@@ -1714,7 +1715,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_11Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[11];
@@ -1735,7 +1736,7 @@ void CUI_Souvenir::IsMouseinRect()
 		m_12Slot[8].bRender = true; //올렸을때
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			Situation = CUI_Souvenir::DETAILS;
 			pLimibuycount = &Limibuycount[12];

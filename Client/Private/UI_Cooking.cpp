@@ -215,7 +215,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 			}
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 				m_Cookist[0].OnRect = true;
 			}
 		}
@@ -308,7 +308,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 			m_CommonList[9].iTexNum = 8;
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Cancel.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 취소 클릭하는 소리
 
 				pActiveCharacter->Set_OnControl(true);
 				m_MenuOutStart = true;
@@ -327,6 +327,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 				Situation = COOKEND;
 				SetState(DISABLE);
 				pGM->SetMouseActive(false);
+				m_NPCbye = false;
 			}
 		}
 		else // 나가고 있을 때가 아니라면
@@ -368,13 +369,15 @@ void CUI_Cooking::Tick(_double TimeDelta)
 				{
 					m_RButtonList[1].iTexNum = 26;
 					m_RButtonList[1].fX = 432.f;
+					m_RButtonList[1].fY = -292.f;
 					m_RButtonList[1].fWidth = 184.32f; m_RButtonList[1].fHeight = 23.04f;
 				}
 			}
 			else
 			{
 				m_RButtonList[1].iTexNum = 26;
-				m_RButtonList[1].fX = m_RButtonList[1].OriPos.x;
+				m_RButtonList[1].fX = 432.f;
+				m_RButtonList[1].fY = -292.f;
 				m_RButtonList[1].fWidth = 184.32f; m_RButtonList[1].fHeight = 23.04f;
 			}
 
@@ -383,7 +386,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 			{
 				if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 				{
-					pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+					pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
 
 					if (1<MakeNum)
 						--MakeNum;
@@ -397,7 +400,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 			{
 				if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 				{
-					pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+					pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
 
 					++MakeNum;
 					// 라스트  수량
@@ -414,7 +417,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 					m_RButtonList[0].iTexNum = 20;
 					if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 					{
-						pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 확인 클릭하는 소리
 
 						m_ReadyConfirmRender = true;
 					}
@@ -434,7 +437,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 				m_ReadyConfirmRender = false;
 				m_ConfirmRenderStart = true;
 				Situation = CUI_Cooking::READYCONFRIM;
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 물건 구매나 보상획득 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 물건 구매나 보상획득 소리
 			}
 		}
 	}
@@ -493,7 +496,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 
 			if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
-				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 닫는 소리, NPC나가는 소리
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 닫는 소리, NPC나가는 소리
 
 				Situation = CUI_Cooking::BYE;
 				m_ConfirmRenderStart = true;
@@ -2699,7 +2702,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			// 슬롯을 선택했을 때,
 			pSelectSlot = &m_0Slot[2];
@@ -2711,7 +2714,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_1Slot[2];
 			if (m_1Slot[3].bRender)
@@ -2722,7 +2725,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_2Slot[2];
 			if (m_2Slot[3].bRender)
@@ -2733,7 +2736,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_3Slot[2];
 			if (m_3Slot[3].bRender)
@@ -2744,7 +2747,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_4Slot[2];
 			if (m_4Slot[3].bRender)
@@ -2755,7 +2758,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_5Slot[2];
 			if (m_5Slot[3].bRender)
@@ -2766,7 +2769,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_6Slot[2];
 			if (m_6Slot[3].bRender)
@@ -2777,7 +2780,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_7Slot[2];
 			if (m_7Slot[3].bRender)
@@ -2788,7 +2791,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_8Slot[2];
 			if (m_8Slot[3].bRender)
@@ -2799,7 +2802,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_9Slot[2];
 			if (m_9Slot[3].bRender)
@@ -2810,7 +2813,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_10Slot[2];
 			if (m_10Slot[3].bRender)
@@ -2821,7 +2824,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_11Slot[2];
 			if (m_11Slot[3].bRender)
@@ -2832,7 +2835,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_12Slot[2];
 
@@ -2845,7 +2848,7 @@ void CUI_Cooking::SelectSlot()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 슬롯 선택하는 소리
 
 			pSelectSlot = &m_13Slot[2];
 
@@ -2862,7 +2865,7 @@ void CUI_Cooking::SelectGreade()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 등급 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 등급 선택하는 소리
 
 			GradeIndex = 0;
 		}
@@ -2871,7 +2874,7 @@ void CUI_Cooking::SelectGreade()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 등급 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 등급 선택하는 소리
 
 			GradeIndex = 1;
 		}
@@ -2880,7 +2883,7 @@ void CUI_Cooking::SelectGreade()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 등급 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 등급 선택하는 소리
 
 			GradeIndex = 2;
 		}
@@ -2889,7 +2892,7 @@ void CUI_Cooking::SelectGreade()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 등급 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 등급 선택하는 소리
 
 			GradeIndex = 3;
 		}
@@ -2898,7 +2901,7 @@ void CUI_Cooking::SelectGreade()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 등급 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 등급 선택하는 소리
 
 			GradeIndex = 4;
 		}
@@ -2907,7 +2910,7 @@ void CUI_Cooking::SelectGreade()
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 		{
-			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 등급 선택하는 소리
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wem.wav ", SOUND_UI_BUTTON, VOLUME_VFX); // 등급 선택하는 소리
 
 			GradeIndex = 5;
 		}
