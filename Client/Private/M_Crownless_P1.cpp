@@ -98,7 +98,7 @@ HRESULT CM_Crownless_P1::Initialize(void * pArg)
 	m_tMonsterInfo.eElement = ELMT_HAVOC;
 	m_tMonsterInfo.iLevel = 45;
 	m_tMonsterInfo.iExp = 0;
-	m_tMonsterInfo.fMaxHP = 50000.f;
+	m_tMonsterInfo.fMaxHP = 40000.f;
 	m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
 	m_tMonsterInfo.fAttack = 500.f;
 	m_tMonsterInfo.fDefense = 400.f;

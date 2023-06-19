@@ -425,7 +425,7 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P1, pLayerTag, TEXT("Crownless_P1"))))
 		return E_FAIL;
 	pPhase->Set_Phase1(static_cast<CCharacter*>(pChar));
-
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
 
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P2, pLayerTag, TEXT("Crownless_P2"))))
 		return E_FAIL;

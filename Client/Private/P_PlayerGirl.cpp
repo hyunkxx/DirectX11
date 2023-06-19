@@ -309,15 +309,7 @@ void CP_PlayerGirl::LateTick(_double TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	//림라이트 임시테스트
-	if (pGameInstance->InputKey(DIK_H) == KEY_STATE::TAP)
-		m_bRimToggle = !m_bRimToggle;
 
-	if (m_bRimToggle)
-	{
-		m_fRimAlpha += (_float)TimeDelta;
-		if (m_fRimAlpha >= 1.f)
-			m_fRimAlpha = 0.f;
-	}
 
 	// BurstRim
 	if (m_Scon.iCurState == IS_BURST)

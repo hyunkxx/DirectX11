@@ -175,6 +175,11 @@ public: /* Crown */
 	void SetUp_ChangeBgm();
 	void Reset_ChangeBgm();
 
+public:
+	static _bool s_bGameEnd;
+	static void EndGame() { s_bGameEnd = true; };
+	static _bool IsGameEnd() { return s_bGameEnd; }
+
 private:
 	_bool				m_IsBattleBgm = { false };
 	_bool				m_IsChangeBgm = { false };
@@ -184,6 +189,7 @@ private:
 	CRenderer* m_pRenderer = nullptr;
 
 	_bool m_bSettingActive = false;
+
 };
 
 END

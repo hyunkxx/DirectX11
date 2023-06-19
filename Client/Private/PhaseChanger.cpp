@@ -150,6 +150,17 @@ void CPhaseChanger::Tick(_double TimeDelta)
 
 		if (true == m_bAnimFinished)
 			CutScene1_End();
+
+		/*static _bool bRimCheck = false;
+		if (!bRimCheck)
+		{
+			if (m_TrackPos >= 115.f)
+			{
+				bRimCheck = true;
+				m_bRim = true;
+			}
+		}*/
+
 	}
 	else if (STATE_2_ONGOING == m_eState)
 	{
@@ -175,7 +186,25 @@ void CPhaseChanger::Tick(_double TimeDelta)
 			CutScene2_End();
 	}
 
-	
+	/*if (m_bRim)
+	{
+		m_fRimAcc += (_float)TimeDelta;
+		if (m_fRimAcc >= 1.f)
+		{
+			m_fRimAcc = 1.f;
+			m_bRim = false;
+		}
+	}
+	else
+	{
+		m_fRimAcc -= (_float)TimeDelta;
+		if (m_fRimAcc <= 0.f)
+		{
+			m_fRimAcc = 0.f;
+			m_bRim = true;
+		}
+	}*/
+
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC, this);
 
 	
@@ -230,9 +259,46 @@ HRESULT CPhaseChanger::Render()
 			return E_FAIL;
 
 		m_pShaderCom->Begin(10);
-
 		m_pCrownlessModel->Render(i);
+
 	}
+
+
+	//Rim Light
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (m_fRimAcc > 0.f)
+		{
+			for (_uint i = 0; i < iNumMeshes; ++i)
+			{
+				if (STATE_1_ONGOING == m_eState)
+				{
+					if (2 == i || 4 == i || 5 == i || 6 == i)
+						continue;
+				}
+				else if (STATE_2_ONGOING == m_eState)
+				{
+					if (5 == i || 6 == i)
+						continue;
+				}
+			}
+
+			_float vRimPower = 5.f;
+			_float3 vColor = UNIQUE_COLOR;
+			_float4 vRimColor = _float4(vColor.x, vColor.y, vColor.z, 1.f);
+
+			if (FAILED(m_pShaderCom->SetRawValue("g_RimPower", &vRimPower, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->SetRawValue("g_RimColor", &vRimColor, sizeof(_float4))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->SetRawValue("g_fTimeAcc", &m_fRimAcc, sizeof(_float))))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(8);
+			m_pCrownlessModel->Render(i);
+		}
+	}
+
 
 	if (STATE_1_ONGOING != m_eState)
 		return S_OK;

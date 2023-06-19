@@ -8,6 +8,8 @@
 
 IMPLEMENT_SINGLETON(CGameMode)
 
+_bool CGameMode::s_bGameEnd;
+
 void CGameMode::Free()
 {
 }

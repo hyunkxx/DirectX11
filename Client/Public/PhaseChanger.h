@@ -77,6 +77,7 @@ public:
 	HRESULT	Init_EffectBones();
 	void	Update_EffectBones();
 	virtual void Shot_EffectKey(_tchar* szEffectTag, _uint iEffectBoneID, _uint iTypeID, _bool bTracking);
+	void StartRim() { m_bRim = true; };
 
 private:
 	CRenderer*		m_pRendererCom = { nullptr };
@@ -113,6 +114,9 @@ private:
 	class CCameraMovement* m_pCamMovement = { nullptr };
 	_bool m_bZoomIn = false;
 	_float m_fZoomAcc = 0.f;
+	_float m_fRimAcc = 0.f;
+	_bool m_bRim = false;
+
 private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
