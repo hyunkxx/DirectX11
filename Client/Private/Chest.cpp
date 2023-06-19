@@ -45,11 +45,12 @@ HRESULT CChest::Initialize(void * pArg)
 		_float3 vPos = *(_float3*)pArg;
 		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
 	}
-
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	switch (m_eChestType)
 	{
 	case CHEST_SIMPLE:
 		m_vColor = ADVANCED_COLOR;
+		m_pMainTransform->SetRotation(vUp, XMConvertToRadians(90.f));
 		break;
 	case CHEST_STANDARD:
 		m_vColor = UNIQUE_COLOR;
