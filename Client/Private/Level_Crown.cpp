@@ -116,7 +116,7 @@ HRESULT CLevel_Crown::Initialize()
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	
 	// play_story_music_neutral_02_1.wem.wav
-	// play_story_music_serious_1.wem.wav ÀüÅõ ?
+	// play_story_music_serious_1.wem.wav
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
 	pGameInstance->PlaySoundEx(L"play_story_music_dangerous_2.wem.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 
