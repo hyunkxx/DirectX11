@@ -2232,11 +2232,11 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 
 #pragma region Interaction_Object
 	_float3  vPos = { 135.5f, 30.75f, 211.f };
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_SIMPLE, pLayerTag, L"Invisivle_chest_simple", &vPos)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_SIMPLE, pLayerTag, L"Invisivle_chest_simple_01", &vPos)))
 		return E_FAIL;
 
 	vPos = { 368.f, 71.25f, 286.f };
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_STANDARD, pLayerTag, L"Invisivle_chest_standard", &vPos)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::INVISIBLE_CHEST_SIMPLE, pLayerTag, L"Invisivle_chest_Simple_02", &vPos)))
 		return E_FAIL;
 
 	vPos = { 212.91f,  42.80f,  259.54f, };
@@ -2244,7 +2244,7 @@ HRESULT CLevel_GamePlay::Ready_Interaction_Object(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	vPos = { 259.55f , 38.30f , 227.42f };
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_STANDARD, pLayerTag, L"chest_standard", &vPos)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, OBJECT::CHEST_EXPANDED, pLayerTag, L"chest_standard", &vPos)))
 		return E_FAIL;
 
 	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
