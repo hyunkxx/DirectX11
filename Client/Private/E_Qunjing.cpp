@@ -59,7 +59,7 @@ HRESULT CE_Qunjing::Initialize(void * pArg)
 
 
 	m_pModelCom->Get_Animation(0)->Set_TicksPerSecond(m_tCurState.FramePerSec);
-
+	m_pModelCom->Get_Animation(0)->Set_Duration(70.0);
 	// 루트모션용 본찾기
 	m_pModelCom->Set_RootBone(TEXT("Root"));
 
@@ -67,7 +67,7 @@ HRESULT CE_Qunjing::Initialize(void * pArg)
 	//m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(186.066f, 32.837f, 242.489f, 1.f));
 	//m_pNaviCom->Set_CurrentIndex(2200);
 
-
+	m_bEcho = true;
 
 	// StateController 초기화
 	m_Scon.iCurState = 0;

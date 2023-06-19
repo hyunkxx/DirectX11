@@ -67,7 +67,7 @@ HRESULT CE_Leilie::Initialize(void * pArg)
 	//m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(186.066f, 32.837f, 242.489f, 1.f));
 	//m_pNaviCom->Set_CurrentIndex(2200);
 
-
+	m_bEcho = true;
 
 	// StateController ÃÊ±âÈ­
 	m_Scon.iCurState = 0;
@@ -461,6 +461,8 @@ void CE_Leilie::Shot_MissileKey(_uint iMissilePoolID, _uint iEffectBoneID)
 	else
 		vInitPos = m_pMainTransform->Get_State(CTransform::STATE_POSITION);*/
 	
+	Shot_SoundKey(L"Play_mon_leilie_fx_attack03_jianyu.wem.wav", SOUND_ECHO_MISSILE, VOLUME_VFX);
+
 	_vector vInitPos;
 	if (nullptr != m_pTarget)
 		vInitPos = m_pTarget->Get_CellHeight_Position();

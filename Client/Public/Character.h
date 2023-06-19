@@ -507,6 +507,7 @@ protected:
 	CollisionType	m_eCollisionType;
 	_bool			m_bRender = true;
 	_uint			m_iSoundChannel = 0;
+	_bool			m_bEcho = false;
 
 	// 디졸브 벨류
 	_float m_fDissolveAmount = 0.f;

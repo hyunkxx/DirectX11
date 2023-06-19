@@ -68,7 +68,7 @@ HRESULT CE_Binglie::Initialize(void * pArg)
 	//m_pNaviCom->Set_CurrentIndex(2200);
 
 
-
+	m_bEcho = true;
 	// StateController √ ±‚»≠
 	m_Scon.iCurState = 0;
 	m_Scon.iNextState = 0;
@@ -108,6 +108,7 @@ void CE_Binglie::Start()
 	//m_pTarget = static_cast<CPlayerState*>(pGame->Find_GameObject(LEVEL_STATIC, L"CharacterState"))->Get_ActiveCharacter();
 	//m_pTargetTransform = m_pTarget->GetTransform();
 
+	
 
 }
 
@@ -410,6 +411,8 @@ HRESULT CE_Binglie::Reload_Components()
 	}
 
 	Init_Missiles();
+
+	m_MissilePools[MISS_ATTACK_02_BOOM]->Set_SoundTag(this, L"DA_Au_Mon_Imp_Magic_Ice_Light_5.wem.wav");
 
 	return S_OK;
 }

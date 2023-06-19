@@ -35,21 +35,39 @@ CCharacter::PHYSICMOVE CCharacter::StatePhysics[SP_END]
 
 };
 
-void CCharacter::Shot_SoundKey(_tchar * szSoundTag, _uint iSoundChannelm, _float fVolume)
+void CCharacter::Shot_SoundKey(_tchar * szSoundTag, _uint iSoundChannel, _float fVolume)
 {
 	CGameInstance* pGame = CGameInstance::GetInstance();
 
-	if (CT_PLAYER == m_eCollisionType)
+	if (true == m_bEcho)
 	{
-		pGame->StopSound(iPlayerSoundChannel);
-		pGame->PlaySoundEx(szSoundTag, iPlayerSoundChannel++, fVolume);
-		if (SOUND_PLAYER_TEMP_03 < iPlayerSoundChannel)
-			iPlayerSoundChannel = SOUND_PLAYER_SWING;
+		_uint iChannel;
+		if (SOUND_MONSTER1_SWING == iSoundChannel ||
+			SOUND_MONSTER2_SWING == iSoundChannel)
+			iChannel = SOUND_ECHO_SWING;
+		else if (SOUND_MONSTER1_MISSILE== iSoundChannel ||
+			SOUND_MONSTER2_MISSILE == iSoundChannel)
+			iChannel = SOUND_ECHO_MISSILE;
+		else
+			iChannel = SOUND_ECHO_TEMP;
+
+		pGame->StopSound(iChannel);
+		pGame->PlaySoundEx(szSoundTag, iChannel, fVolume);
 	}
 	else
 	{
-		pGame->StopSound(iSoundChannelm);
-		pGame->PlaySoundEx(szSoundTag, iSoundChannelm, fVolume);
+		if (CT_PLAYER == m_eCollisionType)
+		{
+			pGame->StopSound(iPlayerSoundChannel);
+			pGame->PlaySoundEx(szSoundTag, iPlayerSoundChannel++, fVolume);
+			if (SOUND_PLAYER_TEMP_03 < iPlayerSoundChannel)
+				iPlayerSoundChannel = SOUND_PLAYER_SWING;
+		}
+		else
+		{
+			pGame->StopSound(iSoundChannel);
+			pGame->PlaySoundEx(szSoundTag, iSoundChannel, fVolume);
+		}
 	}
 }
 

@@ -1751,6 +1751,10 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 				if (m_bParryable)
 				{
 					m_fParalysisPoint -= 90.f;
+
+					pGI->StopSound(SOUND_MONSTER2_HIT);
+					pGI->PlaySoundEx(L"Play_Role_Common_Weapon_Block_Light_1.wem.wav", SOUND_MONSTER2_HIT, VOLUME_VFX);
+
 					pGI->Get_Effect(TEXT("Parry_Effect"), EFFECT_ID::COMON)->Play_Effect(&EffectMatrix);
 					if (m_fParalysisPoint < 0.f && PS_GROUND == m_Scon.ePositionState)
 					{
@@ -1783,6 +1787,10 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 				if (m_bParryable)
 				{
 					m_fParalysisPoint -= 90.f;
+
+					pGI->StopSound(SOUND_MONSTER2_HIT);
+					pGI->PlaySoundEx(L"Play_Role_Common_Weapon_Block_Light_1.wem.wav", SOUND_MONSTER2_HIT, VOLUME_VFX);
+
 					pGI->Get_Effect(TEXT("Parry_Effect"), EFFECT_ID::COMON)->Play_Effect(&EffectMatrix);
 					if (m_fParalysisPoint < 0.f && PS_GROUND == m_Scon.ePositionState)
 					{
@@ -1826,6 +1834,10 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 				if (m_bParryable)
 				{
 					m_fParalysisPoint -= 90.f;
+
+					pGI->StopSound(SOUND_MONSTER2_HIT);
+					pGI->PlaySoundEx(L"Play_Role_Common_Weapon_Block_Light_1.wem.wav", SOUND_MONSTER2_HIT, VOLUME_VFX);
+
 					pGI->Get_Effect(TEXT("Parry_Effect"), EFFECT_ID::COMON)->Play_Effect(&EffectMatrix);
 					if (m_fParalysisPoint < 0.f && PS_GROUND == m_Scon.ePositionState)
 					{

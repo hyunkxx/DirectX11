@@ -66,6 +66,7 @@ HRESULT CE_AWukaka::Initialize(void * pArg)
 	//m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(186.066f, 32.837f, 242.489f, 1.f));
 	//m_pNaviCom->Set_CurrentIndex(2200);
 
+	m_bEcho = true;
 
 
 	// StateController √ ±‚»≠

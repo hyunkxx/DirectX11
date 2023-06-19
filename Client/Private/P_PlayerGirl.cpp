@@ -840,6 +840,11 @@ void CP_PlayerGirl::Check_TimeDelay(_double TimeDelta)
 
 void CP_PlayerGirl::Appear(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID, _float fDissolveSpeed)
 {
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	pGame->StopSound(SOUND_PLAYER_VOICE);
+	pGame->PlaySoundEx(L"Playback_vo_ba_nvzhu_hx_trans.wem.wav", SOUND_PLAYER_VOICE, 0.5f);
+	Shot_SoundKey(L"DA_Au_Role_Common_Char_Change.wem.wav", 0, 0.5);
+
 	SetState(ACTIVE);
 
 	m_pFixedTarget = pTarget;
@@ -881,7 +886,14 @@ void CP_PlayerGirl::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget,
 
 void CP_PlayerGirl::Appear_QTE(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID)
 {
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	pGame->StopSound(SOUND_PLAYER_VOICE);
+	pGame->PlaySoundEx(L"Playback_vo_ba_nvzhu_qte.wem.wav", SOUND_PLAYER_VOICE, 0.5f);
+	Shot_SoundKey(L"DA_Au_Role_Common_Char_Change.wem.wav", 0, 0.5);
+
 	SetState(ACTIVE);
+
+	Shot_SoundKey(L"", SOUND_PLAYER_VOICE, 0.5);
 
 	m_pFixedTarget = pTarget;
 	

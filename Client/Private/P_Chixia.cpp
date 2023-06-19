@@ -882,8 +882,13 @@ void CP_Chixia::Check_TimeDelay(_double TimeDelta)
 
 void CP_Chixia::Appear(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID, _float fDissolveSpeed)
 {
-	SetState(ACTIVE);
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	pGame->StopSound(SOUND_PLAYER_VOICE);
+	pGame->PlaySoundEx(L"Playback_vo_ba_chixia_hx_trans.wem.wav", SOUND_PLAYER_VOICE, 0.5f);
+	Shot_SoundKey(L"DA_Au_Role_Common_Char_Change.wem.wav", 0, 0.5);
 
+	SetState(ACTIVE);
+	
 	m_pFixedTarget = pTarget;
 	m_pMainTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix());
 	m_pNaviCom->Set_CurrentIndex(iNaviCellID);
@@ -923,6 +928,12 @@ void CP_Chixia::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget, _ui
 
 void CP_Chixia::Appear_QTE(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID)
 {
+
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	pGame->StopSound(SOUND_PLAYER_VOICE);
+	pGame->PlaySoundEx(L"Playback_vo_ba_chixia_qte.wem.wav", SOUND_PLAYER_VOICE, 0.5f);
+	Shot_SoundKey(L"DA_Au_Role_Common_Char_Change.wem.wav", 0, 0.5);
+
 	SetState(ACTIVE);
 
 	m_pFixedTarget = pTarget;

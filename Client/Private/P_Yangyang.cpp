@@ -887,7 +887,17 @@ void CP_Yangyang::Check_TimeDelay(_double TimeDelta)
 
 void CP_Yangyang::Appear(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID, _float fDissolveSpeed)
 {
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	pGame->StopSound(SOUND_PLAYER_VOICE);
+	pGame->PlaySoundEx(L"Playback_vo_ba_yangyang_hx_trans.wem.wav", SOUND_PLAYER_VOICE, 0.5f);
+	Shot_SoundKey(L"DA_Au_Role_Common_Char_Change.wem.wav", 0, 0.5);
+
+
 	SetState(ACTIVE);
+
+
+	Shot_SoundKey(L"", SOUND_PLAYER_VOICE, 0.5);
+	
 
 	m_pFixedTarget = pTarget;
 	m_pMainTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix());
@@ -929,6 +939,11 @@ void CP_Yangyang::Disappear(CTransform ** ppTransform, CCharacter ** ppTarget, _
 
 void CP_Yangyang::Appear_QTE(CTransform * pTransform, CCharacter * pTarget, _uint iNaviCellID)
 {
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	pGame->StopSound(SOUND_PLAYER_VOICE);
+	pGame->PlaySoundEx(L"Playback_vo_yangyang_dash.wem.wav", SOUND_PLAYER_VOICE, 0.5f);
+	Shot_SoundKey(L"DA_Au_Role_Common_Char_Change.wem.wav", 0, 0.5);
+
 	SetState(ACTIVE);
 
 	m_pFixedTarget = pTarget;
