@@ -63,6 +63,8 @@ HRESULT CTrigger::Initialize(void* pArg)
 
 		m_pPotal->Play_Effect(&m_WorldMatrix_Potal, true);
 
+
+
 		break;
 	case Client::CTrigger::TYPE_SPAWN:
 		if (nullptr != m_TriggerDesc.pEditionFilePath)
@@ -364,6 +366,12 @@ void CTrigger::ShowEffect(_double TimeDelta)
 	{
 		m_pPotalEffect->Play_Effect(&m_WorldMatrix_Origin);
 		m_OnlyOnePlay = true;
+
+		CGameInstance::GetInstance()->PlaySoundEx(L"Play_amb_interact_wuyinqu_open.wem.wav",
+			SOUND_UI_TEMP, 1.f);
+
+		CGameInstance::GetInstance()->PlaySoundEx(L"DA_Au_amb_interact_control_mingjing_low.wem.wav",
+			SOUND_UI_FEEDBACK, 1.f);
 	}
 
 	m_EffectTimeAcc += TimeDelta;
