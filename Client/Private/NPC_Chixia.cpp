@@ -640,6 +640,7 @@ void CNPC_Chixia::OnCollisionStay(CCollider * src, CCollider * dest)
 			m_UITip->Foff();
 			m_pAnimSetCom[ANIMSET_BASE]->SetUp_Animation(m_tStates[1].iAnimID[ANIMSET_BASE], false);
 			m_pAnimSetCom[ANIMSET_RIBBON]->SetUp_Animation(m_tStates[1].iAnimID[ANIMSET_RIBBON], false);
+			m_eState = STATE_STAND1_ACTION;
 			pGM->Set_Chixia(true);
 		}
 	}

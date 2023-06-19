@@ -62,7 +62,8 @@ void CGameMode::Distance_BattleRange(_float fTargetDistance)
 
 	// 전투 거리에 들어왔을 때. m_IsBattle 전투 상태로 변경 , m_IsIn_BattleRange true 
 	// 한마리라도 들어 왔을 경우 m_IsIn_BattleRange 이 true
-	if (m_fBattle_Range >= fTargetDistance)
+	// + 플레이어가 전투 중 이라면 ( 몬스터가 맞았을 경우 )
+	if (m_fBattle_Range >= fTargetDistance || true == m_IsCombat)
 	{
 		if (false == m_IsBattle)
 			m_IsChangeDelay = true;
@@ -92,4 +93,45 @@ void CGameMode::SetUp_ChangeDelay()
 void CGameMode::Reset_ChangeDelay()
 {
 	m_IsChangeDelay = false;
+}
+
+void CGameMode::SetUp_Combat()
+{
+	m_IsCombat = true;
+	m_RenewalCombat = true;
+}
+
+void CGameMode::Reset_Combat()
+{
+	m_IsCombat = false;
+}
+
+void CGameMode::SetUp_RenewalCombat()
+{
+	m_RenewalCombat = true;
+}
+
+void CGameMode::Reset_RenewalCombat()
+{
+	m_RenewalCombat = false;
+}
+
+void CGameMode::SetUp_BattleBgm()
+{
+	m_IsBattleBgm = true;
+}
+
+void CGameMode::Reset_BattleBgm()
+{
+	m_IsBattleBgm = false;
+}
+
+void CGameMode::SetUp_ChangeBgm()
+{
+	m_IsChangeBgm = true;
+}
+
+void CGameMode::Reset_ChangeBgm()
+{
+	m_IsChangeBgm = false;
 }

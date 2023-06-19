@@ -186,7 +186,7 @@ HRESULT CSound_Manager::Set_SoundVolume(int eChannel, SOUND_VOLUME eVolume, floa
 	}
 
 	m_pSystem->update();
-
+	
 	return S_OK;
 }
 

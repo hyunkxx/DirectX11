@@ -118,7 +118,7 @@ HRESULT CLevel_Crown::Initialize()
 	// play_story_music_neutral_02_1.wem.wav
 	// play_story_music_serious_1.wem.wav
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
-	pGameInstance->PlaySoundEx(L"play_story_music_dangerous_2.wem.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+	pGameInstance->PlaySoundEx(L"Opening.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 
 	pGM->ResetStaticShadowBake();
 
@@ -134,6 +134,37 @@ void CLevel_Crown::Tick(_double TimeDelta)
 
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (nullptr == pGameInstance || nullptr == pGameMode)
+		return;
+
+	// 브금 교체.
+	if (true == pGameMode->Is_ChangeBgm())
+	{
+		if (true == pGameMode->Is_ChangeDelay())
+		{
+			if (true == pGameInstance->BGMSmoothOff(TimeDelta))
+			{
+				if (true == pGameMode->Is_BattleBgm())
+				{
+					pGameInstance->StopSound(SOUND_CHANNEL::SOUND_BGM);
+					// 보스방 전투 사운드로 교체.
+					pGameInstance->PlaySoundEx(L"Wuthering_Waves _Crownless_OST.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+				}
+				else
+				{
+					//pGameInstance->StopSound(SOUND_CHANNEL::SOUND_BGM);
+					//pGameInstance->PlaySoundEx(L"Opening.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+				}
+
+				pGameMode->Reset_ChangeDelay();
+			}
+		}
+		else
+		{
+			pGameInstance->BGMSmoothOn(TimeDelta);
+		}
+	}
 
 	//pGameInstance->BGMSmoothOn(TimeDelta);
 
@@ -197,9 +228,13 @@ void CLevel_Crown::Tick(_double TimeDelta)
 
 	if (true == pGameMode->Is_ReserveLevel())
 	{
-		pGameInstance->StopAllSound();
-		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
-		pGameMode->Reset_ReserveLevel();
+		//pGameInstance->StopAllSound();
+
+		if (true == pGameInstance->BGMSmoothOff(TimeDelta))
+		{
+			pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
+			pGameMode->Reset_ReserveLevel();
+		}
 	}
 
 #pragma region LEVEL_MOVE
@@ -376,6 +411,7 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 	CPhaseChanger* pPhase = static_cast<CPhaseChanger*>(pChar);
 	pGM->Set_PhaseChanger(pPhase);
 
+	
 	// 트리거 정보 로드
 	if (FAILED(Load_TriggerData(TEXT("../../Data/Crown/Trigger/Spawn_Crown.data"), TEXT("Trigger_Spawn_Crown"),
 		TEXT("layer_trigger"), TEXT("../../Data/Crown/Trigger/Spawn_Crown_SpawnPoint.data"))))
@@ -383,13 +419,21 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 		MSG_BOX("Trigger_Spawn_Crown");
 		return E_FAIL;
 	}
-
 	
-
+	
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P1, pLayerTag, TEXT("Crownless_P1"))))
 		return E_FAIL;
 	pPhase->Set_Phase1(static_cast<CCharacter*>(pChar));
-	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
+	pChar->SetState(CGameObject::DISABLE);
+	//static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
+
+	CGameObject*		pGameObject = { nullptr };
+	pGameObject = pGameInstance->Find_GameObject(LEVEL_CROWN, TEXT("Trigger_Spawn_Crown"));
+	if (nullptr == pGameObject)
+		return E_FAIL;
+
+	if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, static_cast<CCharacter*>(pChar))))
+		return E_FAIL;
 
 
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P2, pLayerTag, TEXT("Crownless_P2"))))
@@ -399,6 +443,7 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
 
+
 	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_CROWN, OBJECT::MONSTER_CROWNLESS_P3, pLayerTag, TEXT("Crownless_P3"))))
 		return E_FAIL;
 	pPhase->Set_Phase3(static_cast<CCharacter*>(pChar));
@@ -406,19 +451,7 @@ HRESULT CLevel_Crown::Ready_Layer_Monster(const _tchar * pLayerTag)
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMVectorSet(116.507f, 20.010f, 113.048f, 1.f), 218);
 
 	
-	//static_cast<CCharacter*>(pChar)->Set_State(CCharacter::STATE::DISABLE);
-
-	//CGameObject*		pGameObject = { nullptr };
-	//pGameObject = pGameInstance->Find_GameObject(LEVEL_CROWN, TEXT("Trigger_Spawn_Crown"));
-	//if (nullptr == pGameObject)
-	//	return E_FAIL;
-
-	//if (FAILED(static_cast<CTrigger*>(pGameObject)->Link_WaveMonster(CTrigger::SPAWN_WAVE::WAVE_1, static_cast<CCharacter*>(pChar))))
-	//	return E_FAIL;
-
-
-	
-
+	static_cast<CCharacter*>(pChar)->Set_State(CCharacter::STATE::DISABLE);
 
 
 	return S_OK;

@@ -143,6 +143,34 @@ private:
 
 	const _float&		m_fBattle_Range = { 20.0f };
 	_double				m_Battle_Time = { 0.0 };
+	
+public:
+	_bool Is_Combat() const { return m_IsCombat; }
+	void SetUp_Combat();
+	void Reset_Combat();
+
+	_bool Is_RenewalCombat() const { return m_RenewalCombat; }
+	void SetUp_RenewalCombat();
+	void Reset_RenewalCombat();
+
+private:
+	// 전투 중 임을 체크함.
+	_bool				m_IsCombat = { false };
+
+	_bool				m_RenewalCombat = { false };
+
+public: /* Crown */
+	_bool Is_BattleBgm() const { return m_IsBattleBgm; }
+	void SetUp_BattleBgm();
+	void Reset_BattleBgm();
+
+	_bool Is_ChangeBgm() const { return m_IsChangeBgm; }
+	void SetUp_ChangeBgm();
+	void Reset_ChangeBgm();
+
+private:
+	_bool				m_IsBattleBgm = { false };
+	_bool				m_IsChangeBgm = { false };
 
 private: 
 	class CAcquireSystem* m_pAcquireSystem = nullptr;

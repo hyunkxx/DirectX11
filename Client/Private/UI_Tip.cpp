@@ -595,6 +595,7 @@ _bool CUI_Tip::AddAlphaSingle(TIPDESC* pDesc, _double TimeDelta)
 {
 	if (pDesc->Color.w > pDesc->fColorA)
 	{
+		pDesc->bRender = true;
 		pDesc->fColorA += (_float)TimeDelta * 100.f;
 	}
 	else
@@ -1128,8 +1129,4 @@ void CUI_Tip::Free()
 	Safe_Release(m_pVIBuffer);
 
 
-}
-
-void CUI_Tip::Foff()
-{
 }

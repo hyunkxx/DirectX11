@@ -200,7 +200,9 @@ void CTrigger::Trigger_Condition()
 	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_1:
 	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_2:
 	case CTrigger::TRIGGER_ID::ID_SPAWN_FOREST_3:
+
 	case CTrigger::TRIGGER_ID::ID_SPAWN_CROWN:
+
 	case CTrigger::TRIGGER_ID::ID_INTERACT_COOK:
 	case CTrigger::TRIGGER_ID::ID_INTERACT_COOKNPC:
 	case CTrigger::TRIGGER_ID::ID_INTERACT_SHOP_1:
@@ -318,6 +320,10 @@ void CTrigger::Trigger_Spawn_Forest_3()
 
 void CTrigger::Trigger_Spawn_Crown()
 {
+	CGameMode*		pGameMode = CGameMode::GetInstance();
+	if (nullptr == pGameMode)
+		return;
+
 	m_IsOnlyOneTrigger = true;
 
 	// 트리거 발동 시 현재 웨이브로 등록된 몬스터를 활성화.
@@ -329,6 +335,11 @@ void CTrigger::Trigger_Spawn_Crown()
 			{
 				pMonster->SetUp_Activate(m_SpawnPoints[m_iSpawnPointIndex]);
 				Add_SpawnPoint();
+				pMonster->Set_LookAt(m_vPlayerPos);
+
+				pGameMode->SetUp_BattleBgm();
+				pGameMode->SetUp_ChangeBgm();
+				pGameMode->SetUp_ChangeDelay();
 			}
 		}
 	}

@@ -1058,6 +1058,9 @@ void CM_Anjin::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAttac
 	Play_HitSound(pAttackInfo);
 
 	CGameMode* pGM = CGameMode::GetInstance();
+	
+	if (nullptr != pGM)
+		pGM->SetUp_Combat();
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지

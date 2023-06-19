@@ -122,6 +122,7 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
 	pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+	pGameInstance->PlaySoundEx(L"Play_AMB_Common_Insect.wem.wav", SOUND_CHANNEL::SOUND_AMBIENCE1, VOLUME_BGM);
 
 	pGM->ResetStaticShadowBake();
 	ShowCursor(false);
@@ -146,6 +147,28 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 	// 전투 상태인데
 	if (true == pGameMode->Is_Battle())
 	{
+		// 계속 전투중 이라면 거리 벗어남 시간 누적 초기화. + 전투 지속 시간 체크
+		if (true == pGameMode->Is_Combat())
+		{
+			m_Battle_TimeAcc = 0.0;
+
+			m_Combat_TimeAcc += TimeDelta;
+
+			// 전투 지속이 갱신되면 전투 지속 관련 초기화
+			if (true == pGameMode->Is_RenewalCombat())
+			{
+				m_Combat_TimeAcc = 0.0;
+				pGameMode->Reset_RenewalCombat();
+			}
+		}
+		// 제한 전투 지속 시간 이 지나면
+		if (m_Combat_Time <= m_Combat_TimeAcc)
+		{
+			// 전투 지속 관련 초기화
+			m_Combat_TimeAcc = 0.0;
+			pGameMode->Reset_Combat();
+		}
+
 		// 전투 거리 안에 없을경우. -> 시간체크
 		if (false == pGameMode->IsIn_BattleRange())
 		{
@@ -170,13 +193,16 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 			{
 				//pGameInstance->BGMSmoothOn(TimeDelta);
 				pGameInstance->StopSound(SOUND_CHANNEL::SOUND_BGM);
+				pGameInstance->StopSound(SOUND_CHANNEL::SOUND_AMBIENCE1);
 				pGameInstance->PlaySoundEx(L"Battle_BGM_0.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 			}
 			else
 			{
 				//pGameInstance->BGMSmoothOn(TimeDelta);
 				pGameInstance->StopSound(SOUND_CHANNEL::SOUND_BGM);
+				pGameInstance->StopSound(SOUND_CHANNEL::SOUND_AMBIENCE1);
 				pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+				pGameInstance->PlaySoundEx(L"Play_AMB_Common_Insect.wem.wav", SOUND_CHANNEL::SOUND_AMBIENCE1, VOLUME_BGM);
 			}
 
 			pGameMode->Reset_ChangeDelay();
@@ -250,9 +276,13 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 
 	if (true == pGameMode->Is_ReserveLevel())
 	{
-		pGameInstance->StopAllSound();
-		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
-		pGameMode->Reset_ReserveLevel();
+		//pGameInstance->StopAllSound();
+
+		if (true == pGameInstance->BGMSmoothOff(TimeDelta))
+		{
+			pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
+			pGameMode->Reset_ReserveLevel();
+		}
 	}
 
 #pragma region LEVEL_MOVE

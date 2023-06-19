@@ -65,6 +65,9 @@ public:
 private:
 	_double				m_Battle_Time = { 5.0 };
 	_double				m_Battle_TimeAcc = { 0.0 };
+
+	_double				m_Combat_Time = { 10.0 };
+	_double				m_Combat_TimeAcc = { 0.0 };
 };
 
 END
