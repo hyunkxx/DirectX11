@@ -1274,10 +1274,7 @@ void CP_Chixia::SetUp_State()
 	else
 		m_pMainTransform->Set_RotationSpeed(XMConvertToRadians(540.f));
 
-	if (IS_BURST == m_Scon.iCurState)
-		m_pHitCollider->SetActive(false);
-	else
-		m_pHitCollider->SetActive(true);
+
 
 	//PhysicMove
 	if (false == m_tCurState.bRootMotion)

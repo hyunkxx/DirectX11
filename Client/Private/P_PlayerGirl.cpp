@@ -1231,14 +1231,10 @@ void CP_PlayerGirl::SetUp_State()
 
 	// 게이지 차감
 	if (IS_SKILL_02 == m_Scon.iCurState)
-		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 0.f;
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] -= 10.f;
 	else if (IS_BURST == m_Scon.iCurState)
-		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 0.f;
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] -= 10.f;
 
-	if (IS_BURST == m_Scon.iCurState)
-		m_pHitCollider->SetActive(false);
-	else
-		m_pHitCollider->SetActive(true);
 
 	//PhysicMove
 	if (false == m_tCurState.bRootMotion)
