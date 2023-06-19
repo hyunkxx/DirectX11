@@ -256,7 +256,7 @@ void CUI_Monster::Font(_double TimeDelta)
 		if (78 == Desc.TextureNum)
 		{
 			Desc.Size.x += (_float)(TimeDelta * 80.f);
-			Desc.Size.y -= (_float)(TimeDelta * 30.f);
+			Desc.Size.y -= (_float)(TimeDelta * 20.f);
 			if (0.f >= Desc.Size.y)
 			{
 				Desc.Size.y = 0.f;
@@ -1008,8 +1008,8 @@ void CUI_Monster::DecideRender(_double TimeDelta)
 				m_DescList[20].fHeight = 35.f + abs(m_Damage * 0.6f);
 				if (m_DescList[16].fHeight > 50.f) { m_DescList[16].fHeight -= abs(m_Damage * 0.05f); }
 				if (m_DescList[20].fHeight > 50.f) { m_DescList[20].fHeight -= abs(m_Damage * 0.05f); }
-				if (m_DescList[16].fHeight > 75.f) { m_DescList[16].fHeight = 35.f; }
-				if (m_DescList[20].fHeight > 75.f) { m_DescList[20].fHeight = 35.f; }
+				if (m_DescList[16].fHeight > 100.f) { m_DescList[16].fHeight = 35.f; }
+				if (m_DescList[20].fHeight > 100.f) { m_DescList[20].fHeight = 35.f; }
 			}
 
 			for (_uint i = 10; i < (_uint)m_DescList.size(); ++i)

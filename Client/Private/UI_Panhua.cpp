@@ -326,23 +326,23 @@ m_DetailsList[33].fX = -488.f;
 
 	m_pDB = CItemDB::GetInstance();
 	// 고정 박스, 보상메세지 박스 색상
-	itemDesc[0] = m_pDB->GetItemData(ITEM::RICE);		//cost 100
-	itemDesc[1] = m_pDB->GetItemData(ITEM::TOFU);		//cost 100
-	itemDesc[2] = m_pDB->GetItemData(ITEM::FLOUR);		//cost 100
-	itemDesc[3] = m_pDB->GetItemData(ITEM::MUSHROOM);	//cost 100
-	itemDesc[4] = m_pDB->GetItemData(ITEM::CHICKEN);	//cost 100
-	itemDesc[5] = m_pDB->GetItemData(ITEM::EGG);		//cost 100
-	itemDesc[6] = m_pDB->GetItemData(ITEM::MEAT);		//cost 100
-	itemDesc[7] = m_pDB->GetItemData(ITEM::HERB);		//cost 100
-	itemDesc[8] = m_pDB->GetItemData(ITEM::VIOLET);		//cost 100
-	itemDesc[9] = m_pDB->GetItemData(ITEM::DANDELION);  //cost 100
-	itemDesc[10] = m_pDB->GetItemData(ITEM::PEPPER);	//cost 100
-	itemDesc[11] = m_pDB->GetItemData(ITEM::SUGAR);		//cost 100
-	itemDesc[12] = m_pDB->GetItemData(ITEM::SALT);		//cost 100
-	itemDesc[13] = m_pDB->GetItemData(ITEM::OIL);		//cost 100
-	itemDesc[14] = m_pDB->GetItemData(ITEM::SOYSAUCE);		//cost 100
-	itemDesc[15] = m_pDB->GetItemData(ITEM::RECIPE0);		//cost 100
-	itemDesc[16] = m_pDB->GetItemData(ITEM::RECIPE1);		//cost 100
+	itemDesc[0] = m_pDB->GetItemData( ITEM::RICE			);		//cost 100
+	itemDesc[1] = m_pDB->GetItemData( ITEM::TOFU			);		//cost 100
+	itemDesc[2] = m_pDB->GetItemData( ITEM::FLOUR		);		//cost 100
+	itemDesc[3] = m_pDB->GetItemData( ITEM::MUSHROOM		);	//cost 100
+	itemDesc[4] = m_pDB->GetItemData( ITEM::CHICKEN		);	//cost 100
+	itemDesc[5] = m_pDB->GetItemData( ITEM::EGG			);		//cost 100
+	itemDesc[6] = m_pDB->GetItemData( ITEM::MEAT			);		//cost 100
+	itemDesc[7] = m_pDB->GetItemData( ITEM::HERB			);		//cost 100
+	itemDesc[8] = m_pDB->GetItemData (ITEM::VIOLET		);		//cost 100
+	itemDesc[9] = m_pDB->GetItemData( ITEM::DANDELION	);  //cost 100
+	itemDesc[10] = m_pDB->GetItemData(ITEM::PEPPER		);	//cost 100
+	itemDesc[11] = m_pDB->GetItemData(ITEM::SUGAR		);		//cost 100
+	itemDesc[12] = m_pDB->GetItemData(ITEM::SALT		);		//cost 100
+	itemDesc[13] = m_pDB->GetItemData(ITEM::OIL			);		//cost 100
+	itemDesc[14] = m_pDB->GetItemData(ITEM::SOYSAUCE	);		//cost 100
+	itemDesc[15] = m_pDB->GetItemData(ITEM::RECIPE0		);		//cost 100
+	itemDesc[16] = m_pDB->GetItemData(ITEM::RECIPE1		);		//cost 100
 
 	m_MenuList[0].fX = m_MenuList[3].fX;
 	m_MenuList[1].fX = m_MenuList[4].fX;
@@ -962,39 +962,39 @@ void CUI_Panhua::Tick(_double TimeDelta)
 		// 인벤토리 처리 후 목록으로
 		// 보상 인벤에 넣기
 		if(pSelectSlot == &m_0Slot)
-			m_pInven->AddItem(itemDesc[0].iItemID, BuyNum*10);
+			m_pInven->AddItem(ITEM::RICE, BuyNum *10);
 		if (pSelectSlot == &m_1Slot)
-			m_pInven->AddItem(itemDesc[1].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::TOFU, BuyNum * 10);
 		if (pSelectSlot == &m_2Slot)
-			m_pInven->AddItem(itemDesc[2].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::FLOUR, BuyNum * 10);
 		if (pSelectSlot == &m_3Slot)
-			m_pInven->AddItem(itemDesc[3].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::MUSHROOM, BuyNum * 10);
 		if (pSelectSlot == &m_4Slot)
-			m_pInven->AddItem(itemDesc[4].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::CHICKEN, BuyNum * 10);
 		if (pSelectSlot == &m_5Slot)
-			m_pInven->AddItem(itemDesc[5].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::EGG, BuyNum * 10);
 		if (pSelectSlot == &m_6Slot)
-			m_pInven->AddItem(itemDesc[6].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::MEAT, BuyNum * 10);
 		if (pSelectSlot == &m_7Slot)
-			m_pInven->AddItem(itemDesc[7].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::HERB, BuyNum * 10);
 		if (pSelectSlot == &m_8Slot)
-			m_pInven->AddItem(itemDesc[8].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::VIOLET, BuyNum * 10);
 		if (pSelectSlot == &m_9Slot)
-			m_pInven->AddItem(itemDesc[9].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::DANDELION, BuyNum * 10);
 		if (pSelectSlot == &m_10Slot)
-			m_pInven->AddItem(itemDesc[10].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::PEPPER, BuyNum * 10);
 		if (pSelectSlot == &m_11Slot)
-			m_pInven->AddItem(itemDesc[11].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::SUGAR, BuyNum * 10);
 		if (pSelectSlot == &m_12Slot)
-			m_pInven->AddItem(itemDesc[12].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::SALT, BuyNum * 10);
 		if (pSelectSlot == &m_13Slot)
-			m_pInven->AddItem(itemDesc[13].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::OIL, BuyNum * 10);
 		if (pSelectSlot == &m_14Slot)
-			m_pInven->AddItem(itemDesc[14].iItemID, BuyNum * 10);
+			m_pInven->AddItem(ITEM::SOYSAUCE, BuyNum * 10);
 		if (pSelectSlot == &m_15Slot)
-			m_pInven->AddItem(itemDesc[15].iItemID, 1);
+			m_pInven->AddItem(ITEM::RECIPE0, 1);
 		if (pSelectSlot == &m_16Slot)
-			m_pInven->AddItem(itemDesc[16].iItemID, 1);
+			m_pInven->AddItem(ITEM::RECIPE1, 1);
 
 		m_pInven->DeleteCoin(iTotal);
 		SettingCurMoneyTexNum();

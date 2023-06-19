@@ -299,10 +299,6 @@ void CCookGirl::Free()
 
 void CCookGirl::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
-
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 열리는 소리,NPC들어가는 소리
-
 	// 상인
 	if (src == m_pCollider)
 	{
