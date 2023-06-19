@@ -53,7 +53,8 @@ HRESULT CGuide_Spirit::Initialize(void * pArg)
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_vPosition));
 
 	m_pEffect = CGameInstance::GetInstance()->Get_Effect(L"Guide_Spirit_R",EFFECT_ID::COMON);
-	m_pEffect->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
+	if (nullptr != m_pEffect)
+		m_pEffect->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
 
 	_int iSize = (_int)m_pRouteList->size();
 	auto& iter = m_pRouteList->begin();
@@ -147,7 +148,8 @@ void CGuide_Spirit::Wait_Tick(_double TimeDelta)
 		++m_iDestinationCount;
 
 		m_pEffect = CGameInstance::GetInstance()->Get_Effect(L"Spilit_Flare", EFFECT_ID::COMON);
-		m_pEffect->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
+		if (nullptr != m_pEffect)
+			m_pEffect->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
 
 		if (m_pRouteList->size() <= m_iDestinationCount)
 			m_eSpiritState = STATE_RECALL;
@@ -221,7 +223,8 @@ void CGuide_Spirit::ReCall_Tick(_double TimeDelta)
 	{
 		m_bBoxAppear = true;
 		CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Spilit_Mark", EFFECT_ID::COMON);
-		pEffect->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), false);
+		if(nullptr != pEffect)
+			pEffect->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), false);
 
 		static_cast<CInvisible_Chest*>(m_pMyBox)->Appear_Box();
 	}

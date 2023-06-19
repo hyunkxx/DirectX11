@@ -117,8 +117,9 @@ _bool CMissile::Shot(_fvector vInitPos, _fvector vLookDir, _fmatrix vMissileRotM
 	{
 		if(nullptr == m_pEffect)
 			m_pEffect = CGameInstance::GetInstance()->Get_Effect(m_tMissileDesc.szLoopEffectTag, (Engine::EFFECT_ID)m_tMissileDesc.iLoopEffectLayer);
-
-		m_pEffect->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
+		
+		if (nullptr != m_pEffect)
+			m_pEffect->Play_Effect(m_pMainTransform->Get_WorldMatrixPtr(), true);
 	}
 	
 	m_pCollider->SetActive(true);

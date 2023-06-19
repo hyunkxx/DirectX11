@@ -982,7 +982,9 @@ void CM_AWukaka::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtt
 		CGameInstance* pGI = CGameInstance::GetInstance();
 		_float4x4 EffectMatrix = m_pMainTransform->Get_WorldMatrix();
 		memcpy(EffectMatrix.m[3], pEffPos, sizeof(_float3));
-		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
+		CEffect* pEffect = pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID);
+		if(nullptr != pEffect)
+			pEffect->Play_Effect(&EffectMatrix);
 	}
 
 	pChar->Recover_Gauge(pAttackInfo->fSPGain, pAttackInfo->fBPGain, pAttackInfo->fTPGain);

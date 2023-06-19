@@ -2487,7 +2487,9 @@ void CP_Yangyang::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _flo
 		CGameInstance* pGI = CGameInstance::GetInstance();
 		_float4x4 EffectMatrix = m_pMainTransform->Get_WorldMatrix();
 		memcpy(EffectMatrix.m[3], pEffPos, sizeof(_float3));
-		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
+		CEffect* pEffect = pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID);
+		if(nullptr != pEffect)
+			pEffect->Play_Effect(&EffectMatrix);
 	}
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)

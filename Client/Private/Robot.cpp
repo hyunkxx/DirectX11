@@ -138,7 +138,8 @@ HRESULT CRobot::Add_Components()
 	for (_int i = 0; 4 > i; i++)
 	{
 		m_pEffect[i] = pGameInstance->Get_Effect(L"Box_Robot",EFFECT_ID::COMON);
-		m_pEffect[i]->Play_Effect(&m_RobotMatrix[i],false);
+		if(nullptr != m_pEffect[i])
+			m_pEffect[i]->Play_Effect(&m_RobotMatrix[i],false);
 	}
 
 	CCollider::COLLIDER_DESC CollDesc;

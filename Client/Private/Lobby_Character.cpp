@@ -59,7 +59,8 @@ HRESULT CLobbyCharacter::Initialize(void * pArg)
 	// Lobby_Player_Particle_Effect
 	CEffect* pEffect= CGameInstance::GetInstance()->Get_Effect(L"Lobby_Particle_Effect_01", EFFECT_ID::LOBBY);
 	_float4x4 WorldMatirx = m_pMainTransform->Get_WorldMatrix();
-	pEffect->Play_Effect(&WorldMatirx, false);
+	if (nullptr != pEffect)
+		pEffect->Play_Effect(&WorldMatirx, false);
 
 	m_pEyeBone = m_pModelCom->Get_BonePtr(L"Bip001_Eye_Bone_L");
 		
@@ -179,10 +180,12 @@ void CLobbyCharacter::PlaySelectedAnimation()
 	// ÀÓ½Ã ÀÌÆåÆ® ³¢¿ö³Ö±â
 	CEffect* pEffect = CGameInstance::GetInstance()->Get_Effect(L"Lobby_Particle_Effect_02", EFFECT_ID::LOBBY);
 	_float4x4 WorldMatirx = m_pMainTransform->Get_WorldMatrix();
-	pEffect->Play_Effect(&WorldMatirx, false);
+	if (nullptr != pEffect)
+		pEffect->Play_Effect(&WorldMatirx, false);
 
 	pEffect = CGameInstance::GetInstance()->Get_Effect(L"Test_Lobby_Effect",EFFECT_ID::LOBBY);
- 	pEffect->Play_Effect(&WorldMatirx, false);
+	if (nullptr != pEffect)
+		pEffect->Play_Effect(&WorldMatirx, false);
 
 }
 

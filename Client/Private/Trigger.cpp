@@ -364,7 +364,9 @@ void CTrigger::ShowEffect(_double TimeDelta)
 
 	if (false == m_OnlyOnePlay)
 	{
-		m_pPotalEffect->Play_Effect(&m_WorldMatrix_Origin);
+		if(nullptr != m_pPotalEffect)
+			m_pPotalEffect->Play_Effect(&m_WorldMatrix_Origin);
+
 		m_OnlyOnePlay = true;
 
 		CGameInstance::GetInstance()->PlaySoundEx(L"Play_amb_interact_wuyinqu_open.wem.wav",

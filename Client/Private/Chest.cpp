@@ -105,7 +105,8 @@ void CChest::Tick(_double TimeDelta)
 				_float4x4 matrix = m_pMainTransform->Get_WorldMatrix();
 				matrix._42 = matrix._42 + 1.f;
 				CEffect* pOpenEffect = pGameInstance->Get_Effect(L"Get_Item_Effect_02", EFFECT_ID::COMON);
-				pOpenEffect->Play_Effect(&matrix);
+				if(nullptr != pOpenEffect)
+					pOpenEffect->Play_Effect(&matrix);
 
 				//UI Ãß°¡
 				///m_pUIIcon->SetRender(m_UIIndex, false);
