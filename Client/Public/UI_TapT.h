@@ -92,6 +92,7 @@ private:
 	void	Load();
 
 private:
+	class CCharacter* pActiveCharacter = { nullptr };
 	class CPlayerState*			m_pPlayerStateClass = { nullptr };
 	CUI_MainScreen*				m_pUIMain = { nullptr };
 	CUI_Mouse*					m_pUIMouse = { nullptr };

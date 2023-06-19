@@ -14,7 +14,7 @@ BEGIN(Client)
 class CUI_Tip final : public CGameObject
 {
 public:
-	enum SITUINDEX { AREA_OPENING, AREA_BOSS, AREA_CITY, AREA_DUNGEON, CHAR_YANGYANG, CHAR_CHIXIA, SITUINDEXEND };
+	enum SITUINDEX { AREA_OPENING, AREA_BOSS, AREA_CITY, AREA_DUNGEON, CHAR_YANGYANG, F, CHAR_CHIXIA, SITUINDEXEND };
 
 	typedef struct tagTip
 	{
@@ -100,6 +100,7 @@ public:
 
 public:
 	void	SetTipIndex(SITUINDEX situIndex) { m_bUIRender = true; SetState(ACTIVE); SituIndex = situIndex; }
+	void	Foff() { m_F.bRender = false; SetState(DISABLE); };
 	_bool	IsMouseActive() { return m_bMouseActive; }
 
 
@@ -121,7 +122,7 @@ private:
 	vector<TIPDESC>		  m_BossDescList;
 	vector<TIPDESC>		  m_CityDescList;
 	vector<TIPDESC>		  m_DungeonDescList;
-
+	TIPDESC				  m_F;
 	// 0 = AREA_OPENING, 1 = AREA_BOSS, 2 = CHAR_YANGYANG, 3 = CHAR_CHIXIA, 4 = TOOL_HOOK, 5 = TOOL_SCAN, 6 = TOOL_LEVI, 7 = SKILL_E, 8 = SKILL_Q, 9 = SKILL_R, 10 = SKILL_QTE, 11 = SKILL_BURST
 	SITUINDEX		SituIndex = { SITUINDEX::SITUINDEXEND };
 	_int iSituation = { 0 };

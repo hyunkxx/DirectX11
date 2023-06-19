@@ -83,6 +83,7 @@ void CNPC_Chixia::Tick(_double TimeDelta)
 		else if (STATE_STAND1_ACTION == m_eState)
 		{
 			// 캐릭터 획득 처리
+			m_UITip->SetTipIndex(CUI_Tip::CHAR_CHIXIA);
 			SetState(DISABLE);
 		}
 	}
@@ -620,7 +621,6 @@ void CNPC_Chixia::Free()
 
 void CNPC_Chixia::OnCollisionEnter(CCollider * src, CCollider * dest)
 {
-	m_UITip->SetTipIndex(CUI_Tip::CHAR_CHIXIA);
 }
 
 void CNPC_Chixia::OnCollisionStay(CCollider * src, CCollider * dest)
@@ -633,10 +633,11 @@ void CNPC_Chixia::OnCollisionStay(CCollider * src, CCollider * dest)
 		CGameMode* pGM = CGameMode::GetInstance();
 		
 		// UI 버튼 출력 처리
-
+		m_UITip->SetTipIndex(CUI_Tip::F);
 
 		if (pGame->InputKey(DIK_F) == KEY_STATE::TAP)
 		{
+			m_UITip->Foff();
 			m_pAnimSetCom[ANIMSET_BASE]->SetUp_Animation(m_tStates[1].iAnimID[ANIMSET_BASE], false);
 			m_pAnimSetCom[ANIMSET_RIBBON]->SetUp_Animation(m_tStates[1].iAnimID[ANIMSET_RIBBON], false);
 			pGM->Set_Chixia(true);

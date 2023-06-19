@@ -200,6 +200,11 @@ void CUI_Tip::Tick(_double TimeDelta)
 		}
 	}
 	break;
+	case Client::CUI_Tip::F:
+	{
+		AddAlphaSingle(&m_F, TimeDelta);
+	}
+	break;
 	case Client::CUI_Tip::CHAR_CHIXIA:
 	{
 		CGameMode* pGM = CGameMode::GetInstance();
@@ -207,6 +212,8 @@ void CUI_Tip::Tick(_double TimeDelta)
 		m_pUIMouse->Set_RenderMouse(true);
 		CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
 		pActiveCharacter->Set_OnControl(false);
+
+
 		if ((true == m_bUIRender) && (AddAlphaW(&m_ChixiaDescList, TimeDelta)))
 		{
 			m_bUIRender = false;
@@ -247,9 +254,11 @@ void CUI_Tip::Tick(_double TimeDelta)
 					{
 						Desc.fColorA = -255.f;
 					}
-					pGM->SetMouseActive(false);
-					m_pUIMouse->Set_RenderMouse(false);
+					m_pPlayerStateClass->AddPlayer();
 					SetState(DISABLE);
+					pActiveCharacter->Set_OnControl(true); // 플레이어움직임
+					m_pUIMouse->Set_RenderMouse(false); // 마우스 랜더off
+					pGM->SetMouseActive(false); //플레이어카메라
 					m_ChixiaDescList[9].OnRect = false;
 					m_TimeAcc = 0.f;
 				}
@@ -1018,6 +1027,41 @@ void CUI_Tip::Load()
 	}
 
 
+	TCHAR	szFileName[128] = L"";
+	wsprintf(szFileName, L"../../Data/UI/F.dat");
+	HANDLE hFile = CreateFile(
+		szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	TIPDESC Desc;
+	ZeroMemory(&Desc, sizeof(TIPDESC));
+
+	_ulong dwByte = 0;
+	while (true)
+	{
+		ReadFile(hFile, &(Desc.fX), sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &(Desc.fY), sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &(Desc.fZ), sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &(Desc.fWidth), sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &(Desc.fHeight), sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &(Desc.fColorA), sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &(Desc.fColorR), sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &(Desc.fColorG), sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &(Desc.fColorB), sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &(Desc.iPass), sizeof(_int), &dwByte, nullptr);
+		ReadFile(hFile, &(Desc.iTexNum), sizeof(_int), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+	}
+
+	Desc.Color.w = Desc.fColorA;
+	Desc.fColorA = -255.f;
+	XMStoreFloat4x4(&(Desc.WorldMatrix), XMMatrixScaling(Desc.fWidth, Desc.fHeight, 1.f)
+		* XMMatrixTranslation(Desc.fX, Desc.fY, Desc.fZ));
+	m_F = Desc;
+	CloseHandle(hFile);
+
+
 }
 
 void CUI_Tip::Area_Opening(vector<TIPDESC>* pDesc, _double TimeDelta)
@@ -1084,4 +1128,8 @@ void CUI_Tip::Free()
 	Safe_Release(m_pVIBuffer);
 
 
+}
+
+void CUI_Tip::Foff()
+{
 }

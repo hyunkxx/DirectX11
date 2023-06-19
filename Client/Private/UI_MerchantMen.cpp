@@ -1679,11 +1679,12 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 	break;
 	case Client::CUI_MerchantMen::BYE:
 	{
-		pActiveCharacter->Set_OnControl(true);
-		m_pUIMouse->Set_RenderMouse(false);
-		pGM->SetMouseActive(false);
 		SetState(DISABLE);
+		pActiveCharacter->Set_OnControl(true); // 플레이어움직임
+		m_pUIMouse->Set_RenderMouse(false); // 마우스 랜더off
+		pGM->SetMouseActive(false); //플레이어카메라
 		m_NPCbye = false;
+
 	}
 	}
 
@@ -1711,7 +1712,15 @@ void CUI_MerchantMen::Set_END()
 	Degree = 0.f;
 	SubDegree = 0.f;
 	SettingLevel = 10;
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+	CGameMode* pGM = CGameMode::GetInstance();
+	SetState(DISABLE);
+	pActiveCharacter->Set_OnControl(true); // 플레이어움직임
+	m_pUIMouse->Set_RenderMouse(false); // 마우스 랜더off
+	pGM->SetMouseActive(false); //플레이어카메라
 	m_NPCbye = false;
+
+
 	for (auto& Desc : m_CommonList)
 	{
 		Desc.fColorA = Desc.Color.w;
@@ -1784,8 +1793,6 @@ void CUI_MerchantMen::Set_END()
 	{
 		Desc.fColorA = Desc.Color.w;
 	}
-
-	SetState(DISABLE);
 }
 
 void CUI_MerchantMen::InMenuOpen(_double TimeDelta)

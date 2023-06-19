@@ -92,7 +92,7 @@ private:
 	_bool	MinusAlphaW(vector<SOUDESC>* pDesc, _double TimeDelta);
 	void	ColorP(SOUDESC* pDesc, _float4 fcolor, _double TimeDelta);
 	void	ColorM(SOUDESC * pDesc, _float4 fcolor, _double TimeDelta);
-	void	MouseMove();
+	void	MouseMove(_double TimeDelta);
 	_bool	SelectUI(SOUDESC* pDesc);
 	void	Total();
 	void	Load();

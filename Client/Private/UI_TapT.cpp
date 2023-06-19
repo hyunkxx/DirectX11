@@ -5,6 +5,7 @@
 #include "UI_MainScreen.h"
 #include "UI_Mouse.h"
 #include "PlayerState.h"
+#include "Character.h"
 
 CUI_TapT::CUI_TapT(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -60,6 +61,7 @@ void CUI_TapT::Start()
 	m_pUIMain = static_cast<CUI_MainScreen*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_MainScreen"));
 	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
 }
 
 void CUI_TapT::Tick(_double TimeDelta)
@@ -70,6 +72,7 @@ void CUI_TapT::Tick(_double TimeDelta)
 	
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::HOLD)
 	{
+
 		Add_ShaderY(TimeDelta);
 		Add_Alpha(3, 4, TimeDelta*4.f);
 		if (0.5f < m_ShaderY)
@@ -136,16 +139,18 @@ void CUI_TapT::Tick(_double TimeDelta)
 
 	m_pUIMouse->Set_Texchange(false);
 	CGameMode* pGM = CGameMode::GetInstance();
+
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::TAP)
 	{
-	
-		pGM->SetMouseActive(true);
-		m_pUIMouse->Set_RenderMouse(true);
+		pActiveCharacter->Set_OnControl(false); // 플레이어움직임
+		m_pUIMouse->Set_RenderMouse(true); // 마우스 랜더on
+		pGM->SetMouseActive(true); //플레이어카메라
 	}
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::AWAY)
 	{
-		pGM->SetMouseActive(false);
-		m_pUIMouse->Set_RenderMouse(false);
+		pActiveCharacter->Set_OnControl(true); // 플레이어움직임
+		m_pUIMouse->Set_RenderMouse(false); // 마우스 랜더on
+		pGM->SetMouseActive(false); //플레이어카메라
 	}
 }
 

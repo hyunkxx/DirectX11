@@ -324,8 +324,11 @@ void CUI_Cooking::Tick(_double TimeDelta)
 				m_MenuOutStart = false;
 				Situation = COOKEND;
 				SetState(DISABLE);
-				pGM->SetMouseActive(false);
+				pActiveCharacter->Set_OnControl(true); // 플레이어움직임
+				m_pUIMouse->Set_RenderMouse(false); // 마우스 랜더off
+				pGM->SetMouseActive(false); //플레이어카메라
 				m_NPCbye = false;
+
 			}
 		}
 		else // 나가고 있을 때가 아니라면
@@ -3814,7 +3817,14 @@ void CUI_Cooking::Set_END()
 	bEnoughMaterial2 = false;
 	bMake = false;
 	GradeIndex = 0;
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+	CGameMode* pGM = CGameMode::GetInstance();
+	SetState(DISABLE);
+	pActiveCharacter->Set_OnControl(true); // 플레이어움직임
+	m_pUIMouse->Set_RenderMouse(false); // 마우스 랜더off
+	pGM->SetMouseActive(false); //플레이어카메라
 	m_NPCbye = false;
+
 	for (auto& Desc : m_Cookist)
 	{
 		Desc.fColorA = Desc.Color.w;
@@ -3911,7 +3921,6 @@ void CUI_Cooking::Set_END()
 	{
 		Desc.fColorA = Desc.Color.w;
 	}
-	SetState(DISABLE);
 }
 
 void CUI_Cooking::IsMouseinRect()

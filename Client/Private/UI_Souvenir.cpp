@@ -376,9 +376,9 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CGameMode* pGM = CGameMode::GetInstance();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	
 	if (m_NPCbye)
 		Set_END();
 	
@@ -494,12 +494,15 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			if (MinusAlphaW(&m_MenuList, TimeDelta))
 			{
 				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX); // 목록 닫는 소리, NPC나가는 소리
-				pActiveCharacter->Set_OnControl(true);
+				
 				m_MenuRenderStart = true;
 				m_MenuList[3].OnRect = false;
 				SetState(DISABLE);
-				pGM->SetMouseActive(false);
+				pActiveCharacter->Set_OnControl(true); // 플레이어움직임
+				m_pUIMouse->Set_RenderMouse(false); // 마우스 랜더off
+				pGM->SetMouseActive(false); //플레이어카메라
 				m_NPCbye = false;
+
 			}
 		}
 	}
@@ -521,7 +524,7 @@ void CUI_Souvenir::Tick(_double TimeDelta)
 			m_bMouseMoveStart = false;
 		}
 		if(m_bMouseMoveStart)
-			MouseMove();
+			MouseMove(TimeDelta);
 
 		// 슬롯 위에 올리면 테두리, 리미트 셋팅, 디테일 설명이미지 셋팅
 		IsMouseinRect();
@@ -1883,7 +1886,7 @@ void CUI_Souvenir::ColorM(SOUDESC* pDesc, _float4 fcolor, _double TimeDelta)
 		pDesc->fColorB = fcolor.z;
 }
 
-void CUI_Souvenir::MouseMove()
+void CUI_Souvenir::MouseMove(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	
@@ -1895,83 +1898,254 @@ void CUI_Souvenir::MouseMove()
 	XMStoreFloat4x4(&(m_CommonList[11].WorldMatrix), XMMatrixScaling(m_CommonList[11].fWidth, m_CommonList[11].fHeight, 1.f)
 		* XMMatrixTranslation(m_CommonList[11].fX, m_CommonList[11].fY, m_CommonList[11].fZ));
 
-	for (auto& Slot : m_0Slot)
+	if ((m_12Slot[0].fY > -156.f + m_12Slot[0].fHeight / 2.f) && (pGameInstance->InputMouse(MOUSE_KEYSTATE::DIMK_LB) == KEY_STATE::AWAY))
 	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		while (m_12Slot[0].fY <= -156.f + m_12Slot[0].fHeight / 2.f)
+		{
+			for (auto& Slot : m_0Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_1Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_2Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_3Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_4Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_5Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_6Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_7Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_8Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_9Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_10Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_11Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_12Slot)
+			{
+				Slot.fY -= (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+		}
 	}
-	for (auto& Slot : m_1Slot)
+	else if ((m_0Slot[0].fY < 134.f - m_0Slot[0].fHeight / 2.f) && (pGameInstance->InputMouse(MOUSE_KEYSTATE::DIMK_LB) == KEY_STATE::AWAY))
 	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		while (m_0Slot[0].fY >= 134.f - m_0Slot[0].fHeight / 2.f)
+		{
+			for (auto& Slot : m_0Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_1Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_2Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_3Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_4Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_5Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_6Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_7Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_8Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_9Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_10Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_11Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+			for (auto& Slot : m_12Slot)
+			{
+				Slot.fY += (_float)TimeDelta * 20.f;
+				XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+					* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+			}
+		}
 	}
-	for (auto& Slot : m_2Slot)
+	else
 	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
-	}
-	for (auto& Slot : m_3Slot)
-	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
-	}
-	for (auto& Slot : m_4Slot)
-	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
-	}
-	for (auto& Slot : m_5Slot)
-	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
-	}
-	for (auto& Slot : m_6Slot)
-	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
-	}
-	for (auto& Slot : m_7Slot)
-	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
-	}
-	for (auto& Slot : m_8Slot)
-	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
-	}
-	for (auto& Slot : m_9Slot)
-	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
-	}
-	for (auto& Slot : m_10Slot)
-	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
-	}
-	for (auto& Slot : m_11Slot)
-	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
-	}
-	for (auto& Slot : m_12Slot)
-	{
-		Slot.fY += mouse;
-		XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
-			* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		for (auto& Slot : m_0Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
+		for (auto& Slot : m_1Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
+		for (auto& Slot : m_2Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
+		for (auto& Slot : m_3Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
+		for (auto& Slot : m_4Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
+		for (auto& Slot : m_5Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
+		for (auto& Slot : m_6Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
+		for (auto& Slot : m_7Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
+		for (auto& Slot : m_8Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
+		for (auto& Slot : m_9Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
+		for (auto& Slot : m_10Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
+		for (auto& Slot : m_11Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
+		for (auto& Slot : m_12Slot)
+		{
+			Slot.fY += mouse;
+			XMStoreFloat4x4(&(Slot.WorldMatrix), XMMatrixScaling(Slot.fWidth, Slot.fHeight, 1.f)
+				* XMMatrixTranslation(Slot.fX, Slot.fY, Slot.fZ));
+		}
 	}
 
 }
@@ -3192,7 +3366,14 @@ void CUI_Souvenir::Set_END()
 	CurrentMoney = 0; 
 	CurrentOwn = 0;
 	iTotal = 0;
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+	CGameMode* pGM = CGameMode::GetInstance();
+	SetState(DISABLE);
+	pActiveCharacter->Set_OnControl(true); // 플레이어움직임
+	m_pUIMouse->Set_RenderMouse(false); // 마우스 랜더off
+	pGM->SetMouseActive(false); //플레이어카메라
 	m_NPCbye = false;
+
 	for (auto& Desc : m_SouList)
 	{
 		Desc.fColorA = Desc.Color.w;
@@ -3265,8 +3446,6 @@ void CUI_Souvenir::Set_END()
 	{
 		Desc.fColorA = Desc.Color.w;
 	}
-
-	SetState(DISABLE);
 }
 
 HRESULT CUI_Souvenir::Setup_CommonShader(_uint index)

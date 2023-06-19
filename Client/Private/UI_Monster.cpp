@@ -255,8 +255,8 @@ void CUI_Monster::Font(_double TimeDelta)
 	{
 		if (78 == Desc.TextureNum)
 		{
-			Desc.Size.x += (_float)(TimeDelta * 80.f);
-			Desc.Size.y -= (_float)(TimeDelta * 20.f);
+			Desc.Size.x += (_float)(TimeDelta * 100.f);
+			Desc.Size.y -= (_float)(TimeDelta * 40.f);
 			if (0.f >= Desc.Size.y)
 			{
 				Desc.Size.y = 0.f;
@@ -375,7 +375,7 @@ void	CUI_Monster::Damage(_float Damage)
 			Desc.Pos = _float3{ (Desc1000.Pos.x + Desc1.Pos.x) / 2.f, Desc1000.Pos.y , 0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = _float4{ 255.f, 255.f,255.f,155.f };
+			Desc.Color = _float4{ 255.f, 255.f,255.f, 100.f };
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
@@ -417,7 +417,7 @@ void	CUI_Monster::Damage(_float Damage)
 			Desc.Pos = _float3{ (Desc100.Pos.x + Desc1.Pos.x) / 2.f, Desc100.Pos.y, 0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = _float4{ 255.f, 255.f,255.f,155.f };
+			Desc.Color = _float4{ 255.f, 255.f,255.f, 100.f };
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
@@ -449,7 +449,7 @@ void	CUI_Monster::Damage(_float Damage)
 			Desc.Pos = _float3{ (Desc10.Pos.x + Desc1.Pos.x) / 2.f,Desc10.Pos.y,0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = _float4{ 255.f, 255.f,255.f,155.f };
+			Desc.Color = _float4{ 255.f, 255.f,255.f, 100.f };
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
@@ -472,7 +472,7 @@ void	CUI_Monster::Damage(_float Damage)
 			Desc.Pos = _float3{ Desc1.Pos.x, Desc1.Pos.y ,0.01f };
 			Desc.Size = _float2{ 30.f, 20.f };
 			Desc.TextureNum = 78;
-			Desc.Color = _float4{ 255.f, 255.f,255.f,155.f };
+			Desc.Color = _float4{ 255.f, 255.f,255.f, 100.f };
 			XMStoreFloat4x4(&Desc.WorldMat, XMMatrixIdentity());
 			DamageList.push_back(Desc);
 		}
