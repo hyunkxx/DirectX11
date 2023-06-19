@@ -2768,8 +2768,13 @@ void CP_Chixia::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _float
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
-	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint *
-		((fAttackPoint * 2 - m_pCharacterState->fDefense[CPlayerState::STAT_TOTAL]) / fAttackPoint);
+
+
+	_float fDefenceRate = fAttackPoint / m_pCharacterState->fDefense[CPlayerState::STAT_TOTAL] * 1.75f;
+	fDefenceRate = max(min(fDefenceRate, 1.1f), 0.25f);
+
+	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * fDefenceRate;
+		
 	
 	_bool bCrit = false;
 	if (fCritRate > _float(rand() % 100))

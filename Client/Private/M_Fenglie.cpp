@@ -89,14 +89,14 @@ HRESULT CM_Fenglie::Initialize(void * pArg)
 	m_tMonsterInfo.eElement = ELMT_AERO;
 	m_tMonsterInfo.iLevel = 1;
 	m_tMonsterInfo.iExp = 0;
-	m_tMonsterInfo.fMaxHP = 2000.f;
+	m_tMonsterInfo.fMaxHP = 2150.f;
 	m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
 	//m_tMonsterInfo.fMaxSP = 100.f;
 	//m_tMonsterInfo.fCurSP = 0.f;
 	//m_tMonsterInfo.fMaxTP = 100.f;
 	//m_tMonsterInfo.fCurTP = 0.f;
-	m_tMonsterInfo.fAttack = 50.f;
-	m_tMonsterInfo.fDefense = 50.f;
+	m_tMonsterInfo.fAttack = 220.f;
+	m_tMonsterInfo.fDefense = 145.f;
 	m_tMonsterInfo.fCriticalRate = 0.1f;
 
 	// 충돌 타입 처리
@@ -917,7 +917,10 @@ void CM_Fenglie::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtt
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
-	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint);
+	_float fDefenceRate = fAttackPoint / m_tMonsterInfo.fDefense * 1.75f;
+	fDefenceRate = max(min(fDefenceRate, 1.1f), 0.25f);
+
+	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * fDefenceRate;
 
 	_bool bCrit = false;
 	if (fCritRate > _float(rand() % 100))

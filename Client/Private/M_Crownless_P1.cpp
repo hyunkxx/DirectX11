@@ -98,10 +98,10 @@ HRESULT CM_Crownless_P1::Initialize(void * pArg)
 	m_tMonsterInfo.eElement = ELMT_HAVOC;
 	m_tMonsterInfo.iLevel = 45;
 	m_tMonsterInfo.iExp = 0;
-	m_tMonsterInfo.fMaxHP = 200000.f;
+	m_tMonsterInfo.fMaxHP = 15000.f;
 	m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
-	m_tMonsterInfo.fAttack = 50.f;
-	m_tMonsterInfo.fDefense = 50.f;
+	m_tMonsterInfo.fAttack = 500.f;
+	m_tMonsterInfo.fDefense = 400.f;
 	m_tMonsterInfo.fCriticalRate = 0.1f;
 
 	// 충돌 타입 처리
@@ -1415,7 +1415,10 @@ void CM_Crownless_P1::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
-	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
+	_float fDefenceRate = fAttackPoint / m_tMonsterInfo.fDefense * 1.75f;
+	fDefenceRate = max(min(fDefenceRate, 1.1f), 0.25f);
+
+	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * fDefenceRate;
 
 	_bool bCrit = false;
 	if (fCritRate > _float(rand() % 100))

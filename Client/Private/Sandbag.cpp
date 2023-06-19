@@ -1021,7 +1021,11 @@ void CSandbag::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAttac
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
 	// 공격력과 방어력이 같을 때 1배 대미지
-	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * ((fAttackPoint * 2 - m_tMonsterInfo.fDefense) / fAttackPoint) /** 속성 보너스 */;
+	_float fDefenceRate = fAttackPoint / m_tMonsterInfo.fDefense * 1.75f;
+	fDefenceRate = max(min(fDefenceRate, 1.1f), 0.25f);
+
+	_float fFinalDamage = pAttackInfo->fDamageFactor * fAttackPoint * fDefenceRate;
+
 	_bool bCrit = false;
 	if (fCritRate > _float(rand() % 100))
 	{
