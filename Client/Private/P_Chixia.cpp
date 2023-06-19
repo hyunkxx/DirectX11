@@ -229,16 +229,8 @@ void CP_Chixia::PreTick(_double TimeDelta)
 			true == m_pFixedTarget->Get_Dying() ||
 			25.f <  XMVectorGetX(XMVector3Length(m_pFixedTarget->Get_Position() - Get_Position())))
 		{
-			if (nullptr != m_pNearst)
-			{
-				m_pFixedTarget = m_pNearst;
-				m_pPlayerStateClass->Set_LockOn(true, m_pFixedTarget);
-			}
-			else
-			{
-				m_pFixedTarget = nullptr;
-				m_pPlayerStateClass->Set_LockOn(false, nullptr);
-			}
+			m_pFixedTarget = nullptr;
+			m_pPlayerStateClass->Set_LockOn(false, nullptr);
 		}
 	}
 }
