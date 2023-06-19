@@ -160,7 +160,7 @@ private:
 	vector<MONSTERDESC>	m_DescList;
 
 	list<DAMAGEDESC> DamageList;
-
+	_bool m_bUIRender = { true };
 };
 
 END

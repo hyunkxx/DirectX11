@@ -55,6 +55,15 @@ void CUI_Monster::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CGameMode* pGM = CGameMode::GetInstance();
+	if (pGM->Get_UIRender())
+	{
+		m_bUIRender = true;
+	}
+	else
+	{
+		m_bUIRender = false;
+	}
 	if (pGameInstance->InputKey(DIK_MINUS) == KEY_STATE::TAP)
 	{
 		if (true == m_bNameRender)
@@ -100,131 +109,133 @@ void CUI_Monster::LateTick(_double TimeDelta)
 
 HRESULT CUI_Monster::Render()
 {
-
-	if (true == m_bRender)
+	if (m_bUIRender)
 	{
-		for (auto& Desc : DamageList)
+		if (true == m_bRender)
 		{
-			if (FAILED(__super::Render()))
-				return E_FAIL;
-			if (FAILED(Setup_ShaderResourcesDamage(&Desc)))
-				return E_FAIL;
-			m_pShader->Begin(24);
-			m_pVIBuffer->Render();
-		}
-
-		switch (m_MonsterType)
-		{
-		case Client::CUI_Monster::MONSTERTYPE::TYPE0:
-		{
-			for (_uint i = 0; i < 4; ++i)
-			{
-				if (true == m_DescList[i].bRender)
-				{
-					if (FAILED(__super::Render()))
-						return E_FAIL;
-					if (FAILED(Setup_ShaderResourcesHP(i)))
-						return E_FAIL;
-					m_pShader->Begin(m_DescList[i].iPass);
-					m_pVIBuffer->Render();
-				}
-			}
-
-			for (_uint i = 4; i < 8; ++i)
-			{
-				if (true == m_DescList[i].bRender)
-				{
-					if (FAILED(__super::Render()))
-						return E_FAIL;
-					if (FAILED(Setup_ShaderResources(i)))
-						return E_FAIL;
-					m_pShader->Begin(m_DescList[i].iPass);
-					m_pVIBuffer->Render();
-				}
-			}
-		}
-		break;
-		case Client::CUI_Monster::MONSTERTYPE::TYPE1:
-		{
-			if (true == m_DescList[9].bRender)
+			for (auto& Desc : DamageList)
 			{
 				if (FAILED(__super::Render()))
 					return E_FAIL;
-				if (FAILED(Setup_ShaderResourcesMask(9)))
+				if (FAILED(Setup_ShaderResourcesDamage(&Desc)))
 					return E_FAIL;
-				m_pShader->Begin(25);
+				m_pShader->Begin(24);
 				m_pVIBuffer->Render();
 			}
 
-			for (_uint i = 0; i < 4; ++i)
+			switch (m_MonsterType)
 			{
-				if (true == m_DescList[i].bRender)
+			case Client::CUI_Monster::MONSTERTYPE::TYPE0:
+			{
+				for (_uint i = 0; i < 4; ++i)
 				{
-					if (FAILED(__super::Render()))
-						return E_FAIL;
-					if (FAILED(Setup_ShaderResourcesHP(i)))
-						return E_FAIL;
-					m_pShader->Begin(m_DescList[i].iPass);
-					m_pVIBuffer->Render();
+					if (true == m_DescList[i].bRender)
+					{
+						if (FAILED(__super::Render()))
+							return E_FAIL;
+						if (FAILED(Setup_ShaderResourcesHP(i)))
+							return E_FAIL;
+						m_pShader->Begin(m_DescList[i].iPass);
+						m_pVIBuffer->Render();
+					}
+				}
+
+				for (_uint i = 4; i < 8; ++i)
+				{
+					if (true == m_DescList[i].bRender)
+					{
+						if (FAILED(__super::Render()))
+							return E_FAIL;
+						if (FAILED(Setup_ShaderResources(i)))
+							return E_FAIL;
+						m_pShader->Begin(m_DescList[i].iPass);
+						m_pVIBuffer->Render();
+					}
 				}
 			}
-
-			for (_uint i = 4; i < 9; ++i)
-			{
-				if (true == m_DescList[i].bRender)
-				{
-					if (FAILED(__super::Render()))
-						return E_FAIL;
-					if (FAILED(Setup_ShaderResources(i)))
-						return E_FAIL;
-					m_pShader->Begin(m_DescList[i].iPass);
-					m_pVIBuffer->Render();
-				}
-			}
-
-
-		}
-		break;
-		case Client::CUI_Monster::MONSTERTYPE::BOSS:
-		{
-			for (_uint i = 10; i < (_uint)m_DescList.size() - 1; ++i)
-			{
-				if (i == 16)
-					continue;
-				if (true == m_DescList[i].bRender)
-				{
-					if (FAILED(__super::Render()))
-						return E_FAIL;
-					if (FAILED(Setup_ShaderResourcesBoss(i)))
-						return E_FAIL;
-					m_pShader->Begin(m_DescList[i].iPass);
-					m_pVIBuffer->Render();
-				}
-			}
-			if (true == m_DescList[16].bRender)
-			{
-				if (FAILED(__super::Render()))
-					return E_FAIL;
-				if (FAILED(Setup_ShaderResourcesBossG1(16)))
-					return E_FAIL;
-				m_pShader->Begin(25);
-				m_pVIBuffer->Render();
-			}
-			if (true == m_DescList[20].bRender)
-			{
-				if (FAILED(__super::Render()))
-					return E_FAIL;
-				if (FAILED(Setup_ShaderResourcesBossG2(20)))
-					return E_FAIL;
-				m_pShader->Begin(25);
-				m_pVIBuffer->Render();
-			}
-		}
-		break;
-		default:
 			break;
-		}
+			case Client::CUI_Monster::MONSTERTYPE::TYPE1:
+			{
+				if (true == m_DescList[9].bRender)
+				{
+					if (FAILED(__super::Render()))
+						return E_FAIL;
+					if (FAILED(Setup_ShaderResourcesMask(9)))
+						return E_FAIL;
+					m_pShader->Begin(25);
+					m_pVIBuffer->Render();
+				}
 
+				for (_uint i = 0; i < 4; ++i)
+				{
+					if (true == m_DescList[i].bRender)
+					{
+						if (FAILED(__super::Render()))
+							return E_FAIL;
+						if (FAILED(Setup_ShaderResourcesHP(i)))
+							return E_FAIL;
+						m_pShader->Begin(m_DescList[i].iPass);
+						m_pVIBuffer->Render();
+					}
+				}
+
+				for (_uint i = 4; i < 9; ++i)
+				{
+					if (true == m_DescList[i].bRender)
+					{
+						if (FAILED(__super::Render()))
+							return E_FAIL;
+						if (FAILED(Setup_ShaderResources(i)))
+							return E_FAIL;
+						m_pShader->Begin(m_DescList[i].iPass);
+						m_pVIBuffer->Render();
+					}
+				}
+
+
+			}
+			break;
+			case Client::CUI_Monster::MONSTERTYPE::BOSS:
+			{
+				for (_uint i = 10; i < (_uint)m_DescList.size() - 1; ++i)
+				{
+					if (i == 16)
+						continue;
+					if (true == m_DescList[i].bRender)
+					{
+						if (FAILED(__super::Render()))
+							return E_FAIL;
+						if (FAILED(Setup_ShaderResourcesBoss(i)))
+							return E_FAIL;
+						m_pShader->Begin(m_DescList[i].iPass);
+						m_pVIBuffer->Render();
+					}
+				}
+				if (true == m_DescList[16].bRender)
+				{
+					if (FAILED(__super::Render()))
+						return E_FAIL;
+					if (FAILED(Setup_ShaderResourcesBossG1(16)))
+						return E_FAIL;
+					m_pShader->Begin(25);
+					m_pVIBuffer->Render();
+				}
+				if (true == m_DescList[20].bRender)
+				{
+					if (FAILED(__super::Render()))
+						return E_FAIL;
+					if (FAILED(Setup_ShaderResourcesBossG2(20)))
+						return E_FAIL;
+					m_pShader->Begin(25);
+					m_pVIBuffer->Render();
+				}
+			}
+			break;
+			default:
+				break;
+			}
+
+		}
 	}
 	return S_OK;
 }
