@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "GameMode.h"
 #include "SoundKey.h"
+#include "UI_Tip.h"
 
 CNPC_Chixia::CNPC_Chixia(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCharacter(pDevice, pContext)
@@ -50,6 +51,10 @@ void CNPC_Chixia::Start()
 {
 	m_pAnimSetCom[ANIMSET_BASE]->SetUp_Animation(m_tStates[0].iAnimID[ANIMSET_BASE], false);
 	m_pAnimSetCom[ANIMSET_RIBBON]->SetUp_Animation(m_tStates[0].iAnimID[ANIMSET_RIBBON], false);
+
+	CGameInstance* pGame = CGameInstance::GetInstance();
+	m_UITip = static_cast<CUI_Tip*>(pGame->Find_GameObject(LEVEL_ANYWHERE, L"UI_Tip"));
+
 }
 
 void CNPC_Chixia::PreTick(_double TimeDelta)
@@ -78,6 +83,7 @@ void CNPC_Chixia::Tick(_double TimeDelta)
 		else if (STATE_STAND1_ACTION == m_eState)
 		{
 			// Ä³¸¯ÅÍ È¹µæ Ã³¸®
+			m_UITip->SetTipIndex(CUI_Tip::CHAR_CHIXIA);
 			SetState(DISABLE);
 		}
 	}

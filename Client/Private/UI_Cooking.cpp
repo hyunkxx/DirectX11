@@ -237,25 +237,23 @@ void CUI_Cooking::Tick(_double TimeDelta)
 	case Client::CUI_Cooking::SETTINGNUM:
 	{
 		//// 인벤토리에 있는 요리관련 아이템들 수량 가져오기
-
-		m_pInven->AddItem(ITEM::RECIPE0, 1);
-		m_pInven->AddItem(ITEM::RECIPE1, 1);
-		m_pInven->AddItem(ITEM::RICE, 5);
-		m_pInven->AddItem(ITEM::TOFU, 5);
-		m_pInven->AddItem(ITEM::FLOUR, 5);
-		m_pInven->AddItem(ITEM::MUSHROOM, 50);
-		m_pInven->AddItem(ITEM::CHICKEN, 5);
-		m_pInven->AddItem(ITEM::EGG, 5);
-		m_pInven->AddItem(ITEM::MEAT, 5);
-		m_pInven->AddItem(ITEM::HERB, 5);
-		m_pInven->AddItem(ITEM::VIOLET, 5);
-		m_pInven->AddItem(ITEM::DANDELION, 5);
-		m_pInven->AddItem(ITEM::PEPPER, 5);
-		m_pInven->AddItem(ITEM::SUGAR, 5);
-		m_pInven->AddItem(ITEM::SALT, 5);
-		m_pInven->AddItem(ITEM::OIL, 5);
-		m_pInven->AddItem(ITEM::SOYSAUCE, 5);
-
+		//m_pInven->AddItem(ITEM::RECIPE0, 1);
+		//m_pInven->AddItem(ITEM::RECIPE1, 1);
+		//m_pInven->AddItem(ITEM::RICE, 5);
+		//m_pInven->AddItem(ITEM::TOFU, 5);
+		//m_pInven->AddItem(ITEM::FLOUR, 5);
+		//m_pInven->AddItem(ITEM::MUSHROOM, 50);
+		//m_pInven->AddItem(ITEM::CHICKEN, 5);
+		//m_pInven->AddItem(ITEM::EGG, 5);
+		//m_pInven->AddItem(ITEM::MEAT, 5);
+		//m_pInven->AddItem(ITEM::HERB, 5);
+		//m_pInven->AddItem(ITEM::VIOLET, 5);
+		//m_pInven->AddItem(ITEM::DANDELION, 5);
+		//m_pInven->AddItem(ITEM::PEPPER, 5);
+		//m_pInven->AddItem(ITEM::SUGAR, 5);
+		//m_pInven->AddItem(ITEM::SALT, 5);
+		//m_pInven->AddItem(ITEM::OIL, 5);
+		//m_pInven->AddItem(ITEM::SOYSAUCE, 5);
 		InvenRice = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::RICE);
 		InvenTofu = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::TOFU);
 		InvenFlour = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::FLOUR);

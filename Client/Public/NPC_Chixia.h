@@ -89,6 +89,7 @@ public:
 
 	CCollider* m_pCollider = nullptr;
 	CCollider* m_pMoveCollider = nullptr;
+	class CUI_Tip* m_UITip = { nullptr };
 };
 
 END
