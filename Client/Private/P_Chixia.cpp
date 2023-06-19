@@ -191,13 +191,10 @@ HRESULT CP_Chixia::Initialize(void * pArg)
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_SPECIAL] = 60.f;
 	m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] = 100.f;
 
-	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 60.f;
-	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 100.f;
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_SPECIAL] = 0.f;
+	m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 0.f;
 
-
-	// TODO: 에코 쿨타임, 에코 착용 시 변경하도록 바꿔야 함
 	m_pCharacterState->fMaxCooltime[CPlayerState::COOL_ECHO] = 5.f;
-	//
 
 	return S_OK;
 }
@@ -1139,18 +1136,12 @@ void CP_Chixia::updateAttackDesc()
 	const CPlayerState::ATTACK_DESC* AttackDesc = m_pPlayerStateClass->GetAttackDesc(CPlayerState::CHARACTER_CHIXIA);
 
 	static float fOriginDamageFactor[4];
-	static float fOriginBurstFactor;
-	static _bool bSetup = false;
+	fOriginDamageFactor[0] = m_AttackInfos[ATK_ATTACK_01].fDamageFactor;
+	fOriginDamageFactor[1] = m_AttackInfos[ATK_ATTACK_02].fDamageFactor;
+	fOriginDamageFactor[2] = m_AttackInfos[ATK_ATTACK_03].fDamageFactor;
+	fOriginDamageFactor[3] = m_AttackInfos[ATK_ATTACK_04].fDamageFactor;
 
-	if (!bSetup)
-	{
-		bSetup = true;
-		fOriginDamageFactor[0] = m_AttackInfos[ATK_ATTACK_01].fDamageFactor;
-		fOriginDamageFactor[1] = m_AttackInfos[ATK_ATTACK_02].fDamageFactor;
-		fOriginDamageFactor[2] = m_AttackInfos[ATK_ATTACK_03].fDamageFactor;
-		fOriginDamageFactor[3] = m_AttackInfos[ATK_ATTACK_04].fDamageFactor;
-		fOriginBurstFactor = m_AttackInfos[ATK_BURST_2].fDamageFactor;
-	}
+	static float fOriginBurstFactor = m_AttackInfos[MISS_BURST_2].fDamageFactor;
 
 	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = fOriginDamageFactor[0] * AttackDesc->fDamageFactor[0];
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = fOriginDamageFactor[1] * AttackDesc->fDamageFactor[1];
@@ -1258,7 +1249,12 @@ void CP_Chixia::SetUp_State()
 
 	// 게이지 차감
 	if (IS_BURST == m_Scon.iCurState)
-		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] -= 10.f;
+	{
+		m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST] = 0.f;
+		m_pHitCollider->SetActive(false);
+	}
+	else
+		m_pHitCollider->SetActive(true);
 
 	if (IS_SKILL_01_B == m_Scon.iCurState ||
 		IS_SKILL_01_F == m_Scon.iCurState)
@@ -1649,11 +1645,14 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB1);
 		}
 
-		if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
+		if (m_pPlayerStateClass->Get_PlayerState()->iCharCount == 3)
 		{
-			if (PS_GROUND == m_Scon.ePositionState &&
-				7 > m_tCurState.iLeavePriority)
-				m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
+			if (pGame->InputKey(DIK_2) == KEY_STATE::TAP)
+			{
+				if (PS_GROUND == m_Scon.ePositionState &&
+					7 > m_tCurState.iLeavePriority)
+					m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
+			}
 		}
 	}
 	// Echo Summon
@@ -2769,7 +2768,9 @@ void CP_Chixia::On_Hit(CCharacter * pGameObject, TAGATTACK * pAttackInfo, _float
 		
 		_float4x4 EffectMatrix = m_pMainTransform->Get_WorldMatrix();
 		memcpy(EffectMatrix.m[3], pEffPos, sizeof(_float3));
-		pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID)->Play_Effect(&EffectMatrix);
+		CEffect* pEffect = pGI->Get_Effect(pAttackInfo->szHitEffectTag, (EFFECT_ID)pAttackInfo->iHitEffectID);
+		if(nullptr != pEffect)
+			pEffect->Play_Effect(&EffectMatrix);
 	}
 
 	// 대미지 계산 공식 : 모션 계수 * 공격력 * ((공격력 * 2 - 방어력) / 공격력) * (속성 보너스)
@@ -3159,7 +3160,7 @@ void CP_Chixia::Init_AttackInfos()
 	lstrcpy(m_AttackInfos[ATK_SKILL_QTE].szHitEffectTag, TEXT("Chixia_Hit_Effect_S"));
 	lstrcpy(m_AttackInfos[ATK_SKILL_QTE].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_2.wem.wav"));
 
-	m_AttackInfos[ATK_BURST_1].fDamageFactor = 1.f;
+	m_AttackInfos[ATK_BURST_1].fDamageFactor = 0.7f;
 	m_AttackInfos[ATK_BURST_1].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_BURST_1].eElementType = ELMT_FUSION;
 	m_AttackInfos[ATK_BURST_1].fSPGain = 1.f;
@@ -3169,7 +3170,7 @@ void CP_Chixia::Init_AttackInfos()
 	lstrcpy(m_AttackInfos[ATK_BURST_1].szHitEffectTag, TEXT("Chixia_Hit_Effect_B"));
 	lstrcpy(m_AttackInfos[ATK_BURST_1].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_5.wem.wav"));
 
-	m_AttackInfos[ATK_BURST_2].fDamageFactor = 2.9f;
+	m_AttackInfos[ATK_BURST_2].fDamageFactor = 2.5f;
 	m_AttackInfos[ATK_BURST_2].eHitIntensity = HIT_FLY;
 	m_AttackInfos[ATK_BURST_2].eElementType = ELMT_FUSION;
 	m_AttackInfos[ATK_BURST_2].fSPGain = 10.f;
@@ -3179,7 +3180,7 @@ void CP_Chixia::Init_AttackInfos()
 	lstrcpy(m_AttackInfos[ATK_BURST_2].szHitEffectTag, TEXT("Chixia_Hit_Effect_B"));
 	lstrcpy(m_AttackInfos[ATK_BURST_2].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_5.wem.wav"));
 
-	m_AttackInfos[ATK_AIMATTACK_S].fDamageFactor = 1.2f;
+	m_AttackInfos[ATK_AIMATTACK_S].fDamageFactor = 1.7f;
 	m_AttackInfos[ATK_AIMATTACK_S].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_AIMATTACK_S].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_AIMATTACK_S].fSPGain = 1.f;
@@ -3190,7 +3191,7 @@ void CP_Chixia::Init_AttackInfos()
 	lstrcpy(m_AttackInfos[ATK_AIMATTACK_S].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_2.wem.wav"));
 
 
-	m_AttackInfos[ATK_AIMATTACK_B].fDamageFactor = 2.5f;
+	m_AttackInfos[ATK_AIMATTACK_B].fDamageFactor = 3.5f;
 	m_AttackInfos[ATK_AIMATTACK_B].eHitIntensity = HIT_BIG;
 	m_AttackInfos[ATK_AIMATTACK_B].eElementType = ELMT_FUSION;
 	m_AttackInfos[ATK_AIMATTACK_B].fSPGain = 5.f;
@@ -3200,7 +3201,7 @@ void CP_Chixia::Init_AttackInfos()
 	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitEffectTag, TEXT("Chixia_Hit_Effect_SC"));
 	lstrcpy(m_AttackInfos[ATK_AIMATTACK_B].szHitSoundTag, TEXT("DA_Au_Role_Common_Imp_Bullet_3.wem.wav"));
 
-	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 600.6f;
+	m_AttackInfos[ATK_AIRATTACK].fDamageFactor = 0.9f;
 	m_AttackInfos[ATK_AIRATTACK].eHitIntensity = HIT_SMALL;
 	m_AttackInfos[ATK_AIRATTACK].eElementType = ELMT_NONE;
 	m_AttackInfos[ATK_AIRATTACK].fSPGain = 1.f;

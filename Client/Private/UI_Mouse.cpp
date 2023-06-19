@@ -2,7 +2,6 @@
 #include "..\Public\UI_Mouse.h"
 #include "GameMode.h"
 #include "GameInstance.h"
-#include "TerminalUI.h"
 
 CUI_Mouse::CUI_Mouse(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -35,13 +34,6 @@ HRESULT CUI_Mouse::Initialize(void * pArg)
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 
 	return S_OK;
-}
-
-void CUI_Mouse::Start()
-{
-	CGameInstance* pGI = CGameInstance::GetInstance();
-	CTerminalUI* pTerminal = static_cast<CTerminalUI*>(pGI->Find_GameObject(LEVEL_STATIC, L"Terminal"));
-	pTerminal->SetupMouseUI(this);
 }
 
 void CUI_Mouse::Tick(_double TimeDelta)

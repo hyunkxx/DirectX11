@@ -98,63 +98,63 @@ void CLevel_City::Tick(_double TimeDelta)
 
 	//pGameInstance->BGMSmoothOn(TimeDelta);
 
-	////임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것
-	//static _uint iShadowLevel = 0;
-	//if (pGameInstance->InputKey(DIK_0) == KEY_STATE::TAP)
-	//{
-	//	iShadowLevel++;
-	//	if (iShadowLevel > 2)
-	//		iShadowLevel = 0;
+	//임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것
+	static _uint iShadowLevel = 0;
+	if (pGameInstance->InputKey(DIK_0) == KEY_STATE::TAP)
+	{
+		iShadowLevel++;
+		if (iShadowLevel > 2)
+			iShadowLevel = 0;
 
-	//	pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)iShadowLevel);
-	//}
+		pGameInstance->SetShadowLevel((CRenderSetting::SHADOW_LEVEL)iShadowLevel);
+	}
 
-	//if (pGameInstance->InputKey(DIK_PAUSE) == KEY_STATE::TAP)
-	//{
-	//	pGameInstance->DebugTargetToggle();
-	//}
+	if (pGameInstance->InputKey(DIK_PAUSE) == KEY_STATE::TAP)
+	{
+		pGameInstance->DebugTargetToggle();
+	}
 
-	//if (pGameInstance->InputKey(DIK_9) == KEY_STATE::TAP)
-	//	pGameInstance->OutlineToggle();
+	if (pGameInstance->InputKey(DIK_9) == KEY_STATE::TAP)
+		pGameInstance->OutlineToggle();
 
-	//if (pGameInstance->InputKey(DIK_8) == KEY_STATE::TAP)
-	//	pGameInstance->SSAOToggle();
+	if (pGameInstance->InputKey(DIK_8) == KEY_STATE::TAP)
+		pGameInstance->SSAOToggle();
 
-	//static _uint iIndexLUT = CRenderer::LUT_DEFAULT;
-	//if (pGameInstance->InputKey(DIK_7) == KEY_STATE::TAP)
-	//{
-	//	iIndexLUT++;
-	//	if (iIndexLUT >= CRenderer::LUT_DEFAULT + 1)
-	//		iIndexLUT = 0;
+	static _uint iIndexLUT = CRenderer::LUT_DEFAULT;
+	if (pGameInstance->InputKey(DIK_7) == KEY_STATE::TAP)
+	{
+		iIndexLUT++;
+		if (iIndexLUT >= CRenderer::LUT_DEFAULT + 1)
+			iIndexLUT = 0;
 
-	//	pGameInstance->SetLUT((CRenderer::LUT)iIndexLUT);
-	//}
+		pGameInstance->SetLUT((CRenderer::LUT)iIndexLUT);
+	}
 
-	//if (pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
-	//	pGameInstance->InputKey(DIK_6) == KEY_STATE::TAP)
-	//{
-	//	pGameInstance->StartBlackWhite(0.05f);
-	//}
-	//else if (pGameInstance->InputKey(DIK_6) == KEY_STATE::TAP)
-	//{
-	//	pGameInstance->StartBlackWhite(1.f);
-	//}
+	if (pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
+		pGameInstance->InputKey(DIK_6) == KEY_STATE::TAP)
+	{
+		pGameInstance->StartBlackWhite(0.05f);
+	}
+	else if (pGameInstance->InputKey(DIK_6) == KEY_STATE::TAP)
+	{
+		pGameInstance->StartBlackWhite(1.f);
+	}
 
-	//if (pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
-	//	pGameInstance->InputKey(DIK_5) == KEY_STATE::TAP)
-	//{
-	//	pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DEFAULT, 0.5f);
-	//}
-	//else if (pGameInstance->InputKey(DIK_5) == KEY_STATE::TAP)
-	//{
-	//	pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DEFAULT, 2.f);
-	//}
+	if (pGameInstance->InputKey(DIK_LCONTROL) == KEY_STATE::HOLD &&
+		pGameInstance->InputKey(DIK_5) == KEY_STATE::TAP)
+	{
+		pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DEFAULT, 0.5f);
+	}
+	else if (pGameInstance->InputKey(DIK_5) == KEY_STATE::TAP)
+	{
+		pGameInstance->StartRGBSplit(CRenderSetting::SPLIT_DEFAULT, 2.f);
+	}
 
-	//if (pGameInstance->InputKey(DIK_L) == KEY_STATE::TAP)
-	//	pGameInstance->TimeSlowDown(1.f, 0.1f);
+	if (pGameInstance->InputKey(DIK_L) == KEY_STATE::TAP)
+		pGameInstance->TimeSlowDown(1.f, 0.1f);
 
-	//if (pGameInstance->InputKey(DIK_K) == KEY_STATE::TAP)
-	//	pGameInstance->TimeSlowDown(0.5f, 0.1f);
+	if (pGameInstance->InputKey(DIK_K) == KEY_STATE::TAP)
+		pGameInstance->TimeSlowDown(0.5f, 0.1f);
 
 
 	if (true == pGameMode->Is_ReserveLevel())

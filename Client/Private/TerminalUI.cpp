@@ -7,7 +7,6 @@
 
 #include "CameraMovement.h"
 #include "PlayerState.h"
-#include "UI_Mouse.h"
 
 CTerminalUI::CTerminalUI(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -252,15 +251,6 @@ void CTerminalUI::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	CGameInstance* pGame = CGameInstance::GetInstance();
-
-	_bool bShowCursor = false;
-	if (pGame->InputKey(DIK_INSERT) == KEY_STATE::TAP)
-	{
-		bShowCursor = !bShowCursor;
-		ShowCursor(bShowCursor);
-	}
-
 	inputKey(TimeDelta);
 
 	activeCheck(TimeDelta);
@@ -326,7 +316,7 @@ void CTerminalUI::inputKey(_double TimeDelta)
 			{
 				m_pActivateList.pop();
 				m_bSlotActive[0] = m_bActive[TERMINAL_MAINFRAME] = m_bMainActive = !m_bMainActive;
-				m_pMouse->Set_RenderMouse(m_bMainActive);
+				ShowCursor(m_bMainActive);
 			}
 		}
 		else
@@ -340,7 +330,7 @@ void CTerminalUI::inputKey(_double TimeDelta)
 				}
 
 				m_bRender = m_bSlotActive[0] = m_bActive[TERMINAL_MAINFRAME] = m_bMainActive = !m_bMainActive;
-				m_pMouse->Set_RenderMouse(m_bMainActive);
+				ShowCursor(m_bMainActive);
 			}
 		}
 
@@ -571,7 +561,7 @@ void CTerminalUI::ManualShutDown()
 		m_pActivateList.pop();
 
 	m_bSlotActive[0] = m_bActive[TERMINAL_MAINFRAME] = m_bMainActive = !m_bMainActive;
-	m_pMouse->Set_RenderMouse(m_bMainActive);
+	ShowCursor(m_bMainActive);
 }
 
 HRESULT CTerminalUI::addComponents()

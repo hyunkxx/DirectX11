@@ -132,7 +132,6 @@ public:
 	virtual void Free() override;
 
 private:
-	class  CUI_Mouse* m_pMouse = nullptr;
 	class CTerminalUI* m_pTerminalUI = nullptr;
 };
 

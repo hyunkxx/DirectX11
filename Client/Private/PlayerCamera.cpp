@@ -13,7 +13,6 @@
 #include "UI_Panhua.h"
 #include "Character.h"
 #include "UI_Cooking.h"
-#include "UI_Mouse.h"
 
 CPlayerCamera::CPlayerCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCamera(pDevice, pContext)
@@ -82,8 +81,6 @@ void CPlayerCamera::Start()
 	CGameMode* pGM = CGameMode::GetInstance();
 	_uint nCurrentLevel = pGM->GetCurrentLevel();
 
-	m_pMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
-
 	// 플레이어 스테이트 세팅
 	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
 	m_pPlayerStateClass->Set_PlayerCamera(this);
@@ -149,22 +146,17 @@ void CPlayerCamera::Tick(_double TimeDelta)
 		}
 
 
-		if (pGM->ActiveSettingUI())
+		if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::HOLD)
+			m_bFixMouse = true;
+		else if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::TAP)
 		{
-			if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::HOLD)
-				m_bFixMouse = true;
-			else if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::TAP)
-			{
-				
-				m_bFixMouse = true;
-				m_pMouse->Set_RenderMouse(false);
-			}
-			else if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::AWAY)
-			{
-				m_bFixMouse = false;
-				m_pMouse->Set_RenderMouse(true);
-			}
-
+			m_bFixMouse = true;
+			ShowCursor(false);
+		}
+		else if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::AWAY)
+		{
+			m_bFixMouse = false;
+			ShowCursor(true);
 		}
 
 		///* 임시 마우스 고정 혜지 용 */

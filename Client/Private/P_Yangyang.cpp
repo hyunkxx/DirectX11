@@ -1145,18 +1145,12 @@ void CP_Yangyang::updateAttackDesc()
 	const CPlayerState::ATTACK_DESC* AttackDesc = m_pPlayerStateClass->GetAttackDesc(CPlayerState::CHARACTER_YANGYANG);
 
 	static float fOriginDamageFactor[4];
-	static float fOriginBurstFactor;
-	static _bool bSetup = false;
+	fOriginDamageFactor[0] = m_AttackInfos[ATK_ATTACK_01].fDamageFactor;
+	fOriginDamageFactor[1] = m_AttackInfos[ATK_ATTACK_02].fDamageFactor;
+	fOriginDamageFactor[2] = m_AttackInfos[ATK_ATTACK_03_2].fDamageFactor;
+	fOriginDamageFactor[3] = m_AttackInfos[ATK_ATTACK_04_3].fDamageFactor;
 
-	if (!bSetup)
-	{
-		bSetup = true;
-		fOriginDamageFactor[0] = m_AttackInfos[ATK_ATTACK_01].fDamageFactor;
-		fOriginDamageFactor[1] = m_AttackInfos[ATK_ATTACK_02].fDamageFactor;
-		fOriginDamageFactor[2] = m_AttackInfos[ATK_ATTACK_03_2].fDamageFactor;
-		fOriginDamageFactor[3] = m_AttackInfos[ATK_ATTACK_04_3].fDamageFactor;
-		fOriginBurstFactor = m_AttackInfos[ATK_BURST_2].fDamageFactor;
-	}
+	static float fOriginBurstFactor = m_AttackInfos[ATK_BURST_2].fDamageFactor;
 
 	m_AttackInfos[ATK_ATTACK_01].fDamageFactor = fOriginDamageFactor[0] * AttackDesc->fDamageFactor[0];
 	m_AttackInfos[ATK_ATTACK_02].fDamageFactor = fOriginDamageFactor[1] * AttackDesc->fDamageFactor[1];

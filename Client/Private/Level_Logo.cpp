@@ -64,9 +64,9 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_StaticGameObject(TEXT("layer_static"))))
 		return E_FAIL;
 
-	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
+	/*pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.5f);
 	pGameInstance->PlaySoundEx(L"Login.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
-	
+	*/
 	return S_OK;
 }
 
