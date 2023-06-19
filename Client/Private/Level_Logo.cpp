@@ -220,8 +220,6 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, OBJECT::UI_CAM, pLayerTag, L"UICam", &CameraDesc)))
 		return E_FAIL;
 
-	ShowCursor(false);
-
 	return S_OK;
 }
 

@@ -100,22 +100,6 @@ void CAcquireSystem::SetInteractionActive(CInteractionUI::INTERACT_TYPE eType, _
 void CAcquireSystem::EnqueueItemDesc(CItem::ITEM_DESC ItemDesc)
 {
 	m_pAcquireUI->EnqueueItemDesc(ItemDesc);
-
-	if(ItemDesc.iItemID == ITEM::E_ZIGZAG ||
-		ItemDesc.iItemID == ITEM::E_ZIGZAG ||
-		ItemDesc.iItemID == ITEM::E_TICTAC ||
-		ItemDesc.iItemID == ITEM::E_WHOOSH ||
-		ItemDesc.iItemID == ITEM::E_RUPTURE ||
-		ItemDesc.iItemID == ITEM::E_FUSHION ||
-		ItemDesc.iItemID == ITEM::E_IMPULSE ||
-		ItemDesc.iItemID == ITEM::E_GLACIO  ||
-		ItemDesc.iItemID == ITEM::E_PNENUMA ||
-		ItemDesc.iItemID == ITEM::E_STONE)
-	{
-		return;
-	}
-
-	m_pInventory->PushItemDesc(ItemDesc);
 }
 
 void CAcquireSystem::SetGageBar(_float fValue)
