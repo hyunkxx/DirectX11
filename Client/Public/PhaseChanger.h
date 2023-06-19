@@ -111,7 +111,8 @@ private:
 
 private:
 	class CCameraMovement* m_pCamMovement = { nullptr };
-
+	_bool m_bZoomIn = false;
+	_float m_fZoomAcc = 0.f;
 private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();

@@ -38,6 +38,7 @@ public:
 	void UseCamera(CAM_TYPE eCameraType);
 	void SetupBone(CAM_TYPE eCameraType, CBone* pBone);
 	void SetupTransform(CAM_TYPE eCameraType, CTransform* pTransform);
+	void SetupCrownBoneMatrix(CAM_TYPE eCameraType, _float4x4* pMatrix);
 
 	void ResetPlayerCamera();
 

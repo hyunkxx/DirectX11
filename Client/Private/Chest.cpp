@@ -255,23 +255,34 @@ void CChest::Interaction(void * pArg)
 	case CChest::CHEST_SIMPLE:
 	{
 		CItem::ITEM_DESC item0 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
-		item0.iAmount = 12900;
+		item0.iAmount = 500;
 		CGameMode::GetInstance()->EnqueueItemDesc(item0);
 		m_pInven->AddItem(ITEM::TACTITE_COIN, item0.iAmount);
+
+		CItem::ITEM_DESC item1 = CItemDB::GetInstance()->GetItemData(ITEM::CASKETPIECE);
+		item0.iAmount = 5;
+		CGameMode::GetInstance()->EnqueueItemDesc(item1);
+		m_pInven->AddItem(ITEM::TACTITE_COIN, item1.iAmount);
 		break;
 	}
 	case CChest::CHEST_STANDARD:
 	{
-		CItem::ITEM_DESC item0 = CItemDB::GetInstance()->GetItemData(ITEM::COMMEMORATIVE_COIN);
-		item0.iAmount = 2;
-		CItem::ITEM_DESC item1 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
-		item1.iAmount = 1000;
+		CItem::ITEM_DESC item;
 
-		CGameMode::GetInstance()->EnqueueItemDesc(item0);
-		CGameMode::GetInstance()->EnqueueItemDesc(item1);
+		item = CItemDB::GetInstance()->GetItemData(ITEM::COMMEMORATIVE_COIN);
+		item.iAmount = 2;
+		CGameMode::GetInstance()->EnqueueItemDesc(item);
+		m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, item.iAmount);
 
-		m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, item0.iAmount);
-		m_pInven->AddItem(ITEM::TACTITE_COIN, item1.iAmount);
+		item = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
+		item.iAmount = 1000;
+		CGameMode::GetInstance()->EnqueueItemDesc(item);
+		m_pInven->AddItem(ITEM::TACTITE_COIN, item.iAmount);
+
+		item = CItemDB::GetInstance()->GetItemData(ITEM::EXP1);
+		item.iAmount = 10;
+		CGameMode::GetInstance()->EnqueueItemDesc(item);
+		m_pInven->AddItem(ITEM::EXP1, item.iAmount);
 		break;
 	}
 	case CChest::CHEST_EXPANDED:
@@ -282,13 +293,17 @@ void CChest::Interaction(void * pArg)
 		item1.iAmount = 2;
 		CItem::ITEM_DESC item2 = CItemDB::GetInstance()->GetItemData(ITEM::TACTITE_COIN);
 		item2.iAmount = 500;
+		CItem::ITEM_DESC item3 = CItemDB::GetInstance()->GetItemData(ITEM::EXP2);
+		item2.iAmount = 10;
 		CGameMode::GetInstance()->EnqueueItemDesc(item0);
 		CGameMode::GetInstance()->EnqueueItemDesc(item1);
 		CGameMode::GetInstance()->EnqueueItemDesc(item2);
+		CGameMode::GetInstance()->EnqueueItemDesc(item3);
 
 		m_pInven->AddItem(ITEM::TACTREITE_VOUCHER, item0.iAmount);
 		m_pInven->AddItem(ITEM::COMMEMORATIVE_COIN, item1.iAmount);
 		m_pInven->AddItem(ITEM::TACTITE_COIN, item2.iAmount);
+		m_pInven->AddItem(ITEM::TACTITE_COIN, item3.iAmount);
 
 		break;
 	}

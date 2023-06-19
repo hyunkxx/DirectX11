@@ -40,11 +40,21 @@ HRESULT CPhaseChanger::Initialize(void * pArg)
 
 	// 
 	for (auto& pAnimation : m_pRoverModel->Get_Animations())
+	{
+		pAnimation->Set_Duration(220.f);
 		pAnimation->Set_TicksPerSecond(30.0);
+	}
 
+	_uint iIndex = 0;
 	for (auto& pAnimation : m_pCrownlessModel->Get_Animations())
+	{
+		if (iIndex == 0)
+			pAnimation->Set_Duration(220.f);
+
 		pAnimation->Set_TicksPerSecond(30.0);
 
+		iIndex++;
+	}
 	
 
 	
@@ -78,15 +88,21 @@ void CPhaseChanger::Start()
 
 	CGameInstance* pGI = CGameInstance::GetInstance();
 	m_pCamMovement = static_cast<CCameraMovement*>(pGI->Find_GameObject(LEVEL_STATIC, L"CameraMovement"));
-	m_pCamMovement->SetupBone(CCameraMovement::CAM_CROWN1, m_EffectBones[EBONE_SPINE]);
-	m_pCamMovement->SetupTransform(CCameraMovement::CAM_CROWN1, m_pCrownlessTransform);
-	m_pCamMovement->SetupBone(CCameraMovement::CAM_CROWN2, m_EffectBones[EBONE_SPINE]);
-	m_pCamMovement->SetupTransform(CCameraMovement::CAM_CROWN2, m_pCrownlessTransform);
 }
 
 void CPhaseChanger::Tick(_double TimeDelta)
 {
 	CGameInstance* pGame = CGameInstance::GetInstance();
+
+	if (m_bZoomIn)
+	{
+		m_fZoomAcc += (_float)TimeDelta;
+		if (m_fZoomAcc > 10.f)
+		{
+			m_pCamMovement->SetupBone(CCameraMovement::CAM_CROWN2, m_EffectBones[EBONE_RHAND]);
+			m_pCamMovement->SetupCrownBoneMatrix(CCameraMovement::CAM_CROWN2, &m_EffectBoneMatrices[EBONE_RHAND]);
+		}
+	}
 
 	if (pGame->InputKey(DIK_NUMPAD1) == KEY_STATE::TAP)
 	{
@@ -254,6 +270,9 @@ HRESULT CPhaseChanger::Render()
 
 void CPhaseChanger::CutScene1_Ready()
 {
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	pGI->StartFade(CRenderSetting::FADE_OUT, 0.8f);
+
 	m_Timer = 1.0;
 	m_eState = STATE_1_READY;
 
@@ -262,11 +281,20 @@ void CPhaseChanger::CutScene1_Ready()
 	pChar->Set_OnControl(false);
 	pChar->Set_ForceIdle();
 
+	
+
 	// UI ²ô±â, ±âÁ¸ ¸ðµ¨ ¼û±â±â µî?
 }
 
 void CPhaseChanger::CutScene1_Start()
 {
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	pGI->StartFade(CRenderSetting::FADE_IN, 1.f);
+
+	m_pCamMovement->SetupBone(CCameraMovement::CAM_CROWN1, m_EffectBones[EBONE_SPINE]);
+	m_pCamMovement->SetupTransform(CCameraMovement::CAM_CROWN1, m_pCrownlessTransform);
+	m_pCamMovement->SetupCrownBoneMatrix(CCameraMovement::CAM_CROWN1, &m_EffectBoneMatrices[EBONE_SPINE]);
+	
 	m_pCrownless_P1->SetState(DISABLE);
 	
 	CCharacter* pChar = m_pPlayerStateClass->Get_ActiveCharacter();
@@ -275,7 +303,7 @@ void CPhaseChanger::CutScene1_Start()
 
 	pCharTransform->Set_State(CTransform::STATE_POSITION, m_pRoverTransform->Get_State(CTransform::STATE_POSITION));
 	pCharTransform->Set_LookDir(m_pRoverTransform->Get_State(CTransform::STATE_LOOK));
-	//m_pPlayerStateClass->SetCamBehind();
+	m_pPlayerStateClass->SetCamBehind();
 	m_pCamMovement->UseCamera(CCameraMovement::CAM_CROWN1);
 
 	pChar->Disappear(nullptr, nullptr, nullptr);
@@ -305,7 +333,7 @@ void CPhaseChanger::CutScene1_End()
 	CCharacter* pChar = m_pPlayerStateClass->Get_ActiveCharacter();
 	pChar->Appear(m_pRoverTransform, nullptr, 196, 200.f);
 	pChar->Set_LookAt(m_pCrownlessTransform->Get_State(CTransform::STATE_POSITION));
-	pChar->Set_ForceIdle();
+	//pChar->Set_ForceIdle();
 
 }
 
@@ -319,10 +347,22 @@ void CPhaseChanger::CutScene2_Ready()
 	CCharacter* pChar = m_pPlayerStateClass->Get_ActiveCharacter();
 	pChar->Set_OnControl(false);
 	pChar->Set_ForceIdle();
+
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	pGI->StartFade(CRenderSetting::FADE_OUT, 0.8f);
 }
 
 void CPhaseChanger::CutScene2_Start()
 {
+	CGameInstance* pGI = CGameInstance::GetInstance();
+	pGI->StartFade(CRenderSetting::FADE_IN, 1.5f);
+
+	m_pCamMovement->SetupBone(CCameraMovement::CAM_CROWN2, m_EffectBones[EBONE_SPINE]);
+	m_pCamMovement->SetupCrownBoneMatrix(CCameraMovement::CAM_CROWN2, &m_EffectBoneMatrices[EBONE_SPINE]);
+	m_pCamMovement->SetupTransform(CCameraMovement::CAM_CROWN2, m_pCrownlessTransform);
+	
+	m_bZoomIn = true; // È®´ë
+
 	m_pCrownless_P2->SetState(DISABLE);
 
 	CCharacter* pChar = m_pPlayerStateClass->Get_ActiveCharacter();
@@ -330,11 +370,11 @@ void CPhaseChanger::CutScene2_Start()
 
 	pCharTransform->Set_State(CTransform::STATE_POSITION, m_pRoverTransform->Get_State(CTransform::STATE_POSITION));
 	pCharTransform->Set_LookDir(m_pRoverTransform->Get_State(CTransform::STATE_LOOK));
-	//m_pPlayerStateClass->SetCamBehind();
+	m_pPlayerStateClass->SetCamBehind();
 	m_pCamMovement->UseCamera(CCameraMovement::CAM_CROWN2);
 
 	pChar->Disappear(nullptr, nullptr, nullptr);
-
+	
 	m_bRender = true;
 
 	m_pCrownlessModel->Set_RootBone(TEXT("Root"));
@@ -355,7 +395,6 @@ void CPhaseChanger::CutScene2_End()
 	m_pCrownless_P3->Set_WorldMatrix(XMLoadFloat4x4(&m_pCrownlessTransform->Get_WorldMatrix()));
 	//m_pCrownless_P3->Set_ForceIdle();
 
-	
 	CCharacter* pChar = m_pPlayerStateClass->Get_ActiveCharacter();
 	pChar->Appear(m_pRoverTransform, nullptr, 196, 200.f);
 	pChar->Set_LookAt(m_pCrownlessTransform->Get_State(CTransform::STATE_POSITION));

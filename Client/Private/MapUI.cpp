@@ -239,6 +239,8 @@ void CMapUI::RenderGUI()
 void CMapUI::OnClick()
 {
 	m_pTerminal->PushActiveUI(this);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 }
 
 void CMapUI::SetActive(_bool bValue)
@@ -281,6 +283,9 @@ void CMapUI::stateActive()
 	elemAlphaReset(0);
 	m_bElemAlphaStart[0] = true;
 	m_eLevel = SELECT_END;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX);
 }
 
 void CMapUI::stateDisable()
@@ -336,6 +341,7 @@ void CMapUI::keyInput(_double TimeDelta)
 				m_fElemAlpha[7] = 0.f;
 			}
 
+			pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			m_eLevel = VALLEY;
 		}
 	}
@@ -349,6 +355,7 @@ void CMapUI::keyInput(_double TimeDelta)
 				m_fElemAlpha[7] = 0.f;
 			}
 
+			pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			m_eLevel = CITY;
 		}
 	}
@@ -362,6 +369,7 @@ void CMapUI::keyInput(_double TimeDelta)
 				m_fElemAlpha[7] = 0.f;
 			}
 
+			pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			m_eLevel = FOREST;
 		}
 	}
@@ -375,6 +383,7 @@ void CMapUI::keyInput(_double TimeDelta)
 				m_fElemAlpha[7] = 0.f;
 			}
 
+			pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			m_eLevel = CROWN;
 		}
 	}
@@ -392,6 +401,8 @@ void CMapUI::keyInput(_double TimeDelta)
 				_uint iOwnCoin = m_pInven->GetCoin();
 				if (iOwnCoin >= m_iPay[m_eLevel])
 				{
+					pGI->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+
 					pGM->ReserveLevel((LEVEL_ID)m_eLevel);
 					m_pInven->DeleteCoin(m_iPay[m_eLevel]);
 					stateDisable();

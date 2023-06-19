@@ -21,6 +21,8 @@
 //UI추가
 #include "UI_Monster.h"
 #include "UI_Minimap.h"
+#include "AcquireSystem.h"
+#include "EchoSystem.h"
 
 CCharacter::SINGLESTATE CM_Leilie::m_tStates[IS_END];
 CM_Leilie::CM_Leilie(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -1102,6 +1104,61 @@ void CM_Leilie::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAtta
 	// 사망 시 사망 애니메이션 실행 
 	if (0.f >= m_tMonsterInfo.fCurHP)
 	{
+		CGameInstance* pGI = CGameInstance::GetInstance();
+		static _bool bDie = false;
+		if (!bDie)
+		{
+			bDie = true;
+			CPlayerState* pState = static_cast<CPlayerState*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+			CEchoSystem* pEchoSystem = static_cast<CEchoSystem*>(pGI->Find_GameObject(LEVEL_STATIC, L"Echo"));
+			CAcquireSystem* pAquire = static_cast<CAcquireSystem*>(pGI->Find_GameObject(LEVEL_STATIC, L"AcquireSystem"));
+			CItemDB* pDB = CItemDB::GetInstance();
+
+			if (!pEchoSystem->GetEcho(CEchoSystem::EC_RUPTURE_WARRIOR).bActive)
+			{
+				pEchoSystem->SetActiveEcho(CEchoSystem::EC_RUPTURE_WARRIOR);
+				CItem::ITEM_DESC item = pDB->GetItemData(ITEM::E_RUPTURE);
+				pAquire->EnqueueItemDesc(item);
+
+				pState->AddUnionExp(20.f);
+
+				switch (item.eItemGrade)
+				{
+				case CItem::ADVANCED:
+					item = pDB->GetItemData(ITEM::EXP0);
+					pAquire->EnqueueItemDesc(item);
+
+					item = pDB->GetItemData(ITEM::DOGTAG0);
+					pAquire->EnqueueItemDesc(item);
+
+					break;
+				case CItem::RARE:
+					item = pDB->GetItemData(ITEM::EXP1);
+					pAquire->EnqueueItemDesc(item);
+
+					item = pDB->GetItemData(ITEM::DOGTAG1);
+					pAquire->EnqueueItemDesc(item);
+
+					break;
+				case CItem::UNIQUE:
+					item = pDB->GetItemData(ITEM::EXP2);
+					pAquire->EnqueueItemDesc(item);
+
+					item = pDB->GetItemData(ITEM::DOGTAG2);
+					pAquire->EnqueueItemDesc(item);
+					break;
+				case CItem::LEGEND:
+					item = pDB->GetItemData(ITEM::EXP3);
+					pAquire->EnqueueItemDesc(item);
+
+					item = pDB->GetItemData(ITEM::DOGTAG3);
+					pAquire->EnqueueItemDesc(item);
+
+					break;
+				}
+			}
+		}
+
 		m_tMonsterInfo.fCurHP = 0.f;
 		m_Scon.iNextState = IS_DEAD;
 		m_pHitCollider->SetActive(false);

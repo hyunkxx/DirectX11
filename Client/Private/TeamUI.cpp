@@ -240,6 +240,9 @@ void CTeamUI::stateActive()
 
 	elemAlphaReset(0);
 	m_bElemAlphaStart[0] = true;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
 }
 
 void CTeamUI::stateDisable()

@@ -395,6 +395,16 @@ void CPlayerState::SetCamBehind()
 		m_pPlayerCam->Set_Behind();
 }
 
+void CPlayerState::AddUnionExp(_float fValue)
+{
+	m_fCurUnionExp += fValue;
+	if (m_fCurUnionExp >= m_fMaxUnionExp)
+	{
+		m_fCurUnionExp = 0.f;
+		m_iUnionLevel++;
+	}
+}
+
 void CPlayerState::levelUp(CHARACTERS eCharater)
 {
 	if (m_CharacterState[eCharater].iCurLevel % 4 == 0)

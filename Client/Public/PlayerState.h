@@ -258,6 +258,10 @@ public:
 
 	void SetCamBehind();
 
+	_uint GetUnionLevel() const { return m_iUnionLevel; }
+	void AddUnionExp(_float fValue);
+	_float GetUnionExp() const { return m_fCurUnionExp; }
+
 private:
 	void levelUp(CHARACTERS eCharater);
 
@@ -291,6 +295,9 @@ private:
 	_uint m_iFoodIconID[FOOD_END] = { 0, 0, 0 };
 	_bool m_bFoodBuff[FOOD_END] = { false, false, false };
 	
+	_uint m_iUnionLevel = 1;
+	_float m_fCurUnionExp = 0.f;
+	const _float m_fMaxUnionExp = 200.f;
 };
 
 END

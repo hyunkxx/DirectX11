@@ -29,7 +29,7 @@ HRESULT CEchoSystem::Initialize(void * pArg)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	// 정령
-	m_Echos[EC_ZIGZAG].bActive = true;
+	m_Echos[EC_ZIGZAG].bActive = false;
 	m_Echos[EC_ZIGZAG].bBind = false;
 	m_Echos[EC_ZIGZAG].iGrade = 1;
 	m_Echos[EC_ZIGZAG].iLevel = 1;
@@ -70,7 +70,7 @@ HRESULT CEchoSystem::Initialize(void * pArg)
 	m_Echos[EC_RUPTURE_WARRIOR].iNameTextureID = STATIC_IMAGE::TEXT_EC_RUPTURE_WARRIOR;
 	m_Echos[EC_RUPTURE_WARRIOR].iIconTextureID = STATIC_IMAGE::ICON_EC_RUPTURE_WARRIOR;
 
-	m_Echos[EC_FUSHION_WARRIOR].bActive = true;
+	m_Echos[EC_FUSHION_WARRIOR].bActive = false;
 	m_Echos[EC_FUSHION_WARRIOR].bBind = false;
 	m_Echos[EC_FUSHION_WARRIOR].iGrade = 2;
 	m_Echos[EC_FUSHION_WARRIOR].iLevel = 1;
@@ -79,7 +79,7 @@ HRESULT CEchoSystem::Initialize(void * pArg)
 	m_Echos[EC_FUSHION_WARRIOR].iIconTextureID = STATIC_IMAGE::ICON_EC_FUSHION_WARRIOR;
 
 	// 프레데터
-	m_Echos[EC_IMPULSE_PREDATOR].bActive = true;
+	m_Echos[EC_IMPULSE_PREDATOR].bActive = false;
 	m_Echos[EC_IMPULSE_PREDATOR].bBind = false;
 	m_Echos[EC_IMPULSE_PREDATOR].iGrade = 3;
 	m_Echos[EC_IMPULSE_PREDATOR].iLevel = 1;
@@ -95,7 +95,7 @@ HRESULT CEchoSystem::Initialize(void * pArg)
 	m_Echos[EC_GLACIO_PREDATOR].iNameTextureID = STATIC_IMAGE::TEXT_EC_GLACIO_PREDATOR;
 	m_Echos[EC_GLACIO_PREDATOR].iIconTextureID = STATIC_IMAGE::ICON_EC_GLACIO_PREDATOR;
 
-	m_Echos[EC_PNENUMA_PREDATOR].bActive = true;
+	m_Echos[EC_PNENUMA_PREDATOR].bActive = false;
 	m_Echos[EC_PNENUMA_PREDATOR].bBind = false;
 	m_Echos[EC_PNENUMA_PREDATOR].iGrade = 3;
 	m_Echos[EC_PNENUMA_PREDATOR].iLevel = 1;
@@ -104,7 +104,7 @@ HRESULT CEchoSystem::Initialize(void * pArg)
 	m_Echos[EC_PNENUMA_PREDATOR].iIconTextureID = STATIC_IMAGE::ICON_EC_PNENUMA_PREDATOR;
 
 	// 엘리트
-	m_Echos[EC_ELITE_STONE].bActive = true;
+	m_Echos[EC_ELITE_STONE].bActive = false;
 	m_Echos[EC_ELITE_STONE].bBind = false;
 	m_Echos[EC_ELITE_STONE].iGrade = 4;
 	m_Echos[EC_ELITE_STONE].iLevel = 1;
@@ -112,7 +112,7 @@ HRESULT CEchoSystem::Initialize(void * pArg)
 	m_Echos[EC_ELITE_STONE].iNameTextureID = STATIC_IMAGE::TEXT_EC_ELITE_STONE;
 	m_Echos[EC_ELITE_STONE].iIconTextureID = STATIC_IMAGE::ICON_EC_ELITE_STONE;
 
-	m_Echos[EC_ELITE_FLUTE].bActive = true;
+	m_Echos[EC_ELITE_FLUTE].bActive = false;
 	m_Echos[EC_ELITE_FLUTE].bBind = false;
 	m_Echos[EC_ELITE_FLUTE].iGrade = 4;
 	m_Echos[EC_ELITE_FLUTE].iLevel = 1;
@@ -121,7 +121,7 @@ HRESULT CEchoSystem::Initialize(void * pArg)
 	m_Echos[EC_ELITE_FLUTE].iIconTextureID = STATIC_IMAGE::ICON_EC_ELITE_FLUTE;
 
 	// 보스
-	m_Echos[EC_CROWNLESS].bActive = true;
+	m_Echos[EC_CROWNLESS].bActive = false;
 	m_Echos[EC_CROWNLESS].bBind = false;
 	m_Echos[EC_CROWNLESS].iGrade = 5;
 	m_Echos[EC_CROWNLESS].iLevel = 1;

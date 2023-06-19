@@ -2166,6 +2166,38 @@ HRESULT CApplication::Ready_Item_Image()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/DarkSky.png")))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ECHO_ITEM_ZIGZAG,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/ZigzagEcho.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ECHO_ITEM_TICTAC,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/TicTacEcho.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ECHO_ITEM_WHOOSH,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/WhooshEcho.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ECHO_ITEM_RUPTURE_WARRIOR,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/RuptureWarriorEcho.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ECHO_ITEM_FUSHION_WARRIOR,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/FushionEcho.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ECHO_ITEM_IMPULSE_PREDATOR,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/ImpulseEcho.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ECHO_ITEM_GLACIO_PREDATOR,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/GlacioEcho.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ECHO_ITEM_PNENUMA_PREDATOR,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/PnenumaEcho.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ECHO_ITEM_STONE,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/StoneEcho.dds")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ECHO_ITEM_CROWNLESS,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/StaticImage/CrownlessEcho.dds")))))
+		return E_FAIL;
+
+
 	//이미지
 	//요리 재료 아이콘
 	if (FAILED(m_pGameInstance->Add_Texture(STATIC_IMAGE::ICON_RICE,

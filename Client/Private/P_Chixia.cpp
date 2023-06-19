@@ -1887,8 +1887,8 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 			break;
 
 		case Client::CP_Chixia::INPUT_BURST:
-			/*if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] &&
-				m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] == m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST])*/
+			if (0.0 == m_pCharacterState->fCurCooltime[CPlayerState::COOL_BURST] &&
+				m_pCharacterState->fMaxGauge[CPlayerState::GAUGE_BURST] == m_pCharacterState->fCurGauge[CPlayerState::GAUGE_BURST])
 				m_Scon.iNextState = IS_BURST;
 			break;
 

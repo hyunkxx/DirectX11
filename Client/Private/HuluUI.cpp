@@ -205,6 +205,9 @@ void CHuluUI::RenderGUI()
 void CHuluUI::OnClick()
 {
 	m_pTerminal->PushActiveUI(this);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
 }
 
 void CHuluUI::SetActive(_bool bValue)

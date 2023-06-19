@@ -1354,6 +1354,9 @@ void CResonatorUI::stateActive()
 	elemAlphaReset();
 
 	m_pCamMovement->UseCamera(CCameraMovement::CAM_UI);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX);
 }
 
 void CResonatorUI::stateDisable()
@@ -1381,6 +1384,7 @@ void CResonatorUI::stateUpdate(_double TimeDelta)
 					{
 						elemAlphaReset();
 						m_pUICharacter->SetAnimation((UICharacter::UIANIMATION)i);
+						pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX);
 					}
 
 					m_eCurButton = (RESONATOR_BTN)i;
@@ -2054,6 +2058,7 @@ void CResonatorUI::selectCharacter(_double TimeDelta)
 				if (m_iCurCharacter != i)
 				{
 					elemAlphaReset(1);
+					pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 					m_pUICharacter->ChangeCharacter((UICharacter::MODEL)i);
 				}
 
@@ -2086,6 +2091,8 @@ void CResonatorUI::stateKeyInput(_double TimeDelta)
 			{
 				if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 				{
+					pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+
 					if (iItemAmount > m_iUseAmount[iCapsule])
 					{
 						//재클릭시 리셋
@@ -2099,6 +2106,8 @@ void CResonatorUI::stateKeyInput(_double TimeDelta)
 
 				if (pGameInstance->InputMouse(DIMK_RB) == KEY_STATE::TAP)
 				{
+					pGameInstance->PlaySoundEx(L"Play_ae_ui_but_count.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX); // 수량 선택하는 소리
+
 					if (0 < m_iUseAmount[iCapsule])
 					{
 						//재클릭시 리셋
@@ -2133,6 +2142,7 @@ void CResonatorUI::stateKeyInput(_double TimeDelta)
 				{
 					m_fPushAcc = 1.f;
 					m_bUpgradeConfirm = true;
+					pGameInstance->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
 				}
 			}
 			else
@@ -2213,7 +2223,10 @@ void CResonatorUI::echoKeyInput(_double TimeDelta)
 		if (pGameMode->OnMouse(m_OrthoBindEcho))
 		{
 			if (pGameInstnace->InputMouse(DIMK_RB) == KEY_STATE::TAP)
+			{
 				m_pEchoSystem->ReleaseEcho((CEchoSystem::ECHO_SLOT)m_iCurCharacter);
+				pGameInstnace->PlaySoundEx(L"Play_AE_UI_But_Cancel.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+			}
 		}
 	}
 
@@ -2225,7 +2238,10 @@ void CResonatorUI::echoKeyInput(_double TimeDelta)
 			m_iRegisterBtnState = 2;
 
 		if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
+		{
+			pGameInstnace->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			m_pEchoSystem->BindEcho((CEchoSystem::ECHO_SLOT)m_iCurCharacter, (CEchoSystem::ECHO_TYPE)m_iCurSelectEcho);
+		}
 
 	}
 	else
@@ -2286,7 +2302,8 @@ void CResonatorUI::echoKeyInput(_double TimeDelta)
 			{
 				// 업그레이드 처리
 				m_pEchoSystem->Levelup((CEchoSystem::ECHO_TYPE)m_iCurSelectEcho);
-				
+				pGameInstnace->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+
 				switch (iEchoGrade)
 				{
 				case 1:
@@ -2347,23 +2364,35 @@ void CResonatorUI::resonanceInput(_double TimeDelta)
 	// SQ 선택
 	if (pGameMode->OnMouse(m_OrthoSequenceSlot1[1]))
 	{
-		if(pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
+			pGameInstnance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			m_iSelectSQ = SQ_1;
+		}
 	}
 	else if (pGameMode->OnMouse(m_OrthoSequenceSlot2[1]))
 	{
 		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
+			pGameInstnance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			m_iSelectSQ = SQ_2;
+		}
 	}
 	else if (pGameMode->OnMouse(m_OrthoSequenceSlot3[1]))
 	{
 		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
+			pGameInstnance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			m_iSelectSQ = SQ_3;
+		}
 	}
 	else if (pGameMode->OnMouse(m_OrthoSequenceSlot4[1]))
 	{
 		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
+			pGameInstnance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			m_iSelectSQ = SQ_4;
+		}
 	}
 	else
 	{
@@ -2388,6 +2417,8 @@ void CResonatorUI::resonanceInput(_double TimeDelta)
 			_uint iAmount = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::SEQUENCE_GEM);
 			if (iAmount > 0 && iResonanceSocket[m_iSelectSQ] < 3)
 			{
+				pGameInstnance->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
+
 				iResonanceSocket[m_iSelectSQ]++;
 				m_pInven->EraseItem(CInventory::INVEN_MATERIAL, ITEM::SEQUENCE_GEM, 1);
 				m_pPlayerState->SetSequenceLevel((CPlayerState::SQ_TYPE)m_iSelectSQ, iResonanceSocket[m_iSelectSQ]);
@@ -2411,32 +2442,50 @@ void CResonatorUI::forteInput(_double TimeDelta)
 	if (pGameMode->OnMouse(m_OrthoAttackIcon[0]))
 	{
 		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
+			pGameInstnance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			m_iCurSelectSkill = ATTACK1;
+		}
 	}
 	else if (pGameMode->OnMouse(m_OrthoAttackIcon[1]))
 	{
 		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
 			m_iCurSelectSkill = ATTACK2;
+			pGameInstnance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+		}
 	}
 	else if (pGameMode->OnMouse(m_OrthoAttackIcon[2]))
 	{
 		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
 			m_iCurSelectSkill = ATTACK3;
+			pGameInstnance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+		}
 	}
 	else if (pGameMode->OnMouse(m_OrthoAttackIcon[3]))
 	{
 		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
 			m_iCurSelectSkill = ATTACK4;
+			pGameInstnance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+		}
 	}
 	else if (pGameMode->OnMouse(m_OrthoQTESlot))
 	{
 		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
 			m_iCurSelectSkill = QTE;
+			pGameInstnance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+		}
 	}
 	else if (pGameMode->OnMouse(m_OrthoBurstSlot))
 	{
 		if (pGameInstnance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
 			m_iCurSelectSkill = BURST;
+			pGameInstnance->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+		}
 	}
 
 	upgradeSkill(TimeDelta);
@@ -2461,7 +2510,10 @@ void CResonatorUI::weaponKeyInput(_double TimeDelta)
 			if (pGameMode->OnMouse(m_OrthoSwitchBackpage))
 			{
 				if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+				{
 					m_bSwitchButton = false;
+					pGameInstnace->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
+				}
 			}
 
 			//슬롯 체크
@@ -2470,7 +2522,10 @@ void CResonatorUI::weaponKeyInput(_double TimeDelta)
 				if (pGameMode->OnMouse(m_OrthoWeaponSlot[i]))
 				{
 					if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+					{
 						m_iSelectSlot = i;
+						pGameInstnace->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+					}
 				}
 			}
 
@@ -2483,7 +2538,10 @@ void CResonatorUI::weaponKeyInput(_double TimeDelta)
 					|| (pSlotItem.iData[3] == 0 && m_iCurCharacter == CPlayerState::CHARACTER_YANGYANG))
 				{
 					if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
+					{
 						m_iConfirmButtonState = BTN_CLICK;
+						pGameInstnace->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+					}
 					else
 					{
 						if (pGameInstnace->InputMouse(DIMK_LB) == KEY_STATE::AWAY && m_iConfirmButtonState == BTN_CLICK)
@@ -2527,6 +2585,7 @@ void CResonatorUI::pushUpgradeButton(_double TimeDelta)
 				{
 					m_fPushAcc = 0.f;
 					m_bUpgradeConfirm = true;
+					pGameInstnace->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
 				}
 			}
 			else
@@ -2570,6 +2629,7 @@ void CResonatorUI::upshSwitchButton(_double TimeDelta)
 				{
 					m_fSwitchWeaponAcc = 0.f;
 					m_bSwitchButton = true;
+					pGameInstnace->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX);
 				}
 			}
 			else
@@ -4460,7 +4520,10 @@ void CResonatorUI::upgradeSkill(_double TimeDelta)
 	if (pGameMode->OnMouse(m_OrthoSkillUpgradeBtn))
 	{
 		if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+		{
+			pGameInstance->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			m_bUpgradeButtonClick = true;
+		}
 		else if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::HOLD)
 			m_bUpgradeButtonClick = true;
 		else if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::AWAY)

@@ -488,6 +488,9 @@ void CBackpackUI::stateActive()
 	m_fCurDescAlpha = 0.f;
 
 	ZeroMemory(m_bOneFlash, sizeof(m_bOneFlash));
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
 }
 
 void CBackpackUI::stateDisable()
@@ -612,6 +615,8 @@ void CBackpackUI::keyInput(_double TimeDelta)
 				{
 					if (eInvenType != i)
 					{
+						pGI->PlaySoundEx(L"Play_AE_UI_FB_FilterOpen.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+
 						if (i != CInventory::INVEN_COOK)
 							m_bFoodPanel = false;
 
@@ -634,6 +639,8 @@ void CBackpackUI::keyInput(_double TimeDelta)
 					{
 						if (m_iCurSlot != i)
 						{
+							pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+
 							m_fCurDescAlpha = 0.f;
 
 							m_iCurDiscardDigit = 0;
@@ -658,13 +665,17 @@ void CBackpackUI::keyInput(_double TimeDelta)
 					if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 					{
 						if (!m_bFoodPanel)
+						{
+							pGI->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX);
 							m_bFoodPanel = true;
+						}
 					}
 				}
 				else if (pGM->OnMouse(m_OrthoItemDiscard))
 				{
 					if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 					{
+						pGI->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX);
 						m_bDiscardPanel = true;
 					}
 				}
@@ -678,6 +689,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 						if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
 							m_bDiscardPanel = true;
+							pGI->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX);
 						}
 					}
 					else
@@ -685,6 +697,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 						if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 						{
 							m_pInven->DiscardItem(eInvenType, m_iCurSlot, iCurSlotAmount);
+							pGI->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav ", SOUND_UI_FEEDBACK, VOLUME_VFX);
 
 							if (m_iCurSlot > 0)
 								m_iCurSlot--;
@@ -702,6 +715,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
 				m_bDiscardPanel = false;
 			}
 		}
@@ -711,6 +725,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				if (iCurSlotAmount >= 7 && m_AmountQueue.size() < 5)
 					m_AmountQueue.push_back('7');
 			}
@@ -720,6 +735,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				if (iCurSlotAmount >= 8 && m_AmountQueue.size() < 5)
 					m_AmountQueue.push_back('8');
 			}
@@ -729,6 +745,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				if (iCurSlotAmount >= 9 && m_AmountQueue.size() < 5)
 					m_AmountQueue.push_back('9');
 			}
@@ -738,6 +755,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				if (iCurSlotAmount >= 4 && m_AmountQueue.size() < 5)
 					m_AmountQueue.push_back('4');
 			}
@@ -747,6 +765,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				if (iCurSlotAmount >= 5 && m_AmountQueue.size() < 5)
 					m_AmountQueue.push_back('5');
 			}
@@ -756,6 +775,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				if (iCurSlotAmount >= 6 && m_AmountQueue.size() < 5)
 					m_AmountQueue.push_back('6');
 			}
@@ -765,6 +785,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				if (iCurSlotAmount >= 1 && m_AmountQueue.size() < 5)
 					m_AmountQueue.push_back('1');
 			}
@@ -774,6 +795,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				if (iCurSlotAmount >= 2 && m_AmountQueue.size() < 5)
 					m_AmountQueue.push_back('2');
 			}
@@ -783,6 +805,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				if (iCurSlotAmount >= 3 && m_AmountQueue.size() < 5)
 					m_AmountQueue.push_back('3');
 			}
@@ -792,6 +815,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				if (!m_AmountQueue.empty())
 					m_AmountQueue.pop_back();
 			}
@@ -801,6 +825,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 					m_AmountQueue.push_back('0');
 			}
@@ -813,6 +838,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 				if (!m_bConfirm)
 				{
 					m_bConfirm = true;
+					pGI->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
 
 					if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 					{
@@ -845,6 +871,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_But_Click.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				m_DiscardAmount = 0;
 				m_iCurDiscardDigit = 0;
 				m_AmountQueue.clear();
@@ -861,6 +888,8 @@ void CBackpackUI::keyInput(_double TimeDelta)
 
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::AWAY)
 			{
+
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				m_DiscardAmount = iCurSlotAmount;
 				m_iCurDiscardDigit = 0;
 				m_AmountQueue.clear();
@@ -878,6 +907,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 			{
 				if (m_bConfirm)
 				{
+					pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 					m_bDiscardPanel = false;
 					m_pInven->DiscardItem(eInvenType, m_iCurSlot, m_DiscardAmount);
 					m_iCurDiscardDigit = 0;
@@ -904,7 +934,10 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		if (pGM->OnMouse(m_OrthoExitFood))
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
+			{
 				m_bFoodPanel = false;
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
+			}
 		}
 
 		//음식 먹일 캐릭터 선택
@@ -912,6 +945,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 		{
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 				m_iCurCharacter = 0;
 			}
 		}
@@ -920,14 +954,20 @@ void CBackpackUI::keyInput(_double TimeDelta)
 			if (pGI->InputMouse(DIMK_LB) == KEY_STATE::TAP)
 			{
 				if (iActiveCount > 1)
+				{
 					m_iCurCharacter = 1;
+					pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+				}
 			}
 		}
 		else if (pGM->OnMouse(m_OrthoSelectCharacterIcon[2]))
 		{
 			{
 				if (iActiveCount > 2)
+				{
 					m_iCurCharacter = 2;
+					pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
+				}
 			}
 		}
 
@@ -939,7 +979,7 @@ void CBackpackUI::keyInput(_double TimeDelta)
 				m_bFoodPanel = false;
 				CItem::ITEM_DESC itemData = m_pInven->GetSlotData(eInvenType, m_iCurSlot);
 				m_pInven->DiscardItem(eInvenType, m_iCurSlot, 1);
-
+				pGI->PlaySoundEx(L"Play_AE_UI_AreaReward_Get.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
 				// 음식 먹기
 				switch (itemData.eItemGrade)
 				{

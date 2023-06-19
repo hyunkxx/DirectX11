@@ -244,6 +244,10 @@ void CSettingUI::stateActive()
 		m_OrthoGraphicBtnRight[i].fX = 0.f;
 		CAppManager::ComputeOrtho(&m_OrthoGraphicBtnRight[i]);
 	}
+
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
 }
 
 void CSettingUI::stateDisable()
@@ -367,10 +371,12 @@ void CSettingUI::graphicInput(_double TimeDelta)
 			if (pGM->OnMouse(m_OrthoGraphicBtnLeftBtn[i]))
 			{
 				onColickGraphicLeftButton((GRAPHIC_BTN)i);
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			}
 			else if (pGM->OnMouse(m_OrthoGraphicBtnRightBtn[i]))
 			{
 				onColickGraphicRightButton((GRAPHIC_BTN)i);
+				pGI->PlaySoundEx(L"Play_AE_UI_FB_ItemPick.wem.wav", SOUND_UI_BUTTON, VOLUME_VFX);
 			}
 
 		}

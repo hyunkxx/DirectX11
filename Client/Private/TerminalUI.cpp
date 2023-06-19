@@ -310,6 +310,7 @@ void CTerminalUI::inputKey(_double TimeDelta)
 				m_pActivateList.pop();
 				m_pActivateList.top()->SetRender(true);
 				m_pActivateList.top()->SetActive(true);
+				pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Close_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
 			}
 			else
 			{
@@ -323,7 +324,10 @@ void CTerminalUI::inputKey(_double TimeDelta)
 			if (m_fAlpha[TERMINAL_MAINFRAME] == 0.f || m_fAlpha[TERMINAL_MAINFRAME] == 1.f)
 			{
 				if (!m_bActive[TERMINAL_MAINFRAME])
+				{
 					m_pActivateList.push(this);
+					pGameInstance->PlaySoundEx(L"Play_AE_UI_FB_Open_2.wem.wav", SOUND_UI_FEEDBACK, VOLUME_VFX);
+				}
 
 				m_bRender = m_bSlotActive[0] = m_bActive[TERMINAL_MAINFRAME] = m_bMainActive = !m_bMainActive;
 				ShowCursor(m_bMainActive);
@@ -732,7 +736,7 @@ HRESULT CTerminalUI::renderLeftPivot()
 	m_pVIBuffer->Render();
 
 	// Level Number 0
-	string LevelString = to_string(m_iCount);
+	string LevelString = to_string(m_pCharacterState->GetUnionLevel());
 	int iFirst = LevelString[0] - '0';
 	int iSecond = LevelString[1] - '0';
 
@@ -786,12 +790,13 @@ HRESULT CTerminalUI::renderLeftPivot()
 	m_pVIBuffer->Render();
 
 	// Level GageFront
+	_float fGage = m_pCharacterState->GetUnionExp() / 200.f;
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoDesc[TERMINAL_LEVELEXPGAGE].WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::IMAGE_WHITE_RECT, m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->SetRawValue("g_fFillAmount", &m_fTestTimer, sizeof(_float))))
+	if (FAILED(m_pShader->SetRawValue("g_fFillAmount", &fGage, sizeof(_float))))
 		return E_FAIL;
 
 	m_pShader->Begin(2);
@@ -812,14 +817,14 @@ HRESULT CTerminalUI::renderLeftPivot()
 
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoUnionExp[0].WorldMatrix)))
 		return E_FAIL;
-	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_1, m_pShader, "g_DiffuseTexture")))
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_2, m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
 	m_pShader->Begin(7);
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pShader->SetMatrix("g_WorldMatrix", &m_OrthoUnionExp[1].WorldMatrix)))
 		return E_FAIL;
-	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_5, m_pShader, "g_DiffuseTexture")))
+	if (FAILED(pGameInstance->SetupSRV(STATIC_IMAGE::TEXT_0, m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
 	m_pShader->Begin(7);
 	m_pVIBuffer->Render();

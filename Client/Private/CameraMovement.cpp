@@ -36,7 +36,6 @@ HRESULT CCameraMovement::Initialize(void * pArg)
 	
 	for (int i = 0; i < CAM_END; ++i)
 		m_pCams[i] = nullptr;
-
 	return S_OK;
 }
 
@@ -122,6 +121,14 @@ void CCameraMovement::SetupTransform(CAM_TYPE eCameraType, CTransform * pTransfo
 		return;
 
 	static_cast<CActionCam*>(m_pCams[eCameraType])->SetupTransform(pTransform);
+}
+
+void CCameraMovement::SetupCrownBoneMatrix(CAM_TYPE eCameraType, _float4x4 * pMatrix)
+{
+	if (eCameraType <= CAM_UI || eCameraType >= CAM_END)
+		return;
+
+	static_cast<CActionCam*>(m_pCams[eCameraType])->SetupCrownBoneMatrix(pMatrix);
 }
 
 void CCameraMovement::ResetPlayerCamera()

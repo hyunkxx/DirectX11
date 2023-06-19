@@ -37,6 +37,7 @@ public:
 	void ActionInit();
 	void SetupBone(CBone* pBone) { m_pTargetBone = pBone; };
 	void SetupTransform(CTransform* pTransform) { m_pTargetTransform = pTransform; }
+	void SetupCrownBoneMatrix(_float4x4* pMatrix) { m_pCrownBoneMatrix = pMatrix; };
 
 private:
 	void RevertPrevCam(_double TimeDelta);
@@ -58,6 +59,7 @@ public:
 	virtual void Free() override;
  
 private:
+	_float4x4* m_pCrownBoneMatrix = nullptr;
 	CBone* m_pTargetBone = nullptr;
 	CTransform* m_pTargetTransform = nullptr;
 	CTransform* m_pSubTransform = nullptr;
@@ -77,6 +79,8 @@ private:
 	// Revert
 	_float m_fRevertAcc = 0.f;
 	_float m_fChixiaValue = 2.f;
+
+	_vector m_vBonePos;
 };
 
 END
