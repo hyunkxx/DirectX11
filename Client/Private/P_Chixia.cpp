@@ -119,7 +119,8 @@ HRESULT CP_Chixia::Initialize(void * pArg)
 		break;
 	case LEVEL_CITY:
 		m_pNaviCom->Set_CurrentIndex(0);
-		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(70.f, 15.50f, 118.f, 1.f));
+		m_pMainTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(73.f, 15.50f, 118.f, 1.f));
+		m_pMainTransform->Set_LookDir(XMVectorSet(1.f, 0.f, 0.f, 0.f));
 		break;
 
 		// Ãß°¡µÊ
