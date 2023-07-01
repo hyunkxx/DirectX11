@@ -417,7 +417,6 @@ void CPhaseChanger::CutScene2_End()
 	pChar->Set_LookAt(m_pCrownlessTransform->Get_State(CTransform::STATE_POSITION));
 	pChar->Set_ForceIdle();
 
-
 	CGameMode* pGM = CGameMode::GetInstance();
 	pGM->Set_UIRender(true);
 }

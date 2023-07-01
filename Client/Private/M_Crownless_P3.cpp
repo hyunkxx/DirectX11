@@ -1738,6 +1738,9 @@ void CM_Crownless_P3::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float
 		m_pHitCollider->SetActive(false);
 		m_bDying = true;
 		bHitCheck = true;
+		
+		// 수정 사망시 ui off
+		pGM->Set_UIRender(false);
 	}
 	// 피격 애니메이션 실행
 	else if (PS_GROUND == m_Scon.ePositionState)

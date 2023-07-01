@@ -80,32 +80,6 @@ HRESULT CUI_MerchantMen::Initialize(void * pArg)
 	m_FinalList[7].fColorB = m_5RewardList[0].fColorB = -(255.f - (color5.z * 255.f));
 
 
-
-	return S_OK;
-}
-
-void CUI_MerchantMen::Start()
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
-	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
-	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
-	m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel; 
-	ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET);
-	CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE);
-
-	SetState(DISABLE);
-}
-
-void CUI_MerchantMen::Tick(_double TimeDelta)
-{
-	__super::Tick(TimeDelta);
-	if (m_NPCbye)
-		Set_END();
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	CGameMode* pGM = CGameMode::GetInstance();
-	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
-
 	// 레벨에 따라 보상 아이템, 수치 설정
 	switch (SettingLevel)
 	{
@@ -145,7 +119,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		m_FinalList[25].iTexNum = 94;
 		m_FinalList[26].iTexNum = 93;
 
-		NeedNum = 3; 
+		NeedNum = 3;
 		m_CasketList[4].iTexNum = 70;
 	}
 	break;
@@ -165,7 +139,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		m_FinalList[25].iTexNum = 94;
 		m_FinalList[26].iTexNum = 94;
 
-		NeedNum = 5; 
+		NeedNum = 5;
 		m_CasketList[4].iTexNum = 72;
 	}
 	break;
@@ -185,7 +159,7 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		m_FinalList[25].iTexNum = 95;
 		m_FinalList[26].iTexNum = 94;
 
-		NeedNum = 7; 
+		NeedNum = 7;
 		m_CasketList[4].iTexNum = 74;
 	}
 	break;
@@ -205,13 +179,41 @@ void CUI_MerchantMen::Tick(_double TimeDelta)
 		m_FinalList[25].iTexNum = 95;
 		m_FinalList[26].iTexNum = 95;
 
-		NeedNum = 9; 
+		NeedNum = 9;
 		m_CasketList[4].iTexNum = 76;
 	}
 	break;
 	}
 
-	m_PlayerCurrentLevel = m_pPlayerStateClass->Get_MainCharacterState()->iCurLevel; 
+	return S_OK;
+}
+
+void CUI_MerchantMen::Start()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	m_pUIMouse = static_cast<CUI_Mouse*>(pGameInstance->Find_GameObject(LEVEL_ANYWHERE, L"UI_Mouse"));
+	m_pPlayerStateClass = static_cast<CPlayerState*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+	m_pInven = static_cast<CInventory*>(pGameInstance->Find_GameObject(LEVEL_STATIC, L"Inventory"));
+	m_PlayerCurrentLevel = m_pPlayerStateClass->GetUnionLevel();
+	ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET);
+	CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE);
+
+
+	SetState(DISABLE);
+}
+
+void CUI_MerchantMen::Tick(_double TimeDelta)
+{
+	__super::Tick(TimeDelta);
+	if (m_NPCbye)
+		Set_END();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CGameMode* pGM = CGameMode::GetInstance();
+	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
+
+	
+
+	m_PlayerCurrentLevel = m_pPlayerStateClass->GetUnionLevel();
 	 ItemNum = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKET);
 	 CurrentOwn = m_pInven->GetTotalAmount(CInventory::INVEN_MATERIAL, ITEM::CASKETPIECE);
 	_int num = ItemNum / 1;
@@ -1699,19 +1701,6 @@ void CUI_MerchantMen::Set_SituMeet()
 
 void CUI_MerchantMen::Set_END()
 {
-	Situation = MENSITUINDEX::MENEND;
-	m_Count = 0;
-	m_InMenuRenderStart = true;
-	m_MenuRenderStart = true;
-	m_CircleSTurntart = true;
-	m_CircleLevDown = false;
-	m_CircleSLevUp = false;
-	m_MsgboxRender = true;
-	m_RewardboxRender = false;
-	m_CancelMsgbox = false;
-	Degree = 0.f;
-	SubDegree = 0.f;
-	SettingLevel = 10;
 	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
 	CGameMode* pGM = CGameMode::GetInstance();
 	SetState(DISABLE);
@@ -1719,80 +1708,6 @@ void CUI_MerchantMen::Set_END()
 	m_pUIMouse->Set_RenderMouse(false); // 마우스 랜더off
 	pGM->SetMouseActive(false); //플레이어카메라
 	m_NPCbye = false;
-
-
-	for (auto& Desc : m_CommonList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_LevelList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_CircleList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_LButtonList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_RButtonList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_CasketList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_OwnList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_DeliverList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_0RewardList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_1RewardList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_2RewardList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_3RewardList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_4RewardList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_5RewardList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_MerchantList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_MenuList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_MessageList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_FinalList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
 }
 
 void CUI_MerchantMen::InMenuOpen(_double TimeDelta)

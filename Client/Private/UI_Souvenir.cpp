@@ -3351,21 +3351,6 @@ void CUI_Souvenir::Set_SituMeet()
 
 void CUI_Souvenir::Set_END()
 {
-	Situation = SOUSITUINDEX::SOUEND;
-	m_Count = 0;
-	m_InMenuRenderStart = true;
-	m_MenuRenderStart = true;
-	m_DetailRenderStart = true;
-	m_ConfirmRenderStart = true;
-	m_bOverPurchase = false;
-	pSelectSlot = nullptr;
-	pLimibuycount = nullptr;
-	m_bMouseMoveStart = false;
-	mouse = 0l;
-	BuyNum = 0;
-	CurrentMoney = 0; 
-	CurrentOwn = 0;
-	iTotal = 0;
 	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
 	CGameMode* pGM = CGameMode::GetInstance();
 	SetState(DISABLE);
@@ -3373,79 +3358,6 @@ void CUI_Souvenir::Set_END()
 	m_pUIMouse->Set_RenderMouse(false); // 마우스 랜더off
 	pGM->SetMouseActive(false); //플레이어카메라
 	m_NPCbye = false;
-
-	for (auto& Desc : m_SouList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_MenuList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_CommonList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_DetailsList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_FinalList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_0Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_1Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_2Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_3Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_4Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_5Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_6Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_7Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_8Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_9Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_10Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_11Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_12Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
 }
 
 HRESULT CUI_Souvenir::Setup_CommonShader(_uint index)

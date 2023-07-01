@@ -49,9 +49,6 @@ HRESULT CUI_TapT::Initialize(void * pArg)
 		m_DescList[i]->fZ = 0.01f;
 	}
 	
-	
-	
-	
 	return S_OK;
 }
 
@@ -72,6 +69,7 @@ void CUI_TapT::Tick(_double TimeDelta)
 	
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::HOLD)
 	{
+		m_bActive = true; // 수정
 
 		Add_ShaderY(TimeDelta);
 		Add_Alpha(3, 4, TimeDelta*4.f);
@@ -123,6 +121,8 @@ void CUI_TapT::Tick(_double TimeDelta)
 	}
 	else
 	{
+		m_bActive = false; // 수정
+
 		Minus_Alpha(0, 16, TimeDelta);
 		Minus_ShaderY(TimeDelta);
 		if (0.9f < m_ShaderY)
@@ -140,7 +140,7 @@ void CUI_TapT::Tick(_double TimeDelta)
 	m_pUIMouse->Set_Texchange(false);
 	CGameMode* pGM = CGameMode::GetInstance();
 
-	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::TAP)
+	if (m_bActive)
 	{
 		pActiveCharacter->Set_OnControl(false); // 플레이어움직임
 		m_pUIMouse->Set_RenderMouse(true); // 마우스 랜더on

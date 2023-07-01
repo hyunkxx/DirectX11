@@ -72,6 +72,7 @@ private:
 	//도구모음창 랜더
 	_float m_ShaderY = { 0.f };
 	_bool  m_bHolding = { false };
+	_bool  m_bActive = { false };
 	_vector vMousePos;
 	_int	Index = { 0 };
 public:

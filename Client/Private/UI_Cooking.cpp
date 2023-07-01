@@ -185,8 +185,6 @@ void CUI_Cooking::Start()
 
 void CUI_Cooking::Tick(_double TimeDelta)
 {
-	// 레시피 조건 추가해야함
-
 	__super::Tick(TimeDelta);
 
 	if (m_NPCbye)
@@ -236,24 +234,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 	break;
 	case Client::CUI_Cooking::SETTINGNUM:
 	{
-		//// 인벤토리에 있는 요리관련 아이템들 수량 가져오기
-		//m_pInven->AddItem(ITEM::RECIPE0, 1);
-		//m_pInven->AddItem(ITEM::RECIPE1, 1);
-		//m_pInven->AddItem(ITEM::RICE, 5);
-		//m_pInven->AddItem(ITEM::TOFU, 5);
-		//m_pInven->AddItem(ITEM::FLOUR, 5);
-		//m_pInven->AddItem(ITEM::MUSHROOM, 50);
-		//m_pInven->AddItem(ITEM::CHICKEN, 5);
-		//m_pInven->AddItem(ITEM::EGG, 5);
-		//m_pInven->AddItem(ITEM::MEAT, 5);
-		//m_pInven->AddItem(ITEM::HERB, 5);
-		//m_pInven->AddItem(ITEM::VIOLET, 5);
-		//m_pInven->AddItem(ITEM::DANDELION, 5);
-		//m_pInven->AddItem(ITEM::PEPPER, 5);
-		//m_pInven->AddItem(ITEM::SUGAR, 5);
-		//m_pInven->AddItem(ITEM::SALT, 5);
-		//m_pInven->AddItem(ITEM::OIL, 5);
-		//m_pInven->AddItem(ITEM::SOYSAUCE, 5);
+		// 인벤토리에 있는 요리관련 아이템들 수량 가져오기
 		InvenRice = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::RICE);
 		InvenTofu = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::TOFU);
 		InvenFlour = m_pInven->GetTotalAmount(CInventory::INVEN_TYPE::INVEN_MATERIAL, ITEM::FLOUR);
@@ -382,7 +363,7 @@ void CUI_Cooking::Tick(_double TimeDelta)
 				m_RButtonList[1].fWidth = 184.32f; m_RButtonList[1].fHeight = 23.04f;
 			}
 
-			// 수량 조절 버튼-> 보유 수량봅다 많으면 빨간색
+			// 수량 조절 버튼-> 보유 수량보다 많으면 빨간색
 			if (SelectUI(&m_LButtonList[1]))
 			{
 				if (pGameInstance->InputMouse(DIMK_LB) == KEY_STATE::TAP)
@@ -2405,7 +2386,7 @@ void CUI_Cooking::SettingTotal(_int MakeNum) //총 수량
 		m_FinalList[7].bRender = false;
 		m_FinalList[8].bRender = false;
 		m_FinalList[9].bRender = false;
-		if (1 < MakeNum)
+		if (1 > MakeNum)
 		{
 			MakeNum = 1;
 		}
@@ -3797,26 +3778,6 @@ void CUI_Cooking::Set_SituMeet()
 
 void CUI_Cooking::Set_END()
 {
-	Situation = COOKSITUINDEX::COOKEND;
-	m_Count = 0;
-	m_MenuRenderStart = true;
-	m_MenuOutStart = false;
-	m_ReadyConfirmRender = false;
-	m_ConfirmRenderStart = true;
-	pSelectSlot = &m_0Slot[2];
-	pOwnFood = &InvenFlatbread;
-	pNeedMaterial0 = &NeedMaterial0;
-	pNeedMaterial1 = &NeedMaterial1;
-	pNeedMaterial2 = &NeedMaterial2;
-	pOwnMaterial0 = &InvenFlour;
-	pOwnMaterial1 = &InvenRice;
-	pOwnMaterial2 = &InvenTofu;
-	MakeNum = 1;
-	bEnoughMaterial0 = false;
-	bEnoughMaterial1 = false;
-	bEnoughMaterial2 = false;
-	bMake = false;
-	GradeIndex = 0;
 	CCharacter* pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
 	CGameMode* pGM = CGameMode::GetInstance();
 	SetState(DISABLE);
@@ -3824,103 +3785,6 @@ void CUI_Cooking::Set_END()
 	m_pUIMouse->Set_RenderMouse(false); // 마우스 랜더off
 	pGM->SetMouseActive(false); //플레이어카메라
 	m_NPCbye = false;
-
-	for (auto& Desc : m_Cookist)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_CommonList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_GradeList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_DetailsList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_0MaterialSlot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_1MaterialSlot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_2MaterialSlot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_LButtonList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_RButtonList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_FinalList)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_0Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_1Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_2Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_3Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_4Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_5Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_6Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_7Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_8Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_9Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_10Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_11Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_12Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
-	for (auto& Desc : m_13Slot)
-	{
-		Desc.fColorA = Desc.Color.w;
-	}
 }
 
 void CUI_Cooking::IsMouseinRect()
