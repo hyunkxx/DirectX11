@@ -1389,7 +1389,7 @@ void CP_Yangyang::Apply_CoolTime(_double TimeDelta)
 		}
 	}
 
-	if (SS_STAND1 == m_Scon.iCurState)
+	if (SS_STAND1 == m_Scon.iCurState && true == m_bShowIdleAction)
 		m_IdleTimeAcc += TimeDelta;
 	else
 		m_IdleTimeAcc = 0.0;
@@ -1558,6 +1558,16 @@ void CP_Yangyang::Key_Input(_double TimeDelta)
 					7 > m_tCurState.iLeavePriority)
 					m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
 			}
+		}
+
+		if (pGame->InputKey(DIK_UP) == KEY_STATE::TAP)
+		{
+			m_bShowIdleAction = false;
+		}
+
+		if (pGame->InputKey(DIK_DOWN) == KEY_STATE::TAP)
+		{
+			m_bShowIdleAction = true;
 		}
 	}
 

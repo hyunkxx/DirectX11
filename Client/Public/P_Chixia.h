@@ -361,6 +361,7 @@ private:
 	_double				m_SubTrackPos = { 0.0 };
 	_bool				m_SubAnimFinished = { false };
 
+	_bool				m_bShowIdleAction = { true };
 	_double				m_IdleTimeAcc = { 0.0 };
 
 	

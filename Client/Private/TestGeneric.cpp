@@ -97,18 +97,6 @@ void CTestGeneric::Tick(_double TimeDelta)
 			SetUp_State();
 		}
 
-		if (pGame->InputKey(DIK_UP) == KEY_STATE::TAP)
-		{
-			/*m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON2);
-			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON1);*/
-		}
-
-		if (pGame->InputKey(DIK_DOWN) == KEY_STATE::TAP)
-		{
-		/*	m_Parts[PARTS_WEAPON_MAIN]->Set_Parent(PBONE_WEAPON4);
-			m_Parts[PARTS_WEAPON_SUB]->Set_Parent(PBONE_WEAPON3);*/
-		}
-
 		if (pGame->InputKey(DIK_F) == KEY_STATE::TAP)
 		{
 			m_tStates[m_iStateID].bLoop = !m_tStates[m_iStateID].bLoop;

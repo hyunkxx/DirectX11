@@ -1504,7 +1504,7 @@ void CP_Chixia::Apply_CoolTime(_double TimeDelta)
 	else
 		m_AimChargeAcc = 0.0;
 
-	if (SS_STAND1 == m_Scon.iCurState)
+	if (SS_STAND1 == m_Scon.iCurState && true == m_bShowIdleAction)
 		m_IdleTimeAcc += TimeDelta;
 	else
 		m_IdleTimeAcc = 0.0;
@@ -1670,11 +1670,16 @@ void CP_Chixia::Key_Input(_double TimeDelta)
 					m_pPlayerStateClass->Change_ActiveCharacter(CPlayerState::SLOT_SUB2);
 			}
 		}
-	}
-	// Echo Summon
-	if (pGame->InputKey(DIK_NUMPAD6) == KEY_STATE::TAP)
-	{
-		eCurFrameInput = INPUT_AIM;
+
+		if (pGame->InputKey(DIK_UP) == KEY_STATE::TAP)
+		{
+			m_bShowIdleAction = false;
+		}
+
+		if (pGame->InputKey(DIK_DOWN) == KEY_STATE::TAP)
+		{
+			m_bShowIdleAction = true;
+		}
 	}
 
 	// ≈∏∞Ÿ πÊ«‚

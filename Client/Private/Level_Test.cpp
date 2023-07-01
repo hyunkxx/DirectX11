@@ -326,8 +326,8 @@ HRESULT CLevel_Test::Ready_Layer_Monster(const _tchar * pLayerTag)
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_ANJIN, pLayerTag, TEXT("Anjin"))))
 	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_BINGLIE, pLayerTag, TEXT("Binglie"))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_BINGLIE, pLayerTag, TEXT("Binglie"))))
+	//	return E_FAIL;
 
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_TEST, OBJECT::MONSTER_FENGLIE, pLayerTag, TEXT("Fenglie"))))
 	//	return E_FAIL;
