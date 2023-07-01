@@ -1007,66 +1007,75 @@ void CM_FHuxiuxiu::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fA
 	if (0.f >= m_tMonsterInfo.fCurHP)
 	{
 		CGameInstance* pGI = CGameInstance::GetInstance();
+		CPlayerState* pState = static_cast<CPlayerState*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
+		CEchoSystem* pEchoSystem = static_cast<CEchoSystem*>(pGI->Find_GameObject(LEVEL_STATIC, L"Echo"));
+		CAcquireSystem* pAquire = static_cast<CAcquireSystem*>(pGI->Find_GameObject(LEVEL_STATIC, L"AcquireSystem"));
+		CItemDB* pDB = CItemDB::GetInstance();
+
 		static _bool bDie = false;
 		if (!bDie)
 		{
 			bDie = true;
-			CPlayerState* pState = static_cast<CPlayerState*>(pGI->Find_GameObject(LEVEL_STATIC, L"CharacterState"));
-			CEchoSystem* pEchoSystem = static_cast<CEchoSystem*>(pGI->Find_GameObject(LEVEL_STATIC, L"Echo"));
-			CAcquireSystem* pAquire = static_cast<CAcquireSystem*>(pGI->Find_GameObject(LEVEL_STATIC, L"AcquireSystem"));
-			CItemDB* pDB = CItemDB::GetInstance();
-
 			if (!pEchoSystem->GetEcho(CEchoSystem::EC_WHOOSH).bActive)
 			{
 				pEchoSystem->SetActiveEcho(CEchoSystem::EC_WHOOSH);
 				CItem::ITEM_DESC item = pDB->GetItemData(ITEM::E_WHOOSH);
 				pAquire->EnqueueItemDesc(item);
-
-				pState->AddUnionExp(20.f);
-
-				switch (item.eItemGrade)
-				{
-				case CItem::ADVANCED:
-					item = pDB->GetItemData(ITEM::EXP0);
-					item.iAmount = 1;
-					pAquire->EnqueueItemDesc(item);
-
-					item = pDB->GetItemData(ITEM::DOGTAG0);
-					item.iAmount = 2;
-					pAquire->EnqueueItemDesc(item);
-
-					break;
-				case CItem::RARE:
-					item = pDB->GetItemData(ITEM::EXP1);
-					item.iAmount = 1;
-					pAquire->EnqueueItemDesc(item);
-
-					item = pDB->GetItemData(ITEM::DOGTAG1);
-					item.iAmount = 2;
-					pAquire->EnqueueItemDesc(item);
-
-					break;
-				case CItem::UNIQUE:
-					item = pDB->GetItemData(ITEM::EXP2);
-					item.iAmount = 1;
-					pAquire->EnqueueItemDesc(item);
-
-					item = pDB->GetItemData(ITEM::DOGTAG2);
-					item.iAmount = 2;
-					pAquire->EnqueueItemDesc(item);
-					break;
-				case CItem::LEGEND:
-					item = pDB->GetItemData(ITEM::EXP3);
-					item.iAmount = 1;
-					pAquire->EnqueueItemDesc(item);
-
-					item = pDB->GetItemData(ITEM::DOGTAG3);
-					item.iAmount = 2;
-					pAquire->EnqueueItemDesc(item);
-
-					break;
-				}
 			}
+		}
+
+		CItem::ITEM_DESC coin = pDB->GetItemData(ITEM::COMMEMORATIVE_COIN);
+		coin.iAmount = 5;
+		pAquire->EnqueueItemDesc(coin);
+
+		coin = pDB->GetItemData(ITEM::TACTITE_COIN);
+		coin.iAmount = 500;
+		pAquire->EnqueueItemDesc(coin);
+
+		pState->AddUnionExp(20.f);
+
+		CItem::ITEM_DESC item = pDB->GetItemData(ITEM::E_WHOOSH);
+		switch (item.eItemGrade)
+		{
+		case CItem::ADVANCED:
+			item = pDB->GetItemData(ITEM::EXP0);
+			item.iAmount = 1;
+			pAquire->EnqueueItemDesc(item);
+
+			item = pDB->GetItemData(ITEM::DOGTAG0);
+			item.iAmount = 2;
+			pAquire->EnqueueItemDesc(item);
+
+			break;
+		case CItem::RARE:
+			item = pDB->GetItemData(ITEM::EXP1);
+			item.iAmount = 1;
+			pAquire->EnqueueItemDesc(item);
+
+			item = pDB->GetItemData(ITEM::DOGTAG1);
+			item.iAmount = 2;
+			pAquire->EnqueueItemDesc(item);
+
+			break;
+		case CItem::UNIQUE:
+			item = pDB->GetItemData(ITEM::EXP2);
+			item.iAmount = 1;
+			pAquire->EnqueueItemDesc(item);
+
+			item = pDB->GetItemData(ITEM::DOGTAG2);
+			item.iAmount = 2;
+			pAquire->EnqueueItemDesc(item);
+			break;
+		case CItem::LEGEND:
+			item = pDB->GetItemData(ITEM::EXP3);
+			item.iAmount = 1;
+			pAquire->EnqueueItemDesc(item);
+
+			item = pDB->GetItemData(ITEM::DOGTAG3);
+			item.iAmount = 2;
+			pAquire->EnqueueItemDesc(item);
+
+			break;
 		}
 
 		m_tMonsterInfo.fCurHP = 0.f;

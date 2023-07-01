@@ -673,7 +673,7 @@ void CActionCam::actionLoop_Crown2(_double TimeDelta)
 				if (!bSlowMotion)
 				{
 					bSlowMotion = true;
-					pGameInstance->StartBlackWhite(2.5f);
+					pGameInstance->StartBlackWhite(2.f);
 				}
 			}
 			break;
