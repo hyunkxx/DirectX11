@@ -484,10 +484,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 		return E_FAIL;*/
 
 	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
-	SpawnPoint.vP = { 121.755f, 27.597f, 219.469f };
-	SpawnPoint.iCellIndex = 1707;
+	SpawnPoint.vP = { 108.511f, 27.577f, 212.447f };
+	SpawnPoint.iCellIndex = 1584;
 	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_AWUKAKA, pLayerTag, SpawnPoint)))
 		return E_FAIL;
+
 	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
 	SpawnPoint.vP = { 110.679f, 27.628f, 223.045f };
 	SpawnPoint.iCellIndex = 1682;
