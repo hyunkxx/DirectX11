@@ -66,7 +66,7 @@ void CUI_TapT::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
-	
+	pActiveCharacter = m_pPlayerStateClass->Get_ActiveCharacter();
 	if (pGameInstance->InputKey(DIK_TAB) == KEY_STATE::HOLD)
 	{
 		m_bActive = true; // ¼öÁ¤
