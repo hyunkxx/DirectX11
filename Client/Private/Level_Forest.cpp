@@ -940,6 +940,13 @@ HRESULT CLevel_Forest::Ready_Layer_Monster(const _tchar* pLayerTag)
 	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
 	SpawnPoint.vP = { 296.426f, 13.317f, 306.432f };
 	SpawnPoint.iCellIndex = 1475;
+	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_FHUXIUXIU, pLayerTag, SpawnPoint)))
+		return E_FAIL;
+
+	// ( 2스폰 벽타기 밑 )
+	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+	SpawnPoint.vP = { 309.540f, 16.020f, 332.300f };
+	SpawnPoint.iCellIndex = 1395;
 	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_AWUKAKA, pLayerTag, SpawnPoint)))
 		return E_FAIL;
 
