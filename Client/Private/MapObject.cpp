@@ -49,13 +49,51 @@ HRESULT CMapObject::Initialize(void * pArg)
 	
 	m_pMainTransform->Set_State(CTransform::STATE_POSITION, POSITION_ZERO);
 
-	//if (m_EditionDesc.iTypeID == CMapObject::MAPOBJECT_TYPEID::ID_ROCK)
-		//m_EditionDesc.fCullingRatio = 0.f;
+	switch (m_EditionDesc.iTypeID)
+	{
+	case Client::CMapObject::ID_TREE:
+		break;
+	case Client::CMapObject::ID_ROCK:
+		m_EditionDesc.fCullingRatio = 0.f;
+		break;
+	case Client::CMapObject::ID_FLOOR:
+		break;
+	case Client::CMapObject::ID_STAIRS:
+		break;
+	case Client::CMapObject::ID_GRASS:
+		break;
+	case Client::CMapObject::ID_GRASS_MASK:
+		break;
+	case Client::CMapObject::ID_VIN:
+		break;
+	case Client::CMapObject::ID_VEG:
+		break;
+	case Client::CMapObject::ID_SHR:
+		break;
+	case Client::CMapObject::ID_STRUCTURE:
+		m_EditionDesc.fCullingRatio = 0.f;
+		break;
+	case Client::CMapObject::ID_PIL:
+		m_EditionDesc.fCullingRatio = 0.f;
+		break;
+	case Client::CMapObject::ID_STATUE:
+		break;
+	case Client::CMapObject::ID_NOIROCK:
+		break;
+	case Client::CMapObject::ID_TOF_GRASS:
+		break;
+	case Client::CMapObject::ID_END:
+		break;
+	default:
+		break;
+	}
 
-	m_EditionDesc.fCullingRatio = 0.f;
+	//m_EditionDesc.fCullingRatio = 0.f;
 
 	//SetUp_Random_Shake();
 	//SetUp_Shake();
+
+	SetState(CGameObject::STATE::NONTICK);
 	
 	return S_OK;
 }
@@ -64,7 +102,6 @@ void CMapObject::Start()
 {
 	__super::Start();
 
-	// 여기도 확인해볼것
 	if (m_EditionDesc.iTypeID != CMapObject::MAPOBJECT_TYPEID::ID_GRASS_MASK && m_EditionDesc.iTypeID != CMapObject::MAPOBJECT_TYPEID::ID_TOF_GRASS)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_STATIC_SHADOW, this);
 }
@@ -72,13 +109,13 @@ void CMapObject::Start()
 void CMapObject::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-
-	m_fTimeeAcc += (_float)TimeDelta;
 }
 
 void CMapObject::LateTick(_double TimeDelta)
 {
 	CGameInstance* pGame = CGameInstance::GetInstance();
+
+	m_fTimeeAcc += (_float)TimeDelta;
 
 	__super::LateTick(TimeDelta);
 

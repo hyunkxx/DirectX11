@@ -7,7 +7,7 @@ BEGIN(Engine)
 class ENGINE_DLL CGameObject abstract : public CBase
 {
 public:
-	enum STATE { ACTIVE, DISABLE, DESTROY };
+	enum STATE { ACTIVE, DISABLE, DESTROY, NONTICK };
 
 protected:
 	explicit CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -51,6 +51,7 @@ public:
 	_bool IsActive() const { return m_eState == STATE::ACTIVE; }
 	_bool IsDisable() const { return m_eState == STATE::DISABLE; }
 	_bool IsDestroy() const { return m_eState == STATE::DESTROY; }
+	_bool IsNoneTick() const { return m_eState == STATE::NONTICK; }
 
 	_int GetID() const { return m_iObjectID; }
 	_tchar* GetTag() { return m_ObjectTag; }

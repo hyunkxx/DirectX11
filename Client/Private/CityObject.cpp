@@ -55,6 +55,8 @@ HRESULT CCityObject::Initialize(void * pArg)
 
 	m_fCullingRatio = { 0.0f };
 
+	SetState(CGameObject::STATE::NONTICK);
+
 	return S_OK;
 }
 

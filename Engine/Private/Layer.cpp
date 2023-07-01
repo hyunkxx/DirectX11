@@ -56,7 +56,7 @@ void CLayer::LateTick(_double TimeDelta)
 				continue;
 			}
 
-			if (iter->second->IsActive())
+			if (iter->second->IsActive() || iter->second->IsNoneTick())
 				iter->second->LateTick(TimeDelta);
 
 			iter++;
