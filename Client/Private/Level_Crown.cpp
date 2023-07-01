@@ -120,8 +120,8 @@ HRESULT CLevel_Crown::Initialize()
 	
 	// play_story_music_neutral_02_1.wem.wav
 	// play_story_music_serious_1.wem.wav
-	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
-	pGameInstance->PlaySoundEx(L"Opening.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+	//pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
+	//pGameInstance->PlaySoundEx(L"Opening.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 
 	pGM->ResetStaticShadowBake();
 
@@ -142,6 +142,7 @@ void CLevel_Crown::Tick(_double TimeDelta)
 		return;
 
 	// 브금 교체.
+	/*
 	if (true == pGameMode->Is_ChangeBgm())
 	{
 		if (true == pGameMode->Is_ChangeDelay())
@@ -168,8 +169,7 @@ void CLevel_Crown::Tick(_double TimeDelta)
 			pGameInstance->BGMSmoothOn(TimeDelta);
 		}
 	}
-
-	//pGameInstance->BGMSmoothOn(TimeDelta);
+	*/
 
 	////임시 그래픽 세팅 추후에 시스템 UI만들면서 넣을것
 	//static _uint iShadowLevel = 0;
@@ -233,11 +233,9 @@ void CLevel_Crown::Tick(_double TimeDelta)
 	{
 		pGameInstance->StopAllSound();
 
-		/*if (true == pGameInstance->BGMSmoothOff(TimeDelta))
-		{*/
-			pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
-			pGameMode->Reset_ReserveLevel();
-		//}
+
+		pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, pGameMode->Get_ReserveLevel()));
+		pGameMode->Reset_ReserveLevel();
 	}
 
 #pragma region LEVEL_MOVE

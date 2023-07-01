@@ -138,14 +138,14 @@ HRESULT CLevel_Forest::Initialize()
 	}
 
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
+
+	/*
 	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
-
-	//pGameInstance->PlaySoundEx(L"Base_BGM.mp3", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
-
 	// Play_AMB_Common_Forest_Bird.wem.wav
 	pGameInstance->PlaySoundEx(L"play_story_music_neutral_02_1.wem.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 	
 	pGameInstance->PlaySoundEx(L"Play_AMB_Common_Forest_Bird.wem.wav", SOUND_CHANNEL::SOUND_AMBIENCE1, VOLUME_BGM);
+	*/
 
 	pGM->ResetStaticShadowBake();
 
@@ -160,10 +160,12 @@ void CLevel_Forest::Tick(_double TimeDelta)
 #endif
 
 	CGameMode* pGameMode = CGameMode::GetInstance();
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	if (nullptr == pGameInstance || nullptr == pGameMode)
 		return;
 
+	/*
 	// 전투 상태인데
 	if (true == pGameMode->Is_Battle())
 	{
@@ -233,6 +235,7 @@ void CLevel_Forest::Tick(_double TimeDelta)
 	{
 		pGameInstance->BGMSmoothOn(TimeDelta);
 	}
+	*/
 
 	//if (true == pGameMode->Is_ChangeBgm())
 

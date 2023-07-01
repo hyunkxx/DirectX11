@@ -78,8 +78,8 @@ HRESULT CLevel_City::Initialize()
 	
 	pGameInstance->StartFade(CRenderSetting::FADE_IN, 4.f);
 	
-	pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
-	pGameInstance->PlaySoundEx(L"play_sequence_music_m0165_2.wem.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
+	//pGameInstance->SetVolume(SOUND_TYPE::SOUND_BGM, 0.2f);
+	//pGameInstance->PlaySoundEx(L"play_sequence_music_m0165_2.wem.wav", SOUND_CHANNEL::SOUND_BGM, VOLUME_BGM);
 
 	pGM->ResetStaticShadowBake();
 
@@ -95,6 +95,9 @@ void CLevel_City::Tick(_double TimeDelta)
 
 	CGameMode* pGameMode = CGameMode::GetInstance();
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	if (nullptr == pGameInstance || nullptr == pGameMode)
+		return;
 
 	//pGameInstance->BGMSmoothOn(TimeDelta);
 
