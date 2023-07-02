@@ -137,7 +137,22 @@ public:
 		m_pUIIcon->SetRender(m_UIIndex, true);
 	};
 
-
+public: /* Ãß°¡ÇÔ */
+	void SetUp_Hp(_float fHp) {
+		if (0.0f >= fHp)
+			return;
+		m_tMonsterInfo.fMaxHP = fHp;
+		m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
+		if (nullptr != m_pUIMon)
+			m_pUIMon->Set_MonHP(m_tMonsterInfo.fCurHP);
+	}
+	void Reset_To_OriginHp()
+	{
+		m_tMonsterInfo.fMaxHP = 1600.f;;
+		m_tMonsterInfo.fCurHP = m_tMonsterInfo.fMaxHP;
+		if (nullptr != m_pUIMon)
+			m_pUIMon->Set_MonHP(m_tMonsterInfo.fCurHP);
+	}
 
 private:
 	CRenderer*			m_pRendererCom = { nullptr };

@@ -459,17 +459,28 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	SPAWN_POINT			SpawnPoint = {};
 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	CGameObject* pChar = nullptr;
+
 	// [ 돌판 1 ]
 	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
 	SpawnPoint.vP = { 145.898f, 25.767f, 183.038f };
 	SpawnPoint.iCellIndex = 1340;
-	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_GAZIZI, pLayerTag, SpawnPoint)))
+
+	if (FAILED(pGameInstance->Add_GameObjectEx(&pChar, LEVEL_GAMEPLAY, OBJECT::MONSTER_GAZIZI, pLayerTag, TEXT("Gazizi"))))
 		return E_FAIL;
-	ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
+
+	static_cast<CCharacter*>(pChar)->Set_InitPos(XMLoadFloat3(&SpawnPoint.vP), SpawnPoint.iCellIndex);
+	static_cast<CM_GAzizi*>(pChar)->SetUp_Hp(10000.0f);
+
+	/*ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
 	SpawnPoint.vP = { 130.752f, 25.751f, 186.065f };
 	SpawnPoint.iCellIndex = 1460;
 	if (FAILED(Add_StreetMonster(OBJECT::MONSTER_AWUKAKA, pLayerTag, SpawnPoint)))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	// [ 돌판 2 ]
 	/*ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
