@@ -1081,7 +1081,7 @@ HRESULT CResonatorUI::Initialize(void * pArg)
 	m_pInven->PushItemDesc(itemDesc);
 	
 	itemDesc = pDB->GetItemData(ITEM::SWORD4);
-	itemDesc.iAmount = 5;
+	itemDesc.iAmount = 1;
 	m_pInven->PushItemDesc(itemDesc);
 	
 	_matrix IdenMatrix = XMMatrixIdentity();

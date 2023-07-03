@@ -261,6 +261,10 @@ void CTerminalUI::Tick(_double TimeDelta)
 		ShowCursor(bShowCursor);
 	}
 
+	CGameMode* pGM = CGameMode::GetInstance();
+	if (pGM->GetCurrentLevel() == LEVEL_LOGO)
+		return;
+
 	inputKey(TimeDelta);
 
 	activeCheck(TimeDelta);
@@ -280,6 +284,10 @@ void CTerminalUI::Tick(_double TimeDelta)
 void CTerminalUI::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
+
+	CGameMode* pGM = CGameMode::GetInstance();
+	if (pGM->GetCurrentLevel() == LEVEL_LOGO)
+		return;
 
 	if (!m_pActivateList.empty() && m_pActivateList.top() == this)
 		m_bRender = true;

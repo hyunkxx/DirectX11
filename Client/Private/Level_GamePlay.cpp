@@ -474,7 +474,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	static_cast<CCharacter*>(pChar)->Set_InitPos(XMLoadFloat3(&SpawnPoint.vP), SpawnPoint.iCellIndex);
-	static_cast<CM_GAzizi*>(pChar)->SetUp_Hp(10000.0f);
+	static_cast<CM_GAzizi*>(pChar)->SetUp_Hp(2000.0f);
 
 	/*ZeroMemory(&SpawnPoint, sizeof(SPAWN_POINT));
 	SpawnPoint.vP = { 130.752f, 25.751f, 186.065f };

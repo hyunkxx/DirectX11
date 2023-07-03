@@ -297,7 +297,7 @@ private:
 	
 	_uint m_iUnionLevel = 1;
 	_float m_fCurUnionExp = 0.f;
-	const _float m_fMaxUnionExp = 200.f;
+	const _float m_fMaxUnionExp = 20.f;
 };
 
 END

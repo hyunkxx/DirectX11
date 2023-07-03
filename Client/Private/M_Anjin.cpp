@@ -1112,10 +1112,6 @@ void CM_Anjin::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAttac
 		coin.iAmount = 5;
 		pAquire->EnqueueItemDesc(coin);
 
-		coin = pDB->GetItemData(ITEM::TACTITE_COIN);
-		coin.iAmount = 500;
-		pAquire->EnqueueItemDesc(coin);
-
 		pState->AddUnionExp(20.f);
 
 		CItem::ITEM_DESC item = pDB->GetItemData(ITEM::E_RUPTURE);
@@ -1161,6 +1157,10 @@ void CM_Anjin::On_Hit(CCharacter * pChar, TAGATTACK * pAttackInfo, _float fAttac
 
 			break;
 		}
+
+		coin = pDB->GetItemData(ITEM::TACTITE_COIN);
+		coin.iAmount = 500;
+		pAquire->EnqueueItemDesc(coin);
 
 		m_tMonsterInfo.fCurHP = 0.f;
 		m_Scon.iNextState = IS_DEAD;
